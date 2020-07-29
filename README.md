@@ -48,5 +48,5 @@ The current main code run sequentially the add_image_and_scalar and maximum_z_pr
 - Running kernel limited to (for now)
     - add_image_and_scalar
     - maximum_z_projection  
-- Only process data in 1D array
+- Only process buffer data, image2d_t and image3d_t not supported
 
