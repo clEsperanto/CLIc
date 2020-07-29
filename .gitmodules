@@ -1,0 +1,3 @@
+[submodule "clij-opencl-kernels"]
+	path = clij-opencl-kernels
+	url = git@github.com:clEsperanto/clij-opencl-kernels.git
