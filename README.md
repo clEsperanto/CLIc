@@ -16,7 +16,7 @@ Right now, this is very preliminary, and mainly focussed on running a few kernel
 
 clone the repository
 ```
-git clone git@gitlab.pasteur.fr:iah/CLIc.git
+git clone git@github.com:clEsperanto/CLIc_prototype.git
 ```
 download the submodule required (here the CLIJ kernels)
 ```
