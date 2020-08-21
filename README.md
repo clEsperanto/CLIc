@@ -43,16 +43,18 @@ Cmake control the project configuration and path to required libraries. If it fa
 
 ### LibTiff
 It is require to link the include folder and the compiled library to the project. This is done automatically if already in PATH through the *find_package()* cmake function, otherwise can be specified to cmake through the following variables:
-- TIFF_LIBRARY
-- TIFF_INCLUDE_DIR  
+- TIFF_LIBRARY → which should point to libtiff (.so for Unix, .lib for Windows)
+- TIFF_INCLUDE_DIR → which should point folder containing the tiffio<span>.h and tiff<span>.h  
+
+Both can be found in the libtiff folder provided in the last version of the library [LibTiff](http://www.simplesystems.org/libtiff/).
 
 ### OpenCL
-OpenCL is usually provided in the SDK corresponding to your GPU platform (Nvidia, Intel, etc.). If SDK in the PATH, the *find_package()* cmake function shoudl find it, otherwise both can be set using the variables:
-- OPENCL_LIBRARY
-- OPENCL_INCLUDE_DIR 
+OpenCL is usually already provided by your OS or can be found in the SDK corresponding to your GPU platform (Nvidia, Intel, etc.). If SDK in the PATH, the *find_package()* cmake function shoudl find it, otherwise both can be set using the variables:
+- OPENCL_LIBRARY → which should point to libOpenCL or OpenCL (.so for Unix, .lib for Windows)
+- OPENCL_INCLUDE_DIR → which should point to a folder containg CL/cl<span>.h
 
 ### Others
-CLIj kernels and preamble opencl file are required for execution, the path to both of them is defined by CLI_Path and CLP_Path in cmake.
+CLIj kernels opencl file are required for execution, those are provided by the submodules. The folder can be redefined using the variable CLI_Path in cmake-gui.
 
 # Testing
 
