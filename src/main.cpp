@@ -10,11 +10,13 @@
 
 #include <fstream>
 #include <iostream>
+#include <string>
 
 #include "utils.h"
 #include "tiffreader.h"
 #include "tiffwriter.h"
 #include "image.h"
+
 
 
 /**
