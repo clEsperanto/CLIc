@@ -368,6 +368,7 @@ int initialise_gpu(cl_platform_id &platform_id, cl_device_id &device_id, cl_cont
         std::cerr << "OpenCL Error! Could not create commande queue : " << getOpenCLErrorString(clError) << std::endl;
         return EXIT_FAILURE;
     }
+    return EXIT_SUCCESS;
 }
 
 
