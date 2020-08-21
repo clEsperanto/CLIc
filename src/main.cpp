@@ -380,11 +380,20 @@ int initialise_gpu(cl_platform_id &platform_id, cl_device_id &device_id, cl_cont
  */
 int main(int argc, char **argv)
 {
+    if (argc < 4)
+    {
+        std::cerr << "CLIc Prototype, Compiled : " << __DATE__ << " at " << __TIME__ << std::endl;
+        std::cerr << "Usage: " << argv[0] << std::endl;
+        std::cerr << "\tstring - path to input tiff 3d image." << std::endl;
+        std::cerr << "\tstring - path to output tiff image 1." << std::endl;
+        std::cerr << "\tstring - path to output tiff image 2." << std::endl;
+        return EXIT_FAILURE;
+    }
 
     // I/O filename
-    std::string ouFilename_add = "./images/output_add_image_and_scalar.tif";
-    std::string ouFilename_proj = "./images/output_maximum_z_projection.tif";
-    std::string inFilename = "./images/input.tif";
+    std::string ouFilename_add = argv[2];
+    std::string ouFilename_proj = argv[3];
+    std::string inFilename = argv[1];
 
     // Read input tiff file
     unsigned int width, height, depth;
