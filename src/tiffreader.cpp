@@ -13,7 +13,6 @@ float* TiffReader::read(unsigned int* width, unsigned int* height, unsigned int*
     float* buffer;
     size_t global_cpt = 0;
     size_t npixels = 0;
-    size_t ori;
 
     if (tiff)
     {
