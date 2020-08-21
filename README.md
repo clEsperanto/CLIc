@@ -62,8 +62,14 @@ The current main code run sequentially the add_image_and_scalar and maximum_z_pr
 | :--------:  | :--------: | :--------: |
 | <img src="./ressources/input.gif" width="200" height="200" /> | <img src="./ressources/output_add_image_and_scalar.gif" width="200" height="200" /> | <img src="./ressources/output_maximum_z_projection.png" width="200" height="200" /> |
 
+## Current architecture compatibility
 
-# Issues
+| OS  | GPU | Driver | OpenCL | Test Status |
+| :--------:  | :--------: | :--------: | :--------: | :--------: |
+| Ubuntu 18.04  | NVIDIA GeForce GTX 1050 Ti | x84_64 440 | NVIDIA OpenCL 1.2 | PASS |
+| Windows 10  | NVIDIA Quadro P4000 | nvidia quadro 450 | NVIDIA OpenCL 1.2 | PASS |
+
+## Issues
 
 - Running kernel limited to (for now)
     - add_image_and_scalar
