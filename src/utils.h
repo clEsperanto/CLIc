@@ -52,6 +52,7 @@ std::string TypeId(std::string type)
     {
         return "ui";
     }
+    return "f"; // default
 }
 
 /**
