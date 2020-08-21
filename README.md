@@ -8,8 +8,11 @@ Right now, this is very preliminary, and mainly focussed on running a few kernel
 
 ## Requierements
 
-- [LibTiff](https://en.wikipedia.org/wiki/Libtiff)
-- [OpenCL](https://www.khronos.org/opencl/)  
+- [LibTiff](http://www.simplesystems.org/libtiff/)
+- [OpenCL](https://www.khronos.org/opencl/) (version 1.2) 
+    - [Nvidia Platform](https://developer.nvidia.com/cuda-downloads)  
+    - AMD Platform  
+    - [Intel Platform](https://software.intel.com/content/www/us/en/develop/tools/opencl-sdk.html)
 - [CMake](https://cmake.org/)
 
 ## Install
@@ -33,6 +36,23 @@ call make to compile.
 ```
 make 
 ```
+
+## Troubleshooting
+
+Cmake control the project configuration and path to required libraries. If it fail generating the make file, open the cmake-gui to easily access key configuration variable.
+
+### LibTiff
+It is require to link the include folder and the compiled library to the project. This is done automatically if already in PATH through the *find_package()* cmake function, otherwise can be specified to cmake through the following variables:
+- TIFF_LIBRARY
+- TIFF_INCLUDE_DIR  
+
+### OpenCL
+OpenCL is usually provided in the SDK corresponding to your GPU platform (Nvidia, Intel, etc.). If SDK in the PATH, the *find_package()* cmake function shoudl find it, otherwise both can be set using the variables:
+- OPENCL_LIBRARY
+- OPENCL_INCLUDE_DIR 
+
+### Others
+CLIj kernels and preamble opencl file are required for execution, the path to both of them is defined by CLI_Path and CLP_Path in cmake.
 
 # Testing
 
