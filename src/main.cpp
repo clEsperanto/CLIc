@@ -360,7 +360,7 @@ int initialise_gpu(cl_platform_id &platform_id, cl_device_id &device_id, cl_cont
         std::cerr << "OpenCL Error! Could not create context : " << getOpenCLErrorString(clError) << std::endl;
         return EXIT_FAILURE;
     }
-    command_queue = clCreateCommandQueueWithProperties(context, device_id, NULL, &clError);
+    command_queue = clCreateCommandQueue(context, device_id, NULL, &clError);
     if (clError != CL_SUCCESS) 
     {
         std::cerr << "OpenCL Error! Could not create commande queue : " << getOpenCLErrorString(clError) << std::endl;
