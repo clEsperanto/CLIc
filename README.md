@@ -66,10 +66,11 @@ The current main code run sequentially the add_image_and_scalar and maximum_z_pr
 
 ## Current architecture compatibility
 
-| OS  | GPU | Driver | OpenCL | Test Status |
-| :--------:  | :--------: | :--------: | :--------: | :--------: |
-| Ubuntu 18.04  | NVIDIA GeForce GTX 1050 Ti | x84_64 440 | NVIDIA OpenCL 1.2 | PASS |
-| Windows 10  | NVIDIA Quadro P4000 | nvidia quadro 450 | NVIDIA OpenCL 1.2 | PASS |
+| OS  | GPU | Driver | OpenCL | Test Status | Info |
+| :--------:  | :--------: | :--------: | :--------: | :--------: | :--------: |
+| Ubuntu 18.04  | NVIDIA GeForce GTX 1050 Ti | x84_64 440 | NVIDIA OpenCL 1.2 | PASS | clCreateCommandQueue is deprecated |
+| Windows 10  | NVIDIA Quadro P4000 | nvidia quadro 450 | NVIDIA OpenCL 1.2 | PASS | clCreateCommandQueueWithProperties Not Recognised, use clCreateCommandQueue |
+| OSX 10.14.1  | Intel Iris Pro | included with OS | OpenCL 1.2 | PASS | Nearly all cl function are deprecated. Required CL_MEM_COPY_HOST_PTR in clCreateBuffer to execute. |
 
 ## Issues
 
