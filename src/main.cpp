@@ -26,7 +26,7 @@ template<class T>
 cl_mem push(Image<T>& img, cl_context context, cl_command_queue command_queue)
 {
     cl_int clError;
-    cl_mem mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY, img.GetDataSize(), img.GetData(), &clError);
+    cl_mem mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, img.GetDataSize(), img.GetData(), &clError);
     if (clError != CL_SUCCESS)
     {
         std::cerr << "OCL Error! fail to create buffer in push() : " << getOpenCLErrorString(clError) << std::endl;
@@ -362,7 +362,7 @@ int initialise_gpu(cl_platform_id &platform_id, cl_device_id &device_id, cl_cont
         std::cerr << "OpenCL Error! Could not create context : " << getOpenCLErrorString(clError) << std::endl;
         return EXIT_FAILURE;
     }
-    command_queue = clCreateCommandQueue(context, device_id, NULL, &clError);
+    command_queue = clCreateCommandQueue(context, device_id, 0, &clError);
     if (clError != CL_SUCCESS) 
     {
         std::cerr << "OpenCL Error! Could not create commande queue : " << getOpenCLErrorString(clError) << std::endl;
