@@ -23,7 +23,7 @@ git clone git@github.com:clEsperanto/CLIc_prototype.git
 ```
 download the submodule required (here the CLIJ kernels)
 ```
-cd CLIc
+cd CLIc_prototype
 git submodule update --init --recursive
 ```
 create de build folder and call cmake from it to generate a make file
