@@ -2,6 +2,7 @@
 #define __tiffreader_h
 
 #include <tiffio.h>
+#include "image.h"
  
 class TiffReader
 {
