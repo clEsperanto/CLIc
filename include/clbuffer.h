@@ -1,3 +1,7 @@
+/**
+ * Author: Stephane Rigaud - @strigaud 
+ */
+
 #ifndef __clbuffer_h
 #define __clbuffer_h
 

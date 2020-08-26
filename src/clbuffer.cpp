@@ -1,3 +1,6 @@
+/**
+ * Author: Stephane Rigaud - @strigaud 
+ */
 
 #include "clbuffer.h"
 #include <iostream>

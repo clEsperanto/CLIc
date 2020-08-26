@@ -1,3 +1,7 @@
+/**
+ * Author: Stephane Rigaud - @strigaud 
+ */
+
 #ifndef __tiffreader_h
 #define __tiffreader_h
 
