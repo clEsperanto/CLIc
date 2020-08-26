@@ -408,7 +408,13 @@ int initialise_gpu(cl_platform_id &platform_id, cl_device_id &device_id, cl_cont
         return EXIT_FAILURE;
     }
 
+#if OCL_MAJOR_VERSION == 2  
+    command_queue = clCreateCommandQueueWithProperties(context, device_id, nullptr, &clError);
+#elif OCL_MAJOR_VERSION == 1 
     command_queue = clCreateCommandQueue(context, device_id, 0, &clError);
+#else
+    command_queue = clCreateCommandQueue(context, device_id, 0, &clError);
+
     if (clError != CL_SUCCESS) 
     {
         std::cerr << "OpenCL Error! Could not create commande queue : " << getOpenCLErrorString(clError) << std::endl;
