@@ -1,7 +1,12 @@
+/**
+ * Author: Stephane Rigaud - @strigaud 
+ */
+
 #ifndef __tiffreader_h
 #define __tiffreader_h
 
 #include <tiffio.h>
+#include "image.h"
  
 class TiffReader
 {

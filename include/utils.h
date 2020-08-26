@@ -1,5 +1,5 @@
 /**
- * Author: @strigaud 
+ * Author: Stephane Rigaud - @strigaud 
  */
 
 #ifndef __utils_h
