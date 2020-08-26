@@ -169,19 +169,15 @@ std::string LoadSources(std::string kernelFilename)
 /**
  * Set OpenCL Defines variable from clBuffer.
  */
-std::string LoadDefines(clBuffer& src, std::string src_key, clBuffer& dst, std::string dst_key)
+std::string LoadDefines(std::map<std::string, clBuffer>& parameters)
 {
-    std::map<std::string, clBuffer> dataList;
-    dataList.insert({src_key, src});
-    dataList.insert({dst_key, dst});
-
     std::string defines;
     defines = defines + "\n#define GET_IMAGE_WIDTH(image_key) IMAGE_SIZE_ ## image_key ## _WIDTH";
     defines = defines + "\n#define GET_IMAGE_HEIGHT(image_key) IMAGE_SIZE_ ## image_key ## _HEIGHT";
     defines = defines + "\n#define GET_IMAGE_DEPTH(image_key) IMAGE_SIZE_ ## image_key ## _DEPTH";
     defines = defines + "\n";   
 
-    for (auto itr = dataList.begin(); itr != dataList.end(); ++itr)
+    for (auto itr = parameters.begin(); itr != parameters.end(); ++itr)
     {
         // image type handling
         defines = defines + "\n#define CONVERT_" + itr->first + "_PIXEL_TYPE clij_convert_" + itr->second.GetType() + "_sat";
@@ -256,9 +252,13 @@ int maximumzprojection(clBuffer src_gpu_obj, clBuffer dst_gpu_obj,
     cl_int clError;
     std::string kernel_name = "maximum_z_projection";
 
+    std::map<std::string, clBuffer> dataList;
+    dataList.insert({"src", src_gpu_obj});
+    dataList.insert({"dst_max", dst_gpu_obj});
+
     // read kernel, defines, and preamble
     std::string kernel_src = LoadSources(kernel_name);
-    std::string defines_src = LoadDefines(src_gpu_obj, "src", dst_gpu_obj, "dst_max");
+    std::string defines_src = LoadDefines(dataList);
     std::string preambule_src = LoadPreamble();
 
     // construct final source code
@@ -327,10 +327,14 @@ int addImageAndScalar3d(clBuffer src_gpu_obj, clBuffer dst_gpu_obj, float scalar
     // initialise information on kernel and data to process
     cl_int clError;
     std::string kernel_name = "add_image_and_scalar_3d";
+    
+    std::map<std::string, clBuffer> dataList;
+    dataList.insert({"src", src_gpu_obj});
+    dataList.insert({"dst", dst_gpu_obj});
 
     // read kernel, defines, and preamble
     std::string kernel_src = LoadSources(kernel_name);
-    std::string defines_src = LoadDefines(src_gpu_obj, "src", dst_gpu_obj, "dst");
+    std::string defines_src = LoadDefines(dataList);
     std::string preambule_src = LoadPreamble();
 
     // construct final source code
