@@ -21,7 +21,8 @@
 
 
 /**
- * Push local array into clBuffer.
+ * Push local image into buffer
+ * @return clBuffer.
  */
 template<class T>
 clBuffer push(Image<T>& img, std::string type, cl_context context, cl_command_queue command_queue)
@@ -42,7 +43,8 @@ clBuffer push(Image<T>& img, std::string type, cl_context context, cl_command_qu
 
 
 /**
- * Create an empty array into clBuffer.
+ * Create an empty buffer, use local image for initialisation.
+ * @return clBuffer.
  */
 template<class T>
 clBuffer create(Image<T>& img, std::string type, cl_context context, cl_command_queue command_queue)
@@ -58,7 +60,8 @@ clBuffer create(Image<T>& img, std::string type, cl_context context, cl_command_
 
 
 /**
- * Create an empty array into clBuffer.
+ * Create an empty buffer, use clBuffer for initialisation.
+ * @return clBuffer.
  */
 template<class T>
 clBuffer create(clBuffer& gpu_obj, std::string type, cl_context context, cl_command_queue command_queue)
@@ -75,7 +78,8 @@ clBuffer create(clBuffer& gpu_obj, std::string type, cl_context context, cl_comm
 
 
 /**
- * Create an empty array into clBuffer.
+ * Create an empty buffer, use dimensions and type for initialisation.
+ * @return clBuffer.
  */
 template<class T>
 clBuffer create(std::array<unsigned int,3> arr, std::string type, cl_context context, cl_command_queue command_queue)
@@ -93,7 +97,8 @@ clBuffer create(std::array<unsigned int,3> arr, std::string type, cl_context con
 
 
 /**
- * Read array from clBuffer.
+ * Pull clBuffer into local image.
+ * @return image
  */
 template<class T>
 Image<T> pull(clBuffer gpu_obj, cl_context context, cl_command_queue command_queue)
@@ -162,7 +167,7 @@ std::string LoadSources(std::string kernelFilename)
 
 
 /**
- * Set OpenCL Defines variable.
+ * Set OpenCL Defines variable from clBuffer.
  */
 std::string LoadDefines(clBuffer& src, std::string src_key, clBuffer& dst, std::string dst_key)
 {
