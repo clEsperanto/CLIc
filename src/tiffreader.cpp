@@ -1,4 +1,6 @@
-
+/**
+ * Author: Stephane Rigaud - @strigaud 
+ */
 
 #include "tiffreader.h"
 #include <iostream>
