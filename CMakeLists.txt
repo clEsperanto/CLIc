@@ -48,4 +48,5 @@ set(CLP_Path ${CMAKE_CURRENT_SOURCE_DIR}/ressources CACHE PATH "Path to CLI prea
 
 target_compile_definitions(CLIc PRIVATE -DCLI_PATH=\"${CLI_Path}\")
 target_compile_definitions(CLIc PRIVATE -DCLP_PATH=\"${CLP_Path}\")
+target_compile_definitions(CLIc PRIVATE -DOCL_MAJOR_VERSION=${OpenCL_VERSION_MAJOR})
 
