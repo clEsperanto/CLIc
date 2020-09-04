@@ -12,6 +12,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <utility>
 
 #include "utils.h"
 #include "tiffreader.h"
