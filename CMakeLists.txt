@@ -1,51 +1,70 @@
-## CMake Initialisation
+## Project Initialisation ####################################
 
 cmake_minimum_required(VERSION 3.0)
 
+# Project name
 project(CLIc)
 
-## Find and manage libraries and include path
-#
+# define compilation flag
+set(CMAKE_C_STANDARD 11)
+
+## Libraries management ####################################
+
+# Find OpenCL
 find_package(OpenCL REQUIRED)
 if(OpenCL_FOUND)
   include_directories(${OpenCL_INCLUDE_DIR})
 endif()
 
+# Find TIFF
 find_package(TIFF REQUIRED)
 if(TIFF_FOUND)
  include_directories(${TIFF_INCLUDE_DIR})
 endif()
 
-## List project sources, header, and include directories
-#
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+## Project files ####################################
 
+# defines paths
+set(src_dir ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(include_dir ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+# List sources
 set(source 
-src/main.cpp
-src/clbuffer.cpp
-src/tiffreader.cpp
-src/tiffwriter.cpp
+${src_dir}/main.cpp
+${src_dir}/clbuffer.cpp
+${src_dir}/tiffreader.cpp
+${src_dir}/tiffwriter.cpp
 )
 
+# List header
 set(header 
-include/clbuffer.h
-include/tiffreader.h
-include/tiffwriter.h
-include/utils.h
+${include_dir}/clbuffer.h
+${include_dir}/tiffreader.h
+${include_dir}/tiffwriter.h
+${include_dir}/utils.h
 )
 
-## Define target and link
-#
+# Include directories
+include_directories(${include_dir})
+
+## Define target and links ####################################
+
+# Create target as executable
 add_executable(CLIc ${source} ${header})
 
+# Link libraries to target
 target_link_libraries(CLIc OpenCL::OpenCL TIFF::TIFF)
+
+# Define executable path destination
 set_target_properties(CLIc PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
-## Define Path to kernels directory
-#
+## Define global information ####################################
+
+# Declare CMake variable parameters
 set(CLI_Path ${CMAKE_CURRENT_SOURCE_DIR}/clij-opencl-kernels/src/main/java/net/haesleinhuepf/clij/kernels CACHE PATH "Path to CLI kernels folder")
 set(CLP_Path ${CMAKE_CURRENT_SOURCE_DIR}/ressources CACHE PATH "Path to CLI preamble folder")
 
+# Define global variable
 target_compile_definitions(CLIc PRIVATE -DCLI_PATH=\"${CLI_Path}\")
 target_compile_definitions(CLIc PRIVATE -DCLP_PATH=\"${CLP_Path}\")
 target_compile_definitions(CLIc PRIVATE -DOCL_MAJOR_VERSION=${OpenCL_VERSION_MAJOR})
