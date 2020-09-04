@@ -253,8 +253,10 @@ int maximumzprojection(clBuffer src_gpu_obj, clBuffer dst_gpu_obj,
     std::string kernel_name = "maximum_z_projection";
 
     std::map<std::string, clBuffer> dataList;
-    dataList.insert({"src", src_gpu_obj});
-    dataList.insert({"dst_max", dst_gpu_obj});
+    std::pair<std::string, clBuffer> p1 = std::make_pair("src", src_gpu_obj);
+    std::pair<std::string, clBuffer> p2 = std::make_pair("dst_max", dst_gpu_obj);
+    dataList.insert(p1);
+    dataList.insert(p2);
 
     // read kernel, defines, and preamble
     std::string kernel_src = LoadSources(kernel_name);
@@ -329,8 +331,10 @@ int addImageAndScalar3d(clBuffer src_gpu_obj, clBuffer dst_gpu_obj, float scalar
     std::string kernel_name = "add_image_and_scalar_3d";
     
     std::map<std::string, clBuffer> dataList;
-    dataList.insert({"src", src_gpu_obj});
-    dataList.insert({"dst", dst_gpu_obj});
+    std::pair<std::string, clBuffer> p1 = std::make_pair("src", src_gpu_obj);
+    std::pair<std::string, clBuffer> p2 = std::make_pair("dst", dst_gpu_obj);
+    dataList.insert(p1);
+    dataList.insert(p2);
 
     // read kernel, defines, and preamble
     std::string kernel_src = LoadSources(kernel_name);
