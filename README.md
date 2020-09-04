@@ -9,7 +9,7 @@ Right now, this is very preliminary, and mainly focussed on running a few kernel
 ## Requierements
 
 - [LibTiff](http://www.simplesystems.org/libtiff/)
-- [OpenCL](https://www.khronos.org/opencl/) (version 1.2) 
+- [OpenCL](https://www.khronos.org/opencl/) 
     - [Nvidia Platform](https://developer.nvidia.com/cuda-downloads)  
     - AMD Platform  
     - [Intel Platform](https://software.intel.com/content/www/us/en/develop/tools/opencl-sdk.html)
