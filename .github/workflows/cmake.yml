@@ -36,17 +36,13 @@ jobs:
 
     steps:
       # checkout action and download submodule
-      - name: checkout repository
+      - name: Checkout
         uses: actions/checkout@v2
         with:
           submodules: true 
 
-      - name: LibTiff dependency
-        if: ${{ matrix.os }} == ubuntu-latest
-        run: sudo apt-get -y install libtiff-dev ocl-icd-opencl-dev
-
       # get latest cmake version
-      - name: get-cmake
+      - name: Install cmake
         uses: lukka/get-cmake@latest
 
       # run CMake+Ninja
