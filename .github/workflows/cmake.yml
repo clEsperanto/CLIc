@@ -43,7 +43,7 @@ jobs:
 
       - name: LibTiff dependency
         if: ${{ matrix.os }} == ubuntu-latest
-        uses: sudo apt-get -y install libtiff-dev ocl-icd-opencl-dev
+        run: sudo apt-get -y install libtiff-dev ocl-icd-opencl-dev
 
       # get latest cmake version
       - name: get-cmake
