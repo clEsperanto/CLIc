@@ -19,20 +19,20 @@ jobs:
         include:
           - name: windows-msvc
             os: windows-latest
-            # cxx: cl.exe
-            # cc: cl.exe
+            cxx: cl.exe
+            cc: cl.exe
           - name: ubuntu-clang
             os: ubuntu-latest
-            # cxx: clang++
-            # cc: clang
+            cxx: clang++
+            cc: clang
           - name: ubuntu-gcc
             os: ubuntu-latest
-            # cxx: g++
-            # cc: gcc            
+            cxx: g++
+            cc: gcc            
           - name: macos-clang
             os: macos-latest
-            # cxx: clang++
-            # cc: clang
+            cxx: clang++
+            cc: clang
 
     steps:
       # checkout action and download submodule
@@ -41,9 +41,9 @@ jobs:
         with:
           submodules: true 
 
-      # - name: LibTiff dependency
-      #   if: ${{ matrix.os }} == ubuntu-latest
-      #   uses: sudo apt-get -y install libtiff-dev
+      - name: LibTiff dependency
+        if: ${{ matrix.os }} == ubuntu-latest
+        uses: sudo apt-get -y install libtiff-dev ocl-icd-opencl-dev
 
       # get latest cmake version
       - name: get-cmake
