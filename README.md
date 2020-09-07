@@ -1,4 +1,6 @@
-![CI](https://github.com/clEsperanto/CLIc_prototype/workflows/CI/badge.svg)
+![Ubuntu](https://github.com/clEsperanto/CLIc_prototype/workflows/ubuntu/badge.svg)
+![Windows](https://github.com/clEsperanto/CLIc_prototype/workflows/windows/badge.svg)
+![MacOS](https://github.com/clEsperanto/CLIc_prototype/workflows/macos/badge.svg)
 
 # CLIc
 
