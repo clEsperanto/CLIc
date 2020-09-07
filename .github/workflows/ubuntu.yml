@@ -8,19 +8,7 @@ env:
 jobs:
 
   build:
-    name: ${{ matrix.os }}-${{ matrix.cxx }}-build
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        name: [ubuntu]
-        include:
-          - name: ubuntu-gcc
-            os: ubuntu-latest
-            triplet: x64-linux          
-            cxx: g++
-            cc: gcc
+    runs-on: ubuntu-latest
 
     steps:
 

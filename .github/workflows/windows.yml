@@ -8,19 +8,7 @@ env:
 jobs:
 
   build:
-    name: ${{ matrix.os }}-${{ matrix.cxx }}-build
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        name: [windows]
-        include:
-          - name: windows-gcc
-            os: windows-latest
-            triplet: x64-windows
-            cxx: cl.exe
-            cc: cl.exe
+    runs-on: windows-latest
 
     steps:
 
