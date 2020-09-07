@@ -41,7 +41,7 @@ jobs:
         with:
           submodules: true 
 
-        if: ${{ strategy.matrix.include.os }} == ubuntu-latest
+        if: ${{ matrix.os }} == ubuntu-latest
       - name: Install Dependencies
         run: |
           sudo apt update
