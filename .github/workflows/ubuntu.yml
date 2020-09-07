@@ -1,0 +1,52 @@
+name: Ubuntu-build
+
+on: [push]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+
+  build:
+    name: ${{ matrix.os }}-${{ matrix.cxx }}-build
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        name: [ubuntu]
+        include:
+          - name: ubuntu-gcc
+            os: ubuntu-latest
+            triplet: x64-linux          
+            cxx: g++
+            cc: gcc
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true 
+
+      - if: ${{ matrix.os }} == ubuntu-latest
+        name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y ocl-icd-opencl-dev libtiff-dev
+
+      - name: Install cmake
+        uses: lukka/get-cmake@latest
+
+      - name: Run CMake+Ninja
+        uses: lukka/run-cmake@v2
+        id: runcmake
+        with:
+          cmakeGenerator: 'Ninja'  
+          cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          useVcpkgToolchainFile: true
+          buildWithCMakeArgs: '-- -v'
+          buildDirectory: '${{ runner.workspace }}/build/ninja/'  
+
+
