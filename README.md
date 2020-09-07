@@ -1,6 +1,7 @@
 ![Ubuntu-build](https://github.com/clEsperanto/CLIc_prototype/workflows/Ubuntu-build/badge.svg)
 ![Windows-build](https://github.com/clEsperanto/CLIc_prototype/workflows/Windows-build/badge.svg)
 ![MacOS-build](https://github.com/clEsperanto/CLIc_prototype/workflows/MacOS-build/badge.svg)
+![CI-build](https://github.com/clEsperanto/CLIc_prototype/workflows/CI/badge.svg)
 
 # CLIc
 
