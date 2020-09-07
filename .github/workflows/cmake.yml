@@ -41,8 +41,8 @@ jobs:
         with:
           submodules: true 
 
-      - name: Install Dependencies
         if: ${{ strategy.matrix.include.os }} == ubuntu-latest
+      - name: Install Dependencies
         run: |
           sudo apt update
           sudo apt install -y ocl-icd-opencl-dev libtiff-dev
