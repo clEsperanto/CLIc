@@ -16,16 +16,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [ubuntu-gcc, ubuntu-clang, macos-clang, windows-msvc]
+        name: [ubuntu-gcc, macos-clang, windows-msvc]
         include:
           - name: windows-msvc
             os: windows-latest
             cxx: cl.exe
             cc: cl.exe
-          - name: ubuntu-clang
-            os: ubuntu-latest
-            cxx: clang++
-            cc: clang
           - name: ubuntu-gcc
             os: ubuntu-latest
             cxx: g++
@@ -42,11 +38,9 @@ jobs:
         with:
           submodules: true 
 
-      - name: Install Dependencies
+      - name: Install OpenCL
         if: ${{ matrix.os }} == ubuntu-latest
-        uses: ryankurte/action-apt@v0.1.0
-        with: 
-          packages: "libtiff-dev"
+        run: sudo apt-get install ocl-icd-opencl-dev
 
       - name: Install cmake
         uses: lukka/get-cmake@latest
