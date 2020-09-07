@@ -1,6 +1,10 @@
 name: Windows-build
 
-on: [push]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 env:
   BUILD_TYPE: Release
@@ -8,7 +12,13 @@ env:
 jobs:
 
   build:
-    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        os: [windows-latest]
+      fail-fast: false
+
+    runs-on: ${{ matrix.os }}
 
     steps:
 
@@ -17,24 +27,21 @@ jobs:
         with:
           submodules: true 
 
-      - if: ${{ matrix.os }} == ubuntu-latest
-        name: Install Dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y ocl-icd-opencl-dev libtiff-dev
-
       - name: Install cmake
         uses: lukka/get-cmake@latest
 
-      - name: Run CMake+Ninja
+      - name: Instal MSCV
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Run CMake+MSVC
         uses: lukka/run-cmake@v2
         id: runcmake
         with:
-          cmakeGenerator: 'Ninja'  
+          cmakeGenerator: VS19Win64  
           cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
           buildWithCMakeArgs: '-- -v'
-          buildDirectory: '${{ runner.workspace }}/build/ninja/'  
+          buildDirectory: '${{ runner.workspace }}/build/msvc/'  
 
 

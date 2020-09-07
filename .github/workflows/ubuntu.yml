@@ -1,6 +1,10 @@
 name: Ubuntu-build
 
-on: [push]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 env:
   BUILD_TYPE: Release
@@ -8,7 +12,13 @@ env:
 jobs:
 
   build:
-    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+      fail-fast: false
+
+    runs-on: ${{ matrix.os }}
 
     steps:
 
@@ -17,8 +27,7 @@ jobs:
         with:
           submodules: true 
 
-      - if: ${{ matrix.os }} == ubuntu-latest
-        name: Install Dependencies
+      - name: Install Dependencies
         run: |
           sudo apt update
           sudo apt install -y ocl-icd-opencl-dev libtiff-dev
