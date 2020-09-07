@@ -40,7 +40,7 @@ jobs:
 
       - name: Install OpenCL
         if: ${{ matrix.os }} == ubuntu-latest
-        run: sudo apt-get install ocl-icd-opencl-dev
+        run: apt-get install ocl-icd-opencl-dev
 
       - name: Install cmake
         uses: lukka/get-cmake@latest
