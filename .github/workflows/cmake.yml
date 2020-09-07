@@ -20,14 +20,17 @@ jobs:
         include:
           - name: windows-msvc
             os: windows-latest
+            triplet: x64-windows
             cxx: cl.exe
             cc: cl.exe
           - name: ubuntu-gcc
             os: ubuntu-latest
+            triplet: x64-linux          
             cxx: g++
-            cc: gcc            
+            cc: gcc  
           - name: macos-clang
             os: macos-latest
+            triplet: x64-osx
             cxx: clang++
             cc: clang
 
@@ -40,7 +43,7 @@ jobs:
 
       - name: Install OpenCL
         if: ${{ matrix.os }} == ubuntu-latest
-        run: apt-get install ocl-icd-opencl-dev
+        run: sudo apt install ocl-icd-opencl-dev
 
       - name: Install cmake
         uses: lukka/get-cmake@latest
