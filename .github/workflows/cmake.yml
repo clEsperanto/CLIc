@@ -41,9 +41,11 @@ jobs:
         with:
           submodules: true 
 
-      - name: Install OpenCL
+      - name: Install Dependencies
         if: ${{ matrix.os }} == ubuntu-latest
-        run: sudo apt install ocl-icd-opencl-dev
+        run: |
+          sudo apt update
+          sudo apt install -y ocl-icd-opencl-dev libtiff-dev
 
       - name: Install cmake
         uses: lukka/get-cmake@latest
