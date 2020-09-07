@@ -42,7 +42,7 @@ jobs:
           submodules: true 
 
       - name: Install Dependencies
-        if: ${{ matrix.name }} == ubuntu-gcc
+        if: ${{ build.strategy.matrix.include.os }} == ubuntu-latest
         run: |
           sudo apt update
           sudo apt install -y ocl-icd-opencl-dev libtiff-dev
