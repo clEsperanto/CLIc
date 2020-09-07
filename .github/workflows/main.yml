@@ -1,10 +1,10 @@
 name: CI
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push]
+  # push:
+  #   branches: [ master ]
+  # pull_request:
+  #   branches: [ master ]
 
 env:
   BUILD_TYPE: Release
@@ -60,7 +60,7 @@ jobs:
 
       - name: Run CMake+Ninja
         uses: lukka/run-cmake@v2
-        
+
         id: runcmake
         with:
           cmakeGenerator: 'Ninja'  
