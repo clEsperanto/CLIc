@@ -56,6 +56,12 @@ jobs:
           sudo apt update
           sudo apt install -y ocl-icd-opencl-dev libtiff-dev
 
+      - name: Instal Dependencies - windows
+        if: matrix.name == 'windows-msvc'
+        uses: crazy-max/ghaction-chocolatey@v1
+        with:
+          args: install opencl-intel-cpu-runtime
+
       - name: Install cmake
         uses: lukka/get-cmake@latest
 

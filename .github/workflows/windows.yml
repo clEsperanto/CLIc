@@ -43,7 +43,7 @@ jobs:
         uses: lukka/run-cmake@v2
         id: runcmake
         with:
-          cmakeGenerator: VS19Win64  
+          cmakeGenerator: 'Ninja'  
           cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
