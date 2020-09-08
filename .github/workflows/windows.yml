@@ -34,6 +34,11 @@ jobs:
       - name: Instal MSCV
         uses: ilammy/msvc-dev-cmd@v1
 
+      - name: Instal OpenCL
+        uses: crazy-max/ghaction-chocolatey@v1
+        with:
+          args: install opencl-intel-cpu-runtime  
+
       - name: Run CMake+MSVC
         uses: lukka/run-cmake@v2
         id: runcmake
