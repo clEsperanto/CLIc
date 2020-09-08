@@ -62,7 +62,7 @@ set_target_properties(CLIc PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_S
 
 # Declare CMake variable parameters
 set(CLI_Path ${CMAKE_CURRENT_SOURCE_DIR}/clij-opencl-kernels/src/main/java/net/haesleinhuepf/clij/kernels CACHE PATH "Path to CLI kernels folder")
-set(CLP_Path ${CMAKE_CURRENT_SOURCE_DIR}/ressources CACHE PATH "Path to CLI preamble folder")
+set(CLP_Path ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "Path to CLI preamble folder")
 
 # Define global variable
 target_compile_definitions(CLIc PRIVATE -DCLI_PATH=\"${CLI_Path}\")
