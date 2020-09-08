@@ -16,7 +16,7 @@ Right now, this is very preliminary, and mainly focussed on running a few kernel
 - [OpenCL](https://www.khronos.org/opencl/) 
 (
     [Nvidia](https://developer.nvidia.com/cuda-downloads), 
-    AMD, 
+    [AMD](https://github.com/GPUOpen-LibrariesAndSDKs/OCL-SDK/releases), 
     [Intel](https://software.intel.com/content/www/us/en/develop/tools/opencl-sdk.html)
 )
 - [CMake](https://cmake.org/)
