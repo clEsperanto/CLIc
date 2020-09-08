@@ -69,3 +69,9 @@ target_compile_definitions(CLIc PRIVATE -DCLI_PATH=\"${CLI_Path}\")
 target_compile_definitions(CLIc PRIVATE -DCLP_PATH=\"${CLP_Path}\")
 target_compile_definitions(CLIc PRIVATE -DOCL_MAJOR_VERSION=${OpenCL_VERSION_MAJOR})
 
+## Tests ####################################
+# include(CTest) # set BUILD_TESTING ON by default
+
+# if(BUILD_TESTING)
+#   add_subdirectory(tests)
+# endif()
