@@ -1,8 +1,7 @@
+![CI-build](https://github.com/clEsperanto/CLIc_prototype/workflows/CI/badge.svg)
 ![Ubuntu-build](https://github.com/clEsperanto/CLIc_prototype/workflows/Ubuntu-build/badge.svg)
 ![Windows-build](https://github.com/clEsperanto/CLIc_prototype/workflows/Windows-build/badge.svg)
 ![MacOS-build](https://github.com/clEsperanto/CLIc_prototype/workflows/MacOS-build/badge.svg)
-![CI-build](https://github.com/clEsperanto/CLIc_prototype/workflows/CI/badge.svg)
-
 # CLIc
 
 CLIc is a prototype for [CLesperanto](https://github.com/clEsperanto) - a multi-language framework for GPU-accelerated image processing. It uses [OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/development/src/main/java/net/haesleinhuepf/clij/kernels) from [CLIJ](https://clij.github.io/)
@@ -15,9 +14,11 @@ Right now, this is very preliminary, and mainly focussed on running a few kernel
 
 - [LibTiff](http://www.simplesystems.org/libtiff/)
 - [OpenCL](https://www.khronos.org/opencl/) 
-    - [Nvidia Platform](https://developer.nvidia.com/cuda-downloads)  
-    - AMD Platform  
-    - [Intel Platform](https://software.intel.com/content/www/us/en/develop/tools/opencl-sdk.html)
+(
+    [Nvidia](https://developer.nvidia.com/cuda-downloads), 
+    AMD, 
+    [Intel](https://software.intel.com/content/www/us/en/develop/tools/opencl-sdk.html)
+)
 - [CMake](https://cmake.org/)
 
 ## Install
@@ -44,22 +45,48 @@ make
 
 ## Troubleshooting
 
-Cmake control the project configuration and path to required libraries. If it fail generating the make file, open the cmake-gui to easily access key configuration variable.
+Cmake control the project configuration and link to required libraries. If the compiled libraries and includes folder are installed and specified in your environment PATH, it should automatically found it and manage the dependencies to the project.   
+If it fail configurating the project, verify that both LibTiff and OpenCL are installed, and that CMake point to the correct libraries version via cmake-gui for an easy access to CMake variables.
 
 ### LibTiff
-It is require to link the include folder and the compiled library to the project. This is done automatically if already in PATH through the *find_package()* cmake function, otherwise can be specified to cmake through the following variables:
-- TIFF_LIBRARY → which should point to libtiff (.so for Unix, .lib for Windows)
-- TIFF_INCLUDE_DIR → which should point folder containing the tiffio<span>.h and tiff<span>.h  
 
-Both can be found in the libtiff folder provided in the last version of the library [LibTiff](http://www.simplesystems.org/libtiff/).
+#### Linux:
+Running the following in a terminal will download and install libtif
+```
+sudo apt update
+sudo apt install -y libtiff-dev 
+```
+
+#### MacOS:
+Normally already installed, it is also possible to get it using [Homebrew](https://brew.sh/) via the following line in terminal
+```
+sudo brew update
+sudo brew install libtiff
+```
+
+#### Windows:
+Download the latest source code version on the library [website](http://www.simplesystems.org/libtiff/). With the source code, the compiled library and includes can be found in the libtiff folder. The path to both includes and library can then be specified in CMake GUI with the following variables:
+- TIFF_LIBRARY → which should point to libtiff compiled library (.so for Unix, .lib for Windows)
+- TIFF_INCLUDE_DIR → which should point to the include folder containing the tiffio<span>.h and tiff<span>.h  
 
 ### OpenCL
-OpenCL is usually already provided by your OS or can be found in the SDK corresponding to your GPU platform (Nvidia, Intel, etc.). If SDK in the PATH, the *find_package()* cmake function shoudl find it, otherwise both can be set using the variables:
-- OPENCL_LIBRARY → which should point to libOpenCL or OpenCL (.so for Unix, .lib for Windows)
-- OPENCL_INCLUDE_DIR → which should point to a folder containg CL/cl<span>.h
 
-### Others
-CLIj kernels opencl file are required for execution, those are provided by the submodules. The folder can be redefined using the variable CLI_Path in cmake-gui.
+#### Linux:
+Running the following in a terminal will download and install OpenCL
+```
+sudo apt update
+sudo apt install -y ocl-icd-opencl-dev 
+```
+It is however advised to get OpenCL via your GPU drivers and SDK.
+
+#### MacOS and Windows:
+Normally already installed on MacOS system, it is advised to get it by installing both GPU drivers and SDK from the your GPU brand (NVidia, AMD, Intel, etc.).
+The compiled library and includes can then be specified in CMake GUI with the following variables:
+- OPENCL_LIBRARY → which should point to libOpenCL or OpenCL compiled library (.so for Unix, .lib for Windows)
+- OPENCL_INCLUDE_DIR → which should point to a folder containg CL/cl<span>.htiff<span>.h 
+
+### Kernels
+CLIc rely on the [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels) and they are required for execution. Make sure you are downloading the submodule of the repository, or change the folder path variable CLI_Path in CMake configuration to point to the kernels location.
 
 # Testing
 
