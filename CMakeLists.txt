@@ -12,7 +12,7 @@ set(CMAKE_C_STANDARD 11)
 
 
 # OpenCL Dependency
-find_package(OpenCL REQUIRED)
+find_package(OpenCL)
 if(OpenCL_FOUND)
   include_directories(${OpenCL_INCLUDE_DIR})
 else()
@@ -32,7 +32,7 @@ else()
 endif()
 
 # TIFF Dependency
-find_package(TIFF REQUIRED)
+find_package(TIFF)
 if(TIFF_FOUND)
   include_directories(${TIFF_INCLUDE_DIR})
 else()
