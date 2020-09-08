@@ -38,29 +38,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          submodules: true
-
-      # - name: Instal msvc toolset
-      #   uses: ilammy/msvc-dev-cmd@v1
-      
-      # - name: Set shell environement
-      #   uses: lukka/set-shell-env@v1
-      #   with:
-      #     shell: bash
-      #     cxx: ${{ matrix.cxx }}
-      #     cc: ${{ matrix.cc }}  
+          submodules: true 
 
       - name: Install Dependencies - ubuntu
         if: matrix.name == 'ubuntu-gcc'
         run: |
           sudo apt update
           sudo apt install -y ocl-icd-opencl-dev libtiff-dev
-
-      # - name: Instal Dependencies - windows
-      #   if: matrix.name == 'windows-msvc'
-      #   uses: crazy-max/ghaction-chocolatey@v1
-      #   with:
-      #     args: install opencl-intel-cpu-runtime
 
       - name: Install cmake
         uses: lukka/get-cmake@latest
@@ -75,6 +59,9 @@ jobs:
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
           buildWithCMakeArgs: '-- -v'
-          buildDirectory: '${{ runner.workspace }}/build/ninja/'  
+          buildDirectory: '${{ runner.workspace }}/build'  
 
-
+      - name: Run Tests
+        working-directory: ${{ runner.workspace }}/build
+        shell: bash
+        run: ctest
