@@ -10,16 +10,45 @@ set(CMAKE_C_STANDARD 11)
 
 ## Libraries management ####################################
 
-# Find OpenCL
+
+# OpenCL Dependency
 find_package(OpenCL REQUIRED)
 if(OpenCL_FOUND)
   include_directories(${OpenCL_INCLUDE_DIR})
+else()
+  if(APPLE)  
+    set(local_opencl_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib/apple/opencl)
+    set(OpenCL_LIBRARY ${local_opencl_PATH}/libOpenCL.so) 
+  elseif(WIN32)
+    set(local_opencl_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib/win32/opencl)
+    set(OpenCL_LIBRARY ${local_opencl_PATH}/libOpenCL.lib)
+  elseif(UNIX)
+    set(local_opencl_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib/unix/opencl)
+    set(OpenCL_LIBRARY ${local_opencl_PATH}/libOpenCL.so)
+  endif()
+  set(OpenCL_INCLUDE_DIR ${local_opencl_PATH}/include)
+  include_directories(${OpenCL_INCLUDE_DIR}) 
+  find_package(OpenCL REQUIRED)
 endif()
 
-# Find TIFF
+# TIFF Dependency
 find_package(TIFF REQUIRED)
 if(TIFF_FOUND)
- include_directories(${TIFF_INCLUDE_DIR})
+  include_directories(${TIFF_INCLUDE_DIR})
+else()
+  if(APPLE)
+    set(local_opencl_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib/apple/libtiff)
+    set(OpenCL_LIBRARY ${local_libtiff_PATH}/libtiff.so) 
+  elseif(WIN32)
+    set(local_opencl_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib/win32/libtiff)
+    set(OpenCL_LIBRARY ${local_libtiff_PATH}/libtiff.lib) 
+  elseif(UNIX)
+    set(local_opencl_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib/unix/libtiff)
+    set(OpenCL_LIBRARY ${local_libtiff_PATH}/libtiff.so) 
+  endif()
+  set(OpenCL_INCLUDE_DIR ${local_libtiff_PATH}/include)  
+  include_directories(${TIFF_INCLUDE_DIR})
+  find_package(TIFF REQUIRED)
 endif()
 
 ## Project files ####################################
