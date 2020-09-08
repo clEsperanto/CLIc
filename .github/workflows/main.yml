@@ -46,8 +46,9 @@ jobs:
       - name: Set shell environement
         uses: lukka/set-shell-env@v1
         with:
-          CXX: ${{ matrix.cxx }}
-          CC: ${{ matrix.cc }}  
+          shell: bash
+          cxx: ${{ matrix.cxx }}
+          cc: ${{ matrix.cc }}  
 
       - name: Install Dependencies - ubuntu
         if: matrix.name == 'ubuntu-gcc'
