@@ -50,8 +50,12 @@ If it fail configurating the project, verify that both LibTiff and OpenCL are in
 
 ### LibTiff
 
+If not in PATH environment, it is possible to specify the library location in cmake via the GUI using the following variables:
+- TIFF_LIBRARY → which should point to libtiff compiled library (.so for Unix, .lib for Windows)
+- TIFF_INCLUDE_DIR → which should point to the include folder containing the tiffio<span>.h and tiff<span>.h  
+
 #### Linux:
-Running the following in a terminal will download and install libtif
+Running the following in a terminal will download and install libtiff on your system
 ```
 sudo apt update
 sudo apt install -y libtiff-dev 
@@ -65,11 +69,18 @@ sudo brew install libtiff
 ```
 
 #### Windows:
-Download the latest source code version on the library [website](http://www.simplesystems.org/libtiff/). With the source code, the compiled library and includes can be found in the libtiff folder. The path to both includes and library can then be specified in CMake GUI with the following variables:
-- TIFF_LIBRARY → which should point to libtiff compiled library (.so for Unix, .lib for Windows)
-- TIFF_INCLUDE_DIR → which should point to the include folder containing the tiffio<span>.h and tiff<span>.h  
+Download the latest source code version on the library [website](http://www.simplesystems.org/libtiff/). The code can be compile using the following commande line in the [x64 Native Tools Command Prompt](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=vs-2019) of windows
+```
+nmake /f makefile.vc
+```
+Both compiled library and includes will be found in the libtiff folder.
+More information on libtiff compilation [here](http://www.simplesystems.org/libtiff/build.html)
 
 ### OpenCL
+
+Same as for the TIFF library, it is possible to specify the library location via CMake GUI with the variables:
+- OPENCL_LIBRARY → which should point to libOpenCL or OpenCL compiled library (.so for Unix, .lib for Windows)
+- OPENCL_INCLUDE_DIR → which should point to a folder containg CL/cl<span>.htiff<span>.h 
 
 #### Linux:
 Running the following in a terminal will download and install OpenCL
@@ -79,11 +90,12 @@ sudo apt install -y ocl-icd-opencl-dev
 ```
 It is however advised to get OpenCL via your GPU drivers and SDK.
 
-#### MacOS and Windows:
-Normally already installed on MacOS system, it is advised to get it by installing both GPU drivers and SDK from the your GPU brand (NVidia, AMD, Intel, etc.).
-The compiled library and includes can then be specified in CMake GUI with the following variables:
-- OPENCL_LIBRARY → which should point to libOpenCL or OpenCL compiled library (.so for Unix, .lib for Windows)
-- OPENCL_INCLUDE_DIR → which should point to a folder containg CL/cl<span>.htiff<span>.h 
+#### MacOS:
+Normally already installed on MacOS system. 
+It is also possible to get it by installing both GPU drivers and SDK from the your GPU brand (NVidia, AMD, Intel, etc.).
+
+#### Windows:
+It is required to install it via the GPU drivers and SDK from the your GPU brand (NVidia, AMD, Intel, etc.).
 
 ### Kernels
 CLIc rely on the [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels) and they are required for execution. Make sure you are downloading the submodule of the repository, or change the folder path variable CLI_Path in CMake configuration to point to the kernels location.
