@@ -1,4 +1,4 @@
-![CI-build](https://github.com/clEsperanto/CLIc_prototype/workflows/CI-build/badge.svg)
+![CI-Build](https://github.com/clEsperanto/CLIc_prototype/workflows/CI-Build/badge.svg)
 ![Ubuntu-build](https://github.com/clEsperanto/CLIc_prototype/workflows/Ubuntu-build/badge.svg)
 ![Windows-build](https://github.com/clEsperanto/CLIc_prototype/workflows/Windows-build/badge.svg)
 ![MacOS-build](https://github.com/clEsperanto/CLIc_prototype/workflows/MacOS-build/badge.svg)
