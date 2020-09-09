@@ -42,8 +42,7 @@ make
 
 ## Troubleshooting
 
-Cmake control the project configuration and link to required libraries. If the compiled libraries and includes folder are installed and specified in your environment PATH, it should automatically found it and manage the dependencies to the project.   
-If it fail configurating the project, verify that both LibTiff and OpenCL are installed, and that CMake point to the correct libraries version via cmake-gui for an easy access to CMake variables.
+Cmake control the project configuration and linking to required libraries. If the libraries and their respective includes folder are installed and/or specified in your environment PATH, it should automatically find it and manage the dependencies to the project. Otherwise, CMake will fail the configuration steps.
 
 ### LibTiff
 
@@ -99,24 +98,20 @@ CLIc rely on the [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-openc
 
 # Testing
 
-The current main code run sequentially the add_image_and_scalar and maximum_z_projection kernel.
-
 | input  | add scalar = 127 | maximum z projection |
 | :--------:  | :--------: | :--------: |
 | <img src="./ressources/input.gif" width="200" height="200" /> | <img src="./ressources/output_add_image_and_scalar.gif" width="200" height="200" /> | <img src="./ressources/output_maximum_z_projection.png" width="200" height="200" /> |
 
-## Current architecture compatibility
-
-| OS  | GPU | Driver | OpenCL | Test Status | Info |
-| :--------:  | :--------: | :--------: | :--------: | :--------: | :--------: |
-| Ubuntu 18.04  | NVIDIA GeForce GTX 1050 Ti | x84_64 440 | NVIDIA OpenCL 2.2 | PASS |  |
-| Windows 10  | NVIDIA Quadro P4000 | NVIDIA quadro 450 | NVIDIA OpenCL 1.2 | PASS | |
-| OSX 10.14.1  | ? | included with OS | ? | PASS | Most cl function are deprecated. Required CL_MEM_COPY_HOST_PTR in clCreateBuffer in Push(). |
+The current main code run sequentially the add_image_and_scalar and maximum_z_projection kernel. And unitary kernel test can be found in the tests folder of the project and run using the following command in the build folder
+```
+make test
+```
 
 ## Issues
 
 - Running kernel limited to (for now)
     - add_image_and_scalar
     - maximum_z_projection  
-- Only process buffer data, image2d_t and image3d_t not supported
+- Only process buffer data. image2d_t and image3d_t not supported
+- CI Workflow do not properly work
 
