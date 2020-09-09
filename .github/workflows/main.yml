@@ -1,0 +1,73 @@
+name: CI-Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+
+  build:
+    
+    name: ${{ matrix.os }}-${{ matrix.cxx }}-build-and-test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        name: [ubuntu-gcc, macos-clang, windows-msvc]
+        include:
+          - name: windows-msvc
+            os: windows-latest
+            cxx: cl.exe
+            cc: cl.exe
+          - name: macos-clang
+            os: macos-latest
+            cxx: clang++
+            cc: clang
+          - name: ubuntu-gcc
+            os: ubuntu-latest
+            cxx: g++
+            cc: gcc
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true 
+
+      - name: Install Dependencies - ubuntu
+        if: matrix.name == 'ubuntu-gcc'
+        run: |
+          sudo apt update
+          sudo apt install -y ocl-icd-opencl-dev libtiff-dev
+
+      # - name: Instal Dependencies - windows
+      #   if: matrix.name == 'windows-msvc'
+      #   uses: crazy-max/ghaction-chocolatey@v1
+      #   with:
+      #     args: install opencl-intel-cpu-runtime
+
+      - name: Install cmake
+        uses: lukka/get-cmake@latest
+
+      - name: Run CMake+Ninja
+        uses: lukka/run-cmake@v2
+
+        id: runcmake
+        with:
+          cmakeGenerator: 'Ninja'  
+          cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          useVcpkgToolchainFile: true
+          buildWithCMakeArgs: '-- -v'
+          buildDirectory: '${{ runner.workspace }}/build'  
+
+      - name: Run Tests
+        working-directory: ${{ runner.workspace }}/build
+        shell: bash
+        run: ctest
