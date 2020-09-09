@@ -100,7 +100,7 @@ CLIc rely on the [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-openc
 
 | input  | add scalar = 127 | maximum z projection |
 | :--------:  | :--------: | :--------: |
-| <img src="./ressources/input.gif" width="200" height="200" /> | <img src="./ressources/output_add_image_and_scalar.gif" width="200" height="200" /> | <img src="./ressources/output_maximum_z_projection.png" width="200" height="200" /> |
+| <img src="./docs/input.gif" width="200" height="200" /> | <img src="./docs/output_add_image_and_scalar.gif" width="200" height="200" /> | <img src="./docs/output_maximum_z_projection.png" width="200" height="200" /> |
 
 The current main code run sequentially the add_image_and_scalar and maximum_z_projection kernel. And unitary kernel test can be found in the tests folder of the project and run using the following command in the build folder
 ```
