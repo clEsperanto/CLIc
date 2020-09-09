@@ -18,12 +18,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [ubuntu-gcc, macos-clang]
+        name: [ubuntu-gcc, macos-clang, windows-msvc]
         include:
-          # - name: windows-msvc
-          #   os: windows-latest
-          #   cxx: cl.exe
-          #   cc: cl.exe
+          - name: windows-msvc
+            os: windows-latest
+            cxx: cl.exe
+            cc: cl.exe
           - name: macos-clang
             os: macos-latest
             cxx: clang++
