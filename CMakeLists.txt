@@ -8,6 +8,12 @@ project(CLIc)
 # define compilation flag
 set(CMAKE_C_STANDARD 11)
 
+# defines architecture paths
+set(src_dir ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(include_dir ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(tests_dir ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+set(bin_dir ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+
 ## Libraries management ####################################
 
 # OpenCL Dependency
@@ -24,13 +30,8 @@ endif()
 
 ## Project files ####################################
 
-# defines paths
-set(src_dir ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(include_dir ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
 # List sources
 set(source 
-${src_dir}/main.cpp
 ${src_dir}/clbuffer.cpp
 ${src_dir}/tiffreader.cpp
 ${src_dir}/tiffwriter.cpp
@@ -44,19 +45,24 @@ ${include_dir}/tiffwriter.h
 ${include_dir}/utils.h
 )
 
+# main
+set(main
+${src_dir}/main.cpp
+)
+
 # Include directories
 include_directories(${include_dir})
 
 ## Define target and links ####################################
 
 # Create target as executable
-add_executable(CLIc ${source} ${header})
+add_executable(CLIc ${source} ${header} ${main})
 
 # Link libraries to target
 target_link_libraries(CLIc OpenCL::OpenCL TIFF::TIFF)
 
 # Define executable path destination
-set_target_properties(CLIc PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+set_target_properties(CLIc PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${bin_dir})
 
 ## Define global information ####################################
 
@@ -70,8 +76,8 @@ target_compile_definitions(CLIc PRIVATE -DCLP_PATH=\"${CLP_Path}\")
 target_compile_definitions(CLIc PRIVATE -DOCL_MAJOR_VERSION=${OpenCL_VERSION_MAJOR})
 
 ## Tests ####################################
-# include(CTest) # set BUILD_TESTING ON by default
+include(CTest) # set BUILD_TESTING ON by default
 
-# if(BUILD_TESTING)
-#   add_subdirectory(tests)
-# endif()
+if(BUILD_TESTING)
+  add_subdirectory(${tests_dir})
+endif()
