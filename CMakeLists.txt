@@ -17,13 +17,13 @@ set(bin_dir ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 ## Libraries management ####################################
 
 # OpenCL Dependency
-find_package(OpenCL)
+find_package(OpenCL REQUIRED)
 if(OpenCL_FOUND)
   include_directories(${OpenCL_INCLUDE_DIR})
 endif()
 
 # TIFF Dependency
-find_package(TIFF)
+find_package(TIFF REQUIRED)
 if(TIFF_FOUND)
   include_directories(${TIFF_INCLUDE_DIR})
 endif()
