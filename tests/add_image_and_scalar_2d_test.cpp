@@ -392,21 +392,21 @@ int main(int argc, char **argv)
 
     // Push / Create input and output buffer
     Image<float> raw_image (raw_data, width, height, depth, "float");
-    clBuffer gpuRawImage = push<float>(raw_image, "float", context, command_queue);
+    clBuffer gpuInImage = push<float>(raw_image, "float", context, command_queue);
     std::array<unsigned int, 3> dimensions = {width, height, depth};
-    clBuffer gpuAddImage = create<float>(dimensions, "float", context, command_queue);
+    clBuffer gpuOutImage = create<float>(dimensions, "float", context, command_queue);
 
     // Apply pipeline of kernels
-    addImageAndScalar2d(gpuRawImage, gpuAddImage, scalar, context, device_id, command_queue);  
+    addImageAndScalar2d(gpuInImage, gpuOutImage, scalar, context, device_id, command_queue);  
 
     // Pull output into container
-    Image<float> add_image = pull<float>(gpuAddImage, context, command_queue);    
+    Image<float> out_image = pull<float>(gpuOutImage, context, command_queue);    
 
     // Verify output
     float difference = 0;
     for (size_t i = 0; i < width*height*depth; i++)
     {
-        difference += std::abs(res_data[i] - add_image.GetData()[i]);
+        difference += std::abs(res_data[i] - out_image.GetData()[i]);
     }
     if (difference > std::numeric_limits<float>::epsilon())
     {
