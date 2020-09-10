@@ -20,102 +20,15 @@
 #include "tiffwriter.h"
 #include "image.h"
 #include "clbuffer.h"
-
-
-/**
- * Push local image into buffer
- * @return clBuffer.
- */
-template<class T>
-clBuffer push(Image<T>& img, std::string type, cl_context context, cl_command_queue command_queue)
-{
-    cl_int clError;
-    cl_mem mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, img.GetDataSize(), img.GetData(), &clError);
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "OCL Error! fail to create buffer in push() : " << getOpenCLErrorString(clError) << std::endl;
-    }
-    clError = clEnqueueWriteBuffer(command_queue, mem_obj, CL_TRUE, 0, img.GetDataSize(), img.GetData(), 0, nullptr, nullptr);
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "OCL Error! fail to write buffer in push() " << getOpenCLErrorString(clError) << std::endl;
-    }
-    return clBuffer (mem_obj, img.GetDimensions().data(), type);
-}
-
-
-/**
- * Create an empty buffer, use local image for initialisation.
- * @return clBuffer.
- */
-template<class T>
-clBuffer create(Image<T>& img, std::string type, cl_context context, cl_command_queue command_queue)
-{
-    cl_int clError;
-    cl_mem mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY, img.GetDataSize(), img.GetData(), &clError);
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "OCL Error! fail to create buffer in create() : " << getOpenCLErrorString(clError) << std::endl;
-    }
-    return clBuffer (mem_obj, img.GetDimensions().data(), type);
-}
-
-
-/**
- * Create an empty buffer, use clBuffer for initialisation.
- * @return clBuffer.
- */
-template<class T>
-clBuffer create(clBuffer& gpu_obj, std::string type, cl_context context, cl_command_queue command_queue)
-{
-    size_t nbElement = sizeof(T) * gpu_obj.GetDimensions()[0] * gpu_obj.GetDimensions()[1] * gpu_obj.GetDimensions()[2];
-    cl_int clError;
-    cl_mem mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY, nbElement, nullptr, &clError);
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "OCL Error! fail to create buffer in create() : " << getOpenCLErrorString(clError) << std::endl;
-    }
-    return clBuffer (mem_obj, gpu_obj.GetDimensions().data(), type);
-}
-
-
-/**
- * Create an empty buffer, use dimensions and type for initialisation.
- * @return clBuffer.
- */
-template<class T>
-clBuffer create(std::array<unsigned int,3> arr, std::string type, cl_context context, cl_command_queue command_queue)
-{
-    size_t nbElement = sizeof(T) * arr[0] * arr[1] * arr[2];
-    cl_int clError;
-    cl_mem mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY, nbElement, nullptr, &clError);
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "OCL Error! fail to create buffer in create() : " << getOpenCLErrorString(clError) << std::endl;
-    }
-    return clBuffer (mem_obj, arr.data(), type);
-}
+#include "clgpu.h"
 
 
 
-/**
- * Pull clBuffer into local image.
- * @return image
- */
-template<class T>
-Image<T> pull(clBuffer gpu_obj, cl_context context, cl_command_queue command_queue)
-{
-    unsigned int nbElements = gpu_obj.GetDimensions()[0] * gpu_obj.GetDimensions()[1] * gpu_obj.GetDimensions()[2];
-    size_t size = sizeof(T) * nbElements;
-    T* array = new T[nbElements];
-    cl_int clError = clEnqueueReadBuffer(command_queue, gpu_obj.GetPointer(), CL_TRUE, 0, size, array, 0, NULL, NULL);
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "OCL Error! fail to read buffer in pull() : " << getOpenCLErrorString(clError) << std::endl;
-    }
-    Image<T> img (array, gpu_obj.GetDimensions()[0], gpu_obj.GetDimensions()[1], gpu_obj.GetDimensions()[2], gpu_obj.GetType());
-    return img;
-}
+
+
+
+
+
 
 
 /**
@@ -246,8 +159,7 @@ std::string LoadDefines(std::map<std::string, clBuffer>& parameters)
  * Build the program, kernel, and setup the parameters before enqueuing the kernel.
  *
  */
-int addImageAndScalar2d(clBuffer src_gpu_obj, clBuffer dst_gpu_obj, float scalar,
-                       cl_context context, cl_device_id device_id, cl_command_queue command_queue)
+int addImageAndScalar2d(clBuffer src_gpu_obj, clBuffer dst_gpu_obj, float scalar, clGPU gpu)
 {
     // initialise information on kernel and data to process
     cl_int clError;
@@ -273,13 +185,14 @@ int addImageAndScalar2d(clBuffer src_gpu_obj, clBuffer dst_gpu_obj, float scalar
     // write_kernel_source(ocl_src);
 
     // Create a program from the kernel source
-    cl_program program = clCreateProgramWithSource(context, 1, &source_str, &source_size, &clError);
+    cl_program program = clCreateProgramWithSource(gpu.GetContext(), 1, &source_str, &source_size, &clError);
     if (clError != CL_SUCCESS)
     {
         std::cerr << "OpenCL Error! Fail to create program in addImageAndScalar3d() " << getOpenCLErrorString(clError) << std::endl;
         return EXIT_FAILURE;
     }
     // build the program
+    cl_device_id device_id = gpu.GetDevice();
     clError = clBuildProgram(program, 1, &device_id, nullptr, nullptr, nullptr);
     if (clError != CL_SUCCESS)
     {
@@ -308,7 +221,7 @@ int addImageAndScalar2d(clBuffer src_gpu_obj, clBuffer dst_gpu_obj, float scalar
         global_item_size[i] = std::max(src_gpu_obj.GetDimensions()[i], dst_gpu_obj.GetDimensions()[i]);
     }
     size_t work_dim = 3;
-    clError = clEnqueueNDRangeKernel(command_queue, kernel, work_dim, nullptr, global_item_size, nullptr, 0, nullptr, nullptr);
+    clError = clEnqueueNDRangeKernel(gpu.GetCommandQueue(), kernel, work_dim, nullptr, global_item_size, nullptr, 0, nullptr, nullptr);
     if (clError != CL_SUCCESS)
     {
         std::cerr << "OpenCL Error! Could not enqueue ND-Range in addImageAndScalar3d() : " << getOpenCLErrorString(clError) << std::endl;
@@ -318,47 +231,6 @@ int addImageAndScalar2d(clBuffer src_gpu_obj, clBuffer dst_gpu_obj, float scalar
     return EXIT_SUCCESS;
 }
 
-/**
- * Naive initialisation of device, context, and command queue.
- */ 
-int initialise_gpu(cl_platform_id &platform_id, cl_device_id &device_id, cl_context &context, cl_command_queue &command_queue)
-{
-    cl_uint ret_num_devices;
-    cl_uint ret_num_platforms;
-    cl_int clError = clGetPlatformIDs(1, &platform_id, &ret_num_platforms);
-    if (clError != CL_SUCCESS)  
-    {
-        std::cerr << "OpenCL Error! Could not get platform : " << getOpenCLErrorString(clError) << std::endl;
-        return EXIT_FAILURE;
-    }
-    clError = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1, &device_id, &ret_num_devices);
-    if (clError != CL_SUCCESS) 
-    {
-        std::cerr << "OpenCL Error! Could not get device : " << getOpenCLErrorString(clError) << std::endl;
-        return EXIT_FAILURE;
-    }
-    context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &clError);
-    if (clError != CL_SUCCESS) 
-    {
-        std::cerr << "OpenCL Error! Could not create context : " << getOpenCLErrorString(clError) << std::endl;
-        return EXIT_FAILURE;
-    }
-
-#if OCL_MAJOR_VERSION == 2  // 2.0 or higher
-    command_queue = clCreateCommandQueueWithProperties(context, device_id, nullptr, &clError);
-#elif OCL_MAJOR_VERSION == 1  // 1.1 and 1.2
-    command_queue = clCreateCommandQueue(context, device_id, 0, &clError);
-#else
-    command_queue = clCreateCommandQueue(context, device_id, 0, &clError);
-#endif
-
-    if (clError != CL_SUCCESS) 
-    {
-        std::cerr << "OpenCL Error! Could not create commande queue : " << getOpenCLErrorString(clError) << std::endl;
-        return EXIT_FAILURE;
-    }
-    return EXIT_SUCCESS;
-}
 
 
 /**
@@ -384,23 +256,19 @@ int main(int argc, char **argv)
     }
 
     // Initialise device, context, and CQ.
-    cl_platform_id platform_id = nullptr;
-    cl_device_id device_id = nullptr;
-    cl_context context;
-    cl_command_queue command_queue;
-    initialise_gpu(platform_id, device_id, context, command_queue);
+    clGPU gpu;
+    gpu.Initialisation();
 
     // Push / Create input and output buffer
     Image<float> raw_image (raw_data, width, height, depth, "float");
-    clBuffer gpuInImage = push<float>(raw_image, "float", context, command_queue);
-    std::array<unsigned int, 3> dimensions = {width, height, depth};
-    clBuffer gpuOutImage = create<float>(dimensions, "float", context, command_queue);
+    clBuffer gpuInput = gpu.Push<float>(raw_image);
+    clBuffer gpuOutput = gpu.Create<float>(raw_image, "float");
 
     // Apply pipeline of kernels
-    addImageAndScalar2d(gpuInImage, gpuOutImage, scalar, context, device_id, command_queue);  
+    addImageAndScalar2d(gpuInput, gpuOutput, scalar, gpu);  
 
     // Pull output into container
-    Image<float> out_image = pull<float>(gpuOutImage, context, command_queue);    
+    Image<float> out_image = gpu.Pull<float>(gpuOutput);    
 
     // Verify output
     float difference = 0;
