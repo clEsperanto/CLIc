@@ -337,9 +337,6 @@ int main(int argc, char **argv)
     gpu.Initialisation();
 
     // Push / Create buffer
-    // cl_mem raw_data_mem = push<float>(raw_image, context, command_queue);
-    // cl_mem add_data_mem = create<float>(add_image, context, command_queue);
-    // cl_mem proj_data_mem = create<float>(proj_image, context, command_queue);
     Image<float> raw_image (raw_data, width, height, depth, "float");
     clBuffer gpuRawImage = gpu.Push<float>(raw_image);
 
