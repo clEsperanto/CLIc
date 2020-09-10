@@ -125,7 +125,7 @@ std::string LoadPreamble()
 {
     std::string preamble;
     const std::string preamble_path = CLP_PATH;
-    std::string filename = preamble_path + filesep + "preamble.cl";
+    std::string filename = preamble_path + "/" + "preamble.cl";
     std::ifstream file(filename.c_str(), std::ios::in | std::ios::binary);
     if (file)
     {
@@ -150,7 +150,7 @@ std::string LoadSources(std::string kernelFilename)
 {
     std::string sources;
     const std::string kernels_path = CLI_PATH;
-    std::string filename = kernels_path + filesep + kernelFilename + "_x.cl";
+    std::string filename = kernels_path + "/" + kernelFilename + "_x.cl";
     std::ifstream file(filename.c_str(), std::ios::in | std::ios::binary);
     if (file)
     {

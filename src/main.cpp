@@ -20,6 +20,8 @@
 #include "image.h"
 #include "clbuffer.h"
 
+#include "clgpu.h"
+
 
 /**
  * Push local image into buffer
@@ -39,7 +41,7 @@ clBuffer push(Image<T>& img, std::string type, cl_context context, cl_command_qu
     {
         std::cerr << "OCL Error! fail to write buffer in push() " << getOpenCLErrorString(clError) << std::endl;
     }
-    return clBuffer (mem_obj, img.GetDimensions().data(), type);
+    return clBuffer (mem_obj, img.GetDimensions().data(), img.GetType());
 }
 
 
@@ -56,7 +58,7 @@ clBuffer create(Image<T>& img, std::string type, cl_context context, cl_command_
     {
         std::cerr << "OCL Error! fail to create buffer in create() : " << getOpenCLErrorString(clError) << std::endl;
     }
-    return clBuffer (mem_obj, img.GetDimensions().data(), type);
+    return clBuffer (mem_obj, img.GetDimensions().data(), img.GetType());
 }
 
 
@@ -124,7 +126,7 @@ std::string LoadPreamble()
 {
     std::string preamble;
     const std::string preamble_path = CLP_PATH;
-    std::string filename = preamble_path + filesep + "preamble.cl";
+    std::string filename = preamble_path + "/preamble.cl";
     std::ifstream file(filename.c_str(), std::ios::in | std::ios::binary);
     if (file)
     {
@@ -149,7 +151,7 @@ std::string LoadSources(std::string kernelFilename)
 {
     std::string sources;
     const std::string kernels_path = CLI_PATH;
-    std::string filename = kernels_path + filesep + kernelFilename + "_x.cl";
+    std::string filename = kernels_path + "/" + kernelFilename + "_x.cl";
     std::ifstream file(filename.c_str(), std::ios::in | std::ios::binary);
     if (file)
     {
@@ -480,7 +482,7 @@ int main(int argc, char **argv)
     // cl_mem add_data_mem = create<float>(add_image, context, command_queue);
     // cl_mem proj_data_mem = create<float>(proj_image, context, command_queue);
     Image<float> raw_image (raw_data, width, height, depth, "float");
-    clBuffer gpuRawImage = push<float>(raw_image, "float", context, command_queue);
+    clBuffer gpuRawImage = push(raw_image, "float", context, command_queue);
 
     std::array<unsigned int, 3> dimensions = {width, height, depth};
     clBuffer gpuAddImage = create<float>(dimensions, "float", context, command_queue);
