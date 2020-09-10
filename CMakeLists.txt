@@ -36,6 +36,7 @@ ${src_dir}/clgpu.cpp
 ${src_dir}/clbuffer.cpp
 ${src_dir}/tiffreader.cpp
 ${src_dir}/tiffwriter.cpp
+${src_dir}/utils.cpp
 )
 
 # List header
