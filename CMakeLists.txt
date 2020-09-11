@@ -35,6 +35,7 @@ set(source
 ${src_dir}/clgpu.cpp
 ${src_dir}/clkernel.cpp
 ${src_dir}/claddimageandscalar.cpp
+${src_dir}/clsmallerorequalconstant.cpp
 ${src_dir}/clmaximumzprojection.cpp
 ${src_dir}/clbuffer.cpp
 ${src_dir}/tiffreader.cpp
@@ -47,6 +48,7 @@ set(header
 ${include_dir}/clgpu.h
 ${include_dir}/clkernel.h
 ${include_dir}/claddimageandscalar.h
+${include_dir}/clsmallerorequalconstant.h
 ${include_dir}/clmaximumzprojection.h
 ${include_dir}/clbuffer.h
 ${include_dir}/tiffreader.h
