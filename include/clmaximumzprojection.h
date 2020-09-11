@@ -11,16 +11,15 @@
 class clMaximumZProjection : public clKernel
 {
 private:
-    const std::string kernelName = "maximum_z_projection";
     std::string input_tag = "src";
     std::string output_tag = "dst_max";
 
 public:
-    // clMaximumZProjection(clGPU&, clBuffer&, clBuffer&);
+    clMaximumZProjection(clGPU& gpu) : clKernel(gpu) {kernelName = "maximum_z_projection";}
+    ~clMaximumZProjection(){};
 
     void Execute(clBuffer&, clBuffer&);
 
-    ~clMaximumZProjection(){};
 };
 
 #endif // __clmaximumzprojection_h

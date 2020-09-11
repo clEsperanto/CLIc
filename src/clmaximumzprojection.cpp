@@ -6,10 +6,10 @@
 
 void clMaximumZProjection::Execute(clBuffer& in, clBuffer& out)
 {
-    std::pair<std::string, clBuffer> p1 = std::make_pair(input_tag, in);
-    std::pair<std::string, clBuffer> p2 = std::make_pair(output_tag, out);
-    this->GetParameters().insert(p1);
-    this->GetParameters().insert(p2);
+    std::pair<std::string, clBuffer> src = std::make_pair(input_tag, in);
+    std::pair<std::string, clBuffer> dst = std::make_pair(output_tag, out);
+    parameters.insert(src);
+    parameters.insert(dst);
 
     CompileKernel();
 
@@ -17,13 +17,13 @@ void clMaximumZProjection::Execute(clBuffer& in, clBuffer& out)
     cl_int clError;
     cl_mem src_mem = in.GetPointer();
     cl_mem dst_mem = out.GetPointer();
-    clError = clSetKernelArg(this->GetKernel(), 0, sizeof(cl_mem), &src_mem);
+    clError = clSetKernelArg(this->GetKernel(), 0, sizeof(cl_mem), &dst_mem);
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
         throw clError;
     }
-    clError = clSetKernelArg(this->GetKernel(), 1, sizeof(cl_mem), &dst_mem);
+    clError = clSetKernelArg(this->GetKernel(), 1, sizeof(cl_mem), &src_mem);
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
