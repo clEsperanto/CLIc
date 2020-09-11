@@ -6,7 +6,7 @@
 
 void clAddImageAndScalar::Execute(clBuffer& in, clBuffer& out, float scalar)
 {
-    if (in.GetDimensions()[3] > 1)
+    if (in.GetDimensions()[2] > 1)
     {
         dimensionality = "_3d";
     }
@@ -15,10 +15,10 @@ void clAddImageAndScalar::Execute(clBuffer& in, clBuffer& out, float scalar)
         dimensionality = "_2d";
     }
 
-    std::pair<std::string, clBuffer> p1 = std::make_pair(input_tag, in);
-    std::pair<std::string, clBuffer> p2 = std::make_pair(output_tag, out);
-    this->GetParameters().insert(p1);
-    this->GetParameters().insert(p2);
+    std::pair<std::string, clBuffer> src = std::make_pair(input_tag, in);
+    std::pair<std::string, clBuffer> dst = std::make_pair(output_tag, out);
+    parameters.insert(src);
+    parameters.insert(dst);
 
     CompileKernel();
 

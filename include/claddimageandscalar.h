@@ -11,12 +11,11 @@
 class clAddImageAndScalar : public clKernel
 {
 private:
-    const std::string kernelName = "add_image_and_scalar_2d";
     std::string input_tag = "src";
     std::string output_tag = "dst";
 
 public:
-    // clAddImageAndScalar(clGPU&, clBuffer&, clBuffer&, float);
+    clAddImageAndScalar(clGPU& gpu) : clKernel(gpu) {kernelName = "add_image_and_scalar";}
 
     void Execute(clBuffer&, clBuffer&, float);
 
