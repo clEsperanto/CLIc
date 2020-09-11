@@ -2,11 +2,19 @@
  * Author: Stephane Rigaud - @strigaud 
  */
 
-#include "claddimageandscalar2d.h"
+#include "claddimageandscalar.h"
 
-
-void clAddImageAndScalar2D::Execute(clBuffer& in, clBuffer& out, float scalar)
+void clAddImageAndScalar::Execute(clBuffer& in, clBuffer& out, float scalar)
 {
+    if (in.GetDimensions()[3] > 1)
+    {
+        dimensionality = "_3d";
+    }
+    else
+    {
+        dimensionality = "_2d";
+    }
+
     std::pair<std::string, clBuffer> p1 = std::make_pair(input_tag, in);
     std::pair<std::string, clBuffer> p2 = std::make_pair(output_tag, out);
     this->GetParameters().insert(p1);

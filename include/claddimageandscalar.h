@@ -8,7 +8,7 @@
 #include "clkernel.h"
 
 
-class clAddImageAndScalar2D : public clKernel
+class clAddImageAndScalar : public clKernel
 {
 private:
     const std::string kernelName = "add_image_and_scalar_2d";
@@ -16,11 +16,11 @@ private:
     std::string output_tag = "dst";
 
 public:
-    // clAddImageAndScalar2D(clGPU&, clBuffer&, clBuffer&, float);
+    // clAddImageAndScalar(clGPU&, clBuffer&, clBuffer&, float);
 
     void Execute(clBuffer&, clBuffer&, float);
 
-    ~clAddImageAndScalar2D(){};
+    ~clAddImageAndScalar(){};
 };
 
 #endif // __claddimageandscalar_h
