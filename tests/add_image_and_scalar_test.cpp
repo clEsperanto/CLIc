@@ -8,23 +8,13 @@
 #include <CL/cl.h>
 #endif
 
-#include <fstream>
-#include <iostream>
-#include <string>
-#include <map>
-#include <utility>
+
 #include <random>
 
-#include "utils.h"
 #include "tiffreader.h"
 #include "tiffwriter.h"
 #include "image.h"
-#include "clbuffer.h"
-#include "clgpu.h"
-
 #include "claddimageandscalar.h"
-
-
 
 
 /**
