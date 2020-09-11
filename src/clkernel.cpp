@@ -3,6 +3,7 @@
  */
 
 #include "clkernel.h"
+#include "utils.h"
 
 std::string clKernel::LoadPreamble()
 {
@@ -27,7 +28,7 @@ std::string clKernel::LoadSources()
 {
     std::string sources;
     std::string suffix = "_x.cl";
-    std::string filename = kernelFolder + filesep + kernelName + dimensionality + suffix;
+    std::string filename = kernelFolder + filesep + kernelName + suffix;
     std::ifstream file(filename.c_str(), std::ios::in | std::ios::binary);
     if (file)
     {
@@ -114,6 +115,8 @@ std::string clKernel::LoadDefines()
 
 void clKernel::CompileKernel()
 {
+    kernelName = kernelName + dimensionality;
+
     // read kernel, defines, and preamble
     std::string kernel_src = LoadSources();
     std::string defines_src = LoadDefines();
@@ -122,7 +125,7 @@ void clKernel::CompileKernel()
     // construct final source code
     std::string ocl_src = defines_src + "\n" + preambule_src + "\n" + kernel_src;
     const char *source_str = (ocl_src).c_str();
-    size_t source_size = (ocl_src).size();    
+    size_t source_size = (ocl_src).size();  
 
     // Create a program from the kernel source
     cl_int clError;
@@ -178,14 +181,9 @@ cl_command_queue clKernel::GetCommandQueue()
     return command_queue;
 }
 
-std::map<std::string, clBuffer> clKernel::GetParameters()
-{
-    return parameters;
-}
-
 clKernel::clKernel(clGPU& gpu)
 {
-    device_id = gpu.GetDevice();
-    context = gpu.GetContext();
-    command_queue = gpu.GetCommandQueue();
+    this->device_id = gpu.GetDevice();
+    this->context = gpu.GetContext();
+    this->command_queue = gpu.GetCommandQueue();
 }

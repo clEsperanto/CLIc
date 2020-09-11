@@ -22,8 +22,6 @@
 class clKernel
 {
 private:
-    const std::string kernelName = "kernel";
-    std::map<std::string, clBuffer> parameters;
 
     cl_device_id device_id;
     cl_context context;
@@ -37,6 +35,8 @@ private:
 
 protected:
     std::string dimensionality = "";
+    std::string kernelName;
+    std::map<std::string, clBuffer> parameters;
 
     cl_device_id GetDevice();
     cl_context GetContext();
@@ -47,18 +47,17 @@ protected:
     std::string LoadDefines();
 
     void CompileKernel();
-    std::map<std::string, clBuffer> GetParameters();
 
 public:
     clKernel(clGPU&);
+    ~clKernel(){};
 
-    virtual void Execute() =0;
+    virtual void Execute(){};
 
     std::string GetKernelName();
     cl_kernel GetKernel();
     cl_program GetProgram();
     
-
 };
 
 
