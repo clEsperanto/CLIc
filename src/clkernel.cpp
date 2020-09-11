@@ -27,7 +27,7 @@ std::string clKernel::LoadSources()
 {
     std::string sources;
     std::string suffix = "_x.cl";
-    std::string filename = kernelFolder + filesep + kernelName + suffix;
+    std::string filename = kernelFolder + filesep + kernelName + dimensionality + suffix;
     std::ifstream file(filename.c_str(), std::ios::in | std::ios::binary);
     if (file)
     {

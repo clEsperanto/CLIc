@@ -36,6 +36,7 @@ private:
     const std::string kernelFolder = CLI_PATH;    
 
 protected:
+    std::string dimensionality = "";
 
     cl_device_id GetDevice();
     cl_context GetContext();
