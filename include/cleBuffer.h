@@ -2,8 +2,8 @@
  * Author: Stephane Rigaud - @strigaud 
  */
 
-#ifndef __clbuffer_h
-#define __clbuffer_h
+#ifndef __cleBuffer_h
+#define __cleBuffer_h
 
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
@@ -14,7 +14,10 @@
 #include <string>
 #include <array>
 
-class clBuffer
+namespace cle
+{
+    
+class Buffer
 {
 
 private:
@@ -24,10 +27,10 @@ private:
     std::string typeId;
     
 public:
-    clBuffer() = delete;
+    Buffer() = delete;
         
-    clBuffer(cl_mem, unsigned int [3], std::string);
-    ~clBuffer();
+    Buffer(cl_mem, unsigned int [3], std::string);
+    ~Buffer();
 
     cl_mem GetPointer();
     std::array<unsigned int, 3> GetDimensions();
@@ -36,4 +39,6 @@ public:
     std::string TypeId(std::string);
 };
 
-#endif // __clbuffer_h
+} // namespace cle
+
+#endif // __cleBuffer_h

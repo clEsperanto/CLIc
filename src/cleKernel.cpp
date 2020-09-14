@@ -2,10 +2,13 @@
  * Author: Stephane Rigaud - @strigaud 
  */
 
-#include "clkernel.h"
+#include "cleKernel.h"
 #include "utils.h"
 
-std::string clKernel::LoadPreamble()
+namespace cle
+{
+    
+std::string Kernel::LoadPreamble()
 {
     std::string preamble;
     std::ifstream file(preambleFile.c_str(), std::ios::in | std::ios::binary);
@@ -24,7 +27,7 @@ std::string clKernel::LoadPreamble()
     return preamble;
 }
 
-std::string clKernel::LoadSources()
+std::string Kernel::LoadSources()
 {
     std::string sources;
     std::string suffix = "_x.cl";
@@ -45,7 +48,7 @@ std::string clKernel::LoadSources()
     return sources;
 }
 
-std::string clKernel::LoadDefines()
+std::string Kernel::LoadDefines()
 {
     std::string defines;
     defines = defines + "\n#define GET_IMAGE_WIDTH(image_key) IMAGE_SIZE_ ## image_key ## _WIDTH";
@@ -113,7 +116,7 @@ std::string clKernel::LoadDefines()
     return defines;
 }
 
-std::string clKernel::DefineDimensionality(clBuffer& data)
+std::string Kernel::DefineDimensionality(clBuffer& data)
 {
     std::string dim = "";
     if (data.GetDimensions()[2] > 1)
@@ -127,7 +130,7 @@ std::string clKernel::DefineDimensionality(clBuffer& data)
     return dim;
 }
 
-void clKernel::CompileKernel()
+void Kernel::CompileKernel()
 {
     kernelName = kernelName + dimensionality;
 
@@ -165,39 +168,41 @@ void clKernel::CompileKernel()
     }
 }
 
-std::string clKernel::GetKernelName()
+std::string Kernel::GetKernelName()
 {
     return kernelName;
 }
 
-cl_kernel clKernel::GetKernel()
+cl_kernel Kernel::GetKernel()
 {
     return kernel;
 }
 
-cl_program clKernel::GetProgram()
+cl_program Kernel::GetProgram()
 {
     return program;
 }
 
-cl_device_id clKernel::GetDevice()
+cl_device_id Kernel::GetDevice()
 {
     return device_id;
 }
 
-cl_context clKernel::GetContext()
+cl_context Kernel::GetContext()
 {
     return context;
 }
 
-cl_command_queue clKernel::GetCommandQueue()
+cl_command_queue Kernel::GetCommandQueue()
 {
     return command_queue;
 }
 
-clKernel::clKernel(clGPU& gpu)
+Kernel::Kernel(GPU& gpu)
 {
     this->device_id = gpu.GetDevice();
     this->context = gpu.GetContext();
     this->command_queue = gpu.GetCommandQueue();
 }
+
+} // namespace cle

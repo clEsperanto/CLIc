@@ -2,17 +2,20 @@
  * Author: Stephane Rigaud - @strigaud 
  */
 
-#include "clsmallerorequalconstant.h"
+#include "cleAddImageAndScalarr.h"
 
-void clSmallerOrEqualConstant::Execute(clBuffer& in, clBuffer& out, float scalar)
+namespace cle
 {
-    dimensionality = this->DefineDimensionality(in);
+    
+void AddImageAndScalar::Execute(Buffer& in, Buffer& out, float scalar)
+{
 
-    std::pair<std::string, clBuffer> src = std::make_pair(input_tag, in);
-    std::pair<std::string, clBuffer> dst = std::make_pair(output_tag, out);
+    std::pair<std::string, Buffer> src = std::make_pair(input_tag, in);
+    std::pair<std::string, Buffer> dst = std::make_pair(output_tag, out);
     parameters.insert(src);
     parameters.insert(dst);
 
+    dimensionality = this->DefineDimensionality(in);
     CompileKernel();
 
     // Set the arguments of the kernel
@@ -25,13 +28,13 @@ void clSmallerOrEqualConstant::Execute(clBuffer& in, clBuffer& out, float scalar
         std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
         throw clError;
     }
-    clError = clSetKernelArg(this->GetKernel(), 1, sizeof(float), &scalar);
+    clError = clSetKernelArg(this->GetKernel(), 1, sizeof(cl_mem), &dst_mem);
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
         throw clError;
     }
-    clError = clSetKernelArg(this->GetKernel(), 2, sizeof(cl_mem), &dst_mem);
+    clError = clSetKernelArg(this->GetKernel(), 2, sizeof(float), (void *)&scalar);
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
@@ -52,3 +55,5 @@ void clSmallerOrEqualConstant::Execute(clBuffer& in, clBuffer& out, float scalar
         throw clError;
     }
 }
+
+} // namespace cle

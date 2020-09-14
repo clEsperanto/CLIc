@@ -2,14 +2,15 @@
  * Author: Stephane Rigaud - @strigaud 
  */
 
-#include "claddimageandscalar.h"
+#include "cleMaximumZProjection.h"
 
-void clAddImageAndScalar::Execute(clBuffer& in, clBuffer& out, float scalar)
+namespace cle
 {
-    dimensionality = this->DefineDimensionality(in);
-
-    std::pair<std::string, clBuffer> src = std::make_pair(input_tag, in);
-    std::pair<std::string, clBuffer> dst = std::make_pair(output_tag, out);
+    
+void MaximumZProjection::Execute(Buffer& in, Buffer& out)
+{
+    std::pair<std::string, Buffer> src = std::make_pair(input_tag, in);
+    std::pair<std::string, Buffer> dst = std::make_pair(output_tag, out);
     parameters.insert(src);
     parameters.insert(dst);
 
@@ -19,19 +20,13 @@ void clAddImageAndScalar::Execute(clBuffer& in, clBuffer& out, float scalar)
     cl_int clError;
     cl_mem src_mem = in.GetPointer();
     cl_mem dst_mem = out.GetPointer();
-    clError = clSetKernelArg(this->GetKernel(), 0, sizeof(cl_mem), &src_mem);
+    clError = clSetKernelArg(this->GetKernel(), 0, sizeof(cl_mem), &dst_mem);
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
         throw clError;
     }
-    clError = clSetKernelArg(this->GetKernel(), 1, sizeof(cl_mem), &dst_mem);
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
-        throw clError;
-    }
-    clError = clSetKernelArg(this->GetKernel(), 2, sizeof(float), (void *)&scalar);
+    clError = clSetKernelArg(this->GetKernel(), 1, sizeof(cl_mem), &src_mem);
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
@@ -52,3 +47,5 @@ void clAddImageAndScalar::Execute(clBuffer& in, clBuffer& out, float scalar)
         throw clError;
     }
 }
+
+} // namespace cle

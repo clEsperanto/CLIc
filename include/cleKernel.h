@@ -2,8 +2,8 @@
  * Author: Stephane Rigaud - @strigaud 
  */
 
-#ifndef __clkernel_h
-#define __clkernel_h
+#ifndef __cleKernel_h
+#define __cleKernel_h
 
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
@@ -16,10 +16,13 @@
 #include <iostream>
 #include <map>
 
-#include "clbuffer.h"
-#include "clgpu.h"
+#include "cleBuffer.h"
+#include "cleGPU.h"
 
-class clKernel
+namespace cle
+{
+
+class Kernel
 {
 private:
 
@@ -36,30 +39,30 @@ private:
 protected:
     std::string dimensionality = "";
     std::string kernelName;
-    std::map<std::string, clBuffer> parameters;
-
-    cl_device_id GetDevice();
-    cl_context GetContext();
-    cl_command_queue GetCommandQueue();
+    std::map<std::string, Buffer> parameters;
 
     std::string LoadPreamble();
     std::string LoadSources();
     std::string LoadDefines();
-    std::string DefineDimensionality(clBuffer&);
+    std::string DefineDimensionality(Buffer&);
 
     void CompileKernel();
 
 public:
-    clKernel(clGPU&);
-    ~clKernel(){};
+    Kernel(GPU&);
+    ~Kernel(){};
 
     virtual void Execute(){};
 
     std::string GetKernelName();
     cl_kernel GetKernel();
     cl_program GetProgram();
+    cl_device_id GetDevice();
+    cl_context GetContext();
+    cl_command_queue GetCommandQueue();
     
 };
 
+} // namespace cle
 
-#endif // __clkernel_h
+#endif // __cleKernel_h
