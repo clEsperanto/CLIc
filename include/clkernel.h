@@ -45,6 +45,7 @@ protected:
     std::string LoadPreamble();
     std::string LoadSources();
     std::string LoadDefines();
+    std::string DefineDimensionality(clBuffer&);
 
     void CompileKernel();
 

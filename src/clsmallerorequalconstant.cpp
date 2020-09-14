@@ -6,14 +6,7 @@
 
 void clSmallerOrEqualConstant::Execute(clBuffer& in, clBuffer& out, float scalar)
 {
-    if (in.GetDimensions()[2] > 1)
-    {
-        dimensionality = "_3d";
-    }
-    else
-    {
-        dimensionality = "_2d";
-    }
+    dimensionality = this->DefineDimensionality(in);
 
     std::pair<std::string, clBuffer> src = std::make_pair(input_tag, in);
     std::pair<std::string, clBuffer> dst = std::make_pair(output_tag, out);

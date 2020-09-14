@@ -113,6 +113,20 @@ std::string clKernel::LoadDefines()
     return defines;
 }
 
+std::string clKernel::DefineDimensionality(clBuffer& data)
+{
+    std::string dim = "";
+    if (data.GetDimensions()[2] > 1)
+    {
+        dim = "_3d";
+    }
+    else
+    {
+        dim = "_2d";
+    }
+    return dim;
+}
+
 void clKernel::CompileKernel()
 {
     kernelName = kernelName + dimensionality;
