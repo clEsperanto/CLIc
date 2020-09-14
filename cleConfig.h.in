@@ -1,0 +1,11 @@
+#ifndef __cleConfig_h
+#define __cleConfig_h
+
+#include <string>
+
+static const std::string cle_kernel_folder = "@CLE_KERNEL_PATH@";
+static const std::string cle_preamble_folder = "@CLE_PREAMBLE_PATH@";
+
+#define cle_opencl_version @OpenCL_VERSION_MAJOR@
+
+#endif // __cleConfig_h
