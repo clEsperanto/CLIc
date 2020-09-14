@@ -48,7 +48,7 @@ int main(int argc, char **argv)
     }
     for (size_t i = 0; i < width*height*1; i++)
     {
-        valid_data[i] = 100;
+        valid_data[i] = 1000;
     }
 
     // Initialise device, context, and CQ.
