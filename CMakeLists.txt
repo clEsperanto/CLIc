@@ -3,18 +3,23 @@
 cmake_minimum_required(VERSION 3.0)
 
 # Project name
-project(CLIc)
+project(Clic VERSION 0.1 DESCRIPTION "OpenCL Image C++ Library")
 
-# define compilation flag
+# define cmake compilation flag
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+include(CTest)
+
+## Project architecture ####################################
 
 # defines architecture paths
-set(src_dir ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(include_dir ${CMAKE_CURRENT_SOURCE_DIR}/include)
-set(tests_dir ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-set(bin_dir ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+set(COMPILED_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(COMPILED_LIBRARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
 
-## Libraries management ####################################
+## Project required libraries ####################################
 
 # OpenCL Dependency
 find_package(OpenCL REQUIRED)
@@ -28,67 +33,72 @@ if(TIFF_FOUND)
   include_directories(${TIFF_INCLUDE_DIR})
 endif()
 
-## Project files ####################################
+## Project options and configuration ####################################
+
+option(BUILD_SHARED_LIBS "Make CLIc dynamic" ON)
+option(BUILD_TESTING "Build and enable tests" ON)
+
+# Declare CMake variable parameters
+set(CLE_KERNEL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/clij-opencl-kernels/src/main/java/net/haesleinhuepf/clij/kernels CACHE PATH "Path to CLI kernels folder")
+set(CLE_PREAMBLE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "Path to CLI preamble folder")
+configure_file("cleConfig.h.in" ${INCLUDE_DIR}/cleConfig.h)
+
+## Project source and headers ####################################
 
 # List sources
-set(source
-${src_dir}/cleGPU.cpp
-${src_dir}/cleKernel.cpp
-${src_dir}/cleAddImageAndScalar.cpp
-${src_dir}/cleSmallerOrEqualConstant.cpp
-${src_dir}/cleMaximumZProjection.cpp
-${src_dir}/cleBuffer.cpp
-${src_dir}/tiffreader.cpp
-${src_dir}/tiffwriter.cpp
-${src_dir}/utils.cpp
+set(SOURCE
+${SRC_DIR}/cleGPU.cpp
+${SRC_DIR}/cleKernel.cpp
+${SRC_DIR}/cleAddImageAndScalar.cpp
+${SRC_DIR}/cleSmallerOrEqualConstant.cpp
+${SRC_DIR}/cleMaximumZProjection.cpp
+${SRC_DIR}/cleBuffer.cpp
+${SRC_DIR}/tiffreader.cpp
+${SRC_DIR}/tiffwriter.cpp
+${SRC_DIR}/utils.cpp
 )
 
 # List header
-set(header 
-${include_dir}/cleGPU.h
-${include_dir}/cleKernel.h
-${include_dir}/cleAddImageAndScalar.h
-${include_dir}/cleSmallerOrEqualConstant.h
-${include_dir}/cleMaximumZProjection.h
-${include_dir}/cleBuffer.h
-${include_dir}/tiffreader.h
-${include_dir}/tiffwriter.h
-${include_dir}/utils.h
+set(HEADER 
+${INCLUDE_DIR}/cleGPU.h
+${INCLUDE_DIR}/cleKernel.h
+${INCLUDE_DIR}/cleAddImageAndScalar.h
+${INCLUDE_DIR}/cleSmallerOrEqualConstant.h
+${INCLUDE_DIR}/cleMaximumZProjection.h
+${INCLUDE_DIR}/cleBuffer.h
+${INCLUDE_DIR}/cleConfig.h
+${INCLUDE_DIR}/tiffreader.h
+${INCLUDE_DIR}/tiffwriter.h
+${INCLUDE_DIR}/utils.h
 )
-
-# main
-set(main
-${src_dir}/main.cpp
-)
-
-# Include directories
-include_directories(${include_dir})
 
 ## Define target and links ####################################
 
 # Create target as executable
-add_executable(CLIc ${source} ${header} ${main})
+add_library(${PROJECT_NAME} ${SOURCE})
+target_link_libraries(${PROJECT_NAME} OpenCL::OpenCL TIFF::TIFF)
 
-# Link libraries to target
-target_link_libraries(CLIc OpenCL::OpenCL TIFF::TIFF)
+target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIR} PRIVATE ${SRC_DIR})
 
-# Define executable path destination
-set_target_properties(CLIc PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${bin_dir})
+set_target_properties(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${COMPILED_LIBRARY_DIR})
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION 0)
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "cleConfig.h")
 
-## Define global information ####################################
+## Install ####################################
 
-# Declare CMake variable parameters
-set(CLI_Path ${CMAKE_CURRENT_SOURCE_DIR}/clij-opencl-kernels/src/main/java/net/haesleinhuepf/clij/kernels CACHE PATH "Path to CLI kernels folder")
-set(CLP_Path ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "Path to CLI preamble folder")
-
-# Define global variable
-target_compile_definitions(CLIc PRIVATE -DCLI_PATH=\"${CLI_Path}\")
-target_compile_definitions(CLIc PRIVATE -DCLP_PATH=\"${CLP_Path}\")
-target_compile_definitions(CLIc PRIVATE -DOCL_MAJOR_VERSION=${OpenCL_VERSION_MAJOR})
+# include(GNUInstallDirs)
+# 
+# install(TARGETS ${PROJECT_NAME} EXPORT cleConfig.h
+#     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+# install(DIRECTORY ${INCLUDE_DIR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+# 
+# install(EXPORT MyLibConfig DESTINATION share/MyLib/cmake)
+# 
+# export(TARGETS ${PROJECT_NAME} FILE Clic.cmake)
 
 ## Tests ####################################
-include(CTest) # set BUILD_TESTING ON by default
-
 if(BUILD_TESTING)
-  add_subdirectory(${tests_dir})
+  add_subdirectory(${TESTS_DIR})
 endif()
