@@ -2,14 +2,17 @@
  * Author: Stephane Rigaud - @strigaud 
  */
 
-#include "clsmallerorequalconstant.h"
+#include "cleSmallerOrEqualConstant.h"
 
-void clSmallerOrEqualConstant::Execute(clBuffer& in, clBuffer& out, float scalar)
+namespace cle
+{
+    
+void SmallerOrEqualConstant::Execute(Buffer& in, Buffer& out, float scalar)
 {
     dimensionality = this->DefineDimensionality(in);
 
-    std::pair<std::string, clBuffer> src = std::make_pair(input_tag, in);
-    std::pair<std::string, clBuffer> dst = std::make_pair(output_tag, out);
+    std::pair<std::string, Buffer> src = std::make_pair(input_tag, in);
+    std::pair<std::string, Buffer> dst = std::make_pair(output_tag, out);
     parameters.insert(src);
     parameters.insert(dst);
 
@@ -52,3 +55,5 @@ void clSmallerOrEqualConstant::Execute(clBuffer& in, clBuffer& out, float scalar
         throw clError;
     }
 }
+
+} // namespace cle

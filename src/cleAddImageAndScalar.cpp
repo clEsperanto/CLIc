@@ -2,17 +2,20 @@
  * Author: Stephane Rigaud - @strigaud 
  */
 
-#include "claddimageandscalar.h"
+#include "cleAddImageAndScalar.h"
 
-void clAddImageAndScalar::Execute(clBuffer& in, clBuffer& out, float scalar)
+namespace cle
 {
-    dimensionality = this->DefineDimensionality(in);
+    
+void AddImageAndScalar::Execute(Buffer& in, Buffer& out, float scalar)
+{
 
-    std::pair<std::string, clBuffer> src = std::make_pair(input_tag, in);
-    std::pair<std::string, clBuffer> dst = std::make_pair(output_tag, out);
+    std::pair<std::string, Buffer> src = std::make_pair(input_tag, in);
+    std::pair<std::string, Buffer> dst = std::make_pair(output_tag, out);
     parameters.insert(src);
     parameters.insert(dst);
 
+    dimensionality = this->DefineDimensionality(in);
     CompileKernel();
 
     // Set the arguments of the kernel
@@ -52,3 +55,5 @@ void clAddImageAndScalar::Execute(clBuffer& in, clBuffer& out, float scalar)
         throw clError;
     }
 }
+
+} // namespace cle

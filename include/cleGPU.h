@@ -2,8 +2,8 @@
  * Author: Stephane Rigaud - @strigaud 
  */
 
-#ifndef __clgpu_h
-#define __clgpu_h
+#ifndef __cleGPU_h
+#define __cleGPU_h
 
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
@@ -11,10 +11,13 @@
 #include <CL/cl.h>
 #endif
 
-#include "clbuffer.h"
+#include "cleBuffer.h"
 #include "image.h"
 #include "utils.h"
 
+namespace cle
+{
+    
 /** \class clGPU
 * \brief Base class for GPU initialisation and data exchange.
 *
@@ -23,7 +26,7 @@
 * clGPU is also the class managing the data exchange between the host 
 * and the device with the methods push/pull/create.
 */
-class clGPU
+class GPU
 {
 
 private:
@@ -40,8 +43,8 @@ protected:
     void CreateCommandQueue();
 
 public:
-    clGPU(){};
-    ~clGPU(){};
+    GPU(){};
+    ~GPU(){};
 
     void Initialisation();
 
@@ -51,7 +54,7 @@ public:
     cl_command_queue GetCommandQueue();
 
     template<class T>
-    clBuffer Push(Image<T>& image)
+    Buffer Push(Image<T>& image)
     {
         cl_int clError;
         cl_mem mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, image.GetDataSize(), image.GetData(), &clError);
@@ -66,11 +69,11 @@ public:
             std::cerr << "Push error! fail to write buffer in push() " << getOpenCLErrorString(clError) << std::endl;
             throw clError;
         }
-        return clBuffer (mem_obj, image.GetDimensions().data(), image.GetType());
+        return Buffer (mem_obj, image.GetDimensions().data(), image.GetType());
     }
 
     template<class T>
-    Image<T> Pull(clBuffer gpu_obj)
+    Image<T> Pull(Buffer gpu_obj)
     {
         unsigned int arrSize = gpu_obj.GetDimensions()[0] * gpu_obj.GetDimensions()[1] * gpu_obj.GetDimensions()[2];
         size_t bitSize = sizeof(T) * arrSize;
@@ -86,7 +89,7 @@ public:
     }
 
     template<class T>
-    clBuffer Create(Image<T>& image, std::string type = "")
+    Buffer Create(Image<T>& image, std::string type = "")
     {
         cl_int clError;
         cl_mem mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY, image.GetDataSize(), image.GetData(), &clError);
@@ -99,11 +102,11 @@ public:
         {
             type = image.GetType();
         }
-        return clBuffer (mem_obj, image.GetDimensions().data(), type);
+        return Buffer (mem_obj, image.GetDimensions().data(), type);
     }
 
     template<class T>
-    clBuffer Create(clBuffer& gpu_obj, std::string type = "")
+    Buffer Create(Buffer& gpu_obj, std::string type = "")
     {
         size_t arrSize = sizeof(T) * gpu_obj.GetDimensions()[0] * gpu_obj.GetDimensions()[1] * gpu_obj.GetDimensions()[2];
         cl_int clError;
@@ -117,11 +120,11 @@ public:
         {
             type = gpu_obj.GetType();
         }
-        return clBuffer (mem_obj, gpu_obj.GetDimensions().data(), type);
+        return Buffer (mem_obj, gpu_obj.GetDimensions().data(), type);
     }
 
     template<class T>
-    clBuffer Create(unsigned int dimensions[3], std::string type)
+    Buffer Create(unsigned int dimensions[3], std::string type)
     {
         size_t arrSize = sizeof(T) * dimensions[0] * dimensions[1] * dimensions[2];
         cl_int clError;
@@ -130,11 +133,11 @@ public:
         {
             std::cerr << "OCL Error! fail to create buffer in create() : " << getOpenCLErrorString(clError) << std::endl;
         }
-        return clBuffer (mem_obj, dimensions, type);
+        return Buffer (mem_obj, dimensions, type);
     }
 
-
-
 };
+
+} // namespace cle
 
 #endif //__clgpu_h

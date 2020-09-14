@@ -2,10 +2,13 @@
  * Author: Stephane Rigaud - @strigaud 
  */
 
-#include "clbuffer.h"
+#include "cleBuffer.h"
 #include <iostream>
 
-clBuffer::clBuffer(cl_mem _ptr, unsigned int* _dimensions, std::string _type)
+namespace cle
+{
+    
+Buffer::Buffer(cl_mem _ptr, unsigned int* _dimensions, std::string _type)
 {
     pointer = _ptr;
     type = _type;
@@ -14,7 +17,7 @@ clBuffer::clBuffer(cl_mem _ptr, unsigned int* _dimensions, std::string _type)
     if (arrSize > 3)
     {
         arrSize = 3;
-        std::cerr << "warning: clBuffer maximum dimensions exeeded,"; 
+        std::cerr << "warning: Buffer maximum dimensions exeeded,"; 
         std::cerr << "only the three first values are considered.";
         std::cerr << std::endl;
     }
@@ -24,31 +27,31 @@ clBuffer::clBuffer(cl_mem _ptr, unsigned int* _dimensions, std::string _type)
     }    
 }
 
-clBuffer::~clBuffer()
+Buffer::~Buffer()
 {
 }
 
-std::array<unsigned int, 3> clBuffer::GetDimensions()
+std::array<unsigned int, 3> Buffer::GetDimensions()
 {
     return dimensions;
 }
 
-std::string clBuffer::GetType()
+std::string Buffer::GetType()
 {
     return type;
 }
 
-std::string clBuffer::GetTypeId()
+std::string Buffer::GetTypeId()
 {
     return typeId;
 }
 
-cl_mem clBuffer::GetPointer()
+cl_mem Buffer::GetPointer()
 {
     return pointer;
 }
 
-std::string clBuffer::TypeId(std::string type)
+std::string Buffer::TypeId(std::string type)
 {
     std::string res;
     if (type.compare("float") == 0)
@@ -77,3 +80,6 @@ std::string clBuffer::TypeId(std::string type)
     }
     return res; 
 }
+
+} // namespace cle
+

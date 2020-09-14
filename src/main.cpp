@@ -14,8 +14,8 @@
 #include "tiffwriter.h"
 #include "image.h"
 
-#include "claddimageandscalar.h"
-#include "clmaximumzprojection.h"
+#include "cleAddImageAndScalar.h"
+#include "cleMaximumZProjection.h"
 
 
 /**
@@ -48,23 +48,23 @@ int main(int argc, char **argv)
     float* raw_data = imageReader.read(&width, &height, &depth);
 
     // Initialise device, context, and CQ.
-    clGPU gpu;
+    cle::GPU gpu;
     gpu.Initialisation();
 
     // Push / Create buffer
     Image<float> raw_image (raw_data, width, height, depth, "float");
-    clBuffer gpuRawImage = gpu.Push<float>(raw_image);
+    cle::Buffer gpuRawImage = gpu.Push<float>(raw_image);
 
     std::array<unsigned int, 3> dimensions = {width, height, depth};
-    clBuffer gpuAddImage = gpu.Create<float>(dimensions.data(), "float");
+    cle::Buffer gpuAddImage = gpu.Create<float>(dimensions.data(), "float");
     dimensions.back() = 1;    
-    clBuffer gpuProjImage = gpu.Create<float>(dimensions.data(), "float");
+    cle::Buffer gpuProjImage = gpu.Create<float>(dimensions.data(), "float");
 
     // Apply pipeline of kernels
-    clAddImageAndScalar addImageAndScalar3d(gpu); 
+    cle::AddImageAndScalar addImageAndScalar3d(gpu); 
     addImageAndScalar3d.Execute(gpuRawImage, gpuAddImage, 127.0);  
 
-    clMaximumZProjection maximumzprojection(gpu); 
+    cle::MaximumZProjection maximumzprojection(gpu); 
     maximumzprojection.Execute(gpuAddImage, gpuProjImage);  
 
     // Pull output into container

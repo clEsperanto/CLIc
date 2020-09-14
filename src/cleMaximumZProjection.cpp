@@ -2,12 +2,15 @@
  * Author: Stephane Rigaud - @strigaud 
  */
 
-#include "clmaximumzprojection.h"
+#include "cleMaximumZProjection.h"
 
-void clMaximumZProjection::Execute(clBuffer& in, clBuffer& out)
+namespace cle
 {
-    std::pair<std::string, clBuffer> src = std::make_pair(input_tag, in);
-    std::pair<std::string, clBuffer> dst = std::make_pair(output_tag, out);
+    
+void MaximumZProjection::Execute(Buffer& in, Buffer& out)
+{
+    std::pair<std::string, Buffer> src = std::make_pair(input_tag, in);
+    std::pair<std::string, Buffer> dst = std::make_pair(output_tag, out);
     parameters.insert(src);
     parameters.insert(dst);
 
@@ -44,3 +47,5 @@ void clMaximumZProjection::Execute(clBuffer& in, clBuffer& out)
         throw clError;
     }
 }
+
+} // namespace cle

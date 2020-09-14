@@ -32,12 +32,12 @@ endif()
 
 # List sources
 set(source
-${src_dir}/clgpu.cpp
-${src_dir}/clkernel.cpp
-${src_dir}/claddimageandscalar.cpp
-${src_dir}/clsmallerorequalconstant.cpp
-${src_dir}/clmaximumzprojection.cpp
-${src_dir}/clbuffer.cpp
+${src_dir}/cleGPU.cpp
+${src_dir}/cleKernel.cpp
+${src_dir}/cleAddImageAndScalar.cpp
+${src_dir}/cleSmallerOrEqualConstant.cpp
+${src_dir}/cleMaximumZProjection.cpp
+${src_dir}/cleBuffer.cpp
 ${src_dir}/tiffreader.cpp
 ${src_dir}/tiffwriter.cpp
 ${src_dir}/utils.cpp
@@ -45,12 +45,12 @@ ${src_dir}/utils.cpp
 
 # List header
 set(header 
-${include_dir}/clgpu.h
-${include_dir}/clkernel.h
-${include_dir}/claddimageandscalar.h
-${include_dir}/clsmallerorequalconstant.h
-${include_dir}/clmaximumzprojection.h
-${include_dir}/clbuffer.h
+${include_dir}/cleGPU.h
+${include_dir}/cleKernel.h
+${include_dir}/cleAddImageAndScalar.h
+${include_dir}/cleSmallerOrEqualConstant.h
+${include_dir}/cleMaximumZProjection.h
+${include_dir}/cleBuffer.h
 ${include_dir}/tiffreader.h
 ${include_dir}/tiffwriter.h
 ${include_dir}/utils.h
