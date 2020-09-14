@@ -2,7 +2,7 @@
  * Author: Stephane Rigaud - @strigaud 
  */
 
-#include "cleAddImageAndScalarr.h"
+#include "cleAddImageAndScalar.h"
 
 namespace cle
 {
