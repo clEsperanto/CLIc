@@ -44,7 +44,7 @@ void GPU::CreateContext()
 void GPU::CreateCommandQueue()
 {
     cl_int clError;        
-#if OCL_MAJOR_VERSION == 2  // 2.0 or higher
+#if cle_opencl_version >= 2  // 2.0 or higher
     command_queue = clCreateCommandQueueWithProperties(context, device_id, nullptr, &clError);
 #else 
     command_queue = clCreateCommandQueue(context, device_id, 0, &clError);
