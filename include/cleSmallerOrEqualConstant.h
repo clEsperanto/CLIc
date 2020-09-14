@@ -5,7 +5,7 @@
 #ifndef __cleSmallerOrEqualConstant_h
 #define __cleSmallerOrEqualConstant_h
 
-#include "clkernel.h"
+#include "cleKernel.h"
 
 namespace cle
 {

@@ -69,7 +69,7 @@ public:
             std::cerr << "Push error! fail to write buffer in push() " << getOpenCLErrorString(clError) << std::endl;
             throw clError;
         }
-        return clBuffer (mem_obj, image.GetDimensions().data(), image.GetType());
+        return Buffer (mem_obj, image.GetDimensions().data(), image.GetType());
     }
 
     template<class T>
@@ -102,7 +102,7 @@ public:
         {
             type = image.GetType();
         }
-        return clBuffer (mem_obj, image.GetDimensions().data(), type);
+        return Buffer (mem_obj, image.GetDimensions().data(), type);
     }
 
     template<class T>
@@ -120,7 +120,7 @@ public:
         {
             type = gpu_obj.GetType();
         }
-        return clBuffer (mem_obj, gpu_obj.GetDimensions().data(), type);
+        return Buffer (mem_obj, gpu_obj.GetDimensions().data(), type);
     }
 
     template<class T>
@@ -133,7 +133,7 @@ public:
         {
             std::cerr << "OCL Error! fail to create buffer in create() : " << getOpenCLErrorString(clError) << std::endl;
         }
-        return clBuffer (mem_obj, dimensions, type);
+        return Buffer (mem_obj, dimensions, type);
     }
 
 };

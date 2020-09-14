@@ -116,7 +116,7 @@ std::string Kernel::LoadDefines()
     return defines;
 }
 
-std::string Kernel::DefineDimensionality(clBuffer& data)
+std::string Kernel::DefineDimensionality(Buffer& data)
 {
     std::string dim = "";
     if (data.GetDimensions()[2] > 1)
