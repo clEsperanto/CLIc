@@ -34,8 +34,8 @@ private:
     cl_kernel kernel;
 
     const std::string filesep = "/";
-    const std::string preambleFile = cle_preamble_folder + filesep + "preamble.cl";
-    const std::string kernelFolder = cle_kernel_folder;    
+    const std::string preambleFile = cle_preamble_file;
+    const std::string kernelFolder = cle_kernel_path;    
 
 protected:
     std::string dimensionality = "";
