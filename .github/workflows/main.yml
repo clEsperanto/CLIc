@@ -45,7 +45,7 @@ jobs:
           submodules: true 
 
       - name: Install Dependencies - ubuntu
-        if: matrix.name == 'ubuntu-gcc'
+        if: matrix.name == 'ubuntu-gcc' OR matrix.name == 'ubuntu-18.04'
         run: |
           sudo apt update
           sudo apt install -y ocl-icd-opencl-dev libtiff-dev
