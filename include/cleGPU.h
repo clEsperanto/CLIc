@@ -93,7 +93,7 @@ public:
     Buffer Create(Image<T>& image, std::string type = "")
     {
         cl_int clError;
-        cl_mem mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY, image.GetDataSize(), image.GetData(), &clError);
+        cl_mem mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, image.GetDataSize(), image.GetData(), &clError);
         if (clError != CL_SUCCESS)
         {
             std::cerr << "Create error! fail to create buffer : " << getOpenCLErrorString(clError) << std::endl;
