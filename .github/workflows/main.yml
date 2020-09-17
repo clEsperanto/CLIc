@@ -48,7 +48,8 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           sudo apt update
-          sudo apt install -y ocl-icd-opencl-dev libtiff-dev
+          sudo apt install -y nvidia-opencl-dev libtiff-dev
+      #    sudo apt install -y ocl-icd-opencl-dev 
 
       # - name: Instal Dependencies - windows
       #   if: matrix.name == 'windows-msvc'
