@@ -12,9 +12,8 @@
 
 #include "tiffreader.h"
 #include "tiffwriter.h"
-#include "image.h"
 
-#include "cleMaximumZProjection.h"
+#include "CLE.h"
 
 /**
  * Main test function
@@ -50,24 +49,23 @@ int main(int argc, char **argv)
     {
         valid_data[i] = 1000;
     }
-
-    // Initialise device, context, and CQ.
-    cle::GPU gpu;
-    gpu.Initialisation();
-
-    // Push / Create input and output buffer
     Image<float> input_img (input_data, width, height, depth, "float");
-    cle::Buffer gpuInput = gpu.Push<float>(input_img);
+
+    // Initialise GPU information.
+    cle::GPU gpu;
+    cle::CLE cle(gpu);
+
+    // Initialise device memory and push from host
     std::array<unsigned int, 3> dimensions = {width, height, depth};
     dimensions.back() = 1;
-    cle::Buffer gpuOutput = gpu.Create<float>(dimensions.data(), "float");
+    cle::Buffer gpuInput = cle.Push<float>(input_img);
+    cle::Buffer gpuOutput = cle.Create<float>(dimensions.data(), "float");
 
-    // Apply pipeline of kernels
-    cle::MaximumZProjection maximumProjection(gpu);
-    maximumProjection.Execute(gpuInput, gpuOutput);   
+    // Call kernel
+    cle.MaximumZProjection(gpuInput, gpuOutput);   
 
-    // Pull output into container
-    Image<float> output_img = gpu.Pull<float>(gpuOutput);    
+    // pull device memory to host
+    Image<float> output_img = cle.Pull<float>(gpuOutput);    
 
     // Verify output
     float difference = 0;
@@ -80,6 +78,8 @@ int main(int argc, char **argv)
         std::cout << "Test failled, cumulated absolute difference " << difference << " > CPU epsilon (" << std::numeric_limits<float>::epsilon() << ")" << std::endl;
         return EXIT_FAILURE;
     }
+    
+    // That's all folks!
     std::cout << "Test succeded!"<< std::endl;
     return EXIT_SUCCESS;
 }
