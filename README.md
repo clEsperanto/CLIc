@@ -5,6 +5,29 @@ CLIc is a prototype for [CLesperanto](https://github.com/clEsperanto) - a multi-
 
 Right now, this is very preliminary, and mainly focussed on running a few kernel using the OpenCL C++ API.
 
+# Usage example
+
+Include main header and initialise class with GPU information
+```
+#include "CLE.h"  
+```
+Initialise CLEsperanto with GPU usage preferences (more to come ... one day)
+```
+cle::GPU gpu();     
+cle::CLE cle(gpu);
+```
+You can then push an image to the GPU and create memory there:
+```
+cle::Buffer src = cle.Push<float>(input);
+cle::Buffer dst = cle.Create<float>(input);
+```
+And then you can call methods in the GPU and pull the output:
+```
+cle.AddImageAndScalar(srd, dst, scalar);  
+Image<float> output = cle.Pull<float>(dst); 
+```
+See more complete example on usage by looking at the [validation tests](https://github.com/clEsperanto/CLIc_prototype/tree/master/test).
+
 # Installation
 
 ## Requierements
@@ -38,27 +61,29 @@ ccmake -DCMAKE_BUILD_TYPE=Release ..
 call make to compile.
 ```
 make 
+make test
 ```
 
 ## Troubleshooting
 
-Cmake control the project configuration and linking to required libraries. If the libraries and their respective includes folder are installed and/or specified in your environment PATH, it should automatically find it and manage the dependencies to the project. Otherwise, CMake will fail the configuration steps.
+Cmake control the project configuration and linking to required libraries (aka OpenCL and LibTiff). If the libraries and their respective includes folder are installed and/or specified in your environment PATH, it should automatically find it and manage the dependencies to the project. Otherwise, CMake will fail the configuration steps.
 
 ### LibTiff
 
-If not in PATH environment, it is possible to specify the library location in cmake via the GUI using the following variables:
-- TIFF_LIBRARY → which should point to libtiff compiled library (.so for Unix, .lib for Windows)
-- TIFF_INCLUDE_DIR → which should point to the include folder containing the tiffio<span>.h and tiff<span>.h  
+If not in PATH environment, it is possible to specify the library location in cmake via the following variables:
+- TIFF_LIBRARY → which should point to libtiff compiled library
+- TIFF_INCLUDE_DIR → which should point to the include folder   
 
-#### Linux:
-Running the following in a terminal will download and install libtiff on your system
+Either by using cmake GUI (recommended) or by adding -DTIFF_LIBRARY=<path_to_library> and -DTIFF_INCLUDE_DIR=<path_to_include_dir> when calling ccmake.
+
+#### Install:
+With apt if using Linux OS
 ```
 sudo apt update
 sudo apt install -y libtiff-dev 
 ```
 
-#### MacOS:
-Normally already installed, it is also possible to get it using [Homebrew](https://brew.sh/) via the following line in terminal
+Already provided in MacOS, otherwise can be installed with [Homebrew](https://brew.sh/) via the following line in terminal
 ```
 sudo brew update
 sudo brew install libtiff
@@ -75,43 +100,21 @@ More information on libtiff compilation [here](http://www.simplesystems.org/libt
 ### OpenCL
 
 Same as for the TIFF library, it is possible to specify the library location via CMake GUI with the variables:
-- OPENCL_LIBRARY → which should point to libOpenCL or OpenCL compiled library (.so for Unix, .lib for Windows)
-- OPENCL_INCLUDE_DIR → which should point to a folder containg CL/cl<span>.htiff<span>.h 
+- OPENCL_LIBRARY → which should point to libOpenCL or OpenCL compiled library
+- OPENCL_INCLUDE_DIR → which should point to the include folder
 
-#### Linux:
-Running the following in a terminal will download and install OpenCL
-```
-sudo apt update
-sudo apt install -y ocl-icd-opencl-dev 
-```
-It is however advised to get OpenCL via your GPU drivers and SDK.
+Either by using cmake GUI (recommended) or by adding -DOPENCL_LIBRARY=<path_to_library> and -DOPENCL_INCLUDE_DIR=<path_to_include_dir> when calling ccmake.
 
-#### MacOS:
-Normally already installed on MacOS system. 
-It is also possible to get it by installing both GPU drivers and SDK from the your GPU brand (NVidia, AMD, Intel, etc.).
-
-#### Windows:
-It is required to install it via the GPU drivers and SDK from the your GPU brand (NVidia, AMD, Intel, etc.).
+#### Install
+Follow the GPU SDK installation guide of your vendor (NVidia, AMD, Intel, ...) 
 
 ### Kernels
-CLIc rely on the [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels) and they are required for execution. Make sure you are downloading the submodule of the repository, or change the folder path variable CLI_Path in CMake configuration to point to the kernels location.
-
-# Testing
-
-| input  | add scalar = 127 | maximum z projection |
-| :--------:  | :--------: | :--------: |
-| <img src="./docs/input.gif" width="200" height="200" /> | <img src="./docs/output_add_image_and_scalar.gif" width="200" height="200" /> | <img src="./docs/output_maximum_z_projection.png" width="200" height="200" /> |
-
-The current main code run sequentially the add_image_and_scalar and maximum_z_projection kernel. And unitary kernel test can be found in the tests folder of the project and run using the following command in the build folder
-```
-make test
-```
+CLIc rely on the [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels). They are required for the proper execution of CLIc. Make sure you are downloading the repository submodule, or update the kernels folder path variable CLI_Path during the CMake configuration to point to the kernels location.
 
 ## Issues
-
-- Running kernel limited to (for now)
-    - add_image_and_scalar
-    - maximum_z_projection  
-- Only process buffer data. image2d_t and image3d_t not supported
-- CI Workflow do not properly work
+- Only process buffer object. image2d_t and image3d_t not yet supported
+- CI Workflow do not properly work, current code compile and runs on
+    - Ubuntu 18.04 - NVidia GeForce device
+    - MacOS 10.14 - NVidia GeForce device
+    - Windows 10 - NVidia GeForce device
 
