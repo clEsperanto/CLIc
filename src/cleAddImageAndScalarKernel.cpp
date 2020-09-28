@@ -2,12 +2,12 @@
  * Author: Stephane Rigaud - @strigaud 
  */
 
-#include "cleAddImageAndScalar.h"
+#include "cleAddImageAndScalarKernel.h"
 
 namespace cle
 {
     
-void AddImageAndScalar::Execute(Buffer& in, Buffer& out, float scalar)
+void AddImageAndScalarKernel::Execute(Buffer& in, Buffer& out, float scalar)
 {
 
     std::pair<std::string, Buffer> src = std::make_pair(input_tag, in);

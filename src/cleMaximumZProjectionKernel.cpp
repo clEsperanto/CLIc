@@ -2,12 +2,12 @@
  * Author: Stephane Rigaud - @strigaud 
  */
 
-#include "cleMaximumZProjection.h"
+#include "cleMaximumZProjectionKernel.h"
 
 namespace cle
 {
     
-void MaximumZProjection::Execute(Buffer& in, Buffer& out)
+void MaximumZProjectionKernel::Execute(Buffer& in, Buffer& out)
 {
     std::pair<std::string, Buffer> src = std::make_pair(input_tag, in);
     std::pair<std::string, Buffer> dst = std::make_pair(output_tag, out);
