@@ -7,6 +7,22 @@
 
 namespace cle
 {
+
+GPU::GPU()
+{
+    try
+    {
+        InitialisePlatform();
+        InitialiseDevice();
+        CreateContext();
+        CreateCommandQueue();
+    }
+    catch(cl_int clError)
+    {
+        std::cerr << "OCL error caught during initialisation! " << getOpenCLErrorString(clError) << std::endl;
+        throw clError;
+    }
+}
     
 void GPU::InitialisePlatform()
 {
@@ -52,22 +68,6 @@ void GPU::CreateCommandQueue()
     if (clError != CL_SUCCESS) 
     {
         std::cerr << "Initialisation error! Could not create commande queue : " << getOpenCLErrorString(clError) << std::endl;
-        throw clError;
-    }
-}
-
-void GPU::Initialisation()
-{
-    try
-    {
-        InitialisePlatform();
-        InitialiseDevice();
-        CreateContext();
-        CreateCommandQueue();
-    }
-    catch(cl_int clError)
-    {
-        std::cerr << "OCL error caught during initialisation! " << getOpenCLErrorString(clError) << std::endl;
         throw clError;
     }
 }
