@@ -2,12 +2,12 @@
  * Author: Stephane Rigaud - @strigaud 
  */
 
-#include "cleSmallerOrEqualConstant.h"
+#include "cleSmallerOrEqualConstantKernel.h"
 
 namespace cle
 {
     
-void SmallerOrEqualConstant::Execute(Buffer& in, Buffer& out, float scalar)
+void SmallerOrEqualConstantKernel::Execute(Buffer& in, Buffer& out, float scalar)
 {
     dimensionality = this->DefineDimensionality(in);
 
