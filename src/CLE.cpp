@@ -7,27 +7,32 @@
 namespace cle
 {
 
+CLE::CLE(GPU& device)
+{
+    gpu = device;
+}
+
 GPU CLE::GetGPU()
 {
     return this->gpu;
 }
 
-void CLE::AddImageAndScalar(Buffer src, Buffer dst, float scalar)
+void CLE::AddImageAndScalar(Buffer& src, Buffer& dst, float scalar)
 {
-    AddImageAndScalar addImageAndScalarKernel(this->gpu);
-    addImageAndScalarKernel.Execute(src, dst, scalar);
+    AddImageAndScalarKernel kernel(this->gpu);
+    kernel.Execute(src, dst, scalar);
 }
 
-void CLE::MaximumZProjection(src, dst)
+void CLE::MaximumZProjection(Buffer& src, Buffer& dst)
 {
-    MaximumZProjection maximumProjection(this->gpu);
-    maximumProjection.Execute(src, dst); 
+    MaximumZProjectionKernel kernel(this->gpu);
+    kernel.Execute(src, dst); 
 }
 
-void CLE::SmallerOrEqualConstant(src, dst, scalar)
+void CLE::SmallerOrEqualConstant(Buffer& src, Buffer& dst, float scalar)
 {
-    SmallerOrEqualConstant addImageAndScalarKernel(this->gpu);
-    addImageAndScalarKernel.Execute(src, dst, scalar);  
+    SmallerOrEqualConstantKernel kernel(this->gpu);
+    kernel.Execute(src, dst, scalar);  
 }
 
 

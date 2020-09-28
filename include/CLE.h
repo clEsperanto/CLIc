@@ -18,12 +18,12 @@ private:
 
 public:
     CLE(GPU&);
-    ~CLE();
+    ~CLE(){};
 
     template<class T>
     Buffer Push(Image<T>& image);
     template<class T>
-    Image<T> Pull(Buffer gpu_obj);
+    Image<T> Pull(Buffer& gpu_obj);
     template<class T>
     Buffer Create(Image<T>& image, std::string type = "");
     template<class T>
@@ -33,15 +33,15 @@ public:
 
     GPU GetGPU();
 
-    void AddImageAndScalar(Buffer, Buffer, float);
-    void SmallerOrEqualConstant(Buffer, Buffer, float);
-    void MaximumZProjection(Buffer, Buffer);
+    void AddImageAndScalar(Buffer&, Buffer&, float);
+    void SmallerOrEqualConstant(Buffer&, Buffer&, float);
+    void MaximumZProjection(Buffer&, Buffer&);
 
 };
 
 
 template<class T>
-Buffer Push(Image<T>& image)
+Buffer CLE::Push(Image<T>& image)
 {
     cl_int clError;
     cl_mem mem_obj = clCreateBuffer(gpu.GetContext(), CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, image.GetDataSize(), image.GetData(), &clError);
@@ -50,7 +50,7 @@ Buffer Push(Image<T>& image)
         std::cerr << "Push error! fail to create buffer : " << getOpenCLErrorString(clError) << std::endl;
         throw clError;
     }
-    clError = clEnqueueWriteBuffer(gpu.GetCommangeQueue(), mem_obj, CL_TRUE, 0, image.GetDataSize(), image.GetData(), 0, nullptr, nullptr);
+    clError = clEnqueueWriteBuffer(gpu.GetCommandQueue(), mem_obj, CL_TRUE, 0, image.GetDataSize(), image.GetData(), 0, nullptr, nullptr);
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Push error! fail to write buffer in push() " << getOpenCLErrorString(clError) << std::endl;
@@ -60,12 +60,12 @@ Buffer Push(Image<T>& image)
 }
 
 template<class T>
-Image<T> Pull(Buffer gpu_obj)
+Image<T> CLE::Pull(Buffer& gpu_obj)
 {
     unsigned int arrSize = gpu_obj.GetDimensions()[0] * gpu_obj.GetDimensions()[1] * gpu_obj.GetDimensions()[2];
     size_t bitSize = sizeof(T) * arrSize;
     T* output_arr = new T[arrSize];
-    cl_int clError = clEnqueueReadBuffer(gpu.GetCommangeQueue(), gpu_obj.GetPointer(), CL_TRUE, 0, bitSize, output_arr, 0, NULL, NULL);
+    cl_int clError = clEnqueueReadBuffer(gpu.GetCommandQueue(), gpu_obj.GetPointer(), CL_TRUE, 0, bitSize, output_arr, 0, NULL, NULL);
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Pull error! fail to read buffer : " << getOpenCLErrorString(clError) << std::endl;
@@ -76,7 +76,7 @@ Image<T> Pull(Buffer gpu_obj)
 }
 
 template<class T>
-Buffer Create(Image<T>& image, std::string type = "")
+Buffer CLE::Create(Image<T>& image, std::string type)
 {
     cl_int clError;
     cl_mem mem_obj = clCreateBuffer(gpu.GetContext(), CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, image.GetDataSize(), image.GetData(), &clError);
@@ -93,7 +93,7 @@ Buffer Create(Image<T>& image, std::string type = "")
 }
 
 template<class T>
-Buffer Create(Buffer& gpu_obj, std::string type = "")
+Buffer CLE::Create(Buffer& gpu_obj, std::string type)
 {
     size_t arrSize = sizeof(T) * gpu_obj.GetDimensions()[0] * gpu_obj.GetDimensions()[1] * gpu_obj.GetDimensions()[2];
     cl_int clError;
@@ -111,7 +111,7 @@ Buffer Create(Buffer& gpu_obj, std::string type = "")
 }
 
 template<class T>
-Buffer Create(unsigned int dimensions[3], std::string type)
+Buffer CLE::Create(unsigned int dimensions[3], std::string type)
 {
     size_t arrSize = sizeof(T) * dimensions[0] * dimensions[1] * dimensions[2];
     cl_int clError;
