@@ -6,10 +6,11 @@ ${header_path}/CLE.h
 ${header_path}/cleKernelList.h
 ${header_path}/cleGPU.h
 ${header_path}/cleKernel.h
+${header_path}/cleBuffer.h
 ${header_path}/cleAddImageAndScalarKernel.h
 ${header_path}/cleSmallerOrEqualConstantKernel.h
 ${header_path}/cleMaximumZProjectionKernel.h
-${header_path}/cleBuffer.h
+${header_path}/cleAbsoluteKernel.h
 ${header_path}/tiffreader.h
 ${header_path}/tiffwriter.h
 ${header_path}/utils.h
@@ -23,6 +24,7 @@ cleKernel.cpp
 cleAddImageAndScalarKernel.cpp
 cleSmallerOrEqualConstantKernel.cpp
 cleMaximumZProjectionKernel.cpp
+cleAbsoluteKernel.cpp
 cleBuffer.cpp
 tiffreader.cpp
 tiffwriter.cpp

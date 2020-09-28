@@ -35,5 +35,10 @@ void CLE::SmallerOrEqualConstant(Buffer& src, Buffer& dst, float scalar)
     kernel.Execute(src, dst, scalar);  
 }
 
+void CLE::Absolute(Buffer& src, Buffer& dst)
+{
+    AbsoluteKernel kernel(this->gpu);
+    kernel.Execute(src, dst);  
+}
 
 }

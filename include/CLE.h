@@ -36,6 +36,7 @@ public:
     void AddImageAndScalar(Buffer&, Buffer&, float);
     void SmallerOrEqualConstant(Buffer&, Buffer&, float);
     void MaximumZProjection(Buffer&, Buffer&);
+    void Absolute(Buffer&, Buffer&);
 
 };
 
