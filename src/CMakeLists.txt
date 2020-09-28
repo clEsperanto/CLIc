@@ -2,6 +2,8 @@
 # set headers
 set(header_path ${Clic_SOURCE_DIR}/include)
 set(header 
+${header_path}/CLE.h
+${header_path}/cleKernelList.h
 ${header_path}/cleGPU.h
 ${header_path}/cleKernel.h
 ${header_path}/cleAddImageAndScalar.h
@@ -15,6 +17,7 @@ ${header_path}/utils.h
 
 # set source files
 set(src
+CLE.cpp
 cleGPU.cpp
 cleKernel.cpp
 cleAddImageAndScalar.cpp
