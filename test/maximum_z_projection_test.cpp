@@ -2,12 +2,6 @@
  * Author: Stephane Rigaud - @strigaud 
  */
 
-#ifdef __APPLE__
-#include <OpenCL/opencl.h>
-#else
-#include <CL/cl.h>
-#endif
-
 #include <random>
 
 #include "tiffreader.h"

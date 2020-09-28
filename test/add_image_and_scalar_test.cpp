@@ -2,14 +2,7 @@
  * Author: Stephane Rigaud - @strigaud 
  */
 
-#ifdef __APPLE__
-#include <OpenCL/opencl.h>
-#else
-#include <CL/cl.h>
-#endif
-
 #include <random>
-
 #include "tiffreader.h"
 #include "tiffwriter.h"
 
@@ -41,7 +34,7 @@ int main(int argc, char **argv)
     
     // Initialise device memory and push from host
     cle::Buffer gpuInput = cle.Push<float>(input_img);
-    cle::Buffer gpuOutput = cle.Create<float>(input_img, "float");
+    cle::Buffer gpuOutput = cle.Create<float>(input_img);
 
     // Call kernel
     cle.AddImageAndScalar(gpuInput, gpuOutput, scalar);  
