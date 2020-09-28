@@ -1,6 +1,6 @@
 
 
-#include "cleAddImageAndScalar.h"
-#include "cleMaximumZProjection.h"
-#include "cleSmallerOrEqualConstant.h"
+#include "cleAddImageAndScalarKernel.h"
+#include "cleMaximumZProjectionKernel.h"
+#include "cleSmallerOrEqualConstantKernel.h"
 
