@@ -7,7 +7,15 @@
 
 namespace cle
 {
-    
+
+// Buffer::Buffer()
+// {
+//     // pointer = nullptr;
+//     // dimensions = {0, 0, 0};
+//     // type = "";
+//     // typeId = "";
+// }  
+
 Buffer::Buffer(cl_mem _ptr, unsigned int* _dimensions, std::string _type)
 {
     pointer = _ptr;
@@ -79,6 +87,21 @@ std::string Buffer::TypeId(std::string type)
         res = "f";
     }
     return res; 
+}
+
+std::string Buffer::to_str() const
+{
+    std::string typ = ", dtype=" + typeId + "(" + type + ")";
+    std::string dim = "size=[" + std::to_string(dimensions[0]) + "," 
+                               + std::to_string(dimensions[1]) + "," 
+                               + std::to_string(dimensions[2]) + "]"; 
+    return "clBuffer<" + dim + typ + ">";
+
+}
+
+std::ostream& operator<<(std::ostream& os, const Buffer& p)
+{
+    return os << p.to_str();
 }
 
 } // namespace cle
