@@ -3,8 +3,6 @@
  */
 
 #include <random>
-#include "tiffreader.h"
-#include "tiffwriter.h"
 
 #include "CLE.h"
 
