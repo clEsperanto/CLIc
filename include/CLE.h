@@ -120,6 +120,7 @@ Buffer CLE::Create(unsigned int dimensions[3], std::string type)
     if (clError != CL_SUCCESS)
     {
         std::cerr << "OCL Error! fail to create buffer in create() : " << getOpenCLErrorString(clError) << std::endl;
+        throw clError;
     }
     return Buffer (mem_obj, dimensions, type);
 }
