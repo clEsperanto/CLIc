@@ -18,22 +18,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [ubuntu-gcc, macos-clang, windows-msvc, ubuntu-18.04]
+        name: [ubuntu, macos, windows]
         include:
-          - name: windows-msvc
+          - name: windows
             os: windows-latest
             cxx: cl.exe
             cc: cl.exe
-          - name: macos-clang
+          - name: macos
             os: macos-latest
             cxx: clang++
             cc: clang
-          - name: ubuntu-gcc
+          - name: ubuntu
             os: ubuntu-latest
-            cxx: g++
-            cc: gcc
-          - name: ubuntu-18.04
-            os: ubuntu-18.04
             cxx: g++
             cc: gcc
 
@@ -48,8 +44,7 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           sudo apt update
-          sudo apt install -y nvidia-opencl-dev libtiff-dev
-      #    sudo apt install -y ocl-icd-opencl-dev 
+          sudo apt install -y ocl-icd-opencl-dev libtiff-dev
 
       # - name: Instal Dependencies - windows
       #   if: matrix.name == 'windows-msvc'
