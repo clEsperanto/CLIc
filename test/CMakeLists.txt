@@ -1,8 +1,16 @@
 
 # core_functions_test
-add_executable(core_functions_test core_functions_test.cpp)
-add_dependencies(core_functions_test Clic) # wait for clic to be compiled
-target_link_libraries(core_functions_test Clic)
+add_executable(push_functions_test push_functions_test.cpp)
+add_dependencies(push_functions_test Clic) # wait for clic to be compiled
+target_link_libraries(push_functions_test Clic)
+# core_functions_test
+add_executable(create_functions_test create_functions_test.cpp)
+add_dependencies(create_functions_test Clic) # wait for clic to be compiled
+target_link_libraries(create_functions_test Clic)
+# core_functions_test
+add_executable(pull_functions_test pull_functions_test.cpp)
+add_dependencies(pull_functions_test Clic) # wait for clic to be compiled
+target_link_libraries(pull_functions_test Clic)
 
 # add_image_and_scalar_test
 add_executable(add_image_and_scalar_test add_image_and_scalar_test.cpp)
@@ -25,7 +33,9 @@ add_dependencies(absolute_test Clic) # wait for clic to be compiled
 target_link_libraries(absolute_test Clic)
 
 # tests
-add_test(NAME core_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/core_functions_test)
+add_test(NAME push_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/push_functions_test)
+add_test(NAME create_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/create_functions_test)
+add_test(NAME pull_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/pull_functions_test)
 add_test(NAME add_image_and_scalar_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/add_image_and_scalar_test)
 add_test(NAME maximum_z_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_z_projection_test)
 add_test(NAME smaller_or_equal_constant_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/smaller_or_equal_constant_test)

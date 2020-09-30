@@ -23,6 +23,7 @@ int main(int argc, char **argv)
         input_data[i] = distribution(generator);
     }
     Image<float> input_img (input_data, width, height, depth, "float");
+    Image<float> output_img;
 
     // Initialise GPU information.
     cle::GPU gpu;
@@ -42,7 +43,7 @@ int main(int argc, char **argv)
 
     try
     {
-        gpuOutput = cle.Create<float>(input_img);
+        output_img = cle.Pull<float>(gpuInput);
     }
     catch(cl_int clError)
     {
@@ -50,13 +51,15 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    try
+    // Verify output
+    float difference = 0;
+    for (size_t i = 0; i < width*height*depth; i++)
     {
-        Image<float> output_img = cle.Pull<float>(gpuInput);
+        difference += std::abs(input_data[i] - output_img.GetData()[i]);
     }
-    catch(cl_int clError)
+    if (difference > std::numeric_limits<float>::epsilon())
     {
-        std::cerr << getOpenCLErrorString(clError) << std::endl;
+        std::cout << "Test failled, cumulated absolute difference " << difference << " > CPU epsilon (" << std::numeric_limits<float>::epsilon() << ")" << std::endl;
         return EXIT_FAILURE;
     }
     
