@@ -21,12 +21,12 @@ class Image
 
 private:
 
-    std::string type;
+    std::string type = "";
     T *data = nullptr;
-    std::array<unsigned int,3> dimensions = {1, 1, 1};
+    std::array<unsigned int,3> dimensions = {0, 0, 0};
     
 public:
-
+    Image(){};
     Image(T*, unsigned int=1, unsigned int=1, unsigned int=1, std::string ="float");
     Image(T*, unsigned int*, std::string="float");
     ~Image();
