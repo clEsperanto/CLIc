@@ -1,3 +1,6 @@
+/**
+ * Author: Stephane Rigaud - @strigaud 
+ */
 
 #ifndef __CLE_h
 #define __CLE_h

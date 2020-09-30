@@ -1,4 +1,6 @@
-
+/**
+ * Author: Stephane Rigaud - @strigaud 
+ */
 
 #include "cleAbsoluteKernel.h"
 #include "cleAddImageAndScalarKernel.h"

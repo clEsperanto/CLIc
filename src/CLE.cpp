@@ -1,4 +1,6 @@
-
+/**
+ * Author: Stephane Rigaud - @strigaud 
+ */
 
 #include "CLE.h"
 #include "cleKernelList.h"
