@@ -11,6 +11,7 @@ set(Clic_VERSION_STRING ${Clic_VERSION_MAJOR}.${Clic_VERSION_MINOR} CACHE STRING
 option(Clic_DEBUG_MODE "activate debug mode (WIP)" OFF)
 option(BUILD_SHARED_LIBS "build CLIc as shared library" ON)
 option(BUILD_TESTING "build and enable tests" ON)
+option(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 set(CLE_KERNEL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/clij-opencl-kernels/src/main/java/net/haesleinhuepf/clij/kernels CACHE PATH "path to CLI kernels folder")
 set(CLE_PREAMBLE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/include/preamble.cl CACHE FILEPATH "path to CLI preamble file")
@@ -22,6 +23,7 @@ set(lib_dest ${main_lib_dest}/${CMAKE_BUILD_TYPE})
 
 # cmake options
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/installed)
 
