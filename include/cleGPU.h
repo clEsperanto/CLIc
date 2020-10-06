@@ -25,17 +25,8 @@
 namespace cle
 {
     
-/** \class clGPU
-* \brief Base class for GPU initialisation and data exchange.
-*
-* clGPU is the GPU initialisation class which manage the gpu paramters
-* like device id, context, and commanq_queue. It remains naive for now.
-* clGPU is also the class managing the data exchange between the host 
-* and the device with the methods push/pull/create.
-*/
 class GPU
 {
-
 private:
     cl_platform_id platform_id;
     cl_device_id device_id;
