@@ -132,7 +132,7 @@ std::string Kernel::DefineDimensionality(Buffer& data)
 
 void Kernel::CompileKernel()
 {
-    kernelName = kernelName + dimensionality;
+    kernelName = kernelName + dimensionality; // TODO: This might not work in general. There are really crazy kernels (says Robert)
 
     // read kernel, defines, and preamble
     std::string kernel_src = LoadSources();

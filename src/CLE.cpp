@@ -31,6 +31,12 @@ void CLE::MaximumZProjection(Buffer& src, Buffer& dst)
     kernel.Execute(src, dst); 
 }
 
+void CLE::Mean2DSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y)
+{
+    Mean2DSphereKernel kernel(this->gpu);
+    kernel.Execute(src, dst, radius_x, radius_y);
+}
+
 void CLE::SmallerOrEqualConstant(Buffer& src, Buffer& dst, float scalar)
 {
     SmallerOrEqualConstantKernel kernel(this->gpu);
