@@ -10,6 +10,7 @@ ${header_path}/cleBuffer.h
 ${header_path}/cleAddImageAndScalarKernel.h
 ${header_path}/cleSmallerOrEqualConstantKernel.h
 ${header_path}/cleMaximumZProjectionKernel.h
+${header_path}/cleMean2DSphereKernel.h
 ${header_path}/cleAbsoluteKernel.h
 ${header_path}/tiffreader.h
 ${header_path}/tiffwriter.h
@@ -24,6 +25,7 @@ cleKernel.cpp
 cleAddImageAndScalarKernel.cpp
 cleSmallerOrEqualConstantKernel.cpp
 cleMaximumZProjectionKernel.cpp
+cleMean2DSphereKernel.cpp
 cleAbsoluteKernel.cpp
 cleBuffer.cpp
 tiffreader.cpp
