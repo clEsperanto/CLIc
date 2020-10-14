@@ -49,6 +49,11 @@ set(CLIc_PREAMBLE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/include/preamble.cl CACHE FIL
 add_compile_definitions(PREAMBLE_FILE="${CLIc_PREAMBLE_FILE}")
 
 # project install structure
+option(CLIc_DEFAULT_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/install)
+if(NOT CMAKE_INSTALL_PREFIX)
+  message(STATUS "Setting install prefix to '${CLIc_DEFAULT_INSTALL_PREFIX}' as none was specified.")
+  set(CMAKE_INSTALL_PREFIX "${CLIc_DEFAULT_INSTALL_PREFIX}" CACHE STRING "Installation destination." FORCE)
+endif()
 set(INSTALL_DIR CLIc-${CLIc_VERSION})
 set(INCLUDE_INSTALL_DIR ${INSTALL_DIR}/include/ )
 set(KERNELS_INSTALL_DIR ${INSTALL_DIR}/kernels/ )
@@ -76,6 +81,11 @@ if(BUILD_TESTING)
   add_subdirectory(test)
 endif()
 
+
+
+
+
+
 # define install rule with config.cmake and targets.cmake files
 install(TARGETS ${PROJECT_NAME}
   EXPORT ${PROJECT_NAME}Targets
@@ -94,7 +104,7 @@ include(CMakePackageConfigHelpers)
 configure_package_config_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/CLIcConfig.cmake.in 
   ${CMAKE_CURRENT_BINARY_DIR}/CLIcConfig.cmake
-  INSTALL_DESTINATION ${INSTALL_DIR}/cmake
+  INSTALL_DESTINATION ${INSTALL_DIR}
   PATH_VARS INSTALL_DIR INCLUDE_INSTALL_DIR KERNELS_INSTALL_DIR LIBRARY_INSTALL_DIR
     )
 write_basic_package_version_file(
@@ -105,12 +115,12 @@ write_basic_package_version_file(
 install(FILES 
   ${CMAKE_CURRENT_BINARY_DIR}/CLIcConfig.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/CLIcConfigVersion.cmake
-  DESTINATION ${INSTALL_DIR}/cmake
+  DESTINATION ${INSTALL_DIR}
   )
 install(EXPORT ${PROJECT_NAME}Targets
   FILE ${PROJECT_NAME}Targets.cmake
   NAMESPACE ${PROJECT_NAME}::
-  DESTINATION ${INSTALL_DIR}/cmake
+  DESTINATION ${INSTALL_DIR}
   )
 
 
