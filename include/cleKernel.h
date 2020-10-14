@@ -24,7 +24,6 @@
 
 #include "cleBuffer.h"
 #include "cleGPU.h"
-#include "cleConfig.h"
 
 namespace cle
 {
@@ -40,8 +39,8 @@ private:
     cl_kernel kernel;
 
     const std::string filesep = "/";
-    const std::string preambleFile = cle_preamble_file;
-    const std::string kernelFolder = cle_kernel_path;    
+    const std::string preambleFile = PREAMBLE_FILE;
+    const std::string kernelFolder = KERNELS_PATH;    
 
 protected:
     std::string dimensionality = "";

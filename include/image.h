@@ -11,13 +11,6 @@
 #ifndef __image_h
 #define __image_h
 
-
-#ifdef __APPLE__
-#include <OpenCL/opencl.h>
-#else
-#include <CL/cl.h>
-#endif
-
 #include <array>
 #include <iostream>
 

@@ -18,7 +18,6 @@
 #endif
 
 #include "cleBuffer.h"
-#include "cleConfig.h"
 #include "image.h"
 #include "utils.h"
 

@@ -1,41 +1,43 @@
 
 # core_functions_test
 add_executable(push_functions_test push_functions_test.cpp)
-add_dependencies(push_functions_test Clic) # wait for clic to be compiled
-target_link_libraries(push_functions_test Clic)
+add_dependencies(push_functions_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(push_functions_test CLIc)
+
 # core_functions_test
 add_executable(create_functions_test create_functions_test.cpp)
-add_dependencies(create_functions_test Clic) # wait for clic to be compiled
-target_link_libraries(create_functions_test Clic)
+add_dependencies(create_functions_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(create_functions_test CLIc)
+
 # core_functions_test
 add_executable(pull_functions_test pull_functions_test.cpp)
-add_dependencies(pull_functions_test Clic) # wait for clic to be compiled
-target_link_libraries(pull_functions_test Clic)
+add_dependencies(pull_functions_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(pull_functions_test CLIc)
 
 # add_image_and_scalar_test
 add_executable(add_image_and_scalar_test add_image_and_scalar_test.cpp)
-add_dependencies(add_image_and_scalar_test Clic) # wait for clic to be compiled
-target_link_libraries(add_image_and_scalar_test Clic)
+add_dependencies(add_image_and_scalar_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(add_image_and_scalar_test CLIc)
 
 # maximum_z_projection_test
 add_executable(maximum_z_projection_test maximum_z_projection_test.cpp)
-add_dependencies(maximum_z_projection_test Clic) # wait for clic to be compiled
-target_link_libraries(maximum_z_projection_test Clic)
+add_dependencies(maximum_z_projection_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(maximum_z_projection_test CLIc)
 
 # mean2d_sphere_test
 add_executable(mean2d_sphere_test mean2d_sphere_test.cpp)
-add_dependencies(mean2d_sphere_test Clic) # wait for clic to be compiled
-target_link_libraries(mean2d_sphere_test Clic)
+add_dependencies(mean2d_sphere_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(mean2d_sphere_test CLIc)
 
 # smaller_or_equal_constant_test
 add_executable(smaller_or_equal_constant_test smaller_or_equal_constant_test.cpp)
-add_dependencies(smaller_or_equal_constant_test Clic) # wait for clic to be compiled
-target_link_libraries(smaller_or_equal_constant_test Clic)
+add_dependencies(smaller_or_equal_constant_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(smaller_or_equal_constant_test CLIc)
 
 # absolute_test
 add_executable(absolute_test absolute_test.cpp)
-add_dependencies(absolute_test Clic) # wait for clic to be compiled
-target_link_libraries(absolute_test Clic)
+add_dependencies(absolute_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(absolute_test CLIc)
 
 # tests
 add_test(NAME push_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/push_functions_test)
