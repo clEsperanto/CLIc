@@ -1,20 +1,21 @@
 
-set(header_path ${CMAKE_CURRENT_BINARY_DIR})
+set(header_path ${CMAKE_CURRENT_SOURCE_DIR})
 
 # set header files
 set(HEADERS 
-    CLE.h
-    cleKernelList.h
-    cleGPU.h
-    cleKernel.h
-    cleBuffer.h
-    cleAddImageAndScalarKernel.h
-    cleSmallerOrEqualConstantKernel.h
-    cleMaximumZProjectionKernel.h
-    cleMean2DSphereKernel.h
-    cleAbsoluteKernel.h
-    tiffreader.h
-    tiffwriter.h
-    image.h
-    utils.h
-)
+    ${header_path}/CLE.h
+    ${header_path}/cleKernelList.h
+    ${header_path}/cleGPU.h
+    ${header_path}/cleKernel.h
+    ${header_path}/cleBuffer.h
+    ${header_path}/cleAddImageAndScalarKernel.h
+    ${header_path}/cleSmallerOrEqualConstantKernel.h
+    ${header_path}/cleMaximumZProjectionKernel.h
+    ${header_path}/cleMean2DSphereKernel.h
+    ${header_path}/cleAbsoluteKernel.h
+    ${header_path}/tiffreader.h
+    ${header_path}/tiffwriter.h
+    ${header_path}/image.h
+    ${header_path}/utils.h
+
+    PARENT_SCOPE)
