@@ -3,10 +3,12 @@
 add_executable(push_functions_test push_functions_test.cpp)
 add_dependencies(push_functions_test Clic) # wait for clic to be compiled
 target_link_libraries(push_functions_test Clic)
+
 # core_functions_test
 add_executable(create_functions_test create_functions_test.cpp)
 add_dependencies(create_functions_test Clic) # wait for clic to be compiled
 target_link_libraries(create_functions_test Clic)
+
 # core_functions_test
 add_executable(pull_functions_test pull_functions_test.cpp)
 add_dependencies(pull_functions_test Clic) # wait for clic to be compiled
