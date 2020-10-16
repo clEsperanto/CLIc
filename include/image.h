@@ -27,7 +27,7 @@ private:
 public:
     Image(){};
     Image(T*, unsigned int=1, unsigned int=1, unsigned int=1, std::string ="float");
-    Image(T*, unsigned int*, std::string="float");
+    Image(T*, unsigned int*, std::string ="float");
     ~Image();
 
     void SetKey(std::string);
