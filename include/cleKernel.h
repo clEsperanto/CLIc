@@ -22,6 +22,7 @@
 #include <iostream>
 #include <map>
 
+#include "cleObject.h"
 #include "cleBuffer.h"
 #include "cleGPU.h"
 
@@ -47,6 +48,7 @@ protected:
     std::string kernelName;
     std::map<std::string, Buffer> parameters;
 
+    std::string TypeAbbr(const std::string) const;
     std::string LoadPreamble();
     std::string LoadSources();
     std::string LoadDefines();
