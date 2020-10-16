@@ -10,32 +10,23 @@
 
 #include "cleBuffer.h"
 #include <iostream>
+#include <algorithm>
 
 namespace cle
 {
 
-// Buffer::Buffer()
-// {
-//     // pointer = nullptr;
-//     // dimensions = {0, 0, 0};
-//     // type = "";
-//     // typeId = "";
-// }  
-
 Buffer::Buffer(cl_mem _ptr, unsigned int* _dimensions, std::string _type)
 {
     pointer = _ptr;
-    type = _type;
-    typeId = this->TypeId(_type);
+    T = this->StringToDataType(_type);
     int arrSize = sizeof(_dimensions)/sizeof(_dimensions[0]) +1;
     if (arrSize > 3)
     {
-        arrSize = 3;
-        std::cerr << "warning: Buffer maximum dimensions exeeded,"; 
-        std::cerr << "only the three first values are considered.";
+        std::cerr << "Warning: 3 Dimensions maximum, "; 
+        std::cerr << "additional dimensions are ignored.";
         std::cerr << std::endl;
     }
-    for (size_t i = 0; i < arrSize; i++)
+    for (size_t i = 0; i < std::min(arrSize, 3); i++)
     {
         dimensions[i] = _dimensions[i];
     }    
@@ -50,64 +41,59 @@ std::array<unsigned int, 3> Buffer::GetDimensions()
     return dimensions;
 }
 
-std::string Buffer::GetType()
-{
-    return type;
-}
-
-std::string Buffer::GetTypeId()
-{
-    return typeId;
-}
-
 cl_mem Buffer::GetPointer()
 {
     return pointer;
 }
 
-std::string Buffer::TypeId(std::string type)
+// std::string Buffer::TypeId(std::string type)
+// {
+//     std::string res;
+//     if (type.compare("float") == 0)
+//     {
+//         res = "f";
+//     }
+//     else if (type.compare("char") == 0)
+//     {
+//         res =  "c";
+//     }
+//     else if (type.compare("uchar") == 0)
+//     {
+//         res =  "uc";
+//     }
+//     else if (type.compare("int") == 0)
+//     {
+//         res =  "i";
+//     }
+//     else if (type.compare("uint") == 0)
+//     {
+//         res =  "ui";
+//     }
+//     else
+//     {
+//         res = "f";
+//     }
+//     return res; 
+// }
+
+std::string Buffer::GetObjectType() const
 {
-    std::string res;
-    if (type.compare("float") == 0)
-    {
-        res = "f";
-    }
-    else if (type.compare("char") == 0)
-    {
-        res =  "c";
-    }
-    else if (type.compare("uchar") == 0)
-    {
-        res =  "uc";
-    }
-    else if (type.compare("int") == 0)
-    {
-        res =  "i";
-    }
-    else if (type.compare("uint") == 0)
-    {
-        res =  "ui";
-    }
-    else
-    {
-        res = "f";
-    }
-    return res; 
+    return this->ObjectTypeToString(O);
 }
 
-std::string Buffer::to_str() const
+std::string Buffer::GetDataType() const
 {
-    std::string typ = ", dtype=" + typeId + "(" + type + ")";
-    std::string dim = "size=[" + std::to_string(dimensions[0]) + "," 
-                               + std::to_string(dimensions[1]) + "," 
-                               + std::to_string(dimensions[2]) + "]"; 
-    return "clBuffer<" + dim + typ + ">";
-
+    return this->DataTypeToString(T);
 }
 
-std::ostream& operator<<(std::ostream& os, const Buffer& p)
+std::string Buffer::ToString() const
 {
-    return os << p.to_str();
+    // std::string typ = ", dtype=" + typeId + "(" + type + ")";
+    // std::string dim = "size=[" + std::to_string(dimensions[0]) + "," 
+    //                            + std::to_string(dimensions[1]) + "," 
+    //                            + std::to_string(dimensions[2]) + "]"; 
+    // return "clBuffer<" + dim + typ + ">";
+    return "";
 }
 
 } // namespace cle
