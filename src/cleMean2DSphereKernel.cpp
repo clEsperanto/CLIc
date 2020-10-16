@@ -25,29 +25,27 @@ void Mean2DSphereKernel::Execute(Buffer& in, Buffer& out, int radius_x, int radi
 
     // Set the arguments of the kernel
     cl_int clError;
-    cl_mem src_mem = in.GetPointer();
-    cl_mem dst_mem = out.GetPointer();
-    clError = clSetKernelArg(this->GetKernel(), 0, sizeof(cl_mem), &dst_mem);
+    clError = clSetKernelArg(this->GetKernel(), 0, sizeof(out.GetData()), &(out.GetData()));
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
         throw clError;
     }
-    clError = clSetKernelArg(this->GetKernel(), 1, sizeof(cl_mem), &src_mem);
+    clError = clSetKernelArg(this->GetKernel(), 1, sizeof(in.GetData()), &(in.GetData()));
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
         throw clError;
     }
     int kernel_size_x = (radius_x * 2 + 1);
-    clError = clSetKernelArg(this->GetKernel(), 2, sizeof(int), (void *)&kernel_size_x);
+    clError = clSetKernelArg(this->GetKernel(), 2, sizeof(int), &kernel_size_x);
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
         throw clError;
     }
     int kernel_size_y = (radius_y * 2 + 1);
-    clError = clSetKernelArg(this->GetKernel(), 3, sizeof(int), (void*)&kernel_size_y);
+    clError = clSetKernelArg(this->GetKernel(), 3, sizeof(int), &kernel_size_y);
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
