@@ -41,7 +41,7 @@ std::array<unsigned int, 3> Buffer::GetDimensions()
     return dimensions;
 }
 
-cl_mem Buffer::GetPointer()
+cl_mem& Buffer::GetData()
 {
     return pointer;
 }

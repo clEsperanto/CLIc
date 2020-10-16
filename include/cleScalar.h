@@ -29,7 +29,7 @@ private:
 public:        
     Scalar(float);
     ~Scalar();
-    float GetValue();
+    float& GetData();
 
     std::string GetObjectType() const;
     std::string GetDataType() const;

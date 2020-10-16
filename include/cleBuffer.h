@@ -33,7 +33,7 @@ public:
     Buffer(cl_mem, unsigned int [3], std::string);
     ~Buffer();
 
-    cl_mem GetPointer();
+    cl_mem& GetData();
     std::array<unsigned int, 3> GetDimensions();
 
     std::string GetObjectType() const;

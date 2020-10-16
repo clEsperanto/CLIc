@@ -23,7 +23,7 @@ Scalar::~Scalar()
 {
 }
 
-float Scalar::GetValue()
+float& Scalar::GetData()
 {
     return value;
 }
