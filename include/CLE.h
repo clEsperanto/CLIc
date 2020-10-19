@@ -12,8 +12,9 @@
 #define __CLE_h
 
 
+
 #include "cleGPU.h"
-#include "cleBuffer.h"
+#include "cleObject.h"
 #include "image.h"
 
 
@@ -76,13 +77,13 @@ Image<T> CLE::Pull(Buffer& gpu_obj)
     unsigned int arrSize = gpu_obj.GetDimensions()[0] * gpu_obj.GetDimensions()[1] * gpu_obj.GetDimensions()[2];
     size_t bitSize = sizeof(T) * arrSize;
     T* output_arr = new T[arrSize];
-    cl_int clError = clEnqueueReadBuffer(gpu.GetCommandQueue(), gpu_obj.GetPointer(), CL_TRUE, 0, bitSize, output_arr, 0, NULL, NULL);
+    cl_int clError = clEnqueueReadBuffer(gpu.GetCommandQueue(), gpu_obj.GetData(), CL_TRUE, 0, bitSize, output_arr, 0, NULL, NULL);
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Pull error! fail to read buffer : " << getOpenCLErrorString(clError) << std::endl;
         throw clError;
     }
-    Image<T> image (output_arr, gpu_obj.GetDimensions()[0], gpu_obj.GetDimensions()[1], gpu_obj.GetDimensions()[2], gpu_obj.GetType());
+    Image<T> image (output_arr, gpu_obj.GetDimensions()[0], gpu_obj.GetDimensions()[1], gpu_obj.GetDimensions()[2], gpu_obj.GetDataType());
     return image;        
 }
 
@@ -116,7 +117,7 @@ Buffer CLE::Create(Buffer& gpu_obj, std::string type)
     }
     if (type.empty())
     {
-        type = gpu_obj.GetType();
+        type = gpu_obj.GetDataType();
     }
     return Buffer (mem_obj, gpu_obj.GetDimensions().data(), type);
 }

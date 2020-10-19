@@ -64,10 +64,14 @@ std::string Kernel::LoadDefines()
 
     for (auto itr = parameters.begin(); itr != parameters.end(); ++itr)
     {
+        std::string objectType = itr->second.GetObjectType();
+        std::string dataType = itr->second.GetDataType();
+        std::string abbrType = TypeAbbr(dataType);
+
         // image type handling
-        defines = defines + "\n#define CONVERT_" + itr->first + "_PIXEL_TYPE clij_convert_" + itr->second.GetType() + "_sat";
-        defines = defines + "\n#define IMAGE_" + itr->first + "_TYPE __global " + itr->second.GetType() + "*";
-        defines = defines + "\n#define IMAGE_" + itr->first + "_PIXEL_TYPE " + itr->second.GetType();
+        defines = defines + "\n#define CONVERT_" + itr->first + "_PIXEL_TYPE clij_convert_" + dataType + "_sat";
+        defines = defines + "\n#define IMAGE_" + itr->first + "_TYPE __global " + dataType + "*";
+        defines = defines + "\n#define IMAGE_" + itr->first + "_PIXEL_TYPE " + dataType;
 
         // image size handling
         if (itr->second.GetDimensions()[2] > 1)
@@ -113,9 +117,9 @@ std::string Kernel::LoadDefines()
 
         // read/write images
         std::string sdim = (itr->second.GetDimensions()[2] == 1) ? "2" : "3";
-        defines = defines + "\n#define READ_" + itr->first + "_IMAGE(a,b,c) read_buffer" + sdim + "d" + itr->second.GetTypeId() +
+        defines = defines + "\n#define READ_" + itr->first + "_IMAGE(a,b,c) read_buffer" + sdim + "d" + abbrType +
                 "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
-        defines = defines + "\n#define WRITE_" + itr->first + "_IMAGE(a,b,c) write_buffer" + sdim + "d" + itr->second.GetTypeId() +
+        defines = defines + "\n#define WRITE_" + itr->first + "_IMAGE(a,b,c) write_buffer" + sdim + "d" + abbrType +
                 "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
         defines = defines + "\n";
     }
@@ -135,6 +139,33 @@ std::string Kernel::DefineDimensionality(Buffer& data)
     }
     return dim;
 }
+
+
+std::string Kernel::TypeAbbr(const std::string type) const
+{
+    if (type.compare("float") == 0)
+    {
+        return "f";
+    }
+    else if (type.compare("char") == 0)
+    {
+        return  "c";
+    }
+    else if (type.compare("uchar") == 0)
+    {
+        return  "uc";
+    }
+    else if (type.compare("int") == 0)
+    {
+        return  "i";
+    }
+    else if (type.compare("uint") == 0)
+    {
+        return  "ui";
+    }
+    return ""; 
+}
+
 
 void Kernel::CompileKernel()
 {

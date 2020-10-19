@@ -26,21 +26,19 @@ void AddImageAndScalarKernel::Execute(Buffer& in, Buffer& out, float scalar)
 
     // Set the arguments of the kernel
     cl_int clError;
-    cl_mem src_mem = in.GetPointer();
-    cl_mem dst_mem = out.GetPointer();
-    clError = clSetKernelArg(this->GetKernel(), 0, sizeof(cl_mem), &src_mem);
+    clError = clSetKernelArg(this->GetKernel(), 0, sizeof(in.GetData()), &(in.GetData()));
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
         throw clError;
     }
-    clError = clSetKernelArg(this->GetKernel(), 1, sizeof(cl_mem), &dst_mem);
+    clError = clSetKernelArg(this->GetKernel(), 1, sizeof(out.GetData()), &(out.GetData()));
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
         throw clError;
     }
-    clError = clSetKernelArg(this->GetKernel(), 2, sizeof(float), (void *)&scalar);
+    clError = clSetKernelArg(this->GetKernel(), 2, sizeof(float), &scalar);
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;

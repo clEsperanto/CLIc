@@ -7,7 +7,9 @@ set(HEADERS
     ${header_path}/cleKernelList.h
     ${header_path}/cleGPU.h
     ${header_path}/cleKernel.h
+    ${header_path}/cleObject.h
     ${header_path}/cleBuffer.h
+    ${header_path}/cleScalar.h
     ${header_path}/cleAddImageAndScalarKernel.h
     ${header_path}/cleSmallerOrEqualConstantKernel.h
     ${header_path}/cleMaximumZProjectionKernel.h
