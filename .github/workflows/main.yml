@@ -18,12 +18,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [ubuntu, macos, windows]
+        name: [ubuntu, macos]
         include:
-          - name: windows
-            os: windows-latest
-            cxx: cl.exe
-            cc: cl.exe
+          #- name: windows
+          #  os: windows-latest
+          #  cxx: cl.exe
+          #  cc: cl.exe
           - name: macos
             os: macos-latest
             cxx: clang++
@@ -68,6 +68,7 @@ jobs:
           buildDirectory: '${{ runner.workspace }}/build'  
 
       - name: Run Tests
+        if: startsWith(matrix.os, 'macos')
         working-directory: ${{ runner.workspace }}/build
         shell: bash
         run: ctest
