@@ -7,7 +7,6 @@ set(SOURCES
 	${source_path}/cleGPU.cpp
 	${source_path}/cleObject.cpp
 	${source_path}/cleBuffer.cpp
-	${source_path}/cleScalar.cpp
 	${source_path}/cleKernel.cpp
 	${source_path}/cleAddImageAndScalarKernel.cpp
 	${source_path}/cleSmallerOrEqualConstantKernel.cpp
