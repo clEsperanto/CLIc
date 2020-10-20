@@ -40,7 +40,7 @@ public:
     ~Object(){};
 
     virtual cl_mem& GetData() = 0;
-    virtual const unsigned int* GetDimensions() const = 0;
+    virtual unsigned int* GetDimensions() = 0;
     virtual std::string GetDataType() const = 0;
     virtual std::string GetObjectType() const = 0;
     virtual std::string ToString() const = 0;

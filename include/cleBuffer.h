@@ -35,7 +35,7 @@ public:
 
     cl_mem& GetData();
 
-    const unsigned int* GetDimensions() const;
+    unsigned int* GetDimensions();
     std::string GetObjectType() const;
     std::string GetDataType() const;
     std::string ToString() const;

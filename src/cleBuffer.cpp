@@ -36,7 +36,7 @@ Buffer::~Buffer()
 {
 }
 
-const unsigned int* Buffer::GetDimensions() const
+unsigned int* Buffer::GetDimensions()
 {
     return dimensions.data();
 }
