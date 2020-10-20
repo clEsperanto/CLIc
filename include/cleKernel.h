@@ -21,6 +21,9 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <vector>
+#include <array>
+#include <algorithm>
 
 #include "cleObject.h"
 #include "cleBuffer.h"
@@ -44,23 +47,33 @@ private:
     const std::string kernelFolder = KERNELS_PATH;    
 
 protected:
-    std::string dimensionality = "";
+
     std::string kernelName;
-    std::map<std::string, Buffer> parameters;
+
+    std::vector<std::string> tagList;
+    std::map<std::string, Object&> objectList;
+    std::map<std::string, float&> floatList;
+    std::map<std::string, int&> intList;
 
     std::string TypeAbbr(const std::string) const;
     std::string LoadPreamble();
     std::string LoadSources();
     std::string LoadDefines();
-    std::string DefineDimensionality(Buffer&);
 
-    void CompileKernel();
+    void AddArgumentsToKernel();
+    void DefineRangeKernel();
 
 public:
     Kernel(GPU&);
     ~Kernel(){};
 
-    virtual void Execute(){};
+    virtual void Execute() = 0;
+    
+    void AddObject(Object&, std::string);
+    void AddFloat(float&, std::string);
+    void AddInt(int&, std::string);
+
+    void CompileKernel();
 
     std::string GetKernelName();
     cl_kernel GetKernel();
@@ -68,7 +81,6 @@ public:
     cl_device_id GetDevice();
     cl_context GetContext();
     cl_command_queue GetCommandQueue();
-    
 };
 
 } // namespace cle
