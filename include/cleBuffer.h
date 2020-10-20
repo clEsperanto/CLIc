@@ -30,12 +30,12 @@ private:
     
 public:      
     Buffer(){};
-    Buffer(cl_mem, unsigned int [3], std::string);
+    Buffer(cl_mem, unsigned int*, std::string);
     ~Buffer();
 
     cl_mem& GetData();
-    std::array<unsigned int, 3> GetDimensions();
 
+    const unsigned int* GetDimensions() const;
     std::string GetObjectType() const;
     std::string GetDataType() const;
     std::string ToString() const;

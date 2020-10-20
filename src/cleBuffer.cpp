@@ -36,9 +36,9 @@ Buffer::~Buffer()
 {
 }
 
-std::array<unsigned int, 3> Buffer::GetDimensions()
+const unsigned int* Buffer::GetDimensions() const
 {
-    return dimensions;
+    return dimensions.data();
 }
 
 cl_mem& Buffer::GetData()
