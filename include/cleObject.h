@@ -26,7 +26,7 @@ namespace cle
 class Object
 {
 public:
-    enum ObjectType {Scalar, Buffer, Image2d};
+    enum ObjectType {Buffer, Image2d};
     enum DataType {Float, Char, UChar, Int, UInt, Short, UShort};
 
 protected:
@@ -39,6 +39,9 @@ public:
     Object(){};
     ~Object(){};
 
+    virtual cl_mem& GetData() = 0;
+    virtual unsigned int* GetDimensions() = 0;
+    virtual std::string GetDataType() const = 0;
     virtual std::string GetObjectType() const = 0;
     virtual std::string ToString() const = 0;
 };

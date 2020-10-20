@@ -12,46 +12,37 @@
 
 namespace cle
 {
-    
-void AbsoluteKernel::Execute(Buffer& in, Buffer& out)
+
+void AbsoluteKernel::DefineDimensionality()
 {
+    std::string dim = "_2d";
+    for (auto it = objectList.begin(); it != objectList.end(); it++)
+    {
+        if (it->second.GetDimensions()[2] > 1)
+        {
+            dim = "_3d";
+        }
+    }
+    kernelName = kernelName + dim;
+}
 
-    std::pair<std::string, Buffer> src = std::make_pair(input_tag, in);
-    std::pair<std::string, Buffer> dst = std::make_pair(output_tag, out);
-    parameters.insert(src);
-    parameters.insert(dst);
+void AbsoluteKernel::SetInput(Object& x)
+{
+    objectList.insert({"src", x});
+}
 
-    dimensionality = this->DefineDimensionality(in);
+void AbsoluteKernel::SetOutput(Object& x)
+{
+    objectList.insert({"dst", x});
+}
+
+    
+void AbsoluteKernel::Execute()
+{
+    DefineDimensionality();
     CompileKernel();
-
-    // Set the arguments of the kernel
-    cl_int clError;
-    clError = clSetKernelArg(this->GetKernel(), 0, sizeof(in.GetData()), &(in.GetData()));
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
-        throw clError;
-    }
-    clError = clSetKernelArg(this->GetKernel(), 1, sizeof(out.GetData()), &(out.GetData()));
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
-        throw clError;
-    }
-
-    // execute the opencl kernel
-    size_t global_item_size[3];
-    for (size_t i = 0; i < 3; i++)
-    {
-        global_item_size[i] = std::max(in.GetDimensions()[i], out.GetDimensions()[i]);
-    }
-    size_t work_dim = 3;
-    clError = clEnqueueNDRangeKernel(this->GetCommandQueue(), this->GetKernel(), work_dim, nullptr, global_item_size, nullptr, 0, nullptr, nullptr);
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "Execution error! Could not enqueue ND-Range : " << getOpenCLErrorString(clError) << std::endl;
-        throw clError;
-    }
+    AddArgumentsToKernel();
+    DefineRangeKernel();
 }
 
 } // namespace cle

@@ -19,14 +19,24 @@ namespace cle
 class SmallerOrEqualConstantKernel : public Kernel
 {
 private:
-    std::string input_tag = "src1";
-    std::string output_tag = "dst";
+
+    void DefineDimensionality();
+
 
 public:
-    SmallerOrEqualConstantKernel(GPU& gpu) : Kernel(gpu) {kernelName = "smaller_or_equal_constant";}
-    ~SmallerOrEqualConstantKernel(){};
+    SmallerOrEqualConstantKernel(GPU& gpu) : Kernel(gpu) 
+    {
+        kernelName = "smaller_or_equal_constant";
+        tagList = {"src1" , "scalar", "dst"};
+    }
 
-    void Execute(Buffer& in, Buffer& out, float scalar);
+    void SetInput(Object&);
+    void SetOutput(Object&);
+    void SetConstant(float&);
+
+    ~SmallerOrEqualConstantKernel() = default;
+
+    void Execute();
 
 };
 

@@ -28,31 +28,45 @@ GPU CLE::GetGPU()
 void CLE::AddImageAndScalar(Buffer& src, Buffer& dst, float scalar)
 {
     AddImageAndScalarKernel kernel(this->gpu);
-    kernel.Execute(src, dst, scalar);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetScalar(scalar);
+    kernel.Execute();
 }
 
 void CLE::MaximumZProjection(Buffer& src, Buffer& dst)
 {
     MaximumZProjectionKernel kernel(this->gpu);
-    kernel.Execute(src, dst); 
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
 }
 
 void CLE::Mean2DSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y)
 {
     Mean2DSphereKernel kernel(this->gpu);
-    kernel.Execute(src, dst, radius_x, radius_y);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetRadiusX(radius_x);
+    kernel.SetRadiusY(radius_y);
+    kernel.Execute();
 }
 
-void CLE::SmallerOrEqualConstant(Buffer& src, Buffer& dst, float scalar)
+void CLE::SmallerOrEqualConstant(Buffer& src, Buffer& dst, float cst)
 {
     SmallerOrEqualConstantKernel kernel(this->gpu);
-    kernel.Execute(src, dst, scalar);  
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetConstant(cst);
+    kernel.Execute();  
 }
 
 void CLE::Absolute(Buffer& src, Buffer& dst)
 {
     AbsoluteKernel kernel(this->gpu);
-    kernel.Execute(src, dst);  
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute();  
 }
 
 }

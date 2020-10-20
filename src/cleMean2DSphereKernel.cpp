@@ -12,59 +12,43 @@
 namespace cle
 {
     
-void Mean2DSphereKernel::Execute(Buffer& in, Buffer& out, int radius_x, int radius_y)
+void Mean2DSphereKernel::ComputeKernelSize()
 {
+    for (auto it = intList.begin(); it != intList.end(); it++)
+    {
+        if (std::find(tagList.begin(), tagList.end(), it->first) != tagList.end())
+        {
+            it->second = it->second * 2 + 1;
+        }
+    } 
+}
 
-    std::pair<std::string, Buffer> src = std::make_pair(input_tag, in);
-    std::pair<std::string, Buffer> dst = std::make_pair(output_tag, out);
-    parameters.insert(src);
-    parameters.insert(dst);
+void Mean2DSphereKernel::SetInput(Object& x)
+{
+    objectList.insert({"src", x});
+}
 
-    dimensionality = this->DefineDimensionality(in);
+void Mean2DSphereKernel::SetOutput(Object& x)
+{
+    objectList.insert({"dst", x});
+}
+
+void Mean2DSphereKernel::SetRadiusX(int& x)
+{
+    intList.insert({"radius_x", x});
+}
+
+void Mean2DSphereKernel::SetRadiusY(int& x)
+{
+    intList.insert({"radius_y", x});
+}
+
+void Mean2DSphereKernel::Execute()
+{
     CompileKernel();
-
-    // Set the arguments of the kernel
-    cl_int clError;
-    clError = clSetKernelArg(this->GetKernel(), 0, sizeof(out.GetData()), &(out.GetData()));
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
-        throw clError;
-    }
-    clError = clSetKernelArg(this->GetKernel(), 1, sizeof(in.GetData()), &(in.GetData()));
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
-        throw clError;
-    }
-    int kernel_size_x = (radius_x * 2 + 1);
-    clError = clSetKernelArg(this->GetKernel(), 2, sizeof(int), &kernel_size_x);
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
-        throw clError;
-    }
-    int kernel_size_y = (radius_y * 2 + 1);
-    clError = clSetKernelArg(this->GetKernel(), 3, sizeof(int), &kernel_size_y);
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
-        throw clError;
-    }
-
-    // execute the opencl kernel
-    size_t global_item_size[2];
-    for (size_t i = 0; i < 2; i++)
-    {
-        global_item_size[i] = std::max(in.GetDimensions()[i], out.GetDimensions()[i]);
-    }
-    size_t work_dim = 2;
-    clError = clEnqueueNDRangeKernel(this->GetCommandQueue(), this->GetKernel(), work_dim, nullptr, global_item_size, nullptr, 0, nullptr, nullptr);
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "Execution error! Could not enqueue ND-Range : " << getOpenCLErrorString(clError) << std::endl;
-        throw clError;
-    }
+    ComputeKernelSize();
+    AddArgumentsToKernel();
+    DefineRangeKernel();
 }
 
 } // namespace cle

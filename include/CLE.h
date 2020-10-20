@@ -68,7 +68,7 @@ Buffer CLE::Push(Image<T>& image)
         std::cerr << "Push error! fail to write buffer in push() " << getOpenCLErrorString(clError) << std::endl;
         throw clError;
     }
-    return Buffer (mem_obj, image.GetDimensions().data(), image.GetType());
+    return Buffer (mem_obj, image.GetDimensions(), image.GetType());
 }
 
 template<class T>
@@ -101,7 +101,7 @@ Buffer CLE::Create(Image<T>& image, std::string type)
     {
         type = image.GetType();
     }
-    return Buffer (mem_obj, image.GetDimensions().data(), type);
+    return Buffer (mem_obj, image.GetDimensions(), type);
 }
 
 template<class T>
@@ -119,7 +119,7 @@ Buffer CLE::Create(Buffer& gpu_obj, std::string type)
     {
         type = gpu_obj.GetDataType();
     }
-    return Buffer (mem_obj, gpu_obj.GetDimensions().data(), type);
+    return Buffer (mem_obj, gpu_obj.GetDimensions(), type);
 }
 
 template<class T>

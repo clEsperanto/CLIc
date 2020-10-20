@@ -19,15 +19,22 @@ namespace cle
 class AddImageAndScalarKernel : public Kernel
 {
 private:
-    std::string input_tag = "src";
-    std::string output_tag = "dst";
+
+    void DefineDimensionality();
 
 public:
-    AddImageAndScalarKernel(GPU& gpu) : Kernel(gpu) {kernelName = "add_image_and_scalar";}
+    AddImageAndScalarKernel(GPU& gpu) : Kernel(gpu) 
+    {
+        kernelName = "add_image_and_scalar";
+        tagList = {"src", "dst", "scalar"};
+    }
 
-    void Execute(Buffer&, Buffer&, float);
+    void SetInput(Object&);
+    void SetOutput(Object&);
+    void SetScalar(float&);
+    void Execute();
 
-    ~AddImageAndScalarKernel(){};
+    ~AddImageAndScalarKernel() = default;
 };
 
 } // namespace cle

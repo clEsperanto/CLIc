@@ -35,7 +35,6 @@ std::string Object::ObjectTypeToString(const ObjectType o) const
 {
     switch (o)
     {
-        case Scalar:  return "Scalar";
         case Buffer:  return "Buffer";
         case Image2d: return "Image2d";
         default:      return "Unknown";

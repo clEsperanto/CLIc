@@ -19,14 +19,20 @@ namespace cle
 class MaximumZProjectionKernel : public Kernel
 {
 private:
-    std::string input_tag = "src";
-    std::string output_tag = "dst_max";
 
 public:
-    MaximumZProjectionKernel(GPU& gpu) : Kernel(gpu) {kernelName = "maximum_z_projection";}
-    ~MaximumZProjectionKernel(){};
+    MaximumZProjectionKernel(GPU& gpu) : Kernel(gpu) 
+    {
+        kernelName = "maximum_z_projection";
+        tagList = {"dst_max", "src"};
+    }
 
-    void Execute(Buffer&, Buffer&);
+    void SetInput(Object&);
+    void SetOutput(Object&);
+    void Execute();
+
+    ~MaximumZProjectionKernel() = default;
+
 
 };
 

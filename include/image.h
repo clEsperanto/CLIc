@@ -38,7 +38,7 @@ public:
     T* GetData();
     size_t GetDataSize();
     unsigned int GetNbPixels();
-    std::array<unsigned int, 3> GetDimensions();
+    unsigned int* GetDimensions();
 
 };
 
@@ -112,9 +112,9 @@ unsigned int Image<T>::GetNbPixels()
 }
 
 template<class T>
-std::array<unsigned int, 3> Image<T>::GetDimensions()
+unsigned int* Image<T>::GetDimensions()
 {
-    return dimensions;
+    return dimensions.data();
 }
 
 #endif // __image_h
