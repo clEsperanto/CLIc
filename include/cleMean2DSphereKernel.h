@@ -18,15 +18,23 @@ namespace cle
 class Mean2DSphereKernel : public Kernel
 {
 private:
-    std::string input_tag = "src";
-    std::string output_tag = "dst";
+
+    void ComputeKernelSize();
 
 public:
-    Mean2DSphereKernel(GPU& gpu) : Kernel(gpu) {kernelName = "mean_sphere";}
+    Mean2DSphereKernel(GPU& gpu) : Kernel(gpu) 
+    {
+        kernelName = "mean_sphere_2d";
+        tagList = {"dst", "src", "radius_x", "radius_y"};
+    }
 
-    void Execute(Buffer&, Buffer&, int, int);
+    void SetInput(Object&);
+    void SetOutput(Object&);
+    void SetRadiusX(int&);
+    void SetRadiusY(int&);
+    void Execute();
 
-    ~Mean2DSphereKernel(){};
+    ~Mean2DSphereKernel() = default;
 };
 
 } // namespace cle

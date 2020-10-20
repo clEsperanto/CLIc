@@ -13,43 +13,21 @@
 namespace cle
 {
     
-void MaximumZProjectionKernel::Execute(Buffer& in, Buffer& out)
+void MaximumZProjectionKernel::SetInput(Object& x)
 {
-    std::pair<std::string, Buffer> src = std::make_pair(input_tag, in);
-    std::pair<std::string, Buffer> dst = std::make_pair(output_tag, out);
-    parameters.insert(src);
-    parameters.insert(dst);
+    objectList.insert({"src", x});
+}
 
+void MaximumZProjectionKernel::SetOutput(Object& x)
+{
+    objectList.insert({"dst_max", x});
+}
+
+void MaximumZProjectionKernel::Execute()
+{
     CompileKernel();
-
-    // Set the arguments of the kernel
-    cl_int clError;
-    clError = clSetKernelArg(this->GetKernel(), 0, sizeof(out.GetData()), &(out.GetData()));
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
-        throw clError;
-    }
-    clError = clSetKernelArg(this->GetKernel(), 1, sizeof(in.GetData()), &(in.GetData()));
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
-        throw clError;
-    }
-
-    // execute the opencl kernel
-    size_t global_item_size[3];
-    for (size_t i = 0; i < 3; i++)
-    {
-        global_item_size[i] = std::max(in.GetDimensions()[i], out.GetDimensions()[i]);
-    }
-    size_t work_dim = 3;
-    clError = clEnqueueNDRangeKernel(this->GetCommandQueue(), this->GetKernel(), work_dim, nullptr, global_item_size, nullptr, 0, nullptr, nullptr);
-    if (clError != CL_SUCCESS)
-    {
-        std::cerr << "Execution error! Could not enqueue ND-Range : " << getOpenCLErrorString(clError) << std::endl;
-        throw clError;
-    }
+    AddArgumentsToKernel();
+    DefineRangeKernel();
 }
 
 } // namespace cle

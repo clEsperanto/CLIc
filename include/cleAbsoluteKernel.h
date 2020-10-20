@@ -19,15 +19,22 @@ namespace cle
 class AbsoluteKernel : public Kernel
 {
 private:
-    std::string input_tag = "src";
-    std::string output_tag = "dst";
+
+    void DefineDimensionality();
+
 
 public:
-    AbsoluteKernel(GPU& gpu) : Kernel(gpu) {kernelName = "absolute";}
+    AbsoluteKernel(GPU& gpu) : Kernel(gpu) 
+    {
+        kernelName = "absolute";
+        tagList = {"src" , "dst"};
+    }
 
-    void Execute(Buffer&, Buffer&);
+    void SetInput(Object&);
+    void SetOutput(Object&);
+    void Execute();
 
-    ~AbsoluteKernel(){};
+    ~AbsoluteKernel() = default;
 };
 
 } // namespace cle
