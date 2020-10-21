@@ -46,6 +46,8 @@ public:
     void AddImageAndScalar(Buffer&, Buffer&, float);
     void SmallerOrEqualConstant(Buffer&, Buffer&, float);
     void MaximumZProjection(Buffer&, Buffer&);
+    void MaximumYProjection(Buffer&, Buffer&);
+    void MaximumXProjection(Buffer&, Buffer&);
     void Mean2DSphere(Buffer&, Buffer&, int, int);
     void Absolute(Buffer&, Buffer&);
 

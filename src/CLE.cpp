@@ -42,6 +42,22 @@ void CLE::MaximumZProjection(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }
 
+void CLE::MaximumYProjection(Buffer& src, Buffer& dst)
+{
+    MaximumYProjectionKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}
+
+void CLE::MaximumXProjection(Buffer& src, Buffer& dst)
+{
+    MaximumXProjectionKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}
+
 void CLE::Mean2DSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y)
 {
     Mean2DSphereKernel kernel(this->gpu);
