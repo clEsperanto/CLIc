@@ -11,6 +11,8 @@
 #include "cleAbsoluteKernel.h"
 #include "cleAddImageAndScalarKernel.h"
 #include "cleMaximumZProjectionKernel.h"
+#include "cleMaximumYProjectionKernel.h"
+#include "cleMaximumXProjectionKernel.h"
 #include "cleMean2DSphereKernel.h"
 #include "cleSmallerOrEqualConstantKernel.h"
 

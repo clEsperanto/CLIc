@@ -24,6 +24,16 @@ add_executable(maximum_z_projection_test maximum_z_projection_test.cpp)
 add_dependencies(maximum_z_projection_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(maximum_z_projection_test CLIc)
 
+# maximum_y_projection_test
+add_executable(maximum_y_projection_test maximum_y_projection_test.cpp)
+add_dependencies(maximum_y_projection_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(maximum_y_projection_test CLIc)
+
+# maximum_x_projection_test
+add_executable(maximum_x_projection_test maximum_x_projection_test.cpp)
+add_dependencies(maximum_x_projection_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(maximum_x_projection_test CLIc)
+
 # mean2d_sphere_test
 add_executable(mean2d_sphere_test mean2d_sphere_test.cpp)
 add_dependencies(mean2d_sphere_test CLIc) # wait for CLIc to be compiled
@@ -45,6 +55,8 @@ add_test(NAME create_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/create_f
 add_test(NAME pull_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/pull_functions_test)
 add_test(NAME add_image_and_scalar_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/add_image_and_scalar_test)
 add_test(NAME maximum_z_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_z_projection_test)
+add_test(NAME maximum_y_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_y_projection_test)
+add_test(NAME maximum_x_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_x_projection_test)
 add_test(NAME mean2d_sphere_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/mean2d_sphere_test)
 add_test(NAME smaller_or_equal_constant_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/smaller_or_equal_constant_test)
 add_test(NAME absolute_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/absolute_test)
