@@ -62,69 +62,79 @@ std::string Kernel::LoadDefines()
     defines = defines + "\n#define GET_IMAGE_DEPTH(image_key) IMAGE_SIZE_ ## image_key ## _DEPTH";
     defines = defines + "\n";   
 
-    for (auto itr = objectList.begin(); itr != objectList.end(); ++itr)
+    for (auto itr = parameterList.begin(); itr != parameterList.end(); ++itr)
     {
-        if (itr->second.GetObjectType().compare("Scalar") != 0)
-        {
-            std::string objectType = itr->second.GetObjectType();
-            std::string dataType = itr->second.GetDataType();
+        std::cout << "\t\t" << itr->first << " is a " << itr->second.get()->GetObjectType() << std::endl;
+        if (itr->second.get()->GetObjectType().compare("cleBuffer") == 0)
+        {    
+            std::cout << "\t\t\tthis is a buffer!" << std::endl;
+            Buffer* bufferObject = dynamic_cast<Buffer*>(itr->second.get());
+            std::string tagObject = itr->first;
+
+            std::string objectType = bufferObject->GetObjectType();
+            std::string dataType = bufferObject->GetDataType();
             std::string abbrType = TypeAbbr(dataType);
 
             // image type handling
-            defines = defines + "\n#define CONVERT_" + itr->first + "_PIXEL_TYPE clij_convert_" + dataType + "_sat";
-            defines = defines + "\n#define IMAGE_" + itr->first + "_TYPE __global " + dataType + "*";
-            defines = defines + "\n#define IMAGE_" + itr->first + "_PIXEL_TYPE " + dataType;
+            defines = defines + "\n#define CONVERT_" + tagObject + "_PIXEL_TYPE clij_convert_" + dataType + "_sat";
+            defines = defines + "\n#define IMAGE_" + tagObject + "_TYPE __global " + dataType + "*";
+            defines = defines + "\n#define IMAGE_" + tagObject + "_PIXEL_TYPE " + dataType;
 
             // image size handling
-            if (itr->second.GetDimensions()[2] > 1)
+            if (bufferObject->GetDimensions()[2] > 1)
             {
-                defines = defines + "\n#define IMAGE_SIZE_" + itr->first + "_WIDTH " + std::to_string(itr->second.GetDimensions()[0]);
-                defines = defines + "\n#define IMAGE_SIZE_" + itr->first + "_HEIGHT " + std::to_string(itr->second.GetDimensions()[1]);
-                defines = defines + "\n#define IMAGE_SIZE_" + itr->first + "_DEPTH " + std::to_string(itr->second.GetDimensions()[2]);
+                defines = defines + "\n#define IMAGE_SIZE_" + tagObject + "_WIDTH " + std::to_string(bufferObject->GetDimensions()[0]);
+                defines = defines + "\n#define IMAGE_SIZE_" + tagObject + "_HEIGHT " + std::to_string(bufferObject->GetDimensions()[1]);
+                defines = defines + "\n#define IMAGE_SIZE_" + tagObject + "_DEPTH " + std::to_string(bufferObject->GetDimensions()[2]);
             }
             else
             {
-                if (itr->second.GetDimensions()[1] > 1)
+                if (bufferObject->GetDimensions()[1] > 1)
                 {
-                    defines = defines + "\n#define IMAGE_SIZE_" + itr->first + "_WIDTH " + std::to_string(itr->second.GetDimensions()[0]);
-                    defines = defines + "\n#define IMAGE_SIZE_" + itr->first + "_HEIGHT " + std::to_string(itr->second.GetDimensions()[1]);
+                    defines = defines + "\n#define IMAGE_SIZE_" + tagObject + "_WIDTH " + std::to_string(bufferObject->GetDimensions()[0]);
+                    defines = defines + "\n#define IMAGE_SIZE_" + tagObject + "_HEIGHT " + std::to_string(bufferObject->GetDimensions()[1]);
                 }
                 else
                 {
-                    defines = defines + "\n#define IMAGE_SIZE_" + itr->first + "_WIDTH " + std::to_string(itr->second.GetDimensions()[0]);
-                    defines = defines + "\n#define IMAGE_SIZE_" + itr->first + "_HEIGHT 1";
+                    defines = defines + "\n#define IMAGE_SIZE_" + tagObject + "_WIDTH " + std::to_string(bufferObject->GetDimensions()[0]);
+                    defines = defines + "\n#define IMAGE_SIZE_" + tagObject + "_HEIGHT 1";
                 }
-                defines = defines + "\n#define IMAGE_SIZE_" + itr->first + "_DEPTH 1";
+                defines = defines + "\n#define IMAGE_SIZE_" + tagObject + "_DEPTH 1";
             }
 
             // position (dimensionality) handling
-            if (itr->second.GetDimensions()[2] == 1)
+            if (bufferObject->GetDimensions()[2] == 1)
             {
-                defines = defines + "\n#define POS_" + itr->first + "_TYPE int2";
-                if (itr->second.GetDimensions()[1] == 1) // 1D
+                defines = defines + "\n#define POS_" + tagObject + "_TYPE int2";
+                if (bufferObject->GetDimensions()[1] == 1) // 1D
                 {
-                    defines = defines + "\n#define POS_" + itr->first + "_INSTANCE(pos0,pos1,pos2,pos3) (int2)(pos0, 0)";
+                    defines = defines + "\n#define POS_" + tagObject + "_INSTANCE(pos0,pos1,pos2,pos3) (int2)(pos0, 0)";
                 }
                 else // 2D
                 {
-                    defines = defines + "\n#define POS_" + itr->first + "_INSTANCE(pos0,pos1,pos2,pos3) (int2)(pos0, pos1)";
+                    defines = defines + "\n#define POS_" + tagObject + "_INSTANCE(pos0,pos1,pos2,pos3) (int2)(pos0, pos1)";
                 }
             }
             else // 3/4D
             {
-                defines = defines + "\n#define POS_" + itr->first + "_TYPE int4";
+                defines = defines + "\n#define POS_" + tagObject + "_TYPE int4";
                 defines =
-                    defines + "\n#define POS_" + itr->first + "_INSTANCE(pos0,pos1,pos2,pos3) (int4)(pos0, pos1, pos2, 0)";
+                    defines + "\n#define POS_" + tagObject + "_INSTANCE(pos0,pos1,pos2,pos3) (int4)(pos0, pos1, pos2, 0)";
             }
 
             // read/write images
-            std::string sdim = (itr->second.GetDimensions()[2] == 1) ? "2" : "3";
-            defines = defines + "\n#define READ_" + itr->first + "_IMAGE(a,b,c) read_buffer" + sdim + "d" + abbrType +
+            std::string sdim = (bufferObject->GetDimensions()[2] == 1) ? "2" : "3";
+            defines = defines + "\n#define READ_" + tagObject + "_IMAGE(a,b,c) read_buffer" + sdim + "d" + abbrType +
                     "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
-            defines = defines + "\n#define WRITE_" + itr->first + "_IMAGE(a,b,c) write_buffer" + sdim + "d" + abbrType +
+            defines = defines + "\n#define WRITE_" + tagObject + "_IMAGE(a,b,c) write_buffer" + sdim + "d" + abbrType +
                     "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
             defines = defines + "\n";    
         } // end check if not Scalar Object
+        else
+        {
+            std::cout << "\t\t\tthis is NOT a buffer!" << std::endl;
+        }
+        
     } // end of for loop on hashmap
     return defines;
 }
@@ -157,37 +167,33 @@ std::string Kernel::TypeAbbr(const std::string type) const
 void Kernel::AddArgumentsToKernel()
 {
     cl_int clError;
-    if (objectList.size() != tagList.size())
+    if (parameterList.size() != tagList.size())
     {
         std::cerr << "Error: Invalid number of Objects and Parameters for the kernel." << std::endl;
     }
     for(auto it = tagList.begin(); it != tagList.end(); it++ )
     {
         int index = it - tagList.begin();
-        if(objectList.find(it->c_str()) != objectList.end())
+        if(parameterList.find(it->c_str()) != parameterList.end())
         {
-            Object& param = objectList.at(it->c_str());
-            clError = clSetKernelArg(this->GetKernel(), index, sizeof(param.GetData()), &(param.GetData()));
-            if (clError != CL_SUCCESS)
-            {
-                std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
-                throw clError;
+
+            std::cout << "\t\t" << it->c_str() << " is a " << parameterList.at(it->c_str()).get()->GetObjectType() << std::endl;
+
+            if (parameterList.at(it->c_str()).get()->GetObjectType().compare("cleBuffer") == 0)
+            {    
+                Buffer* param = dynamic_cast<Buffer*>(parameterList.at(it->c_str()).get());
+                clError = clSetKernelArg(this->GetKernel(), index, sizeof(param->GetData()), &(param->GetData()));
             }
-        }
-        if(floatList.size() > 0 && floatList.find(it->c_str()) != floatList.end())
-        {
-            float& param = floatList.at(it->c_str());
-            clError = clSetKernelArg(this->GetKernel(), index, sizeof(param), &(param));
-            if (clError != CL_SUCCESS)
-            {
-                std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
-                throw clError;
+            else if (parameterList.at(it->c_str()).get()->GetObjectType().compare("cleFloat") == 0)
+            {    
+                Float* param = dynamic_cast<Float*>(parameterList.at(it->c_str()).get());
+                clError = clSetKernelArg(this->GetKernel(), index, sizeof(param->GetData()), &(param->GetData()));
             }
-        }
-        if(intList.size() > 0 && intList.find(it->c_str()) != intList.end())
-        {
-            int& param = intList.at(it->c_str());
-            clError = clSetKernelArg(this->GetKernel(), index, sizeof(param), &(param));
+            else if (parameterList.at(it->c_str()).get()->GetObjectType().compare("cleInt") == 0)
+            {    
+                Int* param = dynamic_cast<Int*>(parameterList.at(it->c_str()).get());
+                clError = clSetKernelArg(this->GetKernel(), index, sizeof(param->GetData()), &(param->GetData()));
+            }
             if (clError != CL_SUCCESS)
             {
                 std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
@@ -197,38 +203,13 @@ void Kernel::AddArgumentsToKernel()
     }
 };
 
-void Kernel::AddObject(Object& o, std::string t)
+void Kernel::AddObject(LightObject& o, std::string t)
 {
     if( std::find(tagList.begin(), tagList.end(), t.c_str()) != tagList.end() &&
-        objectList.find(t.c_str()) == objectList.end() )
+        parameterList.find(t.c_str()) == parameterList.end() )
     {
-        objectList.insert({t, o});
-    }
-    else
-    {
-        std::cerr << "Error: Invalid kernel parameter tag" << std::endl;
-    }
-};
-
-void Kernel::AddFloat(float& o, std::string t)
-{
-    if( std::find(tagList.begin(), tagList.end(), t.c_str()) != tagList.end() &&
-        floatList.find(t.c_str()) == floatList.end() )
-    {
-        floatList.insert({t, o});
-    }
-    else
-    {
-        std::cerr << "Error: Invalid kernel parameter tag" << std::endl;
-    }
-};
-
-void Kernel::AddInt(int& o, std::string t)
-{
-    if( std::find(tagList.begin(), tagList.end(), t.c_str()) != tagList.end() &&
-        intList.find(t.c_str()) == intList.end() )
-    {
-        intList.insert({t, o});
+        std::unique_ptr<LightObject> obj(&o);
+        parameterList.insert(std::make_pair(t, std::move(obj)));
     }
     else
     {
@@ -238,15 +219,23 @@ void Kernel::AddInt(int& o, std::string t)
 
 void Kernel::CompileKernel()
 {
+    std::cout << "\tloadSources" << std::endl;  
     // read kernel, defines, and preamble
     std::string kernel_src = LoadSources();
+
+    std::cout << "\tLoadDefines" << std::endl;  
     std::string defines_src = LoadDefines();
+
+    std::cout << "\tLoadPreamble" << std::endl;  
     std::string preambule_src = LoadPreamble();
+
 
     // construct final source code
     std::string ocl_src = defines_src + "\n" + preambule_src + "\n" + kernel_src;
     const char *source_str = (ocl_src).c_str();
-    size_t source_size = (ocl_src).size();  
+    size_t source_size = (ocl_src).size();
+
+    std::cout << "\tcreate kernel and program" << std::endl;  
 
     // Create a program from the kernel source
     cl_int clError;
@@ -270,26 +259,36 @@ void Kernel::CompileKernel()
         std::cerr << "Program error! Fail to create kernel in maximumzprojection() : " << getOpenCLErrorString(clError) << std::endl;
         throw clError;
     }
+
+    std::cout << "kernel created" << std::endl;  
+
 }
 
 void Kernel::DefineRangeKernel()
 {
     cl_int clError;
     size_t global_item_size[3] = {0, 0, 0};
-    for (auto it = objectList.begin(); it != objectList.end(); it++)
+    for (auto itr = parameterList.begin(); itr != parameterList.end(); itr++)
     {
-        for (size_t i = 0; i < 3; i++)
-        {
-            size_t objectDim = static_cast<size_t>(it->second.GetDimensions()[i]);
-            global_item_size[i] = std::max(global_item_size[i], objectDim);
+
+        std::cout << "\t\t" << itr->first << " is a " << itr->second.get()->GetObjectType() << std::endl;
+
+        if (itr->second.get()->GetObjectType().compare("cleBuffer") == 0)
+        {    
+            Buffer* bufferObject = dynamic_cast<Buffer*>(itr->second.get());
+            for (size_t i = 0; i < 3; i++)
+            {
+                size_t objectDim = static_cast<size_t>(bufferObject->GetDimensions()[i]);
+                global_item_size[i] = std::max(global_item_size[i], objectDim);
+            }
         }
     }
     size_t work_dim = 3;
     clError = clEnqueueNDRangeKernel(this->GetCommandQueue(), this->GetKernel(), work_dim, nullptr, global_item_size, nullptr, 0, nullptr, nullptr);
     if (clError != CL_SUCCESS)
     {
-    std::cerr << "Execution error! Could not enqueue ND-Range : " << getOpenCLErrorString(clError) << std::endl;
-    throw clError;
+        std::cerr << "Execution error! Could not enqueue ND-Range : " << getOpenCLErrorString(clError) << std::endl;
+        throw clError;
     }
 }
 
