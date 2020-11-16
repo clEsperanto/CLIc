@@ -46,36 +46,6 @@ cl_mem& Buffer::GetData()
     return pointer;
 }
 
-// std::string Buffer::TypeId(std::string type)
-// {
-//     std::string res;
-//     if (type.compare("float") == 0)
-//     {
-//         res = "f";
-//     }
-//     else if (type.compare("char") == 0)
-//     {
-//         res =  "c";
-//     }
-//     else if (type.compare("uchar") == 0)
-//     {
-//         res =  "uc";
-//     }
-//     else if (type.compare("int") == 0)
-//     {
-//         res =  "i";
-//     }
-//     else if (type.compare("uint") == 0)
-//     {
-//         res =  "ui";
-//     }
-//     else
-//     {
-//         res = "f";
-//     }
-//     return res; 
-// }
-
 std::string Buffer::GetObjectType() const
 {
     return this->ObjectTypeToString(O);

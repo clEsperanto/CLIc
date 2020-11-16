@@ -17,23 +17,24 @@
 #include <CL/cl.h>
 #endif
 
-#include <string>
-#include <fstream>
+
+#include "cleLightObject.h"
+
 
 namespace cle
 {
 
-class Object
+class Object : public LightObject
 {
 public:
-    enum ObjectType {Buffer, Image2d};
-    enum DataType {Float, Char, UChar, Int, UInt, Short, UShort};
+    // enum ObjectType {Buffer, Image2d};
+    // enum DataType {Float, Char, UChar, Int, UInt, Short, UShort};
 
 protected:
-    std::string DataTypeToString(const DataType) const;
-    std::string ObjectTypeToString(const ObjectType) const;
-    DataType StringToDataType(const std::string) const;
-    friend std::ostream & operator<<(std::ostream &, const Object&);
+    // std::string ObjectTypeToString(const ObjectType) const;
+    // std::string DataTypeToString(const DataType) const;
+    // DataType StringToDataType(const std::string) const;
+    
 
 public:
     Object(){};
