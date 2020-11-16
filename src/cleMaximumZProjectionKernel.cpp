@@ -15,12 +15,12 @@ namespace cle
     
 void MaximumZProjectionKernel::SetInput(Object& x)
 {
-    objectList.insert({"src", x});
+    this->AddObject(x, "src");
 }
 
 void MaximumZProjectionKernel::SetOutput(Object& x)
 {
-    objectList.insert({"dst_max", x});
+    this->AddObject(x, "dst_max");
 }
 
 void MaximumZProjectionKernel::Execute()

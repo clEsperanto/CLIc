@@ -16,29 +16,28 @@ namespace cle
 void SmallerOrEqualConstantKernel::DefineDimensionality()
 {
     std::string dim = "_2d";
-    for (auto it = objectList.begin(); it != objectList.end(); it++)
+    Buffer* bufferObject = dynamic_cast<Buffer*>(parameterList.at("src1").get());
+    if(bufferObject->GetDimensions()[2] > 1)
     {
-        if (it->second.GetDimensions()[2] > 1)
-        {
-            dim = "_3d";
-        }
+        dim = "_3d";
     }
     kernelName = kernelName + dim;
 }
 
 void SmallerOrEqualConstantKernel::SetInput(Object& x)
 {
-    objectList.insert({"src1", x});
+    this->AddObject(x, "src1");
 }
 
 void SmallerOrEqualConstantKernel::SetOutput(Object& x)
 {
-    objectList.insert({"dst", x});
+    this->AddObject(x, "dst");
 }
 
 void SmallerOrEqualConstantKernel::SetConstant(float& x)
 {
-    floatList.insert({"scalar", x});
+    Float val(x);
+    this->AddObject(val, "scalar");
 }
 
 void SmallerOrEqualConstantKernel::Execute()
