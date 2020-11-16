@@ -31,7 +31,7 @@ protected:
 
 public:
     Scalar() = default;
-    ~Scalar() = default;
+    virtual ~Scalar() = default;
 
     virtual std::string GetObjectType() const = 0;
     virtual std::string ToString() const = 0;

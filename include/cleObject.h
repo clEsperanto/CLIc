@@ -38,7 +38,7 @@ protected:
 
 public:
     Object() = default;
-    ~Object() = default;
+    virtual ~Object() = default;
 
     virtual cl_mem& GetData() = 0;
     virtual unsigned int* GetDimensions() = 0;

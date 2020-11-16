@@ -25,7 +25,7 @@ protected:
 public:
 
     LightObject(){};
-    ~LightObject() = default;
+    virtual ~LightObject() = default;
     virtual std::string ToString() const = 0;
     virtual std::string GetObjectType() const = 0;
 
