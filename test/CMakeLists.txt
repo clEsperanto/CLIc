@@ -14,10 +14,10 @@ add_executable(pull_functions_test pull_functions_test.cpp)
 add_dependencies(pull_functions_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(pull_functions_test CLIc)
 
-# # add_image_and_scalar_test
-# add_executable(add_image_and_scalar_test add_image_and_scalar_test.cpp)
-# add_dependencies(add_image_and_scalar_test CLIc) # wait for CLIc to be compiled
-# target_link_libraries(add_image_and_scalar_test CLIc)
+# add_image_and_scalar_test
+add_executable(add_image_and_scalar_test add_image_and_scalar_test.cpp)
+add_dependencies(add_image_and_scalar_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(add_image_and_scalar_test CLIc)
 
 # # maximum_z_projection_test
 # add_executable(maximum_z_projection_test maximum_z_projection_test.cpp)
@@ -53,7 +53,7 @@ target_link_libraries(absolute_test CLIc)
 add_test(NAME push_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/push_functions_test)
 add_test(NAME create_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/create_functions_test)
 add_test(NAME pull_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/pull_functions_test)
-# add_test(NAME add_image_and_scalar_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/add_image_and_scalar_test)
+add_test(NAME add_image_and_scalar_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/add_image_and_scalar_test)
 # add_test(NAME maximum_z_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_z_projection_test)
 # add_test(NAME maximum_y_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_y_projection_test)
 # add_test(NAME maximum_x_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_x_projection_test)

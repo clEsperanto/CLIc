@@ -39,8 +39,6 @@ int main(int argc, char **argv)
     cle::Buffer gpuInput = cle.Push<float>(input_img);
     cle::Buffer gpuOutput = cle.Create<float>(input_img);
 
-    std::cout << "starting execution" << std::endl;
-
     // Call kernel
     cle.AddImageAndScalar(gpuInput, gpuOutput, scalar);  
 
