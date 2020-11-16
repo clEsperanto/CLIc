@@ -10,9 +10,8 @@ set(SOURCES
 	
 	${source_path}/cleLightObject.cpp
 	${source_path}/cleBuffer.cpp
-
-	# ${source_path}/cleFloat.cpp
-	# ${source_path}/cleInt.cpp
+	${source_path}/cleFloat.cpp
+	${source_path}/cleInt.cpp
 
 	# API utilities
 	${source_path}/tiffreader.cpp

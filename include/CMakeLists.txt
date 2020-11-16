@@ -12,8 +12,8 @@ set(HEADERS
     ${header_path}/cleObject.h
     ${header_path}/cleScalar.h
     ${header_path}/cleBuffer.h
-    # ${header_path}/cleFloat.h
-    # ${header_path}/cleInt.h
+    ${header_path}/cleFloat.h
+    ${header_path}/cleInt.h
 
     # API utilities
     ${header_path}/tiffreader.h
