@@ -32,10 +32,6 @@ Buffer::Buffer(cl_mem _ptr, unsigned int* _dimensions, std::string _type)
     }    
 }
 
-Buffer::~Buffer()
-{
-}
-
 unsigned int* Buffer::GetDimensions()
 {
     return dimensions.data();

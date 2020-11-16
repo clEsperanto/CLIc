@@ -8,10 +8,10 @@
 */
 
 
-#ifndef __cleScalar_h
-#define __cleScalar_h
+#ifndef __cleInt_h
+#define __cleInt_h
 
-#include "cleLightObject.h"
+#include "cleScalar.h"
 
 #include <string>
 #include <fstream>
@@ -19,24 +19,27 @@
 namespace cle
 {
 
-class Scalar : public LightObject
+class Int : public Scalar
 {
 private:
-    // static const ObjectType O = ObjectType::Scalar;
-    // static const DataType T = DataType::Float;
-    // T value; 
+    static const ObjectType O = ObjectType::cleInt;
+    static const DataType T = DataType::Int;
+    int value; 
 
 protected:
     
 
 public:
-    Scalar() = default;
-    ~Scalar() = default;
+    Int() = default; 
+    Int(int);
+    ~Int() = default;
 
-    virtual std::string GetObjectType() const = 0;
-    virtual std::string ToString() const = 0;
+    int& GetData();
+    std::string GetDataType() const;
+    std::string GetObjectType() const;
+    std::string ToString() const;
 };
 
 } // namespace cle
 
-#endif // __cleScalar_h
+#endif // __cleInt_h
