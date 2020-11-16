@@ -7,9 +7,13 @@ set(SOURCES
 	${source_path}/CLE.cpp
 	${source_path}/cleGPU.cpp
 	${source_path}/cleKernel.cpp
-	${source_path}/cleObject.cpp
-	${source_path}/cleBuffer.cpp
 	
+	${source_path}/cleLightObject.cpp
+	${source_path}/cleBuffer.cpp
+
+	# ${source_path}/cleFloat.cpp
+	# ${source_path}/cleInt.cpp
+
 	# API utilities
 	${source_path}/tiffreader.cpp
 	${source_path}/tiffwriter.cpp
