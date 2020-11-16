@@ -8,10 +8,11 @@ std::string LightObject::ObjectTypeToString(const ObjectType o) const
 {
     switch (o)
     {
-        case Buffer:  return "Buffer";
-        case Image2d: return "Image2d";
-        case Scalar:  return "Scalar";
-        default:      return "Unknown";
+        case cleBuffer:  return "cleBuffer";
+        // case cleImage2d: return "cleImage2d";
+        case cleFloat:   return "cleFloat";
+        case cleInt:     return "cleInt";
+        default:         return "Unknown";
     }
 }
 
