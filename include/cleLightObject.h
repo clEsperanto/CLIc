@@ -12,7 +12,7 @@ class LightObject
 {
 
 public:
-    enum ObjectType {Buffer, Image2d, Scalar}; 
+    enum ObjectType {cleBuffer, cleFloat, cleInt}; 
     enum DataType {Float, Char, UChar, Int, UInt, Short, UShort};
 
 protected:
@@ -25,8 +25,9 @@ protected:
 public:
 
     LightObject(){};
-    ~LightObject(){};
+    ~LightObject() = default;
     virtual std::string ToString() const = 0;
+    virtual std::string GetObjectType() const = 0;
 
 };
 
