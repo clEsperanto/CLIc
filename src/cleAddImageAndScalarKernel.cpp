@@ -16,7 +16,7 @@ namespace cle
 void AddImageAndScalarKernel::DefineDimensionality()
 {
     std::string dim = "_2d";
-    Buffer* bufferObject = dynamic_cast<Buffer*>(parameterList.at("src").get());
+    Buffer* bufferObject = dynamic_cast<Buffer*>(parameterList.at("src"));
     if(bufferObject->GetDimensions()[2] > 1)
     {
         dim = "_3d";
