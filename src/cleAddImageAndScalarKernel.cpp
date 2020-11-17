@@ -38,10 +38,7 @@ void AddImageAndScalarKernel::SetOutput(Object& x)
 
 void AddImageAndScalarKernel::SetScalar(float& x)
 {
-    std::cout << x << std::endl;
     Float val(x);
-
-    std::cout << val.GetData() << std::endl;
     this->AddObject(val, "scalar");
 }
 
