@@ -64,15 +64,10 @@ std::string Kernel::LoadDefines()
 
     for (auto itr = parameterList.begin(); itr != parameterList.end(); ++itr)
     {
-        std::cout << "\t\ttest" << std::endl;
-        std::cout << "\t\t" << itr->first;
-        std::cout << " is a " << itr->second->GetObjectType() << std::endl;
         if (itr->second->IsObject("cleBuffer"))
         {    
-            std::cout << "\t\t\tthis is a buffer!" << std::endl;
             Buffer* bufferObject = dynamic_cast<Buffer*>(itr->second);
             std::string tagObject = itr->first;
-
 
             std::string objectType = bufferObject->GetObjectType();
             std::string dataType = bufferObject->GetDataType();
@@ -133,11 +128,6 @@ std::string Kernel::LoadDefines()
                     "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
             defines = defines + "\n";    
         } // end check if not Scalar Object
-        else
-        {
-            std::cout << "\t\t\tthis is NOT a buffer!" << std::endl;
-        }
-
     } // end of for loop on hashmap
     return defines;
 }
@@ -179,23 +169,20 @@ void Kernel::AddArgumentsToKernel()
         int index = it - tagList.begin();
         if(parameterList.find(it->c_str()) != parameterList.end())
         {
-
-            std::cout << "\t\t" << it->c_str() ;
-            std::cout << " is a " << parameterList.at(it->c_str())->GetObjectType() << std::endl;
-
-            if (parameterList.at(it->c_str())->IsObject("cleBuffer"))
+            std::string tag = it->c_str();
+            if (parameterList.at(tag)->IsObject("cleBuffer"))
             {    
-                Buffer* param = dynamic_cast<Buffer*>(parameterList.at(it->c_str()));
+                Buffer* param = dynamic_cast<Buffer*>(parameterList.at(tag));
                 clError = clSetKernelArg(this->GetKernel(), index, sizeof(param->GetData()), &(param->GetData()));
             }
-            else if (parameterList.at(it->c_str())->IsObject("cleFloat"))
+            else if (parameterList.at(tag)->IsObject("cleFloat"))
             {    
-                Float* param = dynamic_cast<Float*>(parameterList.at(it->c_str()));
+                Float* param = dynamic_cast<Float*>(parameterList.at(tag));
                 clError = clSetKernelArg(this->GetKernel(), index, sizeof(param->GetData()), &(param->GetData()));
             }
-            else if (parameterList.at(it->c_str())->IsObject("cleInt"))
+            else if (parameterList.at(tag)->IsObject("cleInt"))
             {    
-                Int* param = dynamic_cast<Int*>(parameterList.at(it->c_str()));
+                Int* param = dynamic_cast<Int*>(parameterList.at(tag));
                 clError = clSetKernelArg(this->GetKernel(), index, sizeof(param->GetData()), &(param->GetData()));
             }
             if (clError != CL_SUCCESS)
@@ -222,14 +209,9 @@ void Kernel::AddObject(LightObject* o, std::string t)
 
 void Kernel::CompileKernel()
 {
-    std::cout << "\tloadSources" << std::endl;  
     // read kernel, defines, and preamble
     std::string kernel_src = LoadSources();
-
-    std::cout << "\tLoadDefines" << std::endl;  
     std::string defines_src = LoadDefines();
-
-    std::cout << "\tLoadPreamble" << std::endl;  
     std::string preambule_src = LoadPreamble();
 
 
@@ -237,8 +219,6 @@ void Kernel::CompileKernel()
     std::string ocl_src = defines_src + "\n" + preambule_src + "\n" + kernel_src;
     const char *source_str = (ocl_src).c_str();
     size_t source_size = (ocl_src).size();
-
-    std::cout << "\tcreate kernel and program" << std::endl;  
 
     // Create a program from the kernel source
     cl_int clError;
@@ -262,9 +242,6 @@ void Kernel::CompileKernel()
         std::cerr << "Program error! Fail to create kernel in maximumzprojection() : " << getOpenCLErrorString(clError) << std::endl;
         throw clError;
     }
-
-    std::cout << "kernel created" << std::endl;  
-
 }
 
 void Kernel::DefineRangeKernel()
@@ -273,10 +250,7 @@ void Kernel::DefineRangeKernel()
     size_t global_item_size[3] = {0, 0, 0};
     for (auto itr = parameterList.begin(); itr != parameterList.end(); itr++)
     {
-
-        std::cout << "\t\t" << itr->first << " is a " << itr->second->GetObjectType() << std::endl;
-
-        if (itr->second->GetObjectType().compare("cleBuffer") == 0)
+        if (itr->second->IsObject("cleBuffer"))
         {    
             Buffer* bufferObject = dynamic_cast<Buffer*>(itr->second);
             for (size_t i = 0; i < 3; i++)

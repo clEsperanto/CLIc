@@ -54,11 +54,6 @@ std::string Buffer::GetDataType() const
 
 std::string Buffer::ToString() const
 {
-    // std::string typ = ", dtype=" + typeId + "(" + type + ")";
-    // std::string dim = "size=[" + std::to_string(dimensions[0]) + "," 
-    //                            + std::to_string(dimensions[1]) + "," 
-    //                            + std::to_string(dimensions[2]) + "]"; 
-    // return "clBuffer<" + dim + typ + ">";
     return "";
 }
 

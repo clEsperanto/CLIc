@@ -24,7 +24,7 @@ class Float : public Scalar
 private:
     static const ObjectType O = ObjectType::cleFloat;
     static const DataType T = DataType::Float;
-    float value; 
+    float value = 0; 
 
 protected:
     
@@ -38,7 +38,6 @@ public:
     std::string GetObjectType() const;
     std::string ToString() const;
     bool IsObject(std::string) const;
-
 };
 
 } // namespace cle

@@ -43,8 +43,6 @@ public:
 
 };
 
-
-
 } // namespace cle
 
 #endif // __cleBuffer_h

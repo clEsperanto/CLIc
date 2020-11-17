@@ -58,8 +58,7 @@ protected:
 
     std::vector<std::string> tagList;
     std::map<std::string, LightObject* > parameterList;
-    // std::map<std::string, float&> floatList;
-    // std::map<std::string, int&> intList;
+    void AddObject(LightObject*, std::string);
 
     std::string TypeAbbr(const std::string) const;
     std::string LoadPreamble();
@@ -75,10 +74,6 @@ public:
 
     virtual void Execute() = 0;
     
-    void AddObject(LightObject*, std::string);
-    // void AddFloat(float&, std::string);
-    // void AddInt(int&, std::string);
-
     void CompileKernel();
 
     std::string GetKernelName();
