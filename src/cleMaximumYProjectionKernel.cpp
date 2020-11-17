@@ -15,12 +15,12 @@ namespace cle
     
 void MaximumYProjectionKernel::SetInput(Object& x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(&x, "src");
 }
 
 void MaximumYProjectionKernel::SetOutput(Object& x)
 {
-    this->AddObject(x, "dst_max");
+    this->AddObject(&x, "dst_max");
 }
 
 void MaximumYProjectionKernel::Execute()

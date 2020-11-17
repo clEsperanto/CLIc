@@ -75,7 +75,7 @@ public:
 
     virtual void Execute() = 0;
     
-    void AddObject(LightObject&, std::string);
+    void AddObject(LightObject*, std::string);
     // void AddFloat(float&, std::string);
     // void AddInt(int&, std::string);
 

@@ -1,5 +1,10 @@
 
 # core_functions_test
+add_executable(data_test data_test.cpp)
+add_dependencies(data_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(data_test CLIc)
+
+# core_functions_test
 add_executable(push_functions_test push_functions_test.cpp)
 add_dependencies(push_functions_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(push_functions_test CLIc)
@@ -50,6 +55,8 @@ add_dependencies(absolute_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(absolute_test CLIc)
 
 # tests
+add_test(NAME data_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/data_test)
+
 add_test(NAME push_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/push_functions_test)
 add_test(NAME create_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/create_functions_test)
 add_test(NAME pull_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/pull_functions_test)

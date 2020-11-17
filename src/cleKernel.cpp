@@ -180,7 +180,8 @@ void Kernel::AddArgumentsToKernel()
         if(parameterList.find(it->c_str()) != parameterList.end())
         {
 
-            std::cout << "\t\t" << it->c_str() << " is a " << parameterList.at(it->c_str())->GetObjectType() << std::endl;
+            std::cout << "\t\t" << it->c_str() ;
+            std::cout << " is a " << parameterList.at(it->c_str())->GetObjectType() << std::endl;
 
             if (parameterList.at(it->c_str())->IsObject("cleBuffer"))
             {    
@@ -206,12 +207,12 @@ void Kernel::AddArgumentsToKernel()
     }
 };
 
-void Kernel::AddObject(LightObject& o, std::string t)
+void Kernel::AddObject(LightObject* o, std::string t)
 {
     if( std::find(tagList.begin(), tagList.end(), t.c_str()) != tagList.end() &&
         parameterList.find(t.c_str()) == parameterList.end() )
     {
-        parameterList.insert(std::make_pair(t, &o));
+        parameterList.insert(std::make_pair(t, o));
     }
     else
     {

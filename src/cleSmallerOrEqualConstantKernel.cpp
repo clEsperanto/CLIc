@@ -26,18 +26,18 @@ void SmallerOrEqualConstantKernel::DefineDimensionality()
 
 void SmallerOrEqualConstantKernel::SetInput(Object& x)
 {
-    this->AddObject(x, "src1");
+    this->AddObject(&x, "src1");
 }
 
 void SmallerOrEqualConstantKernel::SetOutput(Object& x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(&x, "dst");
 }
 
 void SmallerOrEqualConstantKernel::SetConstant(float& x)
 {
     Float val(x);
-    this->AddObject(val, "scalar");
+    this->AddObject(&val, "scalar");
 }
 
 void SmallerOrEqualConstantKernel::Execute()

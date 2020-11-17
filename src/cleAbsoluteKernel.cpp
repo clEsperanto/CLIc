@@ -26,18 +26,27 @@ void AbsoluteKernel::DefineDimensionality()
 
 void AbsoluteKernel::SetInput(Object& x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(&x, "src");
 }
 
 void AbsoluteKernel::SetOutput(Object& x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(&x, "dst");
 }
 
     
 void AbsoluteKernel::Execute()
 {
     std::cout << "start absolute kernel exe ... "<< std::endl;
+
+        std::cout << "number of parameters : " << this->parameterList.size() << "/" << this->tagList.size() << std::endl;
+    for (auto itr = parameterList.begin(); itr != parameterList.end(); ++itr)
+    {
+        std::cout << itr->first;
+        std::cout << "(" << itr->second->GetObjectType() << ")";
+        std::cout <<" / ";
+    }
+    std::cout << std::endl;
 
     std::cout << "DefineDimensionality ... "<< std::endl;
     DefineDimensionality();

@@ -19,23 +19,25 @@ void Mean2DSphereKernel::ComputeKernelSize()
 
 void Mean2DSphereKernel::SetInput(Object& x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(&x, "src");
 }
 
 void Mean2DSphereKernel::SetOutput(Object& x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(&x, "dst");
 }
 
 void Mean2DSphereKernel::SetRadiusX(int& x)
 {
     Int val(x * 2 + 1);
-    this->AddObject(val, "radius_x");}
+    this->AddObject(&val, "radius_x");
+}
 
 void Mean2DSphereKernel::SetRadiusY(int& x)
 {
     Int val(x * 2 + 1);
-    this->AddObject(val, "radius_y");}
+    this->AddObject(&val, "radius_y");
+}
 
 void Mean2DSphereKernel::Execute()
 {

@@ -18,12 +18,12 @@ namespace cle
     
 void MaximumOfAllPixelsKernel::SetInput(Object& x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(&x, "src");
 }
 
 void MaximumOfAllPixelsKernel::SetOutput(Object& x)
 {
-    this->AddObject(x, "dst_max");
+    this->AddObject(&x, "dst_max");
 }
 
 void MaximumOfAllPixelsKernel::Execute()
