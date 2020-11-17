@@ -22,8 +22,6 @@ void AddImageAndScalarKernel::DefineDimensionality()
         dim = "_3d";
     }
     kernelName = kernelName + dim;
-    std::cout << "kernel name : " << kernelName << std::endl;
-
 }
 
 void AddImageAndScalarKernel::SetInput(Object& x)
@@ -36,26 +34,14 @@ void AddImageAndScalarKernel::SetOutput(Object& x)
     this->AddObject(&x, "dst");
 }
 
-void AddImageAndScalarKernel::SetScalar(float& x)
+void AddImageAndScalarKernel::SetScalar(float x)
 {
-    Float val(x);
-    LightObject* obj = dynamic_cast<LightObject*>(&val);
-    this->AddObject(obj, "scalar");
+    Float* val = new Float(x);
+    this->AddObject(val, "scalar");
 }
 
 void AddImageAndScalarKernel::Execute()
 {
-    std::cout << "Execution kernel" << std::endl;
-
-    std::cout << "number of parameters : " << this->parameterList.size() << "/" << this->tagList.size() << std::endl;
-    for (auto itr = parameterList.begin(); itr != parameterList.end(); ++itr)
-    {
-        std::cout << itr->first;
-        std::cout << "(" << itr->second->GetObjectType() << ")";
-        std::cout <<" / ";
-    }
-    std::cout << std::endl;
-
     DefineDimensionality();
     CompileKernel();
     AddArgumentsToKernel();

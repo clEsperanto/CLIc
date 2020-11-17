@@ -27,16 +27,16 @@ void Mean2DSphereKernel::SetOutput(Object& x)
     this->AddObject(&x, "dst");
 }
 
-void Mean2DSphereKernel::SetRadiusX(int& x)
+void Mean2DSphereKernel::SetRadiusX(int x)
 {
-    Int val(x * 2 + 1);
-    this->AddObject(&val, "radius_x");
+    Int* val = new Int(x * 2 + 1);
+    this->AddObject(val, "radius_x");
 }
 
-void Mean2DSphereKernel::SetRadiusY(int& x)
+void Mean2DSphereKernel::SetRadiusY(int x)
 {
-    Int val(x * 2 + 1);
-    this->AddObject(&val, "radius_y");
+    Int* val = new Int(x * 2 + 1);
+    this->AddObject(val, "radius_y");
 }
 
 void Mean2DSphereKernel::Execute()

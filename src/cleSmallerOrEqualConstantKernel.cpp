@@ -34,10 +34,10 @@ void SmallerOrEqualConstantKernel::SetOutput(Object& x)
     this->AddObject(&x, "dst");
 }
 
-void SmallerOrEqualConstantKernel::SetConstant(float& x)
+void SmallerOrEqualConstantKernel::SetConstant(float x)
 {
-    Float val(x);
-    this->AddObject(&val, "scalar");
+    Float* val = new Float(x);
+    this->AddObject(val, "scalar");
 }
 
 void SmallerOrEqualConstantKernel::Execute()

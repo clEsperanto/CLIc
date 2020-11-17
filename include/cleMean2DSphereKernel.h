@@ -30,8 +30,8 @@ public:
 
     void SetInput(Object&);
     void SetOutput(Object&);
-    void SetRadiusX(int&);
-    void SetRadiusY(int&);
+    void SetRadiusX(int);
+    void SetRadiusY(int);
     void Execute();
 
     ~Mean2DSphereKernel() = default;
