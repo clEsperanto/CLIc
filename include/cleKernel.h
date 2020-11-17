@@ -57,7 +57,7 @@ protected:
     std::string kernelName;
 
     std::vector<std::string> tagList;
-    std::map<std::string, std::unique_ptr<LightObject> > parameterList;
+    std::map<std::string, LightObject* > parameterList;
     // std::map<std::string, float&> floatList;
     // std::map<std::string, int&> intList;
 

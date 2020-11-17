@@ -64,11 +64,11 @@ std::string Kernel::LoadDefines()
 
     for (auto itr = parameterList.begin(); itr != parameterList.end(); ++itr)
     {
-        std::cout << "\t\t" << itr->first << " is a " << itr->second.get()->GetObjectType() << std::endl;
-        if (itr->second.get()->GetObjectType().compare("cleBuffer") == 0)
+        std::cout << "\t\t" << itr->first << " is a " << itr->second->GetObjectType() << std::endl;
+        if (itr->second->GetObjectType().compare("cleBuffer") == 0)
         {    
             std::cout << "\t\t\tthis is a buffer!" << std::endl;
-            Buffer* bufferObject = dynamic_cast<Buffer*>(itr->second.get());
+            Buffer* bufferObject = dynamic_cast<Buffer*>(itr->second);
             std::string tagObject = itr->first;
 
             std::string objectType = bufferObject->GetObjectType();
@@ -177,21 +177,21 @@ void Kernel::AddArgumentsToKernel()
         if(parameterList.find(it->c_str()) != parameterList.end())
         {
 
-            std::cout << "\t\t" << it->c_str() << " is a " << parameterList.at(it->c_str()).get()->GetObjectType() << std::endl;
+            std::cout << "\t\t" << it->c_str() << " is a " << parameterList.at(it->c_str())->GetObjectType() << std::endl;
 
-            if (parameterList.at(it->c_str()).get()->GetObjectType().compare("cleBuffer") == 0)
+            if (parameterList.at(it->c_str())->GetObjectType().compare("cleBuffer") == 0)
             {    
-                Buffer* param = dynamic_cast<Buffer*>(parameterList.at(it->c_str()).get());
+                Buffer* param = dynamic_cast<Buffer*>(parameterList.at(it->c_str()));
                 clError = clSetKernelArg(this->GetKernel(), index, sizeof(param->GetData()), &(param->GetData()));
             }
-            else if (parameterList.at(it->c_str()).get()->GetObjectType().compare("cleFloat") == 0)
+            else if (parameterList.at(it->c_str())->GetObjectType().compare("cleFloat") == 0)
             {    
-                Float* param = dynamic_cast<Float*>(parameterList.at(it->c_str()).get());
+                Float* param = dynamic_cast<Float*>(parameterList.at(it->c_str()));
                 clError = clSetKernelArg(this->GetKernel(), index, sizeof(param->GetData()), &(param->GetData()));
             }
-            else if (parameterList.at(it->c_str()).get()->GetObjectType().compare("cleInt") == 0)
+            else if (parameterList.at(it->c_str())->GetObjectType().compare("cleInt") == 0)
             {    
-                Int* param = dynamic_cast<Int*>(parameterList.at(it->c_str()).get());
+                Int* param = dynamic_cast<Int*>(parameterList.at(it->c_str()));
                 clError = clSetKernelArg(this->GetKernel(), index, sizeof(param->GetData()), &(param->GetData()));
             }
             if (clError != CL_SUCCESS)
@@ -208,8 +208,7 @@ void Kernel::AddObject(LightObject& o, std::string t)
     if( std::find(tagList.begin(), tagList.end(), t.c_str()) != tagList.end() &&
         parameterList.find(t.c_str()) == parameterList.end() )
     {
-        std::unique_ptr<LightObject> obj(&o);
-        parameterList.insert(std::make_pair(t, std::move(obj)));
+        parameterList.insert(std::make_pair(t, &o));
     }
     else
     {
@@ -271,11 +270,11 @@ void Kernel::DefineRangeKernel()
     for (auto itr = parameterList.begin(); itr != parameterList.end(); itr++)
     {
 
-        std::cout << "\t\t" << itr->first << " is a " << itr->second.get()->GetObjectType() << std::endl;
+        std::cout << "\t\t" << itr->first << " is a " << itr->second->GetObjectType() << std::endl;
 
-        if (itr->second.get()->GetObjectType().compare("cleBuffer") == 0)
+        if (itr->second->GetObjectType().compare("cleBuffer") == 0)
         {    
-            Buffer* bufferObject = dynamic_cast<Buffer*>(itr->second.get());
+            Buffer* bufferObject = dynamic_cast<Buffer*>(itr->second);
             for (size_t i = 0; i < 3; i++)
             {
                 size_t objectDim = static_cast<size_t>(bufferObject->GetDimensions()[i]);
