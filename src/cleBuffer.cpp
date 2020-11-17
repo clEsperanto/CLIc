@@ -62,5 +62,10 @@ std::string Buffer::ToString() const
     return "";
 }
 
+bool Buffer::IsObject(std::string str) const
+{
+    return this->GetObjectType() == str;
+}
+
 } // namespace cle
 

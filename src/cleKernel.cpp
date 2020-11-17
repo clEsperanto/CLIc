@@ -64,12 +64,15 @@ std::string Kernel::LoadDefines()
 
     for (auto itr = parameterList.begin(); itr != parameterList.end(); ++itr)
     {
-        std::cout << "\t\t" << itr->first << " is a " << itr->second->GetObjectType() << std::endl;
-        if (itr->second->GetObjectType().compare("cleBuffer") == 0)
+        std::cout << "\t\ttest" << std::endl;
+        std::cout << "\t\t" << itr->first;
+        std::cout << " is a " << itr->second->GetObjectType() << std::endl;
+        if (itr->second->IsObject("cleBuffer"))
         {    
             std::cout << "\t\t\tthis is a buffer!" << std::endl;
             Buffer* bufferObject = dynamic_cast<Buffer*>(itr->second);
             std::string tagObject = itr->first;
+
 
             std::string objectType = bufferObject->GetObjectType();
             std::string dataType = bufferObject->GetDataType();
@@ -134,7 +137,7 @@ std::string Kernel::LoadDefines()
         {
             std::cout << "\t\t\tthis is NOT a buffer!" << std::endl;
         }
-        
+
     } // end of for loop on hashmap
     return defines;
 }
@@ -179,17 +182,17 @@ void Kernel::AddArgumentsToKernel()
 
             std::cout << "\t\t" << it->c_str() << " is a " << parameterList.at(it->c_str())->GetObjectType() << std::endl;
 
-            if (parameterList.at(it->c_str())->GetObjectType().compare("cleBuffer") == 0)
+            if (parameterList.at(it->c_str())->IsObject("cleBuffer"))
             {    
                 Buffer* param = dynamic_cast<Buffer*>(parameterList.at(it->c_str()));
                 clError = clSetKernelArg(this->GetKernel(), index, sizeof(param->GetData()), &(param->GetData()));
             }
-            else if (parameterList.at(it->c_str())->GetObjectType().compare("cleFloat") == 0)
+            else if (parameterList.at(it->c_str())->IsObject("cleFloat"))
             {    
                 Float* param = dynamic_cast<Float*>(parameterList.at(it->c_str()));
                 clError = clSetKernelArg(this->GetKernel(), index, sizeof(param->GetData()), &(param->GetData()));
             }
-            else if (parameterList.at(it->c_str())->GetObjectType().compare("cleInt") == 0)
+            else if (parameterList.at(it->c_str())->IsObject("cleInt"))
             {    
                 Int* param = dynamic_cast<Int*>(parameterList.at(it->c_str()));
                 clError = clSetKernelArg(this->GetKernel(), index, sizeof(param->GetData()), &(param->GetData()));

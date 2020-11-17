@@ -36,6 +36,11 @@ std::string Int::ToString() const
         return "";
 }
 
+bool Int::IsObject(std::string str) const
+{
+    return this->GetObjectType() == str;
+}
+
 
 } // namespace cle
 

@@ -36,6 +36,10 @@ std::string Float::ToString() const
     return "";
 }
 
+bool Float::IsObject(std::string str) const
+{
+    return this->GetObjectType() == str;
+}
 
 } // namespace cle
 

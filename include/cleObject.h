@@ -45,6 +45,8 @@ public:
     virtual std::string GetDataType() const = 0;
     virtual std::string GetObjectType() const = 0;
     virtual std::string ToString() const = 0;
+    virtual bool IsObject(std::string) const = 0;
+
 };
 
 } // namespace cle
