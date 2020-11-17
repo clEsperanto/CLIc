@@ -17,33 +17,36 @@
 #include <CL/cl.h>
 #endif
 
-#include <string>
-#include <fstream>
+
+#include "cleLightObject.h"
+
 
 namespace cle
 {
 
-class Object
+class Object : public LightObject
 {
 public:
-    enum ObjectType {Buffer, Image2d};
-    enum DataType {Float, Char, UChar, Int, UInt, Short, UShort};
+    // enum ObjectType {Buffer, Image2d};
+    // enum DataType {Float, Char, UChar, Int, UInt, Short, UShort};
 
 protected:
-    std::string DataTypeToString(const DataType) const;
-    std::string ObjectTypeToString(const ObjectType) const;
-    DataType StringToDataType(const std::string) const;
-    friend std::ostream & operator<<(std::ostream &, const Object&);
+    // std::string ObjectTypeToString(const ObjectType) const;
+    // std::string DataTypeToString(const DataType) const;
+    // DataType StringToDataType(const std::string) const;
+    
 
 public:
-    Object(){};
-    ~Object(){};
+    Object() = default;
+    virtual ~Object() = default;
 
     virtual cl_mem& GetData() = 0;
     virtual unsigned int* GetDimensions() = 0;
     virtual std::string GetDataType() const = 0;
     virtual std::string GetObjectType() const = 0;
     virtual std::string ToString() const = 0;
+    virtual bool IsObject(std::string) const = 0;
+
 };
 
 } // namespace cle

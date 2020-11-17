@@ -32,7 +32,7 @@ public:
 
     void SetInput(Object&);
     void SetOutput(Object&);
-    void SetConstant(float&);
+    void SetConstant(float);
 
     ~SmallerOrEqualConstantKernel() = default;
 

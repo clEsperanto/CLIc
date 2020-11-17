@@ -32,10 +32,6 @@ Buffer::Buffer(cl_mem _ptr, unsigned int* _dimensions, std::string _type)
     }    
 }
 
-Buffer::~Buffer()
-{
-}
-
 unsigned int* Buffer::GetDimensions()
 {
     return dimensions.data();
@@ -45,36 +41,6 @@ cl_mem& Buffer::GetData()
 {
     return pointer;
 }
-
-// std::string Buffer::TypeId(std::string type)
-// {
-//     std::string res;
-//     if (type.compare("float") == 0)
-//     {
-//         res = "f";
-//     }
-//     else if (type.compare("char") == 0)
-//     {
-//         res =  "c";
-//     }
-//     else if (type.compare("uchar") == 0)
-//     {
-//         res =  "uc";
-//     }
-//     else if (type.compare("int") == 0)
-//     {
-//         res =  "i";
-//     }
-//     else if (type.compare("uint") == 0)
-//     {
-//         res =  "ui";
-//     }
-//     else
-//     {
-//         res = "f";
-//     }
-//     return res; 
-// }
 
 std::string Buffer::GetObjectType() const
 {
@@ -88,12 +54,12 @@ std::string Buffer::GetDataType() const
 
 std::string Buffer::ToString() const
 {
-    // std::string typ = ", dtype=" + typeId + "(" + type + ")";
-    // std::string dim = "size=[" + std::to_string(dimensions[0]) + "," 
-    //                            + std::to_string(dimensions[1]) + "," 
-    //                            + std::to_string(dimensions[2]) + "]"; 
-    // return "clBuffer<" + dim + typ + ">";
     return "";
+}
+
+bool Buffer::IsObject(std::string str) const
+{
+    return this->GetObjectType() == str;
 }
 
 } // namespace cle

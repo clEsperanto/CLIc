@@ -16,29 +16,28 @@ namespace cle
 void AddImageAndScalarKernel::DefineDimensionality()
 {
     std::string dim = "_2d";
-    for (auto it = objectList.begin(); it != objectList.end(); it++)
+    Buffer* bufferObject = dynamic_cast<Buffer*>(parameterList.at("src"));
+    if(bufferObject->GetDimensions()[2] > 1)
     {
-        if (it->second.GetDimensions()[2] > 1)
-        {
-            dim = "_3d";
-        }
+        dim = "_3d";
     }
     kernelName = kernelName + dim;
 }
 
 void AddImageAndScalarKernel::SetInput(Object& x)
 {
-    objectList.insert({"src", x});
+    this->AddObject(&x, "src");
 }
 
 void AddImageAndScalarKernel::SetOutput(Object& x)
 {
-    objectList.insert({"dst", x});
+    this->AddObject(&x, "dst");
 }
 
-void AddImageAndScalarKernel::SetScalar(float& x)
+void AddImageAndScalarKernel::SetScalar(float x)
 {
-    floatList.insert({"scalar", x});
+    Float* val = new Float(x);
+    this->AddObject(val, "scalar");
 }
 
 void AddImageAndScalarKernel::Execute()

@@ -8,26 +8,38 @@
 */
 
 
-#include "cleMaximumXProjectionKernel.h"
+
+#include "cleFloat.h"
+
+#include <string>
 
 namespace cle
 {
-    
-void MaximumXProjectionKernel::SetInput(Object& x)
+
+Float::Float(float v)
 {
-    this->AddObject(&x, "src");
+    value = v;
 }
 
-void MaximumXProjectionKernel::SetOutput(Object& x)
+float& Float::GetData()
 {
-    this->AddObject(&x, "dst_max");
+    return value;
 }
 
-void MaximumXProjectionKernel::Execute()
+std::string Float::GetObjectType() const
 {
-    CompileKernel();
-    AddArgumentsToKernel();
-    DefineRangeKernel();
+    return this->ObjectTypeToString(O);
+}
+
+std::string Float::ToString() const
+{
+    return "";
+}
+
+bool Float::IsObject(std::string str) const
+{
+    return this->GetObjectType() == str;
 }
 
 } // namespace cle
+

@@ -8,41 +8,39 @@
 */
 
 
-#ifndef __cleBuffer_h
-#define __cleBuffer_h
+#ifndef __cleInt_h
+#define __cleInt_h
 
-#include "cleObject.h"
+#include "cleScalar.h"
 
-#include <array>
+#include <string>
+#include <fstream>
 
 namespace cle
 {
-    
-class Buffer : public Object
+
+class Int : public Scalar
 {
-
 private:
-    static const ObjectType O = ObjectType::cleBuffer;
-    DataType T;
+    static const ObjectType O = ObjectType::cleInt;
+    static const DataType T = DataType::Int;
+    int value; 
 
-    cl_mem pointer = nullptr;
-    std::array<unsigned int, 3> dimensions = {0, 0, 0};
+protected:
     
-public:      
-    Buffer() = default;
-    Buffer(cl_mem, unsigned int*, std::string);
-    ~Buffer() = default;
 
-    cl_mem& GetData();
+public:
+    Int() = default; 
+    Int(int);
+    ~Int() = default;
 
-    unsigned int* GetDimensions();
-    std::string GetObjectType() const;
+    int& GetData();
     std::string GetDataType() const;
+    std::string GetObjectType() const;
     std::string ToString() const;
     bool IsObject(std::string) const;
-
 };
 
 } // namespace cle
 
-#endif // __cleBuffer_h
+#endif // __cleInt_h

@@ -31,7 +31,7 @@ public:
 
     void SetInput(Object&);
     void SetOutput(Object&);
-    void SetScalar(float&);
+    void SetScalar(float);
     void Execute();
 
     ~AddImageAndScalarKernel() = default;

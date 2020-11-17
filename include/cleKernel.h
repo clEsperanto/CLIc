@@ -24,9 +24,15 @@
 #include <vector>
 #include <array>
 #include <algorithm>
+#include <memory>
 
+#include "cleLightObject.h"
+#include "cleScalar.h"
 #include "cleObject.h"
 #include "cleBuffer.h"
+#include "cleFloat.h"
+#include "cleInt.h"
+
 #include "cleGPU.h"
 
 namespace cle
@@ -51,9 +57,8 @@ protected:
     std::string kernelName;
 
     std::vector<std::string> tagList;
-    std::map<std::string, Object&> objectList;
-    std::map<std::string, float&> floatList;
-    std::map<std::string, int&> intList;
+    std::map<std::string, LightObject* > parameterList;
+    void AddObject(LightObject*, std::string);
 
     std::string TypeAbbr(const std::string) const;
     std::string LoadPreamble();
@@ -65,14 +70,10 @@ protected:
 
 public:
     Kernel(GPU&);
-    ~Kernel(){};
+    ~Kernel() = default;
 
     virtual void Execute() = 0;
     
-    void AddObject(Object&, std::string);
-    void AddFloat(float&, std::string);
-    void AddInt(int&, std::string);
-
     void CompileKernel();
 
     std::string GetKernelName();

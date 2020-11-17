@@ -16,33 +16,51 @@ namespace cle
 void AbsoluteKernel::DefineDimensionality()
 {
     std::string dim = "_2d";
-    for (auto it = objectList.begin(); it != objectList.end(); it++)
+    Buffer* bufferObject = dynamic_cast<Buffer*>(parameterList.at("src"));
+    if(bufferObject->GetDimensions()[2] > 1)
     {
-        if (it->second.GetDimensions()[2] > 1)
-        {
-            dim = "_3d";
-        }
+        dim = "_3d";
     }
     kernelName = kernelName + dim;
 }
 
 void AbsoluteKernel::SetInput(Object& x)
 {
-    objectList.insert({"src", x});
+    this->AddObject(&x, "src");
 }
 
 void AbsoluteKernel::SetOutput(Object& x)
 {
-    objectList.insert({"dst", x});
+    this->AddObject(&x, "dst");
 }
 
     
 void AbsoluteKernel::Execute()
 {
+    std::cout << "start absolute kernel exe ... "<< std::endl;
+
+        std::cout << "number of parameters : " << this->parameterList.size() << "/" << this->tagList.size() << std::endl;
+    for (auto itr = parameterList.begin(); itr != parameterList.end(); ++itr)
+    {
+        std::cout << itr->first;
+        std::cout << "(" << itr->second->GetObjectType() << ")";
+        std::cout <<" / ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "DefineDimensionality ... "<< std::endl;
     DefineDimensionality();
+    
+    std::cout << "CompileKernel ... "<< std::endl;
     CompileKernel();
+
+    std::cout << "AddArgumentsToKernel ... "<< std::endl;
     AddArgumentsToKernel();
+
+    std::cout << "DefineRangeKernel ... "<< std::endl;
     DefineRangeKernel();
+
+    std::cout << "Done ..." << std::endl;
 }
 
 } // namespace cle

@@ -7,8 +7,13 @@ set(HEADERS
     ${header_path}/CLE.h
     ${header_path}/cleGPU.h
     ${header_path}/cleKernel.h
+
+    ${header_path}/cleLightObject.h
     ${header_path}/cleObject.h
+    ${header_path}/cleScalar.h
     ${header_path}/cleBuffer.h
+    ${header_path}/cleFloat.h
+    ${header_path}/cleInt.h
 
     # API utilities
     ${header_path}/tiffreader.h

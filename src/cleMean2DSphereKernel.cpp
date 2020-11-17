@@ -14,33 +14,29 @@ namespace cle
     
 void Mean2DSphereKernel::ComputeKernelSize()
 {
-    for (auto it = intList.begin(); it != intList.end(); it++)
-    {
-        if (std::find(tagList.begin(), tagList.end(), it->first) != tagList.end())
-        {
-            it->second = it->second * 2 + 1;
-        }
-    } 
+
 }
 
 void Mean2DSphereKernel::SetInput(Object& x)
 {
-    objectList.insert({"src", x});
+    this->AddObject(&x, "src");
 }
 
 void Mean2DSphereKernel::SetOutput(Object& x)
 {
-    objectList.insert({"dst", x});
+    this->AddObject(&x, "dst");
 }
 
-void Mean2DSphereKernel::SetRadiusX(int& x)
+void Mean2DSphereKernel::SetRadiusX(int x)
 {
-    intList.insert({"radius_x", x});
+    Int* val = new Int(x * 2 + 1);
+    this->AddObject(val, "radius_x");
 }
 
-void Mean2DSphereKernel::SetRadiusY(int& x)
+void Mean2DSphereKernel::SetRadiusY(int x)
 {
-    intList.insert({"radius_y", x});
+    Int* val = new Int(x * 2 + 1);
+    this->AddObject(val, "radius_y");
 }
 
 void Mean2DSphereKernel::Execute()
