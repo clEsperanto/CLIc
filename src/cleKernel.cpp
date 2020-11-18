@@ -301,9 +301,9 @@ cl_command_queue Kernel::GetCommandQueue()
 
 Kernel::Kernel(GPU& gpu)
 {
-    this->device_id = gpu.GetDevice();
-    this->context = gpu.GetContext();
-    this->command_queue = gpu.GetCommandQueue();
+    this->device_id = gpu.GetDeviceManager().GetDevice();
+    this->context = gpu.GetContextManager().GetContext();
+    this->command_queue = gpu.GetContextManager().GetCommandQueue();
 }
 
 } // namespace cle
