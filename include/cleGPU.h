@@ -17,9 +17,12 @@
 #include <CL/cl.h>
 #endif
 
-#include "cleBuffer.h"
-#include "image.h"
-#include "utils.h"
+#include "cleDeviceManager.h"
+#include "cleContextManager.h"
+
+// #include "cleBuffer.h"
+// #include "image.h"
+// #include "utils.h"
 
 namespace cle
 {
@@ -27,26 +30,27 @@ namespace cle
 class GPU
 {
 private:
-    cl_platform_id platform_id;
-    cl_device_id device_id;
-    cl_context context;
-    cl_command_queue command_queue;
+    // cl_platform_id platform_id;
+    // cl_device_id device_id;
+    // cl_context context;
+    // cl_command_queue command_queue;
+
+    DeviceManager device_manager;
+    ContextManager context_manager;
 
 protected:
 
-    void InitialisePlatform();
-    void InitialiseDevice();
-    void CreateContext();
-    void CreateCommandQueue();
+    // void InitialisePlatform();
+    // void InitialiseDevice();
+    // void CreateContext();
+    // void CreateCommandQueue();
 
 public:
     GPU();
-    ~GPU(){};
+    ~GPU() = default;
 
-    cl_platform_id GetPlateform();
-    cl_device_id GetDevice();
-    cl_context GetContext();
-    cl_command_queue GetCommandQueue();
+    DeviceManager GetDeviceManager();
+    ContextManager GetContextManager();
 
 };
 
