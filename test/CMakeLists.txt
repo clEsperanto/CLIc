@@ -56,7 +56,6 @@ target_link_libraries(absolute_test CLIc)
 
 # tests
 add_test(NAME data_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/data_test)
-
 add_test(NAME push_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/push_functions_test)
 add_test(NAME create_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/create_functions_test)
 add_test(NAME pull_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/pull_functions_test)

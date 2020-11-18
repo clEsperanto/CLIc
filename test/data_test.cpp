@@ -6,12 +6,8 @@
 #include "cleInt.h"
 #include "cleBuffer.h"
 
-
 #include <map>
 #include <random>
-
-#include "cleAddImageAndScalarKernel.h"
-
 
 using namespace cle;
 
