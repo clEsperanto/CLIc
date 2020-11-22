@@ -43,6 +43,9 @@ LightObject::DataType LightObject::StringToDataType(const std::string t) const
     else                   return LightObject::DataType::Float;
 }
 
+
+
+
 std::ostream& operator<<(std::ostream& os, const LightObject& p)
 {
     return os << p.ToString();
