@@ -38,6 +38,8 @@ public:
     std::string GetObjectType() const;
     std::string ToString() const;
     bool IsObject(std::string) const;
+    size_t GetBitSize() const;
+
 };
 
 } // namespace cle
