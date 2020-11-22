@@ -29,35 +29,6 @@ void MaximumOfAllPixelsKernel::SetOutput(Object& x)
 void MaximumOfAllPixelsKernel::Execute()
 {
     std::cout << "MaximumOfAllPixelsKernel is not implemented yet. Sorry :)" << std::endl;
-    // TODO: 
-    // Create and execute a pipeline of kernels
-    //      this requires the access to context, and command queue for compiling and executing kernels
-    // Need to create temporary output in device mememory
-    //      this requires the access to context
-    // Output is a scalar
-    //      this open the possibility that kernels do not return only GPU object but also native types. (not urgent...)
-    // 
-    // Maximum of all pixel pipeline in speudo-code
-    // if src.dimension[2] > 1:
-    //     tmp = create(src.dimension[0], src.dimension[1], 1)
-    //     MaximumZProjection kernel()
-    //     kernel.SetIntput(src)
-    //     kernel.SetOutput(tmp)
-    //     kernel.Execute()
-    //     src = tmp
-    //
-    // if src.dimension[1] > 1:
-    //     tmp = create(src.dimension[0], 1, 1)
-    //     MaximumYProjection kernel()
-    //     kernel.SetIntput(src)
-    //     kernel.SetOutput(tmp)
-    //     kernel.Execute()
-    //     src = tmp
-    //
-    // MaximumXProjection kernel()
-    // kernel.SetIntput(src)
-    // kernel.SetOutput(dst)
-    // kernel.Execute()
 }
 
 } // namespace cle
