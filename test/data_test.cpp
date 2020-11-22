@@ -16,7 +16,6 @@ int main(int argc, char **argv)
     std::cout << "Initialisation of the gpu and data structure" << std::endl;
     cle::GPU gpu;
     cle::CLE cle(gpu);
-    std::map<std::string, LightObject*> paramList;
 
     std::cout << "Initialisation of cleFloat" << std::endl;
     float x = 1.28;
@@ -36,10 +35,11 @@ int main(int argc, char **argv)
         input_data[i] = distribution(generator);
     }
     Image<float> input_img (input_data, width, height, depth, "float");   
-    Buffer b_value = cle.Push<float>(input_img);
-    Buffer c_value = cle.Create<float>(b_value);
+    Buffer b_value = cle.Push(input_img);
+    Buffer c_value = cle.Create<float>(b_value, "int");
 
     std::cout << "Fill data structure parameter" << std::endl;
+    std::map<std::string, LightObject*> paramList;
     paramList.insert(std::make_pair("x_value", &x_value));
     paramList.insert(std::make_pair("y_value", &y_value));
     paramList.insert(std::make_pair("b_value", &b_value));
@@ -48,24 +48,54 @@ int main(int argc, char **argv)
 
     for (auto itr = paramList.begin(); itr != paramList.end(); ++itr)
     {
-        std::cout << itr->first;
-        std::cout << " is a " << itr->second->GetObjectType();
+        std::cout << itr->first << " - ";
         if (itr->second->IsObject("cleFloat"))
         {
             Float* new_x_value = dynamic_cast<Float*>(itr->second);
-            std::cout << " = " << new_x_value->GetData() << std::endl;
+            std::cout << *new_x_value << std::endl;
         }
         else if (itr->second->IsObject("cleInt"))
         {
             Int* new_y_value = dynamic_cast<Int*>(itr->second);
-            std::cout << " = " << new_y_value->GetData() << std::endl;
+            std::cout << *new_y_value << std::endl;
         }
         else if (itr->second->IsObject("cleBuffer"))
         {
             Buffer* new_b_value = dynamic_cast<Buffer*>(itr->second);
-            std::cout << " = " << new_b_value->GetData() << " of type " << new_b_value->GetDataType();
-            std::cout << ", dim(" << new_b_value->GetDimensions()[0] <<","<< new_b_value->GetDimensions()[1] <<","<< new_b_value->GetDimensions()[2]; 
-            std::cout << ")" << std::endl;
+            std::cout << *new_b_value << std::endl;
+        }
+        else
+        {
+            std::cout << " = (unknow object type)" << std::endl;
+        }
+    }
+
+    Float* x_value_2 = &x_value;
+    Int* y_value_2 = &y_value;
+    Buffer* b_value_2 = &b_value;
+
+    std::map<std::string, LightObject*> new_paramList;
+    new_paramList.insert(std::make_pair("x_value_2", x_value_2));
+    new_paramList.insert(std::make_pair("y_value_2", y_value_2));
+    new_paramList.insert(std::make_pair("b_value_2", b_value_2));
+
+    for (auto itr = new_paramList.begin(); itr != new_paramList.end(); ++itr)
+    {
+        std::cout << itr->first << " - ";
+        if (itr->second->IsObject("cleFloat"))
+        {
+            Float* new_x_value = dynamic_cast<Float*>(itr->second);
+            std::cout << *new_x_value << std::endl;
+        }
+        else if (itr->second->IsObject("cleInt"))
+        {
+            Int* new_y_value = dynamic_cast<Int*>(itr->second);
+            std::cout << *new_y_value << std::endl;
+        }
+        else if (itr->second->IsObject("cleBuffer"))
+        {
+            Buffer* new_b_value = dynamic_cast<Buffer*>(itr->second);
+            std::cout << *new_b_value << std::endl;
         }
         else
         {
