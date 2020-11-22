@@ -7,8 +7,9 @@
 #include <CL/cl.h>
 #endif
 
-#include "utils.h"
 #include <iostream>
+
+
 
 namespace cle
 {
@@ -17,18 +18,18 @@ class DeviceManager
 {
 private:
     cl_device_id device = nullptr;
-    cl_platform_id platform = nullptr;
-
-protected:
-    void RequestPlatform();
-    void RequestDevice();
 
 public:
-    DeviceManager(/* args */);
+    DeviceManager() = default;
     ~DeviceManager() = default;
+    DeviceManager(cl_platform_id);
+
+    void RequestDevice(cl_platform_id&);
 
     cl_platform_id GetPlatform();
-    cl_device_id GetDevice();
+    cl_device_id& GetDevice();
+
+    std::string ToString() const;
 };
 
 } // namespace cle
