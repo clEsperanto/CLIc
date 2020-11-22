@@ -15,7 +15,7 @@
 cl_mem CreateBuffer(size_t bitSize, cl_context context)
 {
     cl_int clError;
-    cl_mem mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY, bitSize, nullptr, &clError);
+    cl_mem mem_obj = clCreateBuffer(context, CL_MEM_READ_WRITE, bitSize, nullptr, &clError);
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Push error! fail to create buffer : " << getOpenCLErrorString(clError) << std::endl;
