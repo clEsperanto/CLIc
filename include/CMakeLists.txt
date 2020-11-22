@@ -8,6 +8,8 @@ set(HEADERS
     
     #Core
     ${header_path}/cleGPU.h
+    ${header_path}/clePlatformManager.h
+    ${header_path}/cleCommandQueueManager.h
     ${header_path}/cleDeviceManager.h
     ${header_path}/cleContextManager.h
 

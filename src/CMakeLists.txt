@@ -8,6 +8,8 @@ set(SOURCES
     
     #Core
     ${source_path}/cleGPU.cpp
+    ${source_path}/clePlatformManager.cpp
+    ${source_path}/cleCommandQueueManager.cpp
     ${source_path}/cleDeviceManager.cpp
     ${source_path}/cleContextManager.cpp
 
