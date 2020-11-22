@@ -51,6 +51,7 @@ public:
     void MaximumZProjection(Buffer&, Buffer&);
     void MaximumYProjection(Buffer&, Buffer&);
     void MaximumXProjection(Buffer&, Buffer&);
+    void MaximumOfAllPixels(Buffer&, Buffer&);
     void Mean2DSphere(Buffer&, Buffer&, int, int);
     void Absolute(Buffer&, Buffer&);
 
@@ -61,7 +62,7 @@ template<class T>
 Buffer CLE::Push(Image<T>& image)
 {
     cl_mem mem_obj = CreateBuffer(image.GetDataSize(), gpu.GetContextManager().GetContext());
-    bool res = WriteBuffer<T>(mem_obj, image.GetData(), image.GetDataSize(), gpu.GetContextManager().GetCommandQueue());
+    bool res = WriteBuffer<T>(mem_obj, image.GetData(), image.GetDataSize(), gpu.GetCommandQueueManager().GetCommandQueue());
     return Buffer (mem_obj, image.GetDimensions(), image.GetType());
 }
 
@@ -69,7 +70,7 @@ template<class T>
 Image<T> CLE::Pull(Buffer& gpu_obj)
 {
     unsigned int arrSize = gpu_obj.GetDimensions()[0] * gpu_obj.GetDimensions()[1] * gpu_obj.GetDimensions()[2];
-    T* output_arr = ReadBuffer<T>(gpu_obj.GetData(), sizeof(T) * arrSize, gpu.GetContextManager().GetCommandQueue());
+    T* output_arr = ReadBuffer<T>(gpu_obj.GetData(), sizeof(T) * arrSize, gpu.GetCommandQueueManager().GetCommandQueue());
 
     Image<T> image (output_arr, gpu_obj.GetDimensions()[0], gpu_obj.GetDimensions()[1], gpu_obj.GetDimensions()[2], gpu_obj.GetDataType());
     return image;        
