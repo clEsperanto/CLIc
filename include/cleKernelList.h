@@ -16,4 +16,5 @@
 #include "cleMaximumXProjectionKernel.h"
 #include "cleMean2DSphereKernel.h"
 #include "cleSmallerOrEqualConstantKernel.h"
+#include "cleSobelKernel.h"
 

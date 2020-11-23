@@ -8,12 +8,12 @@
 */
 
 
-#include "cleAbsoluteKernel.h"
+#include "cleSobelKernel.h"
 
 namespace cle
 {
 
-void AbsoluteKernel::DefineDimensionality()
+void SobelKernel::DefineDimensionality()
 {
     std::string dim = "_2d";
     Buffer* bufferObject = dynamic_cast<Buffer*>(parameterList.at("src"));
@@ -24,17 +24,18 @@ void AbsoluteKernel::DefineDimensionality()
     kernelName = kernelName + dim;
 }
 
-void AbsoluteKernel::SetInput(Object& x)
+void SobelKernel::SetInput(Object& x)
 {
     this->AddObject(&x, "src");
 }
 
-void AbsoluteKernel::SetOutput(Object& x)
+void SobelKernel::SetOutput(Object& x)
 {
     this->AddObject(&x, "dst");
 }
 
-void AbsoluteKernel::Execute()
+    
+void SobelKernel::Execute()
 {
     DefineDimensionality();
     CompileKernel();

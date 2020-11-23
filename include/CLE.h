@@ -54,6 +54,7 @@ public:
     void MaximumOfAllPixels(Buffer&, Buffer&);
     void Mean2DSphere(Buffer&, Buffer&, int, int);
     void Absolute(Buffer&, Buffer&);
+    void Sobel(Buffer&, Buffer&);
 
 };
 
