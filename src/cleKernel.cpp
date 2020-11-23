@@ -173,21 +173,21 @@ void Kernel::AddArgumentsToKernel()
             if (parameterList.at(tag)->IsObject("cleBuffer"))
             {    
                 Buffer* param = dynamic_cast<Buffer*>(parameterList.at(tag));
-                clError = clSetKernelArg(this->GetKernel(), index, sizeof(param->GetData()), &(param->GetData()));
+                clError = clSetKernelArg(this->kernel, index, sizeof(param->GetData()), &(param->GetData()));
             }
             else if (parameterList.at(tag)->IsObject("cleFloat"))
             {    
                 Float* param = dynamic_cast<Float*>(parameterList.at(tag));
-                clError = clSetKernelArg(this->GetKernel(), index, sizeof(param->GetData()), &(param->GetData()));
+                clError = clSetKernelArg(this->kernel, index, sizeof(param->GetData()), &(param->GetData()));
             }
             else if (parameterList.at(tag)->IsObject("cleInt"))
             {    
                 Int* param = dynamic_cast<Int*>(parameterList.at(tag));
-                clError = clSetKernelArg(this->GetKernel(), index, sizeof(param->GetData()), &(param->GetData()));
+                clError = clSetKernelArg(this->kernel, index, sizeof(param->GetData()), &(param->GetData()));
             }
             if (clError != CL_SUCCESS)
             {
-                std::cerr << "Argument error! Fail to set argument : " << getOpenCLErrorString(clError) << std::endl;
+                std::cerr << "Kernel : Fail to set argument (" << getOpenCLErrorString(clError) << ")" << std::endl;
                 throw clError;
             }
         }
@@ -214,7 +214,6 @@ void Kernel::CompileKernel()
     std::string defines_src = LoadDefines();
     std::string preambule_src = LoadPreamble();
 
-
     // construct final source code
     std::string ocl_src = defines_src + "\n" + preambule_src + "\n" + kernel_src;
     const char *source_str = (ocl_src).c_str();
@@ -222,24 +221,24 @@ void Kernel::CompileKernel()
 
     // Create a program from the kernel source
     cl_int clError;
-    program = clCreateProgramWithSource(context, 1, &source_str, &source_size, &clError);
+    program = clCreateProgramWithSource(this->gpu.GetContextManager().GetContext(), 1, &source_str, &source_size, &clError);
     if (clError != CL_SUCCESS)
     {
-        std::cerr << "Program error! Fail to create program : " << getOpenCLErrorString(clError) << std::endl;
+        std::cerr << "Kernel : Fail to create program from source (" << getOpenCLErrorString(clError) << ")" << std::endl;
         throw clError;
     }
     // build the program
-    clError = clBuildProgram(program, 1, &device_id, nullptr, nullptr, nullptr);
+    clError = clBuildProgram(this->program, 1, &(this->gpu.GetDeviceManager().GetDevice()), nullptr, nullptr, nullptr);
     if (clError != CL_SUCCESS)
     {
-        std::cerr << "Program error! Fail to build program : " << getOpenCLErrorString(clError) << std::endl;
+        std::cerr << "Kernel : Fail to build program (" << getOpenCLErrorString(clError) << ")" << std::endl;
         throw clError;
     }
     // create the OpenCL kernel
-    kernel = clCreateKernel(program, kernelName.c_str(), &clError);
+    kernel = clCreateKernel(this->program, kernelName.c_str(), &clError);
     if (clError != CL_SUCCESS)
     {
-        std::cerr << "Program error! Fail to create kernel in maximumzprojection() : " << getOpenCLErrorString(clError) << std::endl;
+        std::cerr << "Kernel : Fail to create kernel (" << getOpenCLErrorString(clError) << ")" << std::endl;
         throw clError;
     }
 }
@@ -261,10 +260,10 @@ void Kernel::DefineRangeKernel()
         }
     }
     size_t work_dim = 3;
-    clError = clEnqueueNDRangeKernel(this->GetCommandQueue(), this->GetKernel(), work_dim, nullptr, global_item_size, nullptr, 0, nullptr, nullptr);
+    clError = clEnqueueNDRangeKernel(this->gpu.GetCommandQueueManager().GetCommandQueue(), this->kernel, work_dim, nullptr, global_item_size, nullptr, 0, nullptr, nullptr);
     if (clError != CL_SUCCESS)
     {
-        std::cerr << "Execution error! Could not enqueue ND-Range : " << getOpenCLErrorString(clError) << std::endl;
+        std::cerr << "Kernel : Fail to define kernel range (" << getOpenCLErrorString(clError) << ")" << std::endl;
         throw clError;
     }
 }
@@ -284,26 +283,9 @@ cl_program Kernel::GetProgram()
     return program;
 }
 
-cl_device_id Kernel::GetDevice()
+Kernel::Kernel(GPU& _gpu)
 {
-    return device_id;
-}
-
-cl_context Kernel::GetContext()
-{
-    return context;
-}
-
-cl_command_queue Kernel::GetCommandQueue()
-{
-    return command_queue;
-}
-
-Kernel::Kernel(GPU& gpu)
-{
-    this->device_id = gpu.GetDevice();
-    this->context = gpu.GetContext();
-    this->command_queue = gpu.GetCommandQueue();
+    this->gpu = _gpu;
 }
 
 } // namespace cle

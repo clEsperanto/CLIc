@@ -10,6 +10,46 @@
 
 #include "utils.h"
 #include <fstream>
+#include <iostream>
+
+cl_mem CreateBuffer(size_t bitSize, cl_context context)
+{
+    cl_int clError;
+    cl_mem mem_obj = clCreateBuffer(context, CL_MEM_READ_WRITE, bitSize, nullptr, &clError);
+    if (clError != CL_SUCCESS)
+    {
+        std::cerr << "Push error! fail to create buffer : " << getOpenCLErrorString(clError) << std::endl;
+        throw clError;
+    }
+    return mem_obj;
+}
+
+// template<class T>
+// bool WriteBuffer(cl_mem mem_obj, T* arr, size_t bitSize, cl_command_queue command_queue)
+// {
+//     cl_int clError = clEnqueueWriteBuffer(command_queue, mem_obj, CL_TRUE, 0, bitSize, arr, 0, nullptr, nullptr);
+//     if (clError != CL_SUCCESS)
+//     {
+//         std::cerr << "Push error! fail to write buffer in push() " << getOpenCLErrorString(clError) << std::endl;
+//         throw clError;
+//     }
+//     return true;
+// }
+
+// template<class T>
+// T* ReadBuffer(cl_mem mem_obj, size_t bitSize, cl_command_queue command_queue)
+// {
+//     size_t size = bitSize / sizeof(T);
+//     T* arr = new T[size];
+//     cl_int clError = clEnqueueReadBuffer(command_queue, mem_obj, CL_TRUE, 0, bitSize, arr, 0, NULL, NULL);
+//     if (clError != CL_SUCCESS)
+//     {
+//         std::cerr << "Pull error! fail to read buffer : " << getOpenCLErrorString(clError) << std::endl;
+//         throw clError;
+//     }
+//     return arr;
+// }
+
 
 void write_kernel_source(std::string src)
 {

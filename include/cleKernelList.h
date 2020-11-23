@@ -10,6 +10,7 @@
 
 #include "cleAbsoluteKernel.h"
 #include "cleAddImageAndScalarKernel.h"
+#include "cleMaximumOfAllPixelsKernel.h"
 #include "cleMaximumZProjectionKernel.h"
 #include "cleMaximumYProjectionKernel.h"
 #include "cleMaximumXProjectionKernel.h"

@@ -17,9 +17,13 @@
 #include <CL/cl.h>
 #endif
 
-#include "cleBuffer.h"
-#include "image.h"
-#include "utils.h"
+#include "cleDeviceManager.h"
+#include "cleContextManager.h"
+#include "clePlatformManager.h"
+#include "cleCommandQueueManager.h"
+
+#include <iostream>
+
 
 namespace cle
 {
@@ -27,26 +31,22 @@ namespace cle
 class GPU
 {
 private:
-    cl_platform_id platform_id;
-    cl_device_id device_id;
-    cl_context context;
-    cl_command_queue command_queue;
 
-protected:
-
-    void InitialisePlatform();
-    void InitialiseDevice();
-    void CreateContext();
-    void CreateCommandQueue();
+    DeviceManager device_manager;
+    ContextManager context_manager;
+    CommandQueueManager commandqueue_manager;
+    PlatformManager platform_manager;
 
 public:
     GPU();
-    ~GPU(){};
+    ~GPU() = default;
 
-    cl_platform_id GetPlateform();
-    cl_device_id GetDevice();
-    cl_context GetContext();
-    cl_command_queue GetCommandQueue();
+    DeviceManager& GetDeviceManager();
+    ContextManager& GetContextManager();
+    CommandQueueManager& GetCommandQueueManager();
+    PlatformManager& GetPlatformManager();
+
+    std::string ToString() const;
 
 };
 

@@ -58,6 +58,15 @@ void CLE::MaximumXProjection(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }
 
+void CLE::MaximumOfAllPixels(Buffer& src, Buffer& dst)
+{
+    MaximumOfAllPixelsKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}  
+
+
 void CLE::Mean2DSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y)
 {
     Mean2DSphereKernel kernel(this->gpu);

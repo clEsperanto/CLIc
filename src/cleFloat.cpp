@@ -33,12 +33,18 @@ std::string Float::GetObjectType() const
 
 std::string Float::ToString() const
 {
-    return "";
+    std::string str = this->GetObjectType() + "(float) = " + std::to_string(value);
+    return str;
 }
 
 bool Float::IsObject(std::string str) const
 {
     return this->GetObjectType() == str;
+}
+
+size_t Float::GetBitSize() const
+{
+    return sizeof(float);
 }
 
 } // namespace cle

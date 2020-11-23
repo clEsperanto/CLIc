@@ -33,7 +33,8 @@ std::string Int::GetObjectType() const
 
 std::string Int::ToString() const
 {
-        return "";
+    std::string str = this->GetObjectType() + "(int) = " + std::to_string(value);
+    return str;
 }
 
 bool Int::IsObject(std::string str) const
@@ -41,6 +42,10 @@ bool Int::IsObject(std::string str) const
     return this->GetObjectType() == str;
 }
 
+size_t Int::GetBitSize() const
+{
+    return sizeof(int);
+}
 
 } // namespace cle
 

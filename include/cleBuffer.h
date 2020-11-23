@@ -40,6 +40,7 @@ public:
     std::string GetDataType() const;
     std::string ToString() const;
     bool IsObject(std::string) const;
+    size_t GetBitSize() const;
 
 };
 

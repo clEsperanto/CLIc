@@ -42,9 +42,10 @@ class Kernel
 {
 private:
 
-    cl_device_id device_id;
-    cl_context context;
-    cl_command_queue command_queue;
+    // cl_device_id device_id;
+    // cl_context context;
+    // cl_command_queue command_queue;
+
     cl_program program;
     cl_kernel kernel;
 
@@ -53,20 +54,18 @@ private:
     const std::string kernelFolder = KERNELS_PATH;    
 
 protected:
-
+    GPU gpu;
     std::string kernelName;
 
     std::vector<std::string> tagList;
     std::map<std::string, LightObject* > parameterList;
-    void AddObject(LightObject*, std::string);
 
     std::string TypeAbbr(const std::string) const;
     std::string LoadPreamble();
     std::string LoadSources();
     std::string LoadDefines();
 
-    void AddArgumentsToKernel();
-    void DefineRangeKernel();
+
 
 public:
     Kernel(GPU&);
@@ -74,7 +73,10 @@ public:
 
     virtual void Execute() = 0;
     
+    void AddObject(LightObject*, std::string);
     void CompileKernel();
+    void AddArgumentsToKernel();
+    void DefineRangeKernel();
 
     std::string GetKernelName();
     cl_kernel GetKernel();

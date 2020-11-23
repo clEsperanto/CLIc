@@ -54,7 +54,12 @@ std::string Buffer::GetDataType() const
 
 std::string Buffer::ToString() const
 {
-    return "";
+    std::string str = "";
+    str += this->GetObjectType() + "(" + this->GetDataType() + ")";
+    str += " [" + std::to_string(this->dimensions[0]) ;
+    str += ","  + std::to_string(this->dimensions[1]) ;
+    str += ","  + std::to_string(this->dimensions[2]) + "]";
+    return str;
 }
 
 bool Buffer::IsObject(std::string str) const
@@ -62,5 +67,19 @@ bool Buffer::IsObject(std::string str) const
     return this->GetObjectType() == str;
 }
 
+size_t Buffer::GetBitSize() const
+{
+    switch (T)
+    {
+        case Float:  return sizeof(float);
+        case Char:   return sizeof(char);
+        case UChar:  return sizeof(unsigned char);
+        case Int:    return sizeof(int);
+        case UInt:   return sizeof(unsigned int);
+        case Short:  return sizeof(short);
+        case UShort: return sizeof(unsigned short);
+        default:     return 0;
+    }
+}
 } // namespace cle
 
