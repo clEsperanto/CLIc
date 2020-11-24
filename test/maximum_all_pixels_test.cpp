@@ -18,7 +18,7 @@
 int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
-    unsigned int width (10), height (1), depth (1);
+    unsigned int width (10), height (10), depth (10);
     float* input_data = new float[width*height*depth];
     float* valid_data = new float[1];
     std::default_random_engine generator;
@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     {
         input_data[i] = distribution(generator);
     }
-    input_data[5] = 1000;
+    input_data[50] = 1000;
     valid_data[0] = 1000;
     Image<float> input_img (input_data, width, height, depth, "float");
 
@@ -47,7 +47,8 @@ int main(int argc, char **argv)
     Image<float> output_img = cle.Pull<float>(gpuOutput);    
 
     // Verify output
-    float difference = std::abs(valid_data[0] - output_img.GetData()[0]);
+    float difference = std::abs(valid_data[0] - output_img.GetData()[0]); 
+    std::cout << "real maximum = " << valid_data[0] << ", computed maximum = " << output_img.GetData()[0] << std::endl;
     if (difference > std::numeric_limits<float>::epsilon())
     {
         std::cout << "Test failled, cumulated absolute difference " << difference << " > CPU epsilon (" << std::numeric_limits<float>::epsilon() << ")" << std::endl;
