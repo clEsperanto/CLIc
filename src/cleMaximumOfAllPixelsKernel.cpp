@@ -12,6 +12,8 @@
 #include "cleMaximumZProjectionKernel.h"
 #include "cleMaximumYProjectionKernel.h"
 #include "cleMaximumXProjectionKernel.h"
+#include "utils.h"
+
 
 namespace cle
 {
@@ -28,7 +30,43 @@ void MaximumOfAllPixelsKernel::SetOutput(Object& x)
 
 void MaximumOfAllPixelsKernel::Execute()
 {
-    std::cout << "MaximumOfAllPixelsKernel is not implemented yet. Sorry :)" << std::endl;
+    Buffer* src = dynamic_cast<Buffer*>(parameterList.at("src"));
+    Buffer* dst = dynamic_cast<Buffer*>(parameterList.at("dst_max"));
+
+    if (src->GetDimensions()[2] > 1)
+    {
+        unsigned int tmp_dim[3] = {src->GetDimensions()[0], src->GetDimensions()[1], 1};
+        size_t bitsize = src->GetBitSize() * tmp_dim[0] * tmp_dim[1];
+        cl_mem tmp_mem = CreateBuffer(bitsize, this->gpu.GetContextManager().GetContext());
+        Buffer tmp (tmp_mem, tmp_dim, src->GetDataType());
+
+        MaximumZProjectionKernel kernel(this->gpu);
+        kernel.SetInput(*src);
+        kernel.SetOutput(tmp);
+        kernel.Execute();
+
+        src = &tmp;
+    }
+
+    if (src->GetDimensions()[1] > 1)
+    {
+        unsigned int tmp_dim[3] = {src->GetDimensions()[0], 1, 1};
+        size_t bitsize = src->GetBitSize() * tmp_dim[0];
+        cl_mem tmp_mem = CreateBuffer(bitsize, this->gpu.GetContextManager().GetContext());
+        Buffer tmp (tmp_mem, tmp_dim, src->GetDataType());
+
+        MaximumYProjectionKernel kernel(this->gpu);
+        kernel.SetInput(*src);
+        kernel.SetOutput(tmp);
+        kernel.Execute();
+
+        src = &tmp;
+    }
+    
+    MaximumXProjectionKernel kernel(this->gpu);
+    kernel.SetInput(*src);
+    kernel.SetOutput(*dst);
+    kernel.Execute();
 }
 
 } // namespace cle
