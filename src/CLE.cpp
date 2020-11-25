@@ -50,6 +50,15 @@ void CLE::AddImages(Buffer& src1, Buffer& src2, Buffer& dst)
     this->AddImagesWeighted(src1, src2, dst, 1, 1);
 }
 
+void CLE::GreaterThanConstant(Buffer& src, Buffer& dst, float scalar)
+{
+    GreaterConstantKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetScalar(scalar);
+    kernel.Execute();
+}
+
 void CLE::MaximumZProjection(Buffer& src, Buffer& dst)
 {
     MaximumZProjectionKernel kernel(this->gpu);
