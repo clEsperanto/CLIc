@@ -23,6 +23,7 @@
 #include "cleCommandQueueManager.h"
 
 #include <iostream>
+#include "utils.h"
 
 
 namespace cle
@@ -48,7 +49,54 @@ public:
 
     std::string ToString() const;
 
+    template<class T>
+    friend cl_mem CreateBuffer(size_t, GPU&);
+    template<class T>
+    friend bool WriteBuffer(cl_mem, T*, size_t, GPU&);
+    template<class T>
+    friend T* ReadBuffer(cl_mem, size_t, GPU&);
 };
+
+
+template<class T>
+cl_mem CreateBuffer(size_t size, GPU& gpu)
+{
+    cl_int clError;
+    cl_mem mem_obj = clCreateBuffer(gpu.GetContextManager().GetContext(), CL_MEM_READ_WRITE, size * sizeof(T), nullptr, &clError);
+    if (clError != CL_SUCCESS)
+    {
+        std::cerr << "Create Buffer : fail to create buffer space (" << getOpenCLErrorString(clError) << ")" << std::endl;
+        throw clError;
+    }
+    return mem_obj;
+}
+
+template<class T>
+bool WriteBuffer(cl_mem mem_obj, T* arr, size_t bitSize, GPU& gpu)
+{
+    cl_int clError = clEnqueueWriteBuffer(gpu.GetCommandQueueManager().GetCommandQueue(), mem_obj, CL_TRUE, 0, bitSize, arr, 0, nullptr, nullptr);
+    if (clError != CL_SUCCESS)
+    {
+        std::cerr << "Write Buffer : fail to write buffer space (" << getOpenCLErrorString(clError) << ")" << std::endl;
+        throw clError;
+    }
+    return true;
+}
+
+template<class T>
+T* ReadBuffer(cl_mem mem_obj, size_t bitSize, GPU& gpu)
+{
+    size_t size = bitSize / sizeof(T);
+    T* arr = new T[size];
+    cl_int clError = clEnqueueReadBuffer(gpu.GetCommandQueueManager().GetCommandQueue(), mem_obj, CL_TRUE, 0, bitSize, arr, 0, NULL, NULL);
+    if (clError != CL_SUCCESS)
+    {
+        std::cerr << "Read Buffer : fail to read buffer space (" << getOpenCLErrorString(clError) << ")" << std::endl;
+        throw clError;
+    }
+    return arr;
+}
+
 
 } // namespace cle
 
