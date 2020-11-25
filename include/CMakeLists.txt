@@ -27,13 +27,18 @@ set(HEADERS
     ${header_path}/cleKernelList.h
     ${header_path}/cleAbsoluteKernel.h
     ${header_path}/cleAddImageAndScalarKernel.h
+    ${header_path}/cleAddImagesWeightedKernel.h
     ${header_path}/cleMaximumZProjectionKernel.h
     ${header_path}/cleMaximumYProjectionKernel.h
     ${header_path}/cleMaximumXProjectionKernel.h
     ${header_path}/cleMaximumOfAllPixelsKernel.h
     ${header_path}/cleMean2DSphereKernel.h
+    ${header_path}/cleNonzeroMinimumBoxKernel.h
     ${header_path}/cleSmallerOrEqualConstantKernel.h
     ${header_path}/cleSobelKernel.h
+    ${header_path}/cleSetKernel.h
+    ${header_path}/cleSetNonzeroPixelsToPixelindexKernel.h
+    
 
     # utilities
     ${header_path}/tiffreader.h

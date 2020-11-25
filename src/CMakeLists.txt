@@ -24,14 +24,17 @@ set(SOURCES
     ${source_path}/cleKernel.cpp
     ${source_path}/cleAbsoluteKernel.cpp
     ${source_path}/cleAddImageAndScalarKernel.cpp
+    ${source_path}/cleAddImagesWeightedKernel.cpp
     ${source_path}/cleMaximumZProjectionKernel.cpp
     ${source_path}/cleMaximumYProjectionKernel.cpp
     ${source_path}/cleMaximumXProjectionKernel.cpp
     ${source_path}/cleMaximumOfAllPixelsKernel.cpp
     ${source_path}/cleMean2DSphereKernel.cpp
+    ${source_path}/cleNonzeroMinimumBoxKernel.cpp
     ${source_path}/cleSmallerOrEqualConstantKernel.cpp
     ${source_path}/cleSobelKernel.cpp
-
+    ${source_path}/cleSetKernel.cpp
+    ${source_path}/cleSetNonzeroPixelsToPixelindexKernel.cpp
 
     # utilities
     ${source_path}/tiffreader.cpp

@@ -10,11 +10,15 @@
 
 #include "cleAbsoluteKernel.h"
 #include "cleAddImageAndScalarKernel.h"
+#include "cleAddImagesWeightedKernel.h"
 #include "cleMaximumOfAllPixelsKernel.h"
 #include "cleMaximumZProjectionKernel.h"
 #include "cleMaximumYProjectionKernel.h"
 #include "cleMaximumXProjectionKernel.h"
 #include "cleMean2DSphereKernel.h"
+#include "cleNonzeroMinimumBoxKernel.h"
 #include "cleSmallerOrEqualConstantKernel.h"
 #include "cleSobelKernel.h"
+#include "cleSetKernel.h"
+#include "cleSetNonzeroPixelsToPixelindexKernel.h"
 
