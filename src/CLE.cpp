@@ -107,6 +107,39 @@ void CLE::MaximumOfAllPixels(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }  
 
+void CLE::MinimumZProjection(Buffer& src, Buffer& dst)
+{
+    MinimumZProjectionKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}
+
+void CLE::MinimumYProjection(Buffer& src, Buffer& dst)
+{
+    MinimumYProjectionKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}
+
+void CLE::MinimumXProjection(Buffer& src, Buffer& dst)
+{
+    MinimumXProjectionKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}
+
+void CLE::MinimumOfAllPixels(Buffer& src, Buffer& dst)
+{
+    MinimumOfAllPixelsKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}  
+
+
 
 void CLE::Mean2DSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y)
 {

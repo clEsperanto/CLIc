@@ -57,6 +57,10 @@ public:
     void MaximumYProjection(Buffer&, Buffer&);
     void MaximumXProjection(Buffer&, Buffer&);
     void MaximumOfAllPixels(Buffer&, Buffer&);
+    void MinimumZProjection(Buffer&, Buffer&);
+    void MinimumYProjection(Buffer&, Buffer&);
+    void MinimumXProjection(Buffer&, Buffer&);
+    void MinimumOfAllPixels(Buffer&, Buffer&);
     void Mean2DSphere(Buffer&, Buffer&, int, int);
     void NonzeroMinimumBox(Buffer&, Buffer&, Buffer&);
     void Absolute(Buffer&, Buffer&);
