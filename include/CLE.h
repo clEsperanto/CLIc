@@ -62,8 +62,8 @@ public:
 template<class T>
 Buffer CLE::Push(Image<T>& image)
 {
-    cl_mem mem_obj = CreateBuffer(image.GetDataSize(), gpu.GetContextManager().GetContext());
-    bool res = WriteBuffer<T>(mem_obj, image.GetData(), image.GetDataSize(), gpu.GetCommandQueueManager().GetCommandQueue());
+    cl_mem mem_obj = CreateBuffer<T>(image.GetDataSize(), this->gpu);
+    bool res = WriteBuffer<T>(mem_obj, image.GetData(), image.GetDataSize(), this->gpu);
     return Buffer (mem_obj, image.GetDimensions(), image.GetType());
 }
 
@@ -71,8 +71,7 @@ template<class T>
 Image<T> CLE::Pull(Buffer& gpu_obj)
 {
     unsigned int arrSize = gpu_obj.GetDimensions()[0] * gpu_obj.GetDimensions()[1] * gpu_obj.GetDimensions()[2];
-    T* output_arr = ReadBuffer<T>(gpu_obj.GetData(), sizeof(T) * arrSize, gpu.GetCommandQueueManager().GetCommandQueue());
-
+    T* output_arr = ReadBuffer<T>(gpu_obj.GetData(), sizeof(T) * arrSize, this->gpu);
     Image<T> image (output_arr, gpu_obj.GetDimensions()[0], gpu_obj.GetDimensions()[1], gpu_obj.GetDimensions()[2], gpu_obj.GetDataType());
     return image;        
 }
@@ -80,7 +79,7 @@ Image<T> CLE::Pull(Buffer& gpu_obj)
 template<class T>
 Buffer CLE::Create(Image<T>& image, std::string type)
 {
-    cl_mem mem_obj = CreateBuffer(image.GetDataSize(), gpu.GetContextManager().GetContext());
+    cl_mem mem_obj = CreateBuffer<T>(image.GetNbPixels(), this->gpu);
     if (type.empty())
     {
         type = image.GetType();
@@ -91,8 +90,8 @@ Buffer CLE::Create(Image<T>& image, std::string type)
 template<class T>
 Buffer CLE::Create(Buffer& gpu_obj, std::string type)
 {
-    size_t arrSize = sizeof(T) * gpu_obj.GetDimensions()[0] * gpu_obj.GetDimensions()[1] * gpu_obj.GetDimensions()[2];
-    cl_mem mem_obj = CreateBuffer(arrSize, gpu.GetContextManager().GetContext());
+    size_t arrSize = gpu_obj.GetDimensions()[0] * gpu_obj.GetDimensions()[1] * gpu_obj.GetDimensions()[2];
+    cl_mem mem_obj = CreateBuffer<T>(arrSize, this->gpu);
     if (type.empty())
     {
         type = gpu_obj.GetDataType();
@@ -103,8 +102,8 @@ Buffer CLE::Create(Buffer& gpu_obj, std::string type)
 template<class T>
 Buffer CLE::Create(unsigned int dimensions[3], std::string type)
 {
-    size_t arrSize = sizeof(T) * dimensions[0] * dimensions[1] * dimensions[2];
-    cl_mem mem_obj = CreateBuffer(arrSize, gpu.GetContextManager().GetContext());
+    size_t arrSize = dimensions[0] * dimensions[1] * dimensions[2];
+    cl_mem mem_obj = CreateBuffer<T>(arrSize, this->gpu);
     return Buffer (mem_obj, dimensions, type);
 }
 

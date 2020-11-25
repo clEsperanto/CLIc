@@ -32,12 +32,11 @@ void MaximumOfAllPixelsKernel::Execute()
 {
     Buffer* src = dynamic_cast<Buffer*>(parameterList.at("src"));
     Buffer* dst = dynamic_cast<Buffer*>(parameterList.at("dst_max"));
-
     if (src->GetDimensions()[2] > 1)
     {
         unsigned int tmp_dim[3] = {src->GetDimensions()[0], src->GetDimensions()[1], 1};
-        size_t bitsize = src->GetBitSize() * tmp_dim[0] * tmp_dim[1];
-        cl_mem tmp_mem = CreateBuffer(bitsize, this->gpu.GetContextManager().GetContext());
+        size_t bitsize = tmp_dim[0] * tmp_dim[1];
+        cl_mem tmp_mem = CreateBuffer<float>(bitsize, this->gpu);
         Buffer tmp (tmp_mem, tmp_dim, src->GetDataType());
 
         MaximumZProjectionKernel kernel(this->gpu);
@@ -47,12 +46,11 @@ void MaximumOfAllPixelsKernel::Execute()
 
         src = &tmp;
     }
-
     if (src->GetDimensions()[1] > 1)
     {
         unsigned int tmp_dim[3] = {src->GetDimensions()[0], 1, 1};
-        size_t bitsize = src->GetBitSize() * tmp_dim[0];
-        cl_mem tmp_mem = CreateBuffer(bitsize, this->gpu.GetContextManager().GetContext());
+        size_t bitsize = tmp_dim[0];
+        cl_mem tmp_mem = CreateBuffer<float>(bitsize, this->gpu);
         Buffer tmp (tmp_mem, tmp_dim, src->GetDataType());
 
         MaximumYProjectionKernel kernel(this->gpu);
@@ -62,7 +60,6 @@ void MaximumOfAllPixelsKernel::Execute()
 
         src = &tmp;
     }
-    
     MaximumXProjectionKernel kernel(this->gpu);
     kernel.SetInput(*src);
     kernel.SetOutput(*dst);
