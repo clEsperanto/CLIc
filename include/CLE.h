@@ -47,14 +47,20 @@ public:
     GPU GetGPU();
 
     void AddImageAndScalar(Buffer&, Buffer&, float);
+    void AddImagesWeighted(Buffer&, Buffer&, Buffer&, float, float);
+    void AddImages(Buffer&, Buffer&, Buffer&);
     void SmallerOrEqualConstant(Buffer&, Buffer&, float);
     void MaximumZProjection(Buffer&, Buffer&);
     void MaximumYProjection(Buffer&, Buffer&);
     void MaximumXProjection(Buffer&, Buffer&);
     void MaximumOfAllPixels(Buffer&, Buffer&);
     void Mean2DSphere(Buffer&, Buffer&, int, int);
+    void NonzeroMinimumBox(Buffer&, Buffer&, Buffer&);
     void Absolute(Buffer&, Buffer&);
     void Sobel(Buffer&, Buffer&);
+    void Set(Buffer&, float);
+    void SetNonzeroPixelsToPixelindex(Buffer&, Buffer&);
+
 
 };
 
