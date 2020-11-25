@@ -32,6 +32,10 @@ set(SOURCES
     ${source_path}/cleMaximumYProjectionKernel.cpp
     ${source_path}/cleMaximumXProjectionKernel.cpp
     ${source_path}/cleMaximumOfAllPixelsKernel.cpp
+    ${source_path}/cleMinimumZProjectionKernel.cpp
+    ${source_path}/cleMinimumYProjectionKernel.cpp
+    ${source_path}/cleMinimumXProjectionKernel.cpp
+    ${source_path}/cleMinimumOfAllPixelsKernel.cpp
     ${source_path}/cleMean2DSphereKernel.cpp
     ${source_path}/cleNonzeroMinimumBoxKernel.cpp
     ${source_path}/cleSmallerOrEqualConstantKernel.cpp

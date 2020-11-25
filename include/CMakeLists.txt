@@ -35,6 +35,10 @@ set(HEADERS
     ${header_path}/cleMaximumYProjectionKernel.h
     ${header_path}/cleMaximumXProjectionKernel.h
     ${header_path}/cleMaximumOfAllPixelsKernel.h
+    ${header_path}/cleMinimumZProjectionKernel.h
+    ${header_path}/cleMinimumYProjectionKernel.h
+    ${header_path}/cleMinimumXProjectionKernel.h
+    ${header_path}/cleMinimumOfAllPixelsKernel.h
     ${header_path}/cleMean2DSphereKernel.h
     ${header_path}/cleNonzeroMinimumBoxKernel.h
     ${header_path}/cleSmallerOrEqualConstantKernel.h
