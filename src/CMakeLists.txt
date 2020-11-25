@@ -25,6 +25,7 @@ set(SOURCES
     ${source_path}/cleAbsoluteKernel.cpp
     ${source_path}/cleAddImageAndScalarKernel.cpp
     ${source_path}/cleAddImagesWeightedKernel.cpp
+    ${source_path}/cleGreaterConstantKernel.cpp
     ${source_path}/cleMaximumZProjectionKernel.cpp
     ${source_path}/cleMaximumYProjectionKernel.cpp
     ${source_path}/cleMaximumXProjectionKernel.cpp

@@ -28,6 +28,7 @@ set(HEADERS
     ${header_path}/cleAbsoluteKernel.h
     ${header_path}/cleAddImageAndScalarKernel.h
     ${header_path}/cleAddImagesWeightedKernel.h
+    ${header_path}/cleGreaterConstantKernel.h
     ${header_path}/cleMaximumZProjectionKernel.h
     ${header_path}/cleMaximumYProjectionKernel.h
     ${header_path}/cleMaximumXProjectionKernel.h
