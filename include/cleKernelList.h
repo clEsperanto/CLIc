@@ -11,6 +11,8 @@
 #include "cleAbsoluteKernel.h"
 #include "cleAddImageAndScalarKernel.h"
 #include "cleAddImagesWeightedKernel.h"
+#include "cleDilateSphereKernel.h"
+#include "cleErodeSphereKernel.h"
 #include "cleGreaterConstantKernel.h"
 #include "cleMaximumOfAllPixelsKernel.h"
 #include "cleMaximumZProjectionKernel.h"
