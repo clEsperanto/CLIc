@@ -34,6 +34,47 @@ void CLE::AddImageAndScalar(Buffer& src, Buffer& dst, float scalar)
     kernel.Execute();
 }
 
+void CLE::AddImagesWeighted(Buffer& src1, Buffer& src2, Buffer& dst, float factor1, float factor2)
+{
+    AddImagesWeightedKernel kernel(this->gpu);
+    kernel.SetInput1(src1);
+    kernel.SetInput2(src2);
+    kernel.SetOutput(dst);
+    kernel.SetFactor1(1);
+    kernel.SetFactor2(1);
+    kernel.Execute();
+}
+
+void CLE::AddImages(Buffer& src1, Buffer& src2, Buffer& dst)
+{
+    this->AddImagesWeighted(src1, src2, dst, 1, 1);
+}
+
+void CLE::DilateSphere(Buffer& src, Buffer& dst)
+{
+    DilateSphereKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute();
+}
+
+void CLE::ErodeSphere(Buffer& src, Buffer& dst)
+{
+    ErodeSphereKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute();
+}
+
+void CLE::GreaterThanConstant(Buffer& src, Buffer& dst, float scalar)
+{
+    GreaterConstantKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetScalar(scalar);
+    kernel.Execute();
+}
+
 void CLE::MaximumZProjection(Buffer& src, Buffer& dst)
 {
     MaximumZProjectionKernel kernel(this->gpu);
@@ -66,6 +107,39 @@ void CLE::MaximumOfAllPixels(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }  
 
+void CLE::MinimumZProjection(Buffer& src, Buffer& dst)
+{
+    MinimumZProjectionKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}
+
+void CLE::MinimumYProjection(Buffer& src, Buffer& dst)
+{
+    MinimumYProjectionKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}
+
+void CLE::MinimumXProjection(Buffer& src, Buffer& dst)
+{
+    MinimumXProjectionKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}
+
+void CLE::MinimumOfAllPixels(Buffer& src, Buffer& dst)
+{
+    MinimumOfAllPixelsKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}  
+
+
 
 void CLE::Mean2DSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y)
 {
@@ -75,6 +149,15 @@ void CLE::Mean2DSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y)
     kernel.SetRadiusX(radius_x);
     kernel.SetRadiusY(radius_y);
     kernel.Execute();
+}
+
+void CLE::NonzeroMinimumBox(Buffer& src, Buffer& dst, Buffer& flag)
+{
+    NonzeroMinimumBoxKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput1(dst);
+    kernel.SetOutput2(flag);
+    kernel.Execute();  
 }
 
 void CLE::SmallerOrEqualConstant(Buffer& src, Buffer& dst, float cst)
@@ -97,6 +180,22 @@ void CLE::Absolute(Buffer& src, Buffer& dst)
 void CLE::Sobel(Buffer& src, Buffer& dst)
 {
     SobelKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute();  
+}
+
+void CLE::Set(Buffer& src, float value)
+{
+    SetKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetValue(value);
+    kernel.Execute();  
+}
+
+void CLE::SetNonzeroPixelsToPixelindex(Buffer& src, Buffer& dst)
+{
+    SetNonzeroPixelsToPixelindexKernel kernel(this->gpu);
     kernel.SetInput(src);
     kernel.SetOutput(dst);
     kernel.Execute();  
