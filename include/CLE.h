@@ -47,10 +47,11 @@ public:
     GPU GetGPU();
 
     void AddImageAndScalar(Buffer&, Buffer&, float);
-    void AddImagesWeighted(Buffer&, Buffer&, Buffer&, float, float);
+    void AddImagesWeighted(Buffer&, Buffer&, Buffer&, float=1, float=1);
     void AddImages(Buffer&, Buffer&, Buffer&);
     void DilateSphere(Buffer&, Buffer&);
     void ErodeSphere(Buffer&, Buffer&);
+    void GaussianBlur(Buffer&, Buffer&, float=0, float=0, float=0);
     void GreaterThanConstant(Buffer&, Buffer&, float);
     void SmallerOrEqualConstant(Buffer&, Buffer&, float);
     void MaximumZProjection(Buffer&, Buffer&);
@@ -61,7 +62,7 @@ public:
     void MinimumYProjection(Buffer&, Buffer&);
     void MinimumXProjection(Buffer&, Buffer&);
     void MinimumOfAllPixels(Buffer&, Buffer&);
-    void Mean2DSphere(Buffer&, Buffer&, int, int);
+    void Mean2DSphere(Buffer&, Buffer&, int=1, int=1);
     void NonzeroMinimumBox(Buffer&, Buffer&, Buffer&);
     void Absolute(Buffer&, Buffer&);
     void Sobel(Buffer&, Buffer&);
