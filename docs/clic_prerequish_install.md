@@ -24,7 +24,7 @@ None of those are OS specific, and therefore CLIc can compile and run on Windows
 ToDo
 
 ### LibTiff
-ToDo
+Already compiled LibTiff can be found at the anacond [website](https://anaconda.org/anaconda/libtiff/files)
 
 ### Cmake
 [Download and install](https://github.com/Kitware/CMake/releases/download/v3.19.0/cmake-3.19.0-win64-x64.msi) and install the .msi from the CMake website
