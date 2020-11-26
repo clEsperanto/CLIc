@@ -25,8 +25,10 @@ set(SOURCES
     ${source_path}/cleAbsoluteKernel.cpp
     ${source_path}/cleAddImageAndScalarKernel.cpp
     ${source_path}/cleAddImagesWeightedKernel.cpp
+    ${source_path}/cleCopyKernel.cpp
     ${source_path}/cleDilateSphereKernel.cpp
     ${source_path}/cleErodeSphereKernel.cpp
+    ${source_path}/cleGaussianBlurKernel.cpp
     ${source_path}/cleGreaterConstantKernel.cpp
     ${source_path}/cleMaximumZProjectionKernel.cpp
     ${source_path}/cleMaximumYProjectionKernel.cpp
@@ -42,6 +44,8 @@ set(SOURCES
     ${source_path}/cleSobelKernel.cpp
     ${source_path}/cleSetKernel.cpp
     ${source_path}/cleSetNonzeroPixelsToPixelindexKernel.cpp
+    ${source_path}/cleSeparableKernel.cpp
+    ${source_path}/cleExecuteSeparableKernel.cpp
 
     # utilities
     ${source_path}/tiffreader.cpp

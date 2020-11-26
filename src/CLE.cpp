@@ -66,6 +66,15 @@ void CLE::ErodeSphere(Buffer& src, Buffer& dst)
     kernel.Execute();
 }
 
+void CLE::GaussianBlur(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
+{
+    GaussianBlurKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetSigma(sigmaX, sigmaY, sigmaZ);
+    kernel.Execute();
+}
+
 void CLE::GreaterThanConstant(Buffer& src, Buffer& dst, float scalar)
 {
     GreaterConstantKernel kernel(this->gpu);
