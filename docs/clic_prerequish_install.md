@@ -18,7 +18,7 @@ None of those are OS specific, and therefore CLIc can compile and run on Windows
 ## Windows
 
 ### C++ Compiler
-ToDo
+[Visual Studio](https://visualstudio.microsoft.com/downloads/) will provide a compiler and an IDE for heavy project compilation. It is compatible with CMake project generator.  
 
 ### OpenCL
 ToDo
