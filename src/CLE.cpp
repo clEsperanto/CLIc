@@ -84,6 +84,15 @@ void CLE::GreaterThanConstant(Buffer& src, Buffer& dst, float scalar)
     kernel.Execute();
 }
 
+void CLE::GreaterOrEqualConstant(Buffer& src, Buffer& dst, float scalar)
+{
+    GreaterOrEqualConstantKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetScalar(scalar);
+    kernel.Execute();
+}
+
 void CLE::MaximumZProjection(Buffer& src, Buffer& dst)
 {
     MaximumZProjectionKernel kernel(this->gpu);

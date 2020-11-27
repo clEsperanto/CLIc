@@ -33,6 +33,7 @@ set(HEADERS
     ${header_path}/cleErodeSphereKernel.h
     ${header_path}/cleGaussianBlurKernel.h
     ${header_path}/cleGreaterConstantKernel.h
+    ${header_path}/cleGreaterOrEqualConstantKernel.h
     ${header_path}/cleMaximumZProjectionKernel.h
     ${header_path}/cleMaximumYProjectionKernel.h
     ${header_path}/cleMaximumXProjectionKernel.h

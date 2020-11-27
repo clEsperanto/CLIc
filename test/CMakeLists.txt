@@ -24,6 +24,11 @@ add_executable(add_image_and_scalar_test add_image_and_scalar_test.cpp)
 add_dependencies(add_image_and_scalar_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(add_image_and_scalar_test CLIc)
 
+# greater_or_equal_constant_test
+add_executable(greater_or_equal_constant_test greater_or_equal_constant_test.cpp)
+add_dependencies(greater_or_equal_constant_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(greater_or_equal_constant_test CLIc)
+
 # maximum_z_projection_test
 add_executable(maximum_z_projection_test maximum_z_projection_test.cpp)
 add_dependencies(maximum_z_projection_test CLIc) # wait for CLIc to be compiled
