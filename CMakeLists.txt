@@ -9,7 +9,7 @@ set(CLIc_VERSION_PATCH 0 CACHE STRING "patch version" FORCE)
 set(CLIc_VERSION ${CLIc_VERSION_MAJOR}.${CLIc_VERSION_MINOR}.${CLIc_VERSION_PATCH} CACHE STRING "version" FORCE)
 
 # project build options
-option(BUILD_SHARED_LIBS "build CLIc as shared library" ON)
+option(BUILD_SHARED_LIBS "build CLIc as shared library" OFF)
 option(BUILD_TESTING "build and enable tests" ON)
 
 # define cmake options
