@@ -75,7 +75,7 @@ void CLE::GaussianBlur(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, flo
     kernel.Execute();
 }
 
-void CLE::GreaterThanConstant(Buffer& src, Buffer& dst, float scalar)
+void CLE::GreaterConstant(Buffer& src, Buffer& dst, float scalar)
 {
     GreaterConstantKernel kernel(this->gpu);
     kernel.SetInput(src);
