@@ -45,6 +45,7 @@ set(SOURCES
     ${source_path}/cleMinimumOfAllPixelsKernel.cpp
     ${source_path}/cleMean2DSphereKernel.cpp
     ${source_path}/cleNonzeroMinimumBoxKernel.cpp
+    ${source_path}/cleNotEqualKernel.cpp
     ${source_path}/cleNotEqualConstantKernel.cpp
     ${source_path}/cleSmallerKernel.cpp
     ${source_path}/cleSmallerOrEqualKernel.cpp

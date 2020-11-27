@@ -48,6 +48,7 @@ set(HEADERS
     ${header_path}/cleMinimumOfAllPixelsKernel.h
     ${header_path}/cleMean2DSphereKernel.h
     ${header_path}/cleNonzeroMinimumBoxKernel.h
+    ${header_path}/cleNotEqualKernel.h
     ${header_path}/cleNotEqualConstantKernel.h
     ${header_path}/cleSmallerKernel.h
     ${header_path}/cleSmallerOrEqualKernel.h

@@ -31,6 +31,7 @@
 #include "cleMinimumXProjectionKernel.h"
 #include "cleMean2DSphereKernel.h"
 #include "cleNonzeroMinimumBoxKernel.h"
+#include "cleNotEqualKernel.h"
 #include "cleNotEqualConstantKernel.h"
 #include "cleSmallerKernel.h"
 #include "cleSmallerOrEqualKernel.h"
