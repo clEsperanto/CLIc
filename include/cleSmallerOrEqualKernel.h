@@ -33,7 +33,6 @@ public:
     void SetInput1(Object&);
     void SetInput2(Object&);
     void SetOutput(Object&);
-    void Set(float);
 
     ~SmallerOrEqualKernel() = default;
 

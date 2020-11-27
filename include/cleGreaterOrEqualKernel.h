@@ -27,13 +27,12 @@ public:
     GreaterOrEqualKernel(GPU& gpu) : Kernel(gpu)
     {
         kernelName = "greater_or_equal";
-        tagList = {"src1" , "src2", "dst"};
+        tagList = {"src1", "src2", "dst"};
     }
 
     void SetInput1(Object&);
     void SetInput2(Object&);
     void SetOutput(Object&);
-    void Set(float);
 
     ~GreaterOrEqualKernel() = default;
 
