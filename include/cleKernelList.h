@@ -27,6 +27,7 @@
 #include "cleMinimumXProjectionKernel.h"
 #include "cleMean2DSphereKernel.h"
 #include "cleNonzeroMinimumBoxKernel.h"
+#include "cleSmallerConstantKernel.h"
 #include "cleSmallerOrEqualConstantKernel.h"
 #include "cleSobelKernel.h"
 #include "cleSetKernel.h"

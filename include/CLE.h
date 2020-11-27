@@ -54,7 +54,6 @@ public:
     void GaussianBlur(Buffer&, Buffer&, float=0, float=0, float=0);
     void GreaterConstant(Buffer&, Buffer&, float);
     void GreaterOrEqualConstant(Buffer&, Buffer&, float);
-    void SmallerOrEqualConstant(Buffer&, Buffer&, float);
     void MaximumZProjection(Buffer&, Buffer&);
     void MaximumYProjection(Buffer&, Buffer&);
     void MaximumXProjection(Buffer&, Buffer&);
@@ -70,6 +69,8 @@ public:
     void Set(Buffer&, float);
     void SetNonzeroPixelsToPixelindex(Buffer&, Buffer&);
 
+    void SmallerConstant(Buffer&, Buffer&, float);
+    void SmallerOrEqualConstant(Buffer&, Buffer&, float);
 
 };
 

@@ -178,13 +178,22 @@ void CLE::NonzeroMinimumBox(Buffer& src, Buffer& dst, Buffer& flag)
     kernel.Execute();  
 }
 
+void CLE::SmallerConstant(Buffer& src, Buffer& dst, float cst)
+{
+    SmallerConstantKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetConstant(cst);
+    kernel.Execute();  
+}
+
 void CLE::SmallerOrEqualConstant(Buffer& src, Buffer& dst, float cst)
 {
     SmallerOrEqualConstantKernel kernel(this->gpu);
     kernel.SetInput(src);
     kernel.SetOutput(dst);
     kernel.SetConstant(cst);
-    kernel.Execute();  
+    kernel.Execute();
 }
 
 void CLE::Absolute(Buffer& src, Buffer& dst)
