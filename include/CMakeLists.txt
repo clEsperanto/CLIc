@@ -47,6 +47,7 @@ set(HEADERS
     ${header_path}/cleNonzeroMinimumBoxKernel.h
     ${header_path}/cleNotEqualConstantKernel.h
     ${header_path}/cleSmallerKernel.h
+    ${header_path}/cleSmallerOrEqualKernel.h
     ${header_path}/cleSmallerConstantKernel.h
     ${header_path}/cleSmallerOrEqualConstantKernel.h
     ${header_path}/cleSobelKernel.h

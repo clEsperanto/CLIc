@@ -72,6 +72,7 @@ public:
     void SetNonzeroPixelsToPixelindex(Buffer&, Buffer&);
 
     void Smaller(Buffer&, Buffer&, Buffer&);
+    void SmallerOrEqual(Buffer&, Buffer&, Buffer&);
     void SmallerConstant(Buffer&, Buffer&, float);
     void SmallerOrEqualConstant(Buffer&, Buffer&, float);
 

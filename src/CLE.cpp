@@ -205,6 +205,15 @@ void CLE::Smaller(Buffer& src1, Buffer& src2, Buffer& dst)
     kernel.Execute();
 }
 
+void CLE::SmallerOrEqual(Buffer& src1, Buffer& src2, Buffer& dst)
+{
+    SmallerOrEqualKernel kernel(this->gpu);
+    kernel.SetInput1(src1);
+    kernel.SetInput2(src2);
+    kernel.SetOutput(dst);
+    kernel.Execute();
+}
+
 void CLE::SmallerConstant(Buffer& src, Buffer& dst, float cst)
 {
     SmallerConstantKernel kernel(this->gpu);
