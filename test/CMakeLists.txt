@@ -79,6 +79,11 @@ add_executable(smaller_test smaller_test.cpp)
 add_dependencies(smaller_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(smaller_test CLIc)
 
+# set_test
+add_executable(set_test set_test.cpp)
+add_dependencies(set_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(set_test CLIc)
+
 # smaller_or_equal_test
 add_executable(smaller_or_equal_test smaller_or_equal_test.cpp)
 add_dependencies(smaller_or_equal_test CLIc) # wait for CLIc to be compiled
