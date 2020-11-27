@@ -84,6 +84,15 @@ void CLE::GaussianBlur(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, flo
     kernel.Execute();
 }
 
+void CLE::Greater(Buffer& src1, Buffer& src2, Buffer& dst)
+{
+    GreaterKernel kernel(this->gpu);
+    kernel.SetInput1(src1);
+    kernel.SetInput2(src2);
+    kernel.SetOutput(dst);
+    kernel.Execute();
+}
+
 void CLE::GreaterOrEqual(Buffer& src1, Buffer& src2, Buffer& dst)
 {
     GreaterOrEqualKernel kernel(this->gpu);
