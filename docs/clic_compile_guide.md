@@ -48,12 +48,13 @@ git submodule update --init --recursive
     - add path to OpenCL library to OpenCL_LIBRARY
 7. if CLIc field are marked Not-Found
     - add path to CLIc folder to CLIc_DIR 
-8. run the **Configure button** (again)
+8. if "build shared libs" is ticked, untick this checkbox
+9. run the **Configure button** (again)
 
 ![cmake-3](./screen-3.png)
 
-9. run the **Generate button**
-10. compile and modify the project
+10. run the **Generate button**
+11. compile and modify the project
     - (Unix makefile) run command *make* in the build folder
     - (Xcode/VSC++) open the project in the build folder and compile it
 
