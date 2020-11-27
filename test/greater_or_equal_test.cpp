@@ -17,8 +17,6 @@
  */
 int main(int argc, char **argv)
 {
-    std::cout << "Test starting..."<< std::endl;
-
     // Initialise random input and valid output.
     unsigned int width (4), height (3), depth (2);
     float input_data1[24] = {
@@ -52,6 +50,7 @@ int main(int argc, char **argv)
     // Initialise device memory and push from host to device
     cle::Buffer gpuInput1 = cle.Push<float>(input_img1);
     cle::Buffer gpuInput2 = cle.Push<float>(input_img2);
+
     cle.Set(gpuInput2, 5);
 
     cle::Buffer gpuOutput = cle.Create<float>(gpuInput1, "float");
@@ -68,7 +67,6 @@ int main(int argc, char **argv)
     {
         difference += std::abs(valid_data[i] - output_img.GetData()[i]);
     }
-    std::cout << "Difference: " << difference << std::endl;
     if (difference > std::numeric_limits<float>::epsilon())
     {
         std::cout << "Test failed, cumulated absolute difference " << difference << " > CPU epsilon (" << std::numeric_limits<float>::epsilon() << ")" << std::endl;
