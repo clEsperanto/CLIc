@@ -29,6 +29,7 @@
 #include "cleMean2DSphereKernel.h"
 #include "cleNonzeroMinimumBoxKernel.h"
 #include "cleNotEqualConstantKernel.h"
+#include "cleSmallerKernel.h"
 #include "cleSmallerConstantKernel.h"
 #include "cleSmallerOrEqualConstantKernel.h"
 #include "cleSobelKernel.h"
