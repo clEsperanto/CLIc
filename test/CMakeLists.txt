@@ -29,6 +29,11 @@ add_executable(equal_constant_test equal_constant_test.cpp)
 add_dependencies(equal_constant_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(equal_constant_test CLIc)
 
+# greater_or_equal_test
+add_executable(greater_or_equal_test greater_or_equal_test.cpp)
+add_dependencies(greater_or_equal_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(greater_or_equal_test CLIc)
+
 # greater_constant_test
 add_executable(greater_constant_test greater_constant_test.cpp)
 add_dependencies(greater_constant_test CLIc) # wait for CLIc to be compiled

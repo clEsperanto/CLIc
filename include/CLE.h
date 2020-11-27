@@ -53,6 +53,7 @@ public:
     void ErodeSphere(Buffer&, Buffer&);
     void EqualConstant(Buffer&, Buffer&, float);
     void GaussianBlur(Buffer&, Buffer&, float=0, float=0, float=0);
+    void GreaterOrEqual(Buffer&, Buffer&, Buffer&);
     void GreaterConstant(Buffer&, Buffer&, float);
     void GreaterOrEqualConstant(Buffer&, Buffer&, float);
     void MaximumZProjection(Buffer&, Buffer&);

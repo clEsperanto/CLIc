@@ -16,6 +16,7 @@
 #include "cleErodeSphereKernel.h"
 #include "cleGaussianBlurKernel.h"
 #include "cleEqualConstantKernel.h"
+#include "cleGreaterOrEqualKernel.h"
 #include "cleGreaterConstantKernel.h"
 #include "cleGreaterOrEqualConstantKernel.h"
 #include "cleMaximumOfAllPixelsKernel.h"
