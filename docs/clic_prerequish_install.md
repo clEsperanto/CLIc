@@ -21,7 +21,7 @@ None of those are OS specific, and therefore CLIc can compile and run on Windows
 [Visual Studio](https://visualstudio.microsoft.com/downloads/) will provide a compiler and an IDE for heavy project compilation. It is compatible with CMake project generator.  
 
 ### OpenCL
-ToDo
+Install an OpenCL SDK, for example from [Intel](https://software.intel.com/content/www/us/en/develop/tools/opencl-sdk/choose-download.html). Note: This should be done after installing Visual Studio. After installation you will find the OpenCL includes under `C:\Program Files (x86)\IntelSWTools\system_studio_2020\OpenCL\sdk\includes` and the OpenCL library under `C:\Program Files (x86)\IntelSWTools\system_studio_2020\OpenCL\sdk\lib\x64\OpenCL.lib`.
 
 ### LibTiff
 Already compiled LibTiff can be found at the anacond [website](https://anaconda.org/anaconda/libtiff/files)
