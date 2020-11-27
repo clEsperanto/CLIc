@@ -66,6 +66,15 @@ void CLE::ErodeSphere(Buffer& src, Buffer& dst)
     kernel.Execute();
 }
 
+void CLE::Equal(Buffer& src1, Buffer& src2, Buffer& dst)
+{
+    EqualKernel kernel(this->gpu);
+    kernel.SetInput1(src1);
+    kernel.SetInput2(src2);
+    kernel.SetOutput(dst);
+    kernel.Execute();
+}
+
 void CLE::EqualConstant(Buffer& src, Buffer& dst, float scalar)
 {
     EqualConstantKernel kernel(this->gpu);

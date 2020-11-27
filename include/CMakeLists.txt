@@ -31,6 +31,7 @@ set(HEADERS
     ${header_path}/cleCopyKernel.h
     ${header_path}/cleDilateSphereKernel.h
     ${header_path}/cleErodeSphereKernel.h
+    ${header_path}/cleEqualKernel.h
     ${header_path}/cleEqualConstantKernel.h
     ${header_path}/cleGaussianBlurKernel.h
     ${header_path}/cleGreaterKernel.h

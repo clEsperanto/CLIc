@@ -15,6 +15,7 @@
 #include "cleCopyKernel.h"
 #include "cleErodeSphereKernel.h"
 #include "cleGaussianBlurKernel.h"
+#include "cleEqualKernel.h"
 #include "cleEqualConstantKernel.h"
 #include "cleGreaterKernel.h"
 #include "cleGreaterOrEqualKernel.h"
