@@ -55,7 +55,7 @@ int main(int argc, char **argv)
     cle::Buffer gpuOutput = cle.Create<float>(gpuInput1, "float");
 
     // Call kernel
-    cle.Smaller(gpuInput1, gpuInput2, gpuOutput);
+    cle.SmallerOrEqual(gpuInput1, gpuInput2, gpuOutput);
 
     // pull device memory to host
     Image<float> output_img = cle.Pull<float>(gpuOutput);    
