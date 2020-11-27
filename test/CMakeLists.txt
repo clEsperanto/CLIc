@@ -64,6 +64,11 @@ add_executable(mean2d_sphere_test mean2d_sphere_test.cpp)
 add_dependencies(mean2d_sphere_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(mean2d_sphere_test CLIc)
 
+# equal_constant_test
+add_executable(not_equal_constant_test not_equal_constant_test.cpp)
+add_dependencies(not_equal_constant_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(not_equal_constant_test CLIc)
+
 # smaller_constant_test
 add_executable(smaller_constant_test smaller_constant_test.cpp)
 add_dependencies(smaller_constant_test CLIc) # wait for CLIc to be compiled

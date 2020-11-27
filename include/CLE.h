@@ -65,6 +65,7 @@ public:
     void MinimumOfAllPixels(Buffer&, Buffer&);
     void Mean2DSphere(Buffer&, Buffer&, int=1, int=1);
     void NonzeroMinimumBox(Buffer&, Buffer&, Buffer&);
+    void NotEqualConstant(Buffer&, Buffer&, float);
     void Absolute(Buffer&, Buffer&);
     void Sobel(Buffer&, Buffer&);
     void Set(Buffer&, float);
