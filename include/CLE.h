@@ -51,6 +51,7 @@ public:
     void AddImages(Buffer&, Buffer&, Buffer&);
     void DilateSphere(Buffer&, Buffer&);
     void ErodeSphere(Buffer&, Buffer&);
+    void EqualConstant(Buffer&, Buffer&, float);
     void GaussianBlur(Buffer&, Buffer&, float=0, float=0, float=0);
     void GreaterConstant(Buffer&, Buffer&, float);
     void GreaterOrEqualConstant(Buffer&, Buffer&, float);

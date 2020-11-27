@@ -24,6 +24,11 @@ add_executable(add_image_and_scalar_test add_image_and_scalar_test.cpp)
 add_dependencies(add_image_and_scalar_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(add_image_and_scalar_test CLIc)
 
+# equal_constant_test
+add_executable(equal_constant_test equal_constant_test.cpp)
+add_dependencies(equal_constant_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(equal_constant_test CLIc)
+
 # greater_constant_test
 add_executable(greater_constant_test greater_constant_test.cpp)
 add_dependencies(greater_constant_test CLIc) # wait for CLIc to be compiled

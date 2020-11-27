@@ -28,6 +28,7 @@ set(SOURCES
     ${source_path}/cleCopyKernel.cpp
     ${source_path}/cleDilateSphereKernel.cpp
     ${source_path}/cleErodeSphereKernel.cpp
+    ${source_path}/cleEqualConstantKernel.cpp
     ${source_path}/cleGaussianBlurKernel.cpp
     ${source_path}/cleGreaterConstantKernel.cpp
     ${source_path}/cleGreaterOrEqualConstantKernel.cpp
