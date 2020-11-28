@@ -231,6 +231,15 @@ void Kernel::CompileKernel()
     clError = clBuildProgram(this->program, 1, &(this->gpu.GetDeviceManager().GetDevice()), nullptr, nullptr, nullptr);
     if (clError != CL_SUCCESS)
     {
+        // if compilation fails, print out source
+        std::cout << source_str << std::endl;
+        // read out compiler error and send it to stderr
+        char buffer[1024];
+        size_t length = 1024;
+        size_t length_ret = 0;
+        clGetProgramBuildInfo(this->program, (this->gpu.GetDeviceManager().GetDevice()), CL_PROGRAM_BUILD_LOG, length, &buffer, &length_ret);
+        std::cerr << buffer << std::endl;
+
         std::cerr << "Kernel : Fail to build program (" << getOpenCLErrorString(clError) << ")" << std::endl;
         throw clError;
     }
