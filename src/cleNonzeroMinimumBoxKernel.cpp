@@ -29,22 +29,27 @@ void NonzeroMinimumBoxKernel::SetInput(Object& x)
     this->AddObject(&x, "src");
 }
 
-void NonzeroMinimumBoxKernel::SetOutput1(Object& x)
+void NonzeroMinimumBoxKernel::SetOutput2(Object& x)
 {
     this->AddObject(&x, "dst");
 }
 
-void NonzeroMinimumBoxKernel::SetOutput2(Object& x)
+void NonzeroMinimumBoxKernel::SetOutput1(Object& x)
 {
     this->AddObject(&x, "flag_dst");
 }
 
 void NonzeroMinimumBoxKernel::Execute()
 {
+    std::cout << "A" << std::endl;
     DefineDimensionality();
+    std::cout << "b" << std::endl;
     CompileKernel();
+    std::cout << "c" << std::endl;
     AddArgumentsToKernel();
+    std::cout << "d" << std::endl;
     DefineRangeKernel();
+    std::cout << "e" << std::endl;
 }
 
 } // namespace cle

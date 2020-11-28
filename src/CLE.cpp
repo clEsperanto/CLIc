@@ -205,12 +205,12 @@ void CLE::Mean2DSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y)
     kernel.Execute();
 }
 
-void CLE::NonzeroMinimumBox(Buffer& src, Buffer& dst, Buffer& flag)
+void CLE::NonzeroMinimumBox(Buffer& src, Buffer& flag, Buffer& dst)
 {
     NonzeroMinimumBoxKernel kernel(this->gpu);
     kernel.SetInput(src);
-    kernel.SetOutput1(dst);
-    kernel.SetOutput2(flag);
+    kernel.SetOutput1(flag);
+    kernel.SetOutput2(dst);
     kernel.Execute();  
 }
 

@@ -79,6 +79,11 @@ add_executable(mean2d_sphere_test mean2d_sphere_test.cpp)
 add_dependencies(mean2d_sphere_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(mean2d_sphere_test CLIc)
 
+# nonzero_minimum_box_test
+add_executable(nonzero_minimum_box_test nonzero_minimum_box_test.cpp)
+add_dependencies(nonzero_minimum_box_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(nonzero_minimum_box_test CLIc)
+
 # not_equal_test
 add_executable(not_equal_test not_equal_test.cpp)
 add_dependencies(not_equal_test CLIc) # wait for CLIc to be compiled
