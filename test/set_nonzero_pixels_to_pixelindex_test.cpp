@@ -18,7 +18,7 @@
 int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
-    unsigned int width (4), height (2), depth (2);
+    unsigned int width (4), height (4), depth (1);
     float input_data1[24] = {
                 0, 0, 0, 1,
                 0, 0, 3, 1,

@@ -28,7 +28,7 @@ public:
 
     void SetInput(Object&);
     void SetOutput(Object&);
-    void SetOffset(float);
+    void SetOffset(int);
     void Execute();
 
     ~SetNonzeroPixelsToPixelindexKernel() = default;

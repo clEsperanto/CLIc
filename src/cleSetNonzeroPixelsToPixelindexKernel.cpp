@@ -23,9 +23,9 @@ void SetNonzeroPixelsToPixelindexKernel::SetOutput(Object& x)
     this->AddObject(&x, "dst");
 }
 
-void SetNonzeroPixelsToPixelindexKernel::SetOffset(float x)
+void SetNonzeroPixelsToPixelindexKernel::SetOffset(int x)
 {
-    Float* val = new Float(x);
+    Int* val = new Int(x);
     this->AddObject(val, "offset");
 }
 
