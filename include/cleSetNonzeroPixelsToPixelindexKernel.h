@@ -23,11 +23,12 @@ public:
     SetNonzeroPixelsToPixelindexKernel(GPU& gpu) : Kernel(gpu) 
     {
         kernelName = "set_nonzero_pixels_to_pixelindex";
-        tagList = {"dst" , "src"};
+        tagList = {"dst" , "src", "offset"};
     }
 
     void SetInput(Object&);
     void SetOutput(Object&);
+    void SetOffset(float);
     void Execute();
 
     ~SetNonzeroPixelsToPixelindexKernel() = default;

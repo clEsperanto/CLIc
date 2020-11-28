@@ -99,6 +99,11 @@ add_executable(set_test set_test.cpp)
 add_dependencies(set_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(set_test CLIc)
 
+# set_test
+add_executable(set_nonzero_pixels_to_pixelindex_test set_nonzero_pixels_to_pixelindex_test.cpp)
+add_dependencies(set_nonzero_pixels_to_pixelindex_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(set_nonzero_pixels_to_pixelindex_test CLIc)
+
 # smaller_or_equal_test
 add_executable(smaller_or_equal_test smaller_or_equal_test.cpp)
 add_dependencies(smaller_or_equal_test CLIc) # wait for CLIc to be compiled

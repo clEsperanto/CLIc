@@ -297,6 +297,7 @@ void CLE::SetNonzeroPixelsToPixelindex(Buffer& src, Buffer& dst)
     SetNonzeroPixelsToPixelindexKernel kernel(this->gpu);
     kernel.SetInput(src);
     kernel.SetOutput(dst);
+    kernel.SetOffset(1);
     kernel.Execute();  
 }
 
