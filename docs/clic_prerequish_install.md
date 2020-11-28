@@ -21,28 +21,29 @@ None of those are OS specific, and therefore CLIc can compile and run on Windows
 [Visual Studio](https://visualstudio.microsoft.com/downloads/) will provide a compiler and an IDE for heavy project compilation. It is compatible with CMake project generator.  
 
 ### OpenCL
-Install an OpenCL SDK, for example from [Intel](https://software.intel.com/content/www/us/en/develop/tools/opencl-sdk/choose-download.html). Note: This should be done after installing Visual Studio. After installation you will find the OpenCL includes under `C:\Program Files (x86)\IntelSWTools\system_studio_2020\OpenCL\sdk\includes` and the OpenCL library under `C:\Program Files (x86)\IntelSWTools\system_studio_2020\OpenCL\sdk\lib\x64\OpenCL.lib`.
+Note: This should be done after installing Visual Studio.
+
+Install an OpenCL SDK, for example from [Intel](https://software.intel.com/content/www/us/en/develop/tools/opencl-sdk/choose-download.html).  After installation you will find the OpenCL includes under `C:\Program Files (x86)\IntelSWTools\system_studio_2020\OpenCL\sdk\includes` and the OpenCL library under `C:\Program Files (x86)\IntelSWTools\system_studio_2020\OpenCL\sdk\lib\x64\OpenCL.lib`.
+
+Alternative possibility for NVidia users, install [CUDA SDK](https://developer.nvidia.com/cuda-downloads) which come with OpenCL. After installation you will find the OpenCL includes under `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\include` and the OpenCL library under `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\lib\x64\OpenCL.lib`.
 
 ### LibTiff
-Already compiled LibTiff can be found at the anacond [website](https://anaconda.org/anaconda/libtiff/files)
+Pre-compiled LibTiff can be found at the anaconda [website](https://anaconda.org/anaconda/libtiff/files).
 
 ### Cmake
-[Download and install](https://github.com/Kitware/CMake/releases/download/v3.19.0/cmake-3.19.0-win64-x64.msi) and install the .msi from the CMake website
+[Download and install](https://github.com/Kitware/CMake/releases/download/v3.19.0/cmake-3.19.0-win64-x64.msi) and install the .msi from the CMake website.
 
 ---
 ## MacOS
 
 ### C++ Compiler
-In a terminal window, run the follwing command
-```
-xcode-select --install
-```
+In a terminal window, run the following command: `xcode-select --install`
 
 ### OpenCL
-MacOS comes with OpenCL already installed. Nothing to do here normally.
+MacOS should come with OpenCL already installed. Nothing to do here.
 
 ### LibTiff
-MacOS comes with LibTiff already installed. Nothing to do here normally.
+MacOS should come with LibTiff already installed. Nothing to do here.
 
 ### Cmake
 [Download and install](https://github.com/Kitware/CMake/releases/download/v3.19.0/cmake-3.19.0-Darwin-x86_64.dmg) and install the .dmg from the CMake website
