@@ -74,6 +74,11 @@ add_executable(maximum_all_pixels_test maximum_all_pixels_test.cpp)
 add_dependencies(maximum_all_pixels_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(maximum_all_pixels_test CLIc)
 
+# minimum_all_pixels_test
+add_executable(minimum_all_pixels_test minimum_all_pixels_test.cpp)
+add_dependencies(minimum_all_pixels_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(minimum_all_pixels_test CLIc)
+
 # mean2d_sphere_test
 add_executable(mean2d_sphere_test mean2d_sphere_test.cpp)
 add_dependencies(mean2d_sphere_test CLIc) # wait for CLIc to be compiled
@@ -144,6 +149,7 @@ add_test(NAME maximum_z_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maxi
 add_test(NAME maximum_y_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_y_projection_test)
 add_test(NAME maximum_x_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_x_projection_test)
 add_test(NAME maximum_all_pixels_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_all_pixels_test)
+add_test(NAME minimum_all_pixels_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/minimum_all_pixels_test)
 add_test(NAME mean2d_sphere_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/mean2d_sphere_test)
 add_test(NAME absolute_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/absolute_test)
 add_test(NAME sobel_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/sobel_test)

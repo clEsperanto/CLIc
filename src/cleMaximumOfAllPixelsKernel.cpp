@@ -52,7 +52,6 @@ void MaximumOfAllPixelsKernel::Execute()
         size_t bitsize = tmp_dim[0];
         cl_mem tmp_mem = CreateBuffer<float>(bitsize, this->gpu);
         Buffer tmp (tmp_mem, tmp_dim, src->GetDataType());
-
         MaximumYProjectionKernel kernel(this->gpu);
         kernel.SetInput(*src);
         kernel.SetOutput(tmp);
