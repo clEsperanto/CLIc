@@ -24,6 +24,36 @@ add_executable(add_image_and_scalar_test add_image_and_scalar_test.cpp)
 add_dependencies(add_image_and_scalar_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(add_image_and_scalar_test CLIc)
 
+# equal_test
+add_executable(equal_test equal_test.cpp)
+add_dependencies(equal_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(equal_test CLIc)
+
+# equal_constant_test
+add_executable(equal_constant_test equal_constant_test.cpp)
+add_dependencies(equal_constant_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(equal_constant_test CLIc)
+
+# greater_test
+add_executable(greater_test greater_test.cpp)
+add_dependencies(greater_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(greater_test CLIc)
+
+# greater_or_equal_test
+add_executable(greater_or_equal_test greater_or_equal_test.cpp)
+add_dependencies(greater_or_equal_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(greater_or_equal_test CLIc)
+
+# greater_constant_test
+add_executable(greater_constant_test greater_constant_test.cpp)
+add_dependencies(greater_constant_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(greater_constant_test CLIc)
+
+# greater_or_equal_constant_test
+add_executable(greater_or_equal_constant_test greater_or_equal_constant_test.cpp)
+add_dependencies(greater_or_equal_constant_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(greater_or_equal_constant_test CLIc)
+
 # maximum_z_projection_test
 add_executable(maximum_z_projection_test maximum_z_projection_test.cpp)
 add_dependencies(maximum_z_projection_test CLIc) # wait for CLIc to be compiled
@@ -49,6 +79,46 @@ add_executable(mean2d_sphere_test mean2d_sphere_test.cpp)
 add_dependencies(mean2d_sphere_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(mean2d_sphere_test CLIc)
 
+# nonzero_minimum_box_test
+add_executable(nonzero_minimum_box_test nonzero_minimum_box_test.cpp)
+add_dependencies(nonzero_minimum_box_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(nonzero_minimum_box_test CLIc)
+
+# not_equal_test
+add_executable(not_equal_test not_equal_test.cpp)
+add_dependencies(not_equal_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(not_equal_test CLIc)
+
+# equal_constant_test
+add_executable(not_equal_constant_test not_equal_constant_test.cpp)
+add_dependencies(not_equal_constant_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(not_equal_constant_test CLIc)
+
+# smaller_test
+add_executable(smaller_test smaller_test.cpp)
+add_dependencies(smaller_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(smaller_test CLIc)
+
+# set_test
+add_executable(set_test set_test.cpp)
+add_dependencies(set_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(set_test CLIc)
+
+# set_test
+add_executable(set_nonzero_pixels_to_pixelindex_test set_nonzero_pixels_to_pixelindex_test.cpp)
+add_dependencies(set_nonzero_pixels_to_pixelindex_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(set_nonzero_pixels_to_pixelindex_test CLIc)
+
+# smaller_or_equal_test
+add_executable(smaller_or_equal_test smaller_or_equal_test.cpp)
+add_dependencies(smaller_or_equal_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(smaller_or_equal_test CLIc)
+
+# smaller_constant_test
+add_executable(smaller_constant_test smaller_constant_test.cpp)
+add_dependencies(smaller_constant_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(smaller_constant_test CLIc)
+
 # smaller_or_equal_constant_test
 add_executable(smaller_or_equal_constant_test smaller_or_equal_constant_test.cpp)
 add_dependencies(smaller_or_equal_constant_test CLIc) # wait for CLIc to be compiled
@@ -59,7 +129,7 @@ add_executable(absolute_test absolute_test.cpp)
 add_dependencies(absolute_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(absolute_test CLIc)
 
-# absolute_test
+# sobel_test
 add_executable(sobel_test sobel_test.cpp)
 add_dependencies(sobel_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(sobel_test CLIc)
@@ -75,6 +145,19 @@ add_test(NAME maximum_y_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maxi
 add_test(NAME maximum_x_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_x_projection_test)
 add_test(NAME maximum_all_pixels_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_all_pixels_test)
 add_test(NAME mean2d_sphere_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/mean2d_sphere_test)
-add_test(NAME smaller_or_equal_constant_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/smaller_or_equal_constant_test)
 add_test(NAME absolute_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/absolute_test)
 add_test(NAME sobel_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/sobel_test)
+add_test(NAME equal_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/equal_test)
+add_test(NAME equal_constant_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/equal_constant_test)
+add_test(NAME greater_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/greater_test)
+add_test(NAME greater_or_equal_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/greater_or_equal_test)
+add_test(NAME greater_constant_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/greater_constant_test)
+add_test(NAME greater_or_equal_constant_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/greater_or_equal_constant_test)
+add_test(NAME nonzero_minimum_box_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/nonzero_minimum_box_test)
+add_test(NAME not_equal_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/not_equal_test)
+add_test(NAME not_equal_constant_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/not_equal_constant_test)
+add_test(NAME smaller_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/smaller_test)
+add_test(NAME set_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/set_test)
+add_test(NAME set_nonzero_pixels_to_pixelindex_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/set_nonzero_pixels_to_pixelindex_test)
+add_test(NAME smaller_or_equal_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/smaller_or_equal_test)
+add_test(NAME smaller_constant_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/smaller_constant_test)

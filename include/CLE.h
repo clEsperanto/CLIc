@@ -51,9 +51,13 @@ public:
     void AddImages(Buffer&, Buffer&, Buffer&);
     void DilateSphere(Buffer&, Buffer&);
     void ErodeSphere(Buffer&, Buffer&);
+    void Equal(Buffer&, Buffer&, Buffer&);
+    void EqualConstant(Buffer&, Buffer&, float);
     void GaussianBlur(Buffer&, Buffer&, float=0, float=0, float=0);
-    void GreaterThanConstant(Buffer&, Buffer&, float);
-    void SmallerOrEqualConstant(Buffer&, Buffer&, float);
+    void Greater(Buffer&, Buffer&, Buffer&);
+    void GreaterOrEqual(Buffer&, Buffer&, Buffer&);
+    void GreaterConstant(Buffer&, Buffer&, float);
+    void GreaterOrEqualConstant(Buffer&, Buffer&, float);
     void MaximumZProjection(Buffer&, Buffer&);
     void MaximumYProjection(Buffer&, Buffer&);
     void MaximumXProjection(Buffer&, Buffer&);
@@ -64,11 +68,17 @@ public:
     void MinimumOfAllPixels(Buffer&, Buffer&);
     void Mean2DSphere(Buffer&, Buffer&, int=1, int=1);
     void NonzeroMinimumBox(Buffer&, Buffer&, Buffer&);
+    void NotEqual(Buffer&, Buffer&, Buffer&);
+    void NotEqualConstant(Buffer&, Buffer&, float);
     void Absolute(Buffer&, Buffer&);
     void Sobel(Buffer&, Buffer&);
     void Set(Buffer&, float);
     void SetNonzeroPixelsToPixelindex(Buffer&, Buffer&);
 
+    void Smaller(Buffer&, Buffer&, Buffer&);
+    void SmallerOrEqual(Buffer&, Buffer&, Buffer&);
+    void SmallerConstant(Buffer&, Buffer&, float);
+    void SmallerOrEqualConstant(Buffer&, Buffer&, float);
 
 };
 

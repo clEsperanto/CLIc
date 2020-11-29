@@ -66,6 +66,24 @@ void CLE::ErodeSphere(Buffer& src, Buffer& dst)
     kernel.Execute();
 }
 
+void CLE::Equal(Buffer& src1, Buffer& src2, Buffer& dst)
+{
+    EqualKernel kernel(this->gpu);
+    kernel.SetInput1(src1);
+    kernel.SetInput2(src2);
+    kernel.SetOutput(dst);
+    kernel.Execute();
+}
+
+void CLE::EqualConstant(Buffer& src, Buffer& dst, float scalar)
+{
+    EqualConstantKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetScalar(scalar);
+    kernel.Execute();
+}
+
 void CLE::GaussianBlur(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
 {
     GaussianBlurKernel kernel(this->gpu);
@@ -75,9 +93,36 @@ void CLE::GaussianBlur(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, flo
     kernel.Execute();
 }
 
-void CLE::GreaterThanConstant(Buffer& src, Buffer& dst, float scalar)
+void CLE::Greater(Buffer& src1, Buffer& src2, Buffer& dst)
+{
+    GreaterKernel kernel(this->gpu);
+    kernel.SetInput1(src1);
+    kernel.SetInput2(src2);
+    kernel.SetOutput(dst);
+    kernel.Execute();
+}
+
+void CLE::GreaterOrEqual(Buffer& src1, Buffer& src2, Buffer& dst)
+{
+    GreaterOrEqualKernel kernel(this->gpu);
+    kernel.SetInput1(src1);
+    kernel.SetInput2(src2);
+    kernel.SetOutput(dst);
+    kernel.Execute();
+}
+
+void CLE::GreaterConstant(Buffer& src, Buffer& dst, float scalar)
 {
     GreaterConstantKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetScalar(scalar);
+    kernel.Execute();
+}
+
+void CLE::GreaterOrEqualConstant(Buffer& src, Buffer& dst, float scalar)
+{
+    GreaterOrEqualConstantKernel kernel(this->gpu);
     kernel.SetInput(src);
     kernel.SetOutput(dst);
     kernel.SetScalar(scalar);
@@ -160,12 +205,57 @@ void CLE::Mean2DSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y)
     kernel.Execute();
 }
 
-void CLE::NonzeroMinimumBox(Buffer& src, Buffer& dst, Buffer& flag)
+void CLE::NonzeroMinimumBox(Buffer& src, Buffer& flag, Buffer& dst)
 {
     NonzeroMinimumBoxKernel kernel(this->gpu);
     kernel.SetInput(src);
-    kernel.SetOutput1(dst);
-    kernel.SetOutput2(flag);
+    kernel.SetOutput1(flag);
+    kernel.SetOutput2(dst);
+    kernel.Execute();  
+}
+
+void CLE::NotEqual(Buffer& src1, Buffer& src2, Buffer& dst)
+{
+    NotEqualKernel kernel(this->gpu);
+    kernel.SetInput1(src1);
+    kernel.SetInput2(src2);
+    kernel.SetOutput(dst);
+    kernel.Execute();
+}
+
+void CLE::NotEqualConstant(Buffer& src, Buffer& dst, float scalar)
+{
+    NotEqualConstantKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetScalar(scalar);
+    kernel.Execute();
+}
+
+void CLE::Smaller(Buffer& src1, Buffer& src2, Buffer& dst)
+{
+    SmallerKernel kernel(this->gpu);
+    kernel.SetInput1(src1);
+    kernel.SetInput2(src2);
+    kernel.SetOutput(dst);
+    kernel.Execute();
+}
+
+void CLE::SmallerOrEqual(Buffer& src1, Buffer& src2, Buffer& dst)
+{
+    SmallerOrEqualKernel kernel(this->gpu);
+    kernel.SetInput1(src1);
+    kernel.SetInput2(src2);
+    kernel.SetOutput(dst);
+    kernel.Execute();
+}
+
+void CLE::SmallerConstant(Buffer& src, Buffer& dst, float cst)
+{
+    SmallerConstantKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetConstant(cst);
     kernel.Execute();  
 }
 
@@ -175,7 +265,7 @@ void CLE::SmallerOrEqualConstant(Buffer& src, Buffer& dst, float cst)
     kernel.SetInput(src);
     kernel.SetOutput(dst);
     kernel.SetConstant(cst);
-    kernel.Execute();  
+    kernel.Execute();
 }
 
 void CLE::Absolute(Buffer& src, Buffer& dst)
@@ -207,6 +297,7 @@ void CLE::SetNonzeroPixelsToPixelindex(Buffer& src, Buffer& dst)
     SetNonzeroPixelsToPixelindexKernel kernel(this->gpu);
     kernel.SetInput(src);
     kernel.SetOutput(dst);
+    kernel.SetOffset(1);
     kernel.Execute();  
 }
 

@@ -16,7 +16,7 @@ namespace cle
 void SetKernel::DefineDimensionality()
 {
     std::string dim = "_2d";
-    Buffer* bufferObject = dynamic_cast<Buffer*>(parameterList.at("src"));
+    Buffer* bufferObject = dynamic_cast<Buffer*>(parameterList.at("dst"));
     if(bufferObject->GetDimensions()[2] > 1)
     {
         dim = "_3d";
@@ -26,7 +26,7 @@ void SetKernel::DefineDimensionality()
 
 void SetKernel::SetInput(Object& x)
 {
-    this->AddObject(&x, "src");
+    this->AddObject(&x, "dst");
 }
 
 void SetKernel::SetValue(float x)

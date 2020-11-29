@@ -8,32 +8,35 @@
 */
 
 
-#ifndef __cleSetNonzeroPixelsToPixelindexKernel_h
-#define __cleSetNonzeroPixelsToPixelindexKernel_h
+#ifndef __cleNotEqualConstantKernel_h
+#define __cleNotEqualConstantKernel_h
 
 #include "cleKernel.h"
 
 namespace cle
 {
     
-class SetNonzeroPixelsToPixelindexKernel : public Kernel
+class NotEqualConstantKernel : public Kernel
 {
+private:
+
+    void DefineDimensionality();
 
 public:
-    SetNonzeroPixelsToPixelindexKernel(GPU& gpu) : Kernel(gpu) 
+    NotEqualConstantKernel(GPU& gpu) : Kernel(gpu)
     {
-        kernelName = "set_nonzero_pixels_to_pixelindex";
-        tagList = {"dst" , "src", "offset"};
+        kernelName = "not_equal_constant";
+        tagList = {"src1", "scalar", "dst"};
     }
 
     void SetInput(Object&);
     void SetOutput(Object&);
-    void SetOffset(int);
+    void SetScalar(float);
     void Execute();
 
-    ~SetNonzeroPixelsToPixelindexKernel() = default;
+    ~NotEqualConstantKernel() = default;
 };
 
 } // namespace cle
 
-#endif // __cleSetNonzeroPixelsToPixelindexKernel_h
+#endif // __cleNotEqualConstantKernel_h

@@ -16,7 +16,7 @@ namespace cle
 void GreaterConstantKernel::DefineDimensionality()
 {
     std::string dim = "_2d";
-    Buffer* bufferObject = dynamic_cast<Buffer*>(parameterList.at("src"));
+    Buffer* bufferObject = dynamic_cast<Buffer*>(parameterList.at("src1"));
     if(bufferObject->GetDimensions()[2] > 1)
     {
         dim = "_3d";

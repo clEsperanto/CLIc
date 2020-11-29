@@ -31,8 +31,13 @@ set(HEADERS
     ${header_path}/cleCopyKernel.h
     ${header_path}/cleDilateSphereKernel.h
     ${header_path}/cleErodeSphereKernel.h
+    ${header_path}/cleEqualKernel.h
+    ${header_path}/cleEqualConstantKernel.h
     ${header_path}/cleGaussianBlurKernel.h
+    ${header_path}/cleGreaterKernel.h
+    ${header_path}/cleGreaterOrEqualKernel.h
     ${header_path}/cleGreaterConstantKernel.h
+    ${header_path}/cleGreaterOrEqualConstantKernel.h
     ${header_path}/cleMaximumZProjectionKernel.h
     ${header_path}/cleMaximumYProjectionKernel.h
     ${header_path}/cleMaximumXProjectionKernel.h
@@ -43,6 +48,11 @@ set(HEADERS
     ${header_path}/cleMinimumOfAllPixelsKernel.h
     ${header_path}/cleMean2DSphereKernel.h
     ${header_path}/cleNonzeroMinimumBoxKernel.h
+    ${header_path}/cleNotEqualKernel.h
+    ${header_path}/cleNotEqualConstantKernel.h
+    ${header_path}/cleSmallerKernel.h
+    ${header_path}/cleSmallerOrEqualKernel.h
+    ${header_path}/cleSmallerConstantKernel.h
     ${header_path}/cleSmallerOrEqualConstantKernel.h
     ${header_path}/cleSobelKernel.h
     ${header_path}/cleSetKernel.h

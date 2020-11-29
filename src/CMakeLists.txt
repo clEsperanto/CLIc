@@ -28,8 +28,13 @@ set(SOURCES
     ${source_path}/cleCopyKernel.cpp
     ${source_path}/cleDilateSphereKernel.cpp
     ${source_path}/cleErodeSphereKernel.cpp
+    ${source_path}/cleEqualKernel.cpp
+    ${source_path}/cleEqualConstantKernel.cpp
     ${source_path}/cleGaussianBlurKernel.cpp
+    ${source_path}/cleGreaterKernel.cpp
+    ${source_path}/cleGreaterOrEqualKernel.cpp
     ${source_path}/cleGreaterConstantKernel.cpp
+    ${source_path}/cleGreaterOrEqualConstantKernel.cpp
     ${source_path}/cleMaximumZProjectionKernel.cpp
     ${source_path}/cleMaximumYProjectionKernel.cpp
     ${source_path}/cleMaximumXProjectionKernel.cpp
@@ -40,6 +45,11 @@ set(SOURCES
     ${source_path}/cleMinimumOfAllPixelsKernel.cpp
     ${source_path}/cleMean2DSphereKernel.cpp
     ${source_path}/cleNonzeroMinimumBoxKernel.cpp
+    ${source_path}/cleNotEqualKernel.cpp
+    ${source_path}/cleNotEqualConstantKernel.cpp
+    ${source_path}/cleSmallerKernel.cpp
+    ${source_path}/cleSmallerOrEqualKernel.cpp
+    ${source_path}/cleSmallerConstantKernel.cpp
     ${source_path}/cleSmallerOrEqualConstantKernel.cpp
     ${source_path}/cleSobelKernel.cpp
     ${source_path}/cleSetKernel.cpp

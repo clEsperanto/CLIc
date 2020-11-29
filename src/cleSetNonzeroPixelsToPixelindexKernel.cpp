@@ -23,6 +23,12 @@ void SetNonzeroPixelsToPixelindexKernel::SetOutput(Object& x)
     this->AddObject(&x, "dst");
 }
 
+void SetNonzeroPixelsToPixelindexKernel::SetOffset(int x)
+{
+    Int* val = new Int(x);
+    this->AddObject(val, "offset");
+}
+
 void SetNonzeroPixelsToPixelindexKernel::Execute()
 {
     CompileKernel();

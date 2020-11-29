@@ -8,15 +8,15 @@
 */
 
 
-#include "cleNonzeroMinimumBoxKernel.h"
+#include "cleEqualConstantKernel.h"
 
 namespace cle
 {
-
-void NonzeroMinimumBoxKernel::DefineDimensionality()
+    
+void EqualConstantKernel::DefineDimensionality()
 {
     std::string dim = "_2d";
-    Buffer* bufferObject = dynamic_cast<Buffer*>(parameterList.at("src"));
+    Buffer* bufferObject = dynamic_cast<Buffer*>(parameterList.at("src1"));
     if(bufferObject->GetDimensions()[2] > 1)
     {
         dim = "_3d";
@@ -24,32 +24,28 @@ void NonzeroMinimumBoxKernel::DefineDimensionality()
     kernelName = kernelName + dim;
 }
 
-void NonzeroMinimumBoxKernel::SetInput(Object& x)
+void EqualConstantKernel::SetInput(Object& x)
 {
-    this->AddObject(&x, "src");
+    this->AddObject(&x, "src1");
 }
 
-void NonzeroMinimumBoxKernel::SetOutput2(Object& x)
+void EqualConstantKernel::SetOutput(Object& x)
 {
     this->AddObject(&x, "dst");
 }
 
-void NonzeroMinimumBoxKernel::SetOutput1(Object& x)
+void EqualConstantKernel::SetScalar(float x)
 {
-    this->AddObject(&x, "flag_dst");
+    Float* val = new Float(x);
+    this->AddObject(val, "scalar");
 }
 
-void NonzeroMinimumBoxKernel::Execute()
+void EqualConstantKernel::Execute()
 {
-    std::cout << "A" << std::endl;
     DefineDimensionality();
-    std::cout << "b" << std::endl;
     CompileKernel();
-    std::cout << "c" << std::endl;
     AddArgumentsToKernel();
-    std::cout << "d" << std::endl;
     DefineRangeKernel();
-    std::cout << "e" << std::endl;
 }
 
 } // namespace cle
