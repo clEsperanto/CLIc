@@ -129,7 +129,7 @@ add_executable(absolute_test absolute_test.cpp)
 add_dependencies(absolute_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(absolute_test CLIc)
 
-# absolute_test
+# sobel_test
 add_executable(sobel_test sobel_test.cpp)
 add_dependencies(sobel_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(sobel_test CLIc)
@@ -145,6 +145,19 @@ add_test(NAME maximum_y_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maxi
 add_test(NAME maximum_x_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_x_projection_test)
 add_test(NAME maximum_all_pixels_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_all_pixels_test)
 add_test(NAME mean2d_sphere_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/mean2d_sphere_test)
-add_test(NAME smaller_or_equal_constant_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/smaller_or_equal_constant_test)
 add_test(NAME absolute_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/absolute_test)
 add_test(NAME sobel_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/sobel_test)
+add_test(NAME equal_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/equal_test)
+add_test(NAME equal_constant_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/equal_constant_test)
+add_test(NAME greater_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/greater_test)
+add_test(NAME greater_or_equal_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/greater_or_equal_test)
+add_test(NAME greater_constant_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/greater_constant_test)
+add_test(NAME greater_or_equal_constant_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/greater_or_equal_constant_test)
+add_test(NAME nonzero_minimum_box_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/nonzero_minimum_box_test)
+add_test(NAME not_equal_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/not_equal_test)
+add_test(NAME not_equal_constant_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/not_equal_constant_test)
+add_test(NAME smaller_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/smaller_test)
+add_test(NAME set_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/set_test)
+add_test(NAME set_nonzero_pixels_to_pixelindex_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/set_nonzero_pixels_to_pixelindex_test)
+add_test(NAME smaller_or_equal_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/smaller_or_equal_test)
+add_test(NAME smaller_constant_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/smaller_constant_test)
