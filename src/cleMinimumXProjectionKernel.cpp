@@ -20,7 +20,7 @@ void MinimumXProjectionKernel::SetInput(Object& x)
 
 void MinimumXProjectionKernel::SetOutput(Object& x)
 {
-    this->AddObject(&x, "dst_max");
+    this->AddObject(&x, "dst_min");
 }
 
 void MinimumXProjectionKernel::Execute()

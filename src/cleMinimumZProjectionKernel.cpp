@@ -20,7 +20,7 @@ void MinimumZProjectionKernel::SetInput(Object& x)
 
 void MinimumZProjectionKernel::SetOutput(Object& x)
 {
-    this->AddObject(&x, "dst_max");
+    this->AddObject(&x, "dst_min");
 }
 
 void MinimumZProjectionKernel::Execute()
