@@ -84,11 +84,10 @@ bool WriteBuffer(cl_mem mem_obj, T* arr, size_t bitSize, GPU& gpu)
 }
 
 template<class T>
-T* ReadBuffer(cl_mem mem_obj, size_t bitSize, GPU& gpu)
+T* ReadBuffer(cl_mem mem_obj, size_t size, GPU& gpu)
 {
-    size_t size = bitSize / sizeof(T);
     T* arr = new T[size];
-    cl_int clError = clEnqueueReadBuffer(gpu.GetCommandQueueManager().GetCommandQueue(), mem_obj, CL_TRUE, 0, bitSize, arr, 0, NULL, NULL);
+    cl_int clError = clEnqueueReadBuffer(gpu.GetCommandQueueManager().GetCommandQueue(), mem_obj, CL_TRUE, 0, size * sizeof(T), arr, 0, NULL, NULL);
     if (clError != CL_SUCCESS)
     {
         std::cerr << "Read Buffer : fail to read buffer space (" << getOpenCLErrorString(clError) << ")" << std::endl;
