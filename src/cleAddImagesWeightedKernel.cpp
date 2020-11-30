@@ -42,13 +42,13 @@ void AddImagesWeightedKernel::SetOutput(Object& x)
 void AddImagesWeightedKernel::SetFactor1(float x)
 {
     Float* val = new Float(x);
-    this->AddObject(val, "factor1");
+    this->AddObject(val, "factor");
 }
 
 void AddImagesWeightedKernel::SetFactor2(float x)
 {
     Float* val = new Float(x);
-    this->AddObject(val, "factor2");
+    this->AddObject(val, "factor1");
 }
 
 void AddImagesWeightedKernel::Execute()

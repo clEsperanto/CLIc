@@ -43,4 +43,5 @@
 #include "cleSobelKernel.h"
 #include "cleSetKernel.h"
 #include "cleSetNonzeroPixelsToPixelindexKernel.h"
+#include "cleDifferenceOfGaussianKernel.h"
 
