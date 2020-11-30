@@ -26,7 +26,7 @@ void SeparableKernel::DefineDimensionality()
 
 void SeparableKernel::SetKernelName(std::string name)
 {
-    kernelName = kernelName;
+    this->kernelName = name;
 }
 
 void SeparableKernel::SetInput(Object& x)
@@ -54,7 +54,7 @@ void SeparableKernel::SetSigma(float x)
 void SeparableKernel::SetDimension(int x)
 {
     Int* val = new Int(x);
-    this->AddObject(val, "Dim");
+    this->AddObject(val, "dim");
 }
 
 void SeparableKernel::Execute()
