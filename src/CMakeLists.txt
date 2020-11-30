@@ -56,6 +56,8 @@ set(SOURCES
     ${source_path}/cleSetNonzeroPixelsToPixelindexKernel.cpp
     ${source_path}/cleSeparableKernel.cpp
     ${source_path}/cleExecuteSeparableKernel.cpp
+    ${source_path}/cleDifferenceOfGaussianKernel.cpp
+    
 
     # utilities
     ${source_path}/tiffreader.cpp

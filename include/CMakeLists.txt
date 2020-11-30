@@ -59,6 +59,8 @@ set(HEADERS
     ${header_path}/cleSetNonzeroPixelsToPixelindexKernel.h
     ${header_path}/cleSeparableKernel.h
     ${header_path}/cleExecuteSeparableKernel.h
+    ${header_path}/cleDifferenceOfGaussianKernel.h
+
 
     # utilities
     ${header_path}/tiffreader.h
