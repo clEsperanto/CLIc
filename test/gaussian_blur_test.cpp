@@ -20,13 +20,13 @@ int main(int argc, char **argv)
     // Initialise random input and valid output.
     unsigned int width (3), height (3), depth (3);
     unsigned int arrSize = width * height * depth;
-    float input_data[arrSize];
+    float input_data[27];
     for (size_t i = 0; i < arrSize; i++)
     {
         input_data[i] = 0;
     }
     input_data[13] = 1;
-    float valid_data[arrSize] = {
+    float valid_data[27] = {
                 0.0141675, 0.0233582, 0.0141675,
                 0.0233582, 0.0385112, 0.0233582,
                 0.0141675, 0.0233582, 0.0141675,
