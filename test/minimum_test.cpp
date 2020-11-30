@@ -18,13 +18,21 @@
 int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
-    unsigned int width (3), height (3), depth (1);
+    unsigned int width (3), height (3), depth (2);
     float input_data[18] = {
                 1, 1, 1,
                 1, 0, 1,
+                1, 1, 1,
+
+                1, 1, 1,
+                1, 1, 1,
                 1, 1, 1
     };
     float valid_data[18] = {
+                0, 0, 0,
+                0, 0, 0,
+                0, 0, 0,
+
                 0, 0, 0,
                 0, 0, 0,
                 0, 0, 0

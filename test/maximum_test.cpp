@@ -18,13 +18,21 @@
 int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
-    unsigned int width (3), height (3), depth (1);
+    unsigned int width (3), height (3), depth (2);
     float input_data[18] = {
                 0, 0, 0,
                 0, 1, 0,
+                0, 0, 0,
+
+                0, 0, 0,
+                0, 0, 0,
                 0, 0, 0
     };
     float valid_data[18] = {
+                1, 1, 1,
+                1, 1, 1,
+                1, 1, 1,
+
                 1, 1, 1,
                 1, 1, 1,
                 1, 1, 1
@@ -39,7 +47,7 @@ int main(int argc, char **argv)
     cle::Buffer gpuInput = cle.Push<float>(input_img);
     cle::Buffer gpuOutput = cle.Create<float>(gpuInput);
 
-    cle.Maximum(gpuInput, gpuOutput, 1.5, 1.5, 1.5);
+    cle.Maximum(gpuInput, gpuOutput, 1, 1, 1);
 
     // pull device memory to host
     Image<float> output_img = cle.Pull<float>(gpuOutput);    
