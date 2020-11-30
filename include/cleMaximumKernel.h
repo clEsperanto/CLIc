@@ -32,7 +32,7 @@ public:
 
     void SetInput(Object&);
     void SetOutput(Object&);
-    void SetSigma(float=0, float=0, float=0);
+    void SetRadius(float=0, float=0, float=0);
     void Execute();
 
     ~MaximumKernel() = default;

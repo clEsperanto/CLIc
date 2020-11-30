@@ -24,7 +24,7 @@ void MaximumKernel::SetOutput(Object& x)
     this->AddObject(&x, "dst");
 }
 
-void MaximumKernel::SetSigma(float x, float y, float z)
+void MaximumKernel::SetRadius(float x, float y, float z)
 {
     this->x = x;
     this->y = y;
@@ -36,11 +36,16 @@ void MaximumKernel::Execute()
     Buffer* src = dynamic_cast<Buffer*>(parameterList.at("src"));
     Buffer* dst = dynamic_cast<Buffer*>(parameterList.at("dst"));
 
+    int nx = Radius2KernelSize(this->x);
+    int ny = Radius2KernelSize(this->y);
+    int nz = Radius2KernelSize(this->z);
+
     ExecuteSeparableKernel kernel(this->gpu);
     kernel.SetKernelName(this->kernelName);
     kernel.SetInput(*src);
     kernel.SetOutput(*dst);
     kernel.SetSigma(this->x, this->y, this->z);
+    kernel.SetKernelSize(nx, ny, nz);
     kernel.Execute();
 }
 
