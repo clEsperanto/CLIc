@@ -154,6 +154,16 @@ add_executable(sobel_test sobel_test.cpp)
 add_dependencies(sobel_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(sobel_test CLIc)
 
+# maximum_test
+add_executable(maximum_test maximum_test.cpp)
+add_dependencies(maximum_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(maximum_test CLIc)
+
+# minimum_test
+add_executable(minimum_test minimum_test.cpp)
+add_dependencies(minimum_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(minimum_test CLIc)
+
 # tests
 add_test(NAME data_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/data_test)
 add_test(NAME push_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/push_functions_test)
@@ -185,3 +195,5 @@ add_test(NAME set_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/set_test)
 add_test(NAME set_nonzero_pixels_to_pixelindex_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/set_nonzero_pixels_to_pixelindex_test)
 add_test(NAME smaller_or_equal_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/smaller_or_equal_test)
 add_test(NAME smaller_constant_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/smaller_constant_test)
+add_test(NAME maximum_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_test)
+add_test(NAME minimum_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/minimum_test)
