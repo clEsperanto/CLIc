@@ -30,7 +30,7 @@ protected:
 public:
     ExecuteSeparableKernel(GPU& gpu) : Kernel(gpu) 
     {
-        kernelName = "_serapable";
+        kernelName = "_separable";
         tagList = {"dst" , "src", "dim", "N", "s"};
     }
 

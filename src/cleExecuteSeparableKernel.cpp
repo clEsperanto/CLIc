@@ -59,7 +59,7 @@ void ExecuteSeparableKernel::Execute()
     {
         this->dimension = 2;
     }
-    else if (src->GetDimensions()[2] > 1)
+    if (src->GetDimensions()[2] > 1)
     {
         this->dimension = 3;
     }
