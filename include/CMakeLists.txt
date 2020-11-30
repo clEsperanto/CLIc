@@ -63,6 +63,7 @@ set(HEADERS
     ${header_path}/cleSeparableKernel.h
     ${header_path}/cleExecuteSeparableKernel.h
     ${header_path}/cleDifferenceOfGaussianKernel.h
+    ${header_path}/cleLabelConnectComponentKernel.h
 
 
     # utilities

@@ -60,6 +60,7 @@ set(SOURCES
     ${source_path}/cleSeparableKernel.cpp
     ${source_path}/cleExecuteSeparableKernel.cpp
     ${source_path}/cleDifferenceOfGaussianKernel.cpp
+    ${source_path}/cleLabelConnectComponentKernel.cpp
     
 
     # utilities

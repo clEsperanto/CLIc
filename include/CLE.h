@@ -83,6 +83,8 @@ public:
     void SmallerOrEqual(Buffer&, Buffer&, Buffer&);
     void SmallerConstant(Buffer&, Buffer&, float);
     void SmallerOrEqualConstant(Buffer&, Buffer&, float);
+    void LabelConnectComponent(Buffer&, Buffer&);
+
 
 };
 

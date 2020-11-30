@@ -251,8 +251,8 @@ void CLE::NonzeroMinimumBox(Buffer& src, Buffer& flag, Buffer& dst)
 {
     NonzeroMinimumBoxKernel kernel(this->gpu);
     kernel.SetInput(src);
-    kernel.SetOutput1(flag);
-    kernel.SetOutput2(dst);
+    kernel.SetOutputFlag(flag);
+    kernel.SetOutput(dst);
     kernel.Execute();  
 }
 
@@ -340,6 +340,14 @@ void CLE::SetNonzeroPixelsToPixelindex(Buffer& src, Buffer& dst)
     kernel.SetInput(src);
     kernel.SetOutput(dst);
     kernel.SetOffset(1);
+    kernel.Execute();  
+}
+
+void CLE::LabelConnectComponent(Buffer& src, Buffer& dst)
+{
+    LabelConnectComponentKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
     kernel.Execute();  
 }
 
