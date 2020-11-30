@@ -59,7 +59,7 @@ void ExecuteSeparableKernel::Execute()
     {
         this->dimension = 2;
     }
-    else if (src->GetDimensions()[2] > 1)
+    if (src->GetDimensions()[2] > 1)
     {
         this->dimension = 3;
     }
@@ -139,6 +139,7 @@ void ExecuteSeparableKernel::Execute()
         }
         kernel.Execute();
     }
+
     if (this->dimension == 3)
     {
         if (sigma[2] > 0)
