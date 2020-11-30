@@ -35,10 +35,13 @@ set(SOURCES
     ${source_path}/cleGreaterOrEqualKernel.cpp
     ${source_path}/cleGreaterConstantKernel.cpp
     ${source_path}/cleGreaterOrEqualConstantKernel.cpp
+    ${source_path}/cleMaximumKernel.cpp
     ${source_path}/cleMaximumZProjectionKernel.cpp
     ${source_path}/cleMaximumYProjectionKernel.cpp
     ${source_path}/cleMaximumXProjectionKernel.cpp
     ${source_path}/cleMaximumOfAllPixelsKernel.cpp
+    ${source_path}/cleMeanKernel.cpp
+    ${source_path}/cleMinimumKernel.cpp
     ${source_path}/cleMinimumZProjectionKernel.cpp
     ${source_path}/cleMinimumYProjectionKernel.cpp
     ${source_path}/cleMinimumXProjectionKernel.cpp

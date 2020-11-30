@@ -8,38 +8,37 @@
 */
 
 
-#include "cleGaussianBlurKernel.h"
+#include "cleMeanKernel.h"
 #include "cleExecuteSeparableKernel.h"
-#include "utils.h"
 
 namespace cle
 {
 
-void GaussianBlurKernel::SetInput(Object& x)
+void MeanKernel::SetInput(Object& x)
 {
     this->AddObject(&x, "src");
 }
 
-void GaussianBlurKernel::SetOutput(Object& x)
+void MeanKernel::SetOutput(Object& x)
 {
     this->AddObject(&x, "dst");
 }
 
-void GaussianBlurKernel::SetSigma(float x, float y, float z)
+void MeanKernel::SetRadius(float x, float y, float z)
 {
     this->x = x;
     this->y = y;
     this->z = z;
 }
 
-void GaussianBlurKernel::Execute()
+void MeanKernel::Execute()
 {
     Buffer* src = dynamic_cast<Buffer*>(parameterList.at("src"));
     Buffer* dst = dynamic_cast<Buffer*>(parameterList.at("dst"));
 
-    int nx = Sigma2KernelSize(this->x);
-    int ny = Sigma2KernelSize(this->y);
-    int nz = Sigma2KernelSize(this->z);
+    int nx = Radius2KernelSize(this->x);
+    int ny = Radius2KernelSize(this->y);
+    int nz = Radius2KernelSize(this->z);
 
     ExecuteSeparableKernel kernel(this->gpu);
     kernel.SetKernelName(this->kernelName);

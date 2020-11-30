@@ -26,7 +26,7 @@ void SeparableKernel::DefineDimensionality()
 
 void SeparableKernel::SetKernelName(std::string name)
 {
-    kernelName = name;
+    this->kernelName = name;
 }
 
 void SeparableKernel::SetInput(Object& x)
