@@ -93,6 +93,33 @@ void CLE::GaussianBlur(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, flo
     kernel.Execute();
 }
 
+void CLE::Maximum(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
+{
+    MaximumKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetRadius(sigmaX, sigmaY, sigmaZ);
+    kernel.Execute();
+}
+
+void CLE::Minimum(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
+{
+    MinimumKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetRadius(sigmaX, sigmaY, sigmaZ);
+    kernel.Execute();
+}
+
+void CLE::Mean(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
+{
+    MeanKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetRadius(sigmaX, sigmaY, sigmaZ);
+    kernel.Execute();
+}
+
 void CLE::Greater(Buffer& src1, Buffer& src2, Buffer& dst)
 {
     GreaterKernel kernel(this->gpu);

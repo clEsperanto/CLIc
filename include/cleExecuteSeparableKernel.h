@@ -24,13 +24,12 @@ private:
     std::array<int,3> kernel_size;
 
 protected: 
-
-    int Sigma2KernelSize(float);
+    void DefineDimensionality();
 
 public:
     ExecuteSeparableKernel(GPU& gpu) : Kernel(gpu) 
     {
-        kernelName = "_serapable";
+        kernelName = "_separable";
         tagList = {"dst" , "src", "dim", "N", "s"};
     }
 
@@ -38,6 +37,7 @@ public:
     void SetInput(Object&);
     void SetOutput(Object&);
     void SetSigma(float, float, float);
+    void SetKernelSize(int, int, int);
     void Execute();
 
     ~ExecuteSeparableKernel() = default;

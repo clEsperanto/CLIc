@@ -54,6 +54,9 @@ public:
     void Equal(Buffer&, Buffer&, Buffer&);
     void EqualConstant(Buffer&, Buffer&, float);
     void GaussianBlur(Buffer&, Buffer&, float=0, float=0, float=0);
+    void Maximum(Buffer&, Buffer&, float=0, float=0, float=0);
+    void Minimum(Buffer&, Buffer&, float=0, float=0, float=0);
+    void Mean(Buffer&, Buffer&, float=0, float=0, float=0);
     void Greater(Buffer&, Buffer&, Buffer&);
     void GreaterOrEqual(Buffer&, Buffer&, Buffer&);
     void GreaterConstant(Buffer&, Buffer&, float);

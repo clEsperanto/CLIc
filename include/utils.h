@@ -20,6 +20,11 @@
 #include <string>
 #include <iostream>
 
+
+int Sigma2KernelSize(float);
+
+int Radius2KernelSize(float);
+
 /**
  * save string into text file
  */ 

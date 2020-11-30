@@ -38,10 +38,13 @@ set(HEADERS
     ${header_path}/cleGreaterOrEqualKernel.h
     ${header_path}/cleGreaterConstantKernel.h
     ${header_path}/cleGreaterOrEqualConstantKernel.h
+    ${header_path}/cleMaximumKernel.h
     ${header_path}/cleMaximumZProjectionKernel.h
     ${header_path}/cleMaximumYProjectionKernel.h
     ${header_path}/cleMaximumXProjectionKernel.h
     ${header_path}/cleMaximumOfAllPixelsKernel.h
+    ${header_path}/cleMeanKernel.h
+    ${header_path}/cleMinimumKernel.h
     ${header_path}/cleMinimumZProjectionKernel.h
     ${header_path}/cleMinimumYProjectionKernel.h
     ${header_path}/cleMinimumXProjectionKernel.h
