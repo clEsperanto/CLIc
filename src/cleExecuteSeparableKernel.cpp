@@ -26,23 +26,14 @@ void ExecuteSeparableKernel::SetOutput(Object& x)
     this->AddObject(&x, "dst");
 }
 
-int ExecuteSeparableKernel::Sigma2KernelSize(float s)
+void ExecuteSeparableKernel::SetKernelSize(int x, int y, int z)
 {
-    int n = int(s * 8.0);
-    if (n % 2 == 0)
-    {
-        n = n + 1;
-    }
-    return n;
+    this->kernel_size = {x, y, z};
 }
 
 void ExecuteSeparableKernel::SetSigma(float x, float y, float z)
 {
     this->sigma = {x, y, z};
-    for (size_t i = 0; i < 3; i++)
-    {
-        this->kernel_size[i] = this->Sigma2KernelSize(this->sigma[i]);
-    }
 }
 
 void ExecuteSeparableKernel::SetKernelName(std::string name)
