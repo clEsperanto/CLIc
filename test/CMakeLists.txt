@@ -159,6 +159,11 @@ add_executable(add_image_weighted_test add_image_weighted_test.cpp)
 add_dependencies(add_image_weighted_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(add_image_weighted_test CLIc)
 
+# difference_of_gaussian_test
+add_executable(difference_of_gaussian_test difference_of_gaussian_test.cpp)
+add_dependencies(difference_of_gaussian_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(difference_of_gaussian_test CLIc)
+
 # tests
 add_test(NAME data_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/data_test)
 add_test(NAME push_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/push_functions_test)
@@ -191,3 +196,4 @@ add_test(NAME set_nonzero_pixels_to_pixelindex_test COMMAND ${CMAKE_CURRENT_BINA
 add_test(NAME smaller_or_equal_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/smaller_or_equal_test)
 add_test(NAME smaller_constant_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/smaller_constant_test)
 add_test(NAME add_image_weighted_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/add_image_weighted_test)
+add_test(NAME difference_of_gaussian_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/difference_of_gaussian_test)
