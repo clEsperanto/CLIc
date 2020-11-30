@@ -43,7 +43,7 @@ int main(int argc, char **argv)
     cle::Buffer gpuInput = cle.Push<int>(input_img);
     cle::Buffer gpuOutput = cle.Create<int>(gpuInput, "int");
 
-    cle.LabelConnectComponent(gpuInput, gpuOutput);
+    cle.LabelConnectComponentBox(gpuInput, gpuOutput);
 
     // pull device memory to host
     Image<int> output_img = cle.Pull<int>(gpuOutput);    
