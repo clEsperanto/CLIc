@@ -81,8 +81,7 @@ void LabelConnectComponentBoxKernel::Execute()
 
     while (flag_value > 0)
     {
-
-                    std::cout << "\t\tNonzeroMinimumBoxKernel" << std::endl;
+        std::cout << "\t\tNonzeroMinimumBoxKernel" << std::endl;
 
         NonzeroMinimumBoxKernel nonzeroMinBox(this->gpu);
         nonzeroMinBox.SetOutputFlag(flag);
@@ -98,20 +97,21 @@ void LabelConnectComponentBoxKernel::Execute()
         }
         nonzeroMinBox.Execute();
 
-                    std::cout << "\t\tReadFlag" << std::endl;
-
+        std::cout << "\t\tReadFlag" << std::endl;
         flag_value = ReadBuffer<int>(flag_mem, 2, this->gpu)[0];
         
-                            std::cout << "\t\tSet to flag =" << flag_value << std::endl;
-
+        std::cout << "\t\tSet to flag =" << flag_value << std::endl;
         SetKernel set(this->gpu);
-        set.SetInput(temp2);
-        set.SetValue(flag_value);
+        set.SetInput(flag);
+        set.SetValue(0);
         set.Execute();
 
+         std::cout << "\t\tend of loop "<< std::endl;
         iteration_count++;
     }
-    
+
+                    std::cout << "\tkernel copy" << std::endl;
+
     CopyKernel copy(this->gpu);
     if (iteration_count % 2 == 0)
     {    
@@ -123,6 +123,8 @@ void LabelConnectComponentBoxKernel::Execute()
     }
     copy.SetOutput(*dst);
     copy.Execute();
+                std::cout << "\tend exe" << std::endl;
+
 }
 
 } // namespace cle

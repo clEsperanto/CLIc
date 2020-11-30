@@ -20,18 +20,18 @@ int main(int argc, char **argv)
     // Initialise random input and valid output.
     unsigned int width (5), height (5), depth (1);
     int input_data[25] = {
-                0,0,0,0,0,
+                0,0,0,0,1,
                 0,1,0,0,0,
                 0,1,0,1,0,
                 0,0,0,1,0,
-                0,0,0,0,0
+                1,0,0,0,0
     };
     int valid_data[25] = {
-                0,0,0,0,0,
-                0,1,0,0,0,
-                0,1,0,2,0,
-                0,0,0,2,0,
-                0,0,0,0,0
+                0,0,0,0,1,
+                0,2,0,0,0,
+                0,2,0,3,0,
+                0,0,0,3,0,
+                4,0,0,0,0
     };
     Image<int> input_img (input_data, width, height, depth, "int");
 
@@ -43,10 +43,16 @@ int main(int argc, char **argv)
     cle::Buffer gpuInput = cle.Push<int>(input_img);
     cle::Buffer gpuOutput = cle.Create<int>(gpuInput, "int");
 
+                std::cout << "test" << std::endl;
+
     cle.LabelConnectComponentBox(gpuInput, gpuOutput);
+
+                std::cout << "test2" << std::endl;
+                std::cout << gpuOutput << std::endl;
 
     // pull device memory to host
     Image<int> output_img = cle.Pull<int>(gpuOutput);    
+                std::cout << "test3" << std::endl;
 
     // Verify output
     float difference = 0;
