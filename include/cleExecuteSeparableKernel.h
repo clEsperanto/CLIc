@@ -26,11 +26,12 @@ private:
 protected: 
 
     int Sigma2KernelSize(float);
+    void DefineDimensionality();
 
 public:
     ExecuteSeparableKernel(GPU& gpu) : Kernel(gpu) 
     {
-        kernelName = "_serapable";
+        kernelName = "_separable";
         tagList = {"dst" , "src", "dim", "N", "s"};
     }
 
