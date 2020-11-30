@@ -19,13 +19,14 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     unsigned int width (3), height (3), depth (3);
-    float input_data[width*height*depth];
-    for (size_t i = 0; i < width*height*depth; i++)
+    unsigned int arrSize = width * height * depth;
+    float input_data[arrSize];
+    for (size_t i = 0; i < arrSize; i++)
     {
         input_data[i] = 0;
     }
     input_data[14] = 1;
-    float valid_data[width*height*depth] = {
+    float valid_data[arrSize] = {
                 0, 0.03851, 0,
                 0.03851, 0.03851, 0.03851,
                 0, 0.03851, 0,
@@ -55,7 +56,7 @@ int main(int argc, char **argv)
 
     // Verify output
     float difference = 0;
-    for (size_t i = 0; i < width*height*depth; i++)
+    for (size_t i = 0; i < arrSize; i++)
     {
         if (i % width == 0) {
             std::cout << std::endl;
