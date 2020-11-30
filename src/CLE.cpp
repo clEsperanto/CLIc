@@ -98,7 +98,7 @@ void CLE::Maximum(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float si
     MaximumKernel kernel(this->gpu);
     kernel.SetInput(src);
     kernel.SetOutput(dst);
-    kernel.SetSigma(sigmaX, sigmaY, sigmaZ);
+    kernel.SetRadius(sigmaX, sigmaY, sigmaZ);
     kernel.Execute();
 }
 
@@ -107,7 +107,7 @@ void CLE::Minimum(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float si
     MinimumKernel kernel(this->gpu);
     kernel.SetInput(src);
     kernel.SetOutput(dst);
-    kernel.SetSigma(sigmaX, sigmaY, sigmaZ);
+    kernel.SetRadius(sigmaX, sigmaY, sigmaZ);
     kernel.Execute();
 }
 
@@ -116,7 +116,7 @@ void CLE::Mean(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigma
     MeanKernel kernel(this->gpu);
     kernel.SetInput(src);
     kernel.SetOutput(dst);
-    kernel.SetSigma(sigmaX, sigmaY, sigmaZ);
+    kernel.SetRadius(sigmaX, sigmaY, sigmaZ);
     kernel.Execute();
 }
 
