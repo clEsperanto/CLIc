@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     {
         input_data[i] = 0;
     }
-    input_data[14] = 1;
+    input_data[13] = 1;
     float valid_data[arrSize] = {
                 0, 0.03851, 0,
                 0.03851, 0.03851, 0.03851,
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     cle::Buffer gpuInput = cle.Push<float>(input_img);
     cle::Buffer gpuOutput = cle.Create<float>(gpuInput);
 
-    cle.GaussianBlur(gpuInput, gpuOutput, 1, 1, 1);
+    cle.GaussianBlur(gpuInput, gpuOutput, 0.4, 0.4, 0.4);
 
     // pull device memory to host
     Image<float> output_img = cle.Pull<float>(gpuOutput);    
