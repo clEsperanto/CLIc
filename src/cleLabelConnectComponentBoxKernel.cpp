@@ -50,6 +50,12 @@ void LabelConnectComponentBoxKernel::Execute()
     cl_mem tmp2_mem = CreateBuffer<int>(size, this->gpu);
     Buffer temp2 (tmp2_mem, src->GetDimensions(), "int");
 
+    unsigned int flag_dim[3] = {1,1,2};
+    int arr[2] = {0,0};
+    cl_mem flag_mem = CreateBuffer<int>(2, this->gpu);
+    WriteBuffer<int>(flag_mem, arr, 2, this->gpu);
+    Buffer flag (flag_mem, flag_dim, "int");
+
     SetNonzeroPixelsToPixelindexKernel setNonzeroKernel(this->gpu);
     setNonzeroKernel.SetInput(*src);
     setNonzeroKernel.SetOutput(temp1);
@@ -64,12 +70,11 @@ void LabelConnectComponentBoxKernel::Execute()
     int flag_value = 1;
     int iteration_count = 0;
 
-    unsigned int flag_dim[3] = {1,1,2};
-    cl_mem flag_mem = CreateBuffer<int>(2, this->gpu);
-    Buffer flag (flag_mem, flag_dim, "int");
+
 
     while (flag_value > 0)
     {
+
         NonzeroMinimumBoxKernel nonzeroMinBox(this->gpu);
         nonzeroMinBox.SetOutputFlag(flag);
         if (iteration_count % 2 == 0)
@@ -85,9 +90,6 @@ void LabelConnectComponentBoxKernel::Execute()
         nonzeroMinBox.Execute();
 
         flag_value = ReadBuffer<int>(flag_mem, 2, this->gpu)[0];
-
-        std::cout << ReadBuffer<int>(flag_mem, 2, this->gpu)[0] << std::endl;
-        std::cout << ReadBuffer<int>(flag_mem, 2, this->gpu)[1] << std::endl;
 
         SetKernel set(this->gpu);
         set.SetInput(flag);
