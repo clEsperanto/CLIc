@@ -72,8 +72,8 @@ void LabelConnectComponentBoxKernel::Execute()
     int flag_value = 1;
     int iteration_count = 0;
 
-    unsigned int flag_dim[3] = {1,1,1};
-    cl_mem flag_mem = CreateBuffer<int>(1, this->gpu);
+    unsigned int flag_dim[3] = {1,1,2};
+    cl_mem flag_mem = CreateBuffer<int>(2, this->gpu);
     Buffer flag (flag_mem, flag_dim, "int");
 
             std::cout << "\tStartLoop" << std::endl;
@@ -100,7 +100,7 @@ void LabelConnectComponentBoxKernel::Execute()
 
                     std::cout << "\t\tReadFlag" << std::endl;
 
-        flag_value = ReadBuffer<int>(flag_mem, 1, this->gpu)[1];
+        flag_value = ReadBuffer<int>(flag_mem, 2, this->gpu)[0];
         
                             std::cout << "\t\tSet to flag =" << flag_value << std::endl;
 
