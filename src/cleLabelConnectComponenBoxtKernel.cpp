@@ -8,7 +8,7 @@
 */
 
 
-#include "cleLabelConnectComponentKernel.h"
+#include "cleLabelConnectComponentBoxKernel.h"
 #include "cleSetNonzeroPixelsToPixelindexKernel.h"
 #include "cleSetKernel.h"
 #include "cleNonzeroMinimumBoxKernel.h"
@@ -17,7 +17,7 @@
 namespace cle
 {
 
-void LabelConnectComponentKernel::DefineDimensionality()
+void LabelConnectComponentBoxKernel::DefineDimensionality()
 {
     std::string dim = "_2d";
     Buffer* bufferObject = dynamic_cast<Buffer*>(parameterList.at("src"));
@@ -28,17 +28,17 @@ void LabelConnectComponentKernel::DefineDimensionality()
     kernelName = kernelName + dim;
 }
 
-void LabelConnectComponentKernel::SetInput(Object& x)
+void LabelConnectComponentBoxKernel::SetInput(Object& x)
 {
     this->AddObject(&x, "src");
 }
 
-void LabelConnectComponentKernel::SetOutput(Object& x)
+void LabelConnectComponentBoxKernel::SetOutput(Object& x)
 {
     this->AddObject(&x, "dst");
 }
 
-void LabelConnectComponentKernel::Execute()
+void LabelConnectComponentBoxKernel::Execute()
 {
     std::cout << "start label exe" << std::endl;
     Buffer* src = dynamic_cast<Buffer*>(parameterList.at("src"));
@@ -100,9 +100,9 @@ void LabelConnectComponentKernel::Execute()
 
                     std::cout << "\t\tReadFlag" << std::endl;
 
-        flag_value = ReadBuffer<int>(flag_mem, 1, this->gpu)[0];
+        flag_value = ReadBuffer<int>(flag_mem, 1, this->gpu)[1];
         
-                            std::cout << "\t\tSet" << std::endl;
+                            std::cout << "\t\tSet to flag =" << flag_value << std::endl;
 
         SetKernel set(this->gpu);
         set.SetInput(temp2);

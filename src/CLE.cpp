@@ -343,9 +343,9 @@ void CLE::SetNonzeroPixelsToPixelindex(Buffer& src, Buffer& dst)
     kernel.Execute();  
 }
 
-void CLE::LabelConnectComponent(Buffer& src, Buffer& dst)
+void CLE::LabelConnectComponentBox(Buffer& src, Buffer& dst)
 {
-    LabelConnectComponentKernel kernel(this->gpu);
+    LabelConnectComponentBoxKernel kernel(this->gpu);
     kernel.SetInput(src);
     kernel.SetOutput(dst);
     kernel.Execute();  

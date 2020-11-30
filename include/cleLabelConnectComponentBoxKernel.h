@@ -8,15 +8,15 @@
 */
 
 
-#ifndef __cleLabelConnectComponentKernel_h
-#define __cleLabelConnectComponentKernel_h
+#ifndef __cleLabelConnectComponentBoxKernel_h
+#define __cleLabelConnectComponentBoxKernel_h
 
 #include "cleKernel.h"
 
 namespace cle
 {
     
-class LabelConnectComponentKernel : public Kernel
+class LabelConnectComponentBoxKernel : public Kernel
 {
 private:
 
@@ -24,7 +24,7 @@ private:
 
 
 public:
-    LabelConnectComponentKernel(GPU& gpu) : Kernel(gpu) 
+    LabelConnectComponentBoxKernel(GPU& gpu) : Kernel(gpu) 
     {
         kernelName = "label_connect_component";
         tagList = {"src" , "dst"};
@@ -34,9 +34,9 @@ public:
     void SetOutput(Object&);
     void Execute();
 
-    ~LabelConnectComponentKernel() = default;
+    ~LabelConnectComponentBoxKernel() = default;
 };
 
 } // namespace cle
 
-#endif // __cleLabelConnectComponentKernel_h
+#endif // __cleLabelConnectComponentBoxKernel_h

@@ -44,5 +44,5 @@
 #include "cleSetKernel.h"
 #include "cleSetNonzeroPixelsToPixelindexKernel.h"
 #include "cleDifferenceOfGaussianKernel.h"
-#include "cleLabelConnectComponentKernel.h"
+#include "cleLabelConnectComponentBoxKernel.h"
 
