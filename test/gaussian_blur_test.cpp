@@ -27,17 +27,17 @@ int main(int argc, char **argv)
     }
     input_data[13] = 1;
     float valid_data[arrSize] = {
-                0, 0.03851, 0,
-                0.03851, 0.03851, 0.03851,
-                0, 0.03851, 0,
+                0.0141675, 0.0233582, 0.0141675,
+                0.0233582, 0.0385112, 0.0233582,
+                0.0141675, 0.0233582, 0.0141675,
 
-                0, 0.03851, 0,
-                0.03851, 0.06349, 0.03851,
-                0, 0.03851, 0,
+                0.0233582, 0.0385112, 0.0233582,
+                0.0385112, 0.0634942, 0.0385112,
+                0.0233582, 0.0385112, 0.0233582,
 
-                0, 0.03851, 0,
-                0.03851, 0.03851, 0.03851,
-                0, 0.03851, 0
+                0.0141675, 0.0233582, 0.0141675,
+                0.0233582, 0.0385112, 0.0233582,
+                0.0141675, 0.0233582, 0.0141675
     };
     Image<float> input_img (input_data, width, height, depth, "float");
 
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     cle::Buffer gpuInput = cle.Push<float>(input_img);
     cle::Buffer gpuOutput = cle.Create<float>(gpuInput);
 
-    cle.GaussianBlur(gpuInput, gpuOutput, 0.4, 0.4, 0.4);
+    cle.GaussianBlur(gpuInput, gpuOutput, 1, 1, 1);
 
     // pull device memory to host
     Image<float> output_img = cle.Pull<float>(gpuOutput);    
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
             std::cout << std::endl;
         }
         std::cout << output_img.GetData()[i] << " ";
-        difference += std::abs(valid_data[i] - output_img.GetData()[i]);
+        difference += std::abs(valid_data[i] - std::round(output_img.GetData()[i] * 10000000.0) / 10000000.0);
     }
     std::cout << std::endl;
     if (difference > std::numeric_limits<float>::epsilon())
