@@ -13,6 +13,21 @@
 #include <iostream>
 
 
+int Sigma2KernelSize(float s)
+{
+    int n = int(s * 8.0);
+    if (n % 2 == 0)
+    {
+        n = n + 1;
+    }
+    return n;
+}
+
+int Radius2KernelSize(float r)
+{
+    return int(r) * 2 + 1;
+}
+
 void write_kernel_source(std::string src)
 {
     std::ofstream wKernel;
