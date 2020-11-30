@@ -101,7 +101,7 @@ template<class T>
 Image<T> CLE::Pull(Buffer& gpu_obj)
 {
     unsigned int arrSize = gpu_obj.GetDimensions()[0] * gpu_obj.GetDimensions()[1] * gpu_obj.GetDimensions()[2];
-    T* output_arr = ReadBuffer<T>(gpu_obj.GetData(), sizeof(T) * arrSize, this->gpu);
+    T* output_arr = ReadBuffer<T>(gpu_obj.GetData(), arrSize, this->gpu);
     Image<T> image (output_arr, gpu_obj.GetDimensions()[0], gpu_obj.GetDimensions()[1], gpu_obj.GetDimensions()[2], gpu_obj.GetDataType());
     return image;        
 }
