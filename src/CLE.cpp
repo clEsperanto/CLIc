@@ -40,14 +40,19 @@ void CLE::AddImagesWeighted(Buffer& src1, Buffer& src2, Buffer& dst, float facto
     kernel.SetInput1(src1);
     kernel.SetInput2(src2);
     kernel.SetOutput(dst);
-    kernel.SetFactor1(1);
-    kernel.SetFactor2(1);
+    kernel.SetFactor1(factor1);
+    kernel.SetFactor2(factor2);
     kernel.Execute();
 }
 
 void CLE::AddImages(Buffer& src1, Buffer& src2, Buffer& dst)
 {
     this->AddImagesWeighted(src1, src2, dst, 1, 1);
+}
+
+void CLE::SubtractImages(Buffer& src1, Buffer& src2, Buffer& dst)
+{
+    this->AddImagesWeighted(src1, src2, dst, 1, -1);
 }
 
 void CLE::DilateSphere(Buffer& src, Buffer& dst)
@@ -193,6 +198,16 @@ void CLE::MinimumOfAllPixels(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }  
 
+void CLE::DifferenceOfGaussian(Buffer& src, Buffer& dst, float sigma1x, float sigma1y, float sigma1z, 
+                                                         float sigma2x, float sigma2y, float sigma2z)
+{
+    DifferenceOfGaussianKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetSigma1(sigma1x, sigma1y, sigma1z);
+    kernel.SetSigma2(sigma2x, sigma2y, sigma2z);
+    kernel.Execute(); 
+}
 
 
 void CLE::Mean2DSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y)

@@ -49,6 +49,7 @@ public:
     void AddImageAndScalar(Buffer&, Buffer&, float);
     void AddImagesWeighted(Buffer&, Buffer&, Buffer&, float=1, float=1);
     void AddImages(Buffer&, Buffer&, Buffer&);
+    void SubtractImages(Buffer&, Buffer&, Buffer&);
     void DilateSphere(Buffer&, Buffer&);
     void ErodeSphere(Buffer&, Buffer&);
     void Equal(Buffer&, Buffer&, Buffer&);
@@ -74,7 +75,7 @@ public:
     void Sobel(Buffer&, Buffer&);
     void Set(Buffer&, float);
     void SetNonzeroPixelsToPixelindex(Buffer&, Buffer&);
-
+    void DifferenceOfGaussian(Buffer&, Buffer&, float=2, float=2, float=2, float=2, float=2, float=2);
     void Smaller(Buffer&, Buffer&, Buffer&);
     void SmallerOrEqual(Buffer&, Buffer&, Buffer&);
     void SmallerConstant(Buffer&, Buffer&, float);
