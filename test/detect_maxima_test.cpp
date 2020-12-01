@@ -18,24 +18,20 @@
 int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
-    unsigned int width (4), height (3), depth (2);
-    float input_data1[24] = {
-                1, 1, 1, 1,
-                1, 6, 2, 1,
-                2, 0, 1, 1,
-
-                2, 1, 1, 1,
-                1, 0, 2, 8,
-                2, 0, 1, 1
+    unsigned int width (5), height (5), depth (1);
+    float input_data[25] = {
+            0, 0, 0, 0, 0,
+            1, 0, 0, 2, 0,
+            1, 2, 1, 3, 2,
+            0, 1, 0, 2, 0,
+            0, 0, 0, 0, 0
     };
-    float valid_data[24] = {
-                0, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 0, 0, 0,
-
-                0, 0, 0, 0,
-                0, 0, 0, 1,
-                0, 0, 0, 0
+    float valid_data[25] = {
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 1, 0, 1, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0
     };
     Image<float> input_img (input_data, width, height, depth, "float");
 
@@ -44,7 +40,7 @@ int main(int argc, char **argv)
     cle::CLE cle(gpu);
 
     // Initialise device memory and push from host to device
-    cle::Buffer gpuInput = cle.Push<float>(input_img1);
+    cle::Buffer gpuInput = cle.Push<float>(input_img);
     cle::Buffer gpuOutput = cle.Create<float>(gpuInput, "float");
 
     // Call kernel
@@ -57,8 +53,14 @@ int main(int argc, char **argv)
     float difference = 0;
     for (size_t i = 0; i < width*height*depth; i++)
     {
+        if (i%width == 0)
+        {
+            std::cout << std::endl;
+        }
+        std::cout << output_img.GetData()[i] << " ";
         difference += std::abs(valid_data[i] - output_img.GetData()[i]);
     }
+    std::cout << std::endl;
     if (difference > std::numeric_limits<float>::epsilon())
     {
         std::cout << "Test failed, cumulated absolute difference " << difference << " > CPU epsilon (" << std::numeric_limits<float>::epsilon() << ")" << std::endl;

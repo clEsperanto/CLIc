@@ -56,7 +56,7 @@ int main(int argc, char **argv)
     cle::Buffer gpuOutput = cle.Create<float>(gpuInput, "float");
 
     // Call kernel
-    cle.DifferenceOfGaussian(gpuInput, gpuOutput, 2, 2, 2, 3, 3, 3);
+    cle.DifferenceOfGaussian3D(gpuInput, gpuOutput, 2, 2, 2, 3, 3, 3);
 
     // pull device memory to host
     Image<float> output_img = cle.Pull<float>(gpuOutput);    

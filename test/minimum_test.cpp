@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     cle::Buffer gpuInput = cle.Push<float>(input_img);
     cle::Buffer gpuOutput = cle.Create<float>(gpuInput);
 
-    cle.Minimum(gpuInput, gpuOutput, 1.5, 1.5, 1.5);
+    cle.Minimum3DBox(gpuInput, gpuOutput, 1.5, 1.5, 1.5);
 
     // pull device memory to host
     Image<float> output_img = cle.Pull<float>(gpuOutput);    

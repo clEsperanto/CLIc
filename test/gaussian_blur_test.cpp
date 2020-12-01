@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     cle::Buffer gpuInput = cle.Push<float>(input_img);
     cle::Buffer gpuOutput = cle.Create<float>(gpuInput);
 
-    cle.GaussianBlur(gpuInput, gpuOutput, 1, 1, 1);
+    cle.GaussianBlur3D(gpuInput, gpuOutput, 1, 1, 1);
 
     // pull device memory to host
     Image<float> output_img = cle.Pull<float>(gpuOutput);    
