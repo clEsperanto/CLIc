@@ -106,7 +106,7 @@ void LabelConnectComponentBoxKernel::Execute()
     }
     else
     {
-        copy.SetInput(temp1);
+        copy.SetInput(temp2);
     }
     copy.SetOutput(*dst);
     copy.Execute();
