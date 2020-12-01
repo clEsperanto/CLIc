@@ -18,26 +18,20 @@
 int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
-    unsigned int width (3), height (3), depth (3);
-    unsigned int arrSize = width * height * depth;
-    float input_data[27];
-    for (size_t i = 0; i < arrSize; i++)
-    {
-        input_data[i] = 0;
-    }
-    input_data[13] = 1;
-    float valid_data[27] = {
-                0.0141675, 0.0233582, 0.0141675,
-                0.0233582, 0.0385112, 0.0233582,
-                0.0141675, 0.0233582, 0.0141675,
-
-                0.0233582, 0.0385112, 0.0233582,
-                0.0385112, 0.0634942, 0.0385112,
-                0.0233582, 0.0385112, 0.0233582,
-
-                0.0141675, 0.0233582, 0.0141675,
-                0.0233582, 0.0385112, 0.0233582,
-                0.0141675, 0.0233582, 0.0141675
+    unsigned int width (5), height (5), depth (1);
+    float input_data[25] = {
+            0, 0, 0, 0, 0,
+            1, 0, 0, 2, 0,
+            1, 2, 1, 3, 2,
+            0, 1, 0, 2, 0,
+            0, 0, 0, 0, 0
+    };
+    float valid_data[25] = {
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+            0, 1, 0, 1, 0,
+            0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0
     };
     Image<float> input_img (input_data, width, height, depth, "float");
 
@@ -47,22 +41,24 @@ int main(int argc, char **argv)
 
     // Initialise device memory and push from host to device
     cle::Buffer gpuInput = cle.Push<float>(input_img);
-    cle::Buffer gpuOutput = cle.Create<float>(gpuInput);
+    cle::Buffer gpuOutput = cle.Create<float>(gpuInput, "float");
 
-    cle.GaussianBlur3D(gpuInput, gpuOutput, 1, 1, 1);
+    // Call kernel
+    cle.DetectMaximaBox(gpuInput, gpuOutput);
 
     // pull device memory to host
     Image<float> output_img = cle.Pull<float>(gpuOutput);    
 
     // Verify output
     float difference = 0;
-    for (size_t i = 0; i < arrSize; i++)
+    for (size_t i = 0; i < width*height*depth; i++)
     {
-        if (i % width == 0) {
+        if (i%width == 0)
+        {
             std::cout << std::endl;
         }
         std::cout << output_img.GetData()[i] << " ";
-        difference += std::abs(valid_data[i] - std::round(output_img.GetData()[i] * 10000000.0) / 10000000.0);
+        difference += std::abs(valid_data[i] - output_img.GetData()[i]);
     }
     std::cout << std::endl;
     if (difference > std::numeric_limits<float>::epsilon())

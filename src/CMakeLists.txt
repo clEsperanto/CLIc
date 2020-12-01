@@ -60,7 +60,12 @@ set(SOURCES
     ${source_path}/cleSeparableKernel.cpp
     ${source_path}/cleExecuteSeparableKernel.cpp
     ${source_path}/cleDifferenceOfGaussianKernel.cpp
-    
+    ${source_path}/cleDetectMaximaKernel.cpp
+    ${source_path}/cleSumZProjectionKernel.cpp
+    ${source_path}/cleSumYProjectionKernel.cpp
+    ${source_path}/cleSumXProjectionKernel.cpp
+    ${source_path}/cleSumOfAllPixelsKernel.cpp
+
 
     # utilities
     ${source_path}/tiffreader.cpp

@@ -89,6 +89,12 @@ public:
     void SmallerConstant(Buffer&, Buffer&, float);
     void SmallerOrEqualConstant(Buffer&, Buffer&, float);
     void Copy(Buffer&, Buffer&);
+    void DetectMaximaBox(Buffer&, Buffer&);
+    void SumZProjection(Buffer&, Buffer&);
+    void SumYProjection(Buffer&, Buffer&);
+    void SumXProjection(Buffer&, Buffer&);
+    void SumOfAllPixels(Buffer&, Buffer&);
+    
 
 };
 

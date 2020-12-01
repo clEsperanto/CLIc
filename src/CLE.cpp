@@ -391,4 +391,52 @@ void CLE::SetNonzeroPixelsToPixelindex(Buffer& src, Buffer& dst)
     kernel.Execute();  
 }
 
+void CLE::DetectMaximaBox(Buffer& src, Buffer& dst)
+{
+    DetectMaximaKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute();  
+}
+
+void CLE::Copy(Buffer& src, Buffer& dst)
+{
+    CopyKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute();  
+}
+
+void CLE::SumZProjection(Buffer& src, Buffer& dst)
+{
+    SumZProjectionKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}
+
+void CLE::SumYProjection(Buffer& src, Buffer& dst)
+{
+    SumYProjectionKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}
+
+void CLE::SumXProjection(Buffer& src, Buffer& dst)
+{
+    SumXProjectionKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}
+
+void CLE::SumOfAllPixels(Buffer& src, Buffer& dst)
+{
+    SumOfAllPixelsKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}  
+
 }
