@@ -45,4 +45,5 @@
 #include "cleSetNonzeroPixelsToPixelindexKernel.h"
 #include "cleDifferenceOfGaussianKernel.h"
 #include "cleLabelConnectComponentBoxKernel.h"
+#include "cleCopyKernel.h"
 

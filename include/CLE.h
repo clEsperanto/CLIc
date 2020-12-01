@@ -84,6 +84,8 @@ public:
     void SmallerConstant(Buffer&, Buffer&, float);
     void SmallerOrEqualConstant(Buffer&, Buffer&, float);
     void LabelConnectComponentBox(Buffer&, Buffer&);
+    void Copy(Buffer&, Buffer&);
+
 
 
 };

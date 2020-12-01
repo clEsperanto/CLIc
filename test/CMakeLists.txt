@@ -185,6 +185,11 @@ add_executable(label_connect_component_box_test label_connect_component_box_test
 add_dependencies(label_connect_component_box_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(label_connect_component_box_test CLIc)
 
+# copy_test
+add_executable(copy_test copy_test.cpp)
+add_dependencies(copy_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(copy_test CLIc)
+
 
 # tests
 add_test(NAME data_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/data_test)
@@ -223,3 +228,4 @@ add_test(NAME gaussian_blur_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/gaussian_bl
 add_test(NAME add_image_weighted_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/add_image_weighted_test)
 add_test(NAME difference_of_gaussian_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/difference_of_gaussian_test)
 add_test(NAME label_connect_component_box_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/label_connect_component_box_test)
+add_test(NAME copy_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/copy_test)
