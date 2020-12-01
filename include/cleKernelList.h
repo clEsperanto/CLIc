@@ -45,4 +45,7 @@
 #include "cleSetNonzeroPixelsToPixelindexKernel.h"
 #include "cleDifferenceOfGaussianKernel.h"
 #include "cleDetectMaximaKernel.h"
-
+#include "cleSumOfAllPixelsKernel.h"
+#include "cleSumZProjectionKernel.h"
+#include "cleSumYProjectionKernel.h"
+#include "cleSumXProjectionKernel.h"

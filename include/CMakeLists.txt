@@ -64,6 +64,10 @@ set(HEADERS
     ${header_path}/cleExecuteSeparableKernel.h
     ${header_path}/cleDifferenceOfGaussianKernel.h
     ${header_path}/cleDetectMaximaKernel.h
+    ${header_path}/cleSumOfAllPixelsKernel.h
+    ${header_path}/cleSumZProjectionKernel.h
+    ${header_path}/cleSumYProjectionKernel.h
+    ${header_path}/cleSumXProjectionKernel.h
     
 
 
