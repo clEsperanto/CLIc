@@ -399,4 +399,12 @@ void CLE::DetectMaximaBox(Buffer& src, Buffer& dst)
     kernel.Execute();  
 }
 
+void CLE::Copy(Buffer& src, Buffer& dst)
+{
+    CopyKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute();  
+}
+
 }

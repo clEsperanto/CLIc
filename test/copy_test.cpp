@@ -45,7 +45,7 @@ int main(int argc, char **argv)
     cle::Buffer gpuOutput = cle.Create<float>(input_img);
 
     // Call kernel
-    cle.DetectMaximaBox(gpuInput, gpuOutput);  
+    cle.Copy(gpuInput, gpuOutput);  
 
     // pull device memory to host
     Image<float> output_img = cle.Pull<float>(gpuOutput);    
