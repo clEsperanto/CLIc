@@ -47,7 +47,7 @@ Guideline for requirements installation and troubleshooting [here](./docs/clic_p
 
 ## Install
 
-Latest release compiled library is available for Windows, MacOS, and Linux Ubuntu [here](./README.md).  
+Latest release compiled library is available for Windows, MacOS, and Linux Ubuntu [here](https://github.com/clEsperanto/CLIc_prototype/releases/tag/0.1).  
 
 Guide for compiling sources available [here](./docs/clic_compile_guide.md)
 
