@@ -185,6 +185,12 @@ add_executable(copy_test copy_test.cpp)
 add_dependencies(copy_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(copy_test CLIc)
 
+# detect_maxima_test
+add_executable(detect_maxima_test detect_maxima_test.cpp)
+add_dependencies(detect_maxima_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(detect_maxima_test CLIc)
+
+
 # tests
 add_test(NAME data_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/data_test)
 add_test(NAME push_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/push_functions_test)
@@ -222,3 +228,4 @@ add_test(NAME gaussian_blur_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/gaussian_bl
 add_test(NAME add_image_weighted_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/add_image_weighted_test)
 add_test(NAME difference_of_gaussian_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/difference_of_gaussian_test)
 add_test(NAME copy_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/copy_test)
+add_test(NAME detect_maxima_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/detect_maxima_test)

@@ -44,4 +44,5 @@
 #include "cleSetKernel.h"
 #include "cleSetNonzeroPixelsToPixelindexKernel.h"
 #include "cleDifferenceOfGaussianKernel.h"
+#include "cleDetectMaximaKernel.h"
 
