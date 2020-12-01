@@ -70,11 +70,8 @@ void LabelConnectComponentBoxKernel::Execute()
     int flag_value = 1;
     int iteration_count = 0;
 
-
-
     while (flag_value > 0)
     {
-
         NonzeroMinimumBoxKernel nonzeroMinBox(this->gpu);
         nonzeroMinBox.SetOutputFlag(flag);
         if (iteration_count % 2 == 0)
@@ -98,6 +95,31 @@ void LabelConnectComponentBoxKernel::Execute()
 
         iteration_count++;
     }
+
+
+    std::cout << "ite : final" << std::endl;
+    std::cout << "----------------------------" << std::endl;
+    std::cout << "temp1:" << std::endl;
+    int* data1 = ReadBuffer<int>(tmp1_mem, 100, this->gpu);
+    for (size_t i = 0; i < 100; i++)
+    {
+        if (i % 10 == 0) {
+            std::cout << std::endl;
+        }
+        std::cout << data1[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "temp2:" << std::endl;
+    int* data2 = ReadBuffer<int>(tmp2_mem, 100, this->gpu);
+    for (size_t i = 0; i < 100; i++)
+    {
+        if (i % 10 == 0) {
+            std::cout << std::endl;
+        }
+        std::cout << data2[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "----------------------------" << std::endl;
 
     CopyKernel copy(this->gpu);
     if (iteration_count % 2 == 0)
