@@ -54,10 +54,14 @@ public:
     void ErodeSphere(Buffer&, Buffer&);
     void Equal(Buffer&, Buffer&, Buffer&);
     void EqualConstant(Buffer&, Buffer&, float);
-    void GaussianBlur(Buffer&, Buffer&, float=0, float=0, float=0);
-    void Maximum(Buffer&, Buffer&, float=0, float=0, float=0);
-    void Minimum(Buffer&, Buffer&, float=0, float=0, float=0);
-    void Mean(Buffer&, Buffer&, float=0, float=0, float=0);
+    void GaussianBlur3D(Buffer&, Buffer&, float=0, float=0, float=0);
+    void GaussianBlur2D(Buffer&, Buffer&, float=0, float=0);
+    void Maximum2DBox(Buffer&, Buffer&, float=0, float=0);
+    void Minimum2DBox(Buffer&, Buffer&, float=0, float=0);
+    void Mean2DBox(Buffer&, Buffer&, float=0, float=0);
+    void Maximum3DBox(Buffer&, Buffer&, float=0, float=0, float=0);
+    void Minimum3DBox(Buffer&, Buffer&, float=0, float=0, float=0);
+    void Mean3DBox(Buffer&, Buffer&, float=0, float=0, float=0);
     void Greater(Buffer&, Buffer&, Buffer&);
     void GreaterOrEqual(Buffer&, Buffer&, Buffer&);
     void GreaterConstant(Buffer&, Buffer&, float);
@@ -78,11 +82,13 @@ public:
     void Sobel(Buffer&, Buffer&);
     void Set(Buffer&, float);
     void SetNonzeroPixelsToPixelindex(Buffer&, Buffer&);
-    void DifferenceOfGaussian(Buffer&, Buffer&, float=2, float=2, float=2, float=2, float=2, float=2);
+    void DifferenceOfGaussian2D(Buffer&, Buffer&, float=2, float=2, float=2, float=2);
+    void DifferenceOfGaussian3D(Buffer&, Buffer&, float=2, float=2, float=2, float=2, float=2, float=2);
     void Smaller(Buffer&, Buffer&, Buffer&);
     void SmallerOrEqual(Buffer&, Buffer&, Buffer&);
     void SmallerConstant(Buffer&, Buffer&, float);
     void SmallerOrEqualConstant(Buffer&, Buffer&, float);
+    void Copy(Buffer&, Buffer&);
 
 };
 
