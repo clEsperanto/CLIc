@@ -180,6 +180,11 @@ add_executable(difference_of_gaussian_test difference_of_gaussian_test.cpp)
 add_dependencies(difference_of_gaussian_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(difference_of_gaussian_test CLIc)
 
+# copy_test
+add_executable(copy_test copy_test.cpp)
+add_dependencies(copy_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(copy_test CLIc)
+
 # tests
 add_test(NAME data_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/data_test)
 add_test(NAME push_functions_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/push_functions_test)
@@ -216,3 +221,4 @@ add_test(NAME minimum_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/minimum_test)
 add_test(NAME gaussian_blur_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/gaussian_blur_test)
 add_test(NAME add_image_weighted_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/add_image_weighted_test)
 add_test(NAME difference_of_gaussian_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/difference_of_gaussian_test)
+add_test(NAME copy_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/copy_test)
