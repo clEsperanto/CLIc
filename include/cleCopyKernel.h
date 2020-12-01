@@ -25,7 +25,7 @@ public:
     CopyKernel(GPU& gpu) : Kernel(gpu) 
     {
         kernelName = "copy";
-        tagList = {"src" , "dst"};
+        tagList = {"dst" , "src"};
     }
 
     void SetInput(Object&);
