@@ -13,7 +13,7 @@ CommandQueueManager::CommandQueueManager(cl_context context, cl_device_id device
 void CommandQueueManager::CreateCommandQueue(cl_context& context, cl_device_id &device_id)
 {
     cl_int clError;        
-#if OpenCL_VERSION >= 2  // 2.0 or higher
+#if CL_VERSION_2_0  // 2.0 or higher; see CL/cl_version.h
     this->command_queue = clCreateCommandQueueWithProperties(context, device_id, nullptr, &clError);
 #else 
     this->command_queue = clCreateCommandQueue(context, device_id, 0, &clError);

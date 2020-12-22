@@ -33,7 +33,6 @@ endif()
 find_package(OpenCL REQUIRED)
 if(OpenCL_FOUND)
   include_directories(${OpenCL_INCLUDE_DIR})
-  add_compile_definitions(OpenCL_VERSION=${OpenCL_VERSION_MAJOR})
 endif()
 # LibTiff
 find_package(TIFF REQUIRED)
