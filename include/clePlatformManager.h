@@ -1,10 +1,14 @@
 #ifndef __clePlatformManager_h
 #define __clePlatformManager_h
 
+#ifndef CL_TARGET_OPENCL_VERSION
+#  define CL_TARGET_OPENCL_VERSION 120
+#endif
+
 #ifdef __APPLE__
-#include <OpenCL/opencl.h>
+#   include <OpenCL/opencl.h>
 #else
-#include <CL/cl.h>
+#   include <CL/cl.h>
 #endif
 
 #include <iostream>
