@@ -41,13 +41,13 @@ git submodule update --init --recursive
 
 4. Unfold Tiff, OpenCL, and **Undefined groups**
 5. if Tiff field are marked Not-Found
-    - add path to tiff include folder to TIFF_INCLUDE_DIR 
-    - add path to tiff library to TIFF_LIBRARY
+    - add path to tiff include folder to `TIFF_INCLUDE_DIR` 
+    - add path to tiff library to `TIFF_LIBRARY`
 6. if OpenCL field are marked Not-Found
-    - add path to OpenCL include folder to OpenCL_INCLUDE_DIR 
-    - add path to OpenCL library to OpenCL_LIBRARY
+    - add path to OpenCL include folder to `OpenCL_INCLUDE_DIR` 
+    - add path to OpenCL library to `OpenCL_LIBRARY`
 7. if CLIc field are marked Not-Found
-    - add path to CLIc folder to CLIc_DIR 
+    - add path to CLIc folder to `CLIc_DIR` 
 8. if "build shared libs" is ticked, untick this checkbox
 9. run the **Configure button** (again)
 
@@ -60,4 +60,23 @@ git submodule update --init --recursive
 
 ![cmake-4](./screen-4.png)
 
+## Install
 
+Building install project will install CLIc API on your system at specified location using the CMAKE_INSTALL_PREFIX (UNIX default: `/usr/local`).
+
+    > tree ../_install
+
+    ├── include
+    │   └── kernels
+    │   │   ├── *.cl
+    │   └── *.h
+    └── lib
+        ├── cmake
+        │   └── CLIc
+        │       ├── CLIcConfig.cmake
+        │       ├── CLIcConfigVersion.cmake
+        │       ├── CLIcTargets.cmake
+        │       ├── CLIcTargets-debug.cmake
+        │       └── CLIcTargets-release.cmake
+        ├── libCLIc.a                             (Release)
+        └── libCLIcd.a                            (Debug)
