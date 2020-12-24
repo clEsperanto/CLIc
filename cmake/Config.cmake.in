@@ -1,0 +1,31 @@
+@PACKAGE_INIT@
+set_and_check(INSTALL_DIR "@PACKAGE_CMAKE_INSTALL_PREFIX@")
+set_and_check(INCLUDE_DIR "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@")
+set_and_check(KERNELS_DIR "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@/kernels")
+set_and_check(LIBRARY_DIR "@PACKAGE_CMAKE_INSTALL_LIBDIR@")
+
+set_and_check(CLI_KERNELS_DIR ${KERNELS_DIR} CACHE PATH "CLI kernels directory")
+set_and_check(CLI_PREAMBLE_FILE ${KERNELS_DIR}/preamble.cl CACHE FILEPATH "CLI preamble file")
+
+add_compile_definitions(KERNELS_DIR="${CLI_KERNELS_PATH}")
+add_compile_definitions(PREAMBLE_OCL="${CLI_PREAMBLE_FILE}")
+
+find_package(OpenCL REQUIRED)
+if(OpenCL_FOUND)
+  include_directories(${OpenCL_INCLUDE_DIR})
+endif()
+
+find_package(TIFF REQUIRED)
+if(TIFF_FOUND)
+  include_directories(${TIFF_INCLUDE_DIR})
+endif()
+
+if(NOT TARGET ${PROJECT_NAME}::${LIBRARY_NAME})
+    include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+endif()
+
+set(@PROJECT_NAME_UPPERCASE@_LIBRARIES @PROJECT_NAME@::@LIBRARY_NAME@)
+
+check_required_components(OpenCL)
+check_required_components(TIFF)
+check_required_components("@PROJECT_NAME@")
