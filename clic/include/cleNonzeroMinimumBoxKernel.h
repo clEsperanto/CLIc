@@ -31,8 +31,8 @@ public:
     }
 
     void SetInput(Object&);
-    void SetOutput1(Object&);
-    void SetOutput2(Object&);
+    void SetOutput(Object&);
+    void SetOutputFlag(Object&);
     void Execute();
 
     ~NonzeroMinimumBoxKernel() = default;

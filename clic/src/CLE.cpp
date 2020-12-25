@@ -299,8 +299,8 @@ void CLE::NonzeroMinimumBox(Buffer& src, Buffer& flag, Buffer& dst)
 {
     NonzeroMinimumBoxKernel kernel(this->gpu);
     kernel.SetInput(src);
-    kernel.SetOutput1(flag);
-    kernel.SetOutput2(dst);
+    kernel.SetOutput(flag);
+    kernel.SetOutputFlag(dst);
     kernel.Execute();  
 }
 

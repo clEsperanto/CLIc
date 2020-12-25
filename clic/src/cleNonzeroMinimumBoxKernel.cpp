@@ -29,12 +29,12 @@ void NonzeroMinimumBoxKernel::SetInput(Object& x)
     this->AddObject(&x, "src");
 }
 
-void NonzeroMinimumBoxKernel::SetOutput2(Object& x)
+void NonzeroMinimumBoxKernel::SetOutput(Object& x)
 {
     this->AddObject(&x, "dst");
 }
 
-void NonzeroMinimumBoxKernel::SetOutput1(Object& x)
+void NonzeroMinimumBoxKernel::SetOutputFlag(Object& x)
 {
     this->AddObject(&x, "flag_dst");
 }
