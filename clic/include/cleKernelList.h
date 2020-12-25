@@ -49,3 +49,4 @@
 #include "cleSumZProjectionKernel.h"
 #include "cleSumYProjectionKernel.h"
 #include "cleSumXProjectionKernel.h"
+#include "cleConnectedComponentsLabelingBoxKernel.h"

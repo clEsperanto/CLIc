@@ -210,6 +210,10 @@ add_executable(sum_all_pixels_test sum_all_pixels_test.cpp)
 add_dependencies(sum_all_pixels_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(sum_all_pixels_test CLIc::CLIc)
 
+# connected_components_labeling_box_test
+add_executable(connected_components_labeling_box_test connected_components_labeling_box_test.cpp)
+add_dependencies(connected_components_labeling_box_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(connected_components_labeling_box_test CLIc::CLIc)
 
 
 # tests
@@ -254,3 +258,5 @@ add_test(NAME sum_z_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/sum_z_pr
 add_test(NAME sum_y_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/sum_y_projection_test)
 add_test(NAME sum_x_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/sum_x_projection_test)
 add_test(NAME sum_all_pixels_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/sum_all_pixels_test)
+
+add_test(NAME connected_components_labeling_box_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/connected_components_labeling_box_test)

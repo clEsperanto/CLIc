@@ -94,7 +94,7 @@ public:
     void SumYProjection(Buffer&, Buffer&);
     void SumXProjection(Buffer&, Buffer&);
     void SumOfAllPixels(Buffer&, Buffer&);
-    
+    void ConnectedComponentsLabelingBox(Buffer&, Buffer&);
 
 };
 
