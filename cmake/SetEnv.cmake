@@ -152,3 +152,9 @@ endif()
 
 # CMake Registry
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CMakeRegistry.cmake)
+
+# 
+# MIT License
+# Copyright (c) 2020 Pablo Speciale
+# https://github.com/pablospe/cmake-example-library
+# 

@@ -71,3 +71,9 @@ endfunction ()
 if(CMAKE_REGISTRY_FOLDER STREQUAL "INSTALL_FOLDER")
   register_package(${CONFIG_INSTALL_DIR})
 endif ()
+
+# 
+# MIT License
+# Copyright (c) 2020 Pablo Speciale
+# https://github.com/pablospe/cmake-example-library
+# 

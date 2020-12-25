@@ -110,3 +110,9 @@ install(
   DESTINATION "${CONFIG_INSTALL_DIR}"
   NAMESPACE   "${PROJECT_NAME}::"
 )
+
+# 
+# MIT License
+# Copyright (c) 2020 Pablo Speciale
+# https://github.com/pablospe/cmake-example-library
+# 

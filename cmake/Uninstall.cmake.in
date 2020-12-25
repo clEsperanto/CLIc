@@ -66,3 +66,9 @@ delete_empty_folder("@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_BINDIR@")
 delete_empty_folder("@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@/cmake")
 delete_empty_folder("@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@")
 message(STATUS "")
+
+# 
+# MIT License
+# Copyright (c) 2020 Pablo Speciale
+# https://github.com/pablospe/cmake-example-library
+# 

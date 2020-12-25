@@ -29,3 +29,9 @@ set(@PROJECT_NAME_UPPERCASE@_LIBRARIES @PROJECT_NAME@::@LIBRARY_NAME@)
 check_required_components(OpenCL)
 check_required_components(TIFF)
 check_required_components("@PROJECT_NAME@")
+
+# 
+# MIT License
+# Copyright (c) 2020 Pablo Speciale
+# https://github.com/pablospe/cmake-example-library
+# 
