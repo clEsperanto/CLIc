@@ -9,7 +9,7 @@
 
 #include <random>
 
-#include "CLE.h"
+#include <CLE.h>
 
 /**
  * Main test function

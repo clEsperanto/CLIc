@@ -54,8 +54,8 @@ private:
     cl_kernel kernel;
 
     const std::string filesep = "/";
-    const std::string preambleFile = PREAMBLE_FILE;
-    const std::string kernelFolder = KERNELS_PATH;    
+    const std::string preambleFile = PREAMBLE_OCL;
+    const std::string kernelFolder = KERNELS_DIR;    
 
 protected:
     GPU gpu;

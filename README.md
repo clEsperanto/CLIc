@@ -43,16 +43,20 @@ Empty CLIc script project available [here](https://github.com/StRigaud/CLIc_proj
 )
 - [CMake](https://cmake.org/)
 
-Guideline for requirements installation and troubleshooting [here](./docs/clic_prerequish_install.md).
+Guideline for installation requirements and troubleshooting [here](./docs/clic_prerequish_install.md).
 
 ## Install
 
-Latest release compiled library is available for Windows, MacOS, and Linux Ubuntu [here](https://github.com/clEsperanto/CLIc_prototype/releases/tag/0.1).  
+Compiled API available for Windows 10, MaxOS 10.14 and newer, and Ubuntu 18.04 available [here](https://github.com/clEsperanto/CLIc_prototype/releases/tag/0.1).  
 
-Guide for compiling sources available [here](./docs/clic_compile_guide.md)
+[See](./docs/clic_compile_guide.md) compilation guide for installation from source.
 
 ### Kernels
-CLIc rely on the [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels). They are required for the proper execution of CLIc. Make sure you are downloading the repository submodule, or update the kernels folder path variable CLI_Path during the CMake configuration to point to the kernels location.
+CLIc rely on the [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels). They are required for the proper execution of CLIc API. Make sure you are downloading the repository submodule, or update the kernels folder directory variable during the CMake configuration to point to the kernels location.
 
 # Feedback welcome!
 clEsperanto is developed in the open because we believe in the [open source community](https://clij.github.io/clij2-docs/community_guidelines). Feel free to drop feedback as [github issue](https://github.com/clEsperanto/CLIc_prototype/issues) or via [image.sc](https://image.sc)
+
+# Acknowledgement
+
+CMake library configuration extended from [cmake-example-library](https://github.com/pablospe/cmake-example-library) by Pablo Speciale
