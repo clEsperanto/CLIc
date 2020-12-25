@@ -57,3 +57,6 @@ CLIc rely on the [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-openc
 # Feedback welcome!
 clEsperanto is developed in the open because we believe in the [open source community](https://clij.github.io/clij2-docs/community_guidelines). Feel free to drop feedback as [github issue](https://github.com/clEsperanto/CLIc_prototype/issues) or via [image.sc](https://image.sc)
 
+# Acknowledgement
+
+CMake library configuration extended from [cmake-example-library](https://github.com/pablospe/cmake-example-library) by Pablo Speciale
