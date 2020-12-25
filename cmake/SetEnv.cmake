@@ -1,3 +1,8 @@
+#
+# cmake library project by Pablo Speciale:
+# https://github.com/pablospe/cmake-example-library
+#
+
 # Set PROJECT_NAME_UPPERCASE and PROJECT_NAME_LOWERCASE variables
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPERCASE)
 string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWERCASE)
@@ -152,9 +157,3 @@ endif()
 
 # CMake Registry
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CMakeRegistry.cmake)
-
-# 
-# MIT License
-# Copyright (c) 2020 Pablo Speciale
-# https://github.com/pablospe/cmake-example-library
-# 

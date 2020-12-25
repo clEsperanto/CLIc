@@ -1,4 +1,8 @@
 #
+# cmake library project by Pablo Speciale:
+# https://github.com/pablospe/cmake-example-library
+#
+#
 # CMake Registry
 #
 #   Export package to CMake registry such that it can be easily found by
@@ -71,9 +75,3 @@ endfunction ()
 if(CMAKE_REGISTRY_FOLDER STREQUAL "INSTALL_FOLDER")
   register_package(${CONFIG_INSTALL_DIR})
 endif ()
-
-# 
-# MIT License
-# Copyright (c) 2020 Pablo Speciale
-# https://github.com/pablospe/cmake-example-library
-# 

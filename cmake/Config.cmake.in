@@ -1,3 +1,8 @@
+#
+# cmake library project by Pablo Speciale:
+# https://github.com/pablospe/cmake-example-library
+#
+
 @PACKAGE_INIT@
 set_and_check(INSTALL_DIR "@PACKAGE_CMAKE_INSTALL_PREFIX@")
 set_and_check(INCLUDE_DIR "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@")
@@ -29,9 +34,3 @@ set(@PROJECT_NAME_UPPERCASE@_LIBRARIES @PROJECT_NAME@::@LIBRARY_NAME@)
 check_required_components(OpenCL)
 check_required_components(TIFF)
 check_required_components("@PROJECT_NAME@")
-
-# 
-# MIT License
-# Copyright (c) 2020 Pablo Speciale
-# https://github.com/pablospe/cmake-example-library
-# 

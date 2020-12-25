@@ -1,3 +1,8 @@
+#
+# cmake library project by Pablo Speciale:
+# https://github.com/pablospe/cmake-example-library
+#
+
 # OpenCL library
 find_package(OpenCL REQUIRED)
 if(OpenCL_FOUND)
@@ -110,9 +115,3 @@ install(
   DESTINATION "${CONFIG_INSTALL_DIR}"
   NAMESPACE   "${PROJECT_NAME}::"
 )
-
-# 
-# MIT License
-# Copyright (c) 2020 Pablo Speciale
-# https://github.com/pablospe/cmake-example-library
-# 
