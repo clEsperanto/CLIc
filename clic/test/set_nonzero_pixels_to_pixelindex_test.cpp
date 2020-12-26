@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     unsigned int width (4), height (4), depth (1);
-    float input_data1[24] = {
+    float input_data1[16] = {
                 0, 0, 0, 1,
                 0, 0, 3, 1,
                 0, 0, 3, 1,
@@ -32,18 +32,18 @@ int main(int argc, char **argv)
                 0, 0, 11, 15,
                 4, 8, 12, 16
     };
-    Image<float> input_img1 (input_data1, width, height, depth, "float");
+    Image<float> input_img (input_data1, width, height, depth, "float");
 
     // Initialise GPU information.
     cle::GPU gpu;
     cle::CLE cle(gpu);
 
     // Initialise device memory and push from host to device
-    cle::Buffer gpuInput1 = cle.Push<float>(input_img1);
-    cle::Buffer gpuOutput = cle.Create<float>(gpuInput1, "float");
+    cle::Buffer gpuInput = cle.Push<float>(input_img);
+    cle::Buffer gpuOutput = cle.Create<float>(gpuInput, "float");
 
     // Call kernel
-    cle.SetNonzeroPixelsToPixelindex(gpuInput1, gpuOutput);
+    cle.SetNonzeroPixelsToPixelindex(gpuInput, gpuOutput);
 
     // pull device memory to host
     Image<float> output_img = cle.Pull<float>(gpuOutput);    
