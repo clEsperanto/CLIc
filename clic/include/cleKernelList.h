@@ -50,3 +50,5 @@
 #include "cleSumYProjectionKernel.h"
 #include "cleSumXProjectionKernel.h"
 #include "cleConnectedComponentsLabelingBoxKernel.h"
+#include "cleReplaceIntensityKernel.h"
+#include "cleSetColumnKernel.h"
