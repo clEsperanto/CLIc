@@ -299,8 +299,8 @@ void CLE::NonzeroMinimumBox(Buffer& src, Buffer& flag, Buffer& dst)
 {
     NonzeroMinimumBoxKernel kernel(this->gpu);
     kernel.SetInput(src);
-    kernel.SetOutput(flag);
-    kernel.SetOutputFlag(dst);
+    kernel.SetOutput(dst);
+    kernel.SetOutputFlag(flag);
     kernel.Execute();  
 }
 
@@ -445,6 +445,25 @@ void CLE::ConnectedComponentsLabelingBox(Buffer& src, Buffer& dst)
     kernel.SetInput(src);
     kernel.SetOutput(dst);
     kernel.Execute(); 
+}
+
+void CLE::ReplaceIntensity(Buffer& src, Buffer& dst, float in, float out)
+{
+    ReplaceIntensityKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetInValue(in);
+    kernel.SetOutValue(out);
+    kernel.Execute(); 
+}
+
+void CLE::SetColumn(Buffer& src, int column, float value)
+{
+    SetColumnKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetColumn(column);
+    kernel.SetValue(value);
+    kernel.Execute();   
 }
 
 

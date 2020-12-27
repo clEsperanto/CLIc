@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     unsigned int width (4), height (4), depth (1);
-    float input_data1[24] = {
+    float input_data1[16] = {
                 1, 2, 0, 0,
                 3, 0, 0, 0,
                 0, 0, 0, 6,
@@ -39,16 +39,15 @@ int main(int argc, char **argv)
     cle::CLE cle(gpu);
 
     // Initialise device memory and push from host to device
-    cle::Buffer gpuInput1 = cle.Push<float>(input_img1);
+    cle::Buffer gpuInput = cle.Push<float>(input_img1);
 
 
     std::array<unsigned int, 3> dimensions = {1, 1, 2}; //TODO: This should also work width flag depth=1, but it doesn't
     cle::Buffer gpuFlag = cle.Create<float>(dimensions.data(), "float");
-
-    cle::Buffer gpuOutput = cle.Create<float>(gpuInput1, "float");
+    cle::Buffer gpuOutput = cle.Create<float>(gpuInput, "float");
 
     // Call kernel
-    cle.NonzeroMinimumBox(gpuInput1, gpuFlag, gpuOutput);
+    cle.NonzeroMinimumBox(gpuInput, gpuFlag, gpuOutput);
 
     // pull device memory to host
     Image<float> output_img = cle.Pull<float>(gpuOutput);    

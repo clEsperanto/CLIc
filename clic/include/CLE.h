@@ -95,6 +95,8 @@ public:
     void SumXProjection(Buffer&, Buffer&);
     void SumOfAllPixels(Buffer&, Buffer&);
     void ConnectedComponentsLabelingBox(Buffer&, Buffer&);
+    void ReplaceIntensity(Buffer&, Buffer&, float, float);
+    void SetColumn(Buffer&, int, float);
 
 };
 
