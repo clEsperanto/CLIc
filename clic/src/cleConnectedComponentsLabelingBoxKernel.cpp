@@ -18,17 +18,6 @@
 namespace cle
 {
 
-void ConnectedComponentsLabelingBoxKernel::DefineDimensionality()
-{
-    std::string dim = "_2d";
-    Buffer* bufferObject = dynamic_cast<Buffer*>(parameterList.at("src"));
-    if(bufferObject->GetDimensions()[2] > 1)
-    {
-        dim = "_3d";
-    }
-    kernelName = kernelName + dim;
-}
-
 void ConnectedComponentsLabelingBoxKernel::SetInput(Object& x)
 {
     this->AddObject(&x, "src");
@@ -116,8 +105,6 @@ void ConnectedComponentsLabelingBoxKernel::Execute()
     closeGaps.SetOutput(*dst);
     closeGaps.SetBlockSize(4096);
     closeGaps.Execute();
-
-
 }
 
 } // namespace cle

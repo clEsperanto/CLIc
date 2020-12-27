@@ -20,8 +20,6 @@ class ConnectedComponentsLabelingBoxKernel : public Kernel
 {
 private:
 
-    void DefineDimensionality();
-
 
 public:
     ConnectedComponentsLabelingBoxKernel(GPU& gpu) : Kernel(gpu) 
