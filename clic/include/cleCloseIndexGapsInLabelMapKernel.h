@@ -20,8 +20,7 @@ class CloseIndexGapsInLabelMapKernel : public Kernel
 {
 private:
 
-    void DefineDimensionality();
-    int blocksize = 4096;
+    int blocksize = 0;
 
 public:
     CloseIndexGapsInLabelMapKernel(GPU& gpu) : Kernel(gpu) 
@@ -32,7 +31,7 @@ public:
 
     void SetInput(Object&);
     void SetOutput(Object&);
-    void SetBlockSize(int);
+    void SetBlockSize(int =4096);
     void Execute();
 
     ~CloseIndexGapsInLabelMapKernel() = default;
