@@ -97,6 +97,7 @@ public:
     void ConnectedComponentsLabelingBox(Buffer&, Buffer&);
     void ReplaceIntensity(Buffer&, Buffer&, float, float);
     void SetColumn(Buffer&, int, float);
+    void SumReduction(Buffer&, Buffer&, int);
 
 };
 

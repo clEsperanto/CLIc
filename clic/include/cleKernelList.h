@@ -52,3 +52,4 @@
 #include "cleConnectedComponentsLabelingBoxKernel.h"
 #include "cleReplaceIntensityKernel.h"
 #include "cleSetColumnKernel.h"
+#include "cleSumReductionKernel.h"

@@ -466,5 +466,14 @@ void CLE::SetColumn(Buffer& src, int column, float value)
     kernel.Execute();   
 }
 
+void CLE::SumReduction(Buffer& src, Buffer& dst, int blocksize)
+{
+    SumReductionKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetBlocksize(blocksize);
+    kernel.Execute();   
+}
+
 
 }
