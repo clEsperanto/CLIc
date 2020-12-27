@@ -39,9 +39,6 @@ void CloseIndexGapsInLabelMapKernel::SetBlockSize(int x)
 
 void CloseIndexGapsInLabelMapKernel::Execute()
 {
-
-    std::cout << "close gaps kernel ... " << std::endl;
-
     Buffer* src = dynamic_cast<Buffer*>(parameterList.at("src"));
     Buffer* dst = dynamic_cast<Buffer*>(parameterList.at("dst"));
 
@@ -51,20 +48,6 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     cl_mem max_mem = CreateBuffer<float>(sizeof(float), this->gpu);
     Buffer* max  = new Buffer(max_mem, one_dim, src->GetDataType());
 
-
-    float* src_arr = ReadBuffer<float>(src->GetData(), src->GetBitSize() * arr_size, this->gpu);
-    for (size_t i = 0; i < arr_size; i++)
-    {
-        if (i % 10 == 0) {
-            std::cout << std::endl;
-        }
-        std::cout << src_arr[i] << " ";
-    }
-    std::cout << std::endl;
-
-
-
-    // max_label = maximum_of_all_pixels(input)
     MaximumOfAllPixelsKernel maximumOfPixels(this->gpu);
     maximumOfPixels.SetInput(*src);
     maximumOfPixels.SetOutput(*max);
@@ -72,7 +55,6 @@ void CloseIndexGapsInLabelMapKernel::Execute()
 
     float max_value = ReadBuffer<float>(max->GetData(), max->GetBitSize() * 1, this->gpu)[0];
     unsigned int nb_indices =  int(max_value) + 1;
-    std::cout << "nb indices = " << nb_indices << std::endl;
 
     unsigned int indices_dim[3] = {nb_indices, 1, 1};
     cl_mem flaggedIndices_mem = CreateBuffer<float>(src->GetBitSize() * indices_dim[0], this->gpu);
@@ -83,55 +65,27 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     set.SetValue(0);
     set.Execute();
 
-
-    std::cout << "intensity list array : " << std::endl; 
-
     FlagExistingIntensitiesKernel flagIntensity(this->gpu);
     flagIntensity.SetInput(*src);
     flagIntensity.SetOutput(*flaggedIndices);
     flagIntensity.Execute();
-
-    for (size_t i = 0; i < indices_dim[0]; i++)
-    {
-        std::cout << i << " ";
-    }
-    std::cout << std::endl;
-
-    float* flaggedIndices_arr = ReadBuffer<float>(flaggedIndices->GetData(), flaggedIndices->GetBitSize() * indices_dim[0], this->gpu);
-    for (size_t i = 0; i < indices_dim[0]; i++)
-    {
-        std::cout << flaggedIndices_arr[i] << " ";
-    }
-    std::cout << std::endl;
 
     SetColumnKernel setColumn(this->gpu);
     setColumn.SetInput(*flaggedIndices);
     setColumn.SetColumn(0);
     setColumn.SetValue(0);
     setColumn.Execute();
-    
-    float* flaggedIndices_arr2 = ReadBuffer<float>(flaggedIndices->GetData(), flaggedIndices->GetBitSize() * indices_dim[0], this->gpu);
-    for (size_t i = 0; i < indices_dim[0]; i++)
-    {
-        std::cout << flaggedIndices_arr2[i] << " ";
-    }
-    std::cout << std::endl;
-
-    // # sum existing labels per blocks
 
     unsigned int nb_sums = int(nb_indices / this->blocksize) + 1;
     unsigned int sums_dim[3] = {nb_sums, 1, 1};
     cl_mem sums_mem = CreateBuffer<float>(flaggedIndices->GetBitSize() * sums_dim[0], this->gpu);
     Buffer* blockSums  = new Buffer(sums_mem, sums_dim, flaggedIndices->GetDataType());
 
-
     SumReductionKernel sumReduction(this->gpu);
     sumReduction.SetInput(*flaggedIndices);
     sumReduction.SetOutput(*blockSums);
     sumReduction.SetBlocksize(this->blocksize);
     sumReduction.Execute();
-
-
 
     unsigned int newIndices_dim[3] = {nb_indices, 1, 1};
     cl_mem newIndices_mem = CreateBuffer<float>(flaggedIndices->GetBitSize() * newIndices_dim[0], this->gpu);
@@ -144,14 +98,6 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     blockEnumerate.SetBlocksize(this->blocksize);
     blockEnumerate.Execute();
 
-
-    float* newIndices_arr = ReadBuffer<float>(newIndices->GetData(), newIndices->GetBitSize() * newIndices_dim[0], this->gpu);
-    for (size_t i = 0; i < newIndices_dim[0]; i++)
-    {
-        std::cout << newIndices_arr[i] << " ";
-    }
-    std::cout << std::endl;
-
     // replace_intensities(input, new_indices, output)
     ReplaceIntensitiesKernel replaceIntensities(this->gpu);
     replaceIntensities.SetInput(*src);
@@ -159,17 +105,7 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     replaceIntensities.SetMap(*newIndices);
     replaceIntensities.Execute();
 
-    float* arr = ReadBuffer<float>(dst->GetData(), dst->GetBitSize() * arr_size, this->gpu);
-    for (size_t i = 0; i < arr_size; i++)
-    {
-        if (i % dst->GetDimensions()[0] == 0)
-        {
-            std::cout << std::endl;
-        }
-        
-        std::cout << arr[i] << " ";
-    }
-    std::cout << std::endl;
+
 
 }
 
