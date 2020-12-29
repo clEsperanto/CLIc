@@ -53,3 +53,4 @@
 #include "cleReplaceIntensityKernel.h"
 #include "cleSetColumnKernel.h"
 #include "cleSumReductionKernel.h"
+#include "cleFlagExistingLabelsKernel.h"

@@ -98,6 +98,7 @@ public:
     void ReplaceIntensity(Buffer&, Buffer&, float, float);
     void SetColumn(Buffer&, int, float);
     void SumReduction(Buffer&, Buffer&, int);
+    void FlagExistingLabels(Buffer&, Buffer&);
 
 };
 

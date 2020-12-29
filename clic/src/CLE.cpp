@@ -475,5 +475,13 @@ void CLE::SumReduction(Buffer& src, Buffer& dst, int blocksize)
     kernel.Execute();   
 }
 
+void CLE::FlagExistingLabels(Buffer& src, Buffer& dst)
+{
+    FlagExistingLabelsKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}
+
 
 }
