@@ -457,7 +457,7 @@ void CLE::ReplaceIntensity(Buffer& src, Buffer& dst, float in, float out)
     kernel.Execute(); 
 }
 
-void CLE::ReplaceIntensities(Buffer& src, Buffer& dst, Buffer& ref)
+void CLE::ReplaceIntensities(Buffer& src, Buffer& ref, Buffer& dst)
 {
     ReplaceIntensitiesKernel kernel(this->gpu);
     kernel.SetInput(src);

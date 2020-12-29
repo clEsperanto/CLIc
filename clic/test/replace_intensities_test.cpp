@@ -50,7 +50,7 @@ int main(int argc, char **argv)
     cle::Buffer gpuOutput = cle.Create<float>(gpuInput, "float");
 
     // Call kernel
-    cle.ReplaceIntensities(gpuInput, gpuOutput, gpuReference);
+    cle.ReplaceIntensities(gpuInput, gpuReference, gpuOutput);
 
     // pull device memory to host
     Image<float> output_img = cle.Pull<float>(gpuOutput);    
