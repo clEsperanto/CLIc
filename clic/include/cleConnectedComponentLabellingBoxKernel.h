@@ -8,21 +8,21 @@
 */
 
 
-#ifndef __cleConnectedComponentsLabelingBoxKernel_h
-#define __cleConnectedComponentsLabelingBoxKernel_h
+#ifndef __cleConnectedComponentLabellingBoxKernel_h
+#define __cleConnectedComponentLabellingBoxKernel_h
 
 #include "cleKernel.h"
 
 namespace cle
 {
     
-class ConnectedComponentsLabelingBoxKernel : public Kernel
+class ConnectedComponentLabellingBoxKernel : public Kernel
 {
 private:
 
 
 public:
-    ConnectedComponentsLabelingBoxKernel(GPU& gpu) : Kernel(gpu) 
+    ConnectedComponentLabellingBoxKernel(GPU& gpu) : Kernel(gpu) 
     {
         kernelName = "ConnectedComponentsLabelingBox";
         tagList = {"src" , "dst"};
@@ -32,9 +32,9 @@ public:
     void SetOutput(Object&);
     void Execute();
 
-    ~ConnectedComponentsLabelingBoxKernel() = default;
+    ~ConnectedComponentLabellingBoxKernel() = default;
 };
 
 } // namespace cle
 
-#endif // __cleConnectedComponentsLabelingBoxKernel_h
+#endif // __cleConnectedComponentLabellingBoxKernel_h

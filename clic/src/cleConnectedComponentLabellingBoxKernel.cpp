@@ -9,7 +9,7 @@
 
 #include "cleCloseIndexGapsInLabelMapKernel.h"
 
-#include "cleConnectedComponentsLabelingBoxKernel.h"
+#include "cleConnectedComponentLabellingBoxKernel.h"
 #include "cleSetNonzeroPixelsToPixelindexKernel.h"
 #include "cleNonzeroMinimumBoxKernel.h"
 #include "cleSetKernel.h"
@@ -18,17 +18,17 @@
 namespace cle
 {
 
-void ConnectedComponentsLabelingBoxKernel::SetInput(Object& x)
+void ConnectedComponentLabellingBoxKernel::SetInput(Object& x)
 {
     this->AddObject(&x, "src");
 }
 
-void ConnectedComponentsLabelingBoxKernel::SetOutput(Object& x)
+void ConnectedComponentLabellingBoxKernel::SetOutput(Object& x)
 {
     this->AddObject(&x, "dst");
 }
 
-void ConnectedComponentsLabelingBoxKernel::Execute()
+void ConnectedComponentLabellingBoxKernel::Execute()
 {
     Buffer* src = dynamic_cast<Buffer*>(parameterList.at("src"));
     Buffer* dst = dynamic_cast<Buffer*>(parameterList.at("dst"));

@@ -54,7 +54,7 @@ int main(int argc, char **argv)
     cle::Buffer gpuOutput = cle.Create<float>(gpuInput, "float");
 
     // Call kernel
-    cle.ConnectedComponentsLabelingBox(gpuInput, gpuOutput);
+    cle.ConnectedComponentLabellingBox(gpuInput, gpuOutput);
 
     // pull device memory to host
     Image<float> output_img = cle.Pull<float>(gpuOutput);    

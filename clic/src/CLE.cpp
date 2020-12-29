@@ -439,9 +439,9 @@ void CLE::SumOfAllPixels(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }  
 
-void CLE::ConnectedComponentsLabelingBox(Buffer& src, Buffer& dst)
+void CLE::ConnectedComponentLabellingBox(Buffer& src, Buffer& dst)
 {
-    ConnectedComponentsLabelingBoxKernel kernel(this->gpu);
+    ConnectedComponentLabellingBoxKernel kernel(this->gpu);
     kernel.SetInput(src);
     kernel.SetOutput(dst);
     kernel.Execute(); 
