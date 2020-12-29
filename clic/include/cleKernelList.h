@@ -55,3 +55,4 @@
 #include "cleSetColumnKernel.h"
 #include "cleSumReductionKernel.h"
 #include "cleFlagExistingLabelsKernel.h"
+#include "cleBlockEnumerateKernel.h"
