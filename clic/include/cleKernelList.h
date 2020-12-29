@@ -51,6 +51,7 @@
 #include "cleSumXProjectionKernel.h"
 #include "cleConnectedComponentsLabelingBoxKernel.h"
 #include "cleReplaceIntensityKernel.h"
+#include "cleReplaceIntensitiesKernel.h"
 #include "cleSetColumnKernel.h"
 #include "cleSumReductionKernel.h"
 #include "cleFlagExistingLabelsKernel.h"

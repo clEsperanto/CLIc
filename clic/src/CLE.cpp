@@ -457,6 +457,15 @@ void CLE::ReplaceIntensity(Buffer& src, Buffer& dst, float in, float out)
     kernel.Execute(); 
 }
 
+void CLE::ReplaceIntensities(Buffer& src, Buffer& dst, Buffer& ref)
+{
+    ReplaceIntensitiesKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetMap(ref);
+    kernel.Execute(); 
+}
+
 void CLE::SetColumn(Buffer& src, int column, float value)
 {
     SetColumnKernel kernel(this->gpu);

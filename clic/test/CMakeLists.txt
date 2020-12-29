@@ -220,6 +220,11 @@ add_executable(replace_intensity_test replace_intensity_test.cpp)
 add_dependencies(replace_intensity_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(replace_intensity_test CLIc::CLIc)
 
+# replace_intensities_test
+add_executable(replace_intensities_test replace_intensities_test.cpp)
+add_dependencies(replace_intensities_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(replace_intensities_test CLIc::CLIc)
+
 # sum_reduction_test
 add_executable(sum_reduction_test sum_reduction_test.cpp)
 add_dependencies(sum_reduction_test CLIc) # wait for CLIc to be compiled
@@ -282,5 +287,6 @@ add_test(NAME sum_all_pixels_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/sum_all_pi
 add_test(NAME sum_reduction_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/sum_reduction_test)
 add_test(NAME set_column_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/set_column_test)
 add_test(NAME replace_intensity_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/replace_intensity_test)
+add_test(NAME replace_intensities_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/replace_intensities_test)
 add_test(NAME flag_exisiting_labels_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/flag_exisiting_labels_test)
 add_test(NAME connected_components_labeling_box_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/connected_components_labeling_box_test)
