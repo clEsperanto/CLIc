@@ -8,22 +8,22 @@
 */
 
 
-#ifndef __cleFlagExistingIntensitiesKernel_h
-#define __cleFlagExistingIntensitiesKernel_h
+#ifndef __cleFlagExistingLabelsKernel_h
+#define __cleFlagExistingLabelsKernel_h
 
 #include "cleKernel.h"
 
 namespace cle
 {
     
-class FlagExistingIntensitiesKernel : public Kernel
+class FlagExistingLabelsKernel : public Kernel
 {
 private:
 
 public:
-    FlagExistingIntensitiesKernel(GPU& gpu) : Kernel(gpu) 
+    FlagExistingLabelsKernel(GPU& gpu) : Kernel(gpu) 
     {
-        kernelName = "flag_existing_intensities";
+        kernelName = "flag_existing_labels";
         tagList = {"dst" , "src"};
     }
 
@@ -31,9 +31,9 @@ public:
     void SetOutput(Object&);
     void Execute();
 
-    ~FlagExistingIntensitiesKernel() = default;
+    ~FlagExistingLabelsKernel() = default;
 };
 
 } // namespace cle
 
-#endif // __cleFlagExistingIntensitiesKernel_h
+#endif // __cleFlagExistingLabelsKernel_h

@@ -11,7 +11,7 @@
 #include "cleCloseIndexGapsInLabelMapKernel.h"
 
 #include "cleMaximumOfAllPixelsKernel.h"
-#include "cleFlagExistingIntensitiesKernel.h"
+#include "cleFlagExistingLabelsKernel.h"
 #include "cleSetKernel.h"
 #include "cleSumReductionKernel.h"
 #include "cleSetColumnKernel.h"
@@ -65,10 +65,10 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     set.SetValue(0);
     set.Execute();
 
-    FlagExistingIntensitiesKernel flagIntensity(this->gpu);
-    flagIntensity.SetInput(*src);
-    flagIntensity.SetOutput(*flaggedIndices);
-    flagIntensity.Execute();
+    FlagExistingLabelsKernel flagLabels(this->gpu);
+    flagLabels.SetInput(*src);
+    flagLabels.SetOutput(*flaggedIndices);
+    flagLabels.Execute();
 
     SetColumnKernel setColumn(this->gpu);
     setColumn.SetInput(*flaggedIndices);

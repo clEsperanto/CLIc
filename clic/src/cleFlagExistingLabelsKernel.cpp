@@ -8,23 +8,23 @@
 */
 
 
-#include "cleFlagExistingIntensitiesKernel.h"
+#include "cleFlagExistingLabelsKernel.h"
 #include "cleSetKernel.h"
 
 namespace cle
 {
 
-void FlagExistingIntensitiesKernel::SetInput(Object& x)
+void FlagExistingLabelsKernel::SetInput(Object& x)
 {
     this->AddObject(&x, "src");
 }
 
-void FlagExistingIntensitiesKernel::SetOutput(Object& x)
+void FlagExistingLabelsKernel::SetOutput(Object& x)
 {
     this->AddObject(&x, "dst");
 }
 
-void FlagExistingIntensitiesKernel::Execute()
+void FlagExistingLabelsKernel::Execute()
 {
     CompileKernel();
     AddArgumentsToKernel();
