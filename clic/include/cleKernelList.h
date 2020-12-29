@@ -49,7 +49,7 @@
 #include "cleSumZProjectionKernel.h"
 #include "cleSumYProjectionKernel.h"
 #include "cleSumXProjectionKernel.h"
-#include "cleConnectedComponentsLabelingBoxKernel.h"
+#include "cleConnectedComponentLabellingBoxKernel.h"
 #include "cleReplaceIntensityKernel.h"
 #include "cleReplaceIntensitiesKernel.h"
 #include "cleSetColumnKernel.h"
