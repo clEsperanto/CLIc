@@ -25,7 +25,8 @@ int main(int argc, char **argv)
     float valid_data[12] = {
                 0, 1, 0, 2, 0, 0, 3, 4, 0, 0, 5, 0
     };
-    int blocksize = 4000;
+    int max_label = width - 1;
+    int blocksize = 4;
     
     Image<float> input_img (input_data, width, height, depth, "float");
 
@@ -37,11 +38,12 @@ int main(int argc, char **argv)
     cle::Buffer gpuFlagIndices = cle.Push<float>(input_img);
     cle::Buffer gpuNewIndices = cle.Create<float>(gpuFlagIndices, "float");
 
-    unsigned int block_value = int((int(width) + 1) / blocksize) + 1;
+    unsigned int block_value =  int((int(max_label) + 1) / blocksize) + 1;
     unsigned int block_dim[3] = {block_value, 1, 1};
     cle::Buffer gpuBlockSums = cle.Create<float>(block_dim, "float");
 
     // Call kernel
+    cle.SumReductionX(gpuFlagIndices, gpuBlockSums, blocksize);
     cle.BlockEnumerate(gpuFlagIndices, gpuBlockSums, gpuNewIndices, blocksize);
 
     // pull device memory to host
