@@ -23,7 +23,7 @@ private:
 public:
     SumReductionXKernel(GPU& gpu) : Kernel(gpu) 
     {
-        kernelName = "sum_reduction";
+        kernelName = "sum_reduction_x";
         tagList = {"dst", "src", "blocksize"};
     }
 
