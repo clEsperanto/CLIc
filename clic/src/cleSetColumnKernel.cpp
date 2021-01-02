@@ -8,15 +8,15 @@
 */
 
 
-#include "cleNonzeroMinimumBoxKernel.h"
+#include "cleSetColumnKernel.h"
 
 namespace cle
 {
 
-void NonzeroMinimumBoxKernel::DefineDimensionality()
+void SetColumnKernel::DefineDimensionality()
 {
     std::string dim = "_2d";
-    Buffer* bufferObject = dynamic_cast<Buffer*>(parameterList.at("src"));
+    Buffer* bufferObject = dynamic_cast<Buffer*>(parameterList.at("dst"));
     if(bufferObject->GetDimensions()[2] > 1)
     {
         dim = "_3d";
@@ -24,32 +24,29 @@ void NonzeroMinimumBoxKernel::DefineDimensionality()
     kernelName = kernelName + dim;
 }
 
-void NonzeroMinimumBoxKernel::SetInput(Object& x)
-{
-    this->AddObject(&x, "src");
-}
-
-void NonzeroMinimumBoxKernel::SetOutput(Object& x)
+void SetColumnKernel::SetInput(Object& x)
 {
     this->AddObject(&x, "dst");
 }
 
-void NonzeroMinimumBoxKernel::SetOutputFlag(Object& x)
+void SetColumnKernel::SetColumn(int x)
 {
-    this->AddObject(&x, "flag_dst");
+    Int* val = new Int(x);
+    this->AddObject(val, "column");
 }
 
-void NonzeroMinimumBoxKernel::Execute()
+void SetColumnKernel::SetValue(float x)
 {
-    std::cout << "A" << std::endl;
+    Float* val = new Float(x);
+    this->AddObject(val, "value");
+}
+
+void SetColumnKernel::Execute()
+{
     DefineDimensionality();
-    std::cout << "b" << std::endl;
     CompileKernel();
-    std::cout << "c" << std::endl;
     AddArgumentsToKernel();
-    std::cout << "d" << std::endl;
     DefineRangeKernel();
-    std::cout << "e" << std::endl;
 }
 
 } // namespace cle

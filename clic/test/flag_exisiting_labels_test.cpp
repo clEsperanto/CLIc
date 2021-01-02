@@ -18,43 +18,43 @@
 int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
-    unsigned int width (4), height (4), depth (1);
-    float input_data1[16] = {
+    unsigned int width (4), height (4), depth (2);
+    float input_data[32] = {
                 1, 2, 0, 0,
                 3, 0, 0, 0,
                 0, 0, 0, 6,
-                0, 0, 0, 7
+                0, 0, 0, 7,
+
+                1, 2, 0, 3,
+                3, 3, 0, 1,
+                0, 3, 0, 6,
+                7, 0, 0, 7
     };
 
-    float valid_data[16] = {
-                1, 1, 0, 0,
-                1, 0, 0, 0,
-                0, 0, 0, 6,
-                0, 0, 0, 6
+    float valid_data[8] = {
+                1, 1, 1, 1, 0, 0, 1, 1
     };
-    Image<float> input_img1 (input_data1, width, height, depth, "float");
+    Image<float> input_img (input_data, width, height, depth, "float");
 
     // Initialise GPU information.
     cle::GPU gpu;
     cle::CLE cle(gpu);
 
     // Initialise device memory and push from host to device
-    cle::Buffer gpuInput = cle.Push<float>(input_img1);
-
-
-    std::array<unsigned int, 3> dimensions = {1, 1, 2}; //TODO: This should also work width flag depth=1, but it doesn't
-    cle::Buffer gpuFlag = cle.Create<float>(dimensions.data(), "float");
-    cle::Buffer gpuOutput = cle.Create<float>(gpuInput, "float");
+    cle::Buffer gpuInput = cle.Push<float>(input_img);
+    std::array<unsigned int, 3> dimensions = {8, 1, 1}; //TODO: This should also work width flag depth=1, but it doesn't
+    cle::Buffer gpuOutput = cle.Create<float>(dimensions.data(), "float");
+    // cle::Buffer gpuOutput = cle.Create<float>(gpuInput, "float");
 
     // Call kernel
-    cle.NonzeroMinimumBox(gpuInput, gpuFlag, gpuOutput);
+    cle.FlagExistingLabels(gpuInput, gpuOutput);
 
     // pull device memory to host
     Image<float> output_img = cle.Pull<float>(gpuOutput);    
 
     // Verify output
     float difference = 0;
-    for (size_t i = 0; i < width*height*depth; i++)
+    for (size_t i = 0; i < 8; i++)
     {
         std::cout << valid_data[i] << " " << output_img.GetData()[i] << std::endl;
         difference += std::abs(valid_data[i] - output_img.GetData()[i]);

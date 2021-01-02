@@ -18,39 +18,36 @@
 int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
-    unsigned int width (4), height (4), depth (1);
-    float input_data1[16] = {
-                1, 2, 0, 0,
-                3, 0, 0, 0,
-                0, 0, 0, 6,
-                0, 0, 0, 7
+    unsigned int width (12), height (1), depth (1);
+    float input_data[12] = {
+                0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0
     };
-
-    float valid_data[16] = {
-                1, 1, 0, 0,
-                1, 0, 0, 0,
-                0, 0, 0, 6,
-                0, 0, 0, 6
+    float valid_data[12] = {
+                0, 1, 0, 2, 0, 0, 3, 4, 0, 0, 5, 0
     };
-    Image<float> input_img1 (input_data1, width, height, depth, "float");
+    int max_label = width - 1;
+    int blocksize = 4;
+    
+    Image<float> input_img (input_data, width, height, depth, "float");
 
     // Initialise GPU information.
     cle::GPU gpu;
     cle::CLE cle(gpu);
 
     // Initialise device memory and push from host to device
-    cle::Buffer gpuInput = cle.Push<float>(input_img1);
+    cle::Buffer gpuFlagIndices = cle.Push<float>(input_img);
+    cle::Buffer gpuNewIndices = cle.Create<float>(gpuFlagIndices, "float");
 
-
-    std::array<unsigned int, 3> dimensions = {1, 1, 2}; //TODO: This should also work width flag depth=1, but it doesn't
-    cle::Buffer gpuFlag = cle.Create<float>(dimensions.data(), "float");
-    cle::Buffer gpuOutput = cle.Create<float>(gpuInput, "float");
+    unsigned int block_value =  int((int(max_label) + 1) / blocksize) + 1;
+    unsigned int block_dim[3] = {block_value, 1, 1};
+    cle::Buffer gpuBlockSums = cle.Create<float>(block_dim, "float");
 
     // Call kernel
-    cle.NonzeroMinimumBox(gpuInput, gpuFlag, gpuOutput);
+    cle.SumReductionX(gpuFlagIndices, gpuBlockSums, blocksize);
+    cle.BlockEnumerate(gpuFlagIndices, gpuBlockSums, gpuNewIndices, blocksize);
 
     // pull device memory to host
-    Image<float> output_img = cle.Pull<float>(gpuOutput);    
+    Image<float> output_img = cle.Pull<float>(gpuNewIndices);    
 
     // Verify output
     float difference = 0;

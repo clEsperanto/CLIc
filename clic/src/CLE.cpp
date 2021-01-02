@@ -299,8 +299,8 @@ void CLE::NonzeroMinimumBox(Buffer& src, Buffer& flag, Buffer& dst)
 {
     NonzeroMinimumBoxKernel kernel(this->gpu);
     kernel.SetInput(src);
-    kernel.SetOutput1(flag);
-    kernel.SetOutput2(dst);
+    kernel.SetOutput(dst);
+    kernel.SetOutputFlag(flag);
     kernel.Execute();  
 }
 
@@ -438,5 +438,69 @@ void CLE::SumOfAllPixels(Buffer& src, Buffer& dst)
     kernel.SetOutput(dst);
     kernel.Execute(); 
 }  
+
+void CLE::ConnectedComponentLabellingBox(Buffer& src, Buffer& dst)
+{
+    ConnectedComponentLabellingBoxKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}
+
+void CLE::ReplaceIntensity(Buffer& src, Buffer& dst, float in, float out)
+{
+    ReplaceIntensityKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetInValue(in);
+    kernel.SetOutValue(out);
+    kernel.Execute(); 
+}
+
+void CLE::ReplaceIntensities(Buffer& src, Buffer& ref, Buffer& dst)
+{
+    ReplaceIntensitiesKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetMap(ref);
+    kernel.Execute(); 
+}
+
+void CLE::SetColumn(Buffer& src, int column, float value)
+{
+    SetColumnKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetColumn(column);
+    kernel.SetValue(value);
+    kernel.Execute();   
+}
+
+void CLE::SumReductionX(Buffer& src, Buffer& dst, int blocksize)
+{
+    SumReductionXKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetBlocksize(blocksize);
+    kernel.Execute();   
+}
+
+void CLE::BlockEnumerate(Buffer& src, Buffer& sum, Buffer& dst, int blocksize)
+{
+    BlockEnumerateKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetInputSums(sum);
+    kernel.SetOutput(dst);
+    kernel.SetBlocksize(blocksize);
+    kernel.Execute();   
+}
+
+void CLE::FlagExistingLabels(Buffer& src, Buffer& dst)
+{
+    FlagExistingLabelsKernel kernel(this->gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.Execute(); 
+}
+
 
 }

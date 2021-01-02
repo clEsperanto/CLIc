@@ -8,36 +8,32 @@
 */
 
 
-#ifndef __cleNonzeroMinimumBoxKernel_h
-#define __cleNonzeroMinimumBoxKernel_h
+#ifndef __cleFlagExistingLabelsKernel_h
+#define __cleFlagExistingLabelsKernel_h
 
 #include "cleKernel.h"
 
 namespace cle
 {
     
-class NonzeroMinimumBoxKernel : public Kernel
+class FlagExistingLabelsKernel : public Kernel
 {
 private:
 
-    void DefineDimensionality();
-
-
 public:
-    NonzeroMinimumBoxKernel(GPU& gpu) : Kernel(gpu) 
+    FlagExistingLabelsKernel(GPU& gpu) : Kernel(gpu) 
     {
-        kernelName = "nonzero_minimum_box";
-        tagList = {"dst", "flag_dst", "src"};
+        kernelName = "flag_existing_labels";
+        tagList = {"dst" , "src"};
     }
 
     void SetInput(Object&);
     void SetOutput(Object&);
-    void SetOutputFlag(Object&);
     void Execute();
 
-    ~NonzeroMinimumBoxKernel() = default;
+    ~FlagExistingLabelsKernel() = default;
 };
 
 } // namespace cle
 
-#endif // __cleNonzeroMinimumBoxKernel_h
+#endif // __cleFlagExistingLabelsKernel_h

@@ -8,36 +8,35 @@
 */
 
 
-#ifndef __cleNonzeroMinimumBoxKernel_h
-#define __cleNonzeroMinimumBoxKernel_h
+#ifndef __cleCloseIndexGapsInLabelMapKernel_h
+#define __cleCloseIndexGapsInLabelMapKernel_h
 
 #include "cleKernel.h"
 
 namespace cle
 {
     
-class NonzeroMinimumBoxKernel : public Kernel
+class CloseIndexGapsInLabelMapKernel : public Kernel
 {
 private:
 
-    void DefineDimensionality();
-
+    int blocksize = 0;
 
 public:
-    NonzeroMinimumBoxKernel(GPU& gpu) : Kernel(gpu) 
+    CloseIndexGapsInLabelMapKernel(GPU& gpu) : Kernel(gpu) 
     {
-        kernelName = "nonzero_minimum_box";
-        tagList = {"dst", "flag_dst", "src"};
+        kernelName = "close_index_gaps_in_label_map";
+        tagList = {"src", "dst", "blocksize"};
     }
 
     void SetInput(Object&);
     void SetOutput(Object&);
-    void SetOutputFlag(Object&);
+    void SetBlockSize(int =4096);
     void Execute();
 
-    ~NonzeroMinimumBoxKernel() = default;
+    ~CloseIndexGapsInLabelMapKernel() = default;
 };
 
 } // namespace cle
 
-#endif // __cleNonzeroMinimumBoxKernel_h
+#endif // __cleCloseIndexGapsInLabelMapKernel_h

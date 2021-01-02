@@ -8,36 +8,33 @@
 */
 
 
-#ifndef __cleNonzeroMinimumBoxKernel_h
-#define __cleNonzeroMinimumBoxKernel_h
+#ifndef __cleSumReductionXKernel_h
+#define __cleSumReductionXKernel_h
 
 #include "cleKernel.h"
 
 namespace cle
 {
     
-class NonzeroMinimumBoxKernel : public Kernel
+class SumReductionXKernel : public Kernel
 {
 private:
 
-    void DefineDimensionality();
-
-
 public:
-    NonzeroMinimumBoxKernel(GPU& gpu) : Kernel(gpu) 
+    SumReductionXKernel(GPU& gpu) : Kernel(gpu) 
     {
-        kernelName = "nonzero_minimum_box";
-        tagList = {"dst", "flag_dst", "src"};
+        kernelName = "sum_reduction_x";
+        tagList = {"dst", "src", "blocksize"};
     }
 
     void SetInput(Object&);
     void SetOutput(Object&);
-    void SetOutputFlag(Object&);
+    void SetBlocksize(int);
     void Execute();
 
-    ~NonzeroMinimumBoxKernel() = default;
+    ~SumReductionXKernel() = default;
 };
 
 } // namespace cle
 
-#endif // __cleNonzeroMinimumBoxKernel_h
+#endif // __cleSumReductionXKernel_h

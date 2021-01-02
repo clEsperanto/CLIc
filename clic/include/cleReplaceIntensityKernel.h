@@ -8,36 +8,34 @@
 */
 
 
-#ifndef __cleNonzeroMinimumBoxKernel_h
-#define __cleNonzeroMinimumBoxKernel_h
+#ifndef __cleReplaceIntensityKernel_h
+#define __cleReplaceIntensityKernel_h
 
 #include "cleKernel.h"
 
 namespace cle
 {
     
-class NonzeroMinimumBoxKernel : public Kernel
+class ReplaceIntensityKernel : public Kernel
 {
 private:
 
-    void DefineDimensionality();
-
-
 public:
-    NonzeroMinimumBoxKernel(GPU& gpu) : Kernel(gpu) 
+    ReplaceIntensityKernel(GPU& gpu) : Kernel(gpu) 
     {
-        kernelName = "nonzero_minimum_box";
-        tagList = {"dst", "flag_dst", "src"};
+        kernelName = "replace_intensity";
+        tagList = {"dst", "src", "in", "out"};
     }
 
     void SetInput(Object&);
     void SetOutput(Object&);
-    void SetOutputFlag(Object&);
+    void SetInValue(float);
+    void SetOutValue(float);
     void Execute();
 
-    ~NonzeroMinimumBoxKernel() = default;
+    ~ReplaceIntensityKernel() = default;
 };
 
 } // namespace cle
 
-#endif // __cleNonzeroMinimumBoxKernel_h
+#endif // __cleReplaceIntensityKernel_h

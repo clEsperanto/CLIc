@@ -8,36 +8,34 @@
 */
 
 
-#ifndef __cleNonzeroMinimumBoxKernel_h
-#define __cleNonzeroMinimumBoxKernel_h
+#ifndef __cleBlockEnumerateKernel_h
+#define __cleBlockEnumerateKernel_h
 
 #include "cleKernel.h"
 
 namespace cle
 {
     
-class NonzeroMinimumBoxKernel : public Kernel
+class BlockEnumerateKernel : public Kernel
 {
 private:
 
-    void DefineDimensionality();
-
-
 public:
-    NonzeroMinimumBoxKernel(GPU& gpu) : Kernel(gpu) 
+    BlockEnumerateKernel(GPU& gpu) : Kernel(gpu) 
     {
-        kernelName = "nonzero_minimum_box";
-        tagList = {"dst", "flag_dst", "src"};
+        kernelName = "block_enumerate";
+        tagList = {"dst", "src", "src_sums", "blocksize"};
     }
 
     void SetInput(Object&);
+    void SetInputSums(Object&);
     void SetOutput(Object&);
-    void SetOutputFlag(Object&);
+    void SetBlocksize(int);
     void Execute();
 
-    ~NonzeroMinimumBoxKernel() = default;
+    ~BlockEnumerateKernel() = default;
 };
 
 } // namespace cle
 
-#endif // __cleNonzeroMinimumBoxKernel_h
+#endif // __cleBlockEnumerateKernel_h

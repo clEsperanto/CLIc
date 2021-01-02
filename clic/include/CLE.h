@@ -94,7 +94,13 @@ public:
     void SumYProjection(Buffer&, Buffer&);
     void SumXProjection(Buffer&, Buffer&);
     void SumOfAllPixels(Buffer&, Buffer&);
-    
+    void ConnectedComponentLabellingBox(Buffer&, Buffer&);
+    void ReplaceIntensity(Buffer&, Buffer&, float, float);
+    void ReplaceIntensities(Buffer&, Buffer&, Buffer&);
+    void SetColumn(Buffer&, int, float);
+    void SumReductionX(Buffer&, Buffer&, int);
+    void BlockEnumerate(Buffer&, Buffer&, Buffer&, int);
+    void FlagExistingLabels(Buffer&, Buffer&);
 
 };
 

@@ -8,15 +8,15 @@
 */
 
 
-#ifndef __cleNonzeroMinimumBoxKernel_h
-#define __cleNonzeroMinimumBoxKernel_h
+#ifndef __cleSetColumnKernel_h
+#define __cleSetColumnKernel_h
 
 #include "cleKernel.h"
 
 namespace cle
 {
     
-class NonzeroMinimumBoxKernel : public Kernel
+class SetColumnKernel : public Kernel
 {
 private:
 
@@ -24,20 +24,20 @@ private:
 
 
 public:
-    NonzeroMinimumBoxKernel(GPU& gpu) : Kernel(gpu) 
+    SetColumnKernel(GPU& gpu) : Kernel(gpu) 
     {
-        kernelName = "nonzero_minimum_box";
-        tagList = {"dst", "flag_dst", "src"};
+        kernelName = "set_column";
+        tagList = {"dst" , "column", "value"};
     }
 
     void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetOutputFlag(Object&);
+    void SetColumn(int);
+    void SetValue(float);
     void Execute();
 
-    ~NonzeroMinimumBoxKernel() = default;
+    ~SetColumnKernel() = default;
 };
 
 } // namespace cle
 
-#endif // __cleNonzeroMinimumBoxKernel_h
+#endif // __cleSetColumnKernel_h
