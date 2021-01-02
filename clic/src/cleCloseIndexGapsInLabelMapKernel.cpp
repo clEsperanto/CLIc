@@ -13,7 +13,7 @@
 #include "cleMaximumOfAllPixelsKernel.h"
 #include "cleFlagExistingLabelsKernel.h"
 #include "cleSetKernel.h"
-#include "cleSumReductionKernel.h"
+#include "cleSumReductionXKernel.h"
 #include "cleSetColumnKernel.h"
 #include "cleBlockEnumerateKernel.h"
 #include "cleReplaceIntensitiesKernel.h"
@@ -76,11 +76,11 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     cl_mem sums_mem = CreateBuffer<float>(flaggedIndices->GetBitSize() * sums_dim[0], this->gpu);
     Buffer* blockSums  = new Buffer(sums_mem, sums_dim, flaggedIndices->GetDataType());
 
-    SumReductionKernel sumReduction(this->gpu);
-    sumReduction.SetInput(*flaggedIndices);
-    sumReduction.SetOutput(*blockSums);
-    sumReduction.SetBlocksize(this->blocksize);
-    sumReduction.Execute();
+    SumReductionXKernel sumReductionX(this->gpu);
+    sumReductionX.SetInput(*flaggedIndices);
+    sumReductionX.SetOutput(*blockSums);
+    sumReductionX.SetBlocksize(this->blocksize);
+    sumReductionX.Execute();
 
     unsigned int newIndices_dim[3] = {nb_indices, 1, 1};
     cl_mem newIndices_mem = CreateBuffer<float>(flaggedIndices->GetBitSize() * newIndices_dim[0], this->gpu);

@@ -225,10 +225,10 @@ add_executable(replace_intensities_test replace_intensities_test.cpp)
 add_dependencies(replace_intensities_test CLIc) # wait for CLIc to be compiled
 target_link_libraries(replace_intensities_test CLIc::CLIc)
 
-# sum_reduction_test
-add_executable(sum_reduction_test sum_reduction_test.cpp)
-add_dependencies(sum_reduction_test CLIc) # wait for CLIc to be compiled
-target_link_libraries(sum_reduction_test CLIc::CLIc)
+# sum_reduction_x_test
+add_executable(sum_reduction_x_test sum_reduction_x_test.cpp)
+add_dependencies(sum_reduction_x_test CLIc) # wait for CLIc to be compiled
+target_link_libraries(sum_reduction_x_test CLIc::CLIc)
 
 # flag_exisiting_labels_test
 add_executable(flag_exisiting_labels_test flag_exisiting_labels_test.cpp)
@@ -289,7 +289,7 @@ add_test(NAME sum_z_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/sum_z_pr
 add_test(NAME sum_y_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/sum_y_projection_test)
 add_test(NAME sum_x_projection_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/sum_x_projection_test)
 add_test(NAME sum_all_pixels_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/sum_all_pixels_test)
-add_test(NAME sum_reduction_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/sum_reduction_test)
+add_test(NAME sum_reduction_x_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/sum_reduction_x_test)
 add_test(NAME set_column_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/set_column_test)
 add_test(NAME replace_intensity_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/replace_intensity_test)
 add_test(NAME replace_intensities_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/replace_intensities_test)

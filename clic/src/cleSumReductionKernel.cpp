@@ -8,28 +8,28 @@
 */
 
 
-#include "cleSumReductionKernel.h"
+#include "cleSumReductionXKernel.h"
 
 namespace cle
 {
 
-void SumReductionKernel::SetInput(Object& x)
+void SumReductionXKernel::SetInput(Object& x)
 {
     this->AddObject(&x, "src");
 }
 
-void SumReductionKernel::SetOutput(Object& x)
+void SumReductionXKernel::SetOutput(Object& x)
 {
     this->AddObject(&x, "dst");
 }
 
-void SumReductionKernel::SetBlocksize(int x)
+void SumReductionXKernel::SetBlocksize(int x)
 {
     Int* val = new Int(x);
     this->AddObject(val, "blocksize");
 }
 
-void SumReductionKernel::Execute()
+void SumReductionXKernel::Execute()
 {
     CompileKernel();
     AddArgumentsToKernel();

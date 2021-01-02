@@ -8,20 +8,20 @@
 */
 
 
-#ifndef __cleSumReductionKernel_h
-#define __cleSumReductionKernel_h
+#ifndef __cleSumReductionXKernel_h
+#define __cleSumReductionXKernel_h
 
 #include "cleKernel.h"
 
 namespace cle
 {
     
-class SumReductionKernel : public Kernel
+class SumReductionXKernel : public Kernel
 {
 private:
 
 public:
-    SumReductionKernel(GPU& gpu) : Kernel(gpu) 
+    SumReductionXKernel(GPU& gpu) : Kernel(gpu) 
     {
         kernelName = "sum_reduction";
         tagList = {"dst", "src", "blocksize"};
@@ -32,9 +32,9 @@ public:
     void SetBlocksize(int);
     void Execute();
 
-    ~SumReductionKernel() = default;
+    ~SumReductionXKernel() = default;
 };
 
 } // namespace cle
 
-#endif // __cleSumReductionKernel_h
+#endif // __cleSumReductionXKernel_h

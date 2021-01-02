@@ -53,6 +53,6 @@
 #include "cleReplaceIntensityKernel.h"
 #include "cleReplaceIntensitiesKernel.h"
 #include "cleSetColumnKernel.h"
-#include "cleSumReductionKernel.h"
+#include "cleSumReductionXKernel.h"
 #include "cleFlagExistingLabelsKernel.h"
 #include "cleBlockEnumerateKernel.h"

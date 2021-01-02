@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     cle::Buffer gpuOutput = cle.Create<float>(dimensions.data(), "float");
 
     // Call kernel
-    cle.SumReduction(gpuInput, gpuOutput, width);  
+    cle.SumReductionX(gpuInput, gpuOutput, width);  
 
     // pull device memory to host
     Image<float> output_img = cle.Pull<float>(gpuOutput);    
