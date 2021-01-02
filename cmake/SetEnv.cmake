@@ -32,7 +32,7 @@ message(STATUS "BUILD_TESTING: ${BUILD_TESTING}")
 # Set Kernel directory
 set(
   CLI_KERNELS_DIR 
-  ${PROJECT_SOURCE_DIR}/clij-opencl-kernels/src/main/java/net/haesleinhuepf/clij/kernels 
+  ${PROJECT_SOURCE_DIR}/clij-opencl-kernels/kernels 
   CACHE PATH "CLI kernels directory"
 )
 
