@@ -60,11 +60,6 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     cl_mem flaggedIndices_mem = CreateBuffer<float>(src->GetBitSize() * indices_dim[0], this->gpu);
     Buffer* flaggedIndices  = new Buffer(flaggedIndices_mem, indices_dim, src->GetDataType());
 
-    SetKernel set(this->gpu);
-    set.SetInput(*flaggedIndices);
-    set.SetValue(0);
-    set.Execute();
-
     FlagExistingLabelsKernel flagLabels(this->gpu);
     flagLabels.SetInput(*src);
     flagLabels.SetOutput(*flaggedIndices);
