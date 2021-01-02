@@ -26,6 +26,13 @@ void FlagExistingLabelsKernel::SetOutput(Object& x)
 
 void FlagExistingLabelsKernel::Execute()
 {
+    // Set output to 0
+    Buffer *dst = dynamic_cast<Buffer*>(parameterList.at("dst"));
+    SetKernel set(this->gpu);
+    set.SetInput(*dst);
+    set.SetValue(0);
+    set.Execute();
+
     CompileKernel();
     AddArgumentsToKernel();
     DefineRangeKernel();
