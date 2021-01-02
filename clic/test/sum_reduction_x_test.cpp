@@ -18,18 +18,10 @@
 int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
-    unsigned int width (10), height (1), depth (1);
-    float* input_data = new float[width*height*depth];
-    float valid_data = 0;
-    std::default_random_engine generator;
-    std::normal_distribution<float> distribution(5.0,2.0);
-    for (size_t i = 0; i < width*height*depth; i++)
-    {
-        float x = distribution(generator);
-        // float x = 10;
-        input_data[i] = x;
-        valid_data += x;
-    }
+    unsigned int width (12), height (1), depth (1);
+    int block_size = 4;
+    float input_data[12] = {0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0};
+    float valid_data[3] = {2, 2, 1};
     Image<float> input_img (input_data, width, height, depth, "float");
 
     // Initialise GPU information.
@@ -38,17 +30,22 @@ int main(int argc, char **argv)
     
     // Initialise device memory and push from host
     cle::Buffer gpuInput = cle.Push<float>(input_img);
-    std::array<unsigned int, 3> dimensions = {1, 1, 1};
+    unsigned int sum_dim = int(width / block_size);
+    std::array<unsigned int, 3> dimensions = {sum_dim, 1, 1};
     cle::Buffer gpuOutput = cle.Create<float>(dimensions.data(), "float");
 
     // Call kernel
-    cle.SumReductionX(gpuInput, gpuOutput, width);  
+    cle.SumReductionX(gpuInput, gpuOutput, block_size);  
 
     // pull device memory to host
     Image<float> output_img = cle.Pull<float>(gpuOutput);    
 
     // Verify output
-    float difference = std::abs(valid_data - output_img.GetData()[0]);
+    float difference = 0;
+    for (size_t i = 0; i < sum_dim; i++)
+    {
+        difference += std::abs(valid_data[i] - output_img.GetData()[i]);
+    }    
     if (difference > std::numeric_limits<float>::epsilon())
     {
         std::cout << "Test failled, cumulated absolute difference " << difference << " > CPU epsilon (" << std::numeric_limits<float>::epsilon() << ")" << std::endl;
