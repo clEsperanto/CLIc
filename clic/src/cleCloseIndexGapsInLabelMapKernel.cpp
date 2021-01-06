@@ -99,9 +99,6 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     replaceIntensities.SetOutput(*dst);
     replaceIntensities.SetMap(*newIndices);
     replaceIntensities.Execute();
-
-
-
 }
 
 } // namespace cle

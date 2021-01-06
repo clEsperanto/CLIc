@@ -54,12 +54,11 @@ void ConnectedComponentLabellingBoxKernel::Execute()
     setInit.Execute();
 
     unsigned int flag_dim[3] = {1,1,2};
-    int arr[2] = {0,0};
-    cl_mem flag_mem = CreateBuffer<int>(2, this->gpu);
-    WriteBuffer<int>(flag_mem, arr, 2, this->gpu);
-    Buffer* flag = new Buffer (flag_mem, flag_dim, "int");
+    float arr[2] = {0,0};
+    cl_mem flag_mem = CreateBuffer<float>(sizeof(float) * 2, this->gpu);
+    Buffer* flag = new Buffer (flag_mem, flag_dim, "float");
 
-    int flag_value = 1;
+    float flag_value = 1;
     int iteration_count = 0;
 
     while (flag_value > 0)
@@ -78,12 +77,12 @@ void ConnectedComponentLabellingBoxKernel::Execute()
         }
         nonzeroMinBox.Execute();
         
-        flag_value = ReadBuffer<int>(flag_mem, 2, this->gpu)[0];
+        flag_value = ReadBuffer<float>(flag->GetData(), sizeof(float) * 2, this->gpu)[0];
 
-        SetKernel set(this->gpu);
-        set.SetInput(*flag);
-        set.SetValue(0);
-        set.Execute();
+        SetKernel setFlag(this->gpu);
+        setFlag.SetInput(*flag);
+        setFlag.SetValue(0);
+        setFlag.Execute();
 
         iteration_count++;
     }

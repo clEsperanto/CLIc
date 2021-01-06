@@ -31,7 +31,7 @@ public:
 
     void SetInput(Object&);
     void SetOutput(Object&);
-    void SetBlockSize(int =4096);
+    void SetBlockSize(int);
     void Execute();
 
     ~CloseIndexGapsInLabelMapKernel() = default;

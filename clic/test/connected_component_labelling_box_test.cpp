@@ -63,8 +63,15 @@ int main(int argc, char **argv)
     float difference = 0;
     for (size_t i = 0; i < width*height*depth; i++)
     {
+        if (i % width == 0)
+        {
+            std::cout << std::endl;
+        }
+        std::cout << output_img.GetData()[i] << " ";
         difference += std::abs(valid_data[i] - output_img.GetData()[i]);
     }
+    std::cout << std::endl;
+    
     if (difference > std::numeric_limits<float>::epsilon())
     {
         std::cout << "Test failed, cumulated absolute difference " << difference << " > CPU epsilon (" << std::numeric_limits<float>::epsilon() << ")" << std::endl;
