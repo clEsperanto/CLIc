@@ -45,7 +45,7 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           sudo apt update
-          sudo apt install -y ocl-icd-opencl-dev libtiff-dev gcov lcov
+          sudo apt install -y ocl-icd-opencl-dev libtiff-dev
 
       # - name: Instal Dependencies - windows
       #   if: matrix.name == 'windows-msvc'
