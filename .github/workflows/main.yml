@@ -70,7 +70,7 @@ jobs:
       - name: Run Tests
         working-directory: ${{ runner.workspace }}/build
         # shell: bash
-        run: Ctest -T Test -T Coverage
+        run: ctest -T test -T coverage
 
       - name: Code Coverage report
         run: |
