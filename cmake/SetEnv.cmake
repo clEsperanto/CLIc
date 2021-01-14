@@ -3,6 +3,18 @@
 # https://github.com/pablospe/cmake-example-library
 #
 
+# Use C++11
+set(CMAKE_CXX_STANDARD 11) # Use C++11
+set(CMAKE_CXX_STANDARD_REQUIRED ON) # Require (at least) it
+set(CMAKE_CXX_EXTENSIONS OFF) # Don't use e.g. GNU extension (like -std=gnu++11) for portability
+
+# Set Coverage build flag
+option(BUILD_CODE_COVERAGE "Enable coverage reporting" OFF)
+if(BUILD_CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g --coverage")
+  set(CMAKE_BUILD_TYPE Debug)
+endif()
+
 # Set PROJECT_NAME_UPPERCASE and PROJECT_NAME_LOWERCASE variables
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPERCASE)
 string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWERCASE)
