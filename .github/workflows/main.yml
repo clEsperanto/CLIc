@@ -64,7 +64,7 @@ jobs:
           cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
-          buildWithCMakeArgs: '-- -v -DBUILD_CODE_COVERAGE=ON'
+          buildWithCMakeArgs: '-- -v'
           buildDirectory: '${{ runner.workspace }}/build' 
 
       - name: Run Tests
