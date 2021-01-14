@@ -11,7 +11,7 @@ set(CMAKE_CXX_EXTENSIONS OFF) # Don't use e.g. GNU extension (like -std=gnu++11)
 # Set Coverage build flag
 option(BUILD_CODE_COVERAGE "Enable coverage reporting" ON)
 if(BUILD_CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g --coverage -Qunused-arguments")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g --coverage")
   set(CMAKE_BUILD_TYPE Debug)
 endif()
 
