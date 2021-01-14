@@ -56,7 +56,7 @@ jobs:
         uses: lukka/get-cmake@latest
 
       - name: Run CMake+Ninja
-        uses: lukka/run-cmake@v3
+        uses: lukka/run-cmake@v2
 
         id: runcmake
         with:
@@ -79,6 +79,6 @@ jobs:
           lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
           lcov --list coverage.info
           bash <(curl -s https://codecov.io/bash) -f coverage.info -t "7293366f-4ab8-44c8-b249-22d938d0b919"
-          
+
 # bash <(curl -s https://codecov.io/bash) -f coverage.info -t "8cf7e822-d3dc-4ad8-9f7a-17cd58d18f80" 
           
