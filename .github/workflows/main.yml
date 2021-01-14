@@ -24,28 +24,28 @@ jobs:
         buildtype: [Debug, Release]
         include:
           - name: windows-msvc
-            os: windows
+            os: windows-latest
             cxx: cl.exe
             cc: cl.exe
             triplet: x64-windows
             packages: >
               tiff khronos-opencl-clhpp lcov
           - name: ubuntu-gcc
-            os: ubuntu
+            os: ubuntu-latest
             cxx: g++
             cc: gcc
             triplet: x64-linux
             packages: >
               tiff khronos-opencl-clhpp lcov curl
           - name: ubuntu-clang
-            os: ubuntu
+            os: ubuntu-latest
             cxx: clang++
             cc: clang
             triplet: x64-linux
             packages: >
               tiff khronos-opencl-clhpp lcov curl
           - name: macos-clang
-            os: macos
+            os: macos-latest
             cxx: clang++
             cc: clang
             triplet: x64-osx
