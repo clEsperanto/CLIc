@@ -6,7 +6,8 @@ on:
   pull_request:
     branches: [ master ]
 
-# env:
+env:
+    BUILD_TYPE: Debug
 #   CODECOV_TOKEN: "8cf7e822-d3dc-4ad8-9f7a-17cd58d18f80"
 
 jobs:
@@ -65,6 +66,7 @@ jobs:
           useVcpkgToolchainFile: true
           buildWithCMakeArgs: '-- -v -DBUILD_CODE_COVERAGE=ON'
           buildDirectory: '${{ runner.workspace }}/build' 
+          cmakeAppendedArgs: '-G Ninja '
 
       - name: Run Tests
         if: startsWith(matrix.os, 'macos')
