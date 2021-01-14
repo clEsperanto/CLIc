@@ -29,21 +29,21 @@ jobs:
             cc: cl.exe
             triplet: x64-windows
             packages: >
-              tiff khronos-opencl-clhpp lcov
+              tiff opencl lcov
           - name: ubuntu-gcc
             os: ubuntu-latest
             cxx: g++
             cc: gcc
             triplet: x64-linux
             packages: >
-              tiff khronos-opencl-clhpp lcov curl
+              tiff opencl lcov curl
           - name: ubuntu-clang
             os: ubuntu-latest
             cxx: clang++
             cc: clang
             triplet: x64-linux
             packages: >
-              tiff khronos-opencl-clhpp lcov curl
+              tiff opencl lcov curl
           - name: macos-clang
             os: macos-latest
             cxx: clang++
