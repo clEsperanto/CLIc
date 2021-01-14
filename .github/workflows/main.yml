@@ -29,28 +29,28 @@ jobs:
             cc: cl.exe
             triplet: x64-windows
             packages: >
-              tiff opencl lcov
+              tiff opencl 
           - name: ubuntu-gcc
             os: ubuntu-latest
             cxx: g++
             cc: gcc
             triplet: x64-linux
             packages: >
-              tiff opencl lcov curl
+              tiff opencl
           - name: ubuntu-clang
             os: ubuntu-latest
             cxx: clang++
             cc: clang
             triplet: x64-linux
             packages: >
-              tiff opencl lcov curl
+              tiff opencl
           - name: macos-clang
             os: macos-latest
             cxx: clang++
             cc: clang
             triplet: x64-osx
             packages: >
-              tiff khronos-opencl-clhpp lcov curl
+              tiff khronos-opencl-clhpp
 
     steps:
 
@@ -66,7 +66,7 @@ jobs:
       #   if: startsWith(matrix.os, 'ubuntu')
       #   run: |
       #     sudo apt update
-      #     sudo apt install -y ocl-icd-khronos-opencl-clhpp-dev libtiff-dev lcov
+      #     sudo apt install -y ocl-icd-khronos-opencl-clhpp-dev libtiff-dev 
 
       # - name: Instal Dependencies - windows
       #   if: matrix.name == 'windows-msvc'
@@ -106,10 +106,10 @@ jobs:
         shell: bash
         run: ctest -T test -T coverage
 
-      - name: Code Coverage report
-        shell: bash
-        run: |
-          lcov --directory . --capture --output-file coverage.info
-          lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
-          lcov --list coverage.info
-          bash <(curl -s https://codecov.io/bash) -f coverage.info 
+      # - name: Code Coverage report
+      #   shell: bash
+      #   run: |
+      #     lcov --directory . --capture --output-file coverage.info
+      #     lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
+      #     lcov --list coverage.info
+      #     bash <(curl -s https://codecov.io/bash) -f coverage.info 
