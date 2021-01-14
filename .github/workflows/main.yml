@@ -101,7 +101,7 @@ jobs:
           cmakeAppendedArgs: '-DBUILD_CODE_COVERAGE=ON'
 
       - name: Run Tests
-        if: startsWith(matrix.os, 'macos') | startsWith(matrix.os, 'windows')
+        if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'windows')
         working-directory: ${{ runner.workspace }}/build
         shell: bash
         run: ctest -T test -T coverage
