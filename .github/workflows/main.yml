@@ -68,17 +68,17 @@ jobs:
           buildDirectory: '${{ runner.workspace }}/build' 
 
       - name: Run Tests
-        if: startsWith(matrix.os, 'macos')
+        # if: startsWith(matrix.os, 'macos')
         working-directory: ${{ runner.workspace }}/build
         shell: bash
         run: Ctest -T Test -T Coverage
 
-      # - name: Code Coverage report
-      #   run: |
-      #     lcov --directory . --capture --output-file coverage.info
-      #     lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
-      #     lcov --list coverage.info
-      #     bash <(curl -s https://codecov.io/bash) -f coverage.info -t "7293366f-4ab8-44c8-b249-22d938d0b919"
+      - name: Code Coverage report
+        run: |
+          lcov --directory . --capture --output-file coverage.info
+          lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
+          lcov --list coverage.info
+          bash <(curl -s https://codecov.io/bash) -f coverage.info -t "7293366f-4ab8-44c8-b249-22d938d0b919"
 
 # bash <(curl -s https://codecov.io/bash) -f coverage.info -t "8cf7e822-d3dc-4ad8-9f7a-17cd58d18f80" 
           
