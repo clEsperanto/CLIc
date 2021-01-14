@@ -29,28 +29,28 @@ jobs:
             cc: cl.exe
             triplet: x64-windows
             packages: >
-              tiff opencl 
+              tiff opencl lcov 
           - name: ubuntu-gcc
             os: ubuntu-latest
             cxx: g++
             cc: gcc
             triplet: x64-linux
             packages: >
-              tiff opencl
+              tiff opencl lcov
           - name: ubuntu-clang
             os: ubuntu-latest
             cxx: clang++
             cc: clang
             triplet: x64-linux
             packages: >
-              tiff opencl
+              tiff opencl lcov
           - name: macos-clang
             os: macos-latest
             cxx: clang++
             cc: clang
             triplet: x64-osx
             packages: >
-              tiff khronos-opencl-clhpp
+              tiff opencl lcov 
 
     steps:
 
