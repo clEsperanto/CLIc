@@ -45,7 +45,7 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           sudo apt update
-          sudo apt install -y ocl-icd-opencl-dev libtiff-dev
+          sudo apt install -y ocl-icd-opencl-dev libtiff-dev lcov
 
       # - name: Instal Dependencies - windows
       #   if: matrix.name == 'windows-msvc'
@@ -68,7 +68,6 @@ jobs:
           buildDirectory: '${{ runner.workspace }}/build' 
 
       - name: Run Tests
-        # if: startsWith(matrix.os, 'macos')
         working-directory: ${{ runner.workspace }}/build
         shell: bash
         run: Ctest -T Test -T Coverage
@@ -81,4 +80,4 @@ jobs:
           bash <(curl -s https://codecov.io/bash) -f coverage.info -t "7293366f-4ab8-44c8-b249-22d938d0b919"
 
 # bash <(curl -s https://codecov.io/bash) -f coverage.info -t "8cf7e822-d3dc-4ad8-9f7a-17cd58d18f80" 
-          
+                  # if: startsWith(matrix.os, 'macos')
