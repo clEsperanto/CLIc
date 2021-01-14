@@ -45,7 +45,7 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           sudo apt update
-          sudo apt install -y ocl-icd-opencl-dev libtiff-dev
+          sudo apt install -y ocl-icd-opencl-dev libtiff-dev gcov lcov
 
       # - name: Instal Dependencies - windows
       #   if: matrix.name == 'windows-msvc'
@@ -64,9 +64,8 @@ jobs:
           cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
-          buildWithCMakeArgs: '-- -v'
+          buildWithCMakeArgs: '-- -v -DBUILD_CODE_COVERAGE=ON'
           buildDirectory: '${{ runner.workspace }}/build' 
-          # cmakeAppendedArgs: '-G Ninja '
 
       - name: Run Tests
         if: startsWith(matrix.os, 'macos')
