@@ -6,8 +6,8 @@ on:
   pull_request:
     branches: [ master ]
 
-env:
-    BUILD_TYPE: Debug
+# env:
+    # BUILD_TYPE: Debug
 #   CODECOV_TOKEN: "8cf7e822-d3dc-4ad8-9f7a-17cd58d18f80"
 
 jobs:
@@ -69,7 +69,7 @@ jobs:
 
       - name: Run Tests
         working-directory: ${{ runner.workspace }}/build
-        shell: bash
+        # shell: bash
         run: Ctest -T Test -T Coverage
 
       - name: Code Coverage report
