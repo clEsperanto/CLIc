@@ -19,9 +19,9 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     unsigned int width (3), height (3), depth (3);
-    float input_data1[width*height*depth];
-    float input_data2[width*height*depth];
-    float valid_data[width*height*depth];
+    float* input_data1 = new float[width*height*depth];
+    float* input_data2 = new float[width*height*depth];
+    float* valid_data  = new float[width*height*depth];
     for (size_t i = 0; i < width*height*depth; i++)
     {
         input_data1[i] = 1;

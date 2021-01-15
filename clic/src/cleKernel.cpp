@@ -159,14 +159,14 @@ std::string Kernel::TypeAbbr(const std::string type) const
 
 void Kernel::AddArgumentsToKernel()
 {
-    cl_int clError;
+    cl_int clError = CL_SUCCESS;
     if (parameterList.size() != tagList.size())
     {
         std::cerr << "Error: Invalid number of Objects and Parameters for the kernel." << std::endl;
     }
     for(auto it = tagList.begin(); it != tagList.end(); it++ )
     {
-        int index = it - tagList.begin();
+        size_t index = it - tagList.begin();
         if(parameterList.find(it->c_str()) != parameterList.end())
         {
             std::string tag = it->c_str();

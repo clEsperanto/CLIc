@@ -45,7 +45,7 @@ public:
 template<class T>
 Image<T>::Image(T* arr, unsigned int w, unsigned int h, unsigned int d, std::string _type)
 {
-    size_t dim = w*h*d;
+    size_t dim = size_t(w*h*d);
     data = new T[dim];
     std::copy(arr, arr + dim, data);
     dimensions[0] = w;
