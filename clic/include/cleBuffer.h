@@ -26,7 +26,7 @@ private:
     DataType T;
 
     cl_mem pointer = nullptr;
-    std::array<unsigned int, 3> dimensions = {0, 0, 0};
+    std::array<unsigned int, 3> dimensions{{0, 0, 0}};
     
 public:      
     Buffer() = default;
