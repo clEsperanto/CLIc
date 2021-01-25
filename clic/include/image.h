@@ -22,7 +22,7 @@ private:
 
     std::string type = "";
     T *data = nullptr;
-    std::array<unsigned int,3> dimensions = {0, 0, 0};
+    std::array<unsigned int,3> dimensions{{0, 0, 0}};
     
 public:
     Image(){};
