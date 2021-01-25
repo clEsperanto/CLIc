@@ -25,3 +25,8 @@ add_executable(benchmark_mean benchmark_mean.cpp)
 target_compile_features(benchmark_mean PUBLIC cxx_std_14)
 
 target_link_libraries(benchmark_mean benchmark_kernel)
+
+add_executable(benchmark_means_comparison benchmark_means_comparison.cpp)
+target_compile_features(benchmark_means_comparison PUBLIC cxx_std_14)
+
+target_link_libraries(benchmark_means_comparison benchmark_kernel)
