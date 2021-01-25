@@ -8,10 +8,6 @@
 
 #include "CLE.h"
 
-#define WIDTH 512
-#define HEIGHT 512
-#define DEPTH 512
-
 using std::string;
 using std::cout;
 
@@ -25,16 +21,16 @@ protected:
 
     virtual void Setup()
     {
-        input_data = new float[WIDTH * HEIGHT * DEPTH];
+        input_data = new float[dataWidth * dataWidth * dataWidth];
         std::default_random_engine generator;
         std::normal_distribution<float> distribution(5.0,2.0);
-        for (size_t d = 0; d < DEPTH; d++)
+        for (size_t d = 0; d < dataWidth; d++)
         {
-            for (size_t y = 0; y < HEIGHT; y++)
+            for (size_t y = 0; y < dataWidth; y++)
             {
-                for (size_t x = 0; x < WIDTH; x++)
+                for (size_t x = 0; x < dataWidth; x++)
                 {
-                    int i = x + WIDTH*(y+HEIGHT*d);
+                    int i = x + dataWidth*(y+dataWidth*d);
                     if ( x == y )
                     {
                         input_data[i] = 1000;
@@ -46,14 +42,14 @@ protected:
                 }
             }
         }
-        Image<float> input_img (input_data, WIDTH, HEIGHT, DEPTH, "float");
+        Image<float> input_img (input_data, dataWidth, dataWidth, dataWidth, "float");
 
         // Initialise GPU information.
         cle::GPU gpu;
         cle::CLE cle(gpu);
 
         // Initialise device memory and push from host
-        std::array<unsigned int, 3> dimensions = {WIDTH, HEIGHT, DEPTH};
+        std::array<unsigned int, 3> dimensions = {dataWidth, dataWidth, dataWidth};
         dimensions.back() = 1;
         gpuInput = cle.Push<float>(input_img);
         gpuOutput = cle.Create<float>(dimensions.data(), "float");
@@ -71,6 +67,7 @@ protected:
     /* }; */
 
 public:
+    unsigned dataWidth;
     MaximumProjectionBenchmarkBase() : gpu(), cle(cle::CLE(gpu)) {}
     virtual ~MaximumProjectionBenchmarkBase(){}
 };
@@ -115,14 +112,20 @@ public:
 };
 
 int main() {
-    std::cout << "MaximumXProjection: " << std::endl;
     MaximumXProjectionBenchmark x;
-    x.Run();
-    std::cout << "MaximumYProjection: " << std::endl;
     MaximumYProjectionBenchmark y;
-    y.Run();
-    std::cout << "MaximumZProjection: " << std::endl;
     MaximumZProjectionBenchmark z;
-    z.Run();
+    for (int width = 1; width < 1024; width *= 2)
+    {
+        std::cout << "\n============\n dataWidth = " << width << "\n============\nMaximumXProjection: " << std::endl;
+        x.dataWidth = width;
+        x.Run();
+        std::cout << "\n\nMaximumYProjection: " << std::endl;
+        y.dataWidth = width;
+        y.Run();
+        std::cout << "\n\nMaximumZProjection: " << std::endl;
+        z.dataWidth = width;
+        z.Run();
+    }
     return 0;
 }

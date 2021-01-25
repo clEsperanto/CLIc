@@ -14,12 +14,12 @@ class BenchmarkBase
 private:
     void ExecuteSingleIteration(vector<unsigned long>& timingResultWriteback)
     {
-        static std::chrono::time_point<std::chrono::high_resolution_clock> begin
+        std::chrono::time_point<std::chrono::high_resolution_clock> begin
             = std::chrono::high_resolution_clock::now();
 
         Iteration();
 
-        static std::chrono::time_point<std::chrono::high_resolution_clock> end
+        std::chrono::time_point<std::chrono::high_resolution_clock> end
             = std::chrono::high_resolution_clock::now();
 
         timingResultWriteback.push_back(std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count());
@@ -50,7 +50,7 @@ public:
         {
             cout.setstate(std::ios_base::badbit);
         }
-        
+
         cout << "Running setup...";
         cout.flush();
         Setup();
