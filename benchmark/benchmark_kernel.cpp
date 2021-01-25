@@ -14,12 +14,12 @@ class BenchmarkBase
 private:
     void ExecuteSingleIteration(vector<unsigned long>& timingResultWriteback)
     {
-        static std::chrono::time_point<std::chrono::high_resolution_clock> begin
+        std::chrono::time_point<std::chrono::high_resolution_clock> begin
             = std::chrono::high_resolution_clock::now();
 
         Iteration();
 
-        static std::chrono::time_point<std::chrono::high_resolution_clock> end
+        std::chrono::time_point<std::chrono::high_resolution_clock> end
             = std::chrono::high_resolution_clock::now();
 
         timingResultWriteback.push_back(std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count());
@@ -44,6 +44,22 @@ public:
     vector<unsigned long> iterationNormalTimingsMs;
     vector<unsigned long> iterationWarmupTimingsMs;
 
+    unsigned int GetAvgWarmupMs()
+    {
+        return std::accumulate(iterationWarmupTimingsMs.begin(), iterationWarmupTimingsMs.end(), 0) / iterationWarmupTimingsMs.size();
+    }
+
+    unsigned int GetAvgNormalMs()
+    {
+        return std::accumulate(iterationNormalTimingsMs.begin(), iterationNormalTimingsMs.end(), 0) / iterationNormalTimingsMs.size();
+    }
+    unsigned int GetAvgTotalMs()
+    {
+        size_t warmups = iterationWarmupTimingsMs.size();
+        size_t normals = iterationNormalTimingsMs.size();
+        return (GetAvgWarmupMs() * warmups + GetAvgNormalMs() * normals) / (normals + warmups);
+    }
+                    
     void Run(bool printResults = true)
     {
         if (!printResults)
@@ -82,20 +98,15 @@ public:
         Teardown();
         cout << "OK" << endl;
 
-        // summarize results
-        unsigned int avgWarmupMs = std::accumulate(iterationWarmupTimingsMs.begin(), iterationWarmupTimingsMs.end(), 0) / iterationWarmupTimingsMs.size();
-        unsigned int avgNormalMs = std::accumulate(iterationNormalTimingsMs.begin(), iterationNormalTimingsMs.end(), 0) / iterationNormalTimingsMs.size();
-        unsigned int avgTotalMs = (avgNormalMs + avgWarmupMs) / 2;
-
-        InterpretTiming("warmup", avgWarmupMs);
-        InterpretTiming("normal", avgWarmupMs);
-        InterpretTiming("total", avgWarmupMs);
+        InterpretTiming("warmup", GetAvgWarmupMs());
+        InterpretTiming("normal", GetAvgNormalMs());
+        InterpretTiming("total", GetAvgTotalMs());
 
         cout.width(8);
         cout << endl;
         cout << endl;
-        cout << "Avg Warmup: " << avgWarmupMs << "ms" << endl;
-        cout << "Avg Normal: " << avgNormalMs << "ms" << endl;
-        cout << "Avg Total:  " << avgTotalMs  << "ms" << endl;
+        cout << "Avg Warmup: " << GetAvgWarmupMs() << "ms" << endl;
+        cout << "Avg Normal: " << GetAvgNormalMs() << "ms" << endl;
+        cout << "Avg Total:  " << GetAvgTotalMs()  << "ms" << endl;
     }
 };
