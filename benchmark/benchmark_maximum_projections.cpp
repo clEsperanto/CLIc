@@ -1,4 +1,5 @@
 #include <chrono>
+#include <fstream>
 #include <iostream>
 #include <random>
 #include <string>
@@ -10,6 +11,7 @@
 
 using std::string;
 using std::cout;
+using std::ofstream;
 
 class MaximumProjectionBenchmarkBase : public BenchmarkBase
 {
@@ -115,17 +117,33 @@ int main() {
     MaximumXProjectionBenchmark x;
     MaximumYProjectionBenchmark y;
     MaximumZProjectionBenchmark z;
+    ofstream csv;
+    csv.open("maximum_projection_benchmark.csv", std::ios_base::trunc);
+    csv << "width,count,x_compiletime_ms,x_runtime_ms,x_totaltime_ms,y_compiletime_ms,y_runtime_ms,y_totaltime_ms,z_compiletime_ms,z_runtime_ms,z_totaltime_ms" << std::endl;
     for (int width = 1; width < 1024; width *= 2)
     {
+        csv << width << "," << width*width*width << ",";
         std::cout << "\n============\n dataWidth = " << width << "\n============\nMaximumXProjection: " << std::endl;
         x.dataWidth = width;
         x.Run();
+        unsigned long runtime = x.GetAvgNormalMs();
+        unsigned long total = x.GetAvgTotalMs();
+        static unsigned long xCompileTime = runtime;
+        csv << xCompileTime << "," << runtime << "," << total << ",";
         std::cout << "\n\nMaximumYProjection: " << std::endl;
         y.dataWidth = width;
         y.Run();
+        runtime = y.GetAvgNormalMs();
+        total = y.GetAvgTotalMs();
+        static unsigned long yCompileTime = runtime;
+        csv << yCompileTime << "," << runtime << "," << total << ",";
         std::cout << "\n\nMaximumZProjection: " << std::endl;
         z.dataWidth = width;
         z.Run();
+        runtime = z.GetAvgNormalMs();
+        total = z.GetAvgTotalMs();
+        static unsigned long zCompileTime = runtime;
+        csv << zCompileTime << "," << runtime << "," << total << std::endl;
     }
     return 0;
 }
