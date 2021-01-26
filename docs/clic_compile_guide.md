@@ -40,21 +40,18 @@ git submodule update --init --recursive
 ![cmake-2](./screen-2.png)
 
 4. Unfold Tiff, OpenCL, and **Undefined groups**
-5. if Tiff field are marked Not-Found
-    - add path to tiff include folder to `TIFF_INCLUDE_DIR` 
-    - add path to tiff library to `TIFF_LIBRARY`
-6. if OpenCL field are marked Not-Found
+5. if OpenCL field are marked Not-Found
     - add path to OpenCL include folder to `OpenCL_INCLUDE_DIR` 
     - add path to OpenCL library to `OpenCL_LIBRARY`
-7. if CLIc field are marked Not-Found
+6. if CLIc field are marked Not-Found
     - add path to CLIc folder to `CLIc_DIR` 
-8. if "build shared libs" is ticked, untick this checkbox
-9. run the **Configure button** (again)
+7. if "build shared libs" is ticked, untick this checkbox
+8. run the **Configure button** (again)
 
 ![cmake-3](./screen-3.png)
 
-10. run the **Generate button**
-11. compile and modify the project
+9. run the **Generate button**
+10. compile and modify the project
     - (Unix makefile) run command *make* in the build folder
     - (Xcode/VSC++) open the project in the build folder and compile it
 
