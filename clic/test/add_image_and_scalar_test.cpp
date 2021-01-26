@@ -1,8 +1,5 @@
 
-#include <random>
-#include <vector>
 #include <iostream>
-
 #include "CLE.h"
 
 /**
@@ -15,15 +12,9 @@ int main(int argc, char **argv)
     unsigned int dims[3] = {width, height, depth};
     std::vector<float> input_data (width*height*depth);
     std::vector<float> valid_data (width*height*depth);
-    std::vector<float> ouput_data (width*height*depth);
     float scalar = 100;
-    std::default_random_engine generator;
-    std::normal_distribution<float> distribution(5.0,2.0);
-    for (size_t i = 0; i < input_data.size(); i++)
-    {
-        input_data[i] = distribution(generator);
-        valid_data[i] = input_data[i] + scalar;
-    }
+    std::fill(input_data.begin(), input_data.end(), 5);
+    std::fill(valid_data.begin(), valid_data.end(), 5 + scalar);
 
     cle::GPU gpu;
     cle::CLE cle(gpu);
@@ -38,7 +29,8 @@ int main(int argc, char **argv)
     float difference = 0;
     for (size_t i = 0; i < output_data.size(); i++)
     {
-        difference += std::abs(valid_data[i] - ouput_data[i]);
+        std::cout << valid_data[i] << " = "<< output_data[i] << "\n";
+        difference += std::abs(valid_data[i] - output_data[i]);
     }
     if (difference > std::numeric_limits<float>::epsilon())
     {

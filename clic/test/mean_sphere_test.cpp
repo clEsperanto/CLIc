@@ -15,7 +15,6 @@ int main(int argc, char** argv)
     unsigned int width(5), height(5), depth(1);
     unsigned int dims[3] = {width, height, depth};
     std::vector<float> input_data (width*height*depth);
-    std::vector<float> ouput_data (width*height*depth);
     std::vector<float> valid_data (width*height*depth);
     for (size_t i = 0; i < input_data.size(); i++)
     {
@@ -49,13 +48,13 @@ int main(int argc, char** argv)
     
     // Verify output
     float difference = 0;
-    for (size_t i = 0; i < ouput_data.size(); i++)
+    for (size_t i = 0; i < output_data.size(); i++)
     {
         if (i % width == 0) {
             std::cout << std::endl;
         }
-        std::cout << ouput_data[i] << " ";
-        difference += std::abs(valid_data[i] - ouput_data[i]);
+        std::cout << output_data[i] << " ";
+        difference += std::abs(valid_data[i] - output_data[i]);
     }
     if (difference > std::numeric_limits<float>::epsilon())
     {
