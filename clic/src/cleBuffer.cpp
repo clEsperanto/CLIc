@@ -7,6 +7,9 @@
 namespace cle
 {
 
+Buffer::Buffer()
+{}
+
 Buffer::Buffer(cl::Buffer obj, unsigned int dimensions[3], LightObject::DataType type)
 {
     this->m_Object = obj; 	

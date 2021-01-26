@@ -20,7 +20,8 @@ private:
     cl::Buffer m_Object;
     std::array<unsigned int, 3> m_Dimensions = {1, 1, 1};
     
-public:      
+public:     
+    Buffer();
     Buffer(cl::Buffer, unsigned int[3], DataType =Float);
     Buffer(cl::Buffer, DataType =Float);
 
