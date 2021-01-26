@@ -18,7 +18,8 @@
 #endif
 
 #ifdef __APPLE__
-#   include <OpenCL/opencl.h>
+#   include <OpenCL/cl.h>
+#   include <OpenCL/cl2.hpp>
 #else
 #   include <CL/cl.h>
 #   include <CL/cl2.hpp>
