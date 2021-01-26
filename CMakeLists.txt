@@ -11,7 +11,7 @@ include(${PROJECT_SOURCE_DIR}/cmake/SetEnv.cmake)
 add_subdirectory(${LIBRARY_FOLDER})
 
 # build and run tests
-if(BUILD_TESTING)
-    include(CTest)
-    add_subdirectory(${LIBRARY_FOLDER}/test)
-endif()
+# if(BUILD_TESTING)
+#     include(CTest)
+#     add_subdirectory(${LIBRARY_FOLDER}/test)
+# endif()
