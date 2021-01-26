@@ -14,6 +14,7 @@ private:
     int blocksize = 0;
 
 public:
+
     CloseIndexGapsInLabelMapKernel(GPU& gpu) : 
         Kernel( gpu,
                 "close_index_gaps_in_label_map",
@@ -23,6 +24,7 @@ public:
 
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
+
     void SetBlockSize(int);
     void Execute();
 

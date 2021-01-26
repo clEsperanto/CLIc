@@ -10,8 +10,11 @@ include(${PROJECT_SOURCE_DIR}/cmake/SetEnv.cmake)
 # Library sources
 add_subdirectory(${LIBRARY_FOLDER})
 
-# build and run tests
+# Build and run tests
 if(BUILD_TESTING)
     include(CTest)
     add_subdirectory(${LIBRARY_FOLDER}/test)
 endif()
+
+# Benchmark code (uncomment to compile benchmark example code)
+# add_subdirectory(benchmark)
