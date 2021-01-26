@@ -1,47 +1,38 @@
-/*  CLIc - version 0.1 - Copyright 2020 Stéphane Rigaud, Robert Haase,
-*   Institut Pasteur Paris, Max Planck Institute for Molecular Cell Biology and Genetics Dresden
-*
-*   CLIc is part of the clEsperanto project http://clesperanto.net 
-*
-*   This file is subject to the terms and conditions defined in
-*   file 'LICENSE.txt', which is part of this source code package.
-*/
 
 
 #ifndef __cleBuffer_h
 #define __cleBuffer_h
 
-#include "cleObject.h"
+#include "cleLightObject.h"
 
 #include <array>
 
 namespace cle
 {
     
-class Buffer : public Object
+class Buffer : public LightObject
 {
 
 private:
     static const ObjectType O = ObjectType::cleBuffer;
     DataType T;
 
-    cl_mem pointer = nullptr;
-    std::array<unsigned int, 3> dimensions = {0, 0, 0};
+    cl::Buffer m_Object;
+    std::array<unsigned int, 3> m_Dimensions = {1, 1, 1};
     
 public:      
-    Buffer() = default;
-    Buffer(cl_mem, unsigned int*, std::string);
-    ~Buffer() = default;
+    Buffer(cl::Buffer, unsigned int[3], DataType =Float);
+    Buffer(cl::Buffer, DataType =Float);
 
-    cl_mem& GetData();
+    cl::Buffer GetObject();
 
+    size_t GetSize() const;
+    size_t GetBitSize() const;
     unsigned int* GetDimensions();
+
+    bool IsObject(LightObject::ObjectType) const;
     std::string GetObjectType() const;
     std::string GetDataType() const;
-    std::string ToString() const;
-    bool IsObject(std::string) const;
-    size_t GetBitSize() const;
-
 };
 
 } // namespace cle
