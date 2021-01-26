@@ -19,7 +19,7 @@
 #  define CL_TARGET_OPENCL_VERSION 120
 #endif
 
-#   include <CL/cl2.hpp>
+#include <CL/cl2.hpp>
 
 #include "cleDeviceManager.h"
 #include "cleContextManager.h"
