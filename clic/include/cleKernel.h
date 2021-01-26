@@ -19,11 +19,7 @@
 #  define CL_TARGET_OPENCL_VERSION 120
 #endif
 
-#ifdef __APPLE__
-#   include <OpenCL/opencl.hpp>
-#else
 #   include <CL/cl2.hpp>
-#endif
 
 #include <string>
 #include <fstream>
