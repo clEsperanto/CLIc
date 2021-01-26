@@ -11,8 +11,8 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     unsigned int width (10), height (10), depth (10);
-        std::vector<float> input_data (width*height*depth);
-
+    unsigned int dims[3] = {width, height, depth};    
+    std::vector<float> input_data (width*height*depth);
     std::vector<float> valid_data (width*height*depth);
     for (size_t i = 0; i < width*height*depth; i++)
     {
@@ -26,7 +26,6 @@ int main(int argc, char **argv)
         }
         valid_data[i] = 1;
     }
-    Image<float> input_img (input_data, width, height, depth, "float");
 
     // Initialise GPU information.
     cle::GPU gpu;
@@ -34,7 +33,7 @@ int main(int argc, char **argv)
     
     // Initialise device memory and push from host
     cle::Buffer gpuInput = cle.Push<float>(input_data, dims);
-    cle::Buffer gpuOutput = cle.Create<float>(input_img);
+    cle::Buffer gpuOutput = cle.Create<float>(dims);
 
     // Call kernel
     cle.Absolute(gpuInput, gpuOutput);  
@@ -44,7 +43,7 @@ int main(int argc, char **argv)
 
     // Verify output
     float difference = 0;
-    for (size_t i = 0; i < width*height*depth; i++)
+    for (size_t i = 0; i < output_data.size(); i++)
     {
         difference += std::abs(valid_data[i] - output_data[i]);
     }

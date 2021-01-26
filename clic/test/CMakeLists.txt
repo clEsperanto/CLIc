@@ -6,6 +6,11 @@ add_dependencies(operations_test CLIc)
 target_link_libraries(operations_test PRIVATE CLIc::CLIc)
 add_test(NAME operations_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/operations_test)
 
+add_executable(absolute_test absolute_test.cpp)
+add_dependencies(absolute_test CLIc) 
+target_link_libraries(absolute_test PRIVATE CLIc::CLIc)
+add_test(NAME absolute_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/absolute_test)
+
 add_executable(add_image_and_scalar_test add_image_and_scalar_test.cpp)
 add_dependencies(add_image_and_scalar_test CLIc) 
 target_link_libraries(add_image_and_scalar_test PRIVATE CLIc::CLIc)
