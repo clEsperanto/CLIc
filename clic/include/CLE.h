@@ -1,25 +1,13 @@
-/*  CLIc - version 0.1 - Copyright 2020 Stéphane Rigaud, Robert Haase,
-*   Institut Pasteur Paris, Max Planck Institute for Molecular Cell Biology and Genetics Dresden
-*
-*   CLIc is part of the clEsperanto project http://clesperanto.net 
-*
-*   This file is subject to the terms and conditions defined in
-*   file 'LICENSE.txt', which is part of this source code package.
-*/
-
 
 #ifndef __CLE_h
 #define __CLE_h
 
-
-
 #include "cleGPU.h"
-#include "cleObject.h"
-#include "image.h"
 #include "cleBuffer.h"
+#include "cleOperations.h"
 
-#include "utils.h"
-
+#include <type_traits>
+#include <iostream>
 
 namespace cle
 {
@@ -27,22 +15,34 @@ namespace cle
 class CLE
 {
 private:
-    GPU gpu;
+    GPU m_gpu;
+
+    template<class T>
+    LightObject::DataType Template2DataType();
 
 public:
     CLE(GPU&);
-    ~CLE(){};
+    ~CLE() = default;
 
     template<class T>
-    Buffer Push(Image<T>& image);
+    Buffer Push(std::vector<T>& arr, unsigned int[3]);
+
     template<class T>
-    Image<T> Pull(Buffer& gpu_obj);
+    std::vector<T> Pull(Buffer& gpu_obj);
+
     template<class T>
-    Buffer Create(Image<T>& image, std::string type = "");
+    Buffer Create(std::vector<T>& arr, unsigned int[3]);
+
     template<class T>
-    Buffer Create(Buffer& gpu_obj, std::string type = "");
+    Buffer Create(Buffer& gpu_obj);
+
     template<class T>
-    Buffer Create(unsigned int dimensions[3], std::string type);
+    Buffer Create(unsigned int[3]);
+
+    template<class T>
+    Buffer Create();
+
+    
 
     GPU GetGPU();
 
@@ -58,10 +58,10 @@ public:
     void GaussianBlur2D(Buffer&, Buffer&, float=0, float=0);
     void Maximum2DBox(Buffer&, Buffer&, float=0, float=0);
     void Minimum2DBox(Buffer&, Buffer&, float=0, float=0);
-    void Mean2DBox(Buffer&, Buffer&, float=0, float=0);
+    void Mean2DBox(Buffer&, Buffer&, float=1, float=1);
+    void Mean3DBox(Buffer&, Buffer&, float=1, float=1, float=1);
     void Maximum3DBox(Buffer&, Buffer&, float=0, float=0, float=0);
     void Minimum3DBox(Buffer&, Buffer&, float=0, float=0, float=0);
-    void Mean3DBox(Buffer&, Buffer&, float=0, float=0, float=0);
     void Greater(Buffer&, Buffer&, Buffer&);
     void GreaterOrEqual(Buffer&, Buffer&, Buffer&);
     void GreaterConstant(Buffer&, Buffer&, float);
@@ -75,6 +75,7 @@ public:
     void MinimumXProjection(Buffer&, Buffer&);
     void MinimumOfAllPixels(Buffer&, Buffer&);
     void Mean2DSphere(Buffer&, Buffer&, int=1, int=1);
+    void Mean3DSphere(Buffer&, Buffer&, int=1, int=1, int=1);
     void NonzeroMinimumBox(Buffer&, Buffer&, Buffer&);
     void NotEqual(Buffer&, Buffer&, Buffer&);
     void NotEqualConstant(Buffer&, Buffer&, float);
@@ -101,57 +102,96 @@ public:
     void SumReductionX(Buffer&, Buffer&, int);
     void BlockEnumerate(Buffer&, Buffer&, Buffer&, int);
     void FlagExistingLabels(Buffer&, Buffer&);
-
 };
 
-
-template<class T>
-Buffer CLE::Push(Image<T>& image)
-{
-    cl_mem mem_obj = CreateBuffer<T>(image.GetDataSize(), this->gpu);
-    bool res = WriteBuffer<T>(mem_obj, image.GetData(), image.GetDataSize(), this->gpu);
-    return Buffer (mem_obj, image.GetDimensions(), image.GetType());
-}
-
-template<class T>
-Image<T> CLE::Pull(Buffer& gpu_obj)
-{
-    unsigned int arrSize = gpu_obj.GetDimensions()[0] * gpu_obj.GetDimensions()[1] * gpu_obj.GetDimensions()[2];
-    T* output_arr = ReadBuffer<T>(gpu_obj.GetData(), sizeof(T) * arrSize, this->gpu);
-    Image<T> image (output_arr, gpu_obj.GetDimensions()[0], gpu_obj.GetDimensions()[1], gpu_obj.GetDimensions()[2], gpu_obj.GetDataType());
-    return image;        
-}
-
-template<class T>
-Buffer CLE::Create(Image<T>& image, std::string type)
-{
-    cl_mem mem_obj = CreateBuffer<T>(image.GetNbPixels(), this->gpu);
-    if (type.empty())
+    template<class T>
+    LightObject::DataType CLE::Template2DataType()
     {
-        type = image.GetType();
+        if (std::is_same<T, float>::value) 
+        {
+            return LightObject::Float;
+        }
+        else if(std::is_same<T, int>::value)
+        {
+            return LightObject::Int;
+        }
+        else if(std::is_same<T, unsigned int>::value)
+        {
+            return LightObject::UInt;
+        }
+        else if(std::is_same<T, char>::value)
+        {
+            return LightObject::Char;
+        }
+        else if(std::is_same<T, unsigned char>::value)
+        {
+            return LightObject::UChar;
+        }
+        else if(std::is_same<T, short>::value)
+        {
+            return LightObject::Short;
+        }
+        else if(std::is_same<T, unsigned short>::value)
+        {
+            return LightObject::UShort;
+        }
+        else  // default
+        {
+            return LightObject::Float;
+        }
     }
-    return Buffer (mem_obj, image.GetDimensions(), type);
-}
 
-template<class T>
-Buffer CLE::Create(Buffer& gpu_obj, std::string type)
-{
-    size_t arrSize = gpu_obj.GetDimensions()[0] * gpu_obj.GetDimensions()[1] * gpu_obj.GetDimensions()[2];
-    cl_mem mem_obj = CreateBuffer<T>(arrSize, this->gpu);
-    if (type.empty())
+
+    template<class T>
+    Buffer CLE::Push(std::vector<T>& arr, unsigned int dimensions[3])
     {
-        type = gpu_obj.GetDataType();
+        cl::Buffer obj = CreateBuffer<T>(arr.size(), this->m_gpu);
+        WriteBuffer<T>(obj, arr.data(), arr.size(), this->m_gpu);
+        LightObject::DataType dataType = this->Template2DataType<T>();
+        return Buffer (obj, dimensions, dataType);
     }
-    return Buffer (mem_obj, gpu_obj.GetDimensions(), type);
-}
 
-template<class T>
-Buffer CLE::Create(unsigned int dimensions[3], std::string type)
-{
-    size_t arrSize = dimensions[0] * dimensions[1] * dimensions[2];
-    cl_mem mem_obj = CreateBuffer<T>(arrSize, this->gpu);
-    return Buffer (mem_obj, dimensions, type);
-}
+    template<class T>
+    std::vector<T> CLE::Pull(Buffer& obj)
+    {
+        std::vector<T> arr(obj.GetSize());
+        ReadBuffer<T>(obj.GetObject(), arr.data(), obj.GetSize(), this->m_gpu);
+        return arr;
+    }
+
+    template<class T>
+    Buffer CLE::Create(std::vector<T>& arr, unsigned int dimensions[3])
+    {
+        cl::Buffer obj = CreateBuffer<T>(arr.size(), this->m_gpu);
+        LightObject::DataType dataType = this->Template2DataType<T>();
+        return Buffer (obj, dimensions, dataType);
+    }
+
+    template<class T>
+    Buffer CLE::Create(Buffer& obj)
+    {
+        cl::Buffer new_obj = CreateBuffer<T>(obj.GetSize(), this->m_gpu);
+        LightObject::DataType dataType = this->Template2DataType<T>();
+        return Buffer (new_obj, obj.GetDimensions(), dataType);
+       
+    }
+
+    template<class T>
+    Buffer CLE::Create(unsigned int dimensions[3])
+    {
+        size_t size = dimensions[0]*dimensions[1]*dimensions[2];
+        cl::Buffer obj = CreateBuffer<T>(size, this->m_gpu);
+        LightObject::DataType dataType = this->Template2DataType<T>();
+        return Buffer (obj, dimensions, dataType);
+    }
+
+    template<class T>
+    Buffer CLE::Create()
+    {
+        cl::Buffer obj = CreateBuffer<T>(1, this->m_gpu);
+        LightObject::DataType dataType = this->Template2DataType<T>();
+        return Buffer (obj, dataType);
+    }
 
 } // namespace cle
 

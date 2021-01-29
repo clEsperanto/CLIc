@@ -1,17 +1,25 @@
 #ifndef __clePlatformManager_h
 #define __clePlatformManager_h
 
+#ifndef CL_HPP_ENABLE_EXCEPTIONS
+#   define CL_HPP_ENABLE_EXCEPTIONS
+#endif
+
+#ifndef CL_HPP_TARGET_OPENCL_VERSION
+#   define CL_HPP_TARGET_OPENCL_VERSION 120
+#endif
+
+#ifndef CL_HPP_MINIMUM_OPENCL_VERSION
+#   define CL_HPP_MINIMUM_OPENCL_VERSION 120
+#endif
+
 #ifndef CL_TARGET_OPENCL_VERSION
 #  define CL_TARGET_OPENCL_VERSION 120
 #endif
 
-#ifdef __APPLE__
-#   include <OpenCL/opencl.h>
-#else
-#   include <CL/cl.h>
-#endif
+#   include <CL/cl2.hpp>
 
-#include <iostream>
+#include <vector>
 
 namespace cle
 {
@@ -19,17 +27,15 @@ namespace cle
 class PlatformManager
 {
 private:
-    cl_platform_id platform = nullptr;
+    std::vector<cl::Platform> m_PlatformList;
+    int m_PlatformId;
 
 public:
-    PlatformManager();
-    ~PlatformManager() = default;
+    PlatformManager(){};
+    PlatformManager(int);
+    ~PlatformManager();
 
-    void RequestPlatform();
-
-    cl_platform_id& GetPlatform();
-
-    std::string ToString() const;
+    cl::Platform GetPlatform(int=-1);
 };
 
 } // namespace cle

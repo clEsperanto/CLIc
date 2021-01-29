@@ -1,12 +1,3 @@
-/*  CLIc - version 0.1 - Copyright 2020 Stéphane Rigaud, Robert Haase,
-*   Institut Pasteur Paris, Max Planck Institute for Molecular Cell Biology and Genetics Dresden
-*
-*   CLIc is part of the clEsperanto project http://clesperanto.net 
-*
-*   This file is subject to the terms and conditions defined in
-*   file 'LICENSE.txt', which is part of this source code package.
-*/
-
 
 #ifndef __cleSetNonzeroPixelsToPixelindexKernel_h
 #define __cleSetNonzeroPixelsToPixelindexKernel_h
@@ -20,18 +11,17 @@ class SetNonzeroPixelsToPixelindexKernel : public Kernel
 {
 
 public:
-    SetNonzeroPixelsToPixelindexKernel(GPU& gpu) : Kernel(gpu) 
-    {
-        kernelName = "set_nonzero_pixels_to_pixelindex";
-        tagList = {"dst" , "src", "offset"};
-    }
+    SetNonzeroPixelsToPixelindexKernel(GPU& gpu) : 
+        Kernel( gpu, 
+                "set_nonzero_pixels_to_pixelindex",
+                {"dst" , "src", "offset"}
+        )
+    {}
 
-    void SetInput(Object&);
-    void SetOutput(Object&);
+    void SetInput(Buffer&);
+    void SetOutput(Buffer&);
     void SetOffset(int);
     void Execute();
-
-    ~SetNonzeroPixelsToPixelindexKernel() = default;
 };
 
 } // namespace cle

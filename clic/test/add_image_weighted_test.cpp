@@ -1,11 +1,3 @@
-/*  CLIc - version 0.1 - Copyright 2020 Stéphane Rigaud, Robert Haase,
-*   Institut Pasteur Paris, Max Planck Institute for Molecular Cell Biology and Genetics Dresden
-*
-*   CLIc is part of the clEsperanto project http://clesperanto.net 
-*
-*   This file is subject to the terms and conditions defined in
-*   file 'LICENSE.txt', which is part of this source code package.
-*/
 
 #include <random>
 
@@ -19,32 +11,28 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     unsigned int width (3), height (3), depth (3);
-    float* input_data1 = new float[width*height*depth];
-    float* input_data2 = new float[width*height*depth];
-    float* valid_data  = new float[width*height*depth];
-    for (size_t i = 0; i < width*height*depth; i++)
-    {
-        input_data1[i] = 1;
-        input_data2[i] = 1;
-        valid_data[i] = 1.5;
-    }
-    Image<float> input_img1 (input_data1, width, height, depth, "float");
-    Image<float> input_img2 (input_data2, width, height, depth, "float");
+    unsigned int dims[3] = {width, height, depth};
+    std::vector<float> input_data1 (width*height*depth);
+    std::fill(input_data1.begin(), input_data1.end(), 10);
+    std::vector<float> input_data2 (width*height*depth);
+    std::fill(input_data2.begin(), input_data2.end(), 10);
+    std::vector<float> valid_data (width*height*depth);
+    std::fill(valid_data.begin(), valid_data.end(), 15);
 
     // Initialise GPU information.
     cle::GPU gpu;
     cle::CLE cle(gpu);
 
     // Initialise device memory and push from host to device
-    cle::Buffer gpuInput1 = cle.Push<float>(input_img1);
-    cle::Buffer gpuInput2 = cle.Push<float>(input_img2);
-    cle::Buffer gpuOutput = cle.Create<float>(input_img1, "float");
+    cle::Buffer Buffer_A = cle.Push<float>(input_data1, dims);
+    cle::Buffer Buffer_B = cle.Push<float>(input_data2, dims);
+    cle::Buffer Buffer_C = cle.Create<float>(dims);
 
     // Call kernel
-    cle.AddImagesWeighted(gpuInput1, gpuInput2, gpuOutput, 1, 0.5);
+    cle.AddImagesWeighted(Buffer_A, Buffer_B, Buffer_C, 1, 0.5);
 
     // pull device memory to host
-    Image<float> output_img = cle.Pull<float>(gpuOutput);    
+    std::vector<float> ouput_data = cle.Pull<float>(Buffer_C);  
 
     // Verify output
     float difference = 0;
@@ -54,8 +42,8 @@ int main(int argc, char **argv)
         {
             std::cout << std::endl;
         }
-        std::cout << output_img.GetData()[i] << " ";
-        difference += std::abs(valid_data[i] - output_img.GetData()[i]);
+        std::cout << output_data[i] << " ";
+        difference += std::abs(valid_data[i] - output_data[i]);
     }
     std::cout << std::endl;
     if (difference > std::numeric_limits<float>::epsilon())
