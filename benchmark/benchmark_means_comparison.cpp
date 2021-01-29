@@ -24,11 +24,11 @@ protected:
     virtual void Setup()
     {
         vector<float> inputData(dataWidth * dataWidth);
-        Image<float> input_img(inputData.data(), dataWidth, dataWidth, 1, "float");
         
         // Initialise device memory and push from host
-        gpuInput = cle.Push<float>(input_img);
-        gpuOutput = cle.Create<float>(input_img);
+        vector<unsigned int> dim{{dataWidth, dataWidth, 1}};
+        gpuInput = cle.Push<float>(inputData, dim.data());
+        gpuOutput = cle.Create<float>(dim.data());
     }
     virtual void Teardown() {}
 
@@ -44,10 +44,9 @@ protected:
     virtual void Iteration()
     {
         cle.Mean2DBox(gpuInput, gpuOutput, 4, 4);
-        cle.Pull<float>(gpuOutput);
-        Image<float> out = cle.Pull<float>(gpuOutput);
+        vector<float> out = cle.Pull<float>(gpuOutput);
 
-        if (0.2 == out.GetData()[0]) {
+        if (0.2 == out[0]) {
             // do something, so the compiler doesn't optimize this away
             cout << " \b";
         }
@@ -65,9 +64,9 @@ protected:
     virtual void Iteration()
     {
         cle.Mean2DSphere(gpuInput, gpuOutput, 4, 4);
-        Image<float> out = cle.Pull<float>(gpuOutput);
+        vector<float> out = cle.Pull<float>(gpuOutput);
 
-        if (0.2 == out.GetData()[0]) {
+        if (0.2 == out[0]) {
             // do something, so the compiler doesn't optimize this away
             cout << " \b";
         }
