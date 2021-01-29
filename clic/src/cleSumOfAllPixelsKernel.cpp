@@ -1,71 +1,61 @@
-/*  CLIc - version 0.1 - Copyright 2020 Stéphane Rigaud, Robert Haase,
-*   Institut Pasteur Paris, Max Planck Institute for Molecular Cell Biology and Genetics Dresden
-*
-*   CLIc is part of the clEsperanto project http://clesperanto.net 
-*
-*   This file is subject to the terms and conditions defined in
-*   file 'LICENSE.txt', which is part of this source code package.
-*/
 
 
 #include "cleSumOfAllPixelsKernel.h"
 #include "cleSumZProjectionKernel.h"
 #include "cleSumYProjectionKernel.h"
 #include "cleSumXProjectionKernel.h"
-#include "utils.h"
-
 
 namespace cle
 {
     
-void SumOfAllPixelsKernel::SetInput(Object& x)
+void SumOfAllPixelsKernel::SetInput(Buffer& x)
 {
-    this->AddObject(&x, "src");
+    this->AddObject(x, "src");
 }
 
-void SumOfAllPixelsKernel::SetOutput(Object& x)
+void SumOfAllPixelsKernel::SetOutput(Buffer& x)
 {
-    this->AddObject(&x, "dst");
+    this->AddObject(x, "dst_sum");
 }
 
 void SumOfAllPixelsKernel::Execute()
 {
-    Buffer* src = dynamic_cast<Buffer*>(parameterList.at("src"));
-    Buffer* dst = dynamic_cast<Buffer*>(parameterList.at("dst"));
-    unsigned int tmp_dim[3] = {src->GetDimensions()[0], src->GetDimensions()[1], src->GetDimensions()[2]};
+    std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("src"));
+    std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("dst_sum"));
+    unsigned int dim[3] = {src->GetDimensions()[0], src->GetDimensions()[1], src->GetDimensions()[2]};
 
-    if (tmp_dim[2] > 1)
+    if (dim[2] > 1)
     {
-        tmp_dim[2] = 1;
-        size_t bitsize = tmp_dim[0] * tmp_dim[1] * tmp_dim[2];
-        cl_mem tmp_mem = CreateBuffer<float>(bitsize, this->gpu);
-        Buffer* temp1  = new Buffer(tmp_mem, tmp_dim, src->GetDataType());
+        dim[2] = 1;
+        size_t size = dim[0] * dim[1] * dim[2];
+        cl::Buffer tmp1_obj = CreateBuffer<float>(size, this->m_gpu);
+        Buffer temp1 (tmp1_obj, dim, LightObject::Float);
 
-        SumZProjectionKernel kernel(this->gpu);
-        kernel.SetInput(*src);
-        kernel.SetOutput(*temp1);
-        kernel.Execute();
+        SumZProjectionKernel kernelZ(this->m_gpu);
+        kernelZ.SetInput(*src);
+        kernelZ.SetOutput(temp1);
+        kernelZ.Execute();
 
-        src = temp1;
+        *src = temp1;
     }
-    if (tmp_dim[1] > 1)
+    if (dim[1] > 1)
     {
-        tmp_dim[1] = 1;
-        size_t bitsize = tmp_dim[0] * tmp_dim[1] * tmp_dim[2];
-        cl_mem tmp_mem = CreateBuffer<float>(bitsize, this->gpu);
-        Buffer* temp2  = new Buffer (tmp_mem, tmp_dim, src->GetDataType());
+        dim[1] = 1;
+        size_t size = dim[0] * dim[1] * dim[2];
+        cl::Buffer tmp2_obj = CreateBuffer<float>(size, this->m_gpu);
+        Buffer temp2 (tmp2_obj, dim, LightObject::Float);
 
-        SumYProjectionKernel kernel(this->gpu);
-        kernel.SetInput(*src);
-        kernel.SetOutput(*temp2);
-        kernel.Execute();
+        SumYProjectionKernel kernelY(this->m_gpu);
+        kernelY.SetInput(*src);
+        kernelY.SetOutput(temp2);
+        kernelY.Execute();
 
-        src = temp2;
+        *src = temp2;
     }
-    SumXProjectionKernel kernel(this->gpu);
-    kernel.SetInput(*src);
-    kernel.SetOutput(*dst);
-    kernel.Execute();
+    SumXProjectionKernel kernelX(this->m_gpu);
+    kernelX.SetInput(*src);
+    kernelX.SetOutput(*dst);
+    kernelX.Execute();
 }
 
 } // namespace cle

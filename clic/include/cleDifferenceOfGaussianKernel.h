@@ -1,12 +1,3 @@
-/*  CLIc - version 0.1 - Copyright 2020 Stéphane Rigaud, Robert Haase,
-*   Institut Pasteur Paris, Max Planck Institute for Molecular Cell Biology and Genetics Dresden
-*
-*   CLIc is part of the clEsperanto project http://clesperanto.net 
-*
-*   This file is subject to the terms and conditions defined in
-*   file 'LICENSE.txt', which is part of this source code package.
-*/
-
 
 #ifndef __cleDifferenceOfGaussianKernel_h
 #define __cleDifferenceOfGaussianKernel_h
@@ -24,19 +15,19 @@ private:
     float sigma2[3] = {2, 2, 2};
 
 public:
-    DifferenceOfGaussianKernel(GPU& gpu) : Kernel(gpu) 
-    {
-        kernelName = "add_image_and_scalar";
-        tagList = {"src", "dst", "scalar"};
-    }
+    DifferenceOfGaussianKernel(GPU& gpu) :
+        Kernel( gpu,
+                "difference_of_gaussians",
+                {"src", "dst"}
+        )
+    {}
 
-    void SetInput(Object&);
-    void SetOutput(Object&);
+    void SetInput(Buffer&);
+    void SetOutput(Buffer&);
     void SetSigma1(float, float, float);
     void SetSigma2(float, float, float);
     void Execute();
 
-    ~DifferenceOfGaussianKernel() = default;
 };
 
 } // namespace cle

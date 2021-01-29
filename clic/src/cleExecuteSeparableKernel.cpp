@@ -1,73 +1,66 @@
-/*  CLIc - version 0.1 - Copyright 2020 Stéphane Rigaud, Robert Haase,
-*   Institut Pasteur Paris, Max Planck Institute for Molecular Cell Biology and Genetics Dresden
-*
-*   CLIc is part of the clEsperanto project http://clesperanto.net 
-*
-*   This file is subject to the terms and conditions defined in
-*   file 'LICENSE.txt', which is part of this source code package.
-*/
-
 
 #include "cleExecuteSeparableKernel.h"
 #include "cleSeparableKernel.h"
-#include "cleCopyKernel.h"
-#include "utils.h"
 
 namespace cle
 {
 
-void ExecuteSeparableKernel::SetInput(Object& x)
+void ExecuteSeparableKernel::SetInput(Buffer& x)
 {
-    this->AddObject(&x, "src");
+    this->AddObject(x, "src");
 }
 
-void ExecuteSeparableKernel::SetOutput(Object& x)
+void ExecuteSeparableKernel::SetOutput(Buffer& x)
 {
-    this->AddObject(&x, "dst");
+    this->AddObject(x, "dst");
 }
 
 void ExecuteSeparableKernel::SetKernelSize(int x, int y, int z)
 {
-    this->kernel_size = {x, y, z};
+    this->m_KernelSize = {x, y, z};
 }
 
 void ExecuteSeparableKernel::SetSigma(float x, float y, float z)
 {
-    this->sigma = {x, y, z};
+    this->m_Sigma = {x, y, z};
 }
 
 void ExecuteSeparableKernel::SetKernelName(std::string name)
 {
-    kernelName = name + kernelName;
+    m_KernelName = name + m_KernelName;
+}
+
+void ExecuteSeparableKernel::SetSources(std::map<std::string, std::string> sources)
+{
+    // m_Sources = sources;
 }
 
 void ExecuteSeparableKernel::Execute()
 { 
-    Buffer* src = dynamic_cast<Buffer*>(parameterList.at("src"));
-    Buffer* dst = dynamic_cast<Buffer*>(parameterList.at("dst"));
+    std::shared_ptr<cle::Buffer> src = std::dynamic_pointer_cast<cle::Buffer>(m_ParameterList.at("src"));
+    std::shared_ptr<cle::Buffer> dst = std::dynamic_pointer_cast<cle::Buffer>(m_ParameterList.at("dst"));
 
     if (src->GetDimensions()[1] > 1)
     {
-        this->dimension = 2;
+        this->m_Dim = 2;
     }
     if (src->GetDimensions()[2] > 1)
     {
-        this->dimension = 3;
+        this->m_Dim = 3;
     }
 
     // create temp buffer
-    size_t size = src->GetDimensions()[0] * src->GetDimensions()[1] * src->GetDimensions()[2];
-    cl_mem tmp1_mem = CreateBuffer<float>(size, this->gpu);
-    Buffer temp1 (tmp1_mem, src->GetDimensions(), "float");
-    cl_mem tmp2_mem = CreateBuffer<float>(size, this->gpu);
-    Buffer temp2 (tmp2_mem, src->GetDimensions(), "float");
+    cl::Buffer tmp1_obj = cle::CreateBuffer<float>(src->GetSize(), this->m_gpu);
+    cle::Buffer temp1 (tmp1_obj, src->GetDimensions(), cle::LightObject::Float);
+    cl::Buffer tmp2_obj = cle::CreateBuffer<float>(src->GetSize(), this->m_gpu);
+    cle::Buffer temp2 (tmp2_obj, src->GetDimensions(), cle::LightObject::Float);
 
-    if (sigma[0] > 0)
+    SeparableKernel kernel(this->m_gpu);
+    kernel.SetKernelName(this->m_KernelName);
+    if (m_Sigma[0] > 0)
     {
-        SeparableKernel kernel(this->gpu);
-        kernel.SetKernelName(this->kernelName);
-        kernel.SetInput(*src);
-        if (this->dimension == 2)
+        kernel.SetInput( *src );
+        if (this->m_Dim == 2)
         {
             kernel.SetOutput(temp1);
         }
@@ -75,82 +68,67 @@ void ExecuteSeparableKernel::Execute()
         {
             kernel.SetOutput(temp2);
         }
-        kernel.SetSigma(sigma[0]);
-        kernel.SetSize(kernel_size[0]);
+        kernel.SetSigma(m_Sigma[0]);
+        kernel.SetSize(m_KernelSize[0]);
         kernel.SetDimension(0);
         kernel.Execute();
     }
     else
     {
-        CopyKernel kernel(this->gpu);
-        if (this->dimension == 2)
+        if (this->m_Dim == 2)
         {
-            kernel.SetInput(*src);
-            kernel.SetOutput(temp1);
+            cle::CopyBuffer<float>(src->GetObject(), temp1.GetObject(), src->GetSize(), this->m_gpu);
         }
         else
         {
-            kernel.SetInput(*src);
-            kernel.SetOutput(temp2);
+            cle::CopyBuffer<float>(src->GetObject(), temp2.GetObject(), src->GetSize(), this->m_gpu);
         }
-        kernel.Execute();
     }
 
-    if (sigma[1] > 0)
+    if (m_Sigma[1] > 0)
     {
-        SeparableKernel kernel(this->gpu);
-        kernel.SetKernelName(this->kernelName);
-        if (this->dimension == 2)
+        if (this->m_Dim == 2)
         {
             kernel.SetInput(temp1);
-            kernel.SetOutput(*dst);
+            kernel.SetOutput( *dst );
         }
         else
         {
             kernel.SetInput(temp2);
             kernel.SetOutput(temp1);
         }
-        kernel.SetSigma(sigma[1]);
-        kernel.SetSize(kernel_size[1]);
+        kernel.SetSigma(m_Sigma[1]);
+        kernel.SetSize(m_KernelSize[1]);
         kernel.SetDimension(1);
         kernel.Execute();
     }
     else
     {
-        CopyKernel kernel(this->gpu);
-        if (this->dimension == 2)
+        if (this->m_Dim == 2)
         {
-            kernel.SetInput(temp1);
-            kernel.SetOutput(*dst);
+            cle::CopyBuffer<float>(temp1.GetObject(), dst->GetObject(), dst->GetSize(), this->m_gpu);
         }
         else
         {
-            kernel.SetInput(temp2);
-            kernel.SetOutput(temp1);
+            cle::CopyBuffer<float>(temp2.GetObject(), temp1.GetObject(), dst->GetSize(), this->m_gpu);
         }
-        kernel.Execute();
     }
-
-    if (this->dimension == 3)
+    if (this->m_Dim == 3)
     {
-        if (sigma[2] > 0)
+        if (m_Sigma[2] > 0)
         {
-            SeparableKernel kernel(this->gpu);
-            kernel.SetKernelName(this->kernelName);
             kernel.SetInput(temp1);
-            kernel.SetOutput(*dst);
-            kernel.SetSigma(sigma[2]);
-            kernel.SetSize(kernel_size[2]);
+            kernel.SetOutput( *dst );
+            kernel.SetSigma(m_Sigma[2]);
+            kernel.SetSize(m_KernelSize[2]);
             kernel.SetDimension(2);
             kernel.Execute();
         }
         else
         {
-            CopyKernel kernel(this->gpu);
-            kernel.SetInput(temp1);
-            kernel.SetOutput(*dst);
-            kernel.Execute();
+            cle::CopyBuffer<float>(temp1.GetObject(), dst->GetObject(), dst->GetSize(), this->m_gpu);
         }
+
     }
 }
 

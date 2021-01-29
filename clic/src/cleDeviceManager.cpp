@@ -1,80 +1,56 @@
 
 #include "cleDeviceManager.h"
 
-#include "utils.h"
+#include <iostream>
 
 namespace cle
 {
 
-DeviceManager::DeviceManager(cl_platform_id platform)
+DeviceManager::DeviceManager(cl::Platform platform, int device_id)
 {
-    this->RequestDevice(platform);
-}
-
-void DeviceManager::RequestDevice(cl_platform_id& platform)
-{
-    cl_uint ret_num_devices;
-    cl_int clError = clGetDeviceIDs(platform, CL_DEVICE_TYPE_DEFAULT, 1, &device, &ret_num_devices);
-    if (clError != CL_SUCCESS) 
+    this->m_DeviceId = device_id;
+    platform.getDevices(CL_DEVICE_TYPE_ALL, &m_DeviceList);
+    if (m_DeviceList.size() == 0)
     {
-        std::cerr << "DeviceManager : Fail to request device (" << getOpenCLErrorString(clError) << ")" << std::endl;
-        throw clError;
+        std::cerr << "DeviceManager : No devices found." << std::endl;
+    }
+    else
+    {
+        // std::cout << "Using device: " << this->m_DeviceList[this->m_DeviceId].getInfo<CL_DEVICE_NAME>() << std::endl;
     }
 }
 
-cl_platform_id DeviceManager::GetPlatform()
+DeviceManager::~DeviceManager()
 {
-    cl_platform_id platform_id;
-    cl_int clError = clGetDeviceInfo(this->device, CL_DEVICE_PLATFORM, sizeof(platform_id), &platform_id, NULL);
-    if (clError != CL_SUCCESS) 
+    if (this->m_DeviceList.size() != 0)
     {
-        std::cerr << "DeviceManager : Fail to get platform (" << getOpenCLErrorString(clError) << ")" << std::endl;
-        throw clError;
+        this->m_DeviceList.clear();
     }
-    return platform_id;
-}
-
-cl_device_id& DeviceManager::GetDevice()
-{
-    return this->device;
 }
 
 
-std::string DeviceManager::ToString() const
+std::vector<cl::Device> DeviceManager::GetDeviceList()
 {
-    cl_int clError;
-    cl_device_type device_type;
-    cl_platform_id platform;
-    char* name;
-    clError = clGetDeviceInfo(this->device, CL_DEVICE_NAME, sizeof(name), &name, NULL);
-    if (clError != CL_SUCCESS) 
-    {
-        std::cerr << "DeviceManager : Fail to get device name (" << getOpenCLErrorString(clError) << ")" << std::endl;
-        throw clError;
-    }
-    clError = clGetDeviceInfo(this->device, CL_DEVICE_PLATFORM, sizeof(platform), &platform, NULL);
-    if (clError != CL_SUCCESS) 
-    {
-        std::cerr << "DeviceManager : Fail to get device pltaform (" << getOpenCLErrorString(clError) << ")" << std::endl;
-        throw clError;
-    }
-    clError = clGetDeviceInfo(this->device, CL_DEVICE_TYPE, sizeof(device_type), &device_type, NULL);
-    if (clError != CL_SUCCESS) 
-    {
-        std::cerr << "DeviceManager : Fail to get device type (" << getOpenCLErrorString(clError) << ")" << std::endl;
-        throw clError;
-    }
-    std::string str = "Device(name=";
-                str += name; 
-                str += ",type=" ;
-                str += std::to_string(device_type); 
-                // str += ",platform=" ;
-                // str += std::to_string(platform);
-                str += ")";
-    return str;
+    return this->m_DeviceList;
 }
 
 
+cl::Device DeviceManager::GetDevice(int device_id)
+{
+    if (device_id == -1)
+    {
+        return this->m_DeviceList[this->m_DeviceId];
+    }
+    else if (device_id < this->m_DeviceList.size())
+    {
+        return this->m_DeviceList[device_id];
+    }
+    else
+    {
+        std::cerr << "DeviceManager : wrong device id. Return default device." << std::endl;
+        return this->m_DeviceList[this->m_DeviceId];
+    }
+}
 
 } // namespace cle
 

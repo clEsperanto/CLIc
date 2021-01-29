@@ -1,11 +1,3 @@
-/*  CLIc - version 0.1 - Copyright 2020 Stéphane Rigaud, Robert Haase,
-*   Institut Pasteur Paris, Max Planck Institute for Molecular Cell Biology and Genetics Dresden
-*
-*   CLIc is part of the clEsperanto project http://clesperanto.net 
-*
-*   This file is subject to the terms and conditions defined in
-*   file 'LICENSE.txt', which is part of this source code package.
-*/
 
 
 #include "cleMinimumXProjectionKernel.h"
@@ -13,21 +5,21 @@
 namespace cle
 {
     
-void MinimumXProjectionKernel::SetInput(Object& x)
+void MinimumXProjectionKernel::SetInput(Buffer& x)
 {
-    this->AddObject(&x, "src");
+    this->AddObject(x, "src");
 }
 
-void MinimumXProjectionKernel::SetOutput(Object& x)
+void MinimumXProjectionKernel::SetOutput(Buffer& x)
 {
-    this->AddObject(&x, "dst_min");
+    this->AddObject(x, "dst_min");
 }
 
 void MinimumXProjectionKernel::Execute()
 {
-    CompileKernel();
-    AddArgumentsToKernel();
-    DefineRangeKernel();
+    this->BuildProgramKernel();
+    this->SetArguments();
+    this->EnqueueKernel();
 }
 
 } // namespace cle

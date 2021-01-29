@@ -1,11 +1,3 @@
-/*  CLIc - version 0.1 - Copyright 2020 Stéphane Rigaud, Robert Haase,
-*   Institut Pasteur Paris, Max Planck Institute for Molecular Cell Biology and Genetics Dresden
-*
-*   CLIc is part of the clEsperanto project http://clesperanto.net 
-*
-*   This file is subject to the terms and conditions defined in
-*   file 'LICENSE.txt', which is part of this source code package.
-*/
 
 
 
@@ -16,14 +8,24 @@
 namespace cle
 {
 
-Float::Float(float v)
+Float::Float(float obj)
 {
-    value = v;
+    m_Object = obj;
 }
 
-float& Float::GetData()
+float Float::GetObject()
 {
-    return value;
+    return m_Object;
+}
+
+size_t Float::GetBitSize() const
+{
+    return sizeof(float);
+}
+
+size_t Float::GetSize() const
+{
+    return 1;
 }
 
 std::string Float::GetObjectType() const
@@ -31,20 +33,9 @@ std::string Float::GetObjectType() const
     return this->ObjectTypeToString(O);
 }
 
-std::string Float::ToString() const
+bool Float::IsObject(LightObject::ObjectType str) const
 {
-    std::string str = this->GetObjectType() + "(float) = " + std::to_string(value);
-    return str;
-}
-
-bool Float::IsObject(std::string str) const
-{
-    return this->GetObjectType() == str;
-}
-
-size_t Float::GetBitSize() const
-{
-    return sizeof(float);
+    return this->O == str;
 }
 
 } // namespace cle

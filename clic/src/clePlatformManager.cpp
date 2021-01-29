@@ -1,58 +1,49 @@
 
 #include "clePlatformManager.h"
 
-
-#include "utils.h"
+#include <iostream>
 
 namespace cle
 {
 
-PlatformManager::PlatformManager()
+PlatformManager::PlatformManager(int platform_id)
 {
-    this->RequestPlatform();
-}
-
-void PlatformManager::RequestPlatform()
-{
-    cl_uint ret_num_platforms;
-    cl_int clError = clGetPlatformIDs(1, &platform, &ret_num_platforms);
-    if (clError != CL_SUCCESS)  
+    this->m_PlatformId = platform_id;
+    cl::Platform::get(&m_PlatformList);
+    if(m_PlatformList.size()==0)
     {
-        std::cerr << "PlatformManager : Fail to request platform (" << getOpenCLErrorString(clError) << ")" << std::endl;
-        throw clError;
+        std::cerr << "PlatformManager : No platform found, please check OpenCL installation" << std::endl;
+    }
+    else
+    {
+        // std::cout << "Using platform: " << this->m_PlatformList[this->m_PlatformId].getInfo<CL_PLATFORM_NAME>() << std::endl;
     }
 }
 
-cl_platform_id& PlatformManager::GetPlatform()
+PlatformManager::~PlatformManager()
 {
-    return this->platform;
+    if(m_PlatformList.size()!=0)
+    {
+        m_PlatformList.clear();
+    }
 }
 
-std::string PlatformManager::ToString() const
+cl::Platform PlatformManager::GetPlatform(int platform_id)
 {
-    cl_int clError;
-    char* name, vendor;
-    clError = clGetPlatformInfo(this->platform, CL_PLATFORM_NAME, sizeof(name), &name, NULL);
-    if (clError != CL_SUCCESS) 
+    if (platform_id == -1)
     {
-        std::cerr << "PlatformManager : Fail to get platform name (" << getOpenCLErrorString(clError) << ")" << std::endl;
-        throw clError;
+        return this->m_PlatformList[this->m_PlatformId];
     }
-    clError = clGetPlatformInfo(this->platform, CL_PLATFORM_VENDOR, sizeof(vendor), &vendor, NULL);
-    if (clError != CL_SUCCESS) 
+    else if (platform_id < this->m_PlatformList.size())
     {
-        std::cerr << "PlatformManager : Fail to get platform vendor (" << getOpenCLErrorString(clError) << ")" << std::endl;
-        throw clError;
+        return this->m_PlatformList[platform_id];
     }
-    std::string str = "Platform(name=";
-                str += name; 
-                str += ",vendor=" ;
-                str += vendor; 
-                str += ")";
-    return str;
+    else
+    {
+        std::cerr << "PlatformManager : wrong platform id. Return default platform." << std::endl;
+        return this->m_PlatformList[this->m_PlatformId];
+    }
 }
-
-
 
 } // namespace cle
 

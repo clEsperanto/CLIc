@@ -1,51 +1,31 @@
-/*  CLIc - version 0.1 - Copyright 2020 Stéphane Rigaud, Robert Haase,
-*   Institut Pasteur Paris, Max Planck Institute for Molecular Cell Biology and Genetics Dresden
-*
-*   CLIc is part of the clEsperanto project http://clesperanto.net 
-*
-*   This file is subject to the terms and conditions defined in
-*   file 'LICENSE.txt', which is part of this source code package.
-*/
-
 
 #include "cleAddImageAndScalarKernel.h"
 
 namespace cle
 {
-    
-void AddImageAndScalarKernel::DefineDimensionality()
+
+void AddImageAndScalarKernel::SetInput(Buffer& x)
 {
-    std::string dim = "_2d";
-    Buffer* bufferObject = dynamic_cast<Buffer*>(parameterList.at("src"));
-    if(bufferObject->GetDimensions()[2] > 1)
-    {
-        dim = "_3d";
-    }
-    kernelName = kernelName + dim;
+    this->AddObject(x, "src");
 }
 
-void AddImageAndScalarKernel::SetInput(Object& x)
+void AddImageAndScalarKernel::SetOutput(Buffer& x)
 {
-    this->AddObject(&x, "src");
-}
-
-void AddImageAndScalarKernel::SetOutput(Object& x)
-{
-    this->AddObject(&x, "dst");
+    this->AddObject(x, "dst");
 }
 
 void AddImageAndScalarKernel::SetScalar(float x)
 {
-    Float* val = new Float(x);
-    this->AddObject(val, "scalar");
+    this->AddObject(x, "scalar");
 }
 
 void AddImageAndScalarKernel::Execute()
 {
-    DefineDimensionality();
-    CompileKernel();
-    AddArgumentsToKernel();
-    DefineRangeKernel();
+    this->ManageDimensions("dst");
+    this->BuildProgramKernel();
+    this->SetArguments();
+    this->EnqueueKernel();
 }
 
 } // namespace cle
+
