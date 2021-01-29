@@ -86,6 +86,8 @@ map<size_t, unsigned long> getTimingsBySizes(const size_t maxSize)
     {
         cout << "\n\n# Bytes: " << elemCnt*elemCnt*sizeof(float) << "\n###" << endl;
         T d;
+        d.iterationWarmupCount = 2;
+        d.iterationNormalCount = 6;
         d.dataWidth = elemCnt;
         d.Run();
 
