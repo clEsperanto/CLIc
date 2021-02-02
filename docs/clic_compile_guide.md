@@ -6,7 +6,6 @@ CLIc is an openCL Image C++ API which allows you to run various image filters us
 ## Pre-requish
 
 First of all, make sure that all the [pre-requish](./clic_prerequish_install.md) software and libraries are installed on you workstation.
-- [LibTiff](http://www.simplesystems.org/libtiff/)
 - [OpenCL](https://www.khronos.org/opencl/) 
 (
     [Nvidia](https://developer.nvidia.com/cuda-downloads), 

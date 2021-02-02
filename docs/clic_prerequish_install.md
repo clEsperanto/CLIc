@@ -1,7 +1,6 @@
 # CLIc pre-requish installation
 
 In order to use CLIc, a minimal set of API and software is required to be install on your workstation.  
-- [LibTiff](http://www.simplesystems.org/libtiff/)
 - [OpenCL](https://www.khronos.org/opencl/) 
 (
     [Nvidia](https://developer.nvidia.com/cuda-downloads), 
@@ -79,6 +78,10 @@ Once installed, CMake (GUI) can be start by running the following command in a t
 ```
 cmake-gui 
 ```
+
+## Others
+
+Possible missing includes of `CL/cl2.hpp` error requires the install of [OpenCL-CLHPP-Headers](https://github.com/KhronosGroup/OpenCL-CLHPP).
 
 
 
