@@ -1,15 +1,25 @@
 #ifndef __cleDeviceManager_h
 #define __cleDeviceManager_h
 
-#ifdef __APPLE__
-#include <OpenCL/opencl.h>
-#else
-#include <CL/cl.h>
+#ifndef CL_HPP_ENABLE_EXCEPTIONS
+#   define CL_HPP_ENABLE_EXCEPTIONS
 #endif
 
-#include <iostream>
+#ifndef CL_HPP_TARGET_OPENCL_VERSION
+#   define CL_HPP_TARGET_OPENCL_VERSION 120
+#endif
 
+#ifndef CL_HPP_MINIMUM_OPENCL_VERSION
+#   define CL_HPP_MINIMUM_OPENCL_VERSION 120
+#endif
 
+#ifndef CL_TARGET_OPENCL_VERSION
+#  define CL_TARGET_OPENCL_VERSION 120
+#endif
+
+#   include <CL/cl2.hpp>
+
+#include <vector>
 
 namespace cle
 {
@@ -17,19 +27,16 @@ namespace cle
 class DeviceManager
 {
 private:
-    cl_device_id device = nullptr;
+    std::vector<cl::Device> m_DeviceList;
+    int m_DeviceId;
 
 public:
-    DeviceManager() = default;
-    ~DeviceManager() = default;
-    DeviceManager(cl_platform_id);
+    DeviceManager(){};
+    DeviceManager(cl::Platform, int=0);
+    ~DeviceManager();
 
-    void RequestDevice(cl_platform_id&);
-
-    cl_platform_id GetPlatform();
-    cl_device_id& GetDevice();
-
-    std::string ToString() const;
+    cl::Device GetDevice(int=-1);
+    std::vector<cl::Device> GetDeviceList();
 };
 
 } // namespace cle

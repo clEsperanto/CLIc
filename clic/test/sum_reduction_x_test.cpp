@@ -1,11 +1,3 @@
-/*  CLIc - version 0.1 - Copyright 2020 Stéphane Rigaud, Robert Haase,
-*   Institut Pasteur Paris, Max Planck Institute for Molecular Cell Biology and Genetics Dresden
-*
-*   CLIc is part of the clEsperanto project http://clesperanto.net 
-*
-*   This file is subject to the terms and conditions defined in
-*   file 'LICENSE.txt', which is part of this source code package.
-*/
 
 #include <random>
 
@@ -19,32 +11,32 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     unsigned int width (12), height (1), depth (1);
+    unsigned int dims[3] = {width, height, depth};
     int block_size = 4;
-    float input_data[12] = {0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0};
-    float valid_data[3] = {2, 2, 1};
-    Image<float> input_img (input_data, width, height, depth, "float");
+    std::vector<float> input_data {0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0};
+    std::vector<float> valid_data {2, 2, 1};
 
     // Initialise GPU information.
     cle::GPU gpu;
     cle::CLE cle(gpu);
     
     // Initialise device memory and push from host
-    cle::Buffer gpuInput = cle.Push<float>(input_img);
+    cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
     unsigned int sum_dim = int(width / block_size);
     std::array<unsigned int, 3> dimensions = {sum_dim, 1, 1};
-    cle::Buffer gpuOutput = cle.Create<float>(dimensions.data(), "float");
+    cle::Buffer Buffer_B = cle.Create<float>(dimensions.data());
 
     // Call kernel
-    cle.SumReductionX(gpuInput, gpuOutput, block_size);  
+    cle.SumReductionX(Buffer_A, Buffer_B, block_size);  
 
     // pull device memory to host
-    Image<float> output_img = cle.Pull<float>(gpuOutput);    
+    std::vector<float> output_data = cle.Pull<float>(Buffer_B);    
 
     // Verify output
     float difference = 0;
-    for (size_t i = 0; i < sum_dim; i++)
+    for (size_t i = 0; i < output_data.size(); i++)
     {
-        difference += std::abs(valid_data[i] - output_img.GetData()[i]);
+        difference += std::abs(valid_data[i] - output_data[i]);
     }    
     if (difference > std::numeric_limits<float>::epsilon())
     {

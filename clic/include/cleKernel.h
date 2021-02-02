@@ -1,25 +1,25 @@
-/*  CLIc - version 0.1 - Copyright 2020 Stéphane Rigaud, Robert Haase,
-*   Institut Pasteur Paris, Max Planck Institute for Molecular Cell Biology and Genetics Dresden
-*
-*   CLIc is part of the clEsperanto project http://clesperanto.net 
-*
-*   This file is subject to the terms and conditions defined in
-*   file 'LICENSE.txt', which is part of this source code package.
-*/
 
 
 #ifndef __cleKernel_h
 #define __cleKernel_h
 
+#ifndef CL_HPP_ENABLE_EXCEPTIONS
+#   define CL_HPP_ENABLE_EXCEPTIONS
+#endif
+
+#ifndef CL_HPP_TARGET_OPENCL_VERSION
+#   define CL_HPP_TARGET_OPENCL_VERSION 120
+#endif
+
+#ifndef CL_HPP_MINIMUM_OPENCL_VERSION
+#   define CL_HPP_MINIMUM_OPENCL_VERSION 120
+#endif
+
 #ifndef CL_TARGET_OPENCL_VERSION
 #  define CL_TARGET_OPENCL_VERSION 120
 #endif
 
-#ifdef __APPLE__
-#   include <OpenCL/opencl.h>
-#else
-#   include <CL/cl.h>
-#endif
+#   include <CL/cl2.hpp>
 
 #include <string>
 #include <fstream>
@@ -31,13 +31,13 @@
 #include <memory>
 
 #include "cleLightObject.h"
-#include "cleScalar.h"
-#include "cleObject.h"
 #include "cleBuffer.h"
 #include "cleFloat.h"
 #include "cleInt.h"
 
 #include "cleGPU.h"
+#include "cleOperations.h"
+
 
 namespace cle
 {
@@ -46,50 +46,58 @@ class Kernel
 {
 private:
 
-    // cl_device_id device_id;
-    // cl_context context;
-    // cl_command_queue command_queue;
+    cl::Program m_Program;
+    cl::Kernel m_Kernel;
+    
+    // const std::string m_KernelFolder = "/mnt/data/workspace/C++/clEsperanto/CLIc_v2/clij-opencl-kernels/kernels";
+    // const std::string m_PreambleFile =  "/mnt/data/workspace/C++/clEsperanto/CLIc_v2/clic/preamble.cl";
 
-    cl_program program;
-    cl_kernel kernel;
-
-    const std::string filesep = "/";
-    const std::string preambleFile = PREAMBLE_OCL;
-    const std::string kernelFolder = KERNELS_DIR;    
+    const std::string m_KernelFolder = KERNELS_DIR; 
+    const std::string m_PreambleFile = PREAMBLE_OCL;
 
 protected:
-    GPU gpu;
-    std::string kernelName;
+    // std::string m_Preamble;
+    // std::map<std::string, std::string> m_Sources;
+    std::string m_KernelName;
+    std::string m_DimensionTag = "";
 
-    std::vector<std::string> tagList;
-    std::map<std::string, LightObject* > parameterList;
+    GPU m_gpu;
+
+    std::vector<std::string> m_TagList;
+    std::map<std::string, std::shared_ptr<cle::LightObject> > m_ParameterList;
+
+    std::array<size_t,3> m_GlobalRange = {0, 0, 0};
+    size_t m_CurrentHash = 0;
+    bool m_BuildProgram = true;
 
     std::string TypeAbbr(const std::string) const;
     std::string LoadPreamble();
     std::string LoadSources();
     std::string LoadDefines();
+    std::string GenerateSources();
 
+    void AddObject(Buffer, std::string);
+    void AddObject(int, std::string);
+    void AddObject(float, std::string);
 
+    void BuildProgramKernel();
+    void SetArguments();
+    void EnqueueKernel();
+    void ManageDimensions(std::string);
 
 public:
-    Kernel(GPU&);
-    ~Kernel() = default;
+    Kernel(GPU&, std::string, std::vector<std::string>);
+    ~Kernel();
 
     virtual void Execute() = 0;
     
-    void AddObject(LightObject*, std::string);
-    void CompileKernel();
-    void AddArgumentsToKernel();
-    void DefineRangeKernel();
-
     std::string GetKernelName();
-    cl_kernel GetKernel();
-    cl_program GetProgram();
-    cl_device_id GetDevice();
-    cl_context GetContext();
-    cl_command_queue GetCommandQueue();
+    cl::Kernel GetKernel();
+    cl::Program GetProgram();
 };
 
 } // namespace cle
+
+ 
 
 #endif // __cleKernel_h

@@ -1,13 +1,6 @@
-/*  CLIc - version 0.1 - Copyright 2020 Stéphane Rigaud, Robert Haase,
-*   Institut Pasteur Paris, Max Planck Institute for Molecular Cell Biology and Genetics Dresden
-*
-*   CLIc is part of the clEsperanto project http://clesperanto.net 
-*
-*   This file is subject to the terms and conditions defined in
-*   file 'LICENSE.txt', which is part of this source code package.
-*/
 
 #include <random>
+#include <iostream>
 
 #include "CLE.h"
 
@@ -18,56 +11,46 @@
 int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
-    unsigned int width (10), height (10), depth (10);
-    float* input_data = new float[width*height*depth];
-    float* valid_data = new float[width*height*1];
-    std::default_random_engine generator;
-    std::normal_distribution<float> distribution(5.0,2.0);
-    for (size_t d = 0; d < depth; d++)
-    {
-        for (size_t y = 0; y < height; y++)
-        {
-            for (size_t x = 0; x < width; x++)
-            {
-                int i = x + width*(y+height*d);
-                if ( x == y )
-                {
-                    input_data[i] = 1000;
-                }
-                else
-                {
-                    input_data[i] = distribution(generator);
-                }
-            }
-        }
-    }
-    for (size_t i = 0; i < width*depth*1; i++)
-    {
-        valid_data[i] = 1000;
-    }
-    Image<float> input_img (input_data, width, height, depth, "float");
+    unsigned int width (3), height (3), depth (3);
+    std::vector<float> input_data ({
+        10, 1, 5, 
+         1,10, 6, 
+         5, 8,10,
+
+         1, 1,10, 
+         1,10, 6, 
+        10, 8, 4,
+
+        10, 1,10,
+         1, 1, 6,
+         5,10, 8, 
+    });
+    std::vector<float> valid_data (width*1*depth);
+    std::fill(valid_data.begin(), valid_data.end(), 10);
+
 
     // Initialise GPU information.
     cle::GPU gpu;
     cle::CLE cle(gpu);
 
-    // Initialise device memory and push from host
-    std::array<unsigned int, 3> dimensions = {width, height, depth};
-    dimensions.back() = 1;
-    cle::Buffer gpuInput = cle.Push<float>(input_img);
-    cle::Buffer gpuOutput = cle.Create<float>(dimensions.data(), "float");
+    unsigned int dim[3] = {width, height, depth};
+    cle::Buffer Buffer_A = cle.Push<float>(input_data, dim);
+
+    unsigned int dim2[3] = {width, depth, 1};
+    cle::Buffer Buffer_B = cle.Create<float>(dim2);
 
     // Call kernel
-    cle.MaximumYProjection(gpuInput, gpuOutput);   
+    cle.MaximumYProjection(Buffer_A, Buffer_B);   
 
     // pull device memory to host
-    Image<float> output_img = cle.Pull<float>(gpuOutput);    
+    std::vector<float> ouput_data = cle.Pull<float>(Buffer_B);
 
     // Verify output
     float difference = 0;
-    for (size_t i = 0; i < width*depth*1; i++)
+    for (size_t i = 0; i < ouput_data.size(); i++)
     {
-        difference += std::abs(valid_data[i] - output_img.GetData()[i]);
+        std::cout << valid_data[i] <<"="<< ouput_data[i] << "\n";
+        difference += std::abs(valid_data[i] - ouput_data[i]);
     }
     if (difference > std::numeric_limits<float>::epsilon())
     {

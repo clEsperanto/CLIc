@@ -1,11 +1,3 @@
-/*  CLIc - version 0.1 - Copyright 2020 Stéphane Rigaud, Robert Haase,
-*   Institut Pasteur Paris, Max Planck Institute for Molecular Cell Biology and Genetics Dresden
-*
-*   CLIc is part of the clEsperanto project http://clesperanto.net 
-*
-*   This file is subject to the terms and conditions defined in
-*   file 'LICENSE.txt', which is part of this source code package.
-*/
 
 #include <random>
 
@@ -59,13 +51,13 @@ int main(int argc, char **argv)
     cle.GreaterOrEqual(gpuInput1, gpuInput2, gpuOutput);
 
     // pull device memory to host
-    Image<float> output_img = cle.Pull<float>(gpuOutput);    
+    std::vector<float> output_data = cle.Pull<float>(gpuOutput);    
 
     // Verify output
     float difference = 0;
     for (size_t i = 0; i < width*height*depth; i++)
     {
-        difference += std::abs(valid_data[i] - output_img.GetData()[i]);
+        difference += std::abs(valid_data[i] - output_data[i]);
     }
     if (difference > std::numeric_limits<float>::epsilon())
     {

@@ -1,17 +1,9 @@
-/*  CLIc - version 0.1 - Copyright 2020 Stéphane Rigaud, Robert Haase,
-*   Institut Pasteur Paris, Max Planck Institute for Molecular Cell Biology and Genetics Dresden
-*
-*   CLIc is part of the clEsperanto project http://clesperanto.net 
-*
-*   This file is subject to the terms and conditions defined in
-*   file 'LICENSE.txt', which is part of this source code package.
-*/
 
 
 #ifndef __cleFloat_h
 #define __cleFloat_h
 
-#include "cleScalar.h"
+#include "cleLightObject.h"
 
 #include <string>
 #include <fstream>
@@ -19,26 +11,25 @@
 namespace cle
 {
 
-class Float : public Scalar
+class Float : public LightObject
 {
 private:
     static const ObjectType O = ObjectType::cleFloat;
     static const DataType T = DataType::Float;
-    float value = 0; 
 
-protected:
-    
+    float m_Object;    
 
 public:
-    Float() = default;
     Float(float);
-    ~Float() = default;
 
-    float& GetData();
-    std::string GetObjectType() const;
-    std::string ToString() const;
-    bool IsObject(std::string) const;
+    float GetObject();
+    size_t GetSize() const;
     size_t GetBitSize() const;
+
+
+    std::string GetDataType() const;
+    std::string GetObjectType() const;
+    bool IsObject(LightObject::ObjectType) const;
 
 };
 

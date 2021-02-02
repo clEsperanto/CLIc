@@ -1,17 +1,25 @@
 #ifndef __cleCommandQueueManager_h
 #define __cleCommandQueueManager_h
 
+#ifndef CL_HPP_ENABLE_EXCEPTIONS
+#   define CL_HPP_ENABLE_EXCEPTIONS
+#endif
+
+#ifndef CL_HPP_TARGET_OPENCL_VERSION
+#   define CL_HPP_TARGET_OPENCL_VERSION 120
+#endif
+
+#ifndef CL_HPP_MINIMUM_OPENCL_VERSION
+#   define CL_HPP_MINIMUM_OPENCL_VERSION 120
+#endif
+
 #ifndef CL_TARGET_OPENCL_VERSION
 #  define CL_TARGET_OPENCL_VERSION 120
 #endif
 
-#ifdef __APPLE__
-#   include <OpenCL/opencl.h>
-#else
-#   include <CL/cl.h>
-#endif
+#   include <CL/cl2.hpp>
 
-#include <iostream>
+#include <vector>
 
 
 namespace cle
@@ -20,20 +28,16 @@ namespace cle
 class CommandQueueManager
 {
 private:
-    cl_command_queue command_queue = nullptr;
+    cl::CommandQueue m_CommandQueue;
 
 public:
-    CommandQueueManager() = default;
-    ~CommandQueueManager() = default;
-    CommandQueueManager(cl_context, cl_device_id);
+    CommandQueueManager(){};
+    CommandQueueManager(cl::Context, cl::Device);
+    ~CommandQueueManager();
 
-
-    void CreateCommandQueue(cl_context&, cl_device_id&);
-    cl_command_queue& GetCommandQueue();
-    cl_device_id GetDeviceId();
-    cl_context GetContext();
-
-    std::string ToString() const;
+    cl::CommandQueue GetCommandQueue();
+    cl::Device GetDevice();
+    cl::Context GetContext();
 };
 
 
