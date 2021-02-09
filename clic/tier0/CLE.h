@@ -42,8 +42,6 @@ public:
     template<class T>
     Buffer Create();
 
-    
-
     GPU GetGPU();
 
     void AddImageAndScalar(Buffer&, Buffer&, float);
