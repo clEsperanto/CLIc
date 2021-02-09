@@ -20,17 +20,10 @@ endif()
 add_compile_definitions(KERNELS_DIR="${CLI_KERNELS_DIR}")
 add_compile_definitions(PREAMBLE_OCL="${CLI_PREAMBLE_FILE}")
 
-# Target
-# add_library(${LIBRARY_NAME}
-#   ${SOURCES}
-#   ${HEADERS_PUBLIC}
-#   ${HEADERS_PRIVATE}
-#   )
 add_library(${LIBRARY_NAME}
   ${SOURCES_T0} ${SOURCES_T1} ${SOURCES_T2} ${SOURCES_T3}
   ${HEADER_T0} ${HEADER_T1} ${HEADER_T2} ${HEADER_T3}
   )
-
 
 # Target links
 target_link_libraries(${LIBRARY_NAME} OpenCL::OpenCL TIFF::TIFF)
