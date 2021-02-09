@@ -21,13 +21,18 @@ add_compile_definitions(KERNELS_DIR="${CLI_KERNELS_DIR}")
 add_compile_definitions(PREAMBLE_OCL="${CLI_PREAMBLE_FILE}")
 
 # Target
+# add_library(${LIBRARY_NAME}
+#   ${SOURCES}
+#   ${HEADERS_PUBLIC}
+#   ${HEADERS_PRIVATE}
+#   )
 add_library(${LIBRARY_NAME}
-  ${SOURCES}
-  ${HEADERS_PUBLIC}
-  ${HEADERS_PRIVATE}
+  ${SOURCES_T0} ${SOURCES_T1} ${SOURCES_T2} ${SOURCES_T3}
+  ${HEADER_T0} ${HEADER_T1} ${HEADER_T2} ${HEADER_T3}
   )
 
-  # Target links
+
+# Target links
 target_link_libraries(${LIBRARY_NAME} OpenCL::OpenCL TIFF::TIFF)
 
 # Alias:
@@ -51,7 +56,10 @@ target_compile_definitions(${LIBRARY_NAME} PUBLIC
 #   - header location in project: ${CMAKE_CURRENT_BINARY_DIR}/generated_headers
 target_include_directories(
   ${LIBRARY_NAME} PUBLIC
-    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/include>"
+    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/tier0>"
+    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/tier1>"
+    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/tier2>"
+    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/tier3>"
     "$<BUILD_INTERFACE:${GENERATED_HEADERS_DIR}>"
     "$<INSTALL_INTERFACE:.>"
 )

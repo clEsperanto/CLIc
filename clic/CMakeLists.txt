@@ -1,22 +1,15 @@
-# Set SOURCES variable
-# set(SOURCES
-#   foo.cpp
-# )
-include_directories(src)
-file(GLOB SOURCES src/*.cpp)
 
-# Set HEADERS_PUBLIC variable (public headers, included in the library)
-# set(HEADERS_PUBLIC
-#   foo.h
-# )
-include_directories(include)
-file(GLOB HEADERS_PUBLIC include/*.h)
+# include_directories(src)
+file(GLOB_RECURSE SOURCES_T0 ${CMAKE_CURRENT_SOURCE_DIR}/tier0/*.cpp)
+file(GLOB_RECURSE SOURCES_T1 ${CMAKE_CURRENT_SOURCE_DIR}/tier1/*.cpp)
+file(GLOB_RECURSE SOURCES_T2 ${CMAKE_CURRENT_SOURCE_DIR}/tier2/*.cpp)
+file(GLOB_RECURSE SOURCES_T3 ${CMAKE_CURRENT_SOURCE_DIR}/tier3/*.cpp)
 
-# Set HEADERS_PRIVATE variable, if needed.
-# (these private headers won't be included in the library)
-# set(HEADERS_PRIVATE
-#     foo_private.h
-# )
+# include_directories(include)
+file(GLOB_RECURSE HEADERS_T0 ${CMAKE_CURRENT_SOURCE_DIR}/tier0/*.cpp)
+file(GLOB_RECURSE HEADERS_T1 ${CMAKE_CURRENT_SOURCE_DIR}/tier1/*.cpp)
+file(GLOB_RECURSE HEADERS_T2 ${CMAKE_CURRENT_SOURCE_DIR}/tier2/*.cpp)
+file(GLOB_RECURSE HEADERS_T3 ${CMAKE_CURRENT_SOURCE_DIR}/tier3/*.cpp)
 
 include_directories(${CLI_KERNELS_DIR})
 file(GLOB KERNELS ${CLI_KERNELS_DIR}/*.cl)
