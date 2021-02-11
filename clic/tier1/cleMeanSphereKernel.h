@@ -10,8 +10,7 @@ namespace cle
 class MeanSphereKernel : public Kernel
 {
 private:
-
-    int Radius2KernelSize(float);
+    int Radius2KernelSize(float);  // kernel specific methods
 
 public:
     MeanSphereKernel(GPU& gpu) : 

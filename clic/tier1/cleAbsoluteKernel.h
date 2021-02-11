@@ -9,19 +9,17 @@ namespace cle
     
 class AbsoluteKernel : public Kernel
 {
-
 public:
-
-    AbsoluteKernel(GPU& gpu) :
+    AbsoluteKernel(GPU& gpu) :    
         Kernel( gpu, 
-                "absolute",
-                {"src" , "dst"}
+                "absolute",     // kernel name
+                {"src" , "dst"} // parameter tags
         )
     {}
 
-    void SetInput(Buffer&);
+    void SetInput(Buffer&);   // Set<Parameter>(<Type>)
     void SetOutput(Buffer&);
-    void Execute();
+    void Execute();         
 };
 
 } // namespace cle

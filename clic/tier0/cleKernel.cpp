@@ -155,11 +155,6 @@ std::string Kernel::GenerateSources()
     std::string kernel_src = LoadSources();
     std::string preambule_src = LoadPreamble();
     std::string source = defines_src + "\n" + preambule_src + "\n" + kernel_src;
-
-    // std::ofstream out("output.txt");
-    // out << source;
-    // out.close();
-
     return source;
 }
 
@@ -201,8 +196,6 @@ void Kernel::SetArguments()
             {    
                 std::shared_ptr<cle::Buffer> object = std::dynamic_pointer_cast<cle::Buffer>(m_ParameterList.at(tag));
                 this->m_Kernel.setArg(index, object->GetObject());
-                
-                // update Range status
                 for (size_t i = 0; i < 3; i++)
                 {
                     size_t tempDim = size_t(object->GetDimensions()[i]);
@@ -221,7 +214,7 @@ void Kernel::SetArguments()
             }
         }
     }
-};
+}
 
 void Kernel::AddObject(Buffer o, std::string t)
 {
@@ -241,7 +234,7 @@ void Kernel::AddObject(Buffer o, std::string t)
     {
         std::cerr << "Error: Invalid buffer parameter tag" << std::endl;
     }
-};
+}
 
 void Kernel::AddObject(int o, std::string t)
 {
@@ -262,7 +255,7 @@ void Kernel::AddObject(int o, std::string t)
     {
         std::cerr << "Error: Invalid Int parameter tag" << std::endl;
     }
-};
+}
 
 void Kernel::AddObject(float o, std::string t)
 {
@@ -283,7 +276,7 @@ void Kernel::AddObject(float o, std::string t)
     {
         std::cerr << "Error: Invalid Float parameter tag" << std::endl;
     }
-};
+}
 
 void Kernel::BuildProgramKernel()
 {
@@ -325,21 +318,6 @@ void Kernel::EnqueueKernel()
     this->m_gpu.GetCommandQueueManager().GetCommandQueue().finish();
 }
 
-std::string Kernel::GetKernelName()
-{
-    return m_KernelName;
-}
-
-cl::Kernel Kernel::GetKernel()
-{
-    return m_Kernel;
-}
-
-cl::Program Kernel::GetProgram()
-{
-    return m_Program;
-}
-
 Kernel::Kernel(GPU& gpu, std::string kernel, std::vector<std::string> tags) : m_gpu(gpu)
 {
     this->m_KernelName = kernel;
@@ -347,9 +325,6 @@ Kernel::Kernel(GPU& gpu, std::string kernel, std::vector<std::string> tags) : m_
 }
 
 Kernel::~Kernel()
-{
-
-}
-
+{}
 
 } // namespace cle
