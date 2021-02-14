@@ -7,7 +7,7 @@
 
 #include "CLE.h"
 
-#include <benchmark_kernel.cpp>
+#include <benchmark_base.cpp>
 
 using std::string;
 using std::vector;
@@ -25,7 +25,6 @@ protected:
     {
         vector<float> inputData(dataWidth * dataWidth);
         
-        // Initialise device memory and push from host
         vector<unsigned int> dim{{dataWidth, dataWidth, 1}};
         gpuInput = cle.Push<float>(inputData, dim.data());
         gpuOutput = cle.Create<float>(dim.data());
@@ -46,12 +45,6 @@ protected:
     virtual void Iteration()
     {
         cle.Mean2DSphere(gpuInput, gpuOutput, radius, radius);
-        vector<float> out = cle.Pull<float>(gpuOutput);
-
-        if (0.2 == out[0]) {
-            // do something, so the compiler doesn't optimize this away
-            cout << " \b";
-        }
     }
 
     virtual void Compile(cle::CLE& cle)
@@ -63,8 +56,8 @@ protected:
     }
 
 public:
-    Mean2DBoxNonSeperableBenchmark(const cle::GPU& _gpu, const cle::CLE& _cle) : Mean2DBoxBenchmark(_gpu, _cle) {}
-    Mean2DBoxNonSeperableBenchmark() : Mean2DBoxBenchmark() {}
+    Mean2DBoxNonSeperableBenchmark(const cle::GPU& _gpu, const cle::CLE& _cle) : Mean2DBoxBenchmark(_gpu, _cle){}
+    Mean2DBoxNonSeperableBenchmark() : Mean2DBoxBenchmark(){}
     virtual ~Mean2DBoxNonSeperableBenchmark(){}
 };
 
@@ -75,12 +68,6 @@ protected:
     virtual void Iteration()
     {
         cle.Mean2DBox(gpuInput, gpuOutput, radius, radius);
-        vector<float> out = cle.Pull<float>(gpuOutput);
-
-        if (0.2 == out[0]) {
-            // do something, so the compiler doesn't optimize this away
-            cout << " \b";
-        }
     }
 
     virtual void Compile(cle::CLE& cle)
@@ -92,8 +79,8 @@ protected:
     }
 
 public:
-    Mean2DBoxSeperableBenchmark(const cle::GPU& _gpu, const cle::CLE& _cle) : Mean2DBoxBenchmark(_gpu, _cle) {}
-    Mean2DBoxSeperableBenchmark() : Mean2DBoxBenchmark() {}
+    Mean2DBoxSeperableBenchmark(const cle::GPU& _gpu, const cle::CLE& _cle) : Mean2DBoxBenchmark(_gpu, _cle){}
+    Mean2DBoxSeperableBenchmark() : Mean2DBoxBenchmark(){}
     virtual ~Mean2DBoxSeperableBenchmark(){}
 };
 

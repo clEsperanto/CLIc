@@ -26,13 +26,9 @@ private:
 
     void ExecuteSingleIteration(vector<unsigned long>& timingResultWriteback)
     {
-        std::chrono::time_point<std::chrono::high_resolution_clock> begin
-            = std::chrono::high_resolution_clock::now();
-
+        std::chrono::time_point<std::chrono::high_resolution_clock> begin = std::chrono::high_resolution_clock::now();
         Iteration();
-
-        std::chrono::time_point<std::chrono::high_resolution_clock> end
-            = std::chrono::high_resolution_clock::now();
+        std::chrono::time_point<std::chrono::high_resolution_clock> end = std::chrono::high_resolution_clock::now();
 
         timingResultWriteback.push_back(std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count());
     }
@@ -47,7 +43,7 @@ protected:
     /// optional callback to interpret (= provide additional info) the timing results of a single run/avg; ususally prints to stdout. Timings are on stdout anyways
     virtual void InterpretTiming(const string& title, const unsigned long AvgTimeMs) {}
 
-    /// optional callback to measure kernel compile time; only called on demand
+    /// optional callback to measure kernel compile time; only called on demand; should contain kernel call with minimal parameters
     virtual void Compile(cle::CLE& cle) {} 
 
 public:
@@ -60,16 +56,19 @@ public:
     vector<unsigned long> iterationNormalTimingsMs;
     vector<unsigned long> iterationWarmupTimingsMs;
 
+    /// avg iteration time during warmup runs
     unsigned int GetAvgWarmupMs() const
     {
         return getAverage<unsigned long>(iterationWarmupTimingsMs);
     }
 
+    /// avg iteration time during normal runs
     unsigned int GetAvgNormalMs() const
     {
         return getAverage<unsigned long>(iterationNormalTimingsMs);
     }
 
+    /// avg iteration time during all runs (includes also warmup)
     unsigned int GetAvgTotalMs() const
     {
         size_t warmups = iterationWarmupTimingsMs.size();
@@ -77,6 +76,7 @@ public:
         return (GetAvgWarmupMs() * warmups + GetAvgNormalMs() * normals) / (normals + warmups);
     }
 
+    /// wrapper for the compile function with new environment (which causes kernel recompilation)
     unsigned long GetCompilationMs()
     {
         if (-1 == maybeCompilationMs) {

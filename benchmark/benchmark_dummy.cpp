@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 
-#include <benchmark_kernel.cpp>
+#include <benchmark_base.cpp>
 
 using std::string;
 using std::cout;

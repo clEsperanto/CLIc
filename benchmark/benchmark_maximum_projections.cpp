@@ -5,7 +5,7 @@
 #include <string>
 #include <thread>
 
-#include <benchmark_kernel.cpp>
+#include <benchmark_base.cpp>
 
 #include "CLE.h"
 
@@ -19,26 +19,25 @@ protected:
     cle::GPU gpu;
     cle::CLE cle;
     cle::Buffer gpuInput, gpuOutput;
-    float* inputData;
 
     virtual void Setup()
     {
         std::vector<float> inputData (dataWidth * dataWidth * dataWidth);
 
         // Initialise device memory and push from host
-        std::array<unsigned int, 3> dimensions = {dataWidth, dataWidth, dataWidth};
-        gpuInput = cle.Push<float>(inputData, dimensions.data());
+        std::array<unsigned int, 3> dimensionsInput = {dataWidth, dataWidth, dataWidth};
+        gpuInput = cle.Push<float>(inputData, dimensionsInput.data());
         std::array<unsigned int, 3> dimensionsOutput = {dataWidth, dataWidth, 1};
         gpuOutput = cle.Create<float>(dimensionsOutput.data());
-    };
+    }
 
-    virtual void Iteration() {};
+    virtual void Iteration(){};
 
-    virtual void Teardown() {};
+    virtual void Teardown(){};
 
 public:
     unsigned dataWidth;
-    MaximumProjectionBenchmarkBase() : gpu(), cle(cle::CLE(gpu)) {}
+    MaximumProjectionBenchmarkBase() : gpu(), cle(cle::CLE(gpu)){}
     virtual ~MaximumProjectionBenchmarkBase(){}
 };
 
@@ -48,10 +47,10 @@ protected:
     virtual void Iteration()
     {
         cle.MaximumXProjection(gpuInput, gpuOutput);
-    };
+    }
 
 public:
-    MaximumXProjectionBenchmark() {}
+    MaximumXProjectionBenchmark(){}
     virtual ~MaximumXProjectionBenchmark(){}
 };
 
@@ -61,10 +60,10 @@ protected:
     virtual void Iteration()
     {
         cle.MaximumYProjection(gpuInput, gpuOutput);
-    };
+    }
 
 public:
-    MaximumYProjectionBenchmark() {}
+    MaximumYProjectionBenchmark(){}
     virtual ~MaximumYProjectionBenchmark(){}
 };
 
@@ -74,10 +73,10 @@ protected:
     virtual void Iteration()
     {
         cle.MaximumZProjection(gpuInput, gpuOutput);
-    };
+    }
 
 public:
-    MaximumZProjectionBenchmark() {}
+    MaximumZProjectionBenchmark(){}
     virtual ~MaximumZProjectionBenchmark(){}
 };
 
@@ -98,6 +97,7 @@ int main(int argc, char** argv) {
         std::cerr << "Could not write to: " << argv[1] << std::endl;
         return 1;
     }
+
     csv << "width,count,x_runtime_ms,y_runtime_ms,z_runtime_ms" << std::endl;
 
     for (int width = 1; width < 1024; width *= 2)
@@ -120,5 +120,6 @@ int main(int argc, char** argv) {
         z.Run();
         csv << z.GetAvgNormalMs() << std::endl;
     }
+
     return 0;
 }

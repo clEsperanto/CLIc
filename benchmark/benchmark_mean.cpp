@@ -4,7 +4,7 @@
 
 #include "CLE.h"
 
-#include <benchmark_kernel.cpp>
+#include <benchmark_base.cpp>
 
 using std::string;
 using std::vector;
@@ -20,11 +20,11 @@ protected:
     virtual void Setup()
     {
         vector<float> inputData(dataWidth * dataWidth);
-        Image<float> input_img (inputData.data(), dataWidth, dataWidth, 1, "float");
+        vector<unsigned int> dim{{dataWidth, dataWidth, 1}};
         
         // Initialise device memory and push from host
-        gpuInput = cle.Push<float>(input_img);
-        gpuOutput = cle.Create<float>(input_img);
+        gpuInput = cle.Push<float>(inputData, dim.data());
+        gpuOutput = cle.Create<float>(dim.data());
     }
 
     virtual void Iteration()
@@ -34,14 +34,9 @@ protected:
 
     virtual void Teardown() {}
 
-    virtual void InterpretTiming(const string& title, const unsigned long ms)
-    {
-    }
-
-
 public:
     unsigned dataWidth;
-    MeanBenchmark() : gpu(), cle(cle::CLE(gpu)) {}
+    MeanBenchmark() : gpu(), cle(cle::CLE(gpu)){}
     virtual ~MeanBenchmark(){}
 };
 
@@ -57,5 +52,6 @@ int main(int argc, char** argv) {
     }
 
     d.Run();
+
     return 0;
 }
