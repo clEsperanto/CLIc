@@ -3,15 +3,27 @@
 #include <iostream>
 #include <numeric>
 #include <string>
+#include <type_traits>
+
+#include "CLE.h"
 
 using std::vector;
 using std::string;
 using std::cout;
 using std::endl;
 
+template<typename T>
+T getAverage(const vector<T>& v)
+{
+        return std::accumulate(v.begin(), v.end(), 0) / v.size();
+}
+
 class BenchmarkBase
 {
 private:
+    /// holds the compilation time or -1 if it has not been measured yet
+    unsigned int maybeCompilationMs = -1;
+
     void ExecuteSingleIteration(vector<unsigned long>& timingResultWriteback)
     {
         std::chrono::time_point<std::chrono::high_resolution_clock> begin
@@ -35,29 +47,58 @@ protected:
     /// optional callback to interpret (= provide additional info) the timing results of a single run/avg; ususally prints to stdout. Timings are on stdout anyways
     virtual void InterpretTiming(const string& title, const unsigned long AvgTimeMs) {}
 
+    /// optional callback to measure kernel compile time; only called on demand
+    virtual void Compile(cle::CLE& cle) {} 
+
 public:
     // Note: c++ virtual classes need a destructor, so child classes' constructors are called too
     virtual ~BenchmarkBase(){};
     unsigned iterationWarmupCount = 8;
     unsigned iterationNormalCount = 16;
+    unsigned iterationCompilationCount = 8;
 
     vector<unsigned long> iterationNormalTimingsMs;
     vector<unsigned long> iterationWarmupTimingsMs;
 
-    unsigned int GetAvgWarmupMs()
+    unsigned int GetAvgWarmupMs() const
     {
-        return std::accumulate(iterationWarmupTimingsMs.begin(), iterationWarmupTimingsMs.end(), 0) / iterationWarmupTimingsMs.size();
+        return getAverage<unsigned long>(iterationWarmupTimingsMs);
     }
 
-    unsigned int GetAvgNormalMs()
+    unsigned int GetAvgNormalMs() const
     {
-        return std::accumulate(iterationNormalTimingsMs.begin(), iterationNormalTimingsMs.end(), 0) / iterationNormalTimingsMs.size();
+        return getAverage<unsigned long>(iterationNormalTimingsMs);
     }
-    unsigned int GetAvgTotalMs()
+
+    unsigned int GetAvgTotalMs() const
     {
         size_t warmups = iterationWarmupTimingsMs.size();
         size_t normals = iterationNormalTimingsMs.size();
         return (GetAvgWarmupMs() * warmups + GetAvgNormalMs() * normals) / (normals + warmups);
+    }
+
+    unsigned long GetCompilationMs()
+    {
+        if (-1 == maybeCompilationMs) {
+            vector<unsigned long> compilationTimings;
+            for (int i = 0; i < iterationCompilationCount; i++)
+            {
+                // always reconstruct the cle object, as it caches the compiled kernels
+                cle::GPU gpu;
+                cle::CLE cle(gpu);
+
+                // now measure the compilation
+                std::chrono::time_point<std::chrono::high_resolution_clock> begin = std::chrono::high_resolution_clock::now();
+                Compile(cle);
+                std::chrono::time_point<std::chrono::high_resolution_clock> end = std::chrono::high_resolution_clock::now();
+
+                compilationTimings.push_back(std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count());
+            }
+
+            maybeCompilationMs = getAverage<unsigned long>(compilationTimings);
+        }
+
+        return maybeCompilationMs;
     }
                     
     void Run(bool printResults = true)
