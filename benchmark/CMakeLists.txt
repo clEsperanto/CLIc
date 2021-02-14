@@ -16,20 +16,20 @@ target_include_directories(benchmark_kernel PUBLIC
     "${CMAKE_CURRENT_LIST_DIR}"
     )
 
-add_executable(benchmark_dummy benchmark_dummy.cpp)
-target_compile_features(benchmark_dummy PUBLIC cxx_std_14)
+#add_executable(benchmark_dummy benchmark_dummy.cpp)
+#target_compile_features(benchmark_dummy PUBLIC cxx_std_14)
+#
+#target_link_libraries(benchmark_dummy benchmark_kernel)
 
-target_link_libraries(benchmark_dummy benchmark_kernel)
-
-add_executable(benchmark_mean benchmark_mean.cpp)
-target_compile_features(benchmark_mean PUBLIC cxx_std_14)
-
-target_link_libraries(benchmark_mean benchmark_kernel)
+#add_executable(benchmark_mean benchmark_mean.cpp)
+#target_compile_features(benchmark_mean PUBLIC cxx_std_14)
+#
+#target_link_libraries(benchmark_mean benchmark_kernel)
 
 add_executable(benchmark_means_comparison benchmark_means_comparison.cpp)
 target_compile_features(benchmark_means_comparison PUBLIC cxx_std_14)
 
-target_link_libraries(benchmark_means_comparison benchmark_kernel)
+target_link_libraries(benchmark_means_comparison benchmark_kernel CLIc::CLIc)
 
 add_executable(benchmark_maximum_projections benchmark_maximum_projections.cpp)
 target_compile_features(benchmark_maximum_projections PUBLIC cxx_std_14)
