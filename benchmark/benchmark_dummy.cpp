@@ -14,8 +14,7 @@ protected:
     virtual void Setup() {}
     virtual void Iteration()
     {
-        using namespace std::chrono_literals;
-        std::this_thread::sleep_for(700ms);
+        std::this_thread::sleep_for(std::chrono::milliseconds(700));
     };
 
     virtual void Teardown() {}

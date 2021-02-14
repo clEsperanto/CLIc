@@ -7,34 +7,41 @@ Right now, this is very preliminary, and mainly focussed on running a few kernel
 
 # Usage example
 
-Include main header and initialise class with GPU information
-```
-#include "CLE.h"  
-```
-Initialise CLEsperanto with GPU usage preferences (more to come ... one day)
-```
-cle::GPU gpu();     
-cle::CLE cle(gpu);
-```
-You can then push an image to the GPU and create memory there:
-```
-cle::Buffer src = cle.Push<float>(input);
-cle::Buffer dst = cle.Create<float>(input);
-```
-And then you can call methods in the GPU and pull the output:
-```
-cle.AddImageAndScalar(srd, dst, scalar);  
-Image<float> output = cle.Pull<float>(dst); 
+```c++
+#include "CLE.h"  // CLIc include
+
+int main( int argc, char** argv)
+{
+    cle::GPU gpu();       // Initialise GPU 
+    cle::CLE cle(gpu);    // Initialise cle
+
+    // store data to process in vector
+    unsigned int dimensions[3] = {width, height, depth};
+    std::vector<float> input [width * height * depth]; 
+
+    /*
+     * ... fill input with data to process  
+     */
+
+    // push data into GPU, and create the output into GPU
+    cle::Buffer src = cle.Push<float>(input, dimensions);
+
+    // create output GPU object and apply filter
+    cle::Buffer dst = cle.Create<float>(dimensions);
+    cle.AddImageAndScalar(src, dst, 10);  
+
+    // get output from filter into vector
+    Image<float> output = cle.Pull<float>(dst); 
+
+    return EXIT_SUCCESS;
+}
 ```
 See more complete example on usage by looking at the [validation tests](https://github.com/clEsperanto/CLIc_prototype/tree/master/test).
-
-Empty CLIc script project available [here](https://github.com/StRigaud/CLIc_project_template)
 
 # Installation
 
 ## Requierements
 
-- [LibTiff](http://www.simplesystems.org/libtiff/)
 - [OpenCL](https://www.khronos.org/opencl/) 
 (
     [Nvidia](https://developer.nvidia.com/cuda-downloads), 

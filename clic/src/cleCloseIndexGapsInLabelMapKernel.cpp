@@ -1,11 +1,3 @@
-/*  CLIc - version 0.1 - Copyright 2020 Stéphane Rigaud, Robert Haase,
-*   Institut Pasteur Paris, Max Planck Institute for Molecular Cell Biology and Genetics Dresden
-*
-*   CLIc is part of the clEsperanto project http://clesperanto.net 
-*
-*   This file is subject to the terms and conditions defined in
-*   file 'LICENSE.txt', which is part of this source code package.
-*/
 
 
 #include "cleCloseIndexGapsInLabelMapKernel.h"
@@ -22,14 +14,14 @@
 namespace cle
 {
 
-void CloseIndexGapsInLabelMapKernel::SetInput(Object& x)
+void CloseIndexGapsInLabelMapKernel::SetInput(Buffer& x)
 {
-    this->AddObject(&x, "src");
+    this->AddObject(x, "src");
 }
 
-void CloseIndexGapsInLabelMapKernel::SetOutput(Object& x)
+void CloseIndexGapsInLabelMapKernel::SetOutput(Buffer& x)
 {
-    this->AddObject(&x, "dst");
+    this->AddObject(x, "dst");
 }
 
 void CloseIndexGapsInLabelMapKernel::SetBlockSize(int x)
@@ -39,65 +31,63 @@ void CloseIndexGapsInLabelMapKernel::SetBlockSize(int x)
 
 void CloseIndexGapsInLabelMapKernel::Execute()
 {
-    Buffer* src = dynamic_cast<Buffer*>(parameterList.at("src"));
-    Buffer* dst = dynamic_cast<Buffer*>(parameterList.at("dst"));
-
-    size_t arr_size = src->GetDimensions()[0] * src->GetDimensions()[1] * src->GetDimensions()[2];
+    std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("src"));
+    std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("dst"));
+    
     unsigned int one_dim[3] = {1,1,1};
+    cl::Buffer max_obj = CreateBuffer<float>(1, this->m_gpu);
+    Buffer max = Buffer(max_obj, LightObject::DataType::Float);
 
-    cl_mem max_mem = CreateBuffer<float>(sizeof(float), this->gpu);
-    Buffer* max  = new Buffer(max_mem, one_dim, src->GetDataType());
-
-    MaximumOfAllPixelsKernel maximumOfPixels(this->gpu);
+    MaximumOfAllPixelsKernel maximumOfPixels(this->m_gpu);
     maximumOfPixels.SetInput(*src);
-    maximumOfPixels.SetOutput(*max);
+    maximumOfPixels.SetOutput(max);
     maximumOfPixels.Execute();
 
-    float max_value = ReadBuffer<float>(max->GetData(), max->GetBitSize() * 1, this->gpu)[0];
+    float max_value;
+    ReadBuffer<float>(max.GetObject(), &max_value, 1, this->m_gpu);
     unsigned int nb_indices =  int(max_value) + 1;
 
     unsigned int indices_dim[3] = {nb_indices, 1, 1};
-    cl_mem flaggedIndices_mem = CreateBuffer<float>(src->GetBitSize() * indices_dim[0], this->gpu);
-    Buffer* flaggedIndices  = new Buffer(flaggedIndices_mem, indices_dim, src->GetDataType());
+    cl::Buffer flaggedIndices_obj = CreateBuffer<float>(nb_indices, this->m_gpu);
+    Buffer flaggedIndices = Buffer(flaggedIndices_obj, indices_dim, LightObject::DataType::Float);
 
-    FlagExistingLabelsKernel flagLabels(this->gpu);
+    FlagExistingLabelsKernel flagLabels(this->m_gpu);
     flagLabels.SetInput(*src);
-    flagLabels.SetOutput(*flaggedIndices);
+    flagLabels.SetOutput(flaggedIndices);
     flagLabels.Execute();
 
-    SetColumnKernel setColumn(this->gpu);
-    setColumn.SetInput(*flaggedIndices);
+    SetColumnKernel setColumn(this->m_gpu);
+    setColumn.SetInput(flaggedIndices);
     setColumn.SetColumn(0);
     setColumn.SetValue(0);
     setColumn.Execute();
 
     unsigned int nb_sums = int(nb_indices / this->blocksize) + 1;
     unsigned int sums_dim[3] = {nb_sums, 1, 1};
-    cl_mem sums_mem = CreateBuffer<float>(flaggedIndices->GetBitSize() * sums_dim[0], this->gpu);
-    Buffer* blockSums  = new Buffer(sums_mem, sums_dim, flaggedIndices->GetDataType());
+    cl::Buffer sums_obj = CreateBuffer<float>(nb_sums, this->m_gpu);
+    Buffer blockSums = Buffer(sums_obj, sums_dim, LightObject::DataType::Float);
 
-    SumReductionXKernel sumReductionX(this->gpu);
-    sumReductionX.SetInput(*flaggedIndices);
-    sumReductionX.SetOutput(*blockSums);
+    SumReductionXKernel sumReductionX(this->m_gpu);
+    sumReductionX.SetInput(flaggedIndices);
+    sumReductionX.SetOutput(blockSums);
     sumReductionX.SetBlocksize(this->blocksize);
     sumReductionX.Execute();
 
     unsigned int newIndices_dim[3] = {nb_indices, 1, 1};
-    cl_mem newIndices_mem = CreateBuffer<float>(flaggedIndices->GetBitSize() * newIndices_dim[0], this->gpu);
-    Buffer* newIndices = new Buffer(newIndices_mem, newIndices_dim, flaggedIndices->GetDataType());
+    cl::Buffer newIndices_obj = CreateBuffer<float>(nb_indices, this->m_gpu);
+    Buffer newIndices = Buffer(newIndices_obj, newIndices_dim, LightObject::DataType::Float);
 
-    BlockEnumerateKernel blockEnumerate(this->gpu);
-    blockEnumerate.SetInput(*flaggedIndices);
-    blockEnumerate.SetInputSums(*blockSums);
-    blockEnumerate.SetOutput(*newIndices);
+    BlockEnumerateKernel blockEnumerate(this->m_gpu);
+    blockEnumerate.SetInput(flaggedIndices);
+    blockEnumerate.SetInputSums(blockSums);
+    blockEnumerate.SetOutput(newIndices);
     blockEnumerate.SetBlocksize(this->blocksize);
     blockEnumerate.Execute();
 
-    // replace_intensities(input, new_indices, output)
-    ReplaceIntensitiesKernel replaceIntensities(this->gpu);
+    ReplaceIntensitiesKernel replaceIntensities(this->m_gpu);
     replaceIntensities.SetInput(*src);
     replaceIntensities.SetOutput(*dst);
-    replaceIntensities.SetMap(*newIndices);
+    replaceIntensities.SetMap(newIndices);
     replaceIntensities.Execute();
 }
 

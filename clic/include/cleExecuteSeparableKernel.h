@@ -1,11 +1,3 @@
-/*  CLIc - version 0.1 - Copyright 2020 Stéphane Rigaud, Robert Haase,
-*   Institut Pasteur Paris, Max Planck Institute for Molecular Cell Biology and Genetics Dresden
-*
-*   CLIc is part of the clEsperanto project http://clesperanto.net 
-*
-*   This file is subject to the terms and conditions defined in
-*   file 'LICENSE.txt', which is part of this source code package.
-*/
 
 
 #ifndef __cleExecuteSeparableKernel_h
@@ -19,28 +11,24 @@ namespace cle
 class ExecuteSeparableKernel : public Kernel
 {
 private:
-    int dimension = 1;
-    std::array<float,3> sigma;
-    std::array<int,3> kernel_size;
-
-protected: 
-    void DefineDimensionality();
+    int m_Dim = 1;
+    std::array<float, 3> m_Sigma;
+    std::array<int, 3> m_KernelSize;
 
 public:
-    ExecuteSeparableKernel(GPU& gpu) : Kernel(gpu) 
-    {
-        kernelName = "_separable";
-        tagList = {"dst" , "src", "dim", "N", "s"};
-    }
+    ExecuteSeparableKernel(GPU& gpu) : 
+        Kernel( gpu, 
+                "_separable",
+                {"dst" , "src", "dim", "N", "s"}
+        ){}
 
+    void SetSources(std::map<std::string, std::string>);
     void SetKernelName(std::string);
-    void SetInput(Object&);
-    void SetOutput(Object&);
+    void SetInput(Buffer&);
+    void SetOutput(Buffer&);
     void SetSigma(float, float, float);
     void SetKernelSize(int, int, int);
     void Execute();
-
-    ~ExecuteSeparableKernel() = default;
 };
 
 } // namespace cle

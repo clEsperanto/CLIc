@@ -66,7 +66,7 @@ public:
         {
             cout.setstate(std::ios_base::badbit);
         }
-        
+
         cout << "Running setup...";
         cout.flush();
         Setup();

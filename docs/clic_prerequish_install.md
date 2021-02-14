@@ -27,9 +27,6 @@ Install an OpenCL SDK, for example from [Intel](https://software.intel.com/conte
 
 Alternative possibility for NVidia users, install [CUDA SDK](https://developer.nvidia.com/cuda-downloads) which come with OpenCL. After installation you will find the OpenCL includes under `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\include` and the OpenCL library under `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\lib\x64\OpenCL.lib`.
 
-### LibTiff
-Pre-compiled LibTiff can be found at the anaconda [website](https://anaconda.org/anaconda/libtiff/files).
-
 ### Cmake
 [Download and install](https://github.com/Kitware/CMake/releases/download/v3.19.0/cmake-3.19.0-win64-x64.msi) and install the .msi from the CMake website.
 
@@ -41,9 +38,6 @@ In a terminal window, run the following command: `xcode-select --install`
 
 ### OpenCL
 MacOS should come with OpenCL already installed. Nothing to do here.
-
-### LibTiff
-MacOS should come with LibTiff already installed. Nothing to do here.
 
 ### Cmake
 [Download and install](https://github.com/Kitware/CMake/releases/download/v3.19.0/cmake-3.19.0-Darwin-x86_64.dmg) and install the .dmg from the CMake website
@@ -68,17 +62,6 @@ In a terminal window, run the following command
 ```
 sudo apt update
 sudo apt install ocl-icd-opencl-dev 
-```
-
-### LibTiff
-You can check if already installed by running the following command in a terminal
-```
-apt-cache search libtiff-dev
-```
-If not installed, run the following command
-```
-sudo apt update
-sudo apt install libtiff-dev 
 ```
 
 ### Cmake
