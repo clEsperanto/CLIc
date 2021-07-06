@@ -18,11 +18,7 @@ private:
     DataType T;
 
     cl::Buffer m_Object;
-<<<<<<< HEAD
     std::array<unsigned int, 3> m_Dimensions = {{1, 1, 1}};
-=======
-    std::array<unsigned int, 3> m_Dimensions{{1, 1, 1}};
->>>>>>> 4pp-Engine-master
     
 public:     
     Buffer();
