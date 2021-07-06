@@ -5,6 +5,7 @@ build
 
 # Specific files
 ./clij/core/includes/cle_preamble.h
+./clij/core/includes/clic.h
 
 # System files
 .DS_Store
