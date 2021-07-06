@@ -27,12 +27,12 @@ void ExecuteSeparableKernel::SetSigma(float x, float y, float z)
 
 void ExecuteSeparableKernel::SetKernelName(std::string name)
 {
-    m_KernelName = name + m_KernelName;
+    m_KernelName = name;
 }
 
 void ExecuteSeparableKernel::SetSources(std::map<std::string, std::string> sources)
 {
-    // m_Sources = sources;
+    m_Sources = sources;
 }
 
 void ExecuteSeparableKernel::Execute()
@@ -57,6 +57,7 @@ void ExecuteSeparableKernel::Execute()
 
     SeparableKernel kernel(this->m_gpu);
     kernel.SetKernelName(this->m_KernelName);
+    kernel.SetSources(this->m_Sources);
     if (m_Sigma[0] > 0)
     {
         kernel.SetInput( *src );

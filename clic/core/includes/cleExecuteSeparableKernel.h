@@ -18,7 +18,7 @@ private:
 public:
     ExecuteSeparableKernel(GPU& gpu) : 
         Kernel( gpu, 
-                "_separable",
+                "",
                 {"dst" , "src", "dim", "N", "s"}
         ){}
 

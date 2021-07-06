@@ -11,7 +11,7 @@ void SeparableKernel::SetKernelName(std::string name)
 
 void SeparableKernel::SetSources(std::map<std::string, std::string> sources)
 {
-    // m_Sources = sources;
+    m_Sources = sources;
 }
 
 void SeparableKernel::SetInput(Buffer& x)
@@ -41,7 +41,10 @@ void SeparableKernel::SetDimension(int x)
 
 void SeparableKernel::Execute()
 {
-    this->ManageDimensions("dst");
+    if( this->m_Sources.size() > 1)
+    {
+        this->ManageDimensions("dst");
+    }
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();
