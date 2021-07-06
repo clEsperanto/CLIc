@@ -56,8 +56,8 @@ public:
     // void GaussianBlur2D(Buffer&, Buffer&, float=0, float=0);
     // void Maximum2DBox(Buffer&, Buffer&, float=0, float=0);
     // void Minimum2DBox(Buffer&, Buffer&, float=0, float=0);
-    // void Mean2DBox(Buffer&, Buffer&, float=1, float=1);
-    // void Mean3DBox(Buffer&, Buffer&, float=1, float=1, float=1);
+    void Mean2DBox(Buffer&, Buffer&, float=1, float=1);
+    void Mean3DBox(Buffer&, Buffer&, float=1, float=1, float=1);
     // void Maximum3DBox(Buffer&, Buffer&, float=0, float=0, float=0);
     // void Minimum3DBox(Buffer&, Buffer&, float=0, float=0, float=0);
     // void Greater(Buffer&, Buffer&, Buffer&);
@@ -72,8 +72,8 @@ public:
     // void MinimumYProjection(Buffer&, Buffer&);
     // void MinimumXProjection(Buffer&, Buffer&);
     // void MinimumOfAllPixels(Buffer&, Buffer&);
-    // void Mean2DSphere(Buffer&, Buffer&, int=1, int=1);
-    // void Mean3DSphere(Buffer&, Buffer&, int=1, int=1, int=1);
+    void Mean2DSphere(Buffer&, Buffer&, int=1, int=1);
+    void Mean3DSphere(Buffer&, Buffer&, int=1, int=1, int=1);
     // void NonzeroMinimumBox(Buffer&, Buffer&, Buffer&);
     // void NotEqual(Buffer&, Buffer&, Buffer&);
     // void NotEqualConstant(Buffer&, Buffer&, float);

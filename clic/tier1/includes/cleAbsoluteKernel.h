@@ -23,8 +23,8 @@ public:
                 {"src" , "dst"} // parameter tags
         )
     {
-            m_Sources.insert({this->m_KernelName + "_2d", source_1});
-            m_Sources.insert({this->m_KernelName + "_3d", source_2});
+        m_Sources.insert({this->m_KernelName + "_2d", source_1});
+        m_Sources.insert({this->m_KernelName + "_3d", source_2});
     }
 
     void SetInput(Buffer&);   // Set<Parameter>(<Type>)

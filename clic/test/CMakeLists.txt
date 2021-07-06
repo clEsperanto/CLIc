@@ -46,15 +46,15 @@ add_test(NAME add_image_and_scalar_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/add_
 # target_link_libraries(maximum_all_pixels_test PRIVATE CLIc::CLIc)
 # add_test(NAME maximum_all_pixels_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_all_pixels_test)
 
-# add_executable(mean_sphere_test mean_sphere_test.cpp)
-# add_dependencies(mean_sphere_test CLIc) 
-# target_link_libraries(mean_sphere_test PRIVATE CLIc::CLIc)
-# add_test(NAME mean_sphere_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/mean_sphere_test)
+add_executable(mean_sphere_test mean_sphere_test.cpp)
+add_dependencies(mean_sphere_test CLIc) 
+target_link_libraries(mean_sphere_test PRIVATE CLIc::CLIc)
+add_test(NAME mean_sphere_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/mean_sphere_test)
 
-# add_executable(mean_box_test mean_box_test.cpp)
-# add_dependencies(mean_box_test CLIc) 
-# target_link_libraries(mean_box_test PRIVATE CLIc::CLIc)
-# add_test(NAME mean_box_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/mean_box_test)
+add_executable(mean_box_test mean_box_test.cpp)
+add_dependencies(mean_box_test CLIc) 
+target_link_libraries(mean_box_test PRIVATE CLIc::CLIc)
+add_test(NAME mean_box_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/mean_box_test)
 
 # add_executable(block_enumerate_test block_enumerate_test.cpp)
 # add_dependencies(block_enumerate_test CLIc) 

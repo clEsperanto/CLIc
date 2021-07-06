@@ -134,23 +134,23 @@ void CLE::AddImageAndScalar(Buffer& src, Buffer& dst, float scalar)
 //     kernel.Execute();
 // }
 
-// void CLE::Mean3DBox(Buffer& src, Buffer& dst, float radius_x, float radius_y, float radius_z)
-// {
-//     MeanBoxKernel kernel(this->m_gpu);
-//     kernel.SetInput(src);
-//     kernel.SetOutput(dst);
-//     kernel.SetRadius(radius_x, radius_y, radius_z);
-//     kernel.Execute();
-// }
+void CLE::Mean3DBox(Buffer& src, Buffer& dst, float radius_x, float radius_y, float radius_z)
+{
+    MeanBoxKernel kernel(this->m_gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetRadius(radius_x, radius_y, radius_z);
+    kernel.Execute();
+}
 
-// void CLE::Mean2DBox(Buffer& src, Buffer& dst, float radius_x, float radius_y)
-// {
-//     MeanBoxKernel kernel(this->m_gpu);
-//     kernel.SetInput(src);
-//     kernel.SetOutput(dst);
-//     kernel.SetRadius(radius_x, radius_y, 0);
-//     kernel.Execute();
-// }
+void CLE::Mean2DBox(Buffer& src, Buffer& dst, float radius_x, float radius_y)
+{
+    MeanBoxKernel kernel(this->m_gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetRadius(radius_x, radius_y, 0);
+    kernel.Execute();
+}
 
 // void CLE::Greater(Buffer& src1, Buffer& src2, Buffer& dst)
 // {
@@ -274,26 +274,26 @@ void CLE::AddImageAndScalar(Buffer& src, Buffer& dst, float scalar)
 //     kernel.Execute(); 
 // }
 
-// void CLE::Mean2DSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y)
-// {
-//     MeanSphereKernel kernel(this->m_gpu);
-//     kernel.SetInput(src);
-//     kernel.SetOutput(dst);
-//     kernel.SetRadiusX(radius_x);
-//     kernel.SetRadiusY(radius_y);
-//     kernel.Execute();
-// }
+void CLE::Mean2DSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y)
+{
+    MeanSphereKernel kernel(this->m_gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetRadiusX(radius_x);
+    kernel.SetRadiusY(radius_y);
+    kernel.Execute();
+}
 
-// void CLE::Mean3DSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y, int radius_z)
-// {
-//     MeanSphereKernel kernel(this->m_gpu);
-//     kernel.SetInput(src);
-//     kernel.SetOutput(dst);
-//     kernel.SetRadiusX(radius_x);
-//     kernel.SetRadiusY(radius_y);
-//     kernel.SetRadiusY(radius_z);
-//     kernel.Execute();
-// }
+void CLE::Mean3DSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y, int radius_z)
+{
+    MeanSphereKernel kernel(this->m_gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetRadiusX(radius_x);
+    kernel.SetRadiusY(radius_y);
+    kernel.SetRadiusY(radius_z);
+    kernel.Execute();
+}
 
 // void CLE::NonzeroMinimumBox(Buffer& src, Buffer& flag, Buffer& dst)
 // {
