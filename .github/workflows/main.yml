@@ -46,7 +46,7 @@ jobs:
             cc: clang
             triplet: x64-osx
             packages: >
-              tiff opencl 
+              python opencl 
 
     steps:
 
