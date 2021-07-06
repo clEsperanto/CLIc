@@ -3,32 +3,28 @@
 # https://github.com/pablospe/cmake-example-library
 #
 
-# OpenCL library
-find_package(OpenCL REQUIRED)
-if(OpenCL_FOUND)
-  include_directories(${OpenCL_INCLUDE_DIR})
-endif()
-
-# LibTiff library
-find_package(TIFF REQUIRED)
-if(TIFF_FOUND)
-  include_directories(${TIFF_INCLUDE_DIR})
+if(OpenCL_INCLUDE_DIR)
+  find_package(OpenCL REQUIRED)
+  if(OpenCL_FOUND)
+    include_directories(${OpenCL_INCLUDE_DIR}) 
+  endif()
 endif()
 
 # compile definition path to kernels and preamble .cl
 #   - (alt. option) replace by a generated header file ?
-add_compile_definitions(KERNELS_DIR="${CLI_KERNELS_DIR}")
-add_compile_definitions(PREAMBLE_OCL="${CLI_PREAMBLE_FILE}")
+# add_compile_definitions(KERNELS_DIR="${CLIC_KERNELS_DIR}")
+# add_compile_definitions(PREAMBLE_OCL="${CLIC_PREAMBLE_FILE}")
 
-set(HEADERS_PUBLIC ${HEADER_T0} ${HEADER_T1} ${HEADER_T2} ${HEADER_T3})
+set(PUBLIC_HEADERS ${HEADERS_core} ${HEADERS_T1})
 
 add_library(${LIBRARY_NAME}
-  ${SOURCES_T0} ${SOURCES_T1} ${SOURCES_T2} ${SOURCES_T3}
-  ${HEADER_T0} ${HEADER_T1} ${HEADER_T2} ${HEADER_T3}
-  )
+  ${SOURCES_core} ${HEADERS_core} 
+  ${SOURCES_T1} ${HEADERS_T1}
+  ${KERNELS_HEADERS}
+)
 
 # Target links
-target_link_libraries(${LIBRARY_NAME} OpenCL::OpenCL TIFF::TIFF)
+target_link_libraries(${LIBRARY_NAME} OpenCL::OpenCL)
 
 # Alias:
 #   - Foo::foo alias of foo
@@ -51,11 +47,9 @@ target_compile_definitions(${LIBRARY_NAME} PUBLIC
 #   - header location in project: ${CMAKE_CURRENT_BINARY_DIR}/generated_headers
 target_include_directories(
   ${LIBRARY_NAME} PUBLIC
-    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/tier0>"
-    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/tier1>"
-    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/tier2>"
-    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/tier3>"
-    "$<BUILD_INTERFACE:${GENERATED_HEADERS_DIR}>"
+    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/kernels>"
+    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/core/includes>"
+    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/tier1/includes>"
     "$<INSTALL_INTERFACE:.>"
 )
 
@@ -75,29 +69,14 @@ install(
 # Headers:
 #   - foo/*.h -> <prefix>/include/*.h
 install(
-    FILES        ${HEADERS_PUBLIC}
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    FILES       ${PUBLIC_HEADERS}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
-
-# Headers:
-#   - generated_headers/foo/version.h -> <prefix>/include/version.h
-install(
-    FILES       "${GENERATED_HEADERS_DIR}/${LIBRARY_FOLDER}/version.h"
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-)
-
 
 # Kernels:
 #   - foo/*.cl -> <prefix>/include/kernel/*.cl
 install(
-    FILES        ${KERNELS}
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/kernels"
-)
-
-# Preamble:
-#   - foo/preamble.cl -> <prefix>/include/kernel/preamble.cl
-install(
-    FILES        ${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/preamble.cl
+    FILES        ${KERNELS_HEADERS}
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/kernels"
 )
 
