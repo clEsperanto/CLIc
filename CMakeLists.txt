@@ -17,4 +17,8 @@ if(BUILD_TESTING)
 endif()
 
 # Benchmark code (uncomment to compile benchmark example code)
-# add_subdirectory(benchmark)
+option(BUILD_BENCHMARK "build example benchmarks" OFF)
+if(BUILD_BENCHMARK)
+    add_subdirectory(benchmark)
+endif()
+
