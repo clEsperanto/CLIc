@@ -17,7 +17,10 @@ void AbsoluteKernel::SetOutput(Buffer& x)
 
 void AbsoluteKernel::Execute()
 {
-    this->ManageDimensions("dst");  // deal with 2d, 3d, nd
+    if( this->m_Sources.size() > 1)
+    {
+        this->ManageDimensions("dst"); // deal with 2d, 3d, nd
+    }
     this->BuildProgramKernel();     // build program and kernel
     this->SetArguments();           // add arguments to kernel
     this->EnqueueKernel();          // enqueue kernel to GPU
