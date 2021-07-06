@@ -1,6 +1,10 @@
 # Folders
 .vscode
 build
+./clij/kernels
+
+# Specific files
+./clij/core/includes/cle_preamble.h
 
 # System files
 .DS_Store
