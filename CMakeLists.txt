@@ -17,8 +17,7 @@ if(BUILD_TESTING)
     add_subdirectory(${LIBRARY_FOLDER}/test)
 endif()
 
-# Benchmark code (uncomment to compile benchmark example code)
-option(BUILD_BENCHMARK "build example benchmarks" OFF)
+# Build and run benchmark
 if(BUILD_BENCHMARK)
     add_subdirectory(benchmark)
 endif()

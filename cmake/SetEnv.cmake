@@ -63,6 +63,10 @@ message(STATUS "BUILD_TESTING: ${BUILD_TESTING}")
 option(BUILD_DOCUMENTATION "Build ${LIBRARY_NAME} Documentation." OFF)
 message(STATUS "BUILD_DOCUMENTATION: ${BUILD_DOCUMENTATION} (NOT IMPLEMENTED)")
 
+# Benchmark code (uncomment to compile benchmark example code)
+option(BUILD_BENCHMARK "build example benchmarks" ON)
+
+
 # Set OpenCL Standard version number (default: 120)
 set(OPENCL_VERSION 120)
 mark_as_advanced(OPENCL_VERSION)
