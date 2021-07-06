@@ -43,6 +43,7 @@ void GaussianBlurKernel::Execute()
 
     ExecuteSeparableKernel kernel(this->m_gpu);
     kernel.SetKernelName(this->m_KernelName);
+    kernel.SetSources(this->m_Sources);
     kernel.SetInput( *src );
     kernel.SetOutput( *dst );
     kernel.SetSigma(this->x, this->y, this->z);
