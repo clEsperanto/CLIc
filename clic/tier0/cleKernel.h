@@ -60,8 +60,7 @@ protected:
     std::vector<std::string> m_TagList;
     std::map<std::string, std::shared_ptr<cle::LightObject> > m_ParameterList;
 
-    // manage Execution range, and source has
-    std::array<size_t,3> m_GlobalRange = {0, 0, 0};
+    std::array<size_t,3> m_GlobalRange = {{0, 0, 0}};
     size_t m_CurrentHash = 0;
     bool m_BuildProgram = true;
 
