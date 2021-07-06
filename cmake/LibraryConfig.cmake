@@ -20,6 +20,8 @@ set(PUBLIC_HEADERS ${HEADERS_core} ${HEADERS_T1})
 add_library(${LIBRARY_NAME}
   ${SOURCES_core} ${HEADERS_core} 
   ${SOURCES_T1} ${HEADERS_T1}
+  # ${SOURCES_T2} ${HEADERS_T2}
+  # ${SOURCES_T3} ${HEADERS_T3}
   ${KERNELS_HEADERS}
 )
 
@@ -50,6 +52,8 @@ target_include_directories(
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/kernels>"
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/core/includes>"
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/tier1/includes>"
+    # "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/tier2/includes>"
+    # "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/tier3/includes>"
     "$<INSTALL_INTERFACE:.>"
 )
 
