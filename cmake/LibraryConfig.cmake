@@ -3,12 +3,27 @@
 # https://github.com/pablospe/cmake-example-library
 #
 
-if(OpenCL_INCLUDE_DIR)
-  find_package(OpenCL REQUIRED)
-  if(OpenCL_FOUND)
-    include_directories(${OpenCL_INCLUDE_DIR}) 
-  endif()
+# find opencl
+set(OpenCL_CLHPP_FOUND FALSE)
+find_package(OpenCL REQUIRED)
+if(OpenCL_FOUND)
+    include_directories(${OpenCL_INCLUDE_DIR})
+    if(APPLE)
+        message(STATUS ${OpenCL_INCLUDE_DIR}/opencl.hpp)
+        if(EXISTS ${OpenCL_INCLUDE_DIR}/opencl.hpp)
+            set(OpenCL_CLHPP_FOUND TRUE)    
+        endif()
+    else()
+        message(STATUS ${OpenCL_INCLUDE_DIR}/CL/opencl.hpp)
+        if(EXISTS ${OpenCL_INCLUDE_DIR}/CL/opencl.hpp)
+            set(OpenCL_CLHPP_FOUND TRUE)    
+        endif()
+    endif()
 endif()
+if(NOT OpenCL_CLHPP_FOUND)
+    message(WARNING "WARNING: OpenCL-CLHPP is not install on the system. Using local headers. Please install OpenCL-CLHPP on your system.")
+endif()
+
 
 # compile definition path to kernels and preamble .cl
 #   - (alt. option) replace by a generated header file ?
@@ -56,6 +71,13 @@ target_include_directories(
     # "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/tier3/includes>"
     "$<INSTALL_INTERFACE:.>"
 )
+
+if(NOT OpenCL_CLHPP_FOUND)
+  target_include_directories(
+    ${LIBRARY_NAME} PUBLIC
+      "$<BUILD_INTERFACE:${PROJECT_THIRDPARTY_DIR}/OpenCL-CLHPP/include>"
+  )
+endif()
 
 # Targets:
 #   - <prefix>/lib/libfoo.a
