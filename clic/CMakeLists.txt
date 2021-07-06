@@ -33,5 +33,9 @@ file(GLOB_RECURSE SOURCES_T1 ${CMAKE_CURRENT_SOURCE_DIR}/tier1/src/*.cpp)
 # file(GLOB_RECURSE HEADERS_T3 ${CMAKE_CURRENT_SOURCE_DIR}/tier3/includes/*.h)
 # file(GLOB_RECURSE SOURCES_T3 ${CMAKE_CURRENT_SOURCE_DIR}/tier3/src/*.cpp)
 
+# # list T4 files
+# file(GLOB_RECURSE HEADERS_T4 ${CMAKE_CURRENT_SOURCE_DIR}/tier4/includes/*.h)
+# file(GLOB_RECURSE SOURCES_T4 ${CMAKE_CURRENT_SOURCE_DIR}/tier4/src/*.cpp)
+
 # Configure Library
 include(${PROJECT_SOURCE_DIR}/cmake/LibraryConfig.cmake)

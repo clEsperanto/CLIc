@@ -21,10 +21,10 @@ add_test(NAME add_image_and_scalar_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/add_
 # target_link_libraries(copy_test PRIVATE CLIc::CLIc)
 # add_test(NAME copy_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/copy_test)
 
-# add_executable(gaussian_blur_test gaussian_blur_test.cpp)
-# add_dependencies(gaussian_blur_test CLIc) 
-# target_link_libraries(gaussian_blur_test PRIVATE CLIc::CLIc)
-# add_test(NAME gaussian_blur_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/gaussian_blur_test)
+add_executable(gaussian_blur_test gaussian_blur_test.cpp)
+add_dependencies(gaussian_blur_test CLIc) 
+target_link_libraries(gaussian_blur_test PRIVATE CLIc::CLIc)
+add_test(NAME gaussian_blur_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/gaussian_blur_test)
 
 # add_executable(maximum_x_projection_test maximum_x_projection_test.cpp)
 # add_dependencies(maximum_x_projection_test CLIc) 
@@ -45,6 +45,11 @@ add_test(NAME add_image_and_scalar_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/add_
 # add_dependencies(maximum_all_pixels_test CLIc) 
 # target_link_libraries(maximum_all_pixels_test PRIVATE CLIc::CLIc)
 # add_test(NAME maximum_all_pixels_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_all_pixels_test)
+
+add_executable(maximum_box_test maximum_box_test.cpp)
+add_dependencies(maximum_box_test CLIc) 
+target_link_libraries(maximum_box_test PRIVATE CLIc::CLIc)
+add_test(NAME maximum_box_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/maximum_box_test)
 
 add_executable(mean_sphere_test mean_sphere_test.cpp)
 add_dependencies(mean_sphere_test CLIc) 
@@ -111,10 +116,10 @@ add_test(NAME mean_box_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/mean_box_test)
 # target_link_libraries(minimum_all_pixels_test PRIVATE CLIc::CLIc)
 # add_test(NAME minimum_all_pixels_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/minimum_all_pixels_test)
 
-# add_executable(minimum_test minimum_test.cpp)
-# add_dependencies(minimum_test CLIc) 
-# target_link_libraries(minimum_test PRIVATE CLIc::CLIc)
-# add_test(NAME minimum_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/minimum_test)
+add_executable(minimum_box_test minimum_box_test.cpp)
+add_dependencies(minimum_box_test CLIc) 
+target_link_libraries(minimum_box_test PRIVATE CLIc::CLIc)
+add_test(NAME minimum_box_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/minimum_box_test)
 
 # add_executable(minimum_x_projection_test minimum_x_projection_test.cpp)
 # add_dependencies(minimum_x_projection_test CLIc) 

@@ -80,59 +80,59 @@ void CLE::AddImageAndScalar(Buffer& src, Buffer& dst, float scalar)
 //     kernel.Execute();
 // }
 
-// void CLE::GaussianBlur3D(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
-// {
-//     GaussianBlurKernel kernel(this->m_gpu);
-//     kernel.SetInput(src);
-//     kernel.SetOutput(dst);
-//     kernel.SetSigma(sigmaX, sigmaY, sigmaZ);
-//     kernel.Execute();
-// }
+void CLE::GaussianBlur3D(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
+{
+    GaussianBlurKernel kernel(this->m_gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetSigma(sigmaX, sigmaY, sigmaZ);
+    kernel.Execute();
+}
 
-// void CLE::GaussianBlur2D(Buffer& src, Buffer& dst, float sigmaX, float sigmaY)
-// {
-//     GaussianBlurKernel kernel(this->m_gpu);
-//     kernel.SetInput(src);
-//     kernel.SetOutput(dst);
-//     kernel.SetSigma(sigmaX, sigmaY, 0);
-//     kernel.Execute();
-// }
+void CLE::GaussianBlur2D(Buffer& src, Buffer& dst, float sigmaX, float sigmaY)
+{
+    GaussianBlurKernel kernel(this->m_gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetSigma(sigmaX, sigmaY, 0);
+    kernel.Execute();
+}
 
-// void CLE::Maximum3DBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
-// {
-//     MaximumKernel kernel(this->m_gpu);
-//     kernel.SetInput(src);
-//     kernel.SetOutput(dst);
-//     kernel.SetRadius(sigmaX, sigmaY, sigmaZ);
-//     kernel.Execute();
-// }
+void CLE::Maximum3DBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
+{
+    MaximumBoxKernel kernel(this->m_gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetRadius(sigmaX, sigmaY, sigmaZ);
+    kernel.Execute();
+}
 
-// void CLE::Maximum2DBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY)
-// {
-//     MaximumKernel kernel(this->m_gpu);
-//     kernel.SetInput(src);
-//     kernel.SetOutput(dst);
-//     kernel.SetRadius(sigmaX, sigmaY, 0);
-//     kernel.Execute();
-// }
+void CLE::Maximum2DBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY)
+{
+    MaximumBoxKernel kernel(this->m_gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetRadius(sigmaX, sigmaY, 0);
+    kernel.Execute();
+}
 
-// void CLE::Minimum3DBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
-// {
-//     MinimumKernel kernel(this->m_gpu);
-//     kernel.SetInput(src);
-//     kernel.SetOutput(dst);
-//     kernel.SetRadius(sigmaX, sigmaY, sigmaZ);
-//     kernel.Execute();
-// }
+void CLE::Minimum3DBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
+{
+    MinimumBoxKernel kernel(this->m_gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetRadius(sigmaX, sigmaY, sigmaZ);
+    kernel.Execute();
+}
 
-// void CLE::Minimum2DBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY)
-// {
-//     MinimumKernel kernel(this->m_gpu);
-//     kernel.SetInput(src);
-//     kernel.SetOutput(dst);
-//     kernel.SetRadius(sigmaX, sigmaY, 0);
-//     kernel.Execute();
-// }
+void CLE::Minimum2DBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY)
+{
+    MinimumBoxKernel kernel(this->m_gpu);
+    kernel.SetInput(src);
+    kernel.SetOutput(dst);
+    kernel.SetRadius(sigmaX, sigmaY, 0);
+    kernel.Execute();
+}
 
 void CLE::Mean3DBox(Buffer& src, Buffer& dst, float radius_x, float radius_y, float radius_z)
 {
