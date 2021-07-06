@@ -30,49 +30,57 @@ void Kernel::ManageDimensions(std::string tag)
     
 std::string Kernel::LoadPreamble()
 {
-    std::string preamble;
-    std::ifstream file(m_PreambleFile.c_str(), std::ios::in | std::ios::binary);
-    if (file)
-    {
-        file.seekg(0, std::ios::end);
-        preamble.resize(file.tellg());
-        file.seekg(0, std::ios::beg);
-        file.read(&preamble[0], preamble.size());
-        file.close();
-    }
-    else
-    {
-        std::cerr << "Error reading file! Cannot open " << m_PreambleFile << std::endl;
-    }
-    return preamble;
-
-    // std::string preamble =
-    // #include "preamble.h"
-    // ;
-    // std::cout << preamble << std::endl;
+    // std::string preamble;
+    // std::ifstream file(m_PreambleFile.c_str(), std::ios::in | std::ios::binary);
+    // if (file)
+    // {
+    //     file.seekg(0, std::ios::end);
+    //     preamble.resize(file.tellg());
+    //     file.seekg(0, std::ios::beg);
+    //     file.read(&preamble[0], preamble.size());
+    //     file.close();
+    // }
+    // else
+    // {
+    //     std::cerr << "Error reading file! Cannot open " << m_PreambleFile << std::endl;
+    // }
     // return preamble;
+
+    std::string preamble = 
+        #include "cle_preamble.h"
+    ;
+    std::cout << preamble << std::endl;
+    return preamble;
 }
 
 std::string Kernel::LoadSources()
 {
-    std::string sources;
-    std::string suffix = "_x.cl";
-    std::string filename = m_KernelFolder + "/" + m_KernelName + m_DimensionTag + suffix;
-    std::ifstream file(filename.c_str(), std::ios::in | std::ios::binary);
-    if (file)
+    // std::string sources;
+    // std::string suffix = "_x.cl";
+    // std::string filename = m_KernelFolder + "/" + m_KernelName + m_DimensionTag + suffix;
+    // std::ifstream file(filename.c_str(), std::ios::in | std::ios::binary);
+    // if (file)
+    // {
+    //     file.seekg(0, std::ios::end);
+    //     sources.resize(file.tellg());
+    //     file.seekg(0, std::ios::beg);
+    //     file.read(&sources[0], sources.size());
+    //     file.close();
+    // }
+    // else
+    // {
+    //     std::cerr << "Error reading file! Cannot open " << filename << std::endl;
+    // }
+    // return sources;
+    if(m_Sources.size() == 0)
     {
-        file.seekg(0, std::ios::end);
-        sources.resize(file.tellg());
-        file.seekg(0, std::ios::beg);
-        file.read(&sources[0], sources.size());
-        file.close();
+        return "";
     }
     else
     {
-        std::cerr << "Error reading file! Cannot open " << filename << std::endl;
+        return m_Sources[(m_KernelName + m_DimensionTag).c_str()];
     }
-    return sources;
-    // return m_Sources[(m_KernelName + m_DimensionTag).c_str()];
+    
 }
 
 std::string Kernel::LoadDefines()

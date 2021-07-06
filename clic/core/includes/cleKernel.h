@@ -3,23 +3,7 @@
 #ifndef __cleKernel_h
 #define __cleKernel_h
 
-#ifndef CL_HPP_ENABLE_EXCEPTIONS
-#   define CL_HPP_ENABLE_EXCEPTIONS
-#endif
-
-#ifndef CL_HPP_TARGET_OPENCL_VERSION
-#   define CL_HPP_TARGET_OPENCL_VERSION 120
-#endif
-
-#ifndef CL_HPP_MINIMUM_OPENCL_VERSION
-#   define CL_HPP_MINIMUM_OPENCL_VERSION 120
-#endif
-
-#ifndef CL_TARGET_OPENCL_VERSION
-#  define CL_TARGET_OPENCL_VERSION 120
-#endif
-
-#include <CL/cl2.hpp>
+#include "clic.h"
 
 #include <string>
 #include <fstream>
@@ -48,8 +32,8 @@ private:
     cl::Program m_Program;
     cl::Kernel m_Kernel;
 
-    const std::string m_KernelFolder = KERNELS_DIR;  // ocl kernel folder path
-    const std::string m_PreambleFile = PREAMBLE_OCL; // ocl preamble file path
+    // const std::string m_KernelFolder = KERNELS_DIR;  // ocl kernel folder path
+    // const std::string m_PreambleFile = PREAMBLE_OCL; // ocl preamble file path
 
 protected:
     GPU m_gpu;
@@ -58,9 +42,11 @@ protected:
     std::string m_KernelName;
     std::string m_DimensionTag = "";
     std::vector<std::string> m_TagList;
+    std::map<std::string, std::string> m_Sources;
     std::map<std::string, std::shared_ptr<cle::LightObject> > m_ParameterList;
 
-    std::array<size_t,3> m_GlobalRange = {{0, 0, 0}};
+    // manage Execution range, and source has
+    std::array<size_t,3> m_GlobalRange = {0, 0, 0};
     size_t m_CurrentHash = 0;
     bool m_BuildProgram = true;
 
