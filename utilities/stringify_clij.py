@@ -5,9 +5,8 @@ import sys, os
 # stringify function for clij kernel
 def stringify_clij_code(fname, fout, prefix="cle_"):
     # get kernel name
-    print("input name {0}".format(fname))
-    name = fname.split(os.sep)[-1].split('.cl')[0].split('_x')[0]
-    print("isolate name {0}".format(name))
+    name = os.path.split(fname)[-1].split('.cl')[0].split('_x')[0]
+    # name = fname.split(os.sep)[-1].split('.cl')[0].split('_x')[0]
     # generate header name
     new_fname = os.path.join(fout, "{0}{1}.h".format(prefix,name))
     print("new name {0}".format(new_fname))
@@ -34,7 +33,7 @@ if not os.path.isdir(sys.argv[2]):
 if os.path.isdir(sys.argv[1]):
     for filename in os.listdir(sys.argv[1]):
         if filename.endswith(".cl"):
-            stringify_clij_code(os.path.join(sys.argv[1],filename), sys.argv[2])
+            stringify_clij_code("{0}/{1}".format(sys.argv[1],filename), sys.argv[2])
 else:
     stringify_clij_code(sys.argv[1], sys.argv[2])
 
