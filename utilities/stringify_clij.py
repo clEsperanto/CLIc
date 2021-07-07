@@ -3,7 +3,7 @@
 import sys, os
 
 # stringify function for clij kernel
-def stringify_clij_code(fname: str, fout: str, prefix: str="cle_"):
+def stringify_clij_code(fname, fout, prefix="cle_"):
     # get kernel name
     name = fname.split(os.sep)[-1].split('.cl')[0].split('_x')[0]
     # generate header name
