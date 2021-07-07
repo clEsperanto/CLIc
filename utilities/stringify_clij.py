@@ -6,11 +6,8 @@ import sys, os
 def stringify_clij_code(fname, fout, prefix="cle_"):
     # get kernel name
     name = os.path.split(fname)[-1].split('.cl')[0].split('_x')[0]
-    # name = fname.split(os.sep)[-1].split('.cl')[0].split('_x')[0]
     # generate header name
     new_fname = os.path.join(fout, "{0}{1}.h".format(prefix,name))
-    print("new name {0}".format(new_fname))
-
     # I/O kernel into header
     with open(new_fname, 'w') as output_file, open(fname, 'r') as input_file:
         output_file.write("#ifndef __{0}{1}_h\n".format(prefix, name))
