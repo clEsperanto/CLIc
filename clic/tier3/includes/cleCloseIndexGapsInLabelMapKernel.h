@@ -21,7 +21,6 @@ public:
                 {"src", "dst", "blocksize"}
         )
     {}
-
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
 

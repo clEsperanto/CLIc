@@ -21,7 +21,6 @@ public:
                 {"src", "dst"}
         )
     {}
-
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void SetSigma1(float, float, float);

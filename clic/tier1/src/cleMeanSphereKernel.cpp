@@ -39,13 +39,12 @@ void MeanSphereKernel::SetRadiusZ(int x)
 
 void MeanSphereKernel::Execute()
 {
-    if( this->m_Sources.size() > 1)
+    if(this->m_Sources.size() > 1)
     {
-        this->ManageDimensions("dst"); // deal with 2d, 3d, nd
+        this->ManageDimensions("dst");
     }
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();
 }
-
 } // namespace cle

@@ -17,7 +17,6 @@ public:
                 {"src" , "dst"}
         )
     {}
-
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

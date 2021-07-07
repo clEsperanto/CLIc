@@ -21,14 +21,13 @@ void AddImageAndScalarKernel::SetScalar(float x)
 
 void AddImageAndScalarKernel::Execute()
 {
-    if( this->m_Sources.size() > 1)
+    if(this->m_Sources.size() > 1)
     {
-        this->ManageDimensions("dst"); // deal with 2d, 3d, nd
+        this->ManageDimensions("dst");
     }
-    this->BuildProgramKernel();     // build program and kernel
-    this->SetArguments();           // add arguments to kernel
-    this->EnqueueKernel();          // enqueue kernel to GPU
+    this->BuildProgramKernel();
+    this->SetArguments();
+    this->EnqueueKernel();
 }
-
 } // namespace cle
 

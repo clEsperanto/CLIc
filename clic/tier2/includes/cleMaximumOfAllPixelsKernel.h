@@ -18,7 +18,6 @@ public:
                 {"dst_max", "src"}
         )
     {}
-
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

@@ -17,7 +17,6 @@ public:
                 {"dst_min", "src"}
         )
     {}
-
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

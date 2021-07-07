@@ -17,7 +17,6 @@ public:
                 {"dst_sum", "src"}
         )
     {}
-
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();
