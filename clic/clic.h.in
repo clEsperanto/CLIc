@@ -22,7 +22,13 @@
 #  define CL_TARGET_OPENCL_VERSION @OPENCL_VERSION@
 #endif
 
-#if __APPLE__
+// #if __APPLE__
+// #   include <OpenCL/opencl.hpp>
+// #else
+// #   include <CL/opencl.hpp>
+// #endif
+
+#if __has_include("OpenCL/opencl.hpp")
 #   include <OpenCL/opencl.hpp>
 #else
 #   include <CL/opencl.hpp>
