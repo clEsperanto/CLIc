@@ -35,17 +35,17 @@ file(GLOB_RECURSE SOURCES_core ${CMAKE_CURRENT_SOURCE_DIR}/core/src/*.cpp)
 file(GLOB_RECURSE HEADERS_T1 ${CMAKE_CURRENT_SOURCE_DIR}/tier1/includes/*.h)
 file(GLOB_RECURSE SOURCES_T1 ${CMAKE_CURRENT_SOURCE_DIR}/tier1/src/*.cpp)
 
-# # list T2 files
-# file(GLOB_RECURSE HEADERS_T2 ${CMAKE_CURRENT_SOURCE_DIR}/tier2/includes/*.h)
-# file(GLOB_RECURSE SOURCES_T2 ${CMAKE_CURRENT_SOURCE_DIR}/tier2/src/*.cpp)
+# list T2 files
+file(GLOB_RECURSE HEADERS_T2 ${CMAKE_CURRENT_SOURCE_DIR}/tier2/includes/*.h)
+file(GLOB_RECURSE SOURCES_T2 ${CMAKE_CURRENT_SOURCE_DIR}/tier2/src/*.cpp)
 
-# # list T3 files
-# file(GLOB_RECURSE HEADERS_T3 ${CMAKE_CURRENT_SOURCE_DIR}/tier3/includes/*.h)
-# file(GLOB_RECURSE SOURCES_T3 ${CMAKE_CURRENT_SOURCE_DIR}/tier3/src/*.cpp)
+# list T3 files
+file(GLOB_RECURSE HEADERS_T3 ${CMAKE_CURRENT_SOURCE_DIR}/tier3/includes/*.h)
+file(GLOB_RECURSE SOURCES_T3 ${CMAKE_CURRENT_SOURCE_DIR}/tier3/src/*.cpp)
 
-# # list T4 files
-# file(GLOB_RECURSE HEADERS_T4 ${CMAKE_CURRENT_SOURCE_DIR}/tier4/includes/*.h)
-# file(GLOB_RECURSE SOURCES_T4 ${CMAKE_CURRENT_SOURCE_DIR}/tier4/src/*.cpp)
+# list T4 files
+file(GLOB_RECURSE HEADERS_T4 ${CMAKE_CURRENT_SOURCE_DIR}/tier4/includes/*.h)
+file(GLOB_RECURSE SOURCES_T4 ${CMAKE_CURRENT_SOURCE_DIR}/tier4/src/*.cpp)
 
 # Configure Library
 include(${PROJECT_SOURCE_DIR}/cmake/LibraryConfig.cmake)
