@@ -13,7 +13,12 @@ if(Python3_Interpreter_FOUND)
         COMMAND ${STRINGIFY_PREAMBLE}
         RESULT_VARIABLE CMD_ERROR 
         ) 
-    message(CHECK_PASS "done")
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/core/includes/cle_preamble.h)
+        message(CHECK_PASS "done")
+    else()
+        message(CHECK_FAIL "Preamble header not found.")
+        message(FATAL_ERROR "FATAL_ERROR: Kernel headers were not generated properly.")
+    endif()
 else()
     message(FATAL_ERROR "FATAL_ERROR: no Python interpreter found on the system.")
 endif()
