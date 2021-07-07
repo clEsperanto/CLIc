@@ -8,11 +8,13 @@ if(Python3_Interpreter_FOUND)
         COMMAND ${STRINGIFY_KERNELS}
         RESULT_VARIABLE CMD_ERROR 
         )
+    message("KERNEL RETURN ERROR CODE: ${CMD_ERROR}")
     set(STRINGIFY_PREAMBLE ${PYTHON_EXECUTABLE} ${PROJECT_UTILITIES_DIR}/stringify_clij.py ${CLIC_PREAMBLE_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/core/includes)
     execute_process(
         COMMAND ${STRINGIFY_PREAMBLE}
         RESULT_VARIABLE CMD_ERROR 
         ) 
+    message("PREAMBLE RETURN ERROR CODE: ${CMD_ERROR}")
     if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/core/includes/cle_preamble.h)
         message(CHECK_PASS "done")
     else()
