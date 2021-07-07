@@ -4,16 +4,18 @@ find_package(Python3 COMPONENTS Interpreter REQUIRED)
 if(Python3_Interpreter_FOUND)
     message(CHECK_START "Generating kernerls headers")
 
-    set(SCRIPT_KERNELS "${Python3_EXECUTABLE} ${PROJECT_UTILITIES_DIR}/stringify_clij.py ${CLIC_KERNELS_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/kernels")
+    set(SCRIPT_KERNELS "${Python3_EXECUTABLE} ${PROJECT_UTILITIES_DIR}/stringify_clij.py ${CLIC_KERNELS_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/kernels/")
     execute_process(
-        COMMAND ${SCRIPT_KERNELS}
+        COMMAND ${Python3_EXECUTABLE} ${PROJECT_UTILITIES_DIR}/stringify_clij.py ${CLIC_KERNELS_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/kernels/
         RESULT_VARIABLE CMD_ERROR 
         )
+    message("Python3_EXECUTABLE: ${Python3_EXECUTABLE}")
+    message("SCRIPT_PREAMBLE: ${SCRIPT_KERNELS}")
     message("KERNEL RETURN ERROR CODE: ${CMD_ERROR}")
     
-    set(SCRIPT_PREAMBLE "${Python3_EXECUTABLE} ${PROJECT_UTILITIES_DIR}/stringify_clij.py ${CLIC_PREAMBLE_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/core/includes")
+    set(SCRIPT_PREAMBLE "${Python3_EXECUTABLE} ${PROJECT_UTILITIES_DIR}/stringify_clij.py ${CLIC_PREAMBLE_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/core/includes/")
     execute_process(
-        COMMAND ${SCRIPT_PREAMBLE}
+        COMMAND ${Python3_EXECUTABLE} ${PROJECT_UTILITIES_DIR}/stringify_clij.py ${CLIC_PREAMBLE_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/core/includes/
         RESULT_VARIABLE CMD_ERROR 
         ) 
     message("Python3_EXECUTABLE: ${Python3_EXECUTABLE}")
