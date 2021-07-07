@@ -3,18 +3,22 @@
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 if(Python3_Interpreter_FOUND)
     message(CHECK_START "Generating kernerls headers")
-    set(STRINGIFY_KERNELS ${PYTHON_EXECUTABLE} ${PROJECT_UTILITIES_DIR}/stringify_clij.py ${CLIC_KERNELS_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/kernels)
+
     execute_process(
-        COMMAND ${STRINGIFY_KERNELS}
+        COMMAND ${Python3_EXECUTABLE} ${PROJECT_UTILITIES_DIR}/stringify_clij.py ${CLIC_KERNELS_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/kernels
         RESULT_VARIABLE CMD_ERROR 
         )
     message("KERNEL RETURN ERROR CODE: ${CMD_ERROR}")
-    set(STRINGIFY_PREAMBLE ${PYTHON_EXECUTABLE} ${PROJECT_UTILITIES_DIR}/stringify_clij.py ${CLIC_PREAMBLE_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/core/includes)
+    
+    set(SCRIPT "${Python3_EXECUTABLE} ${PROJECT_UTILITIES_DIR}/stringify_clij.py")
     execute_process(
-        COMMAND ${STRINGIFY_PREAMBLE}
+        COMMAND ${SCRIPT} ${CLIC_PREAMBLE_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/core/includes
         RESULT_VARIABLE CMD_ERROR 
         ) 
+    message("Python3_EXECUTABLE: ${Python3_EXECUTABLE}")
+    message("SCRIPT: ${SCRIPT}")
     message("PREAMBLE RETURN ERROR CODE: ${CMD_ERROR}")
+    
     if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/core/includes/cle_preamble.h)
         message(CHECK_PASS "done")
     else()
@@ -26,9 +30,8 @@ else()
 endif()
 
 
-
-# list kernel headers
-file(GLOB_RECURSE KERNELS_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/kernels/*.h)
+# # list kernel headers
+# file(GLOB_RECURSE KERNELS_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/kernels/*.h)
 
 # list core files
 file(GLOB_RECURSE HEADERS_core ${CMAKE_CURRENT_SOURCE_DIR}/core/includes/*.h)
