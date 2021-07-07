@@ -1,5 +1,5 @@
 # Set minimum version of CMake.
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.20)
 
 # Set project name and version
 project(CLIc VERSION 0.3.0)
