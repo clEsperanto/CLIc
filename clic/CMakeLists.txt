@@ -2,6 +2,7 @@
 # stringify kernels and preamble
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 if(Python3_Interpreter_FOUND)
+    message(CHECK_START "Generating kernerls headers")
     set(STRINGIFY_KERNELS ${PYTHON_EXECUTABLE} ${PROJECT_UTILITIES_DIR}/stringify_clij.py ${CLIC_KERNELS_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/kernels)
     execute_process(
         COMMAND ${STRINGIFY_KERNELS}
@@ -12,6 +13,7 @@ if(Python3_Interpreter_FOUND)
         COMMAND ${STRINGIFY_PREAMBLE}
         RESULT_VARIABLE CMD_ERROR 
         ) 
+    message(CHECK_PASS "done")
 else()
     message(FATAL_ERROR "FATAL_ERROR: no Python interpreter found on the system.")
 endif()
