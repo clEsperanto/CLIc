@@ -69,7 +69,7 @@ jobs:
           vcpkgArguments: ${{ matrix.packages }}
           vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
           vcpkgTriplet: ${{ matrix.triplet }}
-          vcpkgGitCommitId: ec6fe06e8da05a8157dc8581fa96b36b571c1bd5 #7db401cb1ef1fc559ec9f9ce814d064c328fd767    
+          vcpkgGitCommitId: 5568f110b509a9fd90711978a7cb76bae75bb092 #ec6fe06e8da05a8157dc8581fa96b36b571c1bd5 #7db401cb1ef1fc559ec9f9ce814d064c328fd767    
 
       - name: Run CMake with Ninja
         uses: lukka/run-cmake@main
