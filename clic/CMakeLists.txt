@@ -1,18 +1,22 @@
 
-
-
 # stringify kernels and preamble
-find_package(PythonInterp REQUIRED)
-set(STRINGIFY_KERNELS ${PYTHON_EXECUTABLE} ${PROJECT_UTILITIES_DIR}/stringify_clij.py ${CLIC_KERNELS_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/kernels)
-execute_process(
-    COMMAND ${STRINGIFY_KERNELS}
-    RESULT_VARIABLE CMD_ERROR 
-    )
-set(STRINGIFY_PREAMBLE ${PYTHON_EXECUTABLE} ${PROJECT_UTILITIES_DIR}/stringify_clij.py ${CLIC_PREAMBLE_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/core/includes)
-execute_process(
-    COMMAND ${STRINGIFY_PREAMBLE}
-    RESULT_VARIABLE CMD_ERROR 
-    )
+find_package(Python3 COMPONENTS Interpreter REQUIRED)
+if(Python3_Interpreter_FOUND)
+    set(STRINGIFY_KERNELS ${PYTHON_EXECUTABLE} ${PROJECT_UTILITIES_DIR}/stringify_clij.py ${CLIC_KERNELS_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/kernels)
+    execute_process(
+        COMMAND ${STRINGIFY_KERNELS}
+        RESULT_VARIABLE CMD_ERROR 
+        )
+    set(STRINGIFY_PREAMBLE ${PYTHON_EXECUTABLE} ${PROJECT_UTILITIES_DIR}/stringify_clij.py ${CLIC_PREAMBLE_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/core/includes)
+    execute_process(
+        COMMAND ${STRINGIFY_PREAMBLE}
+        RESULT_VARIABLE CMD_ERROR 
+        ) 
+else()
+    message(FATAL_ERROR "FATAL_ERROR: no Python interpreter found on the system.")
+endif()
+
+
 
 # list kernel headers
 file(GLOB_RECURSE KERNELS_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/kernels/*.h)
