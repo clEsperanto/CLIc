@@ -1,7 +1,4 @@
-#
-# cmake library project by Pablo Speciale:
-# https://github.com/pablospe/cmake-example-library
-#
+
 
 # find opencl
 set(OpenCL_CLHPP_FOUND FALSE)

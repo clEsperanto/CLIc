@@ -1,7 +1,3 @@
-#
-# cmake library project by Pablo Speciale:
-# https://github.com/pablospe/cmake-example-library
-#
 
 @PACKAGE_INIT@
 set_and_check(INSTALL_DIR "@PACKAGE_CMAKE_INSTALL_PREFIX@")
@@ -9,24 +5,9 @@ set_and_check(INCLUDE_DIR "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@")
 set_and_check(KERNELS_DIR "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@/kernels")
 set_and_check(LIBRARY_DIR "@PACKAGE_CMAKE_INSTALL_LIBDIR@")
 
-set(OpenCL_CLHPP_FOUND FALSE)
 find_package(OpenCL REQUIRED)
 if(OpenCL_FOUND)
     include_directories(${OpenCL_INCLUDE_DIR})
-    if(APPLE)
-    message(STATUS ${OpenCL_INCLUDE_DIR}/opencl.hpp)
-    if(EXISTS ${OpenCL_INCLUDE_DIR}/opencl.hpp)
-        set(OpenCL_CLHPP_FOUND TRUE)    
-    endif()
-    else()
-    message(STATUS ${OpenCL_INCLUDE_DIR}/CL/opencl.hpp)
-    if(EXISTS ${OpenCL_INCLUDE_DIR}/CL/opencl.hpp)
-        set(OpenCL_CLHPP_FOUND TRUE)    
-    endif()
-    endif()
-endif()
-if(NOT OpenCL_CLHPP_FOUND)
-    message(FATAL_ERROR "FATAL ERROR: OpenCL-CLHPP is not install on the system.")
 endif()
 
 if(NOT TARGET ${PROJECT_NAME}::${LIBRARY_NAME})
