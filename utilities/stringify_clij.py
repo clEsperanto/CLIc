@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, os
+import sys, os, datetime
 
 # stringify function for clij kernel
 def stringify_clij_code(fname, fout, prefix="cle_"):
@@ -29,9 +29,12 @@ if not os.path.isdir(sys.argv[2]):
 
 # process folder/file
 if os.path.isdir(sys.argv[1]):
+    with open("{0}/timestamp.txt".format(sys.argv[1]), 'w') as tmp_file:
+        tmp_file.write("Computation date: {0}".format(datetime.date.today()))
     for filename in os.listdir(sys.argv[1]):
         if filename.endswith(".cl"):
             stringify_clij_code("{0}/{1}".format(sys.argv[1],filename), sys.argv[2])
 else:
     stringify_clij_code(sys.argv[1], sys.argv[2])
+    
 
