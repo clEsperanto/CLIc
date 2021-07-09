@@ -42,28 +42,28 @@ See more complete example on usage by looking at the [validation tests](https://
 
 ## Requierements
 
-- [OpenCL](https://www.khronos.org/opencl/) 
-(
-    [Nvidia](https://developer.nvidia.com/cuda-downloads), 
-    [AMD](https://github.com/GPUOpen-LibrariesAndSDKs/OCL-SDK/releases), 
-    [Intel](https://software.intel.com/content/www/us/en/develop/tools/opencl-sdk.html)
-)
-- [CMake](https://cmake.org/)
-
-Guideline for installation requirements and troubleshooting [here](./docs/clic_prerequish_install.md).
+CLIc rely on OpenCL language for parallelisation and CMake for configuration and build.  
+Follow the [pre-requish installation guide](./prerequish.md) for a smooth and error-less installation. 
 
 ## Install
 
-Compiled API available for Windows 10, MaxOS 10.14 and newer, and Ubuntu 18.04 available [here](https://github.com/clEsperanto/CLIc_prototype/releases/tag/0.1).  
+```
+git clone git@github.com:clEsperanto/CLIc_prototype.git CLIc
+cd CLIc_prototype
+git submodule update --init --recursive
+mkdir build
+cd build
+cmake ..
+make
+make test
+make install
+```
 
-[See](./docs/clic_compile_guide.md) compilation guide for installation from source.
+You can modify installation location using `-DPREFIX=/installation/path` when calling cmake.  
+Other configuration variable available through cmake configuration (for advance user). 
 
 ### Kernels
-CLIc rely on the [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels). They are required for the proper execution of CLIc API. Make sure you are downloading the repository submodule, or update the kernels folder directory variable during the CMake configuration to point to the kernels location.
+CLIc filters rely on the [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels).
 
 # Feedback welcome!
 clEsperanto is developed in the open because we believe in the [open source community](https://clij.github.io/clij2-docs/community_guidelines). Feel free to drop feedback as [github issue](https://github.com/clEsperanto/CLIc_prototype/issues) or via [image.sc](https://image.sc)
-
-# Acknowledgement
-
-CMake library configuration extended from [cmake-example-library](https://github.com/pablospe/cmake-example-library) by Pablo Speciale
