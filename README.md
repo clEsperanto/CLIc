@@ -47,12 +47,16 @@ Follow the [pre-requish installation guide](./prerequish.md) for a smooth and er
 
 ## Install
 
+Clone the repository and submodule
 ```
 git clone git@github.com:clEsperanto/CLIc_prototype.git CLIc
 cd CLIc_prototype
 git submodule update --init --recursive
-mkdir build
-cd build
+```
+
+Create a build folder and configure cmake to generate the adapted makefile
+```
+mkdir build && cd build
 cmake ..
 make
 make test
