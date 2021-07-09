@@ -38,7 +38,7 @@ if(BUILD_CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g --coverage")
 endif()
 
-# Set library type options (default: STATIC)
+# Set library type optiONs (default: STATIC)
 option(BUILD_SHARED_LIBS "Build ${LIBRARY_NAME} as a shared library." OFF)
 message(STATUS "BUILD_SHARED_LIBS: ${BUILD_SHARED_LIBS}")
 
@@ -46,11 +46,11 @@ message(STATUS "BUILD_SHARED_LIBS: ${BUILD_SHARED_LIBS}")
 option(BUILD_TESTING "Build ${LIBRARY_NAME} Tests." ON)
 message(STATUS "BUILD_TESTING: ${BUILD_TESTING}")
 
-# Set Doc compilation (default: OFF) (NOT IMPLEMENTED)
-option(BUILD_DOCUMENTATION "Build ${LIBRARY_NAME} Documentation." OFF)
+# Set Doc compilation (default: ON) (NOT IMPLEMENTED)
+option(BUILD_DOCUMENTATION "Build ${LIBRARY_NAME} Documentation." ON)
 message(STATUS "BUILD_DOCUMENTATION: ${BUILD_DOCUMENTATION} (NOT IMPLEMENTED)")
 
-# Set Benchmark compilation (default: OFF)
+# Set Benchmark compilation (default: ON)
 option(BUILD_BENCHMARK "build example benchmarks" ON)
 message(STATUS "BUILD_BENCHMARK: ${BUILD_BENCHMARK}")
 
