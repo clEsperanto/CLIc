@@ -34,4 +34,5 @@ if os.path.isdir(sys.argv[1]):
             stringify_clij_code("{0}/{1}".format(sys.argv[1],filename), sys.argv[2])
 else:
     stringify_clij_code(sys.argv[1], sys.argv[2])
+    
 

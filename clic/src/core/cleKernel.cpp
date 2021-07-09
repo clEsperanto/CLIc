@@ -49,7 +49,6 @@ std::string Kernel::LoadPreamble()
     std::string preamble = 
         #include "cle_preamble.h"
     ;
-    std::cout << preamble << std::endl;
     return preamble;
 }
 

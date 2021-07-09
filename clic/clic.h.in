@@ -24,8 +24,10 @@
 
 #if __has_include("OpenCL/opencl.hpp")
 #   include <OpenCL/opencl.hpp>
-#else
+#elif __has_include("CL/opencl.hpp")
 #   include <CL/opencl.hpp>
+#else
+#   include <opencl.hpp>
 #endif
 
 #endif  // @PROJECT_NAME_LOWERCASE@_h

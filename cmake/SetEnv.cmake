@@ -1,8 +1,3 @@
-#
-# cmake library project by Pablo Speciale:
-# https://github.com/pablospe/cmake-example-library
-#
-
 
 ## Project environement variables
 
@@ -20,27 +15,19 @@ if(NOT LIBRARY_NAME)
 endif()
 
 # Library folder name (by default is the project name in lowercase), Example: #include <foo/foo.h>
-if(NOT LIBRARY_FOLDER)
-  set(LIBRARY_FOLDER ${PROJECT_NAME_LOWERCASE})
+if(NOT LIBRARY_DIR)
+  set(LIBRARY_DIR ${PROJECT_NAME_LOWERCASE})
 endif()
 
 # Set additional folder path
-set(PROJECT_THIRDPARTY_DIR "${PROJECT_SOURCE_DIR}/thirdparty" CACHE PATH "Third party libraries")
-set(PROJECT_UTILITIES_DIR "${PROJECT_SOURCE_DIR}/utilities" CACHE PATH "Utilities folder")
-
-if(APPLE)
-  set(OpenCL_SUBDIR "OpenCL/")    
-else()
-  set(OpenCL_SUBDIR "CL/")    
+if(NOT THIRDPARTY_DIR)
+  set(THIRDPARTY_DIR "${PROJECT_SOURCE_DIR}/thirdparty" CACHE PATH "Third party libraries")
 endif()
 
-# Set Preamble file 
-set(CLIC_PREAMBLE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_FOLDER}/preamble.cl" CACHE FILEPATH "CLIJ preamble file")
-mark_as_advanced(CLIC_PREAMBLE_FILE)
+if(NOT UTILITIES_DIR)
+  set(UTILITIES_DIR "${PROJECT_SOURCE_DIR}/utilities" CACHE PATH "Utilities folder")
+endif()
 
-# Set clij folder file 
-set(CLIC_KERNELS_DIR "${PROJECT_THIRDPARTY_DIR}/clij/kernels" CACHE PATH "CLIJ kernels directory")
-mark_as_advanced(CLIC_KERNELS_DIR)
 
 ## Configuration and Build options
 
@@ -51,7 +38,7 @@ if(BUILD_CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g --coverage")
 endif()
 
-# Set library type options (default: STATIC)
+# Set library type optiONs (default: STATIC)
 option(BUILD_SHARED_LIBS "Build ${LIBRARY_NAME} as a shared library." OFF)
 message(STATUS "BUILD_SHARED_LIBS: ${BUILD_SHARED_LIBS}")
 
@@ -59,18 +46,26 @@ message(STATUS "BUILD_SHARED_LIBS: ${BUILD_SHARED_LIBS}")
 option(BUILD_TESTING "Build ${LIBRARY_NAME} Tests." ON)
 message(STATUS "BUILD_TESTING: ${BUILD_TESTING}")
 
-# Set Doc compilation (default: OFF) (NOT IMPLEMENTED)
-option(BUILD_DOCUMENTATION "Build ${LIBRARY_NAME} Documentation." OFF)
+# Set Doc compilation (default: ON) (NOT IMPLEMENTED)
+option(BUILD_DOCUMENTATION "Build ${LIBRARY_NAME} Documentation." ON)
 message(STATUS "BUILD_DOCUMENTATION: ${BUILD_DOCUMENTATION} (NOT IMPLEMENTED)")
 
-# Benchmark code (uncomment to compile benchmark example code)
+# Set Benchmark compilation (default: ON)
 option(BUILD_BENCHMARK "build example benchmarks" ON)
+message(STATUS "BUILD_BENCHMARK: ${BUILD_BENCHMARK}")
 
-
-# Set OpenCL Standard version number (default: 120)
+# Set OpenCL Standard version number (default: 120 - v1.2)
 set(OPENCL_VERSION 120)
-mark_as_advanced(OPENCL_VERSION)
 message(STATUS "OPENCL_VERSION: ${OPENCL_VERSION}")
+mark_as_advanced(OPENCL_VERSION)
+
+# Set Preamble file 
+set(CLIC_PREAMBLE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_DIR}/preamble.cl" CACHE FILEPATH "CLIJ preamble file")
+mark_as_advanced(CLIC_PREAMBLE_FILE)
+
+# Set clij folder file 
+set(CLIC_KERNELS_DIR "${THIRDPARTY_DIR}/clij/kernels" CACHE PATH "CLIJ kernels directory")
+mark_as_advanced(CLIC_KERNELS_DIR)
 
 # Manage build type options (default: RELEASE)
 get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
@@ -89,23 +84,27 @@ endif()
 message(STATUS "CMAKE_GENERATOR: ${CMAKE_GENERATOR}")
 
 # Configurations tag to avoid compilation colliding
-set(CMAKE_DEBUG_POSTFIX "d")
+set(CMAKE_DEBUG_POSTFIX "_d")
 set(CMAKE_RELEASE_POSTFIX "")
 
+
+# List subdirectory macro
+macro(subdirlist result curdir)
+  file(GLOB children ${curdir} ${curdir}/*)
+  set(dirlist "")
+  foreach(child ${children})
+    if(IS_DIRECTORY ${child})
+      list(APPEND dirlist ${child})
+    endif()
+  endforeach()
+  set(${result} ${dirlist})
+endmacro()
 
 
 
 ## Install and Uninstall configuration
 
-# Create and configure 'clic.h'
-#   - define OpenCL version
-#   - include OpenCL headers
-#   - define CLIC version
-configure_file(
-  "${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/${PROJECT_NAME_LOWERCASE}.h.in"
-  "${PROJECT_SOURCE_DIR}/${LIBRARY_FOLDER}/core/includes/${PROJECT_NAME_LOWERCASE}.h"
-  NO_SOURCE_PERMISSIONS @ONLY
-)
+
 
 # Introduce variables:
 #   - CMAKE_INSTALL_LIBDIR
@@ -153,9 +152,6 @@ configure_file("${PROJECT_SOURCE_DIR}/cmake/Uninstall.cmake.in" "${GENERATED_DIR
 )
 add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${GENERATED_DIR}/Uninstall.cmake)
 
-
-
-## Other?? 
 
 # Always full RPATH (for shared libraries)
 # https://gitlab.kitware.com/cmake/community/-/wikis/doc/cmake/RPATH-handling
