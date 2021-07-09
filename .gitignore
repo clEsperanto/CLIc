@@ -1,11 +1,12 @@
 # Folders
 .vscode
 build
+
+# Specific files/folders
+cle_preamble.h
+clic.h
 clic/kernels
 
-# Specific files
-clic/core/includes/cle_preamble.h
-clic/core/includes/clic.h
 
 # System files
 .DS_Store
