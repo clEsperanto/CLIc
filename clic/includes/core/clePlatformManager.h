@@ -12,14 +12,16 @@ class PlatformManager
 {
 private:
     std::vector<cl::Platform> m_PlatformList;
-    int m_PlatformId;
 
 public:
-    PlatformManager(){};
-    PlatformManager(int);
+    PlatformManager();
     ~PlatformManager();
 
-    cl::Platform GetPlatform(int=-1);
+    std::vector<cl::Platform> GetPlatformList();
+    cl::Platform GetPlatform(int);
+
+    std::string PlatformListInfo();
+
 };
 
 } // namespace cle
