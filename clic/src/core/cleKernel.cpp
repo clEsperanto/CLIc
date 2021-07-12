@@ -71,6 +71,7 @@ std::string Kernel::LoadSources()
     //     std::cerr << "Error reading file! Cannot open " << filename << std::endl;
     // }
     // return sources;
+    
     if(m_Sources.size() == 0)
     {
         return "";

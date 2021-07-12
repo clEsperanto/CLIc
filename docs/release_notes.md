@@ -2,7 +2,7 @@
 
 ## Bug fixes
 - Fix issue of `#include <cl2.hpp>` vs `#include <opencl.hpp>` ([#37](https://github.com/clEsperanto/CLIc_prototype/issues/37))
-- Fix crossplatform OpenCL include `#include <opencl.hpp>` vs `#include <CL/opencl.hpp>` vs `#include <opencl/opencl.hpp>`
+- Fix crossplatform OpenCL include `#include <opencl.hpp>` vs `#include <CL/opencl.hpp>` vs `#include <OpenCL/opencl.hpp>`
 
 ## New features  
 
@@ -15,6 +15,8 @@
   - Define OpenCL standard version to use (Default: 1.2)
 - Rewrite of installation documentation
 - Organising filters into Tiers folders
+- `cleGPU` now display information on all platform and device or on specific device.
+- User can now select specific device based on name.
 
 
 
@@ -26,6 +28,7 @@
 ## New features
 - CI github actions for testing build
 - Generic benchmark for execution speed comparison between two filters
+- `cleGPU` now allows save and reload compiled kernel. Avoid recompiling source if not needed. 
 - Implementation of complexe filters:
   - block_enumerate
   - maximum_of_all_pixels
