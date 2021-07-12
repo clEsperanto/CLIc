@@ -1,5 +1,8 @@
 
-
+add_executable(info_test info_test.cpp)
+add_dependencies(info_test CLIc) 
+target_link_libraries(info_test PRIVATE CLIc::CLIc)
+add_test(NAME info_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/info_test)
 
 add_executable(operations_test operations_test.cpp)
 add_dependencies(operations_test CLIc) 
