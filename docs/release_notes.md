@@ -15,6 +15,8 @@
   - Define OpenCL standard version to use (Default: 1.2)
 - Rewrite of installation documentation
 - Organising filters into Tiers folders
+- `cleGPU` now display information on all platform and device or on specific device.
+- User can now select specific device based on name.
 
 
 
