@@ -11,6 +11,7 @@
 #include "cleCommandQueueManager.h"
 
 #include <map>
+#include <iostream>
 
 namespace cle
 {
@@ -28,6 +29,7 @@ private:
 
 public:
     GPU();
+    GPU(std::string);
     ~GPU() = default;
 
     DeviceManager GetDeviceManager();
@@ -35,9 +37,14 @@ public:
     CommandQueueManager GetCommandQueueManager();
     PlatformManager GetPlatformManager();
 
+    void SelectDevice(std::string);
+
     bool FindProgram(size_t);
     cl::Program GetProgram(size_t);
     void AddProgram(cl::Program, size_t);
+
+    void GetInfo();
+    void GetSelectedDeviceInfo();
 };
 
 
