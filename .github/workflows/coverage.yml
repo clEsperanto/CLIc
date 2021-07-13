@@ -64,13 +64,15 @@ jobs:
       - name: Run Coverage analysis
         working-directory: ${{ runner.workspace }}/build
         shell: bash
-        run: make coverage
+        run: |
+          cd ${{ runner.workspace }}/build
+          make coverage
 
       - name: Code Coverage
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          files: ./build/coverage.xml
+          files: ${{ runner.workspace }}/build/coverage.xml
           name: CLIc_coverage # optional
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
