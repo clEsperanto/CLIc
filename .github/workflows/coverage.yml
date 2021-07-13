@@ -64,9 +64,8 @@ jobs:
       - name: Run CMake
         shell: bash
         run: |
-          mkdir ${{ runner.workspace }}/build && cd ${{ runner.workspace }}/build
-          cmake .. -DCMAKE_BUILD_TYPE={{ matrix.buildtype }} -DBUILD_CODE_COVERAGE=ON
-          make
+          cmake -S ${{ runner.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=Debug -DBUILD_CODE_COVERAGE=ON
+          cd ${{ runner.workspace }}/build && make
 
       - name: Run Coverage analysis
         working-directory: ${{ runner.workspace }}/build
