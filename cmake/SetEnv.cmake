@@ -33,6 +33,7 @@ endif()
 
 # Set Code coverage options (default: OFF)
 option(BUILD_CODE_COVERAGE "Enable coverage reporting" OFF)
+message(STATUS "BUILD_CODE_COVERAGE: ${BUILD_CODE_COVERAGE}")
 mark_as_advanced(BUILD_CODE_COVERAGE)
 
 # Set library type optiONs (default: STATIC)
