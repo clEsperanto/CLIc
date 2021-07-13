@@ -78,9 +78,7 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           # token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          files: ./coverage_xml.xml
-          directory: ${{ runner.workspace }}/build
-          path_to_write_report: ./codecov_report.txt
+          files: ${{ runner.workspace }}/build/coverage_xml.xml
           name: CLIc_coverage # optional
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
