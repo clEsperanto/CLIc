@@ -48,18 +48,25 @@ jobs:
           sudo apt-get install python3.8 -y
           sudo apt-get install opencl-headers ocl-icd-opencl-dev lcov gcovr -y
 
-      - name: Run CMake with Ninja
-        uses: lukka/run-cmake@main
-        id: runcmake
-        with:
-          buildDirectory: ${{ runner.workspace }}/build
-          cmakeBuildType: ${{ matrix.buildtype }}
-          cmakeGenerator: 'Ninja'  
-          cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
-          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          useVcpkgToolchainFile: true
-          buildWithCMakeArgs: '-- -v'
-          cmakeAppendedArgs: '-DBUILD_CODE_COVERAGE=ON'
+      # - name: Run CMake with Ninja
+      #   uses: lukka/run-cmake@main
+      #   id: runcmake
+      #   with:
+      #     buildDirectory: ${{ runner.workspace }}/build
+      #     cmakeBuildType: ${{ matrix.buildtype }}
+      #     cmakeGenerator: 'Ninja'  
+      #     cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
+      #     cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+      #     useVcpkgToolchainFile: true
+      #     buildWithCMakeArgs: '-- -v'
+      #     cmakeAppendedArgs: '-DBUILD_CODE_COVERAGE=ON'
+
+      - name: Run CMake
+        shell: bash
+        run: |
+          mkdir ${{ runner.workspace }}/build && cd ${{ runner.workspace }}/build
+          cmake .. -DCMAKE_BUILD_TYPE={{ matrix.buildtype }} -DBUILD_CODE_COVERAGE=ON
+          make
 
       - name: Run Coverage analysis
         working-directory: ${{ runner.workspace }}/build
