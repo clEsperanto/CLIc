@@ -32,11 +32,8 @@ endif()
 ## Configuration and Build options
 
 # Set Code coverage options
-option(BUILD_CODE_COVERAGE "Enable coverage reporting" OFF)
+option(BUILD_CODE_COVERAGE "Enable coverage reporting" ON)
 mark_as_advanced(BUILD_CODE_COVERAGE)
-if(BUILD_CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g --coverage")
-endif()
 
 # Set library type optiONs (default: STATIC)
 option(BUILD_SHARED_LIBS "Build ${LIBRARY_NAME} as a shared library." OFF)
@@ -87,6 +84,13 @@ message(STATUS "CMAKE_GENERATOR: ${CMAKE_GENERATOR}")
 set(CMAKE_DEBUG_POSTFIX "_d")
 set(CMAKE_RELEASE_POSTFIX "")
 
+# Coverage flags and includes
+if(BUILD_CODE_COVERAGE)
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+  include(CodeCoverage) 
+  append_coverage_compiler_flags()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Og") 
+endif()
 
 # List subdirectory macro
 macro(subdirlist result curdir)
@@ -99,7 +103,6 @@ macro(subdirlist result curdir)
   endforeach()
   set(${result} ${dirlist})
 endmacro()
-
 
 
 ## Install and Uninstall configuration
