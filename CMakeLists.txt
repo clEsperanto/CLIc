@@ -26,6 +26,11 @@ if(BUILD_BENCHMARK)
 endif()
 
 if(BUILD_CODE_COVERAGE)
+    setup_target_for_coverage_lcov(
+        NAME coverage
+        BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
+        EXCLUDE "/build/benchmark/*"
+        )
     setup_target_for_coverage_gcovr_html(
         NAME coverage_html
         BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
