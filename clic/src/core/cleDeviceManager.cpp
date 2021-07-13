@@ -85,10 +85,7 @@ std::vector<cl::Device> DeviceManager::GetDeviceList()
 
 cl::Device DeviceManager::GetDevice()
 {
-    if (this->m_DeviceId < this->m_DeviceList.size())
-    {
-        return this->m_DeviceList[this->m_DeviceId];
-    }
+    return this->m_DeviceList[this->m_DeviceId];
 }
 
 cl::Device DeviceManager::GetDevice(int device_id)
