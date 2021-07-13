@@ -31,8 +31,8 @@ endif()
 
 ## Configuration and Build options
 
-# Set Code coverage options
-option(BUILD_CODE_COVERAGE "Enable coverage reporting" ON)
+# Set Code coverage options (default: OFF)
+option(BUILD_CODE_COVERAGE "Enable coverage reporting" OFF)
 mark_as_advanced(BUILD_CODE_COVERAGE)
 
 # Set library type optiONs (default: STATIC)
