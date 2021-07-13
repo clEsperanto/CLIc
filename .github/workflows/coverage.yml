@@ -16,14 +16,16 @@ jobs:
       fail-fast: false
       max-parallel: 8
       matrix:
-        name: [ubuntu-gcc]
+        name: [macos-clang]
         buildtype: [Debug]
         include:
-          - name: ubuntu-gcc
-            os: ubuntu-latest
-            cxx: g++
-            cc: gcc
-            triplet: x64-linux
+          - name: macos-clang
+            os: macos-latest
+            cxx: clang++
+            cc: clang
+            triplet: x64-osx
+            packages: >
+              python3 opencl
 
     steps:
 
@@ -40,14 +42,14 @@ jobs:
           echo "CXX=${{ matrix.cxx }}" >> $GITHUB_ENV
           echo "CC=${{ matrix.cc }}" >> $GITHUB_ENV
       
-      - name: Install packages
-        shell: bash
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install build-essential -y
-          sudo apt-get install python3.8 -y
-          sudo apt-get install opencl-headers ocl-icd-opencl-dev lcov gcovr -y
-
+      - name: Run vcpkg
+        uses: lukka/run-vcpkg@main
+        with:
+          vcpkgArguments: ${{ matrix.packages }}
+          vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
+          vcpkgTriplet: ${{ matrix.triplet }}
+          vcpkgGitCommitId: ec6fe06e8da05a8157dc8581fa96b36b571c1bd5 #7db401cb1ef1fc559ec9f9ce814d064c328fd767  
+          
       # - name: Run CMake with Ninja
       #   uses: lukka/run-cmake@main
       #   id: runcmake
