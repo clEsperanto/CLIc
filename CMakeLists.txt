@@ -26,15 +26,13 @@ if(BUILD_BENCHMARK)
 endif()
 
 if(BUILD_CODE_COVERAGE)
-    # setup_target_for_coverage_gcovr_html(
-    #     NAME coverage
-    #     EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T coverage -T test
-    #     BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
-    #     EXCLUDE "/build/benchmark/*"
-    #     )
+    setup_target_for_coverage_gcovr_html(
+        NAME coverage_html
+        BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
+        EXCLUDE "/build/benchmark/*"
+        )
     setup_target_for_coverage_gcovr_xml(
-        NAME coverage
-        EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test
+        NAME coverage_xml
         BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
         EXCLUDE "/build/benchmark/*"
         )

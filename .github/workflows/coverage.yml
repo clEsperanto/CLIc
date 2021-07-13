@@ -72,12 +72,12 @@ jobs:
         shell: bash
         run: |
           cd ${{ runner.workspace }}/build
-          make coverage
+          make coverage_xml
 
       - name: Code Coverage
         uses: codecov/codecov-action@v1
         with:
-          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          # token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           files: ${{ runner.workspace }}/build/coverage.xml
           name: CLIc_coverage # optional
           fail_ci_if_error: true # optional (default = false)
