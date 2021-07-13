@@ -82,13 +82,23 @@ jobs:
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
           buildWithCMakeArgs: '-- -v'
-          # cmakeAppendedArgs: '-DBUILD_CODE_COVERAGE=ON'
+          cmakeAppendedArgs: '-DBUILD_CODE_COVERAGE=ON'
 
       - name: Run Tests
         if: startsWith(matrix.os, 'macos') #|| startsWith(matrix.os, 'windows')
         working-directory: ${{ runner.workspace }}/build
         shell: bash
-        run: ctest -C ${{ matrix.buildtype }} # -T test -T coverage
+        run: ctest --build-config ${{ matrix.buildtype }} -T test -T coverage
+
+      - name: Code Coverage
+        if: startsWith(matrix.os, 'macos') && startsWith(matrix.buildtype, 'Debug')
+        uses: codecov/codecov-action@v1
+        with:
+          # token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          files: ./coverage1.xml,./coverage2.xml # optional
+          name: CLIc_code-coverage # optional
+          # fail_ci_if_error: true # optional (default = false)
+          # verbose: true # optional (default = false)
 
       # - name: Code Coverage report
       #   shell: bash
