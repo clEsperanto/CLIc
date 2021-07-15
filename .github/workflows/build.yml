@@ -5,6 +5,8 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  schedule:
+    - cron: '0 1 * * *'
 
 jobs:
 
@@ -25,28 +27,28 @@ jobs:
             cc: cl.exe
             triplet: x64-windows
             packages: >
-              python3 opencl 
+              opencl 
           - name: ubuntu-gcc
             os: ubuntu-latest
             cxx: g++
             cc: gcc
             triplet: x64-linux
             packages: >
-              python3 opencl
+              opencl
           - name: ubuntu-clang
             os: ubuntu-latest
             cxx: clang++
             cc: clang
             triplet: x64-linux
             packages: >
-              python3 opencl
+              opencl
           - name: macos-clang
             os: macos-latest
             cxx: clang++
             cc: clang
             triplet: x64-osx
             packages: >
-              python3 opencl 
+              opencl
 
     steps:
 
@@ -55,25 +57,16 @@ jobs:
         with:
           submodules: true 
       
-      - name: Install cmake
-        uses: lukka/get-cmake@latest
-
-      - name: Set Environment vars
-        run: |
-          echo "CXX=${{ matrix.cxx }}" >> $GITHUB_ENV
-          echo "CC=${{ matrix.cc }}" >> $GITHUB_ENV
-      
-      - name: Run vcpkg
+      - name: Install packages [vcpkg]
         uses: lukka/run-vcpkg@main
         with:
           vcpkgArguments: ${{ matrix.packages }}
           vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
           vcpkgTriplet: ${{ matrix.triplet }}
-          vcpkgGitCommitId: ec6fe06e8da05a8157dc8581fa96b36b571c1bd5 #7db401cb1ef1fc559ec9f9ce814d064c328fd767    
+          vcpkgGitCommitId: ec6fe06e8da05a8157dc8581fa96b36b571c1bd5 
 
-      - name: Run CMake with Ninja
+      - name: Cmake [vcpkg]
         uses: lukka/run-cmake@main
-        id: runcmake
         with:
           buildDirectory: ${{ runner.workspace }}/build
           cmakeBuildType: ${{ matrix.buildtype }}
@@ -81,19 +74,5 @@ jobs:
           cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
-          buildWithCMakeArgs: '-- -v'
-          # cmakeAppendedArgs: '-DBUILD_CODE_COVERAGE=ON'
 
-      - name: Run Tests
-        if: startsWith(matrix.os, 'macos') #|| startsWith(matrix.os, 'windows')
-        working-directory: ${{ runner.workspace }}/build
-        shell: bash
-        run: ctest -C ${{ matrix.buildtype }} # -T test -T coverage
 
-      # - name: Code Coverage report
-      #   shell: bash
-      #   run: |
-      #     --directory . --capture --output-file coverage.info
-      #     --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
-      #     --list coverage.info
-      #     bash <(curl -s https://codecov.io/bash) -f coverage.info 
