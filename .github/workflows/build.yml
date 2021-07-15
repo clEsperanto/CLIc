@@ -93,11 +93,16 @@ jobs:
 
       - name: Configure windows
         if: startsWith(matrix.os, 'windows') 
-        shell: bash
-        run: |
-          cmake -S "${{ github.workspace }}"" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        uses: lukka/run-cmake@main
+        with:
+          buildDirectory: ${{ runner.workspace }}/build
+          cmakeBuildType: ${{ matrix.buildtype }}
+          cmakeGenerator: 'Ninja'  
+          cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          useVcpkgToolchainFile: true
 
-      - name: Configure macos coverage
+      - name: Configure coverage
         if: startsWith(matrix.os, 'macos') && startsWith(matrix.buildtype, 'Debug')
         shell: bash
         run: |
