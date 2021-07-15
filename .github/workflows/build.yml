@@ -57,7 +57,7 @@ jobs:
       
       - if: startsWith(matrix.os, 'windows')
         name: Install packages [windows]
-        run: vcpkg install ${{ matrix.packages }} --triplet=${{ matrix.triplet }}
+        run: vcpkg install ${{ matrix.packages }} 
           
       - if: startsWith(matrix.os, 'macos')
         name: Install packages [macos]
