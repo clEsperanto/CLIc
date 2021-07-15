@@ -24,7 +24,6 @@ jobs:
             cxx: cl.exe
             cc: cl.exe
             triplet: x64-windows
-            coverage: off
             packages: >
               opencl 
           - name: ubuntu-gcc
@@ -32,7 +31,6 @@ jobs:
             cxx: g++
             cc: gcc
             triplet: x64-linux
-            coverage: off
             packages: >
               opencl-headers opencl-headers ocl-icd-opencl-dev lcov gcovr
           - name: ubuntu-clang
@@ -40,7 +38,6 @@ jobs:
             cxx: clang++
             cc: clang
             triplet: x64-linux
-            coverage: off
             packages: >
               opencl-headers ocl-icd-opencl-dev lcov gcovr
           - name: macos-clang
@@ -48,7 +45,6 @@ jobs:
             cxx: clang++
             cc: clang
             triplet: x64-osx
-            coverage: on
             packages: >
               lcov gcovr 
 
@@ -59,24 +55,17 @@ jobs:
         with:
           submodules: true 
       
-      # - name: Install cmake
-      #   uses: lukka/get-cmake@latest
-      
       - if: startsWith(matrix.os, 'windows')
-        name: Install packages
-        uses: lukka/run-vcpkg@main
-        with:
-          vcpkgArguments: ${{ matrix.packages }}
-          vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
-          vcpkgTriplet: ${{ matrix.triplet }}
+        name: Install packages [windows]
+        run: ${{ runner.workspace }}/vcpkg/vcpkg install ${{ matrix.packages }}:${{ matrix.triplet }}
           
       - if: startsWith(matrix.os, 'macos')
-        name: Install packages
+        name: Install packages [macos]
         run: brew update && brew install ${{ matrix.packages }}
 
       - if: startsWith(matrix.os, 'ubuntu')
-        name: Install packages
-        run:  sudo apt-get update -y && sudo apt-get install ${{ matrix.packages }} -y
+        name: Install packages [linux]
+        run:  sudo apt-get update && sudo apt-get install ${{ matrix.packages }}
 
       # - name: Run CMake with Ninja
       #   uses: lukka/run-cmake@main
@@ -90,25 +79,28 @@ jobs:
       #     useVcpkgToolchainFile: true
       #     buildWithCMakeArgs: '-- -v'
 
-      - name: Run CMake
+      - name: Configure
         shell: bash
         run: |
-          cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DBUILD_CODE_COVERAGE=${{ matrix.coverage }}
+          cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }}
+
+      - name: Build
+        shell: bash
+        run: |
           cd ${{ runner.workspace }}/build && make
 
-      - if: startsWith(matrix.os, 'macos')
+      - if: startsWith(matrix.os, 'macos') && startsWith(matrix.buildtype, 'Debug')
         name: Run Coverage analysis
-        working-directory: ${{ runner.workspace }}/build
         shell: bash
         run: |
-          cd ${{ runner.workspace }}/build
-          make coverage_xml
+          cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DBUILD_CODE_COVERAGE=ON
+          cd ${{ runner.workspace }}/build && make coverage_xml
 
-      - if: startsWith(matrix.os, 'macos')
+      - if: startsWith(matrix.os, 'macos') && startsWith(matrix.buildtype, 'Debug')
+        name: Upload coverage
         uses: codecov/codecov-action@v1
         with:
           # token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           files: ${{ runner.workspace }}/build/coverage_xml.xml
-          name: CLIc_coverage # optional
           fail_ci_if_error: true # optional (default = false)
 
