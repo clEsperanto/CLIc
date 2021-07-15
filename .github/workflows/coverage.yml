@@ -10,22 +10,18 @@ jobs:
 
   build:
       
-    name: ${{ matrix.os }}-Test-and-Coverage
+    name: ${{ matrix.os }}-${{ matrix.buildtype }}-Test-and-Coverage
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       max-parallel: 8
       matrix:
-        name: [coverage]
-        buildtype: [Debug]
-        include:
-          - name: macos-clang
-            os: macos-latest
-            cxx: clang++
-            cc: clang
-            triplet: x64-osx
-            packages: >
-              lcov gcovr
+        : [Debug]
+        os: [macos-latest]
+        cxx: [clang++]
+        cc: [clang]
+        triplet: [x64-osx]
+        packages: [lcov gcovr]
 
     steps:  
 
