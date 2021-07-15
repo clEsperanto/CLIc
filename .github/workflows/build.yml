@@ -82,7 +82,7 @@ jobs:
       - name: Configure
         shell: bash
         run: |
-          cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }}
+          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }}
 
       - name: Configure coverage
         if: startsWith(matrix.os, 'macos') && startsWith(matrix.buildtype, 'Debug')
@@ -93,7 +93,7 @@ jobs:
       - name: Build
         shell: bash
         run: |
-          cd ${{ runner.workspace }}/build && make
+          cd "${{ runner.workspace }}/build" && make
 
       - if: startsWith(matrix.os, 'macos') && startsWith(matrix.buildtype, 'Debug')
         name: Run Coverage analysis
