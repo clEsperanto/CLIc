@@ -73,13 +73,16 @@ std::string Kernel::LoadSources()
     // return sources;
     
     std::string kernel_source = "";
-    if(m_Sources.size() > 1)
+    if(!m_Sources.empty())
     {
-        kernel_source = m_Sources[(m_KernelName + m_DimensionTag).c_str()];
-    }
-    else if(m_Sources.size() == 1)
-    {
-        kernel_source = m_Sources.begin()->second.c_str();
+        if(m_Sources.size() == 1)
+        {
+            kernel_source = m_Sources.begin()->second.c_str();
+        }
+        else
+        {
+            kernel_source = m_Sources[(m_KernelName + m_DimensionTag).c_str()];
+        }
     }
     return kernel_source;
 }
