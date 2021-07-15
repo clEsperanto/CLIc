@@ -10,13 +10,13 @@ jobs:
 
   build:
     
-    name: ${{ matrix.os }}-${{ matrix.cxx }}-${{ matrix.buildtype }}-test-coverage
+    name: ${{ matrix.os }}-${{ matrix.cxx }}-${{ matrix.buildtype }}-code-coverage
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
-      max-parallel: 8
+      max-parallel: 1
       matrix:
-        name: [ubuntu-gcc]
+        name: [macos-clang] #ubuntu-gcc]
         buildtype: [Debug]
         include:
           - name: ubuntu-gcc
@@ -24,6 +24,13 @@ jobs:
             cxx: g++
             cc: gcc
             triplet: x64-linux
+          - name: macos-clang
+            os: macos-latest
+            cxx: clang++
+            cc: clang
+            triplet: x64-osx
+            packages: >
+              python3 opencl 
 
     steps:
 
@@ -47,19 +54,14 @@ jobs:
           sudo apt-get install build-essential -y
           sudo apt-get install python3.8 -y
           sudo apt-get install opencl-headers ocl-icd-opencl-dev lcov gcovr -y
-
-      # - name: Run CMake with Ninja
-      #   uses: lukka/run-cmake@main
-      #   id: runcmake
-      #   with:
-      #     buildDirectory: ${{ runner.workspace }}/build
-      #     cmakeBuildType: ${{ matrix.buildtype }}
-      #     cmakeGenerator: 'Ninja'  
-      #     cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
-      #     cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-      #     useVcpkgToolchainFile: true
-      #     buildWithCMakeArgs: '-- -v'
-      #     cmakeAppendedArgs: '-DBUILD_CODE_COVERAGE=ON'
+      
+      - name: Run vcpkg
+        uses: lukka/run-vcpkg@main
+        with:
+          vcpkgArguments: ${{ matrix.packages }}
+          vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
+          vcpkgTriplet: ${{ matrix.triplet }}
+          vcpkgGitCommitId: ec6fe06e8da05a8157dc8581fa96b36b571c1bd5
 
       - name: Run CMake
         shell: bash
