@@ -86,18 +86,18 @@ jobs:
 
 
       - name: Configure
-        if: ${{ matrix.os != 'windows-msvc' }}
+        if: ${{ matrix.os != 'windows-latest' }}
         shell: bash
         run: |
           cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }}
 
-      - name: Configure coverage
+      - name: Configure windows
         if: startsWith(matrix.os, 'windows') 
         shell: bash
         run: |
           cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
-      - name: Configure coverage
+      - name: Configure macos coverage
         if: startsWith(matrix.os, 'macos') && startsWith(matrix.buildtype, 'Debug')
         shell: bash
         run: |
