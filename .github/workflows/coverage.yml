@@ -1,89 +1,57 @@
-# name: CI-Coverage
+name: CI-Coverage
 
-# on:
-#   push:
-#     branches: [ master ]
-#   pull_request:
-#     branches: [ closed ]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
-# jobs:
+jobs:
 
-#   build:
-    
-#     name: ${{ matrix.os }}-${{ matrix.cxx }}-${{ matrix.buildtype }}-code-coverage
-#     runs-on: ${{ matrix.os }}
-#     strategy:
-#       fail-fast: false
-#       max-parallel: 1
-#       matrix:
-#         name: [macos-clang] #ubuntu-gcc]
-#         buildtype: [Debug]
-#         include:
-#           # - name: ubuntu-gcc
-#           #   os: ubuntu-latest
-#           #   cxx: g++
-#           #   cc: gcc
-#           #   triplet: x64-linux
-#           - name: macos-clang
-#             os: macos-latest
-#             cxx: clang++
-#             cc: clang
-#             triplet: x64-osx
-#             # packages: >
-#             #   python3 opencl 
-
-#     steps:
-
-#       - name: Checkout
-#         uses: actions/checkout@v2
-#         with:
-#           submodules: true 
-
-#       - name: Install cmake
-#         uses: lukka/get-cmake@latest
-
-#       - name: Set Environment vars
-#         run: |
-#           echo "CXX=${{ matrix.cxx }}" >> $GITHUB_ENV
-#           echo "CC=${{ matrix.cc }}" >> $GITHUB_ENV
+  coverage:
       
-#       - name: Brew package install
-#         run: brew update && brew install lcov gcovr
+    name: ${{ matrix.os }}-${{ matrix.cxx }}-${{ matrix.buildtype }}-Test-And-Coverage
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        name: [coverage]
+        buildtype: [Debug]
+        include:
+          - name: macos-clang
+            os: macos-latest
+            cxx: clang++
+            cc: clang
+            triplet: x64-osx
+            packages: >
+              lcov gcovr
 
-#       # - name: Install packages
-#       #   shell: bash
-#       #   run: |
-#       #     sudo apt-get update -y
-#       #     sudo apt-get install build-essential -y
-#       #     sudo apt-get install python3.8 -y
-#       #     sudo apt-get install opencl-headers ocl-icd-opencl-dev lcov gcovr -y
-      
-#       # - name: Run vcpkg
-#       #   uses: lukka/run-vcpkg@main
-#       #   with:
-#       #     vcpkgArguments: ${{ matrix.packages }}
-#       #     vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
-#       #     vcpkgTriplet: ${{ matrix.triplet }}
-#       #     vcpkgGitCommitId: ec6fe06e8da05a8157dc8581fa96b36b571c1bd5
+    steps:  
 
-#       - name: Run CMake
-#         shell: bash
-#         run: |
-#           cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=Debug -DBUILD_CODE_COVERAGE=ON
-#           cd ${{ runner.workspace }}/build && make
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true 
 
-#       - name: Run Coverage analysis
-#         working-directory: ${{ runner.workspace }}/build
-#         shell: bash
-#         run: |
-#           cd ${{ runner.workspace }}/build
-#           make coverage_xml
+      - name: Install packages
+        shell: bash
+        run: |
+          brew install ${{ matrix.packages }}
 
-#       - name: Code Coverage
-#         uses: codecov/codecov-action@v1
-#         with:
-#           # token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-#           files: ${{ runner.workspace }}/build/coverage_xml.xml
-#           name: CLIc_coverage # optional
-#           fail_ci_if_error: true # optional (default = false)
-#           verbose: true # optional (default = false)
+      - name: Cmake configure
+        shell: bash
+        run: |
+          cmake -S "${{ github.workspace }}"" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DBUILD_CODE_COVERAGE=ON
+
+      - name: Generate coverage
+        shell: bash
+        run: |    
+          cd "${{ runner.workspace }}/build" && make coverage_xml
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v1
+        with:
+          # token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          files: ${{ runner.workspace }}/build/coverage_xml.xml
+          fail_ci_if_error: true # optional (default = false)

@@ -5,6 +5,8 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  schedule:
+    - cron: '0 1 * * *'
 
 jobs:
 
@@ -73,51 +75,4 @@ jobs:
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
 
-  coverage:
-
-    name: ${{ matrix.os }}-${{ matrix.cxx }}-${{ matrix.buildtype }}-Coverage
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      max-parallel: 1
-      matrix:
-        name: [coverage]
-        buildtype: [Debug]
-        include:
-          - name: macos-clang
-            os: macos-latest
-            cxx: clang++
-            cc: clang
-            triplet: x64-osx
-            packages: >
-              lcov gcovr
-
-    steps:  
-
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          submodules: true 
-
-      - name: Install packages
-        shell: bash
-        run: |
-          brew install ${{ matrix.packages }}
-
-      - name: Cmake configure
-        shell: bash
-        run: |
-          cmake -S "${{ github.workspace }}"" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DBUILD_CODE_COVERAGE=ON
-
-      - name: Generate coverage
-        shell: bash
-        run: |    
-          cd "${{ runner.workspace }}/build" && make coverage_xml
-
-      - name: Upload coverage report
-        uses: codecov/codecov-action@v1
-        with:
-          # token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          files: ${{ runner.workspace }}/build/coverage_xml.xml
-          fail_ci_if_error: true # optional (default = false)
 
