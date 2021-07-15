@@ -37,7 +37,8 @@ cl::Platform PlatformManager::GetPlatform(int platform_id)
     }
     else
     {
-        std::cerr << "PlatformManager : wrong platform id." << std::endl;
+        std::cerr << "PlatformManager : wrong platform id. Returning default platform." << std::endl;
+        return this->m_PlatformList;
     }
 }
 
