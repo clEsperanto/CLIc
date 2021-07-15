@@ -21,14 +21,13 @@ private:
     std::array<unsigned int, 3> m_Dimensions = {{1, 1, 1}};
     
 public:     
-    Buffer();
+    Buffer() =default;
     Buffer(cl::Buffer, unsigned int[3], DataType =Float);
     Buffer(cl::Buffer, DataType =Float);
 
     cl::Buffer GetObject();
 
     size_t GetSize() const;
-    size_t GetBitSize() const;
     unsigned int* GetDimensions();
 
     bool IsObject(LightObject::ObjectType) const;

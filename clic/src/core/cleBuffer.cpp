@@ -7,9 +7,6 @@
 namespace cle
 {
 
-Buffer::Buffer()
-{}
-
 Buffer::Buffer(cl::Buffer obj, unsigned int dimensions[3], LightObject::DataType type)
 {
     this->m_Object = obj; 	
@@ -39,21 +36,6 @@ unsigned int* Buffer::GetDimensions()
 size_t Buffer::GetSize() const
 {
     return m_Dimensions[0] * m_Dimensions[1] * m_Dimensions[2];
-}
-
-size_t Buffer::GetBitSize() const
-{
-    switch (T)
-    {
-        case Float:  return sizeof(float);
-        case Char:   return sizeof(char);
-        case UChar:  return sizeof(unsigned char);
-        case Int:    return sizeof(int);
-        case UInt:   return sizeof(unsigned int);
-        case Short:  return sizeof(short);
-        case UShort: return sizeof(unsigned short);
-        default:     return 0;
-    }
 }
 
 std::string Buffer::GetObjectType() const
