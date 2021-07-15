@@ -9,7 +9,7 @@ namespace cle
 PlatformManager::PlatformManager()
 {
     cl::Platform::get(&m_PlatformList);
-    if(m_PlatformList.size()==0)
+    if(m_PlatformList.empty())
     {
         std::cerr << "PlatformManager : No platform found, please check OpenCL installation" << std::endl;
     }
@@ -17,7 +17,7 @@ PlatformManager::PlatformManager()
 
 PlatformManager::~PlatformManager()
 {
-    if(m_PlatformList.size()!=0)
+    if(m_PlatformList.empty())
     {
         m_PlatformList.clear();
     }
@@ -27,19 +27,6 @@ PlatformManager::~PlatformManager()
 std::vector<cl::Platform> PlatformManager::GetPlatformList()
 {
     return this->m_PlatformList;
-}
-
-cl::Platform PlatformManager::GetPlatform(int platform_id)
-{
-    if (platform_id < this->m_PlatformList.size())
-    {
-        return this->m_PlatformList[platform_id];
-    }
-    else
-    {
-        std::cerr << "PlatformManager : wrong platform id. Returning default platform." << std::endl;
-        return this->m_PlatformList[0];
-    }
 }
 
 
