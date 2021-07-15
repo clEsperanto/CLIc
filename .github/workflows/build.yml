@@ -24,29 +24,33 @@ jobs:
             cxx: cl.exe
             cc: cl.exe
             triplet: x64-windows
+            coverage: off
             packages: >
-              python3 opencl 
+              opencl 
           - name: ubuntu-gcc
             os: ubuntu-latest
             cxx: g++
             cc: gcc
             triplet: x64-linux
+            coverage: off
             packages: >
-              python3 opencl
+              opencl-headers opencl-headers ocl-icd-opencl-dev lcov gcovr
           - name: ubuntu-clang
             os: ubuntu-latest
             cxx: clang++
             cc: clang
             triplet: x64-linux
+            coverage: off
             packages: >
-              python3 opencl
+              opencl-headers ocl-icd-opencl-dev lcov gcovr
           - name: macos-clang
             os: macos-latest
             cxx: clang++
             cc: clang
             triplet: x64-osx
+            coverage: on
             packages: >
-              python3 opencl 
+              lcov gcovr 
 
     steps:
 
@@ -55,36 +59,56 @@ jobs:
         with:
           submodules: true 
       
-      - name: Install cmake
-        uses: lukka/get-cmake@latest
-
-      - name: Set Environment vars
-        run: |
-          echo "CXX=${{ matrix.cxx }}" >> $GITHUB_ENV
-          echo "CC=${{ matrix.cc }}" >> $GITHUB_ENV
+      # - name: Install cmake
+      #   uses: lukka/get-cmake@latest
       
-      - name: Run vcpkg
+      - if: startsWith(matrix.os, 'windows')
+        name: Install packages
         uses: lukka/run-vcpkg@main
         with:
           vcpkgArguments: ${{ matrix.packages }}
           vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
           vcpkgTriplet: ${{ matrix.triplet }}
-          vcpkgGitCommitId: ec6fe06e8da05a8157dc8581fa96b36b571c1bd5 #7db401cb1ef1fc559ec9f9ce814d064c328fd767    
+          
+      - if: startsWith(matrix.os, 'macos')
+        name: Install packages
+        run: brew update && brew install ${{ matrix.packages }}
 
-      - name: Run CMake with Ninja
-        uses: lukka/run-cmake@main
-        id: runcmake
-        with:
-          buildDirectory: ${{ runner.workspace }}/build
-          cmakeBuildType: ${{ matrix.buildtype }}
-          cmakeGenerator: 'Ninja'  
-          cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
-          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          useVcpkgToolchainFile: true
-          buildWithCMakeArgs: '-- -v'
+      - if: startsWith(matrix.os, 'ubuntu')
+        name: Install packages
+        run:  sudo apt-get update -y && sudo apt-get install ${{ matrix.packages }} -y
 
-      - name: Run Tests
-        if: startsWith(matrix.os, 'macos') #|| startsWith(matrix.os, 'windows')
+      # - name: Run CMake with Ninja
+      #   uses: lukka/run-cmake@main
+      #   id: runcmake
+      #   with:
+      #     buildDirectory: ${{ runner.workspace }}/build
+      #     cmakeBuildType: ${{ matrix.buildtype }}
+      #     cmakeGenerator: 'Ninja'  
+      #     cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
+      #     cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+      #     useVcpkgToolchainFile: true
+      #     buildWithCMakeArgs: '-- -v'
+
+      - name: Run CMake
+        shell: bash
+        run: |
+          cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DBUILD_CODE_COVERAGE=${{ matrix.coverage }}
+          cd ${{ runner.workspace }}/build && make
+
+      - if: startsWith(matrix.os, 'macos')
+        name: Run Coverage analysis
         working-directory: ${{ runner.workspace }}/build
         shell: bash
-        run: ctest --build-config ${{ matrix.buildtype }} -T test 
+        run: |
+          cd ${{ runner.workspace }}/build
+          make coverage_xml
+
+      - if: startsWith(matrix.os, 'macos')
+        uses: codecov/codecov-action@v1
+        with:
+          # token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          files: ${{ runner.workspace }}/build/coverage_xml.xml
+          name: CLIc_coverage # optional
+          fail_ci_if_error: true # optional (default = false)
+
