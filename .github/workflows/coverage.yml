@@ -10,7 +10,7 @@ jobs:
 
   build:
       
-    name: ${{ matrix.os }}-${{ matrix.cxx }}-${{ matrix.buildtype }}-Test-And-Coverage
+    name: ${{ matrix.os }}-${{ matrix.cxx }}-${{ matrix.buildtype }}-test-and-coverage
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
