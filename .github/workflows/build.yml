@@ -57,7 +57,12 @@ jobs:
       
       - if: startsWith(matrix.os, 'windows')
         name: Install packages [windows]
-        run: vcpkg install ${{ matrix.packages }} 
+        uses: lukka/run-vcpkg@main
+        with:
+          vcpkgArguments: ${{ matrix.packages }}
+          vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
+          vcpkgTriplet: ${{ matrix.triplet }}
+          vcpkgGitCommitId: ec6fe06e8da05a8157dc8581fa96b36b571c1bd5 
           
       - if: startsWith(matrix.os, 'macos')
         name: Install packages [macos]
@@ -79,14 +84,8 @@ jobs:
       #     useVcpkgToolchainFile: true
       #     buildWithCMakeArgs: '-- -v'
 
-      - name: Configure
-        if: startsWith(matrix.os, 'windows') 
-        shell: bash
-        run: |
-          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DCMAKE_TOOLCHAIN_FILE="C:\vcpkg\scripts\buildsystems\vcpkg.cmake"
 
       - name: Configure
-        if: ${{ matrix.os != 'windows-msvc' }} 
         shell: bash
         run: |
           cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }}
