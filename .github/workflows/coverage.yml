@@ -10,8 +10,8 @@ jobs:
 
   build:
       
-    name: ${{ matrix.os }}-${{ matrix.cxx }}-${{ matrix.buildtype }}-test-and-coverage
-    runs-on: ${{ matrix.os }}
+    name: Test-and-Coverage
+    runs-on: macos-latest
     strategy:
       fail-fast: false
       max-parallel: 8
