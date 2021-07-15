@@ -18,11 +18,6 @@ float Float::GetObject()
     return m_Object;
 }
 
-size_t Float::GetBitSize() const
-{
-    return sizeof(float);
-}
-
 size_t Float::GetSize() const
 {
     return 1;

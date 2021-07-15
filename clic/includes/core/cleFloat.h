@@ -24,7 +24,6 @@ public:
 
     float GetObject();
     size_t GetSize() const;
-    size_t GetBitSize() const;
 
 
     std::string GetDataType() const;
