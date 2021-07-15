@@ -19,11 +19,11 @@ jobs:
         name: [macos-clang] #ubuntu-gcc]
         buildtype: [Debug]
         include:
-          - name: ubuntu-gcc
-            os: ubuntu-latest
-            cxx: g++
-            cc: gcc
-            triplet: x64-linux
+          # - name: ubuntu-gcc
+          #   os: ubuntu-latest
+          #   cxx: g++
+          #   cc: gcc
+          #   triplet: x64-linux
           - name: macos-clang
             os: macos-latest
             cxx: clang++
@@ -47,13 +47,13 @@ jobs:
           echo "CXX=${{ matrix.cxx }}" >> $GITHUB_ENV
           echo "CC=${{ matrix.cc }}" >> $GITHUB_ENV
       
-      - name: Install packages
-        shell: bash
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install build-essential -y
-          sudo apt-get install python3.8 -y
-          sudo apt-get install opencl-headers ocl-icd-opencl-dev lcov gcovr -y
+      # - name: Install packages
+      #   shell: bash
+      #   run: |
+      #     sudo apt-get update -y
+      #     sudo apt-get install build-essential -y
+      #     sudo apt-get install python3.8 -y
+      #     sudo apt-get install opencl-headers ocl-icd-opencl-dev lcov gcovr -y
       
       - name: Run vcpkg
         uses: lukka/run-vcpkg@main
