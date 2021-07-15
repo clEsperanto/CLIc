@@ -66,11 +66,11 @@ jobs:
           
       - if: startsWith(matrix.os, 'macos')
         name: Install packages [macos]
-        run: brew update && brew install ${{ matrix.packages }}
+        run: brew install ${{ matrix.packages }}
 
       - if: startsWith(matrix.os, 'ubuntu')
         name: Install packages [linux]
-        run:  sudo apt-get update && sudo apt-get install ${{ matrix.packages }}
+        run:  sudo apt-get install ${{ matrix.packages }}
 
       - name: Cmake [linux|macos]
         if: ${{ matrix.os != 'windows-latest' }}
