@@ -57,7 +57,7 @@ jobs:
       
       - if: startsWith(matrix.os, 'windows')
         name: Install packages [windows]
-        run: ${{ runner.workspace }}/vcpkg/vcpkg install ${{ matrix.packages }}:${{ matrix.triplet }}
+        run: vcpkg install ${{ matrix.packages }}:${{ matrix.triplet }}
           
       - if: startsWith(matrix.os, 'macos')
         name: Install packages [macos]
@@ -84,6 +84,12 @@ jobs:
         run: |
           cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }}
 
+      - name: Configure coverage
+        if: startsWith(matrix.os, 'macos') && startsWith(matrix.buildtype, 'Debug')
+        shell: bash
+        run: |
+          cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DBUILD_CODE_COVERAGE=ON
+
       - name: Build
         shell: bash
         run: |
@@ -93,7 +99,6 @@ jobs:
         name: Run Coverage analysis
         shell: bash
         run: |
-          cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DBUILD_CODE_COVERAGE=ON
           cd ${{ runner.workspace }}/build && make coverage_xml
 
       - if: startsWith(matrix.os, 'macos') && startsWith(matrix.buildtype, 'Debug')
