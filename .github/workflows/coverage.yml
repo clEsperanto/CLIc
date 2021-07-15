@@ -48,7 +48,7 @@ jobs:
           echo "CC=${{ matrix.cc }}" >> $GITHUB_ENV
       
       - name: Brew package install
-        run: brew update && brew install lcov 
+        run: brew update && brew install lcov gcovr
 
       # - name: Install packages
       #   shell: bash
