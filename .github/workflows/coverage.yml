@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  coverage:
+  build:
       
     name: ${{ matrix.os }}-${{ matrix.cxx }}-${{ matrix.buildtype }}-Test-And-Coverage
     runs-on: ${{ matrix.os }}
