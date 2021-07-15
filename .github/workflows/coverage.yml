@@ -29,8 +29,8 @@ jobs:
             cxx: clang++
             cc: clang
             triplet: x64-osx
-            packages: >
-              python3 opencl 
+            # packages: >
+            #   python3 opencl 
 
     steps:
 
@@ -47,6 +47,9 @@ jobs:
           echo "CXX=${{ matrix.cxx }}" >> $GITHUB_ENV
           echo "CC=${{ matrix.cc }}" >> $GITHUB_ENV
       
+      - name: Brew package install
+        run: brew update && brew install lcov 
+
       # - name: Install packages
       #   shell: bash
       #   run: |
@@ -55,13 +58,13 @@ jobs:
       #     sudo apt-get install python3.8 -y
       #     sudo apt-get install opencl-headers ocl-icd-opencl-dev lcov gcovr -y
       
-      - name: Run vcpkg
-        uses: lukka/run-vcpkg@main
-        with:
-          vcpkgArguments: ${{ matrix.packages }}
-          vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
-          vcpkgTriplet: ${{ matrix.triplet }}
-          vcpkgGitCommitId: ec6fe06e8da05a8157dc8581fa96b36b571c1bd5
+      # - name: Run vcpkg
+      #   uses: lukka/run-vcpkg@main
+      #   with:
+      #     vcpkgArguments: ${{ matrix.packages }}
+      #     vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
+      #     vcpkgTriplet: ${{ matrix.triplet }}
+      #     vcpkgGitCommitId: ec6fe06e8da05a8157dc8581fa96b36b571c1bd5
 
       - name: Run CMake
         shell: bash
