@@ -38,12 +38,12 @@ jobs:
       - name: Cmake configure
         shell: bash
         run: |
-          cmake -S "${{ github.workspace }}"" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DBUILD_CODE_COVERAGE=ON
+          cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DBUILD_CODE_COVERAGE=ON
 
       - name: Generate coverage
         shell: bash
         run: |    
-          cd "${{ runner.workspace }}/build" && make coverage_xml
+          cd ${{ runner.workspace }}/build && make coverage_xml
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v1
