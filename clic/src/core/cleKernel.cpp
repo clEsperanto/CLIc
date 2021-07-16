@@ -30,22 +30,6 @@ void Kernel::ManageDimensions(std::string tag)
     
 std::string Kernel::LoadPreamble()
 {
-    // std::string preamble;
-    // std::ifstream file(m_PreambleFile.c_str(), std::ios::in | std::ios::binary);
-    // if (file)
-    // {
-    //     file.seekg(0, std::ios::end);
-    //     preamble.resize(file.tellg());
-    //     file.seekg(0, std::ios::beg);
-    //     file.read(&preamble[0], preamble.size());
-    //     file.close();
-    // }
-    // else
-    // {
-    //     std::cerr << "Error reading file! Cannot open " << m_PreambleFile << std::endl;
-    // }
-    // return preamble;
-
     std::string preamble = 
         #include "cle_preamble.h"
     ;
@@ -53,25 +37,7 @@ std::string Kernel::LoadPreamble()
 }
 
 std::string Kernel::LoadSources()
-{
-    // std::string sources;
-    // std::string suffix = "_x.cl";
-    // std::string filename = m_KernelFolder + "/" + m_KernelName + m_DimensionTag + suffix;
-    // std::ifstream file(filename.c_str(), std::ios::in | std::ios::binary);
-    // if (file)
-    // {
-    //     file.seekg(0, std::ios::end);
-    //     sources.resize(file.tellg());
-    //     file.seekg(0, std::ios::beg);
-    //     file.read(&sources[0], sources.size());
-    //     file.close();
-    // }
-    // else
-    // {
-    //     std::cerr << "Error reading file! Cannot open " << filename << std::endl;
-    // }
-    // return sources;
-    
+{  
     std::string kernel_source = "";
     if(!m_Sources.empty())
     {
