@@ -17,7 +17,7 @@ PlatformManager::PlatformManager()
 
 PlatformManager::~PlatformManager()
 {
-    if(m_PlatformList.empty())
+    if(!m_PlatformList.empty())
     {
         m_PlatformList.clear();
     }
