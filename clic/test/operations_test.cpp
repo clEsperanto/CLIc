@@ -28,8 +28,10 @@ int main(int argc, char **argv)
 
     cle::GPU gpu;
     cl::Buffer input_buffer = cle::CreateBuffer<float>(input_data.size(), gpu);
-    cle::WriteBuffer<float>(input_buffer, input_data.data(), input_data.size(), gpu);   
-    cle::ReadBuffer<float>(input_buffer, ouput_data.data(), input_data.size(), gpu);
+    cl::Buffer copy_buffer = cle::CreateBuffer<float>(input_data.size(), gpu);
+    cle::WriteBuffer<float>(input_buffer, input_data.data(), input_data.size(), gpu);  
+    cle::CopyBuffer<float>(input_buffer, copy_buffer, input_data.size(), gpu); 
+    cle::ReadBuffer<float>(copy_buffer, ouput_data.data(), input_data.size(), gpu);
 
     float difference = 0;
     for (size_t i = 0; i < width*height*depth; i++)
