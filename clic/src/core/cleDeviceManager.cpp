@@ -78,7 +78,7 @@ void DeviceManager::SetDevice(std::string name)
     }
 }
 
-std::vector<cl::Device> DeviceManager::GetDeviceList()
+std::vector<cl::Device> DeviceManager::GetDevices()
 {
     return this->m_DeviceList;
 }
@@ -101,7 +101,7 @@ cl::Device DeviceManager::GetDevice(int device_id)
     }
 }
 
-std::string DeviceManager::GetDeviceInfo(int index)
+std::string DeviceManager::DeviceInfo(int index)
 {
     if(index == -1)
     {
@@ -122,12 +122,12 @@ std::string DeviceManager::GetDeviceInfo(int index)
 }
 
 
-std::string DeviceManager::DeviceListInfo()
+std::string DeviceManager::DevicesInfo()
 {
     std::string out ("List of Device available:\n");
     for( auto ite = this->m_DeviceList.begin(); ite != this->m_DeviceList.end(); ++ite)
     {
-        out += GetDeviceInfo(ite - this->m_DeviceList.begin());
+        out += DeviceInfo(ite - this->m_DeviceList.begin());
     }
 
     int id_bestForImages(0), id_bestForMemory(0), id_bestForSpeed(0);

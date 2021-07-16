@@ -38,6 +38,7 @@ public:
     PlatformManager GetPlatformManager();
 
     void SelectDevice(std::string);
+    void SelectDevice(int=0);
 
     bool FindProgram(size_t);
     cl::Program GetProgram(size_t);

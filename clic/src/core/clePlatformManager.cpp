@@ -23,14 +23,12 @@ PlatformManager::~PlatformManager()
     }
 }
 
-
-std::vector<cl::Platform> PlatformManager::GetPlatformList()
+std::vector<cl::Platform> PlatformManager::GetPlatforms()
 {
     return this->m_PlatformList;
 }
 
-
-std::string PlatformManager::PlatformListInfo()
+std::string PlatformManager::PlatformsInfo()
 {
     std::string out ("List of Platform available:\n");
     for( auto ite = this->m_PlatformList.begin(); ite != this->m_PlatformList.end(); ++ite)
