@@ -63,7 +63,7 @@ std::string Kernel::LoadDefines()
     // loop on parameters
     for (auto itr = m_ParameterList.begin(); itr != m_ParameterList.end(); ++itr)
     {
-        if (itr->second->IsObject(LightObject::cleBuffer))
+        if (itr->second->IsObjectType(LightObject::cleBuffer))
         {                
             // get object information
             std::shared_ptr<cle::Buffer> object = std::dynamic_pointer_cast<cle::Buffer>(itr->second);
@@ -170,7 +170,7 @@ void Kernel::SetArguments()
         if(m_ParameterList.find(it->c_str()) != m_ParameterList.end())
         {
             std::string tag = it->c_str();
-            if (m_ParameterList.at(tag)->IsObject(LightObject::cleBuffer))
+            if (m_ParameterList.at(tag)->IsObjectType(LightObject::cleBuffer))
             {    
                 std::shared_ptr<cle::Buffer> object = std::dynamic_pointer_cast<cle::Buffer>(m_ParameterList.at(tag));
                 this->m_Kernel.setArg(index, object->GetObject());
@@ -180,12 +180,12 @@ void Kernel::SetArguments()
                     m_GlobalRange[i] = std::max(m_GlobalRange[i], tempDim);
                 }
             }
-            else if (m_ParameterList.at(tag)->IsObject(LightObject::cleFloat))
+            else if (m_ParameterList.at(tag)->IsObjectType(LightObject::cleFloat))
             {    
                 std::shared_ptr<cle::Float> object = std::dynamic_pointer_cast<cle::Float>(m_ParameterList.at(tag));
                 this->m_Kernel.setArg(index, object->GetObject());
             }
-            else if (m_ParameterList.at(tag)->IsObject(LightObject::cleInt))
+            else if (m_ParameterList.at(tag)->IsObjectType(LightObject::cleInt))
             {   
                 std::shared_ptr<cle::Int> object = std::dynamic_pointer_cast<cle::Int>(m_ParameterList.at(tag));
                 this->m_Kernel.setArg(index, object->GetObject());
