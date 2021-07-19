@@ -17,7 +17,8 @@ add_subdirectory(${LIBRARY_DIR})
 # Build and run tests
 if(BUILD_TESTING)
     include(CTest)
-    add_subdirectory(${LIBRARY_DIR}/test)
+    add_subdirectory(${LIBRARY_DIR}/tests)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
 endif()
 
 # Build and run benchmark
@@ -30,18 +31,18 @@ if(BUILD_CODE_COVERAGE)
         NAME coverage
         EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage
         BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
-        EXCLUDE "/build/benchmark/*"
+        EXCLUDE "/benchmark/*"
         )
     setup_target_for_coverage_gcovr_html(
         NAME coverage_html
         EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage
         BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
-        EXCLUDE "/build/benchmark/*"
+        EXCLUDE "/benchmark/*"
         )
     setup_target_for_coverage_gcovr_xml(
         NAME coverage_xml
         EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage
         BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
-        EXCLUDE "/build/benchmark/*"
+        EXCLUDE "/benchmark/*"
         )
 endif()

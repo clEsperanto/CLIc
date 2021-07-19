@@ -30,22 +30,6 @@ void Kernel::ManageDimensions(std::string tag)
     
 std::string Kernel::LoadPreamble()
 {
-    // std::string preamble;
-    // std::ifstream file(m_PreambleFile.c_str(), std::ios::in | std::ios::binary);
-    // if (file)
-    // {
-    //     file.seekg(0, std::ios::end);
-    //     preamble.resize(file.tellg());
-    //     file.seekg(0, std::ios::beg);
-    //     file.read(&preamble[0], preamble.size());
-    //     file.close();
-    // }
-    // else
-    // {
-    //     std::cerr << "Error reading file! Cannot open " << m_PreambleFile << std::endl;
-    // }
-    // return preamble;
-
     std::string preamble = 
         #include "cle_preamble.h"
     ;
@@ -53,34 +37,20 @@ std::string Kernel::LoadPreamble()
 }
 
 std::string Kernel::LoadSources()
-{
-    // std::string sources;
-    // std::string suffix = "_x.cl";
-    // std::string filename = m_KernelFolder + "/" + m_KernelName + m_DimensionTag + suffix;
-    // std::ifstream file(filename.c_str(), std::ios::in | std::ios::binary);
-    // if (file)
-    // {
-    //     file.seekg(0, std::ios::end);
-    //     sources.resize(file.tellg());
-    //     file.seekg(0, std::ios::beg);
-    //     file.read(&sources[0], sources.size());
-    //     file.close();
-    // }
-    // else
-    // {
-    //     std::cerr << "Error reading file! Cannot open " << filename << std::endl;
-    // }
-    // return sources;
-    
-    if(m_Sources.size() == 0)
+{  
+    std::string kernel_source = "";
+    if(!m_Sources.empty())
     {
-        return "";
+        if(m_Sources.size() == 1)
+        {
+            kernel_source = m_Sources.begin()->second.c_str();
+        }
+        else
+        {
+            kernel_source = m_Sources[(m_KernelName + m_DimensionTag).c_str()];
+        }
     }
-    else
-    {
-        return m_Sources[(m_KernelName + m_DimensionTag).c_str()];
-    }
-    
+    return kernel_source;
 }
 
 std::string Kernel::LoadDefines()
@@ -93,7 +63,7 @@ std::string Kernel::LoadDefines()
     // loop on parameters
     for (auto itr = m_ParameterList.begin(); itr != m_ParameterList.end(); ++itr)
     {
-        if (itr->second->IsObject(LightObject::cleBuffer))
+        if (itr->second->IsObjectType(LightObject::cleBuffer))
         {                
             // get object information
             std::shared_ptr<cle::Buffer> object = std::dynamic_pointer_cast<cle::Buffer>(itr->second);
@@ -200,7 +170,7 @@ void Kernel::SetArguments()
         if(m_ParameterList.find(it->c_str()) != m_ParameterList.end())
         {
             std::string tag = it->c_str();
-            if (m_ParameterList.at(tag)->IsObject(LightObject::cleBuffer))
+            if (m_ParameterList.at(tag)->IsObjectType(LightObject::cleBuffer))
             {    
                 std::shared_ptr<cle::Buffer> object = std::dynamic_pointer_cast<cle::Buffer>(m_ParameterList.at(tag));
                 this->m_Kernel.setArg(index, object->GetObject());
@@ -210,12 +180,12 @@ void Kernel::SetArguments()
                     m_GlobalRange[i] = std::max(m_GlobalRange[i], tempDim);
                 }
             }
-            else if (m_ParameterList.at(tag)->IsObject(LightObject::cleFloat))
+            else if (m_ParameterList.at(tag)->IsObjectType(LightObject::cleFloat))
             {    
                 std::shared_ptr<cle::Float> object = std::dynamic_pointer_cast<cle::Float>(m_ParameterList.at(tag));
                 this->m_Kernel.setArg(index, object->GetObject());
             }
-            else if (m_ParameterList.at(tag)->IsObject(LightObject::cleInt))
+            else if (m_ParameterList.at(tag)->IsObjectType(LightObject::cleInt))
             {   
                 std::shared_ptr<cle::Int> object = std::dynamic_pointer_cast<cle::Int>(m_ParameterList.at(tag));
                 this->m_Kernel.setArg(index, object->GetObject());

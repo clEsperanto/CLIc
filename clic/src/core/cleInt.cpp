@@ -23,17 +23,12 @@ size_t Int::GetSize() const
     return 1;
 }
 
-size_t Int::GetBitSize() const
-{
-    return sizeof(int);
-}
-
 std::string Int::GetObjectType() const
 {
     return this->ObjectTypeToString(O);
 }
 
-bool Int::IsObject(LightObject::ObjectType str) const
+bool Int::IsObjectType(LightObject::ObjectType str) const
 {
     return this->O == str;
 }

@@ -14,7 +14,7 @@ using std::vector;
 using std::cout;
 using std::map;
 
-class Mean2DBoxBenchmark : public BenchmarkBase
+class MeanBoxBenchmark : public BenchmarkBase
 {
 protected:
     cle::GPU gpu;
@@ -34,17 +34,17 @@ protected:
 public:
     unsigned dataWidth;
     unsigned radius = 3;
-    Mean2DBoxBenchmark(const cle::GPU& _gpu, const cle::CLE& _cle) : gpu(_gpu), cle(_cle){}
-    Mean2DBoxBenchmark() : gpu(cle::GPU()), cle(cle::CLE(gpu)){}
-    virtual ~Mean2DBoxBenchmark(){}
+    MeanBoxBenchmark(const cle::GPU& _gpu, const cle::CLE& _cle) : gpu(_gpu), cle(_cle){}
+    MeanBoxBenchmark() : gpu(cle::GPU()), cle(cle::CLE(gpu)){}
+    virtual ~MeanBoxBenchmark(){}
 };
 
-class Mean2DBoxNonSeperableBenchmark : public Mean2DBoxBenchmark
+class MeanBoxNonSeperableBenchmark : public MeanBoxBenchmark
 {
 protected:
     virtual void Iteration()
     {
-        cle.Mean2DSphere(gpuInput, gpuOutput, radius, radius);
+        cle.MeanSphere(gpuInput, gpuOutput, radius, radius);
     }
 
     virtual void Compile(cle::CLE& cle)
@@ -52,22 +52,22 @@ protected:
         vector<unsigned int> dim{{1, 1, 1}};
         cle::Buffer in = cle.Create<float>(dim.data());
         cle::Buffer out = cle.Create<float>(dim.data());
-        cle.Mean2DSphere(in, out, 1, 1);
+        cle.MeanSphere(in, out, 1, 1);
     }
 
 public:
-    Mean2DBoxNonSeperableBenchmark(const cle::GPU& _gpu, const cle::CLE& _cle) : Mean2DBoxBenchmark(_gpu, _cle){}
-    Mean2DBoxNonSeperableBenchmark() : Mean2DBoxBenchmark(){}
-    virtual ~Mean2DBoxNonSeperableBenchmark(){}
+    MeanBoxNonSeperableBenchmark(const cle::GPU& _gpu, const cle::CLE& _cle) : MeanBoxBenchmark(_gpu, _cle){}
+    MeanBoxNonSeperableBenchmark() : MeanBoxBenchmark(){}
+    virtual ~MeanBoxNonSeperableBenchmark(){}
 };
 
-class Mean2DBoxSeperableBenchmark : public Mean2DBoxBenchmark
+class MeanBoxSeperableBenchmark : public MeanBoxBenchmark
 {
 protected:
 
     virtual void Iteration()
     {
-        cle.Mean2DBox(gpuInput, gpuOutput, radius, radius);
+        cle.MeanBox(gpuInput, gpuOutput, radius, radius);
     }
 
     virtual void Compile(cle::CLE& cle)
@@ -75,13 +75,13 @@ protected:
         vector<unsigned int> dim{{1, 1, 1}};
         cle::Buffer in = cle.Create<float>(dim.data());
         cle::Buffer out = cle.Create<float>(dim.data());
-        cle.Mean2DBox(in, out, 1, 1);
+        cle.MeanBox(in, out, 1, 1);
     }
 
 public:
-    Mean2DBoxSeperableBenchmark(const cle::GPU& _gpu, const cle::CLE& _cle) : Mean2DBoxBenchmark(_gpu, _cle){}
-    Mean2DBoxSeperableBenchmark() : Mean2DBoxBenchmark(){}
-    virtual ~Mean2DBoxSeperableBenchmark(){}
+    MeanBoxSeperableBenchmark(const cle::GPU& _gpu, const cle::CLE& _cle) : MeanBoxBenchmark(_gpu, _cle){}
+    MeanBoxSeperableBenchmark() : MeanBoxBenchmark(){}
+    virtual ~MeanBoxSeperableBenchmark(){}
 };
 
 template<class T>
@@ -157,17 +157,17 @@ int main(int argc, char** argv) {
     }
 
     cout << "Seperable (former: 2D Box)" << endl;
-    auto timingsSeperableMsBySize = getTimingsBySizes<Mean2DBoxSeperableBenchmark>(maxSize);
+    auto timingsSeperableMsBySize = getTimingsBySizes<MeanBoxSeperableBenchmark>(maxSize);
     cout << "Non-Seperable (former: 2D Sphere)" << endl;
-    auto timingsNonSeperableMsBySize = getTimingsBySizes<Mean2DBoxNonSeperableBenchmark>(maxSize);
+    auto timingsNonSeperableMsBySize = getTimingsBySizes<MeanBoxNonSeperableBenchmark>(maxSize);
     cout << endl << endl;
 
     cout << "Measuring Kernel compile Times...";
     cout.flush();
-    Mean2DBoxSeperableBenchmark benchSep;
+    MeanBoxSeperableBenchmark benchSep;
     benchSep.iterationCompilationCount = 32;
     unsigned int compileSeperableMs = benchSep.GetCompilationMs();
-    Mean2DBoxNonSeperableBenchmark benchNonSep;
+    MeanBoxNonSeperableBenchmark benchNonSep;
     benchNonSep.iterationCompilationCount = 32;
     unsigned int compileNonSeperableMs = benchNonSep.GetCompilationMs();
     cout << "OK" << endl;
@@ -198,9 +198,9 @@ int main(int argc, char** argv) {
     cout << endl;
 
     cout << "Seperable (former: 2D Box)" << endl;
-    auto timingsSeperableMsByRadius = getTimingsByRadius<Mean2DBoxSeperableBenchmark>(defaultDataWidth);
+    auto timingsSeperableMsByRadius = getTimingsByRadius<MeanBoxSeperableBenchmark>(defaultDataWidth);
     cout << "Non-Seperable (former: 2D Sphere)" << endl;
-    auto timingsNonSeperableMsByRadius = getTimingsByRadius<Mean2DBoxNonSeperableBenchmark>(defaultDataWidth);
+    auto timingsNonSeperableMsByRadius = getTimingsByRadius<MeanBoxNonSeperableBenchmark>(defaultDataWidth);
 
     cout << "saving results...";
     cout.flush();

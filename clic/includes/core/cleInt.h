@@ -24,12 +24,11 @@ public:
 
     int GetObject();
     size_t GetSize() const;
-    size_t GetBitSize() const;
 
 
     std::string GetDataType() const;
     std::string GetObjectType() const;
-    bool IsObject(LightObject::ObjectType) const;
+    bool IsObjectType(LightObject::ObjectType) const;
 
 };
 

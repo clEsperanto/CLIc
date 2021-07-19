@@ -17,10 +17,9 @@ public:
     PlatformManager();
     ~PlatformManager();
 
-    std::vector<cl::Platform> GetPlatformList();
-    cl::Platform GetPlatform(int);
+    std::vector<cl::Platform> GetPlatforms();
 
-    std::string PlatformListInfo();
+    std::string PlatformsInfo();
 
 };
 

@@ -18,11 +18,6 @@ float Float::GetObject()
     return m_Object;
 }
 
-size_t Float::GetBitSize() const
-{
-    return sizeof(float);
-}
-
 size_t Float::GetSize() const
 {
     return 1;
@@ -33,7 +28,7 @@ std::string Float::GetObjectType() const
     return this->ObjectTypeToString(O);
 }
 
-bool Float::IsObject(LightObject::ObjectType str) const
+bool Float::IsObjectType(LightObject::ObjectType str) const
 {
     return this->O == str;
 }

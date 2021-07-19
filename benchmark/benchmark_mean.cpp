@@ -29,7 +29,7 @@ protected:
 
     virtual void Iteration()
     {
-        cle.Mean2DBox(gpuInput, gpuOutput, 4, 4);
+        cle.MeanBox(gpuInput, gpuOutput, 4, 4);
     }
 
     virtual void Teardown() {}

@@ -30,9 +30,7 @@ public:
 
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
-    void SetRadiusX(int);
-    void SetRadiusY(int);
-    void SetRadiusZ(int);
+    void SetRadius(int=0, int=0, int=0);
     void Execute();
 
 private:

@@ -20,8 +20,7 @@ public:
     ~LightObject() = default;
 
     virtual std::string GetObjectType() const = 0;
-    virtual bool IsObject(ObjectType) const = 0;
-    virtual size_t GetBitSize() const = 0;
+    virtual bool IsObjectType(ObjectType) const = 0;
 
 protected:    
     std::string ObjectTypeToString(const ObjectType) const;

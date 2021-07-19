@@ -10,7 +10,7 @@ GPU::GPU()
 {
     this->m_PlatformManager = PlatformManager();
 
-    this->m_DeviceManager = DeviceManager(this->m_PlatformManager.GetPlatformList());
+    this->m_DeviceManager = DeviceManager(this->m_PlatformManager.GetPlatforms());
 
     this->m_ContextManager = ContextManager(this->m_DeviceManager.GetDevice());
 
@@ -22,7 +22,7 @@ GPU::GPU(std::string name)
 {
     this->m_PlatformManager = PlatformManager();
 
-    this->m_DeviceManager = DeviceManager(this->m_PlatformManager.GetPlatformList());
+    this->m_DeviceManager = DeviceManager(this->m_PlatformManager.GetPlatforms());
     this->m_DeviceManager.SetDevice(name);
 
     this->m_ContextManager = ContextManager(this->m_DeviceManager.GetDevice());
@@ -34,6 +34,14 @@ GPU::GPU(std::string name)
 void GPU::SelectDevice(std::string name)
 {
     this->m_DeviceManager.SetDevice(name);
+    this->m_ContextManager = ContextManager(this->m_DeviceManager.GetDevice());
+    this->m_CommandQueueManager = CommandQueueManager(this->m_ContextManager.GetContext(), 
+                                                this->m_DeviceManager.GetDevice());
+}
+
+void GPU::SelectDevice(int id)
+{
+    this->m_DeviceManager.SetDevice(id);
     this->m_ContextManager = ContextManager(this->m_DeviceManager.GetDevice());
     this->m_CommandQueueManager = CommandQueueManager(this->m_ContextManager.GetContext(), 
                                                 this->m_DeviceManager.GetDevice());
@@ -78,14 +86,14 @@ void GPU::AddProgram(cl::Program program, size_t hash)
 
 void GPU::GetInfo()
 {
-    std::cout << m_PlatformManager.PlatformListInfo() << std::endl;
-    std::cout << m_DeviceManager.DeviceListInfo() << std::endl;
+    std::cout << m_PlatformManager.PlatformsInfo() << std::endl;
+    std::cout << m_DeviceManager.DevicesInfo() << std::endl;
 }
 
 void GPU::GetSelectedDeviceInfo()
 {
     std::cout << "Current Selected Device: " << std::endl;
-    std::cout << m_DeviceManager.GetDeviceInfo() << std::endl;
+    std::cout << m_DeviceManager.DeviceInfo() << std::endl;
 }
 
 } // namespace cle

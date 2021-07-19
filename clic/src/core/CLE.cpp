@@ -80,7 +80,7 @@ void CLE::EqualConstant(Buffer& src, Buffer& dst, float scalar)
     kernel.Execute();
 }
 
-void CLE::GaussianBlur3D(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
+void CLE::GaussianBlur(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
 {
     GaussianBlurKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -89,16 +89,7 @@ void CLE::GaussianBlur3D(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, f
     kernel.Execute();
 }
 
-void CLE::GaussianBlur2D(Buffer& src, Buffer& dst, float sigmaX, float sigmaY)
-{
-    GaussianBlurKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetSigma(sigmaX, sigmaY, 0);
-    kernel.Execute();
-}
-
-void CLE::Maximum3DBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
+void CLE::MaximumBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
 {
     MaximumBoxKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -107,16 +98,7 @@ void CLE::Maximum3DBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, flo
     kernel.Execute();
 }
 
-void CLE::Maximum2DBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY)
-{
-    MaximumBoxKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetRadius(sigmaX, sigmaY, 0);
-    kernel.Execute();
-}
-
-void CLE::Minimum3DBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
+void CLE::MinimumBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
 {
     MinimumBoxKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -125,30 +107,12 @@ void CLE::Minimum3DBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, flo
     kernel.Execute();
 }
 
-void CLE::Minimum2DBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY)
-{
-    MinimumBoxKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetRadius(sigmaX, sigmaY, 0);
-    kernel.Execute();
-}
-
-void CLE::Mean3DBox(Buffer& src, Buffer& dst, float radius_x, float radius_y, float radius_z)
+void CLE::MeanBox(Buffer& src, Buffer& dst, float radius_x, float radius_y, float radius_z)
 {
     MeanBoxKernel kernel(this->m_gpu);
     kernel.SetInput(src);
     kernel.SetOutput(dst);
     kernel.SetRadius(radius_x, radius_y, radius_z);
-    kernel.Execute();
-}
-
-void CLE::Mean2DBox(Buffer& src, Buffer& dst, float radius_x, float radius_y)
-{
-    MeanBoxKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetRadius(radius_x, radius_y, 0);
     kernel.Execute();
 }
 
@@ -252,7 +216,7 @@ void CLE::MinimumOfAllPixels(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }  
 
-void CLE::DifferenceOfGaussian3D(Buffer& src, Buffer& dst, float sigma1x, float sigma1y, float sigma1z, 
+void CLE::DifferenceOfGaussian(Buffer& src, Buffer& dst, float sigma1x, float sigma1y, float sigma1z, 
                                                          float sigma2x, float sigma2y, float sigma2z)
 {
     DifferenceOfGaussianKernel kernel(this->m_gpu);
@@ -263,35 +227,12 @@ void CLE::DifferenceOfGaussian3D(Buffer& src, Buffer& dst, float sigma1x, float 
     kernel.Execute(); 
 }
 
-void CLE::DifferenceOfGaussian2D(Buffer& src, Buffer& dst, float sigma1x, float sigma1y, 
-                                                         float sigma2x, float sigma2y)
-{
-    DifferenceOfGaussianKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetSigma1(sigma1x, sigma1y, 0);
-    kernel.SetSigma2(sigma2x, sigma2y, 0);
-    kernel.Execute(); 
-}
-
-void CLE::Mean2DSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y)
+void CLE::MeanSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y, int radius_z)
 {
     MeanSphereKernel kernel(this->m_gpu);
     kernel.SetInput(src);
     kernel.SetOutput(dst);
-    kernel.SetRadiusX(radius_x);
-    kernel.SetRadiusY(radius_y);
-    kernel.Execute();
-}
-
-void CLE::Mean3DSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y, int radius_z)
-{
-    MeanSphereKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetRadiusX(radius_x);
-    kernel.SetRadiusY(radius_y);
-    kernel.SetRadiusY(radius_z);
+    kernel.SetRadius(radius_x, radius_y, radius_z);
     kernel.Execute();
 }
 

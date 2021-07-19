@@ -25,12 +25,10 @@ public:
 
     cl::Device GetDevice();
     cl::Device GetDevice(int);
+    std::vector<cl::Device> GetDevices();
 
-    std::vector<cl::Device> GetDeviceList();
-
-    std::string GetDeviceInfo(int=-1);
-    std::string DeviceListInfo();
-
+    std::string DeviceInfo(int=-1);
+    std::string DevicesInfo();
 
 };
 

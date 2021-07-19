@@ -15,7 +15,7 @@ private:
     cl::CommandQueue m_CommandQueue;
 
 public:
-    CommandQueueManager(){};
+    CommandQueueManager() =default;
     CommandQueueManager(cl::Context, cl::Device);
     ~CommandQueueManager();
 

@@ -32,9 +32,6 @@ private:
     cl::Program m_Program;
     cl::Kernel m_Kernel;
 
-    // const std::string m_KernelFolder = KERNELS_DIR;  // ocl kernel folder path
-    // const std::string m_PreambleFile = PREAMBLE_OCL; // ocl preamble file path
-
 protected:
     GPU m_gpu;
 

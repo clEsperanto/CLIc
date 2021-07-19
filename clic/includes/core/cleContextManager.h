@@ -16,7 +16,7 @@ private:
     cl::Context m_Context;
 
 public:
-    ContextManager(){};
+    ContextManager() =default;
     ContextManager(cl::Device);
     ContextManager(std::vector<cl::Device>);
     ~ContextManager();
