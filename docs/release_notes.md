@@ -11,6 +11,7 @@
   - CMake search for OpenCL system installation: `find_package(OpenCL REQUIRED)`
   - Use [OpenCL API C++ Binding](https://github.com/KhronosGroup/OpenCL-CLHPP) submodule if not installed on system.
   - Run Python script `stringify.py` at build time for converting `.cl` into `.h`
+  - Run Python script `autogeneration_script.py` at build time for generating repetivive code (e.g. `cleKernelList.h`)
   - New configuration options for building test, benchmark, code coverage, and documentations
   - Define OpenCL standard version to use (Default: 1.2)
 - Rewrite of installation documentation
