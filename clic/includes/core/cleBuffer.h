@@ -30,7 +30,8 @@ public:
     size_t GetSize() const;
     unsigned int* GetDimensions();
 
-    bool IsObject(LightObject::ObjectType) const;
+    bool IsObjectType(LightObject::ObjectType) const;
+    bool IsDataType(LightObject::DataType) const;
     std::string GetObjectType() const;
     std::string GetDataType() const;
 };

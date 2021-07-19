@@ -28,7 +28,7 @@ std::string Int::GetObjectType() const
     return this->ObjectTypeToString(O);
 }
 
-bool Int::IsObject(LightObject::ObjectType str) const
+bool Int::IsObjectType(LightObject::ObjectType str) const
 {
     return this->O == str;
 }

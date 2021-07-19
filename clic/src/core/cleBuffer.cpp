@@ -48,9 +48,14 @@ std::string Buffer::GetDataType() const
     return this->DataTypeToString(T);
 }
 
-bool Buffer::IsObject(LightObject::ObjectType str) const
+bool Buffer::IsObjectType(LightObject::ObjectType str) const
 {
     return this->O == str;
+}
+
+bool Buffer::IsDataType(LightObject::DataType str) const
+{
+    return this->T == str;
 }
 
 } // namespace cle

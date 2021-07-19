@@ -28,7 +28,7 @@ public:
 
     std::string GetDataType() const;
     std::string GetObjectType() const;
-    bool IsObject(LightObject::ObjectType) const;
+    bool IsObjectType(LightObject::ObjectType) const;
 
 };
 
