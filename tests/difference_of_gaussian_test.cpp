@@ -57,13 +57,7 @@ int main(int argc, char **argv)
     float difference = 0;
     for (size_t i = 0; i < output_data.size(); i++)
     {
-        if(i%width==0)
-        {
-            std::cout << std::endl;
-        }
-        std::cout << output_data[i] << " ";
         difference += std::abs(valid_data[i] - std::round(output_data[i] * 1000000.0) / 1000000.0);
     }
-    std::cout << std::endl;
     return difference > std::numeric_limits<float>::epsilon();
 }

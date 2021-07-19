@@ -48,7 +48,6 @@ int main(int argc, char **argv)
     float difference = 0;
     for (size_t i = 0; i < output_data.size(); i++)
     {
-        std::cout << valid_data[i] << " " << output_data[i] << std::endl;
         difference += std::abs(valid_data[i] - output_data[i]);
     }
     return difference > std::numeric_limits<float>::epsilon();
