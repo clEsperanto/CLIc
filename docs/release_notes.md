@@ -20,7 +20,7 @@
 - User can now select specific device based on name.
 
 ## Miscellaneous
-- Split library tests into two sets, low level for testing library classes, methods, and functions (developper oriented), and high level to test getway operations (user oriented).
+- Split library tests into two sets, low level for testing library classes, methods, and functions (developper oriented, unity tests, etc.), and high level to test getway operations (user oriented, clesperanto functionalities, etc.).
 - Remove 2D and 3D from function call name. Dimensionability is defined by 3rd dimension parameters not equal to 0. 
 
 # 0.2.0 - February 1st 2020 (not released)
