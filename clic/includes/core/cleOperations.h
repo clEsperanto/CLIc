@@ -7,14 +7,14 @@
 
 namespace cle
 {
-
-    template<class T>
-    void FillBuffer(cl::Buffer src, T value, size_t size, GPU gpu)
-    {
-        gpu.GetCommandQueueManager().GetCommandQueue().enqueueFillBuffer(
-            src, value, 0, size
-            ); 
-    }
+    // Removed for now, prefere to use kernel operation Set()
+    // template<class T>
+    // void FillBuffer(cl::Buffer src, T value, size_t size, GPU gpu)
+    // {
+    //     gpu.GetCommandQueueManager().GetCommandQueue().enqueueFillBuffer(
+    //         src, value, 0, size
+    //         ); 
+    // }
 
     template<class T>
     void CopyBuffer(cl::Buffer src, cl::Buffer dst, size_t size, GPU gpu)
