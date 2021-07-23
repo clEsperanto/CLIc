@@ -1,4 +1,4 @@
-# 0.3.0 - X Xth 2021 (ongoing)
+# 0.3.0 - July 23th 2021
 
 ## Bug fixes
 - Fix issue of `#include <cl2.hpp>` vs `#include <opencl.hpp>` ([#37](https://github.com/clEsperanto/CLIc_prototype/issues/37))
