@@ -34,6 +34,5 @@ int main(int argc, char **argv)
 
     // Verify output
     float difference = std::abs(valid_data[0] - output_data[0]); 
-    std::cout << "real maximum = " << valid_data[0] << ", computed maximum = " << output_data[0] << std::endl;
     return difference > std::numeric_limits<float>::epsilon();
 }

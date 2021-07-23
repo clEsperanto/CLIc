@@ -1,8 +1,8 @@
 [![CI-Build](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/build.yml/badge.svg)](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/build.yml)
 [![CI-Tests](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/tests_and_coverage.yml/badge.svg)](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/tests_and_coverage.yml) 
-[![codecov](https://codecov.io/gh/clEsperanto/CLIc_prototype/branch/master/graph/badge.svg?token=QRSZHYDFIF)](https://codecov.io/gh/clEsperanto/CLIc_prototype)
-[![License](https://img.shields.io/pypi/l/pyclesperanto_prototype.svg?color=green)](https://github.com/clEsperanto/CLIc_prototype/blob/master/LICENSE)
-[![website](https://img.shields.io/website?url=http%3A%2F%2Fclesperanto.net)](http://clesperanto.net)
+[![Codecov](https://codecov.io/gh/clEsperanto/CLIc_prototype/branch/master/graph/badge.svg?token=QRSZHYDFIF)](https://codecov.io/gh/clEsperanto/CLIc_prototype)
+[![License](https://img.shields.io/badge/license-BSD-informational)](https://github.com/clEsperanto/CLIc_prototype/blob/master/LICENSE)
+[![Website](https://img.shields.io/website?url=http%3A%2F%2Fclesperanto.net)](http://clesperanto.net)
 
 # CLIc
 
@@ -17,12 +17,12 @@ Right now, this is very preliminary, and mainly focussed on running a few kernel
 
 int main( int argc, char** argv)
 {
-    cle::GPU gpu();       // Initialise GPU 
-    cle::CLE cle(gpu);    // Initialise cle
+    cle::GPU gpu();       // Initialise default GPU 
+    cle::CLE cle(gpu);    // Create cle instance
 
     // store data to process in vector
     unsigned int dimensions[3] = {width, height, depth};
-    std::vector<float> input [width * height * depth]; 
+    std::vector<float> input (width * height * depth); 
 
     /*
      * ... fill input with data to process  
@@ -30,18 +30,18 @@ int main( int argc, char** argv)
 
     // push data into GPU, and create the output into GPU
     cle::Buffer src = cle.Push<float>(input, dimensions);
-
-    // create output GPU object and apply filter
     cle::Buffer dst = cle.Create<float>(dimensions);
+
+    // apply filter with parameters
     cle.AddImageAndScalar(src, dst, 10);  
 
-    // get output from filter into vector
-    Image<float> output = cle.Pull<float>(dst); 
+    // pull output from GPU into vector
+    std::vector<float> output = cle.Pull<float>(dst); 
 
     return EXIT_SUCCESS;
 }
 ```
-See more complete example on usage by looking at the [validation tests](https://github.com/clEsperanto/CLIc_prototype/tree/master/test).
+See more complete example on usage by looking at the [operations tests](https://github.com/clEsperanto/CLIc_prototype/tree/master/tests).
 
 # Installation
 
@@ -55,21 +55,20 @@ Follow the [pre-requish installation guide](./prerequish.md) for a smooth and er
 Clone the repository and submodule
 ```
 git clone git@github.com:clEsperanto/CLIc_prototype.git CLIc
-cd CLIc_prototype
+cd CLIc
 git submodule update --init --recursive
 ```
 
 Create a build folder and configure cmake to generate the adapted makefile
 ```
 mkdir build && cd build
-cmake ..
+cmake .. -DPREFIX=/path/to/installation/folder
 make
 make test
 make install
 ```
 
-You can modify installation location using `-DPREFIX=/installation/path` when calling cmake.  
-Other configuration variable available through cmake configuration (for advance user). 
+You can modify installation location using `-DPREFIX=/path/to/installation/folder` when calling cmake.
 
 ### Kernels
 CLIc filters rely on the [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels).

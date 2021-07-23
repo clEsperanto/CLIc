@@ -13,3 +13,8 @@ add_executable(operations_test operations_test.cpp)
 add_dependencies(operations_test CLIc) 
 target_link_libraries(operations_test PRIVATE CLIc::CLIc)
 add_test(NAME operations_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/operations_test)
+
+add_executable(types_test types_test.cpp)
+add_dependencies(types_test CLIc) 
+target_link_libraries(types_test PRIVATE CLIc::CLIc)
+add_test(NAME types_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/types_test)

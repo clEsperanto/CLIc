@@ -44,19 +44,27 @@ add_custom_target(
     generate_preamble ALL
     COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/stringify_clij.py ${CLIC_PREAMBLE_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/includes/core/
     BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/includes/core/cle_preamble.h
-    COMMENT "Generating cle preamble header."
+    COMMENT "Generating cle_preamble header."
 )
 
 # generate kernel headers
 add_custom_target(
     generate_kernels ALL
     COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/stringify_clij.py ${CLIC_KERNELS_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/kernels/
-    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/kernels #/timestamp.txt
-    COMMENT "Generating cle kernels header."
+    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/kernels 
+    COMMENT "Generating kernels header from clij opencl files."
+)
+
+# generate kernel headers
+add_custom_target(
+    generate_kernels_list ALL
+    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/autogeneration_script.py ${CMAKE_CURRENT_SOURCE_DIR}/includes
+    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/includes/core/cleKernelList.h 
+    COMMENT "Generating cleKernelList header."
 )
 
 # Target dependencies
-add_dependencies(${LIBRARY_NAME} generate_preamble generate_kernels)
+add_dependencies(${LIBRARY_NAME} generate_preamble generate_kernels generate_kernels_list)
 
 # Target links
 target_link_libraries(${LIBRARY_NAME} OpenCL::OpenCL)

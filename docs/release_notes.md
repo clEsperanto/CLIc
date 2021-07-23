@@ -11,6 +11,7 @@
   - CMake search for OpenCL system installation: `find_package(OpenCL REQUIRED)`
   - Use [OpenCL API C++ Binding](https://github.com/KhronosGroup/OpenCL-CLHPP) submodule if not installed on system.
   - Run Python script `stringify.py` at build time for converting `.cl` into `.h`
+  - Run Python script `autogeneration_script.py` at build time for generating repetivive code (e.g. `cleKernelList.h`)
   - New configuration options for building test, benchmark, code coverage, and documentations
   - Define OpenCL standard version to use (Default: 1.2)
 - Rewrite of installation documentation
@@ -19,7 +20,7 @@
 - User can now select specific device based on name.
 
 ## Miscellaneous
-- Split library tests into two sets, low level for testing library classes, methods, and functions (developper oriented), and high level to test getway operations (user oriented).
+- Split library tests into two sets, low level for testing library classes, methods, and functions (developper oriented, unity tests, etc.), and high level to test getway operations (user oriented, clesperanto functionalities, etc.).
 - Remove 2D and 3D from function call name. Dimensionability is defined by 3rd dimension parameters not equal to 0. 
 
 # 0.2.0 - February 1st 2020 (not released)
