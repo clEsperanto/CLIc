@@ -1,6 +1,6 @@
 
-#include "cleExecuteSeparableKernel.h"
-#include "cleSeparableKernel.h"
+#include "cleExecuteSeparableKernel.hpp"
+#include "cleSeparableKernel.hpp"
 
 namespace cle
 {

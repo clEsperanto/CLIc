@@ -1,9 +1,9 @@
 
 
-#include "cleSumOfAllPixelsKernel.h"
-#include "cleSumZProjectionKernel.h"
-#include "cleSumYProjectionKernel.h"
-#include "cleSumXProjectionKernel.h"
+#include "cleSumOfAllPixelsKernel.hpp"
+#include "cleSumZProjectionKernel.hpp"
+#include "cleSumYProjectionKernel.hpp"
+#include "cleSumXProjectionKernel.hpp"
 
 namespace cle
 {

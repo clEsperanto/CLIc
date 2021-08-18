@@ -1,6 +1,6 @@
 
 
-#include "cleSobelKernel.h"
+#include "cleSobelKernel.hpp"
 
 namespace cle
 {

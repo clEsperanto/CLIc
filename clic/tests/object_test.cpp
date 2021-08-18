@@ -1,9 +1,9 @@
 
-#include "CLE.h"
+#include "CLE.hpp"
 
-#include "cleBuffer.h"
-#include "cleFloat.h"
-#include "cleInt.h"
+#include "cleBuffer.hpp"
+#include "cleFloat.hpp"
+#include "cleInt.hpp"
 
 template<class T>
 cle::Buffer buffer_class_constructor_test(cle::CLE clesperanto, cle::LightObject::DataType type, unsigned int dims[3])

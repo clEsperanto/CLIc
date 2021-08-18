@@ -1,5 +1,5 @@
 
-#include "cleLightObject.h"
+#include "cleLightObject.hpp"
 
 namespace cle
 {

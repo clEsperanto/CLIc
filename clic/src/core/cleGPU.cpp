@@ -1,6 +1,6 @@
 
 
-#include "cleGPU.h"
+#include "cleGPU.hpp"
 #include <iostream>
 
 namespace cle

@@ -1,6 +1,6 @@
 
 
-#include "cleMinimumZProjectionKernel.h"
+#include "cleMinimumZProjectionKernel.hpp"
 
 namespace cle
 {

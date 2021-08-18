@@ -12,15 +12,15 @@ def get_includes_list(folder):
 
 
 def generate_kernel_list_header(folder):
-    kernel_list_header_file = os.path.join(folder,os.path.join("core","cleKernelList.h"))
+    kernel_list_header_file = os.path.join(folder,os.path.join("core","cleKernelList.hpp"))
     include_list = get_includes_list(folder)
     with open(kernel_list_header_file, 'w') as output_file:
-        output_file.write("#ifndef __cleKernelList_h\n")
-        output_file.write("#define __cleKernelList_h\n")
+        output_file.write("#ifndef __cleKernelList_hpp\n")
+        output_file.write("#define __cleKernelList_hpp\n")
         output_file.write("\n")
         for include in include_list:
             output_file.write("#include \"{0}\"\n".format(include))
         output_file.write("\n")
-        output_file.write("#endif //__cleKernelList_h\n")
+        output_file.write("#endif //__cleKernelList_hpp\n")
 
 generate_kernel_list_header(sys.argv[1])

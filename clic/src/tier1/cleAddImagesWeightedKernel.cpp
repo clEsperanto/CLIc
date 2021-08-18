@@ -1,6 +1,6 @@
 
 
-#include "cleAddImagesWeightedKernel.h"
+#include "cleAddImagesWeightedKernel.hpp"
 
 namespace cle
 {

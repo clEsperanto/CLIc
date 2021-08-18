@@ -1,14 +1,14 @@
 
 
-#include "cleCloseIndexGapsInLabelMapKernel.h"
+#include "cleCloseIndexGapsInLabelMapKernel.hpp"
 
-#include "cleMaximumOfAllPixelsKernel.h"
-#include "cleFlagExistingLabelsKernel.h"
-#include "cleSetKernel.h"
-#include "cleSumReductionXKernel.h"
-#include "cleSetColumnKernel.h"
-#include "cleBlockEnumerateKernel.h"
-#include "cleReplaceIntensitiesKernel.h"
+#include "cleMaximumOfAllPixelsKernel.hpp"
+#include "cleFlagExistingLabelsKernel.hpp"
+#include "cleSetKernel.hpp"
+#include "cleSumReductionXKernel.hpp"
+#include "cleSetColumnKernel.hpp"
+#include "cleBlockEnumerateKernel.hpp"
+#include "cleReplaceIntensitiesKernel.hpp"
 
 
 namespace cle

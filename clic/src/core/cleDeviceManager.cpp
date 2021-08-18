@@ -1,5 +1,5 @@
 
-#include "cleDeviceManager.h"
+#include "cleDeviceManager.hpp"
 
 #include <iostream>
 

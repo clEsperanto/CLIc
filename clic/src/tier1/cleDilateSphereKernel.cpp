@@ -1,6 +1,6 @@
 
 
-#include "cleDilateSphereKernel.h"
+#include "cleDilateSphereKernel.hpp"
 
 namespace cle
 {

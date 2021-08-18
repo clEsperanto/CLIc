@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include "CLE.h"
+#include "CLE.hpp"
 
 /**
  * Main test function

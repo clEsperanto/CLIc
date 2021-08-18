@@ -1,7 +1,7 @@
 
 
-#include "cleMaximumBoxKernel.h"
-#include "cleExecuteSeparableKernel.h"
+#include "cleMaximumBoxKernel.hpp"
+#include "cleExecuteSeparableKernel.hpp"
 
 namespace cle
 {

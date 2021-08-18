@@ -2,7 +2,7 @@
 #include <vector>
 #include <iostream>
 
-#include "CLE.h"
+#include "CLE.hpp"
 
 #include <benchmark_base.cpp>
 

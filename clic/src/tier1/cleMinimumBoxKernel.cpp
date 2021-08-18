@@ -1,7 +1,7 @@
 
 
-#include "cleMinimumBoxKernel.h"
-#include "cleExecuteSeparableKernel.h"
+#include "cleMinimumBoxKernel.hpp"
+#include "cleExecuteSeparableKernel.hpp"
 
 namespace cle
 {

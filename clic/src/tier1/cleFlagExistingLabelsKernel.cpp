@@ -1,7 +1,7 @@
 
 
-#include "cleFlagExistingLabelsKernel.h"
-#include "cleSetKernel.h"
+#include "cleFlagExistingLabelsKernel.hpp"
+#include "cleSetKernel.hpp"
 
 namespace cle
 {

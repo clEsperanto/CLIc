@@ -7,7 +7,7 @@
 
 #include <benchmark_base.cpp>
 
-#include "CLE.h"
+#include "CLE.hpp"
 
 using std::string;
 using std::cout;

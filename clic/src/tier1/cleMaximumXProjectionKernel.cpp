@@ -1,5 +1,5 @@
 
-#include "cleMaximumXProjectionKernel.h"
+#include "cleMaximumXProjectionKernel.hpp"
 
 namespace cle
 {

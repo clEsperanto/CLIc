@@ -1,8 +1,8 @@
 
-#include "cleMaximumOfAllPixelsKernel.h"
-#include "cleMaximumZProjectionKernel.h"
-#include "cleMaximumYProjectionKernel.h"
-#include "cleMaximumXProjectionKernel.h"
+#include "cleMaximumOfAllPixelsKernel.hpp"
+#include "cleMaximumZProjectionKernel.hpp"
+#include "cleMaximumYProjectionKernel.hpp"
+#include "cleMaximumXProjectionKernel.hpp"
 
 namespace cle
 {

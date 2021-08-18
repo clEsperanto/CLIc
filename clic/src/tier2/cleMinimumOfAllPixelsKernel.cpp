@@ -1,9 +1,9 @@
 
 
-#include "cleMinimumOfAllPixelsKernel.h"
-#include "cleMinimumZProjectionKernel.h"
-#include "cleMinimumYProjectionKernel.h"
-#include "cleMinimumXProjectionKernel.h"
+#include "cleMinimumOfAllPixelsKernel.hpp"
+#include "cleMinimumZProjectionKernel.hpp"
+#include "cleMinimumYProjectionKernel.hpp"
+#include "cleMinimumXProjectionKernel.hpp"
 
 namespace cle
 {

@@ -1,6 +1,6 @@
 
 
-#include "cleSumYProjectionKernel.h"
+#include "cleSumYProjectionKernel.hpp"
 
 namespace cle
 {

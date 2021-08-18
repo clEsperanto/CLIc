@@ -5,7 +5,7 @@
 #include <fstream>
 #include <ostream>
 
-#include "CLE.h"
+#include "CLE.hpp"
 
 #include <benchmark_base.cpp>
 

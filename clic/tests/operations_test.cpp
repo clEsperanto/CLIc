@@ -3,8 +3,8 @@
 #include <vector>
 #include <iostream>
 
-#include "cleGPU.h"
-#include "cleOperations.h"
+#include "cleGPU.hpp"
+#include "cleOperations.hpp"
 
 
 /**

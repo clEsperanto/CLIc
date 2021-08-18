@@ -5,7 +5,7 @@
 #include <string>
 #include <type_traits>
 
-#include "CLE.h"
+#include "CLE.hpp"
 
 using std::vector;
 using std::string;

@@ -1,11 +1,11 @@
 
-#include "cleCloseIndexGapsInLabelMapKernel.h"
+#include "cleCloseIndexGapsInLabelMapKernel.hpp"
 
-#include "cleConnectedComponentLabellingBoxKernel.h"
-#include "cleSetNonzeroPixelsToPixelindexKernel.h"
-#include "cleNonzeroMinimumBoxKernel.h"
-#include "cleSetKernel.h"
-#include "cleCopyKernel.h"
+#include "cleConnectedComponentLabellingBoxKernel.hpp"
+#include "cleSetNonzeroPixelsToPixelindexKernel.hpp"
+#include "cleNonzeroMinimumBoxKernel.hpp"
+#include "cleSetKernel.hpp"
+#include "cleCopyKernel.hpp"
 
 namespace cle
 {

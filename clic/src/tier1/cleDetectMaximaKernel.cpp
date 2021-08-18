@@ -1,6 +1,6 @@
 
 
-#include "cleDetectMaximaKernel.h"
+#include "cleDetectMaximaKernel.hpp"
 
 namespace cle
 {

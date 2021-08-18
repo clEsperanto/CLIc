@@ -1,6 +1,6 @@
 
 
-#include "cleSetNonzeroPixelsToPixelindexKernel.h"
+#include "cleSetNonzeroPixelsToPixelindexKernel.hpp"
 
 namespace cle
 {

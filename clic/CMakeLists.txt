@@ -4,8 +4,8 @@
 #   - include OpenCL headers
 #   - define CLIC version
 configure_file(
-  "${PROJECT_SOURCE_DIR}/${LIBRARY_DIR}/${PROJECT_NAME_LOWERCASE}.h.in"
-  "${PROJECT_SOURCE_DIR}/${LIBRARY_DIR}/includes/core/${PROJECT_NAME_LOWERCASE}.h"
+  "${PROJECT_SOURCE_DIR}/${LIBRARY_DIR}/${PROJECT_NAME_LOWERCASE}.hpp.in"
+  "${PROJECT_SOURCE_DIR}/${LIBRARY_DIR}/includes/core/${PROJECT_NAME_LOWERCASE}.hpp"
   NO_SOURCE_PERMISSIONS @ONLY
 )
 
@@ -86,7 +86,7 @@ target_compile_definitions(${LIBRARY_NAME} PUBLIC "${PROJECT_NAME_UPPERCASE}_DEB
 set(HEADERS_FILES "")
 subdirlist(INCLUDES_DIR_LIST ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 foreach(inc_dir ${INCLUDES_DIR_LIST})
-    file(GLOB files ${inc_dir}/*.h)
+    file(GLOB files ${inc_dir}/*.hpp)
     list(APPEND HEADERS_FILES ${files})
 endforeach()
 list(APPEND INCLUDES_DIR_LIST ${CMAKE_CURRENT_SOURCE_DIR}/kernels)

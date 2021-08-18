@@ -1,8 +1,8 @@
 
 
-#include "cleDifferenceOfGaussianKernel.h"
-#include "cleGaussianBlurKernel.h"
-#include "cleAddImagesWeightedKernel.h"
+#include "cleDifferenceOfGaussianKernel.hpp"
+#include "cleGaussianBlurKernel.hpp"
+#include "cleAddImagesWeightedKernel.hpp"
 
 namespace cle
 {
