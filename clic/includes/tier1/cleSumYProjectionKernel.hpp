@@ -17,7 +17,7 @@ private:
         ;
 
 public:
-    SumYProjectionKernel (GPU* gpu) : 
+    SumYProjectionKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "sum_y_projection",
                 {"dst", "src"}

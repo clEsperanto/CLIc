@@ -15,7 +15,7 @@ private:
         ;
 
 public:
-    BlockEnumerateKernel (GPU* gpu) : 
+    BlockEnumerateKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "block_enumerate",
                 {"dst", "src", "src_sums", "blocksize"}

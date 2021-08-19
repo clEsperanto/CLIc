@@ -18,7 +18,7 @@ private:
         ;
 
 public:
-    MeanSphereKernel (GPU* gpu) : 
+    MeanSphereKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "mean_sphere",
                 {"dst", "src", "radius_x", "radius_y", "radius_z"}

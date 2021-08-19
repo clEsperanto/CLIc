@@ -15,7 +15,7 @@ namespace cle
 class Clesperanto
 {
 private:
-    GPU* m_gpu;
+    std::shared_ptr<GPU> m_gpu;
 
     template<class T>
     Buffer::DataType Template2DataType();
@@ -42,7 +42,7 @@ public:
     template<class T>
     Buffer Create();
 
-    GPU* GetGPU();
+    std::shared_ptr<GPU> GetGPU();
 
     void AddImageAndScalar(Buffer&, Buffer&, float=0);
     void AddImagesWeighted(Buffer&, Buffer&, Buffer&, float=1, float=1);

@@ -18,7 +18,7 @@ private:
         ;
 
 public:
-    AbsoluteKernel (GPU* gpu) :    
+    AbsoluteKernel (std::shared_ptr<GPU> gpu) :    
         Kernel( gpu, 
                 "absolute",     // kernel name
                 {"src" , "dst"} // parameter tags

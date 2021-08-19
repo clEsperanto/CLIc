@@ -17,7 +17,7 @@ private:
 
 public:
 
-    MaximumZProjectionKernel (GPU* gpu) : 
+    MaximumZProjectionKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "maximum_z_projection",
                 {"dst_max", "src"}

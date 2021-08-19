@@ -20,7 +20,7 @@ private:
 
 public:
 
-    EqualKernel (GPU* gpu) : 
+    EqualKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "equal",
                 {"src1", "src2", "dst"}

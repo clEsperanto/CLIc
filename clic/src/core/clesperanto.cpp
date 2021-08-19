@@ -8,10 +8,10 @@ namespace cle
 
 Clesperanto::Clesperanto()
 {
-    m_gpu = new GPU();
+    m_gpu = std::shared_ptr<GPU>(new GPU);
 }
 
-GPU* Clesperanto::GetGPU()
+std::shared_ptr<GPU> Clesperanto::GetGPU()
 {
     return this->m_gpu;
 }

@@ -11,7 +11,7 @@ class SumOfAllPixelsKernel : public Kernel
 {
 
 public:
-    SumOfAllPixelsKernel (GPU* gpu) : 
+    SumOfAllPixelsKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "sum_of_all_pixels",
                 {"dst_sum", "src"}

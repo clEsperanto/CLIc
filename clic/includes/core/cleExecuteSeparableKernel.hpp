@@ -16,7 +16,7 @@ private:
     std::array<int, 3> m_KernelSize;
 
 public:
-    ExecuteSeparableKernel (GPU* gpu) : 
+    ExecuteSeparableKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu, 
                 "",
                 {"dst" , "src", "dim", "N", "s"}

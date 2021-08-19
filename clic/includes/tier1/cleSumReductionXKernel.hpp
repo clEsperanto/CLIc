@@ -18,7 +18,7 @@ private:
         ;
 
 public:
-    SumReductionXKernel (GPU* gpu) : 
+    SumReductionXKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "sum_reduction_x",
                 {"dst", "src", "blocksize"}

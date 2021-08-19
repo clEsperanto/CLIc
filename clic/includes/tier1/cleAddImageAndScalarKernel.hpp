@@ -18,7 +18,7 @@ private:
         ;
 
 public:
-    AddImageAndScalarKernel(GPU* gpu) : 
+    AddImageAndScalarKernel(std::shared_ptr<GPU> gpu) : 
         Kernel( gpu, 
                 "add_image_and_scalar", 
                 {"src", "dst", "scalar"}

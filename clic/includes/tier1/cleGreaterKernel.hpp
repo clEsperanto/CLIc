@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    GreaterKernel (GPU* gpu) : 
+    GreaterKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "greater",
                 {"src1", "src2", "dst"}

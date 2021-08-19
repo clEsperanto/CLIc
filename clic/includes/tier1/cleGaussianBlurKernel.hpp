@@ -18,7 +18,7 @@ private:
         ;
 
 public:
-    GaussianBlurKernel (GPU* gpu) : 
+    GaussianBlurKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "gaussian_blur_separable",
                 {"dst", "src"}

@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    SetKernel (GPU* gpu) : 
+    SetKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "set",
                 {"dst", "value"}

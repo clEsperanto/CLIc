@@ -17,7 +17,7 @@ private:
         ;
 
 public:
-    MinimumZProjectionKernel (GPU* gpu) : 
+    MinimumZProjectionKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "minimum_z_projection",
                 {"dst_min", "src"}

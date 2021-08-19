@@ -18,7 +18,7 @@ private:
         ;
 
 public:
-    MeanBoxKernel (GPU* gpu) : 
+    MeanBoxKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu, 
                 "mean_separable",
                 {"dst", "src"}

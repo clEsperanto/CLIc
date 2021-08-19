@@ -16,7 +16,7 @@ private:
         ;
 
 public:
-    FlagExistingLabelsKernel (GPU* gpu) : 
+    FlagExistingLabelsKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "flag_existing_labels",
                 {"dst" , "src"}

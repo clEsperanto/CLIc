@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    ErodeSphereKernel (GPU* gpu) : 
+    ErodeSphereKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "erode_sphere",
                 {"src" , "dst"}

@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    SmallerKernel (GPU* gpu) : 
+    SmallerKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu, 
                 "smaller",
                 {"src1" , "src2", "dst"}

@@ -16,7 +16,7 @@ private:
         ;
 
 public:
-    ReplaceIntensityKernel (GPU* gpu) : 
+    ReplaceIntensityKernel (std::shared_ptr<GPU> gpu) : 
         Kernel(gpu,
             "replace_intensity",
             {"dst", "src", "in", "out"}

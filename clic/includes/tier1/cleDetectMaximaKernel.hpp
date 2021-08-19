@@ -20,7 +20,7 @@ private:
 
 public:
 
-    DetectMaximaKernel (GPU* gpu) : 
+    DetectMaximaKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu, 
                 "detect_maxima",
                 {"src" , "dst"}

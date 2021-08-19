@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    EqualConstantKernel (GPU* gpu) : 
+    EqualConstantKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu, 
                 "equal_constant",
                 {"src1", "scalar", "dst"}

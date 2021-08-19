@@ -9,7 +9,7 @@ namespace cle
 {
     // Removed for now, prefere to use kernel operation Set()
     // template<class T>
-    // void FillBuffer(cl::Buffer src, T value, size_t size, GPU* gpu)
+    // void FillBuffer(cl::Buffer src, T value, size_t size, std::shared_ptr<GPU> gpu)
     // {
     //     gpu->GetCommandQueueManager().GetCommandQueue().enqueueFillBuffer(
     //         src, value, 0, size
@@ -17,7 +17,7 @@ namespace cle
     // }
 
     template<class T>
-    void CopyBuffer(cl::Buffer src, cl::Buffer dst, size_t size, GPU* gpu)
+    void CopyBuffer(cl::Buffer src, cl::Buffer dst, size_t size, std::shared_ptr<GPU> gpu)
     {
         gpu->GetCommandQueueManager().GetCommandQueue().enqueueCopyBuffer(
             src, dst, 0, 0, sizeof(T) * size
@@ -25,14 +25,14 @@ namespace cle
     }
 
     template<class T>
-    cl::Buffer CreateBuffer(size_t size, GPU* gpu)
+    cl::Buffer CreateBuffer(size_t size, std::shared_ptr<GPU> gpu)
     {
         return cl::Buffer(
             gpu->GetContextManager().GetContext(), CL_MEM_READ_WRITE, sizeof(T) * size);
     }
 
     template<class T>
-    void WriteBuffer(cl::Buffer obj, T* arr, size_t size, GPU* gpu)
+    void WriteBuffer(cl::Buffer obj, T* arr, size_t size, std::shared_ptr<GPU> gpu)
     {
         gpu->GetCommandQueueManager().GetCommandQueue().enqueueWriteBuffer(
             obj, CL_TRUE, 0, sizeof(T) * size, arr
@@ -40,7 +40,7 @@ namespace cle
     }
 
     template<class T>
-    void WriteBuffer(cl::Buffer obj, T val, GPU* gpu)
+    void WriteBuffer(cl::Buffer obj, T val, std::shared_ptr<GPU> gpu)
     {
         gpu->GetCommandQueueManager().GetCommandQueue().enqueueWriteBuffer(
             obj, CL_TRUE, 0, sizeof(T) * 1, val
@@ -48,7 +48,7 @@ namespace cle
     }
 
     template<class T>
-    void ReadBuffer(cl::Buffer obj, T* arr, size_t size, GPU* gpu)
+    void ReadBuffer(cl::Buffer obj, T* arr, size_t size, std::shared_ptr<GPU> gpu)
     {
         gpu->GetCommandQueueManager().GetCommandQueue().enqueueReadBuffer(
             obj, CL_TRUE, 0, sizeof(T) * size, arr

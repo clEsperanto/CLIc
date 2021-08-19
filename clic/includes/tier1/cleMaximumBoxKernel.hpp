@@ -18,7 +18,7 @@ private:
         ;
         
 public:
-    MaximumBoxKernel (GPU* gpu) : 
+    MaximumBoxKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "maximum_separable",
                 {"dst", "src"}

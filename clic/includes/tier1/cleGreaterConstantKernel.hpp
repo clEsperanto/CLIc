@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    GreaterConstantKernel (GPU* gpu) : 
+    GreaterConstantKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "greater_constant",
                 {"src1", "scalar", "dst"}

@@ -17,7 +17,7 @@ private:
 
 public:
 
-    MaximumYProjectionKernel (GPU* gpu) : 
+    MaximumYProjectionKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "maximum_y_projection",
                 {"dst_max", "src"}

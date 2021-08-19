@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    NotEqualKernel (GPU* gpu) : 
+    NotEqualKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "not_equal",
                 {"src1", "src2", "dst"}

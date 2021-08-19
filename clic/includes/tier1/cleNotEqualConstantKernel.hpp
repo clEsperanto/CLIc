@@ -20,7 +20,7 @@ private:
         ;
 
 public:
-    NotEqualConstantKernel (GPU* gpu) : 
+    NotEqualConstantKernel (std::shared_ptr<GPU> gpu) : 
         Kernel( gpu,
                 "not_equal_constant",
                 {"src1", "scalar", "dst"}
