@@ -280,8 +280,9 @@ void Kernel::BuildProgramKernel()
             }
             catch(cl::Error& e)
             {
-                std::cout << e.what() << " error code " << e.err() << std::endl;
-                std::cout << sources << std::endl;
+                std::cerr << "Fail to create program ..." << std::endl;
+                std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
+                std::cerr << sources << std::endl;
             }
             try
             {
@@ -289,12 +290,11 @@ void Kernel::BuildProgramKernel()
             }
             catch(cl::Error& e)
             {
-                std::cout << e.what() << " error code " << e.err() << std::endl;
+                std::cerr << "Fail to build program from source ..." << std::endl;
+                std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
                 std::string build_log = this->m_Program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(this->m_gpu->GetDeviceManager().GetDevice());
-                std::cout << "Kernel : Fail to create program from source." << std::endl;
-                std::cout << "\tbuild log:" << std::endl;
-                std::cout << build_log << std::endl;
-                std::cout << sources << std::endl;
+                std::cerr << "\tbuild log:" << std::endl;
+                std::cerr << build_log << std::endl;
             }
             m_CurrentHash = source_hash;
             this->m_gpu->AddProgram(this->m_Program, m_CurrentHash);
@@ -306,8 +306,8 @@ void Kernel::BuildProgramKernel()
         }
         catch(cl::Error& e)
         {
-            std::cout << "Fail to create kernel: " << fullName.c_str() << std::endl;
-            std::cout << e.what() << " error code " << e.err() << std::endl;
+            std::cerr << "Fail to create kernel: " << fullName.c_str() << std::endl;
+            std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
         }
     }
 }
@@ -323,12 +323,13 @@ void Kernel::EnqueueKernel()
     }
     catch(const cl::Error& e)
     {
-        std::cout << "Exception caught! " << e.what() << " -> " << e.err() << '\n';
+        std::cerr << "Fail to enqueue kernel ..." << std::endl;
+        std::cerr << "\tException caught! " << e.what() << " -> " << e.err() << '\n';
     }
     this->m_gpu->GetCommandQueueManager().GetCommandQueue().finish();
 }
 
-Kernel::Kernel(GPU* gpu, std::string kernel, std::vector<std::string> tags) : m_gpu(gpu)
+Kernel::Kernel(std::shared_ptr<GPU> gpu, std::string kernel, std::vector<std::string> tags) : m_gpu(gpu)
 {
     this->m_KernelName = kernel;
     this->m_TagList = tags;

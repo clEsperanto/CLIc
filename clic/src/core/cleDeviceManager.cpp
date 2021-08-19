@@ -8,7 +8,15 @@ namespace cle
 
 DeviceManager::DeviceManager(cl::Platform platform)
 {
-    platform.getDevices(CL_DEVICE_TYPE_ALL, &m_DeviceList);
+    try
+    {
+        platform.getDevices(CL_DEVICE_TYPE_ALL, &m_DeviceList);
+    }
+    catch(cl::Error& e)
+    {
+        std::cerr << "Fail to get devices ..." << std::endl;
+        std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
+    }
     if (m_DeviceList.size() == 0)
     {
         std::cerr << "DeviceManager : No devices found." << std::endl;
