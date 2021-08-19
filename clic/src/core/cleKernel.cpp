@@ -274,7 +274,15 @@ void Kernel::BuildProgramKernel()
         }
         else
         {
-            this->m_Program = cl::Program(this->m_gpu->GetContextManager().GetContext(), sources);
+            try
+            {
+                this->m_Program = cl::Program(this->m_gpu->GetContextManager().GetContext(), sources);
+            }
+            catch(cl::Error& e)
+            {
+                std::cout << e.what() << " error code " << e.err() << std::endl;
+                std::cout << sources << std::endl;
+            }
             try
             {
                 this->m_Program.build({this->m_gpu->GetDeviceManager().GetDevice()});
@@ -292,7 +300,15 @@ void Kernel::BuildProgramKernel()
             this->m_gpu->AddProgram(this->m_Program, m_CurrentHash);
         }
         std::string fullName = this->m_KernelName + this->m_DimensionTag;
-        this->m_Kernel = cl::Kernel(this->m_Program, fullName.c_str());
+        try
+        {
+            this->m_Kernel = cl::Kernel(this->m_Program, fullName.c_str());
+        }
+        catch(cl::Error& e)
+        {
+            std::cout << "Fail to create kernel: " << fullName.c_str() << std::endl;
+            std::cout << e.what() << " error code " << e.err() << std::endl;
+        }
     }
 }
 
