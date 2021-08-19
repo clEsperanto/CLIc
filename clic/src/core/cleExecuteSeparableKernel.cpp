@@ -40,20 +40,13 @@ void ExecuteSeparableKernel::Execute()
     std::shared_ptr<cle::Buffer> src = std::dynamic_pointer_cast<cle::Buffer>(m_ParameterList.at("src"));
     std::shared_ptr<cle::Buffer> dst = std::dynamic_pointer_cast<cle::Buffer>(m_ParameterList.at("dst"));
 
-    if (src->GetDimensions()[1] > 1)
-    {
-        this->m_Dim = 2;
-    }
-    if (src->GetDimensions()[2] > 1)
-    {
-        this->m_Dim = 3;
-    }
+    this->m_Dim = src->GetDimension();
 
     // create temp buffer
     cl::Buffer tmp1_obj = cle::CreateBuffer<float>(src->GetSize(), this->m_gpu);
-    cle::Buffer temp1 (tmp1_obj, src->GetDimensions(), cle::LightObject::Float);
+    cle::Buffer temp1 (tmp1_obj, src->GetShape(), cle::Buffer::FLOAT);
     cl::Buffer tmp2_obj = cle::CreateBuffer<float>(src->GetSize(), this->m_gpu);
-    cle::Buffer temp2 (tmp2_obj, src->GetDimensions(), cle::LightObject::Float);
+    cle::Buffer temp2 (tmp2_obj, src->GetShape(), cle::Buffer::FLOAT);
 
     SeparableKernel kernel(this->m_gpu);
     kernel.SetKernelName(this->m_KernelName);

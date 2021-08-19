@@ -5,7 +5,7 @@
 #include <string>
 #include <type_traits>
 
-#include "CLE.hpp"
+#include "clesperanto.hpp"
 
 using std::vector;
 using std::string;
@@ -44,7 +44,7 @@ protected:
     virtual void InterpretTiming(const string& title, const unsigned long AvgTimeMs) {}
 
     /// optional callback to measure kernel compile time; only called on demand; should contain kernel call with minimal parameters
-    virtual void Compile(cle::CLE& cle) {} 
+    virtual void Compile(cle::Clesperanto& cle) {} 
 
 public:
     // Note: c++ virtual classes need a destructor, so child classes' constructors are called too
@@ -84,8 +84,7 @@ public:
             for (int i = 0; i < iterationCompilationCount; i++)
             {
                 // always reconstruct the cle object, as it caches the compiled kernels
-                cle::GPU gpu;
-                cle::CLE cle(gpu);
+                cle::Clesperanto cle;
 
                 // now measure the compilation
                 std::chrono::time_point<std::chrono::high_resolution_clock> begin = std::chrono::high_resolution_clock::now();
@@ -146,8 +145,8 @@ public:
         cout.width(8);
         cout << endl;
         cout << endl;
-        cout << "Avg Warmup: " << GetAvgWarmupMs() << "ms" << endl;
-        cout << "Avg Normal: " << GetAvgNormalMs() << "ms" << endl;
-        cout << "Avg Total:  " << GetAvgTotalMs()  << "ms" << endl;
+        cout << "Avg Warmup: " << GetAvgWarmupMs() << " ms" << endl; // " \u03BCs" << endl;
+        cout << "Avg Normal: " << GetAvgNormalMs() << " ms" << endl; // " \u03BCs" << endl;
+        cout << "Avg Total:  " << GetAvgTotalMs()  << " ms" << endl; // " \u03BCs" << endl;
     }
 };

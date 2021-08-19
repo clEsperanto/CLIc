@@ -16,7 +16,7 @@ private:
         ;
 
 public:
-    SetNonzeroPixelsToPixelindexKernel(GPU& gpu) : 
+    SetNonzeroPixelsToPixelindexKernel (GPU* gpu) : 
         Kernel( gpu, 
                 "set_nonzero_pixels_to_pixelindex",
                 {"dst" , "src", "offset"}

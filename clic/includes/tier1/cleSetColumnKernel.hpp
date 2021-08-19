@@ -20,7 +20,7 @@ private:
         ;
 
 public:
-    SetColumnKernel(GPU& gpu) : 
+    SetColumnKernel (GPU* gpu) : 
         Kernel( gpu,
                 "set_column",
                 {"dst" , "column", "value"}

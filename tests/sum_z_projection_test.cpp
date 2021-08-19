@@ -1,7 +1,7 @@
 
 #include <random>
 
-#include "CLE.hpp"
+#include "clesperanto.hpp"
 
 /**
  * Main test function
@@ -10,22 +10,20 @@
 int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
-    unsigned int width (10), height (10), depth (10);
-    unsigned int dims[3] = {width, height, depth};
+    int width (10), height (10), depth (10);
+    int dims[3] = {width, height, depth};
     std::vector<float> input_data (width*height*depth);
     std::vector<float> valid_data (width*height*1);
     std::fill(input_data.begin(), input_data.end(), 1);
     std::fill(valid_data.begin(), valid_data.end(), 10);
 
     // Initialise GPU information.
-    cle::GPU gpu;
-    cle::CLE cle(gpu);
+    cle::Clesperanto cle;
 
     // Initialise device memory and push from host
-    std::array<unsigned int, 3> dimensions = {width, height, depth};
-    dimensions.back() = 1;
+    std::array<int, 3> new_dim = {width, height, 1};
     cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
-    cle::Buffer Buffer_B = cle.Create<float>(dimensions.data());
+    cle::Buffer Buffer_B = cle.Create<float>(new_dim.data());
 
     // Call kernel
     cle.SumZProjection(Buffer_A, Buffer_B);   

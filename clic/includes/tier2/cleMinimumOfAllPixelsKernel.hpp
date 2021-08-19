@@ -11,7 +11,7 @@ class MinimumOfAllPixelsKernel : public Kernel
 {
 
 public:
-    MinimumOfAllPixelsKernel(GPU& gpu) : 
+    MinimumOfAllPixelsKernel (GPU* gpu) : 
         Kernel( gpu,
                 "minimum_of_all_pixels",
                 {"dst_min", "src"}

@@ -7,7 +7,7 @@
 
 #include <benchmark_base.cpp>
 
-#include "CLE.hpp"
+#include "clesperanto.hpp"
 
 using std::string;
 using std::cout;
@@ -16,8 +16,7 @@ using std::ofstream;
 class MaximumProjectionBenchmarkBase : public BenchmarkBase
 {
 protected:
-    cle::GPU gpu;
-    cle::CLE cle;
+    cle::Clesperanto cle;
     cle::Buffer gpuInput, gpuOutput;
 
     virtual void Setup()
@@ -25,9 +24,9 @@ protected:
         std::vector<float> inputData (dataWidth * dataWidth * dataWidth);
 
         // Initialise device memory and push from host
-        std::array<unsigned int, 3> dimensionsInput = {dataWidth, dataWidth, dataWidth};
+        std::array<int, 3> dimensionsInput = {dataWidth, dataWidth, dataWidth};
         gpuInput = cle.Push<float>(inputData, dimensionsInput.data());
-        std::array<unsigned int, 3> dimensionsOutput = {dataWidth, dataWidth, 1};
+        std::array<int, 3> dimensionsOutput = {dataWidth, dataWidth, 1};
         gpuOutput = cle.Create<float>(dimensionsOutput.data());
     }
 
@@ -36,8 +35,8 @@ protected:
     virtual void Teardown(){};
 
 public:
-    unsigned dataWidth;
-    MaximumProjectionBenchmarkBase() : gpu(), cle(cle::CLE(gpu)){}
+    int dataWidth;
+    MaximumProjectionBenchmarkBase() : cle(cle::Clesperanto()){}
     virtual ~MaximumProjectionBenchmarkBase(){}
 };
 

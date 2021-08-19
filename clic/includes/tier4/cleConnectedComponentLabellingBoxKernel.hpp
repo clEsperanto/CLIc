@@ -11,7 +11,7 @@ class ConnectedComponentLabellingBoxKernel : public Kernel
 {
 
 public:
-    ConnectedComponentLabellingBoxKernel(GPU& gpu) : 
+    ConnectedComponentLabellingBoxKernel (GPU* gpu) : 
         Kernel( gpu,
                 "connected_components_labelling_box",
                 {"src" , "dst"}

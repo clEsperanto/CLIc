@@ -16,7 +16,7 @@ private:
         ;
 
 public:
-    SumXProjectionKernel(GPU& gpu) : 
+    SumXProjectionKernel (GPU* gpu) : 
         Kernel( gpu,
                 "sum_x_projection",
                 {"dst", "src"}

@@ -1,7 +1,7 @@
 
 #include <random>
 
-#include "CLE.hpp"
+#include "clesperanto.hpp"
 
 #include "cleGPU.hpp"
 #include "cleContextManager.hpp"

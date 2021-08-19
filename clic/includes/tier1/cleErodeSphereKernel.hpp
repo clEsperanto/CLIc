@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    ErodeSphereKernel(GPU& gpu) : 
+    ErodeSphereKernel (GPU* gpu) : 
         Kernel( gpu,
                 "erode_sphere",
                 {"src" , "dst"}

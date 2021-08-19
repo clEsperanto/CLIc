@@ -18,7 +18,7 @@ private:
         ;
 
 public:
-    MeanBoxKernel(GPU& gpu) : 
+    MeanBoxKernel (GPU* gpu) : 
         Kernel( gpu, 
                 "mean_separable",
                 {"dst", "src"}

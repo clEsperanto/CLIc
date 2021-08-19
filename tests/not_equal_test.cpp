@@ -1,7 +1,7 @@
 
 #include <random>
 
-#include "CLE.hpp"
+#include "clesperanto.hpp"
 
 /**
  * Main test function
@@ -10,8 +10,8 @@
 int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
-    unsigned int width (4), height (3), depth (2);
-    unsigned int dims[3] = {width, height, depth};
+    int width (4), height (3), depth (2);
+    int dims[3] = {width, height, depth};
     std::vector<float> input_data1 {
                 1, 2, 3, 4,
                 5, 6, 7, 8,
@@ -33,8 +33,7 @@ int main(int argc, char **argv)
     };
     
     // Initialise GPU information.
-    cle::GPU gpu;
-    cle::CLE cle(gpu);
+    cle::Clesperanto cle;
 
     // Initialise device memory and push from host to device
     cle::Buffer Buffer_A = cle.Push<float>(input_data1, dims);

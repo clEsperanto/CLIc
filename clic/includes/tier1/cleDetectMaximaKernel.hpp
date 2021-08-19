@@ -20,7 +20,7 @@ private:
 
 public:
 
-    DetectMaximaKernel(GPU& gpu) : 
+    DetectMaximaKernel (GPU* gpu) : 
         Kernel( gpu, 
                 "detect_maxima",
                 {"src" , "dst"}

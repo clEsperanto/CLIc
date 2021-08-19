@@ -20,7 +20,7 @@ private:
 
 public:
 
-    EqualKernel(GPU& gpu) : 
+    EqualKernel (GPU* gpu) : 
         Kernel( gpu,
                 "equal",
                 {"src1", "src2", "dst"}

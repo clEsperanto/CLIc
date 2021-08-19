@@ -18,7 +18,7 @@ private:
         ;
 
 public:
-    AbsoluteKernel(GPU& gpu) :    
+    AbsoluteKernel (GPU* gpu) :    
         Kernel( gpu, 
                 "absolute",     // kernel name
                 {"src" , "dst"} // parameter tags

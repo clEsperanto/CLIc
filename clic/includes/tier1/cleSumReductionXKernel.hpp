@@ -18,7 +18,7 @@ private:
         ;
 
 public:
-    SumReductionXKernel(GPU& gpu) : 
+    SumReductionXKernel (GPU* gpu) : 
         Kernel( gpu,
                 "sum_reduction_x",
                 {"dst", "src", "blocksize"}

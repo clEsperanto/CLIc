@@ -17,7 +17,7 @@ private:
 
 public:
 
-    MaximumZProjectionKernel(GPU& gpu) : 
+    MaximumZProjectionKernel (GPU* gpu) : 
         Kernel( gpu,
                 "maximum_z_projection",
                 {"dst_max", "src"}

@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    SetKernel(GPU& gpu) : 
+    SetKernel (GPU* gpu) : 
         Kernel( gpu,
                 "set",
                 {"dst", "value"}

@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    SmallerKernel(GPU& gpu) : 
+    SmallerKernel (GPU* gpu) : 
         Kernel( gpu, 
                 "smaller",
                 {"src1" , "src2", "dst"}

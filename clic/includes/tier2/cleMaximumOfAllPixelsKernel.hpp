@@ -12,7 +12,7 @@ class MaximumOfAllPixelsKernel : public Kernel
 
 public:
 
-    MaximumOfAllPixelsKernel(GPU& gpu) : 
+    MaximumOfAllPixelsKernel (GPU* gpu) : 
         Kernel( gpu, 
                 "maximum_of_all_pixels",
                 {"dst_max", "src"}

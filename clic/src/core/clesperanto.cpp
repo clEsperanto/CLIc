@@ -1,22 +1,22 @@
 
-#include "CLE.hpp"
+#include "clesperanto.hpp"
 #include "cleKernelList.hpp"
 
 
 namespace cle
 {
 
-CLE::CLE(GPU& device)
+Clesperanto::Clesperanto()
 {
-    m_gpu = device;
+    m_gpu = new GPU();
 }
 
-GPU CLE::GetGPU()
+GPU* Clesperanto::GetGPU()
 {
     return this->m_gpu;
 }
 
-void CLE::AddImageAndScalar(Buffer& src, Buffer& dst, float scalar)
+void Clesperanto::AddImageAndScalar(Buffer& src, Buffer& dst, float scalar)
 {
     AddImageAndScalarKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -25,7 +25,7 @@ void CLE::AddImageAndScalar(Buffer& src, Buffer& dst, float scalar)
     kernel.Execute();
 }
 
-void CLE::AddImagesWeighted(Buffer& src1, Buffer& src2, Buffer& dst, float factor1, float factor2)
+void Clesperanto::AddImagesWeighted(Buffer& src1, Buffer& src2, Buffer& dst, float factor1, float factor2)
 {
     AddImagesWeightedKernel kernel(this->m_gpu);
     kernel.SetInput1(src1);
@@ -36,17 +36,17 @@ void CLE::AddImagesWeighted(Buffer& src1, Buffer& src2, Buffer& dst, float facto
     kernel.Execute();
 }
 
-void CLE::AddImages(Buffer& src1, Buffer& src2, Buffer& dst)
+void Clesperanto::AddImages(Buffer& src1, Buffer& src2, Buffer& dst)
 {
     this->AddImagesWeighted(src1, src2, dst, 1, 1);
 }
 
-void CLE::SubtractImages(Buffer& src1, Buffer& src2, Buffer& dst)
+void Clesperanto::SubtractImages(Buffer& src1, Buffer& src2, Buffer& dst)
 {
     this->AddImagesWeighted(src1, src2, dst, 1, -1);
 }
 
-void CLE::DilateSphere(Buffer& src, Buffer& dst)
+void Clesperanto::DilateSphere(Buffer& src, Buffer& dst)
 {
     DilateSphereKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -54,7 +54,7 @@ void CLE::DilateSphere(Buffer& src, Buffer& dst)
     kernel.Execute();
 }
 
-void CLE::ErodeSphere(Buffer& src, Buffer& dst)
+void Clesperanto::ErodeSphere(Buffer& src, Buffer& dst)
 {
     ErodeSphereKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -62,7 +62,7 @@ void CLE::ErodeSphere(Buffer& src, Buffer& dst)
     kernel.Execute();
 }
 
-void CLE::Equal(Buffer& src1, Buffer& src2, Buffer& dst)
+void Clesperanto::Equal(Buffer& src1, Buffer& src2, Buffer& dst)
 {
     EqualKernel kernel(this->m_gpu);
     kernel.SetInput1(src1);
@@ -71,7 +71,7 @@ void CLE::Equal(Buffer& src1, Buffer& src2, Buffer& dst)
     kernel.Execute();
 }
 
-void CLE::EqualConstant(Buffer& src, Buffer& dst, float scalar)
+void Clesperanto::EqualConstant(Buffer& src, Buffer& dst, float scalar)
 {
     EqualConstantKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -80,7 +80,7 @@ void CLE::EqualConstant(Buffer& src, Buffer& dst, float scalar)
     kernel.Execute();
 }
 
-void CLE::GaussianBlur(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
+void Clesperanto::GaussianBlur(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
 {
     GaussianBlurKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -89,7 +89,7 @@ void CLE::GaussianBlur(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, flo
     kernel.Execute();
 }
 
-void CLE::MaximumBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
+void Clesperanto::MaximumBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
 {
     MaximumBoxKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -98,7 +98,7 @@ void CLE::MaximumBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float
     kernel.Execute();
 }
 
-void CLE::MinimumBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
+void Clesperanto::MinimumBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
 {
     MinimumBoxKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -107,7 +107,7 @@ void CLE::MinimumBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float
     kernel.Execute();
 }
 
-void CLE::MeanBox(Buffer& src, Buffer& dst, float radius_x, float radius_y, float radius_z)
+void Clesperanto::MeanBox(Buffer& src, Buffer& dst, float radius_x, float radius_y, float radius_z)
 {
     MeanBoxKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -116,7 +116,7 @@ void CLE::MeanBox(Buffer& src, Buffer& dst, float radius_x, float radius_y, floa
     kernel.Execute();
 }
 
-void CLE::Greater(Buffer& src1, Buffer& src2, Buffer& dst)
+void Clesperanto::Greater(Buffer& src1, Buffer& src2, Buffer& dst)
 {
     GreaterKernel kernel(this->m_gpu);
     kernel.SetInput1(src1);
@@ -125,7 +125,7 @@ void CLE::Greater(Buffer& src1, Buffer& src2, Buffer& dst)
     kernel.Execute();
 }
 
-void CLE::GreaterOrEqual(Buffer& src1, Buffer& src2, Buffer& dst)
+void Clesperanto::GreaterOrEqual(Buffer& src1, Buffer& src2, Buffer& dst)
 {
     GreaterOrEqualKernel kernel(this->m_gpu);
     kernel.SetInput1(src1);
@@ -134,7 +134,7 @@ void CLE::GreaterOrEqual(Buffer& src1, Buffer& src2, Buffer& dst)
     kernel.Execute();
 }
 
-void CLE::GreaterConstant(Buffer& src, Buffer& dst, float scalar)
+void Clesperanto::GreaterConstant(Buffer& src, Buffer& dst, float scalar)
 {
     GreaterConstantKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -143,7 +143,7 @@ void CLE::GreaterConstant(Buffer& src, Buffer& dst, float scalar)
     kernel.Execute();
 }
 
-void CLE::GreaterOrEqualConstant(Buffer& src, Buffer& dst, float scalar)
+void Clesperanto::GreaterOrEqualConstant(Buffer& src, Buffer& dst, float scalar)
 {
     GreaterOrEqualConstantKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -152,7 +152,7 @@ void CLE::GreaterOrEqualConstant(Buffer& src, Buffer& dst, float scalar)
     kernel.Execute();
 }
 
-void CLE::MaximumZProjection(Buffer& src, Buffer& dst)
+void Clesperanto::MaximumZProjection(Buffer& src, Buffer& dst)
 {
     MaximumZProjectionKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -160,7 +160,7 @@ void CLE::MaximumZProjection(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }
 
-void CLE::MaximumYProjection(Buffer& src, Buffer& dst)
+void Clesperanto::MaximumYProjection(Buffer& src, Buffer& dst)
 {
     MaximumYProjectionKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -168,7 +168,7 @@ void CLE::MaximumYProjection(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }
 
-void CLE::MaximumXProjection(Buffer& src, Buffer& dst)
+void Clesperanto::MaximumXProjection(Buffer& src, Buffer& dst)
 {
     MaximumXProjectionKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -176,7 +176,7 @@ void CLE::MaximumXProjection(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }
 
-void CLE::MaximumOfAllPixels(Buffer& src, Buffer& dst)
+void Clesperanto::MaximumOfAllPixels(Buffer& src, Buffer& dst)
 {
     MaximumOfAllPixelsKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -184,7 +184,7 @@ void CLE::MaximumOfAllPixels(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }  
 
-void CLE::MinimumZProjection(Buffer& src, Buffer& dst)
+void Clesperanto::MinimumZProjection(Buffer& src, Buffer& dst)
 {
     MinimumZProjectionKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -192,7 +192,7 @@ void CLE::MinimumZProjection(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }
 
-void CLE::MinimumYProjection(Buffer& src, Buffer& dst)
+void Clesperanto::MinimumYProjection(Buffer& src, Buffer& dst)
 {
     MinimumYProjectionKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -200,7 +200,7 @@ void CLE::MinimumYProjection(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }
 
-void CLE::MinimumXProjection(Buffer& src, Buffer& dst)
+void Clesperanto::MinimumXProjection(Buffer& src, Buffer& dst)
 {
     MinimumXProjectionKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -208,7 +208,7 @@ void CLE::MinimumXProjection(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }
 
-void CLE::MinimumOfAllPixels(Buffer& src, Buffer& dst)
+void Clesperanto::MinimumOfAllPixels(Buffer& src, Buffer& dst)
 {
     MinimumOfAllPixelsKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -216,7 +216,7 @@ void CLE::MinimumOfAllPixels(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }  
 
-void CLE::DifferenceOfGaussian(Buffer& src, Buffer& dst, float sigma1x, float sigma1y, float sigma1z, 
+void Clesperanto::DifferenceOfGaussian(Buffer& src, Buffer& dst, float sigma1x, float sigma1y, float sigma1z, 
                                                          float sigma2x, float sigma2y, float sigma2z)
 {
     DifferenceOfGaussianKernel kernel(this->m_gpu);
@@ -227,7 +227,7 @@ void CLE::DifferenceOfGaussian(Buffer& src, Buffer& dst, float sigma1x, float si
     kernel.Execute(); 
 }
 
-void CLE::MeanSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y, int radius_z)
+void Clesperanto::MeanSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y, int radius_z)
 {
     MeanSphereKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -236,7 +236,7 @@ void CLE::MeanSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y, int r
     kernel.Execute();
 }
 
-void CLE::NonzeroMinimumBox(Buffer& src, Buffer& flag, Buffer& dst)
+void Clesperanto::NonzeroMinimumBox(Buffer& src, Buffer& flag, Buffer& dst)
 {
     NonzeroMinimumBoxKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -245,7 +245,7 @@ void CLE::NonzeroMinimumBox(Buffer& src, Buffer& flag, Buffer& dst)
     kernel.Execute();  
 }
 
-void CLE::NotEqual(Buffer& src1, Buffer& src2, Buffer& dst)
+void Clesperanto::NotEqual(Buffer& src1, Buffer& src2, Buffer& dst)
 {
     NotEqualKernel kernel(this->m_gpu);
     kernel.SetInput1(src1);
@@ -254,7 +254,7 @@ void CLE::NotEqual(Buffer& src1, Buffer& src2, Buffer& dst)
     kernel.Execute();
 }
 
-void CLE::NotEqualConstant(Buffer& src, Buffer& dst, float scalar)
+void Clesperanto::NotEqualConstant(Buffer& src, Buffer& dst, float scalar)
 {
     NotEqualConstantKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -263,7 +263,7 @@ void CLE::NotEqualConstant(Buffer& src, Buffer& dst, float scalar)
     kernel.Execute();
 }
 
-void CLE::Smaller(Buffer& src1, Buffer& src2, Buffer& dst)
+void Clesperanto::Smaller(Buffer& src1, Buffer& src2, Buffer& dst)
 {
     SmallerKernel kernel(this->m_gpu);
     kernel.SetInput1(src1);
@@ -272,7 +272,7 @@ void CLE::Smaller(Buffer& src1, Buffer& src2, Buffer& dst)
     kernel.Execute();
 }
 
-void CLE::SmallerOrEqual(Buffer& src1, Buffer& src2, Buffer& dst)
+void Clesperanto::SmallerOrEqual(Buffer& src1, Buffer& src2, Buffer& dst)
 {
     SmallerOrEqualKernel kernel(this->m_gpu);
     kernel.SetInput1(src1);
@@ -281,7 +281,7 @@ void CLE::SmallerOrEqual(Buffer& src1, Buffer& src2, Buffer& dst)
     kernel.Execute();
 }
 
-void CLE::SmallerConstant(Buffer& src, Buffer& dst, float cst)
+void Clesperanto::SmallerConstant(Buffer& src, Buffer& dst, float cst)
 {
     SmallerConstantKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -290,7 +290,7 @@ void CLE::SmallerConstant(Buffer& src, Buffer& dst, float cst)
     kernel.Execute();  
 }
 
-void CLE::SmallerOrEqualConstant(Buffer& src, Buffer& dst, float cst)
+void Clesperanto::SmallerOrEqualConstant(Buffer& src, Buffer& dst, float cst)
 {
     SmallerOrEqualConstantKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -299,7 +299,7 @@ void CLE::SmallerOrEqualConstant(Buffer& src, Buffer& dst, float cst)
     kernel.Execute();
 }
 
-void CLE::Absolute(Buffer& src, Buffer& dst)
+void Clesperanto::Absolute(Buffer& src, Buffer& dst)
 {
     AbsoluteKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -307,7 +307,7 @@ void CLE::Absolute(Buffer& src, Buffer& dst)
     kernel.Execute();  
 }
 
-void CLE::Sobel(Buffer& src, Buffer& dst)
+void Clesperanto::Sobel(Buffer& src, Buffer& dst)
 {
     SobelKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -315,7 +315,7 @@ void CLE::Sobel(Buffer& src, Buffer& dst)
     kernel.Execute();  
 }
 
-void CLE::Set(Buffer& src, float value)
+void Clesperanto::Set(Buffer& src, float value)
 {
     SetKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -323,7 +323,7 @@ void CLE::Set(Buffer& src, float value)
     kernel.Execute();  
 }
 
-void CLE::SetNonzeroPixelsToPixelindex(Buffer& src, Buffer& dst)
+void Clesperanto::SetNonzeroPixelsToPixelindex(Buffer& src, Buffer& dst)
 {
     SetNonzeroPixelsToPixelindexKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -332,7 +332,7 @@ void CLE::SetNonzeroPixelsToPixelindex(Buffer& src, Buffer& dst)
     kernel.Execute();  
 }
 
-void CLE::DetectMaximaBox(Buffer& src, Buffer& dst)
+void Clesperanto::DetectMaximaBox(Buffer& src, Buffer& dst)
 {
     DetectMaximaKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -340,7 +340,7 @@ void CLE::DetectMaximaBox(Buffer& src, Buffer& dst)
     kernel.Execute();  
 }
 
-void CLE::Copy(Buffer& src, Buffer& dst)
+void Clesperanto::Copy(Buffer& src, Buffer& dst)
 {
     CopyKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -348,7 +348,7 @@ void CLE::Copy(Buffer& src, Buffer& dst)
     kernel.Execute();  
 }
 
-void CLE::SumZProjection(Buffer& src, Buffer& dst)
+void Clesperanto::SumZProjection(Buffer& src, Buffer& dst)
 {
     SumZProjectionKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -356,7 +356,7 @@ void CLE::SumZProjection(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }
 
-void CLE::SumYProjection(Buffer& src, Buffer& dst)
+void Clesperanto::SumYProjection(Buffer& src, Buffer& dst)
 {
     SumYProjectionKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -364,7 +364,7 @@ void CLE::SumYProjection(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }
 
-void CLE::SumXProjection(Buffer& src, Buffer& dst)
+void Clesperanto::SumXProjection(Buffer& src, Buffer& dst)
 {
     SumXProjectionKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -372,7 +372,7 @@ void CLE::SumXProjection(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }
 
-void CLE::SumOfAllPixels(Buffer& src, Buffer& dst)
+void Clesperanto::SumOfAllPixels(Buffer& src, Buffer& dst)
 {
     SumOfAllPixelsKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -380,7 +380,7 @@ void CLE::SumOfAllPixels(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }  
 
-void CLE::ConnectedComponentLabellingBox(Buffer& src, Buffer& dst)
+void Clesperanto::ConnectedComponentLabellingBox(Buffer& src, Buffer& dst)
 {
     ConnectedComponentLabellingBoxKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -388,7 +388,7 @@ void CLE::ConnectedComponentLabellingBox(Buffer& src, Buffer& dst)
     kernel.Execute(); 
 }
 
-void CLE::ReplaceIntensity(Buffer& src, Buffer& dst, float in, float out)
+void Clesperanto::ReplaceIntensity(Buffer& src, Buffer& dst, float in, float out)
 {
     ReplaceIntensityKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -398,7 +398,7 @@ void CLE::ReplaceIntensity(Buffer& src, Buffer& dst, float in, float out)
     kernel.Execute(); 
 }
 
-void CLE::ReplaceIntensities(Buffer& src, Buffer& ref, Buffer& dst)
+void Clesperanto::ReplaceIntensities(Buffer& src, Buffer& ref, Buffer& dst)
 {
     ReplaceIntensitiesKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -407,7 +407,7 @@ void CLE::ReplaceIntensities(Buffer& src, Buffer& ref, Buffer& dst)
     kernel.Execute(); 
 }
 
-void CLE::SetColumn(Buffer& src, int column, float value)
+void Clesperanto::SetColumn(Buffer& src, int column, float value)
 {
     SetColumnKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -416,7 +416,7 @@ void CLE::SetColumn(Buffer& src, int column, float value)
     kernel.Execute();   
 }
 
-void CLE::SumReductionX(Buffer& src, Buffer& dst, int blocksize)
+void Clesperanto::SumReductionX(Buffer& src, Buffer& dst, int blocksize)
 {
     SumReductionXKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -425,7 +425,7 @@ void CLE::SumReductionX(Buffer& src, Buffer& dst, int blocksize)
     kernel.Execute();   
 }
 
-void CLE::BlockEnumerate(Buffer& src, Buffer& sum, Buffer& dst, int blocksize)
+void Clesperanto::BlockEnumerate(Buffer& src, Buffer& sum, Buffer& dst, int blocksize)
 {
     BlockEnumerateKernel kernel(this->m_gpu);
     kernel.SetInput(src);
@@ -435,7 +435,7 @@ void CLE::BlockEnumerate(Buffer& src, Buffer& sum, Buffer& dst, int blocksize)
     kernel.Execute();   
 }
 
-void CLE::FlagExistingLabels(Buffer& src, Buffer& dst)
+void Clesperanto::FlagExistingLabels(Buffer& src, Buffer& dst)
 {
     FlagExistingLabelsKernel kernel(this->m_gpu);
     kernel.SetInput(src);

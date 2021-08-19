@@ -3,7 +3,7 @@
 #include <vector>
 #include <iostream>
 
-#include "CLE.hpp"
+#include "clesperanto.hpp"
 
 /**
  * Main test function
@@ -12,8 +12,8 @@
 int main(int argc, char** argv)
 {
     // Initialise random input and valid output.
-    unsigned int width(5), height(5), depth(1);
-    unsigned int dims[3] = {width, height, depth};
+    int width(5), height(5), depth(1);
+    int dims[3] = {width, height, depth};
     std::vector<float> input_data (width*height*depth);
     std::vector<float> valid_data (width*height*depth);
     for (size_t i = 0; i < input_data.size(); i++)
@@ -36,8 +36,7 @@ int main(int argc, char** argv)
         }
     }
     
-    cle::GPU gpu;
-    cle::CLE cle(gpu);
+    cle::Clesperanto cle;
 
     cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
     cle::Buffer Buffer_B = cle.Create<float>(dims);

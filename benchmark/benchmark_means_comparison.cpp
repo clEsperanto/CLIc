@@ -5,7 +5,7 @@
 #include <fstream>
 #include <ostream>
 
-#include "CLE.hpp"
+#include "clesperanto.hpp"
 
 #include <benchmark_base.cpp>
 
@@ -17,25 +17,24 @@ using std::map;
 class MeanBoxBenchmark : public BenchmarkBase
 {
 protected:
-    cle::GPU gpu;
-    cle::CLE cle;
+    cle::Clesperanto cle;
     cle::Buffer gpuInput, gpuOutput;
 
     virtual void Setup()
     {
         vector<float> inputData(dataWidth * dataWidth);
         
-        vector<unsigned int> dim{{dataWidth, dataWidth, 1}};
+        vector<int> dim{{dataWidth, dataWidth, 1}};
         gpuInput = cle.Push<float>(inputData, dim.data());
         gpuOutput = cle.Create<float>(dim.data());
     }
     virtual void Teardown() {}
 
 public:
-    unsigned dataWidth;
-    unsigned radius = 3;
-    MeanBoxBenchmark(const cle::GPU& _gpu, const cle::CLE& _cle) : gpu(_gpu), cle(_cle){}
-    MeanBoxBenchmark() : gpu(cle::GPU()), cle(cle::CLE(gpu)){}
+    int dataWidth;
+    int radius = 3;
+    MeanBoxBenchmark(const cle::Clesperanto& _cle) : cle(_cle){}
+    MeanBoxBenchmark() : cle(cle::Clesperanto()){}
     virtual ~MeanBoxBenchmark(){}
 };
 
@@ -47,16 +46,16 @@ protected:
         cle.MeanSphere(gpuInput, gpuOutput, radius, radius);
     }
 
-    virtual void Compile(cle::CLE& cle)
+    virtual void Compile(cle::Clesperanto& cle)
     {
-        vector<unsigned int> dim{{1, 1, 1}};
+        vector<int> dim{{1, 1, 1}};
         cle::Buffer in = cle.Create<float>(dim.data());
         cle::Buffer out = cle.Create<float>(dim.data());
         cle.MeanSphere(in, out, 1, 1);
     }
 
 public:
-    MeanBoxNonSeperableBenchmark(const cle::GPU& _gpu, const cle::CLE& _cle) : MeanBoxBenchmark(_gpu, _cle){}
+    MeanBoxNonSeperableBenchmark(const cle::Clesperanto& _cle) : MeanBoxBenchmark(_cle){}
     MeanBoxNonSeperableBenchmark() : MeanBoxBenchmark(){}
     virtual ~MeanBoxNonSeperableBenchmark(){}
 };
@@ -70,16 +69,16 @@ protected:
         cle.MeanBox(gpuInput, gpuOutput, radius, radius);
     }
 
-    virtual void Compile(cle::CLE& cle)
+    virtual void Compile(cle::Clesperanto& cle)
     {
-        vector<unsigned int> dim{{1, 1, 1}};
+        vector<int> dim{{1, 1, 1}};
         cle::Buffer in = cle.Create<float>(dim.data());
         cle::Buffer out = cle.Create<float>(dim.data());
         cle.MeanBox(in, out, 1, 1);
     }
 
 public:
-    MeanBoxSeperableBenchmark(const cle::GPU& _gpu, const cle::CLE& _cle) : MeanBoxBenchmark(_gpu, _cle){}
+    MeanBoxSeperableBenchmark(const cle::Clesperanto& _cle) : MeanBoxBenchmark(_cle){}
     MeanBoxSeperableBenchmark() : MeanBoxBenchmark(){}
     virtual ~MeanBoxSeperableBenchmark(){}
 };
@@ -87,14 +86,13 @@ public:
 template<class T>
 map<size_t, unsigned long> getTimingsBySizes(const size_t maxSize)
 {
-    static cle::GPU gpu;
-    static cle::CLE cle(gpu);
+    static cle::Clesperanto cle;
 
     map<size_t, unsigned long> timings;
     for (size_t elemCnt = 1; elemCnt <= maxSize; elemCnt <<= 1)
     {
         cout << "\n\n# Bytes: " << elemCnt*elemCnt*sizeof(float) << "\n###" << endl;
-        T d(gpu, cle);
+        T d(cle);
         d.dataWidth = elemCnt;
         d.Run();
 
@@ -107,15 +105,14 @@ map<size_t, unsigned long> getTimingsBySizes(const size_t maxSize)
 template<class T>
 map<size_t, unsigned long> getTimingsByRadius(const size_t elemCnt)
 {
-    static cle::GPU gpu;
-    static cle::CLE cle(gpu);
+    static cle::Clesperanto cle;
 
     map<size_t, unsigned long> timings;
 
     for (size_t radius = 1; radius <= 32; radius++)
     {
         cout << "\n\n# Radius " << radius << "\n###" << endl;
-        T d(gpu, cle);
+        T d(cle);
         d.dataWidth = elemCnt;
         d.radius = radius;
         d.Run();

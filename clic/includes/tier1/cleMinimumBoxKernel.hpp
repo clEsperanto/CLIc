@@ -18,7 +18,7 @@ private:
         ;
 
 public:
-    MinimumBoxKernel(GPU& gpu) : 
+    MinimumBoxKernel (GPU* gpu) : 
         Kernel( gpu,
                 "minimum_separable",
                 {"dst", "src"}

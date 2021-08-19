@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    DilateSphereKernel(GPU& gpu) : 
+    DilateSphereKernel (GPU* gpu) : 
         Kernel( gpu,
                 "dilate_sphere",
                 {"src" , "dst"}

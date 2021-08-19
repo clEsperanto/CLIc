@@ -17,7 +17,7 @@ private:
         ;
 
 public:
-    MinimumZProjectionKernel(GPU& gpu) : 
+    MinimumZProjectionKernel (GPU* gpu) : 
         Kernel( gpu,
                 "minimum_z_projection",
                 {"dst_min", "src"}

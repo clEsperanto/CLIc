@@ -34,9 +34,9 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("src"));
     std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("dst"));
     
-    unsigned int one_dim[3] = {1,1,1};
+    int one_dim[3] = {1,1,1};
     cl::Buffer max_obj = CreateBuffer<float>(1, this->m_gpu);
-    Buffer max = Buffer(max_obj, LightObject::DataType::Float);
+    Buffer max = Buffer(max_obj, Buffer::FLOAT);
 
     MaximumOfAllPixelsKernel maximumOfPixels(this->m_gpu);
     maximumOfPixels.SetInput(*src);
@@ -45,11 +45,11 @@ void CloseIndexGapsInLabelMapKernel::Execute()
 
     float max_value;
     ReadBuffer<float>(max.GetObject(), &max_value, 1, this->m_gpu);
-    unsigned int nb_indices =  int(max_value) + 1;
+    int nb_indices =  int(max_value) + 1;
 
-    unsigned int indices_dim[3] = {nb_indices, 1, 1};
+    int indices_dim[3] = {nb_indices, 1, 1};
     cl::Buffer flaggedIndices_obj = CreateBuffer<float>(nb_indices, this->m_gpu);
-    Buffer flaggedIndices = Buffer(flaggedIndices_obj, indices_dim, LightObject::DataType::Float);
+    Buffer flaggedIndices = Buffer(flaggedIndices_obj, indices_dim, Buffer::FLOAT);
 
     FlagExistingLabelsKernel flagLabels(this->m_gpu);
     flagLabels.SetInput(*src);
@@ -62,10 +62,10 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     setColumn.SetValue(0);
     setColumn.Execute();
 
-    unsigned int nb_sums = int(nb_indices / this->blocksize) + 1;
-    unsigned int sums_dim[3] = {nb_sums, 1, 1};
+    int nb_sums = int(nb_indices / this->blocksize) + 1;
+    int sums_dim[3] = {nb_sums, 1, 1};
     cl::Buffer sums_obj = CreateBuffer<float>(nb_sums, this->m_gpu);
-    Buffer blockSums = Buffer(sums_obj, sums_dim, LightObject::DataType::Float);
+    Buffer blockSums = Buffer(sums_obj, sums_dim, Buffer::FLOAT);
 
     SumReductionXKernel sumReductionX(this->m_gpu);
     sumReductionX.SetInput(flaggedIndices);
@@ -73,9 +73,9 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     sumReductionX.SetBlocksize(this->blocksize);
     sumReductionX.Execute();
 
-    unsigned int newIndices_dim[3] = {nb_indices, 1, 1};
+    int newIndices_dim[3] = {nb_indices, 1, 1};
     cl::Buffer newIndices_obj = CreateBuffer<float>(nb_indices, this->m_gpu);
-    Buffer newIndices = Buffer(newIndices_obj, newIndices_dim, LightObject::DataType::Float);
+    Buffer newIndices = Buffer(newIndices_obj, newIndices_dim, Buffer::FLOAT);
 
     BlockEnumerateKernel blockEnumerate(this->m_gpu);
     blockEnumerate.SetInput(flaggedIndices);

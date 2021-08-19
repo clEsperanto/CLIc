@@ -11,7 +11,7 @@ class SeparableKernel : public Kernel
 {
     
 public:
-    SeparableKernel(GPU& gpu) : 
+    SeparableKernel (GPU* gpu) : 
         Kernel( gpu, 
                 "",
                 {"dst" , "src", "dim", "N", "s"}

@@ -20,7 +20,7 @@ private:
         ;
 
 public:
-    GreaterOrEqualConstantKernel(GPU& gpu) : 
+    GreaterOrEqualConstantKernel (GPU* gpu) : 
         Kernel( gpu,
                 "greater_or_equal_constant",
                 {"src1", "scalar", "dst"}

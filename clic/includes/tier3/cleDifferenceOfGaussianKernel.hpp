@@ -15,7 +15,7 @@ private:
     float sigma2[3] = {2, 2, 2};
 
 public:
-    DifferenceOfGaussianKernel(GPU& gpu) :
+    DifferenceOfGaussianKernel(GPU* gpu) :
         Kernel( gpu,
                 "difference_of_gaussians",
                 {"src", "dst"}

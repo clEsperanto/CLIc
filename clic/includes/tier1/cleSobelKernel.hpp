@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    SobelKernel(GPU& gpu) : 
+    SobelKernel (GPU* gpu) : 
         Kernel( gpu,
                 "sobel",
                 {"dst" , "src"}

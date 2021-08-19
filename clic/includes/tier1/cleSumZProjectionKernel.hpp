@@ -17,7 +17,7 @@ private:
         ;
 
 public:
-    SumZProjectionKernel(GPU& gpu) : 
+    SumZProjectionKernel (GPU* gpu) : 
         Kernel( gpu,
                 "sum_z_projection",
                 {"dst", "src"}

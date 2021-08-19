@@ -20,7 +20,7 @@ private:
         ;
 
 public:
-    AddImagesWeightedKernel(GPU& gpu) : 
+    AddImagesWeightedKernel (GPU* gpu) : 
     Kernel( gpu,  
             "add_images_weighted",
             {"src", "src1", "dst", "factor", "factor1"}

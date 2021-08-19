@@ -17,7 +17,7 @@ private:
         ;
 
 public:
-    MinimumYProjectionKernel(GPU& gpu) : 
+    MinimumYProjectionKernel (GPU* gpu) : 
         Kernel( gpu,
                 "minimum_y_projection",
                 {"dst_min", "src"}

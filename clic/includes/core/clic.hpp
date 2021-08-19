@@ -10,6 +10,10 @@
 #   define CL_HPP_ENABLE_EXCEPTIONS
 #endif
 
+#ifndef __CL_ENABLE_EXCEPTIONS
+#   define __CL_ENABLE_EXCEPTIONS
+#endif
+
 #ifndef CL_HPP_TARGET_OPENCL_VERSION
 #   define CL_HPP_TARGET_OPENCL_VERSION 120
 #endif

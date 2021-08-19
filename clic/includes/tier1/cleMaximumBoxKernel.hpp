@@ -18,7 +18,7 @@ private:
         ;
         
 public:
-    MaximumBoxKernel(GPU& gpu) : 
+    MaximumBoxKernel (GPU* gpu) : 
         Kernel( gpu,
                 "maximum_separable",
                 {"dst", "src"}

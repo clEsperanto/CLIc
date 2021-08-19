@@ -20,7 +20,7 @@ private:
         ;
 
 public:
-    NonzeroMinimumBoxKernel(GPU& gpu) : 
+    NonzeroMinimumBoxKernel (GPU* gpu) : 
         Kernel(gpu,
             "nonzero_minimum_box",
             {"dst", "flag_dst", "src"}

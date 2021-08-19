@@ -18,7 +18,7 @@ private:
         ;
 
 public:
-    CopyKernel(GPU& gpu) : 
+    CopyKernel (GPU* gpu) : 
         Kernel( gpu, 
                 "copy",
                 {"dst" , "src"}

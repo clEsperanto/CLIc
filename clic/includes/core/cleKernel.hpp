@@ -1,7 +1,7 @@
 
 
-#ifndef __cleKernel_hpp
-#define __cleKernel_hpp
+#ifndef __cleKernel_h
+#define __cleKernel_h
 
 #include "clic.hpp"
 
@@ -14,10 +14,7 @@
 #include <algorithm>
 #include <memory>
 
-#include "cleLightObject.hpp"
-#include "cleBuffer.hpp"
-#include "cleFloat.hpp"
-#include "cleInt.hpp"
+#include "cleDataType.hpp"
 
 #include "cleGPU.hpp"
 #include "cleOperations.hpp"
@@ -33,7 +30,7 @@ private:
     cl::Kernel m_Kernel;
 
 protected:
-    GPU m_gpu;
+    GPU *m_gpu;
 
     // kernel specifics
     std::string m_KernelName;
@@ -51,7 +48,7 @@ protected:
     std::string LoadSources();
     std::string LoadDefines();
     std::string GenerateSources();
-    std::string TypeAbbr(const std::string) const;
+    std::string TypeAbbr(const char*) const;
 
     // Populate Parameter list with data and tag
     void AddObject(Buffer, std::string);
@@ -65,7 +62,7 @@ protected:
     void EnqueueKernel();
 
 public:
-    Kernel(GPU&, std::string, std::vector<std::string>);
+    Kernel(GPU*, std::string, std::vector<std::string>);
     ~Kernel();
 
     // virtual abstract method Execute
@@ -73,8 +70,8 @@ public:
     virtual void Execute() = 0;
 };
 
-} // namespace cle
+} // namespace clic
 
  
 
-#endif // __cleKernel_hpp
+#endif // __cleKernel_h

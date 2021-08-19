@@ -21,14 +21,14 @@ void MaximumOfAllPixelsKernel::Execute()
 {
     std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("src"));
     std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("dst_max"));
-    unsigned int dim[3] = {src->GetDimensions()[0], src->GetDimensions()[1], src->GetDimensions()[2]};
+    std::array<int,3> dim = src->GetShape();
 
     if (dim[2] > 1)
     {
         dim[2] = 1;
         size_t size = dim[0] * dim[1] * dim[2];
         cl::Buffer tmp1_obj = CreateBuffer<float>(size, this->m_gpu);
-        Buffer temp1 (tmp1_obj, dim, LightObject::Float);
+        Buffer temp1 (tmp1_obj, dim, Buffer::FLOAT);
 
         MaximumZProjectionKernel kernelZ(this->m_gpu);
         kernelZ.SetInput(*src);
@@ -42,7 +42,7 @@ void MaximumOfAllPixelsKernel::Execute()
         dim[1] = 1;
         size_t size = dim[0] * dim[1] * dim[2];
         cl::Buffer tmp2_obj = CreateBuffer<float>(size, this->m_gpu);
-        Buffer temp2 (tmp2_obj, dim, LightObject::Float);
+        Buffer temp2 (tmp2_obj, dim, Buffer::FLOAT);
 
         MaximumYProjectionKernel kernelY(this->m_gpu);
         kernelY.SetInput(*src);

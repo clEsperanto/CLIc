@@ -2,7 +2,7 @@
 #include <random>
 #include <iostream>
 
-#include "CLE.hpp"
+#include "clesperanto.hpp"
 
 /**
  * Main test function
@@ -11,7 +11,9 @@
 int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
-    unsigned int width (10), height (10), depth (10);
+    int width (10), height (10), depth (10);
+    int dim[3] = {width, height, depth};
+
     std::vector<float> input_data (width*height*depth);
     std::vector<float> valid_data (1);
     std::default_random_engine generator;
@@ -24,13 +26,10 @@ int main(int argc, char **argv)
     valid_data[0] = 1000;
 
     // Initialise GPU information.
-    cle::GPU gpu;
-    cle::CLE cle(gpu);
+    cle::Clesperanto cle;
 
-    unsigned int dim[3] = {width, height, depth};
     cle::Buffer Buffer_A = cle.Push<float>(input_data, dim);
-    unsigned int dim2[3] = {1, 1, 1};
-    cle::Buffer Buffer_B = cle.Create<float>(valid_data, dim2);
+    cle::Buffer Buffer_B = cle.Create<float>(dim);
 
     // Call kernel
     cle.MaximumOfAllPixels(Buffer_A, Buffer_B);   

@@ -36,11 +36,10 @@ void DifferenceOfGaussianKernel::Execute()
     std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("src"));
     std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("dst"));
     
-    size_t size = src->GetDimensions()[0] * src->GetDimensions()[1] * src->GetDimensions()[2];
     cl::Buffer tmp1_obj = CreateBuffer<float>(src->GetSize(), this->m_gpu);
-    Buffer temp1 (tmp1_obj, src->GetDimensions(), LightObject::Float);
+    Buffer temp1 (tmp1_obj, src->GetShape(), Buffer::FLOAT);
     cl::Buffer tmp2_obj = CreateBuffer<float>(src->GetSize(), this->m_gpu);
-    Buffer temp2 (tmp2_obj, src->GetDimensions(), LightObject::Float);
+    Buffer temp2 (tmp2_obj, src->GetShape(), Buffer::FLOAT);
 
     GaussianBlurKernel gaussian1(this->m_gpu);
     gaussian1.SetInput(*src);

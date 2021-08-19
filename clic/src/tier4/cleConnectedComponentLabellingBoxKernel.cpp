@@ -26,11 +26,11 @@ void ConnectedComponentLabellingBoxKernel::Execute()
     std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("dst"));
         
     cl::Buffer temp1_obj = CreateBuffer<float>(src->GetSize(), this->m_gpu);
-    Buffer temp1 = Buffer(temp1_obj, src->GetDimensions(), LightObject::DataType::Float);
+    Buffer temp1 = Buffer(temp1_obj, src->GetShape(), Buffer::FLOAT);
     cl::Buffer temp2_obj = CreateBuffer<float>(src->GetSize(), this->m_gpu);
-    Buffer temp2 = Buffer(temp2_obj, src->GetDimensions(), LightObject::DataType::Float);
+    Buffer temp2 = Buffer(temp2_obj, src->GetShape(), Buffer::FLOAT);
     cl::Buffer temp3_obj = CreateBuffer<float>(src->GetSize(), this->m_gpu);
-    Buffer temp3 = Buffer(temp3_obj, src->GetDimensions(), LightObject::DataType::Float);
+    Buffer temp3 = Buffer(temp3_obj, src->GetShape(), Buffer::FLOAT);
 
     SetNonzeroPixelsToPixelindexKernel setNonzeroPixelToIndex(this->m_gpu);
     setNonzeroPixelToIndex.SetInput(*src);
@@ -43,10 +43,10 @@ void ConnectedComponentLabellingBoxKernel::Execute()
     setInit.SetValue(0);
     setInit.Execute();
 
-    unsigned int flag_dim[3] = {1,1,2};
+    int flag_dim[3] = {1,1,2};
     float arr[2] = {0,0};
     cl::Buffer flag_obj = CreateBuffer<float>(2, this->m_gpu);
-    Buffer flag = Buffer(flag_obj, flag_dim, LightObject::DataType::Float);
+    Buffer flag = Buffer(flag_obj, flag_dim, Buffer::FLOAT);
 
     float flag_value[2] = {1, 1};
     int iteration_count = 0;

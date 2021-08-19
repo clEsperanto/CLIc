@@ -17,7 +17,7 @@ private:
         ;
 
 public:
-    ReplaceIntensitiesKernel(GPU& gpu) : 
+    ReplaceIntensitiesKernel (GPU* gpu) : 
         Kernel( gpu,
                 "replace_intensities",
                 {"dst", "src", "map"}

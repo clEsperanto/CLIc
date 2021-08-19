@@ -2,7 +2,7 @@
 #include <random>
 #include <iostream>
 
-#include "CLE.hpp"
+#include "clesperanto.hpp"
 
 /**
  * Main test function
@@ -11,7 +11,8 @@
 int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
-    unsigned int width (3), height (3), depth (3);
+    int width (3), height (3), depth (3); 
+    int dim[3] = {width, height, depth};
     std::vector<float> input_data ({
         10,10, 5, 
         10, 1, 6, 
@@ -30,14 +31,12 @@ int main(int argc, char **argv)
 
 
     // Initialise GPU information.
-    cle::GPU gpu;
-    cle::CLE cle(gpu);
+    cle::Clesperanto cle;
 
-    unsigned int dim[3] = {width, height, depth};
     cle::Buffer Buffer_A = cle.Push<float>(input_data, dim);
 
-    unsigned int dim2[3] = {width, height, 1};
-    cle::Buffer Buffer_B = cle.Create<float>(dim2);
+    std::array<int,3> new_dim = {width, height, 1};
+    cle::Buffer Buffer_B = cle.Create<float>(new_dim.data());
 
     // Call kernel
     cle.MaximumZProjection(Buffer_A, Buffer_B);   
