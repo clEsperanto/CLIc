@@ -138,7 +138,7 @@ std::string Kernel::GenerateSources()
 
 std::string Kernel::TypeAbbr(const char* str) const
 {
-    size_t size = sizeof(str)/sizeof(char);
+    size_t size = strlen(str);
     if (strncmp("double", str, size) == 0) return "d";
     if (strncmp("float", str, size) == 0)  return "f";
     if (strncmp("char", str, size) == 0)   return "c";

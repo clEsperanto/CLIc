@@ -27,7 +27,7 @@ int buffer_class_method_test(cle::Buffer buff, const char * type, int dims[3])
     {
         return EXIT_FAILURE;
     }
-    if (!buff.GetSize() != dims[0]*dims[1]*dims[2])
+    if (!(buff.GetSize() != dims[0]*dims[1]*dims[2]))
     {
         return EXIT_FAILURE;
     }
