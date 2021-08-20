@@ -3,7 +3,7 @@
 #define __clesperanto_hpp
 
 #include "cleGPU.hpp"
-#include "cleDataType.hpp"
+#include "cleBuffer.hpp"
 #include "cleOperations.hpp"
 
 #include <type_traits>

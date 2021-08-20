@@ -1,8 +1,8 @@
 
 #include "clesperanto.hpp"
 
-#include "cleDataType.hpp"
- 
+#include "cleScalar.hpp"
+#include "cleBuffer.hpp" 
  
 
 template<class T>

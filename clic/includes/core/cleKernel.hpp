@@ -14,7 +14,10 @@
 #include <algorithm>
 #include <memory>
 
-#include "cleDataType.hpp"
+#include "cleLightObject.hpp"
+#include "cleScalar.hpp"
+#include "cleBuffer.hpp"
+
 
 #include "cleGPU.hpp"
 #include "cleOperations.hpp"
