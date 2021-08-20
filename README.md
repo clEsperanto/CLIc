@@ -13,15 +13,14 @@ Right now, this is very preliminary, and mainly focussed on running a few kernel
 # Usage example
 
 ```c++
-#include "CLE.h"  // CLIc include
+#include "clesperanto.h"  // CLIc include
 
 int main( int argc, char** argv)
 {
-    cle::GPU gpu();       // Initialise default GPU 
-    cle::CLE cle(gpu);    // Create cle instance
+    cle::Clesperanto cle();    // Initialisation of clEsperanto
 
     // store data to process in vector
-    unsigned int dimensions[3] = {width, height, depth};
+    int dimensions[3] = {width, height, depth};
     std::vector<float> input (width * height * depth); 
 
     /*
