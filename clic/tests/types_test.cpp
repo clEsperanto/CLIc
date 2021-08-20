@@ -1,10 +1,10 @@
 
 
-#include "CLE.h"
+#include "clesperanto.hpp"
 
 
 template<class T>
-bool ApplyFilter(cle::CLE cle, unsigned int dims[3], float scalar)
+bool ApplyFilter(cle::Clesperanto cle, int dims[3], float scalar)
 {
     std::vector<T> input_data (dims[0]*dims[1]*dims[2]);
     std::vector<T> valid_data (dims[0]*dims[1]*dims[2]);
@@ -32,11 +32,10 @@ bool ApplyFilter(cle::CLE cle, unsigned int dims[3], float scalar)
  */
 int main(int argc, char **argv)
 {
-    unsigned int width (10), height (10), depth (10);
-    unsigned int dims[3] = {width, height, depth};
+    int width (10), height (10), depth (10);
+    int dims[3] = {width, height, depth};
 
-    cle::GPU gpu;
-    cle::CLE cle(gpu);
+    cle::Clesperanto cle;
 
     if (ApplyFilter<float>(cle, dims, 5))
     {

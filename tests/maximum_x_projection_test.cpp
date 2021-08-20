@@ -2,7 +2,7 @@
 #include <random>
 #include <iostream>
 
-#include "CLE.h"
+#include "clesperanto.hpp"
 
 /**
  * Main test function
@@ -11,7 +11,8 @@
 int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
-    unsigned int width (3), height (3), depth (3);
+    int width (3), height (3), depth (3);
+    int dim[3] = {width, height, depth};
     std::vector<float> input_data ({
         10, 1, 5, 
          1,10, 6, 
@@ -29,26 +30,23 @@ int main(int argc, char **argv)
     std::fill(valid_data.begin(), valid_data.end(), 10);
 
     // Initialise GPU information.
-    cle::GPU gpu;
-    cle::CLE cle(gpu);
+    cle::Clesperanto cle;
 
-    unsigned int dim[3] = {width, height, depth};
     cle::Buffer Buffer_A = cle.Push<float>(input_data, dim);
-
-    unsigned int dim2[3] = {height, depth, 1};
-    cle::Buffer Buffer_B = cle.Create<float>(dim2);
+    std::array<int,3> new_dim = {height, depth, 1};
+    cle::Buffer Buffer_B = cle.Create<float>(new_dim.data());
 
     // Call kernel
     cle.MaximumXProjection(Buffer_A, Buffer_B);   
 
     // pull device memory to host
-    std::vector<float> ouput_data = cle.Pull<float>(Buffer_B);
+    std::vector<float> output_data = cle.Pull<float>(Buffer_B);
 
     // Verify output
     float difference = 0;
-    for (size_t i = 0; i < ouput_data.size(); i++)
+    for (size_t i = 0; i < output_data.size(); i++)
     {
-        difference += std::abs(valid_data[i] - ouput_data[i]);
+        difference += std::abs(valid_data[i] - output_data[i]);
     }
     return difference > std::numeric_limits<float>::epsilon();
 }

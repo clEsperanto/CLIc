@@ -1,11 +1,22 @@
 
-#include "cleCommandQueueManager.h"
+#include "cleCommandQueueManager.hpp"
+#include <iostream>
 
 namespace cle
 {
     
-CommandQueueManager::CommandQueueManager(cl::Context context, cl::Device device) : m_CommandQueue(context, device)
-{}
+CommandQueueManager::CommandQueueManager(cl::Context context, cl::Device device)
+{
+    try
+    {
+        m_CommandQueue = cl::CommandQueue(context, device);
+    }
+    catch(cl::Error& e)
+    {
+        std::cerr << "CommandQueueManager : Fail to create command queue from context and device." << std::endl;
+        std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
+    }
+}
 
 CommandQueueManager::~CommandQueueManager()
 {}

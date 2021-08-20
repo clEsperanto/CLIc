@@ -2,7 +2,7 @@
 #include <vector>
 #include <iostream>
 
-#include "CLE.h"
+#include "clesperanto.hpp"
 
 #include <benchmark_base.cpp>
 
@@ -13,14 +13,13 @@ using std::cout;
 class MeanBenchmark : public BenchmarkBase
 {
 protected:
-    cle::GPU gpu;
-    cle::CLE cle;
+    cle::Clesperanto cle;
     cle::Buffer gpuInput, gpuOutput;
 
     virtual void Setup()
     {
         vector<float> inputData(dataWidth * dataWidth);
-        vector<unsigned int> dim{{dataWidth, dataWidth, 1}};
+        vector<int> dim{{dataWidth, dataWidth, 1}};
         
         // Initialise device memory and push from host
         gpuInput = cle.Push<float>(inputData, dim.data());
@@ -35,8 +34,8 @@ protected:
     virtual void Teardown() {}
 
 public:
-    unsigned dataWidth;
-    MeanBenchmark() : gpu(), cle(cle::CLE(gpu)){}
+    int dataWidth;
+    MeanBenchmark() : cle(cle::Clesperanto()){}
     virtual ~MeanBenchmark(){}
 };
 

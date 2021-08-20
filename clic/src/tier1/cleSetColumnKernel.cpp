@@ -1,6 +1,6 @@
 
 
-#include "cleSetColumnKernel.h"
+#include "cleSetColumnKernel.hpp"
 
 namespace cle
 {

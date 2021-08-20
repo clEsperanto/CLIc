@@ -1,6 +1,6 @@
 
-#include "cleGaussianBlurKernel.h"
-#include "cleExecuteSeparableKernel.h"
+#include "cleGaussianBlurKernel.hpp"
+#include "cleExecuteSeparableKernel.hpp"
 
 namespace cle
 {

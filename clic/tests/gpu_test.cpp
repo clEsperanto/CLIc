@@ -1,13 +1,13 @@
 
 #include <random>
 
-#include "CLE.h"
+#include "clesperanto.hpp"
 
-#include "cleGPU.h"
-#include "cleContextManager.h"
-#include "cleCommandQueueManager.h"
-#include "cleDeviceManager.h"
-#include "clePlatformManager.h"
+#include "cleGPU.hpp"
+#include "cleContextManager.hpp"
+#include "cleCommandQueueManager.hpp"
+#include "cleDeviceManager.hpp"
+#include "clePlatformManager.hpp"
 
 
 

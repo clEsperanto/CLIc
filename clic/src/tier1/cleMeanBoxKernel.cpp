@@ -1,7 +1,7 @@
 
 
-#include "cleMeanBoxKernel.h"
-#include "cleExecuteSeparableKernel.h"
+#include "cleMeanBoxKernel.hpp"
+#include "cleExecuteSeparableKernel.hpp"
 
 namespace cle
 {

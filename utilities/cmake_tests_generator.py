@@ -12,7 +12,10 @@ def generate_script(folder):
                 output_file.write("target_link_libraries({0} PRIVATE CLIc::CLIc)\n".format(name))
                 output_file.write("add_test(NAME {0} ".format(name))
                 output_file.write("WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} ")
-                output_file.write("COMMAND {0})\n".format(name))
+                if name == "custom_test":
+                    output_file.write("COMMAND {0} $\{PROJECT_SOURCE_DIR\}/thirdparty/clij/kernels)\n".format(name))
+                else:     
+                    output_file.write("COMMAND {0})\n".format(name))
                 output_file.write("\n")
 
 generate_script(sys.argv[1])

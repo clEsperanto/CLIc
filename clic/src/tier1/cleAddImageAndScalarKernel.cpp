@@ -1,5 +1,5 @@
 
-#include "cleAddImageAndScalarKernel.h"
+#include "cleAddImageAndScalarKernel.hpp"
 
 namespace cle
 {

@@ -1,6 +1,6 @@
 
 
-#include "cleNonzeroMinimumBoxKernel.h"
+#include "cleNonzeroMinimumBoxKernel.hpp"
 
 namespace cle
 {

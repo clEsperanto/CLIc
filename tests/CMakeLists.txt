@@ -28,6 +28,11 @@ add_dependencies(copy_test CLIc)
 target_link_libraries(copy_test PRIVATE CLIc::CLIc)
 add_test(NAME copy_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND copy_test)
 
+add_executable(custom_test custom_test.cpp)
+add_dependencies(custom_test CLIc)
+target_link_libraries(custom_test PRIVATE CLIc::CLIc)
+add_test(NAME custom_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND custom_test ${PROJECT_SOURCE_DIR}/thirdparty/clij/kernels)
+
 add_executable(detect_maxima_test detect_maxima_test.cpp)
 add_dependencies(detect_maxima_test CLIc)
 target_link_libraries(detect_maxima_test PRIVATE CLIc::CLIc)

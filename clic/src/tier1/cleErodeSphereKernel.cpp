@@ -1,6 +1,6 @@
 
 
-#include "cleErodeSphereKernel.h"
+#include "cleErodeSphereKernel.hpp"
 
 namespace cle
 {

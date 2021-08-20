@@ -1,6 +1,6 @@
 
 
-#include "cleSumReductionXKernel.h"
+#include "cleSumReductionXKernel.hpp"
 
 namespace cle
 {

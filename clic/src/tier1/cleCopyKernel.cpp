@@ -1,5 +1,5 @@
 
-#include "cleCopyKernel.h"
+#include "cleCopyKernel.hpp"
 
 namespace cle
 {

@@ -1,6 +1,6 @@
 
 
-#include "cleSmallerOrEqualConstantKernel.h"
+#include "cleSmallerOrEqualConstantKernel.hpp"
 
 namespace cle
 {

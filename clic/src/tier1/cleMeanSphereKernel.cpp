@@ -1,5 +1,5 @@
 
-#include "cleMeanSphereKernel.h"
+#include "cleMeanSphereKernel.hpp"
 
 namespace cle
 {

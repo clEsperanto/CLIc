@@ -1,6 +1,6 @@
 
 
-#include "cleReplaceIntensitiesKernel.h"
+#include "cleReplaceIntensitiesKernel.hpp"
 
 namespace cle
 {

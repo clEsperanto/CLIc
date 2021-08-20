@@ -1,5 +1,5 @@
 
-#include "cleSeparableKernel.h"
+#include "cleSeparableKernel.hpp"
 
 namespace cle
 {

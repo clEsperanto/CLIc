@@ -1,6 +1,6 @@
 
 
-#include "cleMinimumXProjectionKernel.h"
+#include "cleMinimumXProjectionKernel.hpp"
 
 namespace cle
 {
