@@ -43,7 +43,7 @@ jobs:
       - name: Generate coverage
         shell: bash
         run: |    
-          cd ${{ runner.workspace }}/build && make && make coverage_xml -VV
+          cd ${{ runner.workspace }}/build && make && make coverage_xml
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v2

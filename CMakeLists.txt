@@ -29,19 +29,19 @@ endif()
 if(BUILD_CODE_COVERAGE)
     setup_target_for_coverage_lcov(
         NAME coverage
-        EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage
+        EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage -VV
         BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
         EXCLUDE "/benchmark/*"
         )
     setup_target_for_coverage_gcovr_html(
         NAME coverage_html
-        EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage
+        EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage -VV
         BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
         EXCLUDE "/benchmark/*"
         )
     setup_target_for_coverage_gcovr_xml(
         NAME coverage_xml
-        EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage
+        EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage -VV
         BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
         EXCLUDE "/benchmark/*"
         )
