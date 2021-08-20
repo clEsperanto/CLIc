@@ -14,12 +14,12 @@ PlatformManager::PlatformManager()
     }
     catch(cl::Error& e)
     {
-        std::cerr << "Fail to get platforms ..." << std::endl;
+        std::cerr << "PlatformManager : Fail to get platforms ..." << std::endl;
         std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
     }
     if(m_PlatformList.empty())
     {
-        std::cerr << "PlatformManager : No platform found, please check OpenCL installation" << std::endl;
+        std::cerr << "PlatformManager : No platform found, please check OpenCL installation!" << std::endl;
     }
 }
 

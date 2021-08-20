@@ -23,7 +23,7 @@ void Kernel::ManageDimensions(std::string tag)
         }
         else
         {
-            std::cerr << "Error ManageDimensions() : Could not find \"dst\" in Parameters list." << std::endl;
+            std::cerr << "Kernel : Error in managing data dimensions, could not find \"dst\" tag in Parameters list." << std::endl;
         }
     }
 }
@@ -214,7 +214,7 @@ void Kernel::AddObject(Buffer o, std::string t)
     }
     else
     {
-        std::cerr << "Error: Invalid buffer parameter tag" << std::endl;
+        std::cerr << "Kernel : Invalid tag '" << t << "' used to add buffer." << std::endl;
     }
 }
 
@@ -235,7 +235,7 @@ void Kernel::AddObject(int o, std::string t)
     }
     else
     {
-        std::cerr << "Error: Invalid Scalar parameter tag" << std::endl;
+        std::cerr << "Kernel : Invalid tag '" << t << "' used to add int scalar." << std::endl;
     }
 }
 
@@ -256,7 +256,7 @@ void Kernel::AddObject(float o, std::string t)
     }
     else
     {
-        std::cerr << "Error: Invalid Scalar parameter tag" << std::endl;
+        std::cerr << "Kernel : Invalid tag '" << t << "' used to add float scalar." << std::endl;
     }
 }
 
@@ -280,7 +280,7 @@ void Kernel::BuildProgramKernel()
             }
             catch(cl::Error& e)
             {
-                std::cerr << "Fail to create program ..." << std::endl;
+                std::cerr << "Kernel : Fail to create program." << std::endl;
                 std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
                 std::cerr << sources << std::endl;
             }
@@ -290,11 +290,10 @@ void Kernel::BuildProgramKernel()
             }
             catch(cl::Error& e)
             {
-                std::cerr << "Fail to build program from source ..." << std::endl;
+                std::cerr << "Kernel : Fail to build program from source." << std::endl;
                 std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
-                std::string build_log = this->m_Program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(this->m_gpu->GetDeviceManager().GetDevice());
-                std::cerr << "\tbuild log:" << std::endl;
-                std::cerr << build_log << std::endl;
+                std::cerr << "build log:" << std::endl;
+                std::cerr << this->m_Program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(this->m_gpu->GetDeviceManager().GetDevice()) << std::endl;
             }
             m_CurrentHash = source_hash;
             this->m_gpu->AddProgram(this->m_Program, m_CurrentHash);
@@ -306,7 +305,7 @@ void Kernel::BuildProgramKernel()
         }
         catch(cl::Error& e)
         {
-            std::cerr << "Fail to create kernel: " << fullName.c_str() << std::endl;
+            std::cerr << "Kernel : Fail to create kernel. " << fullName.c_str() << std::endl;
             std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
         }
     }
@@ -323,7 +322,7 @@ void Kernel::EnqueueKernel()
     }
     catch(const cl::Error& e)
     {
-        std::cerr << "Fail to enqueue kernel ..." << std::endl;
+        std::cerr << "Kernel : Fail to enqueue kernel." << std::endl;
         std::cerr << "\tException caught! " << e.what() << " -> " << e.err() << '\n';
     }
     this->m_gpu->GetCommandQueueManager().GetCommandQueue().finish();

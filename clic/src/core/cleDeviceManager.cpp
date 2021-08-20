@@ -14,12 +14,12 @@ DeviceManager::DeviceManager(cl::Platform platform)
     }
     catch(cl::Error& e)
     {
-        std::cerr << "Fail to get devices ..." << std::endl;
+        std::cerr << "DeviceManager : Fail to get devices from platform ..." << std::endl;
         std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
     }
     if (m_DeviceList.size() == 0)
     {
-        std::cerr << "DeviceManager : No devices found." << std::endl;
+        std::cerr << "DeviceManager : No devices found, please check your OpenCL installation!" << std::endl;
     }
 }
 
@@ -33,7 +33,7 @@ DeviceManager::DeviceManager(std::vector<cl::Platform> platform_list)
         {
             m_DeviceList.insert(
                 m_DeviceList.end(),
-                std::make_move_iterator(tmp_device_list.begin()),
+                std::make_move_iterator(tmp_device_list.begin()), 
                 std::make_move_iterator(tmp_device_list.end())
                 );    
         }
@@ -41,7 +41,7 @@ DeviceManager::DeviceManager(std::vector<cl::Platform> platform_list)
     }
     if (m_DeviceList.size() == 0)
     {
-        std::cerr << "DeviceManager : No devices found." << std::endl;
+        std::cerr << "DeviceManager : No devices found, please check your OpenCL installation!" << std::endl;
     }
 }
 
@@ -82,7 +82,7 @@ void DeviceManager::SetDevice(std::string name)
     }
     if(!deviceFound)
     {
-        std::cerr << "DeviceManager : No available device found with the name '" + name + "'. Use default device." << std::endl;
+        std::cerr << "DeviceManager : No available device found containing the name '" + name + "'." << std::endl;
     }
 }
 
@@ -104,7 +104,7 @@ cl::Device DeviceManager::GetDevice(int device_id)
     }
     else
     {
-        std::cerr << "DeviceManager : wrong device id. Return default device instead." << std::endl;
+        std::cerr << "DeviceManager : Wrong device id. Returning default device." << std::endl;
         return this->m_DeviceList[this->m_DeviceId];
     }
 }

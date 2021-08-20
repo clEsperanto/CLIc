@@ -13,7 +13,7 @@ CommandQueueManager::CommandQueueManager(cl::Context context, cl::Device device)
     }
     catch(cl::Error& e)
     {
-        std::cerr << "Fail to create command queue ..." << std::endl;
+        std::cerr << "CommandQueueManager : Fail to create command queue from context and device." << std::endl;
         std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
     }
 }

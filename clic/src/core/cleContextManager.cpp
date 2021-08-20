@@ -13,8 +13,8 @@ ContextManager::ContextManager(cl::Device device)
     }
     catch(const cl::Error& e)
     {
-        std::cout << "Error creating context " << std::endl;
-        std::cout << "\tException caught! " << e.what() << " -> " << e.err() << '\n';
+        std::cerr << "ContextManager : Error creating context with provided device." << std::endl;
+        std::cerr << "\tException caught! " << e.what() << " -> " << e.err() << '\n';
     }
     
 }
@@ -27,8 +27,8 @@ ContextManager::ContextManager(std::vector<cl::Device> devices)
     }
     catch(const cl::Error& e)
     {
-        std::cout << "Error creating context " << std::endl;
-        std::cout << "\tException caught! " << e.what() << " -> " << e.err() << '\n';
+        std::cerr << "ContextManager : Error creating context with provided devices." << std::endl;
+        std::cerr << "\tException caught! " << e.what() << " -> " << e.err() << '\n';
     }
 }
     
