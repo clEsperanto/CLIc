@@ -1,4 +1,4 @@
-# 0.4.0 - undefined
+# 0.4.0 - August 20th 2021
 
 ## Bug fixes
 - Fixe display compiling log when error occure during program build.
