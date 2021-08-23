@@ -86,14 +86,14 @@ void GPU::AddProgram(cl::Program program, size_t hash)
 
 void GPU::GetInfo()
 {
-    std::cout << m_PlatformManager.PlatformsInfo() << std::endl;
-    std::cout << m_DeviceManager.DevicesInfo() << std::endl;
+    std::cout << m_PlatformManager.GetInfo() << std::endl;
+    std::cout << m_DeviceManager.GetAllInfo() << std::endl;
 }
 
 void GPU::GetSelectedDeviceInfo()
 {
     std::cout << "Current Selected Device: " << std::endl;
-    std::cout << m_DeviceManager.DeviceInfo() << std::endl;
+    std::cout << m_DeviceManager.GetInfo() << std::endl;
 }
 
 } // namespace cle

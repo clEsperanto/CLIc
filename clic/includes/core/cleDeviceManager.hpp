@@ -27,8 +27,8 @@ public:
     cl::Device GetDevice(int);
     std::vector<cl::Device> GetDevices();
 
-    std::string DeviceInfo(int=-1);
-    std::string DevicesInfo();
+    std::string GetInfo(int=-1);
+    std::string GetAllInfo();
 
 };
 
