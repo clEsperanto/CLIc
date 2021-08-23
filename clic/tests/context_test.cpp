@@ -15,12 +15,18 @@ int main(int argc, char **argv)
     }
     
     {
+    cle::ContextManager* context = new cle::ContextManager(device->GetDevices());
+    context->GetContext();
+    context->GetDevices();
+    delete context;
+    }
+
+    {
     cle::ContextManager* context = new cle::ContextManager(device->GetDevice());
     context->GetContext();
     context->GetDevices();
     delete context;
     }
     
-
     return EXIT_SUCCESS;
 }
