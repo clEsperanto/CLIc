@@ -18,7 +18,7 @@ int platform_test()
     {
         return EXIT_FAILURE;
     }
-    std::cout << platforms.PlatformsInfo() << std::endl;
+    std::cout << platforms.GetInfo() << std::endl;
     return EXIT_SUCCESS;
 }
 
@@ -53,8 +53,8 @@ int device_test()
     {
         return EXIT_FAILURE;
     }
-    std::cout << devices1.DeviceInfo() << std::endl;
-    std::cout << devices1.DevicesInfo() << std::endl;
+    std::cout << devices1.GetInfo() << std::endl;
+    std::cout << devices1.GetAllInfo() << std::endl;
     return EXIT_SUCCESS;
 }
 
