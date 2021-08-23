@@ -1,3 +1,13 @@
+# 0.5.0 - XXX
+
+## Bug fixes
+- Remove extra context manager class left in Tier1 folder.
+
+## New features  
+- Improve error message in Manager classes, with try/catch blocks for OpenCL error management.
+- Add unity test for manager classes.
+
+
 # 0.4.0 - August 20th 2021
 
 ## Bug fixes
