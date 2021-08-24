@@ -27,7 +27,7 @@ if(BUILD_BENCHMARK)
 endif()
 
 if(BUILD_CODE_COVERAGE)
-    set(GCOVR_ADDITIONAL_ARGS "--exclude-throw-branches")
+    set(GCOVR_ADDITIONAL_ARGS "--exclude-throw-branches") # deal with thirdparty throw branche coverage.
     setup_target_for_coverage_lcov(
         NAME coverage
         EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage
