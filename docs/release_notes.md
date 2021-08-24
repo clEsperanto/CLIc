@@ -1,4 +1,4 @@
-# 0.5.0 - XXX
+# 0.5.0 - On-going
 
 ## Bug fixes
 - Remove extra context manager class left in Tier1 folder.
