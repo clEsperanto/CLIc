@@ -42,7 +42,17 @@ cl::Context ContextManager::GetContext()
 
 std::vector<cl::Device> ContextManager::GetDevices()
 {
-    return this->m_Context.getInfo<CL_CONTEXT_DEVICES>();
+    std::vector<cl::Device> output;
+    try 
+    {
+        output = this->m_Context.getInfo<CL_CONTEXT_DEVICES>();
+    }
+    catch(const cl::Error& e)
+    {
+        std::cerr << "ContextManager : Error getting device from context." << std::endl;
+        std::cerr << "\tException caught! " << e.what() << " -> " << e.err() << '\n';
+    }
+    return output;
 }
 
 } // namespace cle

@@ -1,4 +1,24 @@
 
+add_executable(platform_test platform_test.cpp)
+add_dependencies(platform_test CLIc) 
+target_link_libraries(platform_test PRIVATE CLIc::CLIc)
+add_test(NAME platform_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/platform_test)
+
+add_executable(device_test device_test.cpp)
+add_dependencies(device_test CLIc) 
+target_link_libraries(device_test PRIVATE CLIc::CLIc)
+add_test(NAME device_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/device_test)
+
+add_executable(context_test context_test.cpp)
+add_dependencies(context_test CLIc) 
+target_link_libraries(context_test PRIVATE CLIc::CLIc)
+add_test(NAME context_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/context_test)
+
+add_executable(commandqueue_test commandqueue_test.cpp)
+add_dependencies(commandqueue_test CLIc) 
+target_link_libraries(commandqueue_test PRIVATE CLIc::CLIc)
+add_test(NAME commandqueue_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/commandqueue_test)
+
 add_executable(gpu_test gpu_test.cpp)
 add_dependencies(gpu_test CLIc) 
 target_link_libraries(gpu_test PRIVATE CLIc::CLIc)

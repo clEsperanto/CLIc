@@ -28,12 +28,32 @@ cl::CommandQueue CommandQueueManager::GetCommandQueue()
 
 cl::Device CommandQueueManager::GetDevice()
 {
-    return this->m_CommandQueue.getInfo<CL_QUEUE_DEVICE>();
+    cl::Device device;
+    try 
+    {
+        device = this->m_CommandQueue.getInfo<CL_QUEUE_DEVICE>();
+    }
+    catch(const cl::Error& e)
+    {
+        std::cerr << "CommandQueueManager : Error getting device from CommandQueue." << std::endl;
+        std::cerr << "\tException caught! " << e.what() << " -> " << e.err() << '\n';
+    }
+    return device;
 }
 
 cl::Context CommandQueueManager::GetContext()
 {
-    return this->m_CommandQueue.getInfo<CL_QUEUE_CONTEXT>();
+    cl::Context context;
+    try 
+    {
+        context = this->m_CommandQueue.getInfo<CL_QUEUE_CONTEXT>();
+    }
+    catch(const cl::Error& e)
+    {
+        std::cerr << "CommandQueueManager : Error getting context from CommandQueue." << std::endl;
+        std::cerr << "\tException caught! " << e.what() << " -> " << e.err() << '\n';
+    }
+    return context;
 }
 
 } // namespace cle
