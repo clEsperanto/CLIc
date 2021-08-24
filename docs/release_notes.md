@@ -5,10 +5,10 @@
 
 ## New features  
 - Improve error message in Manager classes, with try/catch blocks for OpenCL error management.
-- Add unity test for manager classes.
+- Add more unity test for manager classes.
 
 ## Miscellaneous
-- Exclude throw branches from coverage analysis. This is to avoid taking in account the branche coverage of the stl or other library on which we do not have control. Though it makes the coverage less precise, it is a bit more honnest of the state of our API. 
+- Exclude throw branches from coverage analysis. This is to avoid taking in account the branche coverage of the `stl` or other library on which we do not have control. Though it makes the coverage less precise, it is a bit more honnest of the state of our API. 
 
 # 0.4.0 - August 20th 2021
 
