@@ -4,6 +4,16 @@
 namespace cle
 {
 
+AddImageAndScalarKernel::AddImageAndScalarKernel(std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu, 
+            "add_image_and_scalar", 
+            {"src", "dst", "scalar"}
+        ) 
+{
+    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
+    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+}
+
 void AddImageAndScalarKernel::SetInput(Buffer& x)
 {
     this->AddObject(x, "src");
@@ -21,10 +31,7 @@ void AddImageAndScalarKernel::SetScalar(float x)
 
 void AddImageAndScalarKernel::Execute()
 {
-    if(this->m_Sources.size() > 1)
-    {
-        this->ManageDimensions("dst");
-    }
+    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

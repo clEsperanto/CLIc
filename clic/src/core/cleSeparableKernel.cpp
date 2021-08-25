@@ -43,7 +43,7 @@ void SeparableKernel::Execute()
 {
     if( this->m_Sources.size() > 1)
     {
-        this->ManageDimensions("dst");
+    this->ManageDimensions("dst");
     }
     this->BuildProgramKernel();
     this->SetArguments();

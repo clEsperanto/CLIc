@@ -18,15 +18,7 @@ private:
         ;
 
 public:
-    MinimumBoxKernel (std::shared_ptr<GPU> gpu) : 
-        Kernel( gpu,
-                "minimum_separable",
-                {"dst", "src"}
-        )
-    {
-        m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-        m_Sources.insert({this->m_KernelName + "_3d", source_3d}); 
-    }
+    MinimumBoxKernel (std::shared_ptr<GPU> gpu);
 
     void SetInput(Buffer&);
     void SetOutput(Buffer&);

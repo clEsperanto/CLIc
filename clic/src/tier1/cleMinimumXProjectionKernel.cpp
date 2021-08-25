@@ -4,6 +4,15 @@
 
 namespace cle
 {
+
+MinimumXProjectionKernel::MinimumXProjectionKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,
+            "minimum_x_projection",
+            {"dst_min", "src"}
+    )
+{
+    m_Sources.insert({this->m_KernelName + "", source});
+}
     
 void MinimumXProjectionKernel::SetInput(Buffer& x)
 {
@@ -17,10 +26,7 @@ void MinimumXProjectionKernel::SetOutput(Buffer& x)
 
 void MinimumXProjectionKernel::Execute()
 {
-    if(this->m_Sources.size() > 1)
-    {
-        this->ManageDimensions("dst");
-    }
+    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

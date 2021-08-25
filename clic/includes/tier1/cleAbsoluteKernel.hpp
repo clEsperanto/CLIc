@@ -18,15 +18,7 @@ private:
         ;
 
 public:
-    AbsoluteKernel (std::shared_ptr<GPU> gpu) :    
-        Kernel( gpu, 
-                "absolute",     // kernel name
-                {"src" , "dst"} // parameter tags
-        )
-    {
-        m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-        m_Sources.insert({this->m_KernelName + "_3d", source_3d});
-    }
+    AbsoluteKernel(std::shared_ptr<GPU>);
 
     void SetInput(Buffer&);   // Set<Parameter>(<Type>)
     void SetOutput(Buffer&);

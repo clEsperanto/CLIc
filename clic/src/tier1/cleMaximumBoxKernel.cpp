@@ -6,6 +6,16 @@
 namespace cle
 {
 
+MaximumBoxKernel::MaximumBoxKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,
+            "maximum_separable",
+            {"dst", "src"}
+    )
+{
+    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
+    m_Sources.insert({this->m_KernelName + "_3d", source_3d}); 
+}    
+
 int MaximumBoxKernel::Radius2KernelSize(float r)
 {
     return int(r) * 2 + 1;

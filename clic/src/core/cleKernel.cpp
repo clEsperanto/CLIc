@@ -6,7 +6,7 @@ namespace cle
 
 void Kernel::ManageDimensions(std::string tag)
 {
-    if(m_ParameterList.size() > 1)
+    if(m_ParameterList.size() > 1 && m_Sources.size() > 1)
     {
         auto it = m_ParameterList.find(tag);
         if (it != m_ParameterList.end())

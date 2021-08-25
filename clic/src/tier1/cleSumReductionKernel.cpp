@@ -5,6 +5,15 @@
 namespace cle
 {
 
+SumReductionXKernel::SumReductionXKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,
+            "sum_reduction_x",
+            {"dst", "src", "blocksize"}
+    )
+{
+    m_Sources.insert({this->m_KernelName + "", source});
+}
+
 void SumReductionXKernel::SetInput(Buffer& x)
 {
     this->AddObject(x, "src");
@@ -22,10 +31,7 @@ void SumReductionXKernel::SetBlocksize(int x)
 
 void SumReductionXKernel::Execute()
 {
-    if(this->m_Sources.size() > 1)
-    {
-        this->ManageDimensions("dst");
-    }
+    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

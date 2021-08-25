@@ -17,14 +17,7 @@ private:
 
 public:
 
-    MaximumYProjectionKernel (std::shared_ptr<GPU> gpu) : 
-        Kernel( gpu,
-                "maximum_y_projection",
-                {"dst_max", "src"}
-        )
-    {
-        m_Sources.insert({this->m_KernelName + "", source});
-    }
+    MaximumYProjectionKernel (std::shared_ptr<GPU> gpu);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

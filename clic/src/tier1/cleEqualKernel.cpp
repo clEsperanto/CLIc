@@ -5,6 +5,16 @@
 namespace cle
 {
 
+EqualKernel::EqualKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,
+            "equal",
+            {"src1", "src2", "dst"}
+    )
+{
+    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
+    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+}
+
 void EqualKernel::SetInput1(Buffer& x)
 {
     this->AddObject(x, "src1");
@@ -22,10 +32,7 @@ void EqualKernel::SetOutput(Buffer& x)
 
 void EqualKernel::Execute()
 {
-    if(this->m_Sources.size() > 1)
-    {
-        this->ManageDimensions("dst");
-    }
+    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

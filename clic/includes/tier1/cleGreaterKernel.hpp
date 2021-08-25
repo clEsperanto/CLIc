@@ -19,15 +19,7 @@ private:
         ;
 
 public:
-    GreaterKernel (std::shared_ptr<GPU> gpu) : 
-        Kernel( gpu,
-                "greater",
-                {"src1", "src2", "dst"}
-        )
-    {
-        m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-        m_Sources.insert({this->m_KernelName + "_3d", source_3d});
-    }
+    GreaterKernel (std::shared_ptr<GPU> gpu);
     void SetInput1(Buffer&);
     void SetInput2(Buffer&);
     void SetOutput(Buffer&);

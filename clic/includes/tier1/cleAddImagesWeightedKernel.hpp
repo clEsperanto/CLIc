@@ -20,15 +20,7 @@ private:
         ;
 
 public:
-    AddImagesWeightedKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu,  
-            "add_images_weighted",
-            {"src", "src1", "dst", "factor", "factor1"}
-        )
-    {
-        m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-        m_Sources.insert({this->m_KernelName + "_3d", source_3d});
-    }
+    AddImagesWeightedKernel (std::shared_ptr<GPU> gpu);
     void SetInput1(Buffer&);
     void SetInput2(Buffer&);
     void SetOutput(Buffer&);

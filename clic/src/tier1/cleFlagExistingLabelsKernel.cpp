@@ -6,6 +6,15 @@
 namespace cle
 {
 
+FlagExistingLabelsKernel::FlagExistingLabelsKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,
+            "flag_existing_labels",
+            {"dst" , "src"}
+    )
+{
+    m_Sources.insert({this->m_KernelName + "", source});
+}    
+
 void FlagExistingLabelsKernel::SetInput(Buffer& x)
 {
     this->AddObject(x, "src");

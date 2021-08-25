@@ -16,14 +16,7 @@ private:
         ;
 
 public:
-    SetNonzeroPixelsToPixelindexKernel (std::shared_ptr<GPU> gpu) : 
-        Kernel( gpu, 
-                "set_nonzero_pixels_to_pixelindex",
-                {"dst" , "src", "offset"}
-        )
-    {
-        m_Sources.insert({this->m_KernelName + "", source});
-    }
+    SetNonzeroPixelsToPixelindexKernel (std::shared_ptr<GPU> gpu);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void SetOffset(int);

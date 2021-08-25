@@ -11,12 +11,7 @@ class MinimumOfAllPixelsKernel : public Kernel
 {
 
 public:
-    MinimumOfAllPixelsKernel (std::shared_ptr<GPU> gpu) : 
-        Kernel( gpu,
-                "minimum_of_all_pixels",
-                {"dst_min", "src"}
-        )
-    {}
+    MinimumOfAllPixelsKernel (std::shared_ptr<GPU> gpu);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

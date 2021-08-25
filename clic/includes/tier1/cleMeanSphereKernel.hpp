@@ -18,15 +18,7 @@ private:
         ;
 
 public:
-    MeanSphereKernel (std::shared_ptr<GPU> gpu) : 
-        Kernel( gpu,
-                "mean_sphere",
-                {"dst", "src", "radius_x", "radius_y", "radius_z"}
-        )
-    {
-        m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-        m_Sources.insert({this->m_KernelName + "_3d", source_3d});
-    }
+    MeanSphereKernel (std::shared_ptr<GPU> gpu);
 
     void SetInput(Buffer&);
     void SetOutput(Buffer&);

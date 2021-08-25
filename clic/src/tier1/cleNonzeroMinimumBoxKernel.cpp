@@ -5,6 +5,16 @@
 namespace cle
 {
 
+NonzeroMinimumBoxKernel::NonzeroMinimumBoxKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel(gpu,
+        "nonzero_minimum_box",
+        {"dst", "flag_dst", "src"}
+    )
+{
+    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
+    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+}
+
 void NonzeroMinimumBoxKernel::SetInput(Buffer& x)
 {
     this->AddObject(x, "src");
@@ -22,10 +32,7 @@ void NonzeroMinimumBoxKernel::SetOutputFlag(Buffer& x)
 
 void NonzeroMinimumBoxKernel::Execute()
 {
-    if(this->m_Sources.size() > 1)
-    {
-        this->ManageDimensions("dst");
-    }
+    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

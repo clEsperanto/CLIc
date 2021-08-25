@@ -18,14 +18,7 @@ private:
         ;
 
 public:
-    SumReductionXKernel (std::shared_ptr<GPU> gpu) : 
-        Kernel( gpu,
-                "sum_reduction_x",
-                {"dst", "src", "blocksize"}
-        )
-    {
-        m_Sources.insert({this->m_KernelName + "", source});
-    }
+    SumReductionXKernel (std::shared_ptr<GPU> gpu);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void SetBlocksize(int);

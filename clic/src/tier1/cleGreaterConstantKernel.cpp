@@ -5,6 +5,16 @@
 namespace cle
 {
 
+GreaterConstantKernel::GreaterConstantKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,
+            "greater_constant",
+            {"src1", "scalar", "dst"}
+    )
+{
+    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
+    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+}    
+
 void GreaterConstantKernel::SetInput(Buffer& x)
 {
     this->AddObject(x, "src1");
@@ -22,10 +32,7 @@ void GreaterConstantKernel::SetScalar(float x)
 
 void GreaterConstantKernel::Execute()
 {
-    if(this->m_Sources.size() > 1)
-    {
-        this->ManageDimensions("dst");
-    }
+    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

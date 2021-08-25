@@ -7,6 +7,13 @@
 
 namespace cle
 {
+
+MinimumOfAllPixelsKernel::MinimumOfAllPixelsKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,
+            "minimum_of_all_pixels",
+            {"dst_min", "src"}
+    )
+{}    
     
 void MinimumOfAllPixelsKernel::SetInput(Buffer& x)
 {

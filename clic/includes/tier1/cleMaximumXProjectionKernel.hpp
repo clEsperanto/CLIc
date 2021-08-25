@@ -17,14 +17,7 @@ private:
 
 public:
 
-    MaximumXProjectionKernel (std::shared_ptr<GPU> gpu) : 
-        Kernel( gpu,
-                "maximum_x_projection",
-                {"dst_max", "src"}
-        )
-    {
-        m_Sources.insert({this->m_KernelName + "", source});
-    }
+    MaximumXProjectionKernel (std::shared_ptr<GPU> gpu);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

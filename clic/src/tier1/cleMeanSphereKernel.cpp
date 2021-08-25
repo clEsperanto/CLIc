@@ -3,6 +3,16 @@
 
 namespace cle
 {
+
+MeanSphereKernel::MeanSphereKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,
+            "mean_sphere",
+            {"dst", "src", "radius_x", "radius_y", "radius_z"}
+    )
+{
+    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
+    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+}    
     
 int MeanSphereKernel::Radius2KernelSize(float r)
 {
@@ -34,10 +44,7 @@ void MeanSphereKernel::SetOutput(Buffer& x)
 
 void MeanSphereKernel::Execute()
 {
-    if(this->m_Sources.size() > 1)
-    {
-        this->ManageDimensions("dst");
-    }
+    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();
