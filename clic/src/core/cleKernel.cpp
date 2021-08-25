@@ -139,12 +139,14 @@ std::string Kernel::GenerateSources()
 std::string Kernel::TypeAbbr(const char* str) const
 {
     size_t size = strlen(str);
-    if (strncmp("double", str, size) == 0) return "d";
+    // if (strncmp("double", str, size) == 0) return "d";    // Missing definition type in preamble
     if (strncmp("float", str, size) == 0)  return "f";
     if (strncmp("char", str, size) == 0)   return "c";
     if (strncmp("uchar", str, size) == 0)  return "uc";
-    if (strncmp("int", str, size) == 0)    return "i";
-    if (strncmp("uint", str, size) == 0)   return "ui";
+    // if (strncmp("int", str, size) == 0)    return "i";    // Missing definition type in preamble
+    // if (strncmp("uint", str, size) == 0)   return "ui";   // Missing definition type in preamble
+    // if (strncmp("short", str, size) == 0)    return "s";  // Missing definition type in preamble
+    // if (strncmp("ushort", str, size) == 0)   return "us"; // Missing definition type in preamble
     return "?"; 
 }
 
@@ -166,33 +168,40 @@ void Kernel::SetArguments()
                     m_GlobalRange[i] = std::max(m_GlobalRange[i], tempDim);
                 }
             }
-            else if (m_ParameterList.at(tag)->IsObjectType("scalar"))
+            else if (m_ParameterList.at(tag)->IsObjectType("scalar"))  // only float and int used in kernel for now
             {    
                 if (m_ParameterList.at(tag)->IsDataType("float")) {
                     std::shared_ptr< cle::Scalar<float> > object = std::dynamic_pointer_cast< cle::Scalar<float> >(m_ParameterList.at(tag));
                     this->m_Kernel.setArg(index, object->GetObject()); 
                 }
-                else if (m_ParameterList.at(tag)->IsDataType("double")) {
-                    std::shared_ptr< cle::Scalar<double> > object = std::dynamic_pointer_cast< cle::Scalar<double> >(m_ParameterList.at(tag));
-                    this->m_Kernel.setArg(index, object->GetObject()); 
-                }
+                // else if (m_ParameterList.at(tag)->IsDataType("double")) {
+                //     std::shared_ptr< cle::Scalar<double> > object = std::dynamic_pointer_cast< cle::Scalar<double> >(m_ParameterList.at(tag));
+                //     this->m_Kernel.setArg(index, object->GetObject()); 
+                // }
                 else if (m_ParameterList.at(tag)->IsDataType("int")) {
                     std::shared_ptr< cle::Scalar<int> > object = std::dynamic_pointer_cast< cle::Scalar<int> >(m_ParameterList.at(tag));
                     this->m_Kernel.setArg(index, object->GetObject()); 
                 }
-                else if (m_ParameterList.at(tag)->IsDataType("char")) {
-                    std::shared_ptr< cle::Scalar<char> > object = std::dynamic_pointer_cast< cle::Scalar<char> >(m_ParameterList.at(tag));
-                    this->m_Kernel.setArg(index, object->GetObject()); 
-                }
-                else if (m_ParameterList.at(tag)->IsDataType("unsigned int")) {
-                    std::shared_ptr< cle::Scalar<unsigned int> > object = std::dynamic_pointer_cast< cle::Scalar<unsigned int> >(m_ParameterList.at(tag));
-                    this->m_Kernel.setArg(index, object->GetObject()); 
-                }
-                else if (m_ParameterList.at(tag)->IsDataType("unsigned char")) {
-                    std::shared_ptr< cle::Scalar<unsigned char> > object = std::dynamic_pointer_cast< cle::Scalar<unsigned char> >(m_ParameterList.at(tag));
-                    this->m_Kernel.setArg(index, object->GetObject());
-                }
-
+                // else if (m_ParameterList.at(tag)->IsDataType("char")) {
+                //     std::shared_ptr< cle::Scalar<char> > object = std::dynamic_pointer_cast< cle::Scalar<char> >(m_ParameterList.at(tag));
+                //     this->m_Kernel.setArg(index, object->GetObject()); 
+                // }
+                // else if (m_ParameterList.at(tag)->IsDataType("unsigned int")) {
+                //     std::shared_ptr< cle::Scalar<unsigned int> > object = std::dynamic_pointer_cast< cle::Scalar<unsigned int> >(m_ParameterList.at(tag));
+                //     this->m_Kernel.setArg(index, object->GetObject()); 
+                // }
+                // else if (m_ParameterList.at(tag)->IsDataType("unsigned char")) {
+                //     std::shared_ptr< cle::Scalar<unsigned char> > object = std::dynamic_pointer_cast< cle::Scalar<unsigned char> >(m_ParameterList.at(tag));
+                //     this->m_Kernel.setArg(index, object->GetObject());
+                // }
+                // else if (m_ParameterList.at(tag)->IsDataType("short")) {
+                //     std::shared_ptr< cle::Scalar<short> > object = std::dynamic_pointer_cast< cle::Scalar<short> >(m_ParameterList.at(tag));
+                //     this->m_Kernel.setArg(index, object->GetObject()); 
+                // }
+                // else if (m_ParameterList.at(tag)->IsDataType("unsigned short")) {
+                //     std::shared_ptr< cle::Scalar<unsigned short> > object = std::dynamic_pointer_cast< cle::Scalar<unsigned short> >(m_ParameterList.at(tag));
+                //     this->m_Kernel.setArg(index, object->GetObject()); 
+                // }
             }
         }
     }
