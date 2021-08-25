@@ -39,7 +39,7 @@ int buffer_test(cle::Clesperanto* cle, cle::Buffer::DataType type, const char * 
     res += my_buffer->GetDepth() == dims[2] ;
     res += strncmp(my_buffer->GetObjectType(), "buffer", strlen("buffer")) == 0 ;
     res += strncmp(my_buffer->GetObjectType(), "scalar", strlen("scalar")) != 0 ;
-    res += !strncmp(my_buffer->GetDataType(), c_type, strlen(c_type)) == 0 ;
+    res += !(strncmp(my_buffer->GetDataType(), c_type, strlen(c_type)) == 0) ;
     res += strncmp(my_buffer->GetDataType(), "toto", strlen("toto")) != 0 ;
     delete my_buffer;
     }
