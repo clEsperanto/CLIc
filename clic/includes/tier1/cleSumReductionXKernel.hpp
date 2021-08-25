@@ -18,7 +18,7 @@ private:
         ;
 
 public:
-    SumReductionXKernel (std::shared_ptr<GPU> gpu);
+    SumReductionXKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void SetBlocksize(int);

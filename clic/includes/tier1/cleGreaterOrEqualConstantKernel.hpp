@@ -20,7 +20,7 @@ private:
         ;
 
 public:
-    GreaterOrEqualConstantKernel (std::shared_ptr<GPU> gpu);
+    GreaterOrEqualConstantKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void SetScalar(float);

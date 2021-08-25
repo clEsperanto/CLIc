@@ -16,7 +16,7 @@ private:
         ;
 
 public:
-    SumXProjectionKernel (std::shared_ptr<GPU> gpu);
+    SumXProjectionKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

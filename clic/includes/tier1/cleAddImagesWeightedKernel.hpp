@@ -20,7 +20,7 @@ private:
         ;
 
 public:
-    AddImagesWeightedKernel (std::shared_ptr<GPU> gpu);
+    AddImagesWeightedKernel (std::shared_ptr<GPU>);
     void SetInput1(Buffer&);
     void SetInput2(Buffer&);
     void SetOutput(Buffer&);

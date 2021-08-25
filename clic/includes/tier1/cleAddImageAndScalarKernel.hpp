@@ -18,7 +18,7 @@ private:
         ;
 
 public:
-    AddImageAndScalarKernel(std::shared_ptr<GPU> gpu);
+    AddImageAndScalarKernel(std::shared_ptr<GPU>);
 
     void SetInput(Buffer&);
     void SetOutput(Buffer&);

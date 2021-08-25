@@ -17,7 +17,7 @@ private:
         ;
 
 public:
-    MinimumXProjectionKernel (std::shared_ptr<GPU> gpu);
+    MinimumXProjectionKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

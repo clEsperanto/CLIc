@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    SetKernel (std::shared_ptr<GPU> gpu);
+    SetKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetValue(float);
     void Execute();

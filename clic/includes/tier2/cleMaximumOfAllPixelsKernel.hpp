@@ -12,7 +12,7 @@ class MaximumOfAllPixelsKernel : public Kernel
 
 public:
 
-    MaximumOfAllPixelsKernel (std::shared_ptr<GPU> gpu);
+    MaximumOfAllPixelsKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

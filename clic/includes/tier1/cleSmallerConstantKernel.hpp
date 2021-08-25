@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    SmallerConstantKernel (std::shared_ptr<GPU> gpu);
+    SmallerConstantKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void SetConstant(float);

@@ -18,7 +18,7 @@ private:
         ;
 
 public:
-    CopyKernel (std::shared_ptr<GPU> gpu);
+    CopyKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

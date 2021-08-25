@@ -16,7 +16,7 @@ private:
         ;
 
 public:
-    ReplaceIntensityKernel (std::shared_ptr<GPU> gpu);
+    ReplaceIntensityKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void SetInValue(float);

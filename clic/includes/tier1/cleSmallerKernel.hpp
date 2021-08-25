@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    SmallerKernel (std::shared_ptr<GPU> gpu);
+    SmallerKernel (std::shared_ptr<GPU>);
     void SetInput1(Buffer&);
     void SetInput2(Buffer&);
     void SetOutput(Buffer&);

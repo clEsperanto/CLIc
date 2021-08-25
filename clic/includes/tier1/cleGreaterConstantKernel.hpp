@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    GreaterConstantKernel (std::shared_ptr<GPU> gpu);
+    GreaterConstantKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void SetScalar(float);

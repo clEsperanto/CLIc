@@ -20,7 +20,7 @@ private:
         ;
 
 public:
-    SetColumnKernel (std::shared_ptr<GPU> gpu);
+    SetColumnKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetColumn(int);
     void SetValue(float);

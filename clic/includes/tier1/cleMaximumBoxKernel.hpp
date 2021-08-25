@@ -18,7 +18,7 @@ private:
         ;
         
 public:
-    MaximumBoxKernel (std::shared_ptr<GPU> gpu);
+    MaximumBoxKernel (std::shared_ptr<GPU>);
 
     void SetInput(Buffer&);
     void SetOutput(Buffer&);

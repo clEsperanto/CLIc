@@ -20,7 +20,7 @@ private:
         ;
 
 public:
-    NonzeroMinimumBoxKernel (std::shared_ptr<GPU> gpu);
+    NonzeroMinimumBoxKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void SetOutputFlag(Buffer&);

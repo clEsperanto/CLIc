@@ -17,7 +17,7 @@ private:
 
 public:
 
-    MaximumXProjectionKernel (std::shared_ptr<GPU> gpu);
+    MaximumXProjectionKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    SobelKernel (std::shared_ptr<GPU> gpu);
+    SobelKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

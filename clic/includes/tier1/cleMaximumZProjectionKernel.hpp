@@ -17,7 +17,7 @@ private:
 
 public:
 
-    MaximumZProjectionKernel (std::shared_ptr<GPU> gpu);
+    MaximumZProjectionKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

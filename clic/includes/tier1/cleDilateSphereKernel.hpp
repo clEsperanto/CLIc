@@ -19,7 +19,7 @@ private:
         ;
 
 public:
-    DilateSphereKernel (std::shared_ptr<GPU> gpu);
+    DilateSphereKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

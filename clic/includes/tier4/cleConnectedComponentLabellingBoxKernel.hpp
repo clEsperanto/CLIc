@@ -11,7 +11,7 @@ class ConnectedComponentLabellingBoxKernel : public Kernel
 {
 
 public:
-    ConnectedComponentLabellingBoxKernel (std::shared_ptr<GPU> gpu);
+    ConnectedComponentLabellingBoxKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

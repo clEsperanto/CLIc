@@ -15,7 +15,7 @@ private:
     float sigma2[3] = {2, 2, 2};
 
 public:
-    DifferenceOfGaussianKernel(std::shared_ptr<GPU> gpu);
+    DifferenceOfGaussianKernel(std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void SetSigma1(float, float, float);

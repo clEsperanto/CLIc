@@ -18,7 +18,7 @@ private:
         ;
 
 public:
-    GaussianBlurKernel (std::shared_ptr<GPU> gpu);
+    GaussianBlurKernel (std::shared_ptr<GPU>);
 
     void SetInput(Buffer&);
     void SetOutput(Buffer&);

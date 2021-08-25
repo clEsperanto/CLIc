@@ -15,7 +15,7 @@ private:
 
 public:
 
-    CloseIndexGapsInLabelMapKernel (std::shared_ptr<GPU> gpu);
+    CloseIndexGapsInLabelMapKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
 

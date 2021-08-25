@@ -16,7 +16,7 @@ private:
         ;
 
 public:
-    SetNonzeroPixelsToPixelindexKernel (std::shared_ptr<GPU> gpu);
+    SetNonzeroPixelsToPixelindexKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void SetOffset(int);

@@ -18,7 +18,7 @@ private:
         ;
 
 public:
-    MeanSphereKernel (std::shared_ptr<GPU> gpu);
+    MeanSphereKernel (std::shared_ptr<GPU>);
 
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
