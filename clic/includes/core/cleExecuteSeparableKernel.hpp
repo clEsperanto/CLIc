@@ -16,11 +16,7 @@ private:
     std::array<int, 3> m_KernelSize;
 
 public:
-    ExecuteSeparableKernel (std::shared_ptr<GPU> gpu) : 
-        Kernel( gpu, 
-                "",
-                {"dst" , "src", "dim", "N", "s"}
-        ){}
+    ExecuteSeparableKernel (std::shared_ptr<GPU> gpu);
 
     void SetSources(std::map<std::string, std::string>);
     void SetKernelName(std::string);

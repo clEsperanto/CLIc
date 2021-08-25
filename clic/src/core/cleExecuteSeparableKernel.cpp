@@ -5,6 +5,13 @@
 namespace cle
 {
 
+ExecuteSeparableKernel::ExecuteSeparableKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu, 
+            "",
+            {"dst" , "src", "dim", "N", "s"}
+    )
+{}    
+
 void ExecuteSeparableKernel::SetInput(Buffer& x)
 {
     this->AddObject(x, "src");

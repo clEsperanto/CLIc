@@ -11,11 +11,7 @@ class SeparableKernel : public Kernel
 {
     
 public:
-    SeparableKernel (std::shared_ptr<GPU> gpu) : 
-        Kernel( gpu, 
-                "",
-                {"dst" , "src", "dim", "N", "s"}
-        ){}
+    SeparableKernel (std::shared_ptr<GPU> gpu);
 
     void SetSources(std::map<std::string, std::string>);
     void SetKernelName(std::string);
