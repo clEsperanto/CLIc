@@ -4,7 +4,16 @@
 
 namespace cle
 {
-    
+
+MinimumZProjectionKernel::MinimumZProjectionKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,
+            "minimum_z_projection",
+            {"dst_min", "src"}
+    )
+{
+    m_Sources.insert({this->m_KernelName + "", source});
+}
+
 void MinimumZProjectionKernel::SetInput(Buffer& x)
 {
     this->AddObject(x, "src");
@@ -17,10 +26,7 @@ void MinimumZProjectionKernel::SetOutput(Buffer& x)
 
 void MinimumZProjectionKernel::Execute()
 {
-    if(this->m_Sources.size() > 1)
-    {
-        this->ManageDimensions("dst");
-    }
+    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

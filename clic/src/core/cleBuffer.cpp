@@ -72,14 +72,14 @@ const char* Buffer::GetDataType() const
 bool Buffer::IsDataType(const char* str) const
 {
     size_t size = strlen(str);
-    if (strncmp("float", str, size) == 0 && m_Type == DataType::FLOAT) return true; 
-    if (strncmp("double", str, size) == 0 && m_Type == DataType::DOUBLE) return true; 
-    if (strncmp("int", str, size) == 0 && m_Type == DataType::INT) return true; 
-    if (strncmp("char", str, size) == 0 && m_Type == DataType::CHAR) return true;
-    if (strncmp("uint", str, size) == 0 && m_Type == DataType::UINT) return true; 
-    if (strncmp("uchar", str, size) == 0 && m_Type == DataType::UCHAR) return true; 
-    if (strncmp("short", str, size) == 0 && m_Type == DataType::SHORT) return true; 
-    if (strncmp("ushort", str, size) == 0 && m_Type == DataType::USHORT) return true; 
+    if (m_Type == DataType::FLOAT && strncmp("float", str, size) == 0) return true; 
+    if (m_Type == DataType::DOUBLE && strncmp("double", str, size) == 0) return true; 
+    if (m_Type == DataType::INT && strncmp("int", str, size) == 0) return true; 
+    if (m_Type == DataType::CHAR && strncmp("char", str, size) == 0) return true;
+    if (m_Type == DataType::UINT && strncmp("uint", str, size) == 0) return true; 
+    if (m_Type == DataType::UCHAR && strncmp("uchar", str, size) == 0) return true; 
+    if (m_Type == DataType::SHORT && strncmp("short", str, size) == 0) return true; 
+    if (m_Type == DataType::USHORT && strncmp("ushort", str, size) == 0) return true; 
     return false;
 }
 

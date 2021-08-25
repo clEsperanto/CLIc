@@ -4,6 +4,13 @@
 namespace cle
 {
 
+SeparableKernel::SeparableKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu, 
+            "",
+            {"dst" , "src", "dim", "N", "s"}
+    )
+{}
+
 void SeparableKernel::SetKernelName(std::string name)
 {
     this->m_KernelName = name;
@@ -43,7 +50,7 @@ void SeparableKernel::Execute()
 {
     if( this->m_Sources.size() > 1)
     {
-        this->ManageDimensions("dst");
+    this->ManageDimensions("dst");
     }
     this->BuildProgramKernel();
     this->SetArguments();

@@ -16,14 +16,7 @@ private:
         ;
 
 public:
-    ReplaceIntensityKernel (std::shared_ptr<GPU> gpu) : 
-        Kernel(gpu,
-            "replace_intensity",
-            {"dst", "src", "in", "out"}
-        )
-    {
-        m_Sources.insert({this->m_KernelName + "", source});
-    }
+    ReplaceIntensityKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void SetInValue(float);

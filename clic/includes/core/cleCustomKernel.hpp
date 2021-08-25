@@ -11,13 +11,7 @@ class CustomKernel : public Kernel
 {
 
 public:
-    CustomKernel (std::shared_ptr<GPU> gpu, const char * kernelName, std::vector<std::string> tagList) :    
-        Kernel( gpu, 
-                kernelName, // kernel name
-                tagList     // parameter tags
-        )
-    {}
-
+    CustomKernel (std::shared_ptr<GPU>, const char *, std::vector<std::string>);
     void SetSource(const char * );
     void SetParameter(Buffer& , const char* );
     void SetParameter(float , const char* );

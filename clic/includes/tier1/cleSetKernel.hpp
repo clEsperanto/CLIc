@@ -19,15 +19,7 @@ private:
         ;
 
 public:
-    SetKernel (std::shared_ptr<GPU> gpu) : 
-        Kernel( gpu,
-                "set",
-                {"dst", "value"}
-        )
-    {
-        m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-        m_Sources.insert({this->m_KernelName + "_3d", source_3d});
-    }
+    SetKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetValue(float);
     void Execute();

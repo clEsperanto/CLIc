@@ -20,15 +20,7 @@ private:
         ;
 
 public:
-    GreaterOrEqualConstantKernel (std::shared_ptr<GPU> gpu) : 
-        Kernel( gpu,
-                "greater_or_equal_constant",
-                {"src1", "scalar", "dst"}
-        )
-    {
-        m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-        m_Sources.insert({this->m_KernelName + "_3d", source_3d});
-    }
+    GreaterOrEqualConstantKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void SetScalar(float);

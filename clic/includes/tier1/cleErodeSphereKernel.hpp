@@ -19,15 +19,7 @@ private:
         ;
 
 public:
-    ErodeSphereKernel (std::shared_ptr<GPU> gpu) : 
-        Kernel( gpu,
-                "erode_sphere",
-                {"src" , "dst"}
-        )
-    {
-        m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-        m_Sources.insert({this->m_KernelName + "_3d", source_3d});
-    }
+    ErodeSphereKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

@@ -16,14 +16,7 @@ private:
         ;
 
 public:
-    SumXProjectionKernel (std::shared_ptr<GPU> gpu) : 
-        Kernel( gpu,
-                "sum_x_projection",
-                {"dst", "src"}
-        )
-    {
-        m_Sources.insert({this->m_KernelName + "", source});
-    }
+    SumXProjectionKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

@@ -4,6 +4,15 @@
 
 namespace cle
 {
+
+SumZProjectionKernel::SumZProjectionKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,
+            "sum_z_projection",
+            {"dst", "src"}
+    )
+{
+    m_Sources.insert({this->m_KernelName + "", source});
+}    
     
 void SumZProjectionKernel::SetInput(Buffer& x)
 {
@@ -17,10 +26,7 @@ void SumZProjectionKernel::SetOutput(Buffer& x)
 
 void SumZProjectionKernel::Execute()
 {
-    if(this->m_Sources.size() > 1)
-    {
-        this->ManageDimensions("dst");
-    }
+    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

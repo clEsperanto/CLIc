@@ -5,6 +5,16 @@
 namespace cle
 {
 
+SobelKernel::SobelKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,
+            "sobel",
+            {"dst" , "src"}
+    )
+{
+    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
+    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+}
+
 void SobelKernel::SetInput(Buffer& x)
 {
     this->AddObject(x, "src");
@@ -17,10 +27,7 @@ void SobelKernel::SetOutput(Buffer& x)
    
 void SobelKernel::Execute()
 {
-    if(this->m_Sources.size() > 1)
-    {
-        this->ManageDimensions("dst");
-    }
+    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

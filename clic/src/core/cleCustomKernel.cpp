@@ -8,6 +8,8 @@
 namespace cle
 {
 
+CustomKernel::CustomKernel (std::shared_ptr<GPU> gpu, const char * kernelName, std::vector<std::string> tagList) :    
+    Kernel( gpu,kernelName,tagList) {}
 
 void CustomKernel::SetSource(const char * SourceFile)
 {

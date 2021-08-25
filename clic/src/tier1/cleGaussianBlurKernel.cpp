@@ -5,6 +5,16 @@
 namespace cle
 {
 
+GaussianBlurKernel::GaussianBlurKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,
+            "gaussian_blur_separable",
+            {"dst", "src"}
+        )
+{
+    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
+    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+}    
+
 float GaussianBlurKernel::Sigma2KernelSize(float x)
 {
     int n = int(x * 8.0);

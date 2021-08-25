@@ -18,15 +18,7 @@ private:
         ;
 
 public:
-    AddImageAndScalarKernel(std::shared_ptr<GPU> gpu) : 
-        Kernel( gpu, 
-                "add_image_and_scalar", 
-                {"src", "dst", "scalar"}
-            ) 
-    {
-        m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-        m_Sources.insert({this->m_KernelName + "_3d", source_3d});
-    }
+    AddImageAndScalarKernel(std::shared_ptr<GPU>);
 
     void SetInput(Buffer&);
     void SetOutput(Buffer&);

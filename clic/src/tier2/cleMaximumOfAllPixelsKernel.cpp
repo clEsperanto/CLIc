@@ -7,6 +7,13 @@
 namespace cle
 {
     
+MaximumOfAllPixelsKernel::MaximumOfAllPixelsKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu, 
+            "maximum_of_all_pixels",
+            {"dst_max", "src"}
+    )
+{}
+
 void MaximumOfAllPixelsKernel::SetInput(Buffer& x)
 {
     this->AddObject(x, "src");

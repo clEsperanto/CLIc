@@ -17,14 +17,7 @@ private:
         ;
 
 public:
-    SumZProjectionKernel (std::shared_ptr<GPU> gpu) : 
-        Kernel( gpu,
-                "sum_z_projection",
-                {"dst", "src"}
-        )
-    {
-        m_Sources.insert({this->m_KernelName + "", source});
-    }
+    SumZProjectionKernel (std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

@@ -10,6 +10,13 @@
 namespace cle
 {
 
+ConnectedComponentLabellingBoxKernel::ConnectedComponentLabellingBoxKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,
+            "connected_components_labelling_box",
+            {"src" , "dst"}
+    )
+{}    
+
 void ConnectedComponentLabellingBoxKernel::SetInput(Buffer& x)
 {
     this->AddObject(x, "src");

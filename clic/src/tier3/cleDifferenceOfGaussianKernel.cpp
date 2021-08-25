@@ -7,6 +7,13 @@
 namespace cle
 {
 
+DifferenceOfGaussianKernel::DifferenceOfGaussianKernel(std::shared_ptr<GPU> gpu) :
+    Kernel( gpu,
+            "difference_of_gaussians",
+            {"src", "dst"}
+    )
+{}
+
 void DifferenceOfGaussianKernel::SetInput(Buffer& x)
 {
     this->AddObject(x, "src");

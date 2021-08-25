@@ -6,6 +6,16 @@
 namespace cle
 {
 
+MinimumBoxKernel::MinimumBoxKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,
+            "minimum_separable",
+            {"dst", "src"}
+    )
+{
+    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
+    m_Sources.insert({this->m_KernelName + "_3d", source_3d}); 
+}    
+
 int MinimumBoxKernel::Radius2KernelSize(float r)
 {
     return int(r) * 2 + 1;

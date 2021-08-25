@@ -5,6 +5,16 @@
 namespace cle
 {
 
+AddImagesWeightedKernel::AddImagesWeightedKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,  
+            "add_images_weighted",
+            {"src", "src1", "dst", "factor", "factor1"}
+        )
+{
+    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
+    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+}
+
 void AddImagesWeightedKernel::SetInput1(Buffer& x)
 {
     this->AddObject(x, "src");
@@ -32,10 +42,7 @@ void AddImagesWeightedKernel::SetFactor2(float x)
 
 void AddImagesWeightedKernel::Execute()
 {
-    if(this->m_Sources.size() > 1)
-    {
-        this->ManageDimensions("dst");
-    }
+    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

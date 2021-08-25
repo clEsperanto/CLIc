@@ -5,6 +5,15 @@
 namespace cle
 {
 
+BlockEnumerateKernel::BlockEnumerateKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,
+            "block_enumerate",
+            {"dst", "src", "src_sums", "blocksize"}
+    )
+{
+    m_Sources.insert({this->m_KernelName, source});
+}
+
 void BlockEnumerateKernel::SetInput(Buffer& x)
 {
     this->AddObject(x, "src");
@@ -27,10 +36,7 @@ void BlockEnumerateKernel::SetBlocksize(int x)
 
 void BlockEnumerateKernel::Execute()
 {
-    if(this->m_Sources.size() > 1)
-    {
-        this->ManageDimensions("dst");
-    }
+    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

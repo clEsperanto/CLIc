@@ -5,6 +5,15 @@
 namespace cle
 {
     
+MinimumYProjectionKernel::MinimumYProjectionKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,
+            "minimum_y_projection",
+            {"dst_min", "src"}
+    )
+{
+    m_Sources.insert({this->m_KernelName + "", source});
+}
+
 void MinimumYProjectionKernel::SetInput(Buffer& x)
 {
     this->AddObject(x, "src");
@@ -17,10 +26,7 @@ void MinimumYProjectionKernel::SetOutput(Buffer& x)
 
 void MinimumYProjectionKernel::Execute()
 {
-    if(this->m_Sources.size() > 1)
-    {
-        this->ManageDimensions("dst");
-    }
+    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

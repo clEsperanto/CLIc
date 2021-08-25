@@ -15,14 +15,7 @@ private:
         ;
 
 public:
-    BlockEnumerateKernel (std::shared_ptr<GPU> gpu) : 
-        Kernel( gpu,
-                "block_enumerate",
-                {"dst", "src", "src_sums", "blocksize"}
-        )
-    {
-        m_Sources.insert({this->m_KernelName, source});
-    }
+    BlockEnumerateKernel (std::shared_ptr<GPU>);
 
     void SetInput(Buffer&);
     void SetInputSums(Buffer&);

@@ -5,6 +5,15 @@
 namespace cle
 {
     
+SumXProjectionKernel::SumXProjectionKernel (std::shared_ptr<GPU> gpu) : 
+    Kernel( gpu,
+            "sum_x_projection",
+            {"dst", "src"}
+    )
+{
+    m_Sources.insert({this->m_KernelName + "", source});
+}
+
 void SumXProjectionKernel::SetInput(Buffer& x)
 {
     this->AddObject(x, "src");
@@ -17,10 +26,7 @@ void SumXProjectionKernel::SetOutput(Buffer& x)
 
 void SumXProjectionKernel::Execute()
 {
-    if(this->m_Sources.size() > 1)
-    {
-        this->ManageDimensions("dst");
-    }
+    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();
