@@ -39,17 +39,14 @@ cl::Platform PlatformManager::GetPlatform(int idx)
 
 cl::Platform PlatformManager::GetPlatform(const char* str)
 {
-    if(!m_PlatformList.empty())
+    for( auto ite = this->m_PlatformList.begin(); ite != this->m_PlatformList.end(); ++ite)
     {
-        for( auto ite = this->m_PlatformList.begin(); ite != this->m_PlatformList.end(); ++ite)
+        if( ite->getInfo<CL_PLATFORM_NAME>().find(str) == 0 )
         {
-            if( ite->getInfo<CL_PLATFORM_NAME>().find(str) == 0 )
-            {
-                return *ite;
-            }
+            return *ite;
         }
-        return this->m_PlatformList.front();
     }
+    return this->m_PlatformList.front();
 }
 
 
