@@ -7,7 +7,7 @@
 
 namespace cle
 {
-    // Removed for now, prefere to use kernel operation Set()
+    // copy but do not type cast, prefere copy kernel for safety, to be discussed
     // template<class T>
     // void FillBuffer(cl::Buffer src, T value, size_t size, std::shared_ptr<GPU> gpu)
     // {
@@ -36,14 +36,6 @@ namespace cle
     {
         gpu->GetCommandQueueManager().GetCommandQueue().enqueueWriteBuffer(
             obj, CL_TRUE, 0, sizeof(T) * size, arr
-        );
-    }
-
-    template<class T>
-    void WriteBuffer(cl::Buffer obj, T val, std::shared_ptr<GPU> gpu)
-    {
-        gpu->GetCommandQueueManager().GetCommandQueue().enqueueWriteBuffer(
-            obj, CL_TRUE, 0, sizeof(T) * 1, val
         );
     }
 
