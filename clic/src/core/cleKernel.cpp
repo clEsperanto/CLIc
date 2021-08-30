@@ -323,7 +323,6 @@ void Kernel::AddObject(float o, std::string t)
 void Kernel::BuildProgramKernel()
 {
     std::string sources = GenerateSources();
-    std::cout << "sources are generated\n";
     std::hash<std::string> hasher;
     size_t source_hash = hasher(sources);
     if(m_CurrentHash != source_hash)  

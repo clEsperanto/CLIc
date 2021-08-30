@@ -82,20 +82,15 @@ int main(int argc, char** argv)
     std::fill (B.begin(),B.end(), 0.0f);
     std::fill (C.begin(),C.end(), 101.0f);
 
+
+    // kernel run using Image2D object
+    
     cl::Image2D ocl_imageA = cle::CreateImage2D<float>(dims, cle->GetGPU());
     cle::WriteImage2D<float>(ocl_imageA, A.data(), cle->GetGPU());
     cle::Image2D ImageA (ocl_imageA, dims);
 
     cl::Image2D ocl_imageB = cle::CreateImage2D<float>(dims, cle->GetGPU());
     cle::Image2D ImageB (ocl_imageB, dims);
-
-
-    // cl::Buffer ocl_imageA = cle::CreateBuffer<float>(A.size(), cle->GetGPU());
-    // cle::WriteBuffer<float>(ocl_imageA, A.data(), A.size(), cle->GetGPU());
-    // cle::Buffer ImageA (ocl_imageA, dims);
-
-    // cl::Buffer ocl_imageB = cle::CreateBuffer<float>(B.size(), cle->GetGPU());
-    // cle::Buffer ImageB (ocl_imageB, dims);
 
     cle::AddImageAndScalarKernel kernel (cle->GetGPU());
     kernel.SetScalar(100.0f);
@@ -104,6 +99,22 @@ int main(int argc, char** argv)
     kernel.Execute();
 
     cle::ReadImage2D<float>(ImageB.GetObject(), B.data(), cle->GetGPU());
+
+    // kernel run using Buffer object
+
+    // cl::Buffer ocl_imageA = cle::CreateBuffer<float>(A.size(), cle->GetGPU());
+    // cle::WriteBuffer<float>(ocl_imageA, A.data(), A.size(), cle->GetGPU());
+    // cle::Buffer ImageA (ocl_imageA, dims);
+
+    // cl::Buffer ocl_imageB = cle::CreateBuffer<float>(B.size(), cle->GetGPU());
+    // cle::Buffer ImageB (ocl_imageB, dims);
+
+    // cle::AddImageAndScalarKernel kernel (cle->GetGPU());
+    // kernel.SetScalar(100.0f);
+    // kernel.SetInput(ImageA);
+    // kernel.SetOutput(ImageB);
+    // kernel.Execute();
+
     // cle::ReadBuffer<float>(ImageB.GetObject(), B.data(), ImageB.GetSize(), cle->GetGPU());
 
     float diff = 0;
