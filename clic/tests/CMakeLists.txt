@@ -34,6 +34,11 @@ add_dependencies(scalar_test CLIc)
 target_link_libraries(scalar_test PRIVATE CLIc::CLIc)
 add_test(NAME scalar_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/scalar_test)
 
+add_executable(image_test image_test.cpp)
+add_dependencies(image_test CLIc) 
+target_link_libraries(image_test PRIVATE CLIc::CLIc)
+add_test(NAME image_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test)
+
 add_executable(operations_test operations_test.cpp)
 add_dependencies(operations_test CLIc) 
 target_link_libraries(operations_test PRIVATE CLIc::CLIc)
