@@ -23,9 +23,14 @@ protected:
     const char * TemplateToString() const;
 public: 
 
-    Scalar() =default;
+    Scalar();
     Scalar(T);
     ~Scalar() =default;
+
+    int GetWidth() const;
+    int GetHeight() const;
+    int GetDepth() const;
+    int GetDimension() const;
 
     T GetObject() const;
 
@@ -38,9 +43,39 @@ public:
     
 };
 
+template<class T>
+Scalar<T>::Scalar() : m_Object(0) 
+{
+}
 
 template<class T>
-Scalar<T>::Scalar(T _d) : m_Object(_d) {}
+Scalar<T>::Scalar(T _d) : m_Object(_d)
+{
+}
+
+template<class T>
+int Scalar<T>::GetWidth() const
+{
+    return 1;
+}
+
+template<class T>
+int Scalar<T>::GetHeight() const
+{
+    return 1;
+}
+
+template<class T>
+int Scalar<T>::GetDepth() const
+{
+    return 1;
+}
+
+template<class T>
+int Scalar<T>::GetDimension() const
+{
+    return 1;
+}
 
 template<class T>
 T Scalar<T>::GetObject() const { return this->m_Object; }

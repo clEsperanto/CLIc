@@ -3,21 +3,18 @@
 namespace cle
 {
 
-Buffer::Buffer(cl::Buffer _ocl, DataType _t) : m_Object(_ocl), m_Type(_t) 
-{}
+Buffer::Buffer(cl::Buffer _ocl, DataType _t) : m_Object(_ocl), m_Type(_t)
+{
+}
 
 Buffer::Buffer(cl::Buffer _ocl, std::array<int,3> _dim, DataType _t) : m_Object(_ocl), m_Type(_t) 
 {
     std::copy(_dim.begin(), _dim.end(), m_Shape.begin());
-    if (m_Shape[2] > 1) m_Dimension = 3;
-    else if (m_Shape[1] > 1) m_Dimension = 2;
 }
 
 Buffer::Buffer(cl::Buffer _ocl, int _dim[3], DataType _t) : m_Object(_ocl), m_Type(_t) 
 {
     std::copy(_dim, _dim+3, m_Shape.begin());
-    if (m_Shape[2] > 1) m_Dimension = 3;
-    else if (m_Shape[1] > 1) m_Dimension = 2;
 }
 
 
@@ -41,15 +38,18 @@ int Buffer::GetDepth() const
     return this->m_Shape[2]; 
 }
 
-int Buffer::GetDimension() const 
-{ 
-    return this->m_Dimension; 
-}
-
 int Buffer::GetSize() const 
 { 
     return this->m_Shape[0]*this->m_Shape[1]*this->m_Shape[2]; 
 }
+
+int Buffer::GetDimension() const 
+{ 
+    if (m_Shape[2] > 1) return 3;
+    if (m_Shape[1] > 1) return 2;
+    return  1;
+}
+
 
 std::array<int,3> Buffer::GetShape() const 
 {

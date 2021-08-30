@@ -30,8 +30,9 @@ public:
     int GetWidth() const;
     int GetHeight() const;
     int GetDepth() const;
-    int GetDimension() const;
     int GetSize() const;
+    int GetDimension() const;
+
     std::array<int,3> GetShape() const;
 
     const char* GetDataType() const;
@@ -42,7 +43,6 @@ public:
 private:
     cl::Buffer m_Object;
     std::array<int,3> m_Shape = {1, 1, 1};
-    int m_Dimension = 1;
     DataType m_Type = Buffer::FLOAT;
 };
 

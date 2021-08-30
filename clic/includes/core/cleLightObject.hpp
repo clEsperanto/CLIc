@@ -13,9 +13,19 @@ namespace cle
 
 class LightObject
 {
+protected:
+    int m_Dimension;
+
 public: 
     LightObject() =default;
     virtual ~LightObject() = default;
+
+    virtual int GetDimension() const =0;
+
+    virtual int GetWidth() const =0;
+    virtual int GetHeight() const =0;
+    virtual int GetDepth() const =0;
+
 
     virtual const char* GetDataType() const =0;
     virtual bool IsDataType(const char*) const =0;    
