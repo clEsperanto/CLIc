@@ -24,7 +24,7 @@ Image2D::Image2D(cl::Image2D _ocl, int _dim[3] , DataType _t) : m_Object(_ocl), 
     m_ImageFormat.image_channel_data_type = _ocl.getImageInfo<CL_IMAGE_FORMAT>().image_channel_data_type;  
 }
 
-cl::Image2D Image2D::GetObject() const
+const cl::Image2D Image2D::GetObject() const
 {
     return this->m_Object; 
 }
@@ -67,16 +67,6 @@ std::array<int,3> Image2D::GetOrigin() const
 std::array<int,3> Image2D::GetRegion() const
 {
     return m_Region;
-}
-
-void Image2D::SetOrigin(std::array<int,3> _origin)
-{
-    std::copy(_origin.begin(), _origin.end(), m_Origin.begin());    
-}
-
-void Image2D::SetRegion(std::array<int,3> _region)
-{
-    std::copy(_region.begin(), _region.end(), m_Region.begin());    
 }
 
 const char* Image2D::GetDataType() const

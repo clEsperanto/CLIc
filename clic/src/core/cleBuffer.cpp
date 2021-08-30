@@ -18,7 +18,7 @@ Buffer::Buffer(cl::Buffer _ocl, int _dim[3], DataType _t) : m_Object(_ocl), m_Ty
 }
 
 
-cl::Buffer Buffer::GetObject() const 
+const cl::Buffer Buffer::GetObject() const 
 { 
     return this->m_Object; 
 }

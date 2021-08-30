@@ -25,7 +25,7 @@ public:
     Buffer(cl::Buffer, int[3], DataType=FLOAT);
     ~Buffer() =default;
 
-    cl::Buffer GetObject() const;
+    const cl::Buffer GetObject() const;
     
     int GetWidth() const;
     int GetHeight() const;

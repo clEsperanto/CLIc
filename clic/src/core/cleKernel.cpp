@@ -11,7 +11,6 @@ void Kernel::ManageDimensions(std::string tag)
         auto it = m_ParameterList.find(tag);
         if (it != m_ParameterList.end())
         {
-            // std::shared_ptr<cle::Buffer> object = std::dynamic_pointer_cast<cle::Buffer>(m_ParameterList.at(tag));
             if(m_ParameterList.at(tag)->GetDimension() == 3)
             {
                 m_DimensionTag = "_3d";
@@ -63,10 +62,8 @@ std::string Kernel::LoadDefines()
     // loop on parameters
     for (auto itr = m_ParameterList.begin(); itr != m_ParameterList.end(); ++itr)
     {
-        // if (itr->second->IsObjectType(LightObject::cleBuffer))
-        if (!itr->second->IsObjectType("scalar"))
+        if (!itr->second->IsObjectType("scalar"))  // argument is buffer or image
         {     
-            // std::shared_ptr<cle::Buffer> object = std::dynamic_pointer_cast<cle::Buffer>(itr->second);
             std::string tagObject = itr->first;
             std::string objectType = itr->second->GetObjectType();
             std::string dataType = itr->second->GetDataType();
@@ -248,11 +245,11 @@ void Kernel::AddObject(Buffer &o, std::string t)
         auto it = m_ParameterList.find(t.c_str()); 
         if (it != m_ParameterList.end())
         {
-            it->second = std::make_shared<Buffer>(o);
+            it->second = std::make_shared< cle::Buffer >(o);
         }
         else    
         {
-            m_ParameterList.insert(std::make_pair(t.c_str(), std::make_shared<Buffer>(o)));
+            m_ParameterList.insert(std::make_pair(t.c_str(), std::make_shared< cle::Buffer >(o)));
         }
     }
     else
@@ -268,11 +265,11 @@ void Kernel::AddObject(Image2D &o, std::string t)
         auto it = m_ParameterList.find(t.c_str()); 
         if (it != m_ParameterList.end())
         {
-            it->second = std::make_shared<Image2D>(o);
+            it->second = std::make_shared< cle::Image2D >(o);
         }
         else    
         {
-            m_ParameterList.insert(std::make_pair(t.c_str(), std::make_shared<Image2D>(o)));
+            m_ParameterList.insert(std::make_pair(t.c_str(), std::make_shared< cle::Image2D >(o)));
         }
     }
     else

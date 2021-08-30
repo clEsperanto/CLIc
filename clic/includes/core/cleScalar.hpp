@@ -32,7 +32,7 @@ public:
     int GetDepth() const;
     int GetDimension() const;
 
-    T GetObject() const;
+    const T GetObject() const;
 
     const char* GetDataType() const;
 
@@ -78,7 +78,7 @@ int Scalar<T>::GetDimension() const
 }
 
 template<class T>
-T Scalar<T>::GetObject() const { return this->m_Object; }
+const T Scalar<T>::GetObject() const { return this->m_Object; }
 
 template<class T>
 const char* Scalar<T>::GetDataType() const { return TemplateToString(); }
