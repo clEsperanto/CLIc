@@ -17,6 +17,7 @@
 #include "cleLightObject.hpp"
 #include "cleScalar.hpp"
 #include "cleBuffer.hpp"
+#include "cleImage2D.hpp"
 
 
 #include "cleGPU.hpp"
@@ -54,7 +55,8 @@ protected:
     std::string TypeAbbr(const char*) const;
 
     // Populate Parameter list with data and tag
-    void AddObject(Buffer, std::string);
+    void AddObject(Buffer&, std::string);
+    void AddObject(Image2D&, std::string);
     void AddObject(int, std::string);
     void AddObject(float, std::string);
 

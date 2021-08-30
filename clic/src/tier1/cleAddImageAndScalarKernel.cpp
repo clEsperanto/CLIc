@@ -24,6 +24,16 @@ void AddImageAndScalarKernel::SetOutput(Buffer& x)
     this->AddObject(x, "dst");
 }
 
+void AddImageAndScalarKernel::SetInput(Image2D& x)
+{
+    this->AddObject(x, "src");
+}
+
+void AddImageAndScalarKernel::SetOutput(Image2D& x)
+{
+    this->AddObject(x, "dst");
+}
+
 void AddImageAndScalarKernel::SetScalar(float x)
 {
     this->AddObject(x, "scalar");
@@ -31,10 +41,15 @@ void AddImageAndScalarKernel::SetScalar(float x)
 
 void AddImageAndScalarKernel::Execute()
 {
+    std::cout << "dim" << std::endl;
     this->ManageDimensions("dst");
+    std::cout << "build" << std::endl;
     this->BuildProgramKernel();
+    std::cout << "arg" << std::endl;
     this->SetArguments();
+    std::cout << "enqueue" << std::endl;
     this->EnqueueKernel();
+    std::cout << "done" << std::endl;
 }
 } // namespace cle
 

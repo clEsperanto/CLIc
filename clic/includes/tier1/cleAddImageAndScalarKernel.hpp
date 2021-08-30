@@ -22,6 +22,8 @@ public:
 
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
+    void SetInput(Image2D&);
+    void SetOutput(Image2D&);
     void SetScalar(float);
     void Execute();
 
