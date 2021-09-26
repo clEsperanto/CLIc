@@ -26,7 +26,7 @@ if(OpenCL_FOUND)
         set(OpenCL_CLHPP_HEADERS ${OpenCL_INCLUDE_DIR}/CL/opencl.hpp)
     endif()
     if(NOT EXISTS ${OpenCL_CLHPP_HEADERS})
-        message(WARNING "WARNING: OpenCL-CLHPP is required for a stable install of CLIc Library.")
+        message(WARNING "WARNING: Using project version of OpenCL-CLHPP.")
         set(USE_PROJECT_CLHPP TRUE)
     endif()
 endif()
@@ -83,11 +83,11 @@ target_compile_features(${LIBRARY_NAME} PUBLIC cxx_std_11)
 target_compile_definitions(${LIBRARY_NAME} PUBLIC "${PROJECT_NAME_UPPERCASE}_DEBUG=$<CONFIG:Debug>")
 
 # fetch all src and includes
-set(HEADERS_FILES "")
+set(PUBLIC_HEADERS "")
 subdirlist(INCLUDES_DIR_LIST ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 foreach(inc_dir ${INCLUDES_DIR_LIST})
     file(GLOB files ${inc_dir}/*.hpp)
-    list(APPEND HEADERS_FILES ${files})
+    list(APPEND PUBLIC_HEADERS ${files})
 endforeach()
 list(APPEND INCLUDES_DIR_LIST ${CMAKE_CURRENT_SOURCE_DIR}/kernels)
 file(GLOB KERNELS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/kernels/*.h)
@@ -98,7 +98,7 @@ file(GLOB KERNELS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/kernels/*.h)
 #   - header location in project: ${CMAKE_CURRENT_BINARY_DIR}/generated_headers
 target_include_directories( ${LIBRARY_NAME} PUBLIC 
     "$<BUILD_INTERFACE:${INCLUDES_DIR_LIST}>"
-    "$<INSTALL_INTERFACE:.>"
+    "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>"
 )
 
 # Use thirdparty header library opencl-clhpp required
@@ -106,53 +106,88 @@ if(USE_PROJECT_CLHPP)
     target_include_directories( ${LIBRARY_NAME} PUBLIC 
         "$<BUILD_INTERFACE:${THIRDPARTY_DIR}/OpenCL-CLHPP/include>"
     ) 
-    list(APPEND ${PUBLIC_HEADERS} ${THIRDPARTY_DIR}/OpenCL-CLHPP/include/CL/opencl.hpp)
+    list(APPEND PUBLIC_HEADERS "${THIRDPARTY_DIR}/OpenCL-CLHPP/include/CL/opencl.hpp")
 endif()
-
-
-
-
-# Targets:
-#   - <prefix>/lib/libfoo.a
-#   - header location after install: <prefix>/foo/foo.h
-#   - headers can be included by C++ code `#include <foo/foo.h>`
-install(
-    TARGETS              "${LIBRARY_NAME}"
-    EXPORT               "${TARGETS_EXPORT_NAME}"
-    LIBRARY DESTINATION  "${CMAKE_INSTALL_LIBDIR}"
-    ARCHIVE DESTINATION  "${CMAKE_INSTALL_LIBDIR}"
-    RUNTIME DESTINATION  "${CMAKE_INSTALL_BINDIR}"
-    INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-)
 
 # Headers:
 #   - foo/*.h -> <prefix>/include/*.h
 install(
     FILES       ${PUBLIC_HEADERS}
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
 )
 
 # Kernels:
 #   - foo/*.cl -> <prefix>/include/kernel/*.cl
 install(
     FILES        ${KERNELS_FILES}
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/kernels"
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/kernels"
 )
 
-# Config
-#   - <prefix>/lib/cmake/Foo/FooConfig.cmake
-#   - <prefix>/lib/cmake/Foo/FooConfigVersion.cmake
 install(
-    FILES       "${PROJECT_CONFIG_FILE}"
-                "${VERSION_CONFIG_FILE}"
+    TARGETS              ${LIBRARY_NAME}
+    EXPORT               ${TARGETS_EXPORT_NAME}
+    ARCHIVE DESTINATION  ${CMAKE_INSTALL_LIBDIR} COMPONENT Development
+    LIBRARY DESTINATION  ${CMAKE_INSTALL_LIBDIR} COMPONENT RuntimeLibraries
+    RUNTIME DESTINATION  ${CMAKE_INSTALL_BINDIR} COMPONENT RuntimeLibraries
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
+)
+
+#------------------------------------------------------------------------------
+# CMake Export Configuration
+# This layout works for all platforms:
+#   - <prefix>/lib*/cmake/<PROJECT-NAME>
+#   - <prefix>/lib*/
+#   - <prefix>/include/
+
+# Include module with functions:
+#   - write_basic_package_version_file(...)
+#   - configure_package_config_file(...)
+include(CMakePackageConfigHelpers)
+
+set(PROJECT_CONFIG_FILE "${PROJECT_NAME}Config.cmake")
+set(VERSION_CONFIG_FILE "${PROJECT_NAME}ConfigVersion.cmake")
+
+# Export for the build tree
+
+write_basic_package_version_file( 
+    "${PROJECT_BINARY_DIR}/${VERSION_CONFIG_FILE}"
+    VERSION "${${PROJECT_NAME}_VERSION}"
+    COMPATIBILITY SameMajorVersion
+)
+
+export(
+    EXPORT ${TARGETS_EXPORT_NAME}
+    NAMESPACE ${PROJECT_NAME}::
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/${TARGETS_EXPORT_NAME}.cmake"
+)
+
+configure_package_config_file(
+    "${PROJECT_SOURCE_DIR}/cmake/Config.cmake.in"
+    "${PROJECT_BINARY_DIR}/${PROJECT_CONFIG_FILE}"
+    INSTALL_DESTINATION "${PROJECT_BINARY_DIR}"
+)
+
+# Uninstall targets (build tree only)
+configure_file("${PROJECT_SOURCE_DIR}/cmake/Uninstall.cmake.in" "${PROJECT_BINARY_DIR}/Uninstall.cmake"
+  IMMEDIATE @ONLY
+)
+add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${PROJECT_BINARY_DIR}/Uninstall.cmake)
+
+# Export for the install tree
+
+set(CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
+
+install(
+    EXPORT      ${TARGETS_EXPORT_NAME}
+    NAMESPACE   ${PROJECT_NAME}::
+    FILE        ${TARGETS_EXPORT_NAME}.cmake
+    DESTINATION ${CONFIG_INSTALL_DIR}
+)
+
+install(
+    FILES       "${PROJECT_BINARY_DIR}/${PROJECT_CONFIG_FILE}"
+                "${PROJECT_BINARY_DIR}/${VERSION_CONFIG_FILE}"
     DESTINATION "${CONFIG_INSTALL_DIR}"
 )
 
-# Config
-#   - <prefix>/lib/cmake/Foo/FooTargets.cmake
-install(
-  EXPORT      "${TARGETS_EXPORT_NAME}"
-  FILE        "${PROJECT_NAME}Targets.cmake"
-  DESTINATION "${CONFIG_INSTALL_DIR}"
-  NAMESPACE   "${PROJECT_NAME}::"
-)

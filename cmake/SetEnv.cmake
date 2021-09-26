@@ -5,6 +5,8 @@ set(CMAKE_CXX_STANDARD 11) # Use C++11
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # Require (at least) it
 set(CMAKE_CXX_EXTENSIONS OFF) # Don't use e.g. GNU extension (like -std=gnu++11) for portability
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 # Set PROJECT_NAME_UPPERCASE and PROJECT_NAME_LOWERCASE variables
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPERCASE)
 string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWERCASE)
@@ -105,57 +107,14 @@ macro(subdirlist result curdir)
   set(${result} ${dirlist})
 endmacro()
 
-
-## Install and Uninstall configuration
-
-
-
 # Introduce variables:
 #   - CMAKE_INSTALL_LIBDIR
 #   - CMAKE_INSTALL_BINDIR
 #   - CMAKE_INSTALL_INCLUDEDIR
 include(GNUInstallDirs)
 
-# Include module with functions:
-#   - write_basic_package_version_file(...)
-#   - configure_package_config_file(...)
-include(CMakePackageConfigHelpers)
-
-# Layout. This works for all platforms:
-#   - <prefix>/lib*/cmake/<PROJECT-NAME>
-#   - <prefix>/lib*/
-#   - <prefix>/include/
-set(CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
-
-# Configuration
-set(GENERATED_DIR       "${CMAKE_CURRENT_BINARY_DIR}/generated")
-set(VERSION_CONFIG_FILE "${GENERATED_DIR}/${PROJECT_NAME}ConfigVersion.cmake")
-set(PROJECT_CONFIG_FILE "${GENERATED_DIR}/${PROJECT_NAME}Config.cmake")
+# CMake target export name
 set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
-
-# Configure '<PROJECT-NAME>ConfigVersion.cmake'
-# Use:
-#   - PROJECT_VERSION
-write_basic_package_version_file( 
-  "${VERSION_CONFIG_FILE}" VERSION "${${PROJECT_NAME}_VERSION}" COMPATIBILITY SameMajorVersion
-)
-
-# Configure '<PROJECT-NAME>Config.cmake'
-# Use variables:
-#   - TARGETS_EXPORT_NAME
-#   - PROJECT_NAME
-configure_package_config_file(
-    "${PROJECT_SOURCE_DIR}/cmake/Config.cmake.in" "${PROJECT_CONFIG_FILE}"
-    INSTALL_DESTINATION "${CONFIG_INSTALL_DIR}"
-    PATH_VARS CMAKE_INSTALL_PREFIX CMAKE_INSTALL_LIBDIR CMAKE_INSTALL_INCLUDEDIR 
-)
-
-# Uninstall targets
-configure_file("${PROJECT_SOURCE_DIR}/cmake/Uninstall.cmake.in" "${GENERATED_DIR}/Uninstall.cmake"
-  IMMEDIATE @ONLY
-)
-add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${GENERATED_DIR}/Uninstall.cmake)
-
 
 # Always full RPATH (for shared libraries)
 # https://gitlab.kitware.com/cmake/community/-/wikis/doc/cmake/RPATH-handling
