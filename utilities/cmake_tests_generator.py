@@ -16,6 +16,7 @@ def generate_script(folder):
                     output_file.write("COMMAND {0} $\{PROJECT_SOURCE_DIR\}/thirdparty/clij/kernels)\n".format(name))
                 else:     
                     output_file.write("COMMAND {0})\n".format(name))
+                output_file.write("set_target_properties(device_test PROPERTIES FOLDER \"Tests\")\n")
                 output_file.write("\n")
 
 generate_script(sys.argv[1])
