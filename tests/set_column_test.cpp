@@ -16,10 +16,10 @@ int main(int argc, char **argv)
     std::vector<float> valid_data (width*height*depth);
     for (size_t i = 0; i < input_data.size(); i++)
     {
-            input_data[i] = i;
-            valid_data[i] = i;
+            input_data[i] = static_cast<float>(i);
+            valid_data[i] = static_cast<float>(i);
     }
-    valid_data[2] = 10;
+    valid_data[2] = 10.0f;
 
     // Initialise GPU information.
     cle::Clesperanto cle;

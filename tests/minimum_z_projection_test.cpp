@@ -22,7 +22,7 @@ int main(int argc, char **argv)
         {
             for (size_t x = 0; x < width; x++)
             {
-                int i = x + width*(y+height*d);
+                unsigned int i = x + width*(y+height*d);
                 if ( d == y )
                 {
                     input_data[i] = distribution(generator);
