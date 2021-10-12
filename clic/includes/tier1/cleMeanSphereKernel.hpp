@@ -26,7 +26,7 @@ public:
     void Execute();
 
 private:
-    int Radius2KernelSize(float);
+    int Radius2KernelSize(int);
 };
 
 } // namespace cle

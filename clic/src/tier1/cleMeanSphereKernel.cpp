@@ -14,9 +14,9 @@ MeanSphereKernel::MeanSphereKernel (std::shared_ptr<GPU> gpu) :
     m_Sources.insert({this->m_KernelName + "_3d", source_3d});
 }    
     
-int MeanSphereKernel::Radius2KernelSize(float r)
+int MeanSphereKernel::Radius2KernelSize(int r)
 {
-    return int(r) * 2 + 1;
+    return r * 2 + 1;
 }
 
 void MeanSphereKernel::SetRadius(int x, int y, int z)
