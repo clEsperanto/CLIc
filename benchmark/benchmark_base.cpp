@@ -30,7 +30,7 @@ private:
         Iteration();
         std::chrono::time_point<std::chrono::high_resolution_clock> end = std::chrono::high_resolution_clock::now();
 
-        timingResultWriteback.push_back(std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count());
+        timingResultWriteback.push_back((unsigned long) std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count());
     }
 
 protected:
@@ -73,7 +73,7 @@ public:
     {
         size_t warmups = iterationWarmupTimingsMs.size();
         size_t normals = iterationNormalTimingsMs.size();
-        return (GetAvgWarmupMs() * warmups + GetAvgNormalMs() * normals) / (normals + warmups);
+        return static_cast<unsigned int>((GetAvgWarmupMs() * warmups + GetAvgNormalMs() * normals) / (normals + warmups));
     }
 
     /// wrapper for the compile function with new environment (which causes kernel recompilation)
@@ -81,7 +81,7 @@ public:
     {
         if (-1 == maybeCompilationMs) {
             vector<unsigned long> compilationTimings;
-            for (int i = 0; i < iterationCompilationCount; i++)
+            for (unsigned int i = 0; i < iterationCompilationCount; i++)
             {
                 // always reconstruct the cle object, as it caches the compiled kernels
                 cle::Clesperanto cle;
@@ -91,7 +91,7 @@ public:
                 Compile(cle);
                 std::chrono::time_point<std::chrono::high_resolution_clock> end = std::chrono::high_resolution_clock::now();
 
-                compilationTimings.push_back(std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count());
+                compilationTimings.push_back((unsigned long) std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count());
             }
 
             maybeCompilationMs = getAverage<unsigned long>(compilationTimings);
@@ -115,7 +115,7 @@ public:
         cout << "Warming up [" << iterationWarmupCount << "]";
         cout.flush();
 
-        for (int i = 0; i < iterationWarmupCount; i++)
+        for (unsigned int i = 0; i < iterationWarmupCount; i++)
         {
             ExecuteSingleIteration(iterationWarmupTimingsMs);
             cout << ".";
@@ -125,7 +125,7 @@ public:
 
         cout << "Executing [" << iterationNormalCount << "]";
         cout.flush();
-        for (int i = 0; i < iterationNormalCount; i++)
+        for (unsigned int i = 0; i < iterationNormalCount; i++)
         {
             ExecuteSingleIteration(iterationNormalTimingsMs);
             cout << ".";
