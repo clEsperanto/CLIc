@@ -51,7 +51,6 @@ void ConnectedComponentLabellingBoxKernel::Execute()
     setInit.Execute();
 
     int flag_dim[3] = {1,1,2};
-    float arr[2] = {0,0};
     cl::Buffer flag_obj = CreateBuffer<float>(2, this->m_gpu);
     Buffer flag = Buffer(flag_obj, flag_dim, Buffer::FLOAT);
 

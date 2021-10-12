@@ -41,7 +41,6 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("src"));
     std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("dst"));
     
-    int one_dim[3] = {1,1,1};
     cl::Buffer max_obj = CreateBuffer<float>(1, this->m_gpu);
     Buffer max = Buffer(max_obj, Buffer::FLOAT);
 
