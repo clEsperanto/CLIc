@@ -12,7 +12,7 @@ class DeviceManager
 {
 private:
     std::vector<cl::Device> m_DeviceList;
-    int m_DeviceId = 0;
+    size_t m_DeviceId = 0;
 
 public:
     DeviceManager() = default;
@@ -21,10 +21,10 @@ public:
     ~DeviceManager();
 
     void SetDevice(std::string);
-    void SetDevice(int);
+    void SetDevice(size_t);
 
     cl::Device GetDevice();
-    cl::Device GetDevice(int);
+    cl::Device GetDevice(size_t);
     std::vector<cl::Device> GetDevices();
 
     std::string GetInfo(int=-1);

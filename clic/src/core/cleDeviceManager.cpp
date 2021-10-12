@@ -53,9 +53,9 @@ DeviceManager::~DeviceManager()
     }
 }
 
-void DeviceManager::SetDevice(int index)
+void DeviceManager::SetDevice(size_t index)
 {
-    if ( (int) m_DeviceList.size() < index)
+    if (m_DeviceList.size() < index)
     {
         std::cerr << "DeviceManager : Wrong device index." << std::endl;
     }
@@ -96,9 +96,9 @@ cl::Device DeviceManager::GetDevice()
     return this->m_DeviceList[this->m_DeviceId];
 }
 
-cl::Device DeviceManager::GetDevice(int device_id)
+cl::Device DeviceManager::GetDevice(size_t device_id)
 {
-    if ( (int) this->m_DeviceList.size() < device_id)
+    if (this->m_DeviceList.size() < device_id)
     {
         std::cerr << "DeviceManager : Wrong device id. Returning default device." << std::endl;
         return this->m_DeviceList[this->m_DeviceId];
@@ -140,19 +140,20 @@ std::string DeviceManager::GetAllInfo()
     {
         for( auto ite = this->m_DeviceList.begin(); ite != this->m_DeviceList.end(); ++ite)
         {
-            out += GetInfo(ite - this->m_DeviceList.begin());
+            out += GetInfo(static_cast<int>(ite - this->m_DeviceList.begin()));
         }
 
-        int id_bestForImages(0), id_bestForMemory(0), id_bestForSpeed(0);
+        size_t id_bestForImages(0), id_bestForMemory(0), id_bestForSpeed(0), idx(0);
         for( auto ite = this->m_DeviceList.begin(); ite != this->m_DeviceList.end(); ++ite)
         {
+            idx = ite - this->m_DeviceList.begin();
             if(ite->getInfo<CL_DEVICE_LOCAL_MEM_SIZE>() > this->m_DeviceList[id_bestForMemory].getInfo<CL_DEVICE_LOCAL_MEM_SIZE>())
             {
-                id_bestForMemory = ite - this->m_DeviceList.begin();
+                id_bestForMemory = idx;
             }
             if(ite->getInfo<CL_DEVICE_MAX_CLOCK_FREQUENCY>() > this->m_DeviceList[id_bestForSpeed].getInfo<CL_DEVICE_MAX_CLOCK_FREQUENCY>())
             {
-                id_bestForSpeed = ite - this->m_DeviceList.begin();
+                id_bestForSpeed = idx;
             }
         }
         out += "\n";
