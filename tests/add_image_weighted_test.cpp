@@ -13,11 +13,11 @@ int main(int argc, char **argv)
     int width (3), height (3), depth (3);
     int dims[3] = {width, height, depth};
     std::vector<float> input_data1 (width*height*depth);
-    std::fill(input_data1.begin(), input_data1.end(), 10);
+    std::fill(input_data1.begin(), input_data1.end(), 10.0f);
     std::vector<float> input_data2 (width*height*depth);
-    std::fill(input_data2.begin(), input_data2.end(), 10);
+    std::fill(input_data2.begin(), input_data2.end(), 10.0f);
     std::vector<float> valid_data (width*height*depth);
-    std::fill(valid_data.begin(), valid_data.end(), 15);
+    std::fill(valid_data.begin(), valid_data.end(), 15.0f);
 
     // Initialise GPU information.
     cle::Clesperanto cle;

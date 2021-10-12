@@ -13,7 +13,7 @@ int main(int argc, char **argv)
     int width (10), height (10), depth (10);
     int dims[3] = {width, height, depth};
     std::vector<float> input_data (width*height*depth);
-    std::fill(input_data.begin(), input_data.end(), 1);
+    std::fill(input_data.begin(), input_data.end(), 1.0f);
     std::vector<float> valid_data(1);
     valid_data[0] = 1000;
 

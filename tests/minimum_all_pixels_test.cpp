@@ -14,7 +14,7 @@ int main(int argc, char **argv)
     int dims[3] = {width, height, depth};
     std::vector<float> input_data (width*height*depth);
     std::vector<float> valid_data (1);
-    std::fill(input_data.begin(), input_data.end(), 1000); 
+    std::fill(input_data.begin(), input_data.end(), 1000.0f);
     input_data[50] = 10;
     valid_data[0] = 10;
 

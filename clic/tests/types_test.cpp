@@ -8,8 +8,8 @@ bool ApplyFilter(cle::Clesperanto* cle, int dims[3], float scalar)
 {
     std::vector<T> input_data (dims[0]*dims[1]*dims[2]);
     std::vector<T> valid_data (dims[0]*dims[1]*dims[2]);
-    std::fill(input_data.begin(), input_data.end(), 5);
-    std::fill(valid_data.begin(), valid_data.end(), 5 + scalar);
+    std::fill(input_data.begin(), input_data.end(), static_cast<T>(5));
+    std::fill(valid_data.begin(), valid_data.end(), static_cast<T>(5 + scalar));
 
     cle::Buffer Buffer_A = cle->Push<T>(input_data, dims);
     cle::Buffer Buffer_B = cle->Create<T>(dims);
