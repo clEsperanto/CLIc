@@ -154,7 +154,7 @@ void Kernel::SetArguments()
 {
     for(auto it = m_TagList.begin(); it != m_TagList.end(); it++ )
     {
-        size_t index = it - m_TagList.begin();
+        cl_uint index = static_cast<cl_uint>(it - m_TagList.begin());
         if(m_ParameterList.find(it->c_str()) != m_ParameterList.end())
         {
             std::string tag = it->c_str();
