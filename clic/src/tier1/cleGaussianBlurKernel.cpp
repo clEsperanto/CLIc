@@ -15,14 +15,14 @@ GaussianBlurKernel::GaussianBlurKernel (std::shared_ptr<GPU> gpu) :
     m_Sources.insert({this->m_KernelName + "_3d", source_3d});
 }    
 
-float GaussianBlurKernel::Sigma2KernelSize(float x)
+int GaussianBlurKernel::Sigma2KernelSize(float x)
 {
     int n = static_cast<int>(x * 8.0 + 0.5);
     if (n % 2 == 0)
     {
         n = n + 1;
     }
-    return static_cast<float>(n);
+    return n;
 }
 
 void GaussianBlurKernel::SetInput(Buffer& x)

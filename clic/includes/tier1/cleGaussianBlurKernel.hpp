@@ -29,7 +29,7 @@ private:
     float x;
     float y;
     float z;
-    float Sigma2KernelSize(float);
+    int Sigma2KernelSize(float);
 };
 
 } // namespace cle
