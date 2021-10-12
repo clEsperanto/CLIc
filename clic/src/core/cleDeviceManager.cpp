@@ -55,7 +55,7 @@ DeviceManager::~DeviceManager()
 
 void DeviceManager::SetDevice(int index)
 {
-    if (m_DeviceList.size() < index)
+    if ( (int) m_DeviceList.size() < index)
     {
         std::cerr << "DeviceManager : Wrong device index." << std::endl;
     }
@@ -98,14 +98,14 @@ cl::Device DeviceManager::GetDevice()
 
 cl::Device DeviceManager::GetDevice(int device_id)
 {
-    if (device_id < this->m_DeviceList.size())
-    {
-        return this->m_DeviceList[device_id];
-    }
-    else
+    if ( (int) this->m_DeviceList.size() < device_id)
     {
         std::cerr << "DeviceManager : Wrong device id. Returning default device." << std::endl;
         return this->m_DeviceList[this->m_DeviceId];
+    }
+    else
+    {
+        return this->m_DeviceList[device_id];
     }
 }
 
