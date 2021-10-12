@@ -17,12 +17,12 @@ GaussianBlurKernel::GaussianBlurKernel (std::shared_ptr<GPU> gpu) :
 
 float GaussianBlurKernel::Sigma2KernelSize(float x)
 {
-    int n = int(x * 8.0);
+    int n = static_cast<int>(x * 8.0 + 0.5);
     if (n % 2 == 0)
     {
         n = n + 1;
     }
-    return n;
+    return static_cast<float>(n);
 }
 
 void GaussianBlurKernel::SetInput(Buffer& x)
