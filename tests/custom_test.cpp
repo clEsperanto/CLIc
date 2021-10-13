@@ -16,8 +16,8 @@ int main(int argc, char **argv)
     std::vector<float> input_data (width*height*depth);
     std::vector<float> valid_data (width*height*depth);
     float scalar = 100;
-    std::fill(input_data.begin(), input_data.end(), 5);
-    std::fill(valid_data.begin(), valid_data.end(), 5 + scalar);
+    std::fill(input_data.begin(), input_data.end(), 5.0f);
+    std::fill(valid_data.begin(), valid_data.end(), 5.0f + scalar);
 
     // Initialise GPU information.
     cle::Clesperanto cle;

@@ -9,7 +9,7 @@ int buffer_test(cle::Clesperanto* cle, cle::Buffer::DataType type, const char * 
 {
     int dims[3] = {5, 4, 3};
     std::vector<T> arr (dims[0]*dims[1]*dims[2]); 
-    std::fill (arr.begin(),arr.end(), 1);
+    std::fill (arr.begin(),arr.end(), static_cast<T>(1));
 
     cl::Buffer clObject = cle::CreateBuffer<T>(arr.size(), cle->GetGPU());
     int res = 0;

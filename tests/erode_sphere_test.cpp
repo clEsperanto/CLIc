@@ -14,8 +14,8 @@ int main(int argc, char **argv)
     int dims[3] = {width, height, depth};    
     std::vector<float> input_data (width*height*depth);
     std::vector<float> valid_data (width*height*depth);
-    std::fill(input_data.begin(), input_data.end(), 0);
-    std::fill(valid_data.begin(), valid_data.end(), 0);
+    std::fill(input_data.begin(), input_data.end(), 0.0f);
+    std::fill(valid_data.begin(), valid_data.end(), 0.0f);
 
     int central_idx = (width/2) + (height/2)*height + (depth/2) * height * width;
     valid_data[central_idx] = 1;
