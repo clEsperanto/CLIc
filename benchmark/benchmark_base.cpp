@@ -15,7 +15,7 @@ using std::endl;
 template<typename T>
 T getAverage(const vector<T>& v)
 {
-        return std::accumulate(v.begin(), v.end(), 0) / v.size();
+        return static_cast<T>(std::accumulate(v.begin(), v.end(), 0) / v.size());
 }
 
 class BenchmarkBase

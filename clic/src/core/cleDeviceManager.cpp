@@ -116,7 +116,7 @@ std::string DeviceManager::GetInfo(int index)
     {
         if(index == -1)
         {
-            index = this->m_DeviceId;
+            index = static_cast<int>(this->m_DeviceId);
         }
         auto ite = this->m_DeviceList.begin() + index;
         out += "[" + std::to_string(ite - this->m_DeviceList.begin()) + "] - " + ite->getInfo<CL_DEVICE_NAME>() + "\n";
