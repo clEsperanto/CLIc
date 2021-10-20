@@ -54,70 +54,86 @@ std::string Kernel::LoadSources()
 
 std::string Kernel::LoadDefines()
 {
-    std::string defines;
+    std::string defines = "\n";  
+
+    // image size independent from kernel compilation
     defines = defines + "\n#define GET_IMAGE_WIDTH(image_key) IMAGE_SIZE_ ## image_key ## _WIDTH";
     defines = defines + "\n#define GET_IMAGE_HEIGHT(image_key) IMAGE_SIZE_ ## image_key ## _HEIGHT";
     defines = defines + "\n#define GET_IMAGE_DEPTH(image_key) IMAGE_SIZE_ ## image_key ## _DEPTH";
     defines = defines + "\n";   
+
     // loop on parameters
     for (auto itr = m_ParameterList.begin(); itr != m_ParameterList.end(); ++itr)
     {
-        if (!itr->second->IsObjectType("scalar"))  // argument is buffer or image
+        // only non-scalar argument are relevant
+        if (!itr->second->IsObjectType("scalar"))  
         {     
-            std::string tagObject = itr->first;
-            std::string objectType = itr->second->GetObjectType();
-            std::string dataType = itr->second->GetDataType();
-            std::string abbrType = TypeAbbr(dataType.c_str());
-            // image type handling
-            defines = defines + "\n#define CONVERT_" + tagObject + "_PIXEL_TYPE clij_convert_" + dataType + "_sat";
-            defines = defines + "\n#define IMAGE_" + tagObject + "_TYPE __global " + dataType + "*";
-            defines = defines + "\n#define IMAGE_" + tagObject + "_PIXEL_TYPE " + dataType;
-            // image size handling
-            if (itr->second->GetDimension() == 3)
+
+            // compute defines adapted to current argument (type, size, shape, etc.)
+            std::string tagObject = itr->first;                      // get argument tag (e.g. dst, destination, output)
+            std::string objectType = itr->second->GetObjectType();   // buffer or image
+            std::string dataType = itr->second->GetDataType();       // float, double, char, int, etc.
+            std::string abbrType = TypeAbbr(dataType.c_str());       // shorten type f->float, i->int, d->double, etc.
+            int ndim = itr->second->GetDimension();
+            std::string img_type_name;
+            if(tagObject.compare("dst") == 0 || tagObject.compare("destination") == 0 || tagObject.compare("output") == 0)
             {
-                defines = defines + "\n#define IMAGE_SIZE_" + tagObject + "_WIDTH " + std::to_string(itr->second->GetWidth());
-                defines = defines + "\n#define IMAGE_SIZE_" + tagObject + "_HEIGHT " + std::to_string(itr->second->GetHeight());
-                defines = defines + "\n#define IMAGE_SIZE_" + tagObject + "_DEPTH " + std::to_string(itr->second->GetDepth());
+                img_type_name = "__write_only image" + std::to_string(ndim) + "d_t";
             }
             else
             {
-                if (itr->second->GetDimension() == 2)
-                {
-                    defines = defines + "\n#define IMAGE_SIZE_" + tagObject + "_WIDTH " + std::to_string(itr->second->GetWidth());
-                    defines = defines + "\n#define IMAGE_SIZE_" + tagObject + "_HEIGHT " + std::to_string(itr->second->GetHeight());
-                }
-                else
-                {
-                    defines = defines + "\n#define IMAGE_SIZE_" + tagObject + "_WIDTH " + std::to_string(itr->second->GetWidth());
-                    defines = defines + "\n#define IMAGE_SIZE_" + tagObject + "_HEIGHT 1";
-                }
-                defines = defines + "\n#define IMAGE_SIZE_" + tagObject + "_DEPTH 1";
+                img_type_name = "__read_only image" + std::to_string(ndim) + "d_t";
             }
-            // position (dimensionality) handling
-            if (itr->second->GetDimension() < 3)
+            std::string  pos_type, pos, img_dim; 
+            if( ndim == 1 )
             {
-                defines = defines + "\n#define POS_" + tagObject + "_TYPE int2";
-                if (itr->second->GetDimension() == 1) // 1D
-                {
-                    defines = defines + "\n#define POS_" + tagObject + "_INSTANCE(pos0,pos1,pos2,pos3) (int2)(pos0, 0)";
-                }
-                else // 2D
-                {
-                    defines = defines + "\n#define POS_" + tagObject + "_INSTANCE(pos0,pos1,pos2,pos3) (int2)(pos0, pos1)";
-                }
+                img_dim = "2";
+                pos_type = "int2";
+                pos = "(pos0, 0)";
             }
-            else // 3/4D
+            else if (ndim == 2)
+            { 
+                img_dim = "2";
+                pos_type = "int2";
+                pos = "(pos0, pos1)";
+            } 
+            else if (ndim == 3)
+            { 
+                img_dim = "3";
+                pos_type = "int4";
+                pos = "(pos0, pos1, pos2, 0)";
+            } 
+            std::string size_parameters = ""; // todo: image size independent kernel 
+
+            std::string common_header = "\n";
+            common_header = common_header + "\n#define CONVERT_" + tagObject + "_PIXEL_TYPE clij_convert_" + dataType + "_sat";
+            common_header = common_header + "\n#define IMAGE_" + tagObject + "_PIXEL_TYPE " + dataType + "";
+            common_header = common_header + "\n#define POS_" + tagObject + "_TYPE " + pos_type;
+            common_header = common_header + "\n#define POS_" + tagObject + "_INSTANCE(pos0,pos1,pos2,pos3) (" + pos_type + ")" + pos;
+
+            std::string size_header = "\n";
+            size_header = size_header + "\n#define IMAGE_SIZE_" + tagObject + "_WIDTH " + std::to_string(itr->second->GetWidth());
+            size_header = size_header + "\n#define IMAGE_SIZE_" + tagObject + "_HEIGHT " + std::to_string(itr->second->GetHeight());
+            size_header = size_header + "\n#define IMAGE_SIZE_" + tagObject + "_DEPTH " + std::to_string(itr->second->GetDepth());
+
+            defines = defines + size_header;
+            if (itr->second->IsObjectType("buffer"))
             {
-                defines = defines + "\n#define POS_" + tagObject + "_TYPE int4";
-                defines = defines + "\n#define POS_" + tagObject + "_INSTANCE(pos0,pos1,pos2,pos3) (int4)(pos0, pos1, pos2, 0)";
+                std::string array_header = common_header + "\n";
+                array_header = array_header + "\n#define IMAGE_" + tagObject + "_TYPE " + size_parameters + " __global " + dataType + "*";
+                array_header = array_header + "\n#define READ_" + tagObject + "_IMAGE(a,b,c) read_buffer" + img_dim + "d" + abbrType + "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
+                array_header = array_header + "\n#define WRITE_" + tagObject + "_IMAGE(a,b,c) write_buffer" + img_dim + "d" + abbrType + "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
+                defines = defines + array_header;
+            }   
+            else
+            {
+                std::string image_header = common_header + "\n";
+                image_header = image_header + "\n#define IMAGE_" + tagObject + "_TYPE " + size_parameters + " " + img_type_name;
+                image_header = image_header + "\n#define READ_" + tagObject + "_IMAGE(a,b,c) read_image" + abbrType + "(a,b,c)";
+                image_header = image_header + "\n#define WRITE_" + tagObject + "_IMAGE(a,b,c) write_image" + abbrType + "(a,b,c)";
+                defines = defines + image_header;
             }
-            // read/write images
-            std::string sdim = (itr->second->GetDimension() < 3) ? "2" : "3";
-            defines = defines + "\n#define READ_" + tagObject + "_IMAGE(a,b,c) read_buffer" + sdim + "d" + abbrType +
-                    "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
-            defines = defines + "\n#define WRITE_" + tagObject + "_IMAGE(a,b,c) write_buffer" + sdim + "d" + abbrType +
-                    "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
-            defines = defines + "\n";    
+            defines = defines + "\n";
         } // end check if not Scalar Object
     } // end of for loop on hashmap
     return defines;
@@ -158,10 +174,6 @@ void Kernel::SetArguments()
             {    
                 std::shared_ptr<cle::Buffer> object = std::dynamic_pointer_cast<cle::Buffer>(m_ParameterList.at(tag));
                 std::string mem_type = (object->GetObject().getInfo<CL_MEM_TYPE>()  ==  CL_MEM_OBJECT_BUFFER) ? "true" :  "false";
-                std::cout << "type buffer : " << mem_type << std::endl;
-                std::cout << "memory size = " << object->GetObject().getInfo<CL_MEM_SIZE>() << std::endl;
-                
-                
                 try
                 {
                     this->m_Kernel.setArg(index, object->GetObject());
@@ -177,13 +189,10 @@ void Kernel::SetArguments()
                     m_GlobalRange[i] = std::max(m_GlobalRange[i], tempDim);
                 }
             }
-            else if (m_ParameterList.at(tag)->IsObjectType("image2d"))
+            else if (m_ParameterList.at(tag)->IsObjectType("image"))
             {    
                 std::shared_ptr<cle::Image2D> object = std::dynamic_pointer_cast<cle::Image2D>(m_ParameterList.at(tag));
-                std::string mem_type = (object->GetObject().getInfo<CL_MEM_TYPE>()  ==  CL_MEM_OBJECT_IMAGE2D) ? "true" :  "false";
-                std::cout << "type image2d : " << mem_type << std::endl;
-                std::cout << "memory size = " << object->GetObject().getInfo<CL_MEM_SIZE>() << std::endl;
-                
+                std::string mem_type = (object->GetObject().getInfo<CL_MEM_TYPE>()  ==  CL_MEM_OBJECT_IMAGE2D) ? "true" :  "false";                
                 try
                 {
                     this->m_Kernel.setArg(index, object->GetObject());
