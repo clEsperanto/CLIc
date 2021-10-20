@@ -70,9 +70,6 @@ int main(int argc, char** argv)
     std::cout << diff << std::endl;
     }
 
-
-
-    {
     int dims[3] = {16, 16, 1};
     std::vector<float> A (dims[0]*dims[1]*dims[2]); 
     std::vector<float> B (dims[0]*dims[1]*dims[2]); 
@@ -100,35 +97,11 @@ int main(int argc, char** argv)
 
     cle::ReadImage2D<float>(ImageB.GetObject(), B.data(), cle->GetGPU());
 
-    // kernel run using Buffer object
-
-    // cl::Buffer ocl_imageA = cle::CreateBuffer<float>(A.size(), cle->GetGPU());
-    // cle::WriteBuffer<float>(ocl_imageA, A.data(), A.size(), cle->GetGPU());
-    // cle::Buffer ImageA (ocl_imageA, dims);
-
-    // cl::Buffer ocl_imageB = cle::CreateBuffer<float>(B.size(), cle->GetGPU());
-    // cle::Buffer ImageB (ocl_imageB, dims);
-
-    // cle::AddImageAndScalarKernel kernel (cle->GetGPU());
-    // kernel.SetScalar(100.0f);
-    // kernel.SetInput(ImageA);
-    // kernel.SetOutput(ImageB);
-    // kernel.Execute();
-
-    // cle::ReadBuffer<float>(ImageB.GetObject(), B.data(), ImageB.GetSize(), cle->GetGPU());
-
     float diff = 0;
     for (size_t i=0; i<A.size(); i++)
     {
         diff += B[i] - C[i];
     }
-    std::cout << diff << std::endl;
-    }
 
-
-
-
-
-
-    return 0;
+    return diff;
 }
