@@ -98,12 +98,12 @@ bool Image2D::IsDataType(const char* str) const
 
 const char* Image2D::GetObjectType() const
 {
-    return "image2dimage2d";
+    return "image";
 }
 
 bool Image2D::IsObjectType(const char* str) const
 {
-    return strncmp("image2d", str, strlen(str)) == 0;
+    return strncmp("image", str, strlen(str)) == 0;
 }
 
 }
