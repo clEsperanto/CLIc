@@ -9,7 +9,7 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     int width (4), height (3), depth (2);
-    int dims[3] = {width, height, depth};
+    std::array<int,3> dims = {width, height, depth};
     std::vector<float> input_data = {
                 1, 2, 3, 4,
                 5, 6, 7, 8,
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     cle::Buffer Buffer_B = cle.Create<float>(dims);
     cle.Set(Buffer_B, 5);
 
-    cle::Buffer Buffer_C = cle.Create<float>(Buffer_A);
+    cle::Buffer Buffer_C = cle.Create<float>(dims);
 
     // Call kernel
     cle.GreaterOrEqual(Buffer_A, Buffer_B, Buffer_C);

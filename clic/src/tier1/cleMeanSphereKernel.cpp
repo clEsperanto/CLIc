@@ -4,42 +4,42 @@
 namespace cle
 {
 
-MeanSphereKernel::MeanSphereKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu,
+MeanSphereKernel::MeanSphereKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu,
             "mean_sphere",
             {"dst", "src", "radius_x", "radius_y", "radius_z"}
     )
 {
-    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
+    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
 }    
     
-int MeanSphereKernel::Radius2KernelSize(int r)
+int MeanSphereKernel::Radius2KernelSize(float t_r) const
 {
-    return r * 2 + 1;
+    return static_cast<int>(t_r) * 2 + 1;
 }
 
-void MeanSphereKernel::SetRadius(int x, int y, int z)
+void MeanSphereKernel::SetRadius(int t_x, int t_y, int t_z)
 {
-    int dx = Radius2KernelSize(x);
+    int dx = Radius2KernelSize(t_x);
     this->AddObject(dx, "radius_x");
-    int dy = Radius2KernelSize(y);
+    int dy = Radius2KernelSize(t_y);
     this->AddObject(dy, "radius_y");
-    if(z > 0)
+    if(t_z > 0)
     {
-        int dz = Radius2KernelSize(z);
+        int dz = Radius2KernelSize(t_z);
         this->AddObject(dz, "radius_z");
     }
 }
 
-void MeanSphereKernel::SetInput(Buffer& x)
+void MeanSphereKernel::SetInput(Object& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void MeanSphereKernel::SetOutput(Buffer& x)
+void MeanSphereKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
 void MeanSphereKernel::Execute()

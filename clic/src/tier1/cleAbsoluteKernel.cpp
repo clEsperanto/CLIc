@@ -5,24 +5,24 @@
 namespace cle
 {
 
-AbsoluteKernel::AbsoluteKernel (std::shared_ptr<GPU> gpu) :    
-    Kernel( gpu, 
+AbsoluteKernel::AbsoluteKernel(std::shared_ptr<GPU> t_gpu) :    
+    Kernel( t_gpu, 
             "absolute",     // kernel name
             {"src" , "dst"} // parameter tags
     )
 {
-    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
+    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
 }
 
-void AbsoluteKernel::SetInput(Buffer& x)
+void AbsoluteKernel::SetInput(Object& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void AbsoluteKernel::SetOutput(Buffer& x)
+void AbsoluteKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
 void AbsoluteKernel::Execute()

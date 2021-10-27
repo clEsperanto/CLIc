@@ -5,23 +5,23 @@
 namespace cle
 {
    
-SumYProjectionKernel::SumYProjectionKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu,
+SumYProjectionKernel::SumYProjectionKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu,
             "sum_y_projection",
             {"dst", "src"}
     )
 {
-    m_Sources.insert({this->m_KernelName + "", source});
+    this->m_Sources.insert({this->m_KernelName + "", this->m_OclHeader});
 }   
 
-void SumYProjectionKernel::SetInput(Buffer& x)
+void SumYProjectionKernel::SetInput(Object& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void SumYProjectionKernel::SetOutput(Buffer& x)
+void SumYProjectionKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
 void SumYProjectionKernel::Execute()

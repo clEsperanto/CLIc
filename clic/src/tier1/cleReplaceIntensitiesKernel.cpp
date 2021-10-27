@@ -5,28 +5,28 @@
 namespace cle
 {
 
-ReplaceIntensitiesKernel::ReplaceIntensitiesKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu,
+ReplaceIntensitiesKernel::ReplaceIntensitiesKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu,
             "replace_intensities",
             {"dst", "src", "map"}
     )
 {
-    m_Sources.insert({this->m_KernelName + "", source});
+    this->m_Sources.insert({this->m_KernelName + "", this->m_OclHeader});
 } 
 
-void ReplaceIntensitiesKernel::SetInput(Buffer& x)
+void ReplaceIntensitiesKernel::SetInput(Object& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void ReplaceIntensitiesKernel::SetOutput(Buffer& x)
+void ReplaceIntensitiesKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
-void ReplaceIntensitiesKernel::SetMap(Buffer& x)
+void ReplaceIntensitiesKernel::SetMap(Object& t_x)
 {
-    this->AddObject(x, "map");
+    this->AddObject(t_x, "map");
 }
 
 void ReplaceIntensitiesKernel::Execute()

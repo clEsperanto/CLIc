@@ -5,28 +5,28 @@
 namespace cle
 {
 
-SetNonzeroPixelsToPixelindexKernel::SetNonzeroPixelsToPixelindexKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu, 
+SetNonzeroPixelsToPixelindexKernel::SetNonzeroPixelsToPixelindexKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu, 
             "set_nonzero_pixels_to_pixelindex",
             {"dst" , "src", "offset"}
     )
 {
-    m_Sources.insert({this->m_KernelName + "", source});
+    this->m_Sources.insert({this->m_KernelName + "", this->m_OclHeader});
 }
 
-void SetNonzeroPixelsToPixelindexKernel::SetInput(Buffer& x)
+void SetNonzeroPixelsToPixelindexKernel::SetInput(Object& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void SetNonzeroPixelsToPixelindexKernel::SetOutput(Buffer& x)
+void SetNonzeroPixelsToPixelindexKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
-void SetNonzeroPixelsToPixelindexKernel::SetOffset(int x)
+void SetNonzeroPixelsToPixelindexKernel::SetOffset(int t_x)
 {
-    this->AddObject(x, "offset");
+    this->AddObject(t_x, "offset");
 }
 
 void SetNonzeroPixelsToPixelindexKernel::Execute()

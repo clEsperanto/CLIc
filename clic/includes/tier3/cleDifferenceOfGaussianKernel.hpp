@@ -10,9 +10,8 @@ namespace cle
 class DifferenceOfGaussianKernel : public Kernel
 {
 private:
-
-    float sigma1[3] = {1, 1, 1};
-    float sigma2[3] = {2, 2, 2};
+    float m_Sigma1[3] = {1, 1, 1};
+    float m_Sigma2[3] = {2, 2, 2};
 
 public:
     DifferenceOfGaussianKernel(std::shared_ptr<GPU>);
@@ -21,7 +20,6 @@ public:
     void SetSigma1(float, float, float);
     void SetSigma2(float, float, float);
     void Execute();
-
 };
 
 } // namespace cle

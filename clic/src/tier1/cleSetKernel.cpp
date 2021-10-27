@@ -5,24 +5,24 @@
 namespace cle
 {
 
-SetKernel::SetKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu,
+SetKernel::SetKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu,
             "set",
             {"dst", "value"}
     )
 {
-    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
+    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
 }
 
-void SetKernel::SetInput(Buffer& x)
+void SetKernel::SetInput(Object& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
-void SetKernel::SetValue(float x)
+void SetKernel::SetValue(float t_x)
 {
-    this->AddObject(x, "value");
+    this->AddObject(t_x, "value");
 }
 
 void SetKernel::Execute()

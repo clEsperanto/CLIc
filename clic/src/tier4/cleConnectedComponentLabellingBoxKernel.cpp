@@ -10,72 +10,70 @@
 namespace cle
 {
 
-ConnectedComponentLabellingBoxKernel::ConnectedComponentLabellingBoxKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu,
+ConnectedComponentLabellingBoxKernel::ConnectedComponentLabellingBoxKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu,
             "connected_components_labelling_box",
             {"src" , "dst"}
     )
 {}    
 
-void ConnectedComponentLabellingBoxKernel::SetInput(Buffer& x)
+void ConnectedComponentLabellingBoxKernel::SetInput(Buffer& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void ConnectedComponentLabellingBoxKernel::SetOutput(Buffer& x)
+void ConnectedComponentLabellingBoxKernel::SetOutput(Buffer& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
 void ConnectedComponentLabellingBoxKernel::Execute()
 {
-    std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("src"));
-    std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("dst"));
-        
-    cl::Buffer temp1_obj = CreateBuffer<float>(src->GetSize(), this->m_gpu);
-    Buffer temp1 = Buffer(temp1_obj, src->GetShape(), Buffer::FLOAT);
-    cl::Buffer temp2_obj = CreateBuffer<float>(src->GetSize(), this->m_gpu);
-    Buffer temp2 = Buffer(temp2_obj, src->GetShape(), Buffer::FLOAT);
-    cl::Buffer temp3_obj = CreateBuffer<float>(src->GetSize(), this->m_gpu);
-    Buffer temp3 = Buffer(temp3_obj, src->GetShape(), Buffer::FLOAT);
+    std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("src"));
+    std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("dst"));
 
-    SetNonzeroPixelsToPixelindexKernel setNonzeroPixelToIndex(this->m_gpu);
-    setNonzeroPixelToIndex.SetInput(*src);
-    setNonzeroPixelToIndex.SetOutput(temp1);
-    setNonzeroPixelToIndex.SetOffset(1);
-    setNonzeroPixelToIndex.Execute();
+    cle::Buffer temp1 = this->m_gpu->CreateBuffer<float>(src->Shape());
+    cle::Buffer temp2 = this->m_gpu->CreateBuffer<float>(src->Shape());
+    cle::Buffer temp3 = this->m_gpu->CreateBuffer<float>(src->Shape());
 
-    SetKernel setInit(this->m_gpu);
-    setInit.SetInput(temp2);
-    setInit.SetValue(0);
-    setInit.Execute();
+    SetNonzeroPixelsToPixelindexKernel set_nonzero_to_index_kernel(this->m_gpu);
+    set_nonzero_to_index_kernel.SetInput(*src);
+    set_nonzero_to_index_kernel.SetOutput(temp1);
+    set_nonzero_to_index_kernel.SetOffset(1);
+    set_nonzero_to_index_kernel.Execute();
 
-    int flag_dim[3] = {1,1,2};
-    cl::Buffer flag_obj = CreateBuffer<float>(2, this->m_gpu);
-    Buffer flag = Buffer(flag_obj, flag_dim, Buffer::FLOAT);
+    SetKernel set_init_kernel(this->m_gpu);
+    set_init_kernel.SetInput(temp2);
+    set_init_kernel.SetValue(0);
+    set_init_kernel.Execute();
 
-    float flag_value[2] = {1, 1};
+    std::array<int,3> flag_dim = {1,1,2};
+    std::vector<float> arr = {0,0};
+    cle::Buffer flag = this->m_gpu->PushBuffer<float>(arr, flag_dim);
+
+    std::vector<float> flag_value = {1, 1};
     int iteration_count = 0;
-    NonzeroMinimumBoxKernel nonzeroMinBox(this->m_gpu);
-    SetKernel setFlag(this->m_gpu);
+    NonzeroMinimumBoxKernel nonzero_minimum_kernel(this->m_gpu);
+    SetKernel set_flag_kernel(this->m_gpu);
     while (flag_value[0] > 0)
     {
-        nonzeroMinBox.SetOutputFlag(flag);
+        nonzero_minimum_kernel.SetOutputFlag(flag);
         if (iteration_count % 2 == 0)
         {
-            nonzeroMinBox.SetInput(temp1);
-            nonzeroMinBox.SetOutput(temp2);
+            nonzero_minimum_kernel.SetInput(temp1);
+            nonzero_minimum_kernel.SetOutput(temp2);
         }
         else
         {
-            nonzeroMinBox.SetInput(temp2);
-            nonzeroMinBox.SetOutput(temp1);
+            nonzero_minimum_kernel.SetInput(temp2);
+            nonzero_minimum_kernel.SetOutput(temp1);
         }
-        nonzeroMinBox.Execute();
-        ReadBuffer<float>(flag.GetObject(), flag_value, 2, this->m_gpu);
-        setFlag.SetInput(flag);
-        setFlag.SetValue(0);
-        setFlag.Execute();
+        nonzero_minimum_kernel.Execute();
+        
+        flag_value = this->m_gpu->Pull<float>(flag);
+        set_flag_kernel.SetInput(flag);
+        set_flag_kernel.SetValue(0);
+        set_flag_kernel.Execute();
 
         iteration_count++;
     }
@@ -92,11 +90,11 @@ void ConnectedComponentLabellingBoxKernel::Execute()
     copy.SetOutput(temp3);
     copy.Execute();
 
-    CloseIndexGapsInLabelMapKernel closeGaps(this->m_gpu);
-    closeGaps.SetInput(temp3);
-    closeGaps.SetOutput(*dst);
-    closeGaps.SetBlockSize(4096);
-    closeGaps.Execute();
+    CloseIndexGapsInLabelMapKernel close_gaps_kernel(this->m_gpu);
+    close_gaps_kernel.SetInput(temp3);
+    close_gaps_kernel.SetOutput(*dst);
+    close_gaps_kernel.SetBlockSize(4096);
+    close_gaps_kernel.Execute();
 }
 
 } // namespace cle

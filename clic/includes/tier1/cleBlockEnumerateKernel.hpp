@@ -10,19 +10,17 @@ namespace cle
 class BlockEnumerateKernel : public Kernel
 {
 private:
-    std::string source = 
+    std::string m_OclHeader = 
         #include "cle_block_enumerate.h" 
         ;
 
 public:
-    BlockEnumerateKernel (std::shared_ptr<GPU>);
-
+    BlockEnumerateKernel(std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetInputSums(Buffer&);
     void SetOutput(Buffer&);
     void SetBlocksize(int);
     void Execute();
-
 };
 
 } // namespace cle

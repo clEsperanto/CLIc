@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     int width (5), height (5), depth (1);
-    int dims[3] = {width, height, depth};
+    std::array<int,3> dims = {width, height, depth};
     std::vector<float> input_data {
                 0, 0, 0, 0, 0,
                 0, 1, 2, 3, 0,
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 
     // Initialise device memory and push from host to device
     cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
-    int Buffer_B_dims[3] = {6, 1, 1};
+    std::array<int,3> Buffer_B_dims = {6, 1, 1};
     cle::Buffer Buffer_B = cle.Push<float>(reference_data, Buffer_B_dims);
     cle::Buffer Buffer_C = cle.Create<float>(dims);
 

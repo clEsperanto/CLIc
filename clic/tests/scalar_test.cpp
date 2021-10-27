@@ -1,49 +1,79 @@
 
+#include <random>
+#include <iostream>
+#include <vector>
 
-#include "cleScalar.hpp" 
+#include "cleScalar.hpp"
 
 
-template<class T>
-int scalar_test(const char* c_type)
+/**
+ * Main test function
+ *
+ */
+int main(int argc, char **argv)
 {
-    T value = 5;
-    int res = 0;
-
     {
-    cle::Scalar<T>* my_scalar = new cle::Scalar<T>(); 
-    delete my_scalar;   
+    cle::Scalar<int> x;
+    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
+    std::cout << " " << x.nDim() << "d ";
+    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
     }
 
     {
-    cle::Scalar<T>* my_scalar = new cle::Scalar<T>(value); 
-    res += my_scalar->IsObjectType("buffer") != 0;
-    res += my_scalar->IsObjectType("scalar");
-    res += my_scalar->IsDataType(c_type) ;
-    res += my_scalar->IsDataType("toto") != 0 ;
-    res += strncmp(my_scalar->GetObjectType(), "buffer", strlen("buffer")) != 0 ;
-    res += strncmp(my_scalar->GetObjectType(), "scalar", strlen("scalar")) == 0 ;
-    res += strncmp(my_scalar->GetDataType(), c_type, strlen(c_type)) == 0 ;
-    res += strncmp(my_scalar->GetDataType(), "toto", strlen("toto")) != 0 ;
-    res += my_scalar->GetObject() == value;
-    delete my_scalar;
+    cle::Scalar<unsigned int> x(10);        
+    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
+    std::cout << " " << x.nDim() << "d ";
+    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
     }
 
-    return res;
-}
+    {
+    cle::Scalar<float> x(1.2f);        
+    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
+    std::cout << " " << x.nDim() << "d ";
+    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
+    }
 
+    {
+    cle::Scalar<double> x(1.2f);        
+    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
+    std::cout << " " << x.nDim() << "d ";
+    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
+    }
 
+    {
+    cle::Scalar<char> x(5);        
+    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
+    std::cout << " " << x.nDim() << "d ";
+    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
+    }
 
-int main(int argc, char** argv)
-{
-    int res = 0;
-    res += scalar_test<float>("float");
-    res += scalar_test<double>("double");
-    res += scalar_test<int>("int");
-    res += scalar_test<unsigned int>("uint");
-    res += scalar_test<char>("char");
-    res += scalar_test<unsigned char>("uchar");
-    res += scalar_test<short>("short");
-    res += scalar_test<unsigned short>("ushort");
+    {
+    cle::Scalar<unsigned char> x(5);        
+    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
+    std::cout << " " << x.nDim() << "d ";
+    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
+    }
 
-    return res == 0;
+    {
+    cle::Scalar<short> x(5);        
+    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
+    std::cout << " " << x.nDim() << "d ";
+    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
+    }
+
+    {
+    cle::Scalar<unsigned short> x(5);        
+    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
+    std::cout << " " << x.nDim() << "d ";
+    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
+    }
+
+    {
+    cle::Scalar<> x(5);        
+    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
+    std::cout << " " << x.nDim() << "d ";
+    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
+    }
+
+    return EXIT_SUCCESS;
 }

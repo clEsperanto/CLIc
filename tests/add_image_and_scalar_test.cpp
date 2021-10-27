@@ -9,12 +9,12 @@
 int main(int argc, char **argv)
 {
     int width (10), height (10), depth (10);
-    int dims[3] = {width, height, depth};
+    std::array<int,3> dims = {width, height, depth};
     std::vector<float> input_data (width*height*depth);
     std::vector<float> valid_data (width*height*depth);
-    float scalar = 100;
-    std::fill(input_data.begin(), input_data.end(), 5);
-    std::fill(valid_data.begin(), valid_data.end(), 5 + scalar);
+    float scalar = 100.0f;
+    std::fill(input_data.begin(), input_data.end(), 5.0f);
+    std::fill(valid_data.begin(), valid_data.end(), 5.0f + scalar);
 
     cle::Clesperanto cle;
 

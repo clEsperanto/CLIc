@@ -4,54 +4,51 @@
 namespace cle
 {
 
-SeparableKernel::SeparableKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu, 
+SeparableKernel::SeparableKernel (std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu, 
             "",
             {"dst" , "src", "dim", "N", "s"}
     )
 {}
 
-void SeparableKernel::SetKernelName(std::string name)
+void SeparableKernel::SetKernelName(const std::string& t_name)
 {
-    this->m_KernelName = name;
+    this->m_KernelName = t_name;
 }
 
-void SeparableKernel::SetSources(std::map<std::string, std::string> sources)
+void SeparableKernel::SetSources(const std::map<std::string, std::string>& t_sources)
 {
-    m_Sources = sources;
+    this->m_Sources = t_sources;
 }
 
-void SeparableKernel::SetInput(Buffer& x)
+void SeparableKernel::SetInput(Buffer& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void SeparableKernel::SetOutput(Buffer& x)
+void SeparableKernel::SetOutput(Buffer& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
-void SeparableKernel::SetSize(int x)
+void SeparableKernel::SetSize(int t_x)
 {
-    this->AddObject(x, "N");
+    this->AddObject(t_x, "N");
 }
 
-void SeparableKernel::SetSigma(float x)
+void SeparableKernel::SetSigma(float t_x)
 {
-    this->AddObject(x, "s");
+    this->AddObject(t_x, "s");
 }
 
-void SeparableKernel::SetDimension(int x)
+void SeparableKernel::SetDimension(int t_x)
 {
-    this->AddObject(x, "dim");
+    this->AddObject(t_x, "dim");
 }
 
 void SeparableKernel::Execute()
 {
-    if( this->m_Sources.size() > 1)
-    {
     this->ManageDimensions("dst");
-    }
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

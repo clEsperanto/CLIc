@@ -25,9 +25,9 @@ protected:
 
         // Initialise device memory and push from host
         std::array<int, 3> dimensionsInput = {dataWidth, dataWidth, dataWidth};
-        gpuInput = cle.Push<float>(inputData, dimensionsInput.data());
+        gpuInput = cle.Push<float>(inputData, dimensionsInput);
         std::array<int, 3> dimensionsOutput = {dataWidth, dataWidth, 1};
-        gpuOutput = cle.Create<float>(dimensionsOutput.data());
+        gpuOutput = cle.Create<float>(dimensionsOutput);
     }
 
     virtual void Iteration(){};

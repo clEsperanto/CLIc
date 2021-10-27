@@ -9,16 +9,15 @@ namespace cle
     
 class ReplaceIntensityKernel : public Kernel
 {
-
 private:
-    std::string source = 
+    std::string m_OclHeader = 
         #include "cle_replace_intensity.h" 
         ;
 
 public:
-    ReplaceIntensityKernel (std::shared_ptr<GPU>);
-    void SetInput(Buffer&);
-    void SetOutput(Buffer&);
+    ReplaceIntensityKernel(std::shared_ptr<GPU>);
+    void SetInput(Object&);
+    void SetOutput(Object&);
     void SetInValue(float);
     void SetOutValue(float);
     void Execute();

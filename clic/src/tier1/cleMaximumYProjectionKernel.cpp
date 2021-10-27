@@ -4,23 +4,23 @@
 namespace cle
 {
 
-MaximumYProjectionKernel::MaximumYProjectionKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu,
+MaximumYProjectionKernel::MaximumYProjectionKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu,
             "maximum_y_projection",
             {"dst_max", "src"}
     )
 {
-    m_Sources.insert({this->m_KernelName + "", source});
+    this->m_Sources.insert({this->m_KernelName + "", this->m_OclHeader});
 }
 
-void MaximumYProjectionKernel::SetInput(Buffer& x)
+void MaximumYProjectionKernel::SetInput(Object& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void MaximumYProjectionKernel::SetOutput(Buffer& x)
+void MaximumYProjectionKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(x, "dst_max");
+    this->AddObject(t_x, "dst_max");
 }
 
 void MaximumYProjectionKernel::Execute()

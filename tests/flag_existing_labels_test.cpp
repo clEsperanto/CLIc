@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     int width (4), height (4), depth (2);
-    int dims[3] = {width, height, depth};
+    std::array<int,3> dims = {width, height, depth};
     std::vector<float> input_data {
                 1, 2, 0, 0,
                 3, 0, 0, 0,
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     // Initialise device memory and push from host to device
     cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
     std::array<int, 3> dimensions = {8, 1, 1}; //TODO: This should also work width flag depth=1, but it doesn't
-    cle::Buffer Buffer_B = cle.Create<float>(dimensions.data());
+    cle::Buffer Buffer_B = cle.Create<float>(dimensions);
 
     // Call kernel
     cle.FlagExistingLabels(Buffer_A, Buffer_B);

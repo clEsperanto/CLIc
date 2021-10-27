@@ -9,22 +9,20 @@ namespace cle
     
 class GreaterConstantKernel : public Kernel
 {
-
 private:
-    std::string source_2d = 
+    std::string m_OclHeader2d = 
         #include "cle_greater_constant_2d.h" 
         ;
-    std::string source_3d = 
+    std::string m_OclHeader3d = 
         #include "cle_greater_constant_3d.h" 
         ;
 
 public:
-    GreaterConstantKernel (std::shared_ptr<GPU>);
-    void SetInput(Buffer&);
-    void SetOutput(Buffer&);
+    GreaterConstantKernel(std::shared_ptr<GPU>);
+    void SetInput(Object&);
+    void SetOutput(Object&);
     void SetScalar(float);
     void Execute();
-
 };
 
 } // namespace cle

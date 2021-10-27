@@ -5,29 +5,29 @@
 namespace cle
 {
 
-EqualConstantKernel::EqualConstantKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu, 
+EqualConstantKernel::EqualConstantKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu, 
             "equal_constant",
             {"src1", "scalar", "dst"}
     )
 {
-    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
+    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
 }
 
-void EqualConstantKernel::SetInput(Buffer& x)
+void EqualConstantKernel::SetInput(Object& t_x)
 {
-    this->AddObject(x, "src1");
+    this->AddObject(t_x, "src1");
 }
 
-void EqualConstantKernel::SetOutput(Buffer& x)
+void EqualConstantKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
-void EqualConstantKernel::SetScalar(float x)
+void EqualConstantKernel::SetScalar(float t_x)
 {
-    this->AddObject(x, "scalar");
+    this->AddObject(t_x, "scalar");
 }
 
 void EqualConstantKernel::Execute()

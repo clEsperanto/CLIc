@@ -8,42 +8,29 @@
 #include <iterator>
 #include <array>
 
-#include "cleLightObject.hpp"
+#include "cleObject.hpp"
 
 namespace cle
 {
 
-class Buffer : public LightObject
+class Buffer : public Object
 {
 public: 
 
-    enum DataType { FLOAT, DOUBLE, INT, UINT, CHAR, UCHAR, SHORT, USHORT };
-
     Buffer() =default;
-    Buffer(cl::Buffer, DataType=FLOAT);
-    Buffer(cl::Buffer, std::array<int,3>, DataType=FLOAT);
-    Buffer(cl::Buffer, int[3], DataType=FLOAT);
+    Buffer(const cl::Buffer*, const std::array<int,3>&, const DataType =cle::Object::FLOAT);
     ~Buffer() =default;
 
-    cl::Buffer GetObject() const;
-    
-    int GetWidth() const;
-    int GetHeight() const;
-    int GetDepth() const;
-    int GetDimension() const;
-    int GetSize() const;
-    std::array<int,3> GetShape() const;
+    const cl::Buffer* Data() const;
 
-    const char* GetDataType() const;
-    bool IsDataType(const char*) const;
+    const std::string Info() const;
+
     const char* GetObjectType() const;
-    bool IsObjectType(const char*) const;
+    const bool IsObjectType(const char*) const;
 
 private:
-    cl::Buffer m_Object;
-    std::array<int,3> m_Shape = {1, 1, 1};
-    int m_Dimension = 1;
-    DataType m_Type = Buffer::FLOAT;
+    std::shared_ptr<const cl::Buffer> m_Ocl;
+
 };
 
 }

@@ -8,6 +8,7 @@
 
 using std::string;
 using std::vector;
+using std::array;
 using std::cout;
 
 class MeanBenchmark : public BenchmarkBase
@@ -19,11 +20,11 @@ protected:
     virtual void Setup()
     {
         vector<float> inputData(dataWidth * dataWidth);
-        vector<int> dim{{dataWidth, dataWidth, 1}};
+        array<int,3> dim{{dataWidth, dataWidth, 1}};
         
         // Initialise device memory and push from host
-        gpuInput = cle.Push<float>(inputData, dim.data());
-        gpuOutput = cle.Create<float>(dim.data());
+        gpuInput = cle.Push<float>(inputData, dim);
+        gpuOutput = cle.Create<float>(dim);
     }
 
     virtual void Iteration()
