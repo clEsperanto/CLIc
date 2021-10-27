@@ -11,20 +11,20 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     int width (5), height (5), depth (1);
-    int dims[3] = {width, height, depth};
+    std::array<int,3> dims = {width, height, depth};
     std::vector<float> input_data {
-            0, 0, 0, 0, 0,
-            1, 0, 0, 2, 0,
-            1, 2, 1, 3, 2,
-            0, 1, 0, 2, 0,
-            0, 0, 0, 0, 0
+            0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f, 2.0f, 0.0f,
+            1.0f, 2.0f, 1.0f, 3.0f, 2.0f,
+            0.0f, 1.0f, 0.0f, 2.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 0.0f, 0.0f
     };
     std::vector<float> valid_data {
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0,
-            0, 1, 0, 1, 0,
-            0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0
+            0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 0.0f, 0.0f
     };
 
     // Initialise GPU information.

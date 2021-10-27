@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     int width (3), height (3), depth (2);
-    int dims[3] = {width, height, depth};
+    std::array<int,3> dims = {width, height, depth};
     std::vector<float> input_data {
                 0, 0, 0,
                 0, 1, 0,

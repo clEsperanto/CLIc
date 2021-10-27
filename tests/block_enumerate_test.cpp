@@ -11,10 +11,10 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     int width (12), height (1), depth (1);
-    int dims[3] = {width, height, depth};
+    std::array<int,3> dims = {width, height, depth};
 
-    std::vector<float> input_data{ 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0 };
-    std::vector<float> valid_data{ 0, 1, 0, 2, 0, 0, 3, 4, 0, 0, 5, 0 };
+    std::vector<float> input_data{ 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f };
+    std::vector<float> valid_data{ 0.0f, 1.0f, 0.0f, 2.0f, 0.0f, 0.0f, 3.0f, 4.0f, 0.0f, 0.0f, 5.0f, 0.0f };
     int max_label = width - 1;
     int blocksize = 4;
     
@@ -26,7 +26,7 @@ int main(int argc, char **argv)
     cle::Buffer gpuNewIndices = cle.Create<float>(dims);
 
     int block_value =  int((int(max_label) + 1) / blocksize) + 1;
-    int block_dim[3] = {block_value, 1, 1};
+    std::array<int,3> block_dim = {block_value, 1, 1};
     cle::Buffer gpuBlockSums = cle.Create<float>(block_dim);
 
     // Call kernel
