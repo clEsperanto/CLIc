@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     int width (10), height (10), depth (10);
-    int dims[3] = {width, height, depth};
+    std::array<int,3> dims = {width, height, depth};
     std::vector<float> input_data (width*height*depth);
     std::vector<float> valid_data (width*height*1);
     std::fill(input_data.begin(), input_data.end(), 1.0f);
@@ -21,9 +21,9 @@ int main(int argc, char **argv)
     cle::Clesperanto cle;
 
     // Initialise device memory and push from host
-    std::array<int, 3> new_dim = {width, height, 1};
+    std::array<int, 3> new_dims = {width, height, 1};
     cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
-    cle::Buffer Buffer_B = cle.Create<float>(new_dim.data());
+    cle::Buffer Buffer_B = cle.Create<float>(new_dims);
 
     // Call kernel
     cle.SumZProjection(Buffer_A, Buffer_B);   

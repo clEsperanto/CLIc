@@ -5,24 +5,24 @@
 namespace cle
 {
 
-DetectMaximaKernel::DetectMaximaKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu, 
+DetectMaximaKernel::DetectMaximaKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu, 
             "detect_maxima",
             {"src" , "dst"}
     )
 {
-    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
+    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
 }
 
-void DetectMaximaKernel::SetInput(Buffer& x)
+void DetectMaximaKernel::SetInput(Object& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void DetectMaximaKernel::SetOutput(Buffer& x)
+void DetectMaximaKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
 void DetectMaximaKernel::Execute()

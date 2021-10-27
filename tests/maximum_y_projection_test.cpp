@@ -12,7 +12,7 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     int width (3), height (3), depth (3);
-    int dim[3] = {width, height, depth};
+    std::array<int,3> dims = {width, height, depth};
     std::vector<float> input_data ({
         10, 1, 5, 
          1,10, 6, 
@@ -33,9 +33,9 @@ int main(int argc, char **argv)
     // Initialise GPU information.
     cle::Clesperanto cle;
 
-    cle::Buffer Buffer_A = cle.Push<float>(input_data, dim);
-    std::array<int,3> new_dim = {width, depth, 1};
-    cle::Buffer Buffer_B = cle.Create<float>(new_dim.data());
+    cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
+    std::array<int,3> new_dims = {width, depth, 1};
+    cle::Buffer Buffer_B = cle.Create<float>(new_dims);
 
     // Call kernel
     cle.MaximumYProjection(Buffer_A, Buffer_B);   

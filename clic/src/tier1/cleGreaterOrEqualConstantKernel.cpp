@@ -5,29 +5,29 @@
 namespace cle
 {
 
-GreaterOrEqualConstantKernel::GreaterOrEqualConstantKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu,
+GreaterOrEqualConstantKernel::GreaterOrEqualConstantKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu,
             "greater_or_equal_constant",
             {"src1", "scalar", "dst"}
     )
 {
-    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
+    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
 }
 
-void GreaterOrEqualConstantKernel::SetInput(Buffer& x)
+void GreaterOrEqualConstantKernel::SetInput(Object& t_x)
 {
-    this->AddObject(x, "src1");
+    this->AddObject(t_x, "src1");
 }
 
-void GreaterOrEqualConstantKernel::SetOutput(Buffer& x)
+void GreaterOrEqualConstantKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
-void GreaterOrEqualConstantKernel::SetScalar(float x)
+void GreaterOrEqualConstantKernel::SetScalar(float t_x)
 {
-    this->AddObject(x, "scalar");
+    this->AddObject(t_x, "scalar");
 }
 
 void GreaterOrEqualConstantKernel::Execute()

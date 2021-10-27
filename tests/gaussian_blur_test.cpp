@@ -12,7 +12,7 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     int width (3), height (3), depth (3);
-    int dim[3] = {width, height, depth};
+    std::array<int,3> dims = {width, height, depth};
     std::vector<float> input_data (width*height*depth);
     std::fill(input_data.begin(), input_data.end(), 0.0f);
     input_data[13] = 1;
@@ -34,8 +34,8 @@ int main(int argc, char **argv)
     // Initialise GPU information.
     cle::Clesperanto cle;
 
-    cle::Buffer Buffer_A = cle.Push<float>(input_data, dim);
-    cle::Buffer Buffer_B = cle.Create<float>(dim);
+    cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
+    cle::Buffer Buffer_B = cle.Create<float>(dims);
 
     cle.GaussianBlur(Buffer_A, Buffer_B, 1, 1, 1);
 

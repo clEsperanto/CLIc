@@ -4,7 +4,8 @@
 
 #include "cleGPU.hpp"
 #include "cleBuffer.hpp"
-#include "cleOperations.hpp"
+#include "cleImage.hpp"
+#include "cleObject.hpp"
 
 #include <type_traits>
 #include <iostream>
@@ -15,152 +16,117 @@ namespace cle
 class Clesperanto
 {
 private:
-    std::shared_ptr<GPU> m_gpu;
-
-    template<class T>
-    Buffer::DataType Template2DataType();
+    std::shared_ptr<cle::GPU> m_gpu;
 
 public:
     Clesperanto();
     ~Clesperanto() = default;
 
-    template<class T>
-    Buffer Push(std::vector<T>& arr, int[3]);
+    template<class T =float>
+    cle::Buffer Create(const std::array<int,3>& ={1,1,1}) const;
+    template<class T =float>
+    cle::Image CreateImage(const std::array<int,3>& ={1,1,1}) const;
+    template<class T =float>
+    cle::Buffer Push(std::vector<T>& ={0}, const std::array<int,3>& ={1,1,1}) const;
+    template<class T =float>
+    cle::Image PushImage(std::vector<T>& ={0}, const std::array<int,3>& ={1,1,1}) const;
+    template<class T =float>
+    std::vector<T> Pull(cle::Buffer&) const;
+    template<class T =float>
+    std::vector<T> PullImage(cle::Image&) const;
 
-    template<class T>
-    std::vector<T> Pull(Buffer& gpu_obj);
+    std::shared_ptr<GPU> Ressources();
 
-    template<class T>
-    Buffer Create(std::vector<T>& arr, int[3]);
-
-    template<class T>
-    Buffer Create(Buffer& gpu_obj);
-
-    template<class T>
-    Buffer Create(int[3]);
-
-    template<class T>
-    Buffer Create();
-
-    std::shared_ptr<GPU> GetGPU();
-
-    void AddImageAndScalar(Buffer&, Buffer&, float=0);
-    void AddImagesWeighted(Buffer&, Buffer&, Buffer&, float=1, float=1);
-    void AddImages(Buffer&, Buffer&, Buffer&);
-    void SubtractImages(Buffer&, Buffer&, Buffer&);
-    void DilateSphere(Buffer&, Buffer&);
-    void ErodeSphere(Buffer&, Buffer&);
-    void Equal(Buffer&, Buffer&, Buffer&);
-    void EqualConstant(Buffer&, Buffer&, float=0);
+    void AddImageAndScalar(Object&, Object&, float=0);
+    void AddImagesWeighted(Object&, Object&, Object&, float=1, float=1);
+    void AddImages(Object&, Object&, Object&);
+    void SubtractImages(Object&, Object&, Object&);
+    void DilateSphere(Object&, Object&);
+    void ErodeSphere(Object&, Object&);
+    void Equal(Object&, Object&, Object&);
+    void EqualConstant(Object&, Object&, float=0);
     void GaussianBlur(Buffer&, Buffer&, float=1, float=1, float=0);
     void MeanBox(Buffer&, Buffer&, float=1, float=1, float=0);
     void MaximumBox(Buffer&, Buffer&, float=1, float=1, float=0);
     void MinimumBox(Buffer&, Buffer&, float=1, float=1, float=0);
-    void Greater(Buffer&, Buffer&, Buffer&);
-    void GreaterOrEqual(Buffer&, Buffer&, Buffer&);
-    void GreaterConstant(Buffer&, Buffer&, float=0);
-    void GreaterOrEqualConstant(Buffer&, Buffer&, float=0);
-    void MaximumZProjection(Buffer&, Buffer&);
-    void MaximumYProjection(Buffer&, Buffer&);
-    void MaximumXProjection(Buffer&, Buffer&);
+    void Greater(Object&, Object&, Object&);
+    void GreaterOrEqual(Object&, Object&, Object&);
+    void GreaterConstant(Object&, Object&, float=0);
+    void GreaterOrEqualConstant(Object&, Object&, float=0);
+    void MaximumZProjection(Object&, Object&);
+    void MaximumYProjection(Object&, Object&);
+    void MaximumXProjection(Object&, Object&);
     void MaximumOfAllPixels(Buffer&, Buffer&);
-    void MinimumZProjection(Buffer&, Buffer&);
-    void MinimumYProjection(Buffer&, Buffer&);
-    void MinimumXProjection(Buffer&, Buffer&);
+    void MinimumZProjection(Object&, Object&);
+    void MinimumYProjection(Object&, Object&);
+    void MinimumXProjection(Object&, Object&);
     void MinimumOfAllPixels(Buffer&, Buffer&);
-    void MeanSphere(Buffer&, Buffer&, int=1, int=1, int=0);
-    void NonzeroMinimumBox(Buffer&, Buffer&, Buffer&);
-    void NotEqual(Buffer&, Buffer&, Buffer&);
-    void NotEqualConstant(Buffer&, Buffer&, float=0);
-    void Absolute(Buffer&, Buffer&);
-    void Sobel(Buffer&, Buffer&);
-    void Set(Buffer&, float=0);
-    void SetNonzeroPixelsToPixelindex(Buffer&, Buffer&);
+    void MeanSphere(Object&, Object&, int=1, int=1, int=0);
+    void NonzeroMinimumBox(Object&, Object&, Object&);
+    void NotEqual(Object&, Object&, Object&);
+    void NotEqualConstant(Object&, Object&, float=0);
+    void Absolute(Object&, Object&);
+    void Sobel(Object&, Object&);
+    void Set(Object&, float=0);
+    void SetNonzeroPixelsToPixelindex(Object&, Object&);
     void DifferenceOfGaussian(Buffer&, Buffer&, float=0, float=0, float=0, float=1, float=1, float=0);
-    void Smaller(Buffer&, Buffer&, Buffer&);
-    void SmallerOrEqual(Buffer&, Buffer&, Buffer&);
-    void SmallerConstant(Buffer&, Buffer&, float=0);
-    void SmallerOrEqualConstant(Buffer&, Buffer&, float=0);
-    void Copy(Buffer&, Buffer&);
-    void DetectMaximaBox(Buffer&, Buffer&);
-    void SumZProjection(Buffer&, Buffer&);
-    void SumYProjection(Buffer&, Buffer&);
-    void SumXProjection(Buffer&, Buffer&);
+    void Smaller(Object&, Object&, Object&);
+    void SmallerOrEqual(Object&, Object&, Object&);
+    void SmallerConstant(Object&, Object&, float=0);
+    void SmallerOrEqualConstant(Object&, Object&, float=0);
+    void Copy(Object&, Object&);
+    void DetectMaximaBox(Object&, Object&);
+    void SumZProjection(Object&, Object&);
+    void SumYProjection(Object&, Object&);
+    void SumXProjection(Object&, Object&);
     void SumOfAllPixels(Buffer&, Buffer&);
     void ConnectedComponentLabellingBox(Buffer&, Buffer&);
-    void ReplaceIntensity(Buffer&, Buffer&, float=0, float=0);
-    void ReplaceIntensities(Buffer&, Buffer&, Buffer&);
-    void SetColumn(Buffer&, int=0, float=0);
-    void SumReductionX(Buffer&, Buffer&, int=0);
+    void ReplaceIntensity(Object&, Object&, float=0, float=0);
+    void ReplaceIntensities(Object&, Object&, Object&);
+    void SetColumn(Object&, int=0, float=0);
+    void SumReductionX(Object&, Object&, int=0);
     void BlockEnumerate(Buffer&, Buffer&, Buffer&, int=0);
     void FlagExistingLabels(Buffer&, Buffer&);
+    void CloseIndexGapsInLabelMap(Buffer&, Buffer&, int=4096);
 };
 
-    template<class T>
-    Buffer::DataType Clesperanto::Template2DataType()
-    {
-        if (std::is_same<T, float>::value)  return Buffer::FLOAT;
-        if(std::is_same<T, int>::value) return Buffer::INT;
-        if(std::is_same<T, unsigned int>::value) return Buffer::UINT;
-        if(std::is_same<T, char>::value) return Buffer::CHAR;
-        if(std::is_same<T, unsigned char>::value) return Buffer::UCHAR;
-        if(std::is_same<T, double>::value) return Buffer::DOUBLE;
-        if(std::is_same<T, short>::value) return Buffer::SHORT;
-        if(std::is_same<T, unsigned short>::value) return Buffer::USHORT;
-        return Buffer::FLOAT;
-    }
-
 
     template<class T>
-    Buffer Clesperanto::Push(std::vector<T>& arr, int dimensions[3])
+    cle::Buffer Clesperanto::Create(const std::array<int,3>& t_shape) const
     {
-        cl::Buffer obj = CreateBuffer<T>(arr.size(), this->m_gpu);
-        WriteBuffer<T>(obj, arr.data(), arr.size(), this->m_gpu);
-        Buffer::DataType dataType = this->Template2DataType<T>();
-        return Buffer (obj, dimensions, dataType);
+        return this->m_gpu->CreateBuffer<T>(t_shape);
     }
 
     template<class T>
-    std::vector<T> Clesperanto::Pull(Buffer& obj)
+    cle::Image Clesperanto::CreateImage(const std::array<int,3>& t_shape) const
     {
-        std::vector<T> arr(obj.GetSize());
-        ReadBuffer<T>(obj.GetObject(), arr.data(), obj.GetSize(), this->m_gpu);
-        return arr;
+        return this->m_gpu->CreateImage<T>(t_shape);
     }
 
     template<class T>
-    Buffer Clesperanto::Create(std::vector<T>& arr, int dimensions[3])
+    cle::Buffer Clesperanto::Push(std::vector<T>& t_array, const std::array<int,3>& t_shape) const
     {
-        cl::Buffer obj = CreateBuffer<T>(arr.size(), this->m_gpu);
-        Buffer::DataType dataType = this->Template2DataType<T>();
-        return Buffer (obj, dimensions, dataType);
+        return this->m_gpu->PushBuffer<T>(t_array, t_shape);
     }
 
     template<class T>
-    Buffer Clesperanto::Create(Buffer& obj)
+    cle::Image Clesperanto::PushImage(std::vector<T>& t_array, const std::array<int,3>& t_shape) const
     {
-        cl::Buffer new_obj = CreateBuffer<T>(obj.GetSize(), this->m_gpu);
-        Buffer::DataType dataType = this->Template2DataType<T>();
-        return Buffer (new_obj, obj.GetShape(), dataType);
-       
+        return this->m_gpu->PushImage<T>(t_array, t_shape);
     }
 
     template<class T>
-    Buffer Clesperanto::Create(int dimensions[3])
+    std::vector<T> Clesperanto::Pull(cle::Buffer& t_data) const
     {
-        size_t size = dimensions[0]*dimensions[1]*dimensions[2];
-        cl::Buffer obj = CreateBuffer<T>(size, this->m_gpu);
-        Buffer::DataType dataType = this->Template2DataType<T>();
-        return Buffer (obj, dimensions, dataType);
+        return this->m_gpu->Pull<T>(t_data);
     }
 
     template<class T>
-    Buffer Clesperanto::Create()
+    std::vector<T> Clesperanto::PullImage(cle::Image& t_data) const
     {
-        cl::Buffer obj = CreateBuffer<T>(1, this->m_gpu);
-        Buffer::DataType dataType = this->Template2DataType<T>();
-        return Buffer (obj, dataType);
+        return this->m_gpu->Pull<T>(t_data);
     }
+
 
 } // namespace cle
 

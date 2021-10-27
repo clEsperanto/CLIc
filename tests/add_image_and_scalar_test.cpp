@@ -9,7 +9,7 @@
 int main(int argc, char **argv)
 {
     int width (10), height (10), depth (10);
-    int dims[3] = {width, height, depth};
+    std::array<int,3> dims = {width, height, depth};
     std::vector<float> input_data (width*height*depth);
     std::vector<float> valid_data (width*height*depth);
     float scalar = 100.0f;

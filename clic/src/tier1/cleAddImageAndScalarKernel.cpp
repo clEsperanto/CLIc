@@ -4,29 +4,29 @@
 namespace cle
 {
 
-AddImageAndScalarKernel::AddImageAndScalarKernel(std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu, 
+AddImageAndScalarKernel::AddImageAndScalarKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu, 
             "add_image_and_scalar", 
             {"src", "dst", "scalar"}
         ) 
 {
-    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
+    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
 }
 
-void AddImageAndScalarKernel::SetInput(Buffer& x)
+void AddImageAndScalarKernel::SetInput(Object& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void AddImageAndScalarKernel::SetOutput(Buffer& x)
+void AddImageAndScalarKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
-void AddImageAndScalarKernel::SetScalar(float x)
+void AddImageAndScalarKernel::SetScalar(float t_x)
 {
-    this->AddObject(x, "scalar");
+    this->AddObject(t_x, "scalar");
 }
 
 void AddImageAndScalarKernel::Execute()
@@ -36,5 +36,6 @@ void AddImageAndScalarKernel::Execute()
     this->SetArguments();
     this->EnqueueKernel();
 }
+
 } // namespace cle
 

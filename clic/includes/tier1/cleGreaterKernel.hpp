@@ -11,20 +11,19 @@ class GreaterKernel : public Kernel
 {
 
 private:
-    std::string source_2d = 
+    std::string m_OclHeader2d = 
         #include "cle_greater_2d.h" 
         ;
-    std::string source_3d = 
+    std::string m_OclHeader3d = 
         #include "cle_greater_3d.h" 
         ;
 
 public:
-    GreaterKernel (std::shared_ptr<GPU>);
-    void SetInput1(Buffer&);
-    void SetInput2(Buffer&);
-    void SetOutput(Buffer&);
+    GreaterKernel(std::shared_ptr<GPU>);
+    void SetInput1(Object&);
+    void SetInput2(Object&);
+    void SetOutput(Object&);
     void Execute();
-
 };
 
 } // namespace cle

@@ -11,6 +11,7 @@
 
 using std::string;
 using std::vector;
+using std::array;
 using std::cout;
 using std::map;
 
@@ -24,9 +25,9 @@ protected:
     {
         vector<float> inputData(dataWidth * dataWidth);
         
-        vector<int> dim{{dataWidth, dataWidth, 1}};
-        gpuInput = cle.Push<float>(inputData, dim.data());
-        gpuOutput = cle.Create<float>(dim.data());
+        array<int,3> dim{{dataWidth, dataWidth, 1}};
+        gpuInput = cle.Push<float>(inputData, dim);
+        gpuOutput = cle.Create<float>(dim);
     }
     virtual void Teardown() {}
 
@@ -48,9 +49,9 @@ protected:
 
     virtual void Compile(cle::Clesperanto& cle)
     {
-        vector<int> dim{{1, 1, 1}};
-        cle::Buffer in = cle.Create<float>(dim.data());
-        cle::Buffer out = cle.Create<float>(dim.data());
+        array<int,3> dim{{1, 1, 1}};
+        cle::Buffer in = cle.Create<float>(dim);
+        cle::Buffer out = cle.Create<float>(dim);
         cle.MeanSphere(in, out, 1, 1);
     }
 
@@ -71,9 +72,9 @@ protected:
 
     virtual void Compile(cle::Clesperanto& cle)
     {
-        vector<int> dim{{1, 1, 1}};
-        cle::Buffer in = cle.Create<float>(dim.data());
-        cle::Buffer out = cle.Create<float>(dim.data());
+        array<int,3> dim{{1, 1, 1}};
+        cle::Buffer in = cle.Create<float>(dim);
+        cle::Buffer out = cle.Create<float>(dim);
         cle.MeanBox(in, out, 1, 1);
     }
 

@@ -5,29 +5,29 @@
 namespace cle
 {
 
-SmallerConstantKernel::SmallerConstantKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu,
+SmallerConstantKernel::SmallerConstantKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu,
             "smaller_constant",
             {"src1" , "scalar", "dst"}
     )
 {
-    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
+    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
 }
 
-void SmallerConstantKernel::SetInput(Buffer& x)
+void SmallerConstantKernel::SetInput(Object& t_x)
 {
-    this->AddObject(x, "src1");
+    this->AddObject(t_x, "src1");
 }
 
-void SmallerConstantKernel::SetOutput(Buffer& x)
+void SmallerConstantKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
-void SmallerConstantKernel::SetConstant(float x)
+void SmallerConstantKernel::SetConstant(float t_x)
 {
-    this->AddObject(x, "scalar");
+    this->AddObject(t_x, "scalar");
 }
 
 void SmallerConstantKernel::Execute()

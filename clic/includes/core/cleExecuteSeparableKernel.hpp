@@ -11,15 +11,15 @@ namespace cle
 class ExecuteSeparableKernel : public Kernel
 {
 private:
-    int m_Dim = 1;
+    int m_nDim = 1;
     std::array<float, 3> m_Sigma;
     std::array<int, 3> m_KernelSize;
 
 public:
-    ExecuteSeparableKernel (std::shared_ptr<GPU>);
+    ExecuteSeparableKernel(std::shared_ptr<GPU>);
 
-    void SetSources(std::map<std::string, std::string>);
-    void SetKernelName(std::string);
+    void SetSources(const std::map<std::string, std::string>&);
+    void SetKernelName(const std::string&);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void SetSigma(float, float, float);

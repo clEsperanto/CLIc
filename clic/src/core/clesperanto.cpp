@@ -2,446 +2,452 @@
 #include "clesperanto.hpp"
 #include "cleKernelList.hpp"
 
-
+#include <iostream>
 namespace cle
 {
 
-Clesperanto::Clesperanto()
-{
-    m_gpu = std::shared_ptr<GPU>(new GPU);
-}
+Clesperanto::Clesperanto() : m_gpu(std::make_shared<cle::GPU>())
+{}
 
-std::shared_ptr<GPU> Clesperanto::GetGPU()
+std::shared_ptr<GPU> Clesperanto::Ressources()
 {
     return this->m_gpu;
 }
 
-void Clesperanto::AddImageAndScalar(Buffer& src, Buffer& dst, float scalar)
+void Clesperanto::AddImageAndScalar(Object& t_src, Object& t_dst, float t_scalar)
 {
     AddImageAndScalarKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetScalar(scalar);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetScalar(t_scalar);
     kernel.Execute();
 }
 
-void Clesperanto::AddImagesWeighted(Buffer& src1, Buffer& src2, Buffer& dst, float factor1, float factor2)
+void Clesperanto::AddImagesWeighted(Object& t_src1, Object& t_src2, Object& t_dst, float t_factor1, float t_factor2)
 {
     AddImagesWeightedKernel kernel(this->m_gpu);
-    kernel.SetInput1(src1);
-    kernel.SetInput2(src2);
-    kernel.SetOutput(dst);
-    kernel.SetFactor1(factor1);
-    kernel.SetFactor2(factor2);
+    kernel.SetInput1(t_src1);
+    kernel.SetInput2(t_src2);
+    kernel.SetOutput(t_dst);
+    kernel.SetFactor1(t_factor1);
+    kernel.SetFactor2(t_factor2);
     kernel.Execute();
 }
 
-void Clesperanto::AddImages(Buffer& src1, Buffer& src2, Buffer& dst)
+void Clesperanto::AddImages(Object& t_src1, Object& t_src2, Object& t_dst)
 {
-    this->AddImagesWeighted(src1, src2, dst, 1, 1);
+    this->AddImagesWeighted(t_src1, t_src2, t_dst, 1, 1);
 }
 
-void Clesperanto::SubtractImages(Buffer& src1, Buffer& src2, Buffer& dst)
+void Clesperanto::SubtractImages(Object& t_src1, Object& t_src2, Object& t_dst)
 {
-    this->AddImagesWeighted(src1, src2, dst, 1, -1);
+    this->AddImagesWeighted(t_src1, t_src2, t_dst, 1, -1);
 }
 
-void Clesperanto::DilateSphere(Buffer& src, Buffer& dst)
+void Clesperanto::DilateSphere(Object& t_src, Object& t_dst)
 {
     DilateSphereKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute();
 }
 
-void Clesperanto::ErodeSphere(Buffer& src, Buffer& dst)
+void Clesperanto::ErodeSphere(Object& t_src, Object& t_dst)
 {
     ErodeSphereKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute();
 }
 
-void Clesperanto::Equal(Buffer& src1, Buffer& src2, Buffer& dst)
+void Clesperanto::Equal(Object& t_src1, Object& t_src2, Object& t_dst)
 {
     EqualKernel kernel(this->m_gpu);
-    kernel.SetInput1(src1);
-    kernel.SetInput2(src2);
-    kernel.SetOutput(dst);
+    kernel.SetInput1(t_src1);
+    kernel.SetInput2(t_src2);
+    kernel.SetOutput(t_dst);
     kernel.Execute();
 }
 
-void Clesperanto::EqualConstant(Buffer& src, Buffer& dst, float scalar)
+void Clesperanto::EqualConstant(Object& t_src, Object& t_dst, float t_scalar)
 {
     EqualConstantKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetScalar(scalar);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetScalar(t_scalar);
     kernel.Execute();
 }
 
-void Clesperanto::GaussianBlur(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
+void Clesperanto::GaussianBlur(Buffer& t_src, Buffer& t_dst, float t_sigmaX, float t_sigmaY, float t_sigmaZ)
 {
     GaussianBlurKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetSigma(sigmaX, sigmaY, sigmaZ);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetSigma(t_sigmaX, t_sigmaY, t_sigmaZ);
     kernel.Execute();
 }
 
-void Clesperanto::MaximumBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
+void Clesperanto::MaximumBox(Buffer& t_src, Buffer& t_dst, float t_radius_x, float t_radius_y, float t_radius_z)
 {
     MaximumBoxKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetRadius(sigmaX, sigmaY, sigmaZ);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetRadius(t_radius_x, t_radius_y, t_radius_z);
     kernel.Execute();
 }
 
-void Clesperanto::MinimumBox(Buffer& src, Buffer& dst, float sigmaX, float sigmaY, float sigmaZ)
+void Clesperanto::MinimumBox(Buffer& t_src, Buffer& t_dst, float t_radius_x, float t_radius_y, float t_radius_z)
 {
     MinimumBoxKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetRadius(sigmaX, sigmaY, sigmaZ);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetRadius(t_radius_x, t_radius_y, t_radius_z);
     kernel.Execute();
 }
 
-void Clesperanto::MeanBox(Buffer& src, Buffer& dst, float radius_x, float radius_y, float radius_z)
+void Clesperanto::MeanBox(Buffer& t_src, Buffer& t_dst, float t_radius_x, float t_radius_y, float t_radius_z)
 {
     MeanBoxKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetRadius(radius_x, radius_y, radius_z);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetRadius(t_radius_x, t_radius_y, t_radius_z);
     kernel.Execute();
 }
 
-void Clesperanto::Greater(Buffer& src1, Buffer& src2, Buffer& dst)
+void Clesperanto::Greater(Object& t_src1, Object& t_src2, Object& t_dst)
 {
     GreaterKernel kernel(this->m_gpu);
-    kernel.SetInput1(src1);
-    kernel.SetInput2(src2);
-    kernel.SetOutput(dst);
+    kernel.SetInput1(t_src1);
+    kernel.SetInput2(t_src2);
+    kernel.SetOutput(t_dst);
     kernel.Execute();
 }
 
-void Clesperanto::GreaterOrEqual(Buffer& src1, Buffer& src2, Buffer& dst)
+void Clesperanto::GreaterOrEqual(Object& t_src1, Object& t_src2, Object& t_dst)
 {
     GreaterOrEqualKernel kernel(this->m_gpu);
-    kernel.SetInput1(src1);
-    kernel.SetInput2(src2);
-    kernel.SetOutput(dst);
+    kernel.SetInput1(t_src1);
+    kernel.SetInput2(t_src2);
+    kernel.SetOutput(t_dst);
     kernel.Execute();
 }
 
-void Clesperanto::GreaterConstant(Buffer& src, Buffer& dst, float scalar)
+void Clesperanto::GreaterConstant(Object& t_src, Object& t_dst, float t_scalar)
 {
     GreaterConstantKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetScalar(scalar);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetScalar(t_scalar);
     kernel.Execute();
 }
 
-void Clesperanto::GreaterOrEqualConstant(Buffer& src, Buffer& dst, float scalar)
+void Clesperanto::GreaterOrEqualConstant(Object& t_src, Object& t_dst, float t_scalar)
 {
     GreaterOrEqualConstantKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetScalar(scalar);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetScalar(t_scalar);
     kernel.Execute();
 }
 
-void Clesperanto::MaximumZProjection(Buffer& src, Buffer& dst)
+void Clesperanto::MaximumZProjection(Object& t_src, Object& t_dst)
 {
     MaximumZProjectionKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute(); 
 }
 
-void Clesperanto::MaximumYProjection(Buffer& src, Buffer& dst)
+void Clesperanto::MaximumYProjection(Object& t_src, Object& t_dst)
 {
     MaximumYProjectionKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute(); 
 }
 
-void Clesperanto::MaximumXProjection(Buffer& src, Buffer& dst)
+void Clesperanto::MaximumXProjection(Object& t_src, Object& t_dst)
 {
     MaximumXProjectionKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute(); 
 }
 
-void Clesperanto::MaximumOfAllPixels(Buffer& src, Buffer& dst)
+void Clesperanto::MaximumOfAllPixels(Buffer& t_src, Buffer& t_dst)
 {
     MaximumOfAllPixelsKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute(); 
 }  
 
-void Clesperanto::MinimumZProjection(Buffer& src, Buffer& dst)
+void Clesperanto::MinimumZProjection(Object& t_src, Object& t_dst)
 {
     MinimumZProjectionKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute(); 
 }
 
-void Clesperanto::MinimumYProjection(Buffer& src, Buffer& dst)
+void Clesperanto::MinimumYProjection(Object& t_src, Object& t_dst)
 {
     MinimumYProjectionKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute(); 
 }
 
-void Clesperanto::MinimumXProjection(Buffer& src, Buffer& dst)
+void Clesperanto::MinimumXProjection(Object& t_src, Object& t_dst)
 {
     MinimumXProjectionKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute(); 
 }
 
-void Clesperanto::MinimumOfAllPixels(Buffer& src, Buffer& dst)
+void Clesperanto::MinimumOfAllPixels(Buffer& t_src, Buffer& t_dst)
 {
     MinimumOfAllPixelsKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute(); 
 }  
 
-void Clesperanto::DifferenceOfGaussian(Buffer& src, Buffer& dst, float sigma1x, float sigma1y, float sigma1z, 
-                                                         float sigma2x, float sigma2y, float sigma2z)
+void Clesperanto::DifferenceOfGaussian(Buffer& t_src, Buffer& t_dst, float t_sigma1_x, float t_sigma1_y, float t_sigma1_z, 
+                                                         float t_sigma2_x, float t_sigma2_y, float t_sigma2_z)
 {
     DifferenceOfGaussianKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetSigma1(sigma1x, sigma1y, sigma1z);
-    kernel.SetSigma2(sigma2x, sigma2y, sigma2z);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetSigma1(t_sigma1_x, t_sigma1_y, t_sigma1_z);
+    kernel.SetSigma2(t_sigma2_x, t_sigma2_y, t_sigma2_z);
     kernel.Execute(); 
 }
 
-void Clesperanto::MeanSphere(Buffer& src, Buffer& dst, int radius_x, int radius_y, int radius_z)
+void Clesperanto::MeanSphere(Object& t_src, Object& t_dst, int t_radius_x, int t_radius_y, int t_radius_z)
 {
     MeanSphereKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetRadius(radius_x, radius_y, radius_z);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetRadius(t_radius_x, t_radius_y, t_radius_z);
     kernel.Execute();
 }
 
-void Clesperanto::NonzeroMinimumBox(Buffer& src, Buffer& flag, Buffer& dst)
+void Clesperanto::NonzeroMinimumBox(Object& t_src, Object& t_flag, Object& t_dst)
 {
     NonzeroMinimumBoxKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetOutputFlag(flag);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetOutputFlag(t_flag);
     kernel.Execute();  
 }
 
-void Clesperanto::NotEqual(Buffer& src1, Buffer& src2, Buffer& dst)
+void Clesperanto::NotEqual(Object& t_src1, Object& t_src2, Object& t_dst)
 {
     NotEqualKernel kernel(this->m_gpu);
-    kernel.SetInput1(src1);
-    kernel.SetInput2(src2);
-    kernel.SetOutput(dst);
+    kernel.SetInput1(t_src1);
+    kernel.SetInput2(t_src2);
+    kernel.SetOutput(t_dst);
     kernel.Execute();
 }
 
-void Clesperanto::NotEqualConstant(Buffer& src, Buffer& dst, float scalar)
+void Clesperanto::NotEqualConstant(Object& t_src, Object& t_dst, float t_scalar)
 {
     NotEqualConstantKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetScalar(scalar);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetScalar(t_scalar);
     kernel.Execute();
 }
 
-void Clesperanto::Smaller(Buffer& src1, Buffer& src2, Buffer& dst)
+void Clesperanto::Smaller(Object& t_src1, Object& t_src2, Object& t_dst)
 {
     SmallerKernel kernel(this->m_gpu);
-    kernel.SetInput1(src1);
-    kernel.SetInput2(src2);
-    kernel.SetOutput(dst);
+    kernel.SetInput1(t_src1);
+    kernel.SetInput2(t_src2);
+    kernel.SetOutput(t_dst);
     kernel.Execute();
 }
 
-void Clesperanto::SmallerOrEqual(Buffer& src1, Buffer& src2, Buffer& dst)
+void Clesperanto::SmallerOrEqual(Object& t_src1, Object& t_src2, Object& t_dst)
 {
     SmallerOrEqualKernel kernel(this->m_gpu);
-    kernel.SetInput1(src1);
-    kernel.SetInput2(src2);
-    kernel.SetOutput(dst);
+    kernel.SetInput1(t_src1);
+    kernel.SetInput2(t_src2);
+    kernel.SetOutput(t_dst);
     kernel.Execute();
 }
 
-void Clesperanto::SmallerConstant(Buffer& src, Buffer& dst, float cst)
+void Clesperanto::SmallerConstant(Object& t_src, Object& t_dst, float t_scalar)
 {
     SmallerConstantKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetConstant(cst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetConstant(t_scalar);
     kernel.Execute();  
 }
 
-void Clesperanto::SmallerOrEqualConstant(Buffer& src, Buffer& dst, float cst)
+void Clesperanto::SmallerOrEqualConstant(Object& t_src, Object& t_dst, float t_scalar)
 {
     SmallerOrEqualConstantKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetConstant(cst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetConstant(t_scalar);
     kernel.Execute();
 }
 
-void Clesperanto::Absolute(Buffer& src, Buffer& dst)
+void Clesperanto::Absolute(Object& t_src, Object& t_dst)
 {
     AbsoluteKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute();  
 }
 
-void Clesperanto::Sobel(Buffer& src, Buffer& dst)
+void Clesperanto::Sobel(Object& t_src, Object& t_dst)
 {
     SobelKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute();  
 }
 
-void Clesperanto::Set(Buffer& src, float value)
+void Clesperanto::Set(Object& t_src, float t_scalar)
 {
     SetKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetValue(value);
+    kernel.SetInput(t_src);
+    kernel.SetValue(t_scalar);
     kernel.Execute();  
 }
 
-void Clesperanto::SetNonzeroPixelsToPixelindex(Buffer& src, Buffer& dst)
+void Clesperanto::SetNonzeroPixelsToPixelindex(Object& t_src, Object& t_dst)
 {
     SetNonzeroPixelsToPixelindexKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.SetOffset(1);
     kernel.Execute();  
 }
 
-void Clesperanto::DetectMaximaBox(Buffer& src, Buffer& dst)
+void Clesperanto::DetectMaximaBox(Object& t_src, Object& t_dst)
 {
     DetectMaximaKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute();  
 }
 
-void Clesperanto::Copy(Buffer& src, Buffer& dst)
+void Clesperanto::Copy(Object& t_src, Object& t_dst)
 {
     CopyKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute();  
 }
 
-void Clesperanto::SumZProjection(Buffer& src, Buffer& dst)
+void Clesperanto::SumZProjection(Object& t_src, Object& t_dst)
 {
     SumZProjectionKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute(); 
 }
 
-void Clesperanto::SumYProjection(Buffer& src, Buffer& dst)
+void Clesperanto::SumYProjection(Object& t_src, Object& t_dst)
 {
     SumYProjectionKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute(); 
 }
 
-void Clesperanto::SumXProjection(Buffer& src, Buffer& dst)
+void Clesperanto::SumXProjection(Object& t_src, Object& t_dst)
 {
     SumXProjectionKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute(); 
 }
 
-void Clesperanto::SumOfAllPixels(Buffer& src, Buffer& dst)
+void Clesperanto::SumOfAllPixels(Buffer& t_src, Buffer& t_dst)
 {
     SumOfAllPixelsKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute(); 
 }  
 
-void Clesperanto::ConnectedComponentLabellingBox(Buffer& src, Buffer& dst)
+void Clesperanto::ConnectedComponentLabellingBox(Buffer& t_src, Buffer& t_dst)
 {
     ConnectedComponentLabellingBoxKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute(); 
 }
 
-void Clesperanto::ReplaceIntensity(Buffer& src, Buffer& dst, float in, float out)
+void Clesperanto::ReplaceIntensity(Object& t_src, Object& t_dst, float t_int_in, float t_int_out)
 {
     ReplaceIntensityKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetInValue(in);
-    kernel.SetOutValue(out);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetInValue(t_int_in);
+    kernel.SetOutValue(t_int_out);
     kernel.Execute(); 
 }
 
-void Clesperanto::ReplaceIntensities(Buffer& src, Buffer& ref, Buffer& dst)
+void Clesperanto::ReplaceIntensities(Object& t_src, Object& ref, Object& t_dst)
 {
     ReplaceIntensitiesKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.SetMap(ref);
     kernel.Execute(); 
 }
 
-void Clesperanto::SetColumn(Buffer& src, int column, float value)
+void Clesperanto::SetColumn(Object& t_src, int t_column_idx, float t_scalar)
 {
     SetColumnKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetColumn(column);
-    kernel.SetValue(value);
+    kernel.SetInput(t_src);
+    kernel.SetColumn(t_column_idx);
+    kernel.SetValue(t_scalar);
     kernel.Execute();   
 }
 
-void Clesperanto::SumReductionX(Buffer& src, Buffer& dst, int blocksize)
+void Clesperanto::SumReductionX(Object& t_src, Object& t_dst, int t_blocksize)
 {
     SumReductionXKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
-    kernel.SetBlocksize(blocksize);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetBlocksize(t_blocksize);
     kernel.Execute();   
 }
 
-void Clesperanto::BlockEnumerate(Buffer& src, Buffer& sum, Buffer& dst, int blocksize)
+void Clesperanto::BlockEnumerate(Buffer& t_src, Buffer& sum, Buffer& t_dst, int t_blocksize)
 {
     BlockEnumerateKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
+    kernel.SetInput(t_src);
     kernel.SetInputSums(sum);
-    kernel.SetOutput(dst);
-    kernel.SetBlocksize(blocksize);
+    kernel.SetOutput(t_dst);
+    kernel.SetBlocksize(t_blocksize);
     kernel.Execute();   
 }
 
-void Clesperanto::FlagExistingLabels(Buffer& src, Buffer& dst)
+void Clesperanto::FlagExistingLabels(Buffer& t_src, Buffer& t_dst)
 {
     FlagExistingLabelsKernel kernel(this->m_gpu);
-    kernel.SetInput(src);
-    kernel.SetOutput(dst);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
     kernel.Execute(); 
 }
 
+void Clesperanto::CloseIndexGapsInLabelMap(Buffer& t_src, Buffer& t_dst, int t_blocksize)
+{
+    CloseIndexGapsInLabelMapKernel kernel(this->m_gpu);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetBlockSize(t_blocksize);
+    kernel.Execute();
+}
 
 }

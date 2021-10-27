@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     int width (3), height (3), depth (3);
-    int dims[3] = {width, height, depth};
+    std::array<int,3> dims = {width, height, depth};
     std::vector<float>  input_data {
                 0.0f, 0.0f, 0.0f,
                 0.0f, 0.0f, 0.0f,
@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     cle::Buffer Buffer_B = cle.Create<float>(dims);
 
     // Call kernel
-    cle.DifferenceOfGaussian(Buffer_A, Buffer_B, 2, 2, 2, 3, 3, 3);
+    cle.DifferenceOfGaussian(Buffer_A, Buffer_B, 2.0f, 2.0f, 2.0f, 3.0f, 3.0f, 3.0f);
 
     // pull device memory to host
     std::vector<float> output_data = cle.Pull<float>(Buffer_B);    

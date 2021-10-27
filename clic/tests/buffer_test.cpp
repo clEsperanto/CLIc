@@ -1,67 +1,298 @@
 
-#include "clesperanto.hpp"
+#include <random>
+#include <iostream>
+#include <vector>
 
-#include "cleBuffer.hpp" 
+#include "cleGPU.hpp"
+#include "cleBuffer.hpp"
 
 
-template<class T>
-int buffer_test(cle::Clesperanto* cle, cle::Buffer::DataType type, const char * c_type)
+/**
+ * Main test function
+ *
+ */
+
+int main(int argc, char **argv)
 {
-    int dims[3] = {5, 4, 3};
-    std::vector<T> arr (dims[0]*dims[1]*dims[2]); 
-    std::fill (arr.begin(),arr.end(), static_cast<T>(1));
+    
+    {
+        using type = float;
+        auto gpu = std::make_shared<cle::GPU>();
 
-    cl::Buffer clObject = cle::CreateBuffer<T>(arr.size(), cle->GetGPU());
-    int res = 0;
+        std::array<int,3> dims = {10, 1, 1};
+        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
+        std::fill (A.begin(),A.end(), 10.0f);
+
+        cle::Buffer buff_A = gpu->CreateBuffer<type>(dims);
+        cle::Buffer buff_B = gpu->PushBuffer<type>(A, dims);
+        std::vector<type> C = gpu->Pull<type>(buff_B);
+        
+        float diff = 0;
+        for (int i =0; i< A.size(); i++)
+        {
+            diff += A[i] - C[i];
+        }
+        if (diff > 0)
+        {
+            return EXIT_FAILURE;
+        }
+        }
 
     {
-    cle::Buffer* my_buffer = new cle::Buffer(); 
-    delete my_buffer;   
+        using type = float;
+        auto gpu = std::make_shared<cle::GPU>();
+
+        std::array<int,3> dims = {10, 5, 1};
+        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
+        std::fill (A.begin(),A.end(), 10.0f);
+
+        cle::Buffer buff_A = gpu->CreateBuffer<type>(dims);
+        cle::Buffer buff_B = gpu->PushBuffer<type>(A, dims);
+        std::vector<type> C = gpu->Pull<type>(buff_B);
+        
+        float diff = 0;
+        for (int i =0; i< A.size(); i++)
+        {
+            diff += A[i] - C[i];
+        }
+        if (diff > 0)
+        {
+            return EXIT_FAILURE;
+        }
+        }
+
+    {
+        using type = float;
+        auto gpu = std::make_shared<cle::GPU>();
+
+        std::array<int,3> dims = {10, 5, 2};
+        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
+        std::fill (A.begin(),A.end(), 10.0f);
+
+        cle::Buffer buff_A = gpu->CreateBuffer<type>(dims);
+        cle::Buffer buff_B = gpu->PushBuffer<type>(A, dims);
+        std::vector<type> C = gpu->Pull<type>(buff_B);
+        
+        float diff = 0;
+        for (int i =0; i< A.size(); i++)
+        {
+            diff += A[i] - C[i];
+        }
+        if (diff > 0)
+        {
+            return EXIT_FAILURE;
+        }
+        }
+
+    {
+        using type = double;
+        auto gpu = std::make_shared<cle::GPU>();
+
+        std::array<int,3> dims = {10, 5, 2};
+        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
+        std::fill (A.begin(),A.end(), 10.0f);
+
+        cle::Buffer buff_A = gpu->CreateBuffer<type>(dims);
+        cle::Buffer buff_B = gpu->PushBuffer<type>(A, dims);
+        std::vector<type> C = gpu->Pull<type>(buff_B);
+        
+        float diff = 0;
+        for (int i =0; i< A.size(); i++)
+        {
+            diff += A[i] - C[i];
+        }
+        if (diff > 0)
+        {
+            return EXIT_FAILURE;
+        }
+        }
+
+    {
+        using type = int;
+        auto gpu = std::make_shared<cle::GPU>();
+
+        std::array<int,3> dims = {10, 5, 2};
+        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
+        std::fill (A.begin(),A.end(), 10.0f);
+
+        cle::Buffer buff_A = gpu->CreateBuffer<type>(dims);
+        cle::Buffer buff_B = gpu->PushBuffer<type>(A, dims);
+        std::vector<type> C = gpu->Pull<type>(buff_B);
+        
+        float diff = 0;
+        for (int i =0; i< A.size(); i++)
+        {
+            diff += A[i] - C[i];
+        }
+        if (diff > 0)
+        {
+            return EXIT_FAILURE;
+        }
+        }
+
+    {
+        using type = unsigned int;
+        auto gpu = std::make_shared<cle::GPU>();
+
+        std::array<int,3> dims = {10, 5, 2};
+        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
+        std::fill (A.begin(),A.end(), 10.0f);
+
+        cle::Buffer buff_A = gpu->CreateBuffer<type>(dims);
+        cle::Buffer buff_B = gpu->PushBuffer<type>(A, dims);
+        std::vector<type> C = gpu->Pull<type>(buff_B);
+        
+        float diff = 0;
+        for (int i =0; i< A.size(); i++)
+        {
+            diff += A[i] - C[i];
+        }
+        if (diff > 0)
+        {
+            return EXIT_FAILURE;
+        }
+        }
+
+    {
+        using type = char;
+        auto gpu = std::make_shared<cle::GPU>();
+
+        std::array<int,3> dims = {10, 5, 2};
+        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
+        std::fill (A.begin(),A.end(), 10.0f);
+
+        cle::Buffer buff_A = gpu->CreateBuffer<type>(dims);
+        cle::Buffer buff_B = gpu->PushBuffer<type>(A, dims);
+        std::vector<type> C = gpu->Pull<type>(buff_B);
+        
+        float diff = 0;
+        for (int i =0; i< A.size(); i++)
+        {
+            diff += A[i] - C[i];
+        }
+        if (diff > 0)
+        {
+            return EXIT_FAILURE;
+        }
+        }
+
+    {
+        using type = unsigned char;
+        auto gpu = std::make_shared<cle::GPU>();
+
+        std::array<int,3> dims = {10, 5, 2};
+        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
+        std::fill (A.begin(),A.end(), 10.0f);
+
+        cle::Buffer buff_A = gpu->CreateBuffer<type>(dims);
+        cle::Buffer buff_B = gpu->PushBuffer<type>(A, dims);
+        std::vector<type> C = gpu->Pull<type>(buff_B);
+        
+        float diff = 0;
+        for (int i =0; i< A.size(); i++)
+        {
+            diff += A[i] - C[i];
+        }
+        if (diff > 0)
+        {
+            return EXIT_FAILURE;
+        }
+        }
+
+    {
+        using type = short;
+        auto gpu = std::make_shared<cle::GPU>();
+
+        std::array<int,3> dims = {10, 5, 2};
+        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
+        std::fill (A.begin(),A.end(), 10.0f);
+
+        cle::Buffer buff_A = gpu->CreateBuffer<type>(dims);
+        cle::Buffer buff_B = gpu->PushBuffer<type>(A, dims);
+        std::vector<type> C = gpu->Pull<type>(buff_B);
+        
+        float diff = 0;
+        for (int i =0; i< A.size(); i++)
+        {
+            diff += A[i] - C[i];
+        }
+        if (diff > 0)
+        {
+            return EXIT_FAILURE;
+        }
+        }
+
+    {
+        using type = unsigned short;
+        auto gpu = std::make_shared<cle::GPU>();
+
+        std::array<int,3> dims = {10, 5, 2};
+        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
+        std::fill (A.begin(),A.end(), 10.0f);
+
+        cle::Buffer buff_A = gpu->CreateBuffer<type>(dims);
+        cle::Buffer buff_B = gpu->PushBuffer<type>(A, dims);
+        std::vector<type> C = gpu->Pull<type>(buff_B);
+        
+        float diff = 0;
+        for (int i =0; i< A.size(); i++)
+        {
+            diff += A[i] - C[i];
+        }
+        if (diff > 0)
+        {
+            return EXIT_FAILURE;
+        }
+        }
+
+    {
+        using type = float;
+        auto gpu = std::make_shared<cle::GPU>();
+
+        std::array<int,3> dims = {10, 5, 2};
+        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
+        std::fill (A.begin(),A.end(), 10.0f);
+
+        cle::Buffer buff_A = gpu->CreateBuffer<type>(dims);
+        cle::Buffer buff_B = gpu->PushBuffer<type>(A, dims);
+        buff_A = buff_B;
+        std::vector<type> C = gpu->Pull<type>(buff_A);
+        
+        float diff = 0;
+        for (int i =0; i< A.size(); i++)
+        {
+            diff += A[i] - C[i];
+        }
+        if (diff > 0)
+        {
+            return EXIT_FAILURE;
+        }
     }
 
     {
-    cle::Buffer* my_buffer = new cle::Buffer(clObject, type);
-    delete my_buffer;
+        using type = double;
+        auto gpu = std::make_shared<cle::GPU>();
+
+        std::array<int,3> dims = {10, 5, 2};
+        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
+        std::fill (A.begin(),A.end(), 10.0f);
+
+        cle::Buffer buff_A = gpu->CreateBuffer<type>(dims);
+        cle::Buffer buff_B = gpu->PushBuffer<type>(A, dims);
+        buff_A = buff_B;
+        std::vector<type> C = gpu->Pull<type>(buff_A);
+        
+        float diff = 0;
+        for (int i =0; i< A.size(); i++)
+        {
+            diff += A[i] - C[i];
+        }
+        if (diff > 0)
+        {
+            return EXIT_FAILURE;
+        }
     }
+    
 
-    {
-    cle::Buffer* my_buffer = new cle::Buffer(clObject, dims, type);
-    res += my_buffer->IsObjectType("buffer") ;
-    res += my_buffer->IsObjectType("scalar") != 0;
-    res += my_buffer->IsDataType(c_type) ;
-    res += my_buffer->IsDataType("toto") != 0 ;
-    res += my_buffer->GetSize() == (dims[0]*dims[1]*dims[2]) ;
-    res += my_buffer->GetShape().data()[0] == dims[0] ;
-    res += my_buffer->GetShape()[1] == dims[1] ;
-    res += my_buffer->GetShape()[2] == dims[2] ;
-    res += my_buffer->GetWidth() == dims[0] ;
-    res += my_buffer->GetHeight() == dims[1] ;
-    res += my_buffer->GetDepth() == dims[2] ;
-    res += strncmp(my_buffer->GetObjectType(), "buffer", strlen("buffer")) == 0 ;
-    res += strncmp(my_buffer->GetObjectType(), "scalar", strlen("scalar")) != 0 ;
-    res += strncmp(my_buffer->GetDataType(), c_type, strlen(c_type)) == 0 ;
-    res += strncmp(my_buffer->GetDataType(), "toto", strlen("toto")) != 0 ;
-    delete my_buffer;
-    }
-
-    return res;
-}
-
-
-
-int main(int argc, char** argv)
-{
-    cle::Clesperanto* cle = new cle::Clesperanto();
-
-    int res = 0;
-    res += buffer_test<float>(cle, cle::Buffer::FLOAT, "float");
-    res += buffer_test<double>(cle, cle::Buffer::DOUBLE, "double");
-    res += buffer_test<int>(cle, cle::Buffer::INT, "int");
-    res += buffer_test<unsigned int>(cle, cle::Buffer::UINT, "uint");
-    res += buffer_test<char>(cle, cle::Buffer::CHAR, "char");
-    res += buffer_test<unsigned char>(cle, cle::Buffer::UCHAR, "uchar");
-    res += buffer_test<short>(cle, cle::Buffer::SHORT, "short");
-    res += buffer_test<unsigned short>(cle, cle::Buffer::USHORT, "ushort");
-
-    return res == 0;
+    return EXIT_SUCCESS;
 }

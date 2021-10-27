@@ -7,58 +7,56 @@
 namespace cle
 {
 
-DifferenceOfGaussianKernel::DifferenceOfGaussianKernel(std::shared_ptr<GPU> gpu) :
-    Kernel( gpu,
+DifferenceOfGaussianKernel::DifferenceOfGaussianKernel(std::shared_ptr<GPU> t_gpu) :
+    Kernel( t_gpu,
             "difference_of_gaussians",
             {"src", "dst"}
     )
 {}
 
-void DifferenceOfGaussianKernel::SetInput(Buffer& x)
+void DifferenceOfGaussianKernel::SetInput(Buffer& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void DifferenceOfGaussianKernel::SetOutput(Buffer& x)
+void DifferenceOfGaussianKernel::SetOutput(Buffer& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
-void DifferenceOfGaussianKernel::SetSigma1(float x, float y, float z)
+void DifferenceOfGaussianKernel::SetSigma1(float t_x, float t_y, float t_z)
 {
-    this->sigma1[0] = x;
-    this->sigma1[1] = y;
-    this->sigma1[2] = z;
+    this->m_Sigma1[0] = t_x;
+    this->m_Sigma1[1] = t_y;
+    this->m_Sigma1[2] = t_z;
 }
 
-void DifferenceOfGaussianKernel::SetSigma2(float x, float y, float z)
+void DifferenceOfGaussianKernel::SetSigma2(float t_x, float t_y, float t_z)
 {
-    this->sigma2[0] = x;
-    this->sigma2[1] = y;
-    this->sigma2[2] = z;
+    this->m_Sigma2[0] = t_x;
+    this->m_Sigma2[1] = t_y;
+    this->m_Sigma2[2] = t_z;
 }
 
 void DifferenceOfGaussianKernel::Execute()
 {
-    std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("src"));
-    std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("dst"));
-    
-    cl::Buffer tmp1_obj = CreateBuffer<float>(src->GetSize(), this->m_gpu);
-    Buffer temp1 (tmp1_obj, src->GetShape(), Buffer::FLOAT);
-    cl::Buffer tmp2_obj = CreateBuffer<float>(src->GetSize(), this->m_gpu);
-    Buffer temp2 (tmp2_obj, src->GetShape(), Buffer::FLOAT);
+    std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("src"));
+    std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("dst"));
 
-    GaussianBlurKernel gaussian1(this->m_gpu);
-    gaussian1.SetInput(*src);
-    gaussian1.SetOutput(temp1);
-    gaussian1.SetSigma(this->sigma1[0], this->sigma1[1], this->sigma1[2]);
-    gaussian1.Execute();
+    cle::Buffer temp1 = this->m_gpu->CreateBuffer<float>(src->Shape());
+    cle::Buffer temp2 = this->m_gpu->CreateBuffer<float>(src->Shape());
 
-    GaussianBlurKernel gaussian2(this->m_gpu);
-    gaussian2.SetInput(*src);
-    gaussian2.SetOutput(temp2);
-    gaussian2.SetSigma(this->sigma2[0], this->sigma2[1], this->sigma2[2]);
-    gaussian2.Execute();
+    GaussianBlurKernel gaussian_1_kernel(this->m_gpu);
+    gaussian_1_kernel.SetInput(*src);
+    gaussian_1_kernel.SetOutput(temp1);
+    gaussian_1_kernel.SetSigma(this->m_Sigma1[0], this->m_Sigma1[1], this->m_Sigma1[2]);
+    gaussian_1_kernel.Execute();
+
+    GaussianBlurKernel gaussian_2_kernel(this->m_gpu);
+    gaussian_2_kernel.SetInput(*src);
+    gaussian_2_kernel.SetOutput(temp2);
+    gaussian_2_kernel.SetSigma(this->m_Sigma2[0], this->m_Sigma2[1], this->m_Sigma2[2]);
+    gaussian_2_kernel.Execute();
 
     AddImagesWeightedKernel difference(this->m_gpu);
     difference.SetInput1(temp1);

@@ -9,16 +9,15 @@ namespace cle
     
 class SetNonzeroPixelsToPixelindexKernel : public Kernel
 {
-
 private:
-    std::string source = 
+    std::string m_OclHeader = 
         #include "cle_set_nonzero_pixels_to_pixelindex.h" 
         ;
 
 public:
-    SetNonzeroPixelsToPixelindexKernel (std::shared_ptr<GPU>);
-    void SetInput(Buffer&);
-    void SetOutput(Buffer&);
+    SetNonzeroPixelsToPixelindexKernel(std::shared_ptr<GPU>);
+    void SetInput(Object&);
+    void SetOutput(Object&);
     void SetOffset(int);
     void Execute();
 };

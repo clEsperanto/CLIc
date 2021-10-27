@@ -9,17 +9,15 @@ namespace cle
     
 class MaximumXProjectionKernel : public Kernel
 {
-
 private:
-    std::string source = 
+    std::string m_OclHeader = 
         #include "cle_maximum_x_projection.h" 
         ;
 
 public:
-
-    MaximumXProjectionKernel (std::shared_ptr<GPU>);
-    void SetInput(Buffer&);
-    void SetOutput(Buffer&);
+    MaximumXProjectionKernel(std::shared_ptr<GPU>);
+    void SetInput(Object&);
+    void SetOutput(Object&);
     void Execute();
 };
 

@@ -9,9 +9,8 @@ namespace cle
     
 class SumOfAllPixelsKernel : public Kernel
 {
-
 public:
-    SumOfAllPixelsKernel (std::shared_ptr<GPU>);
+    SumOfAllPixelsKernel(std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();

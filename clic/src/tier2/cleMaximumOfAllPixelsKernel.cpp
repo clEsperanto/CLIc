@@ -7,61 +7,57 @@
 namespace cle
 {
     
-MaximumOfAllPixelsKernel::MaximumOfAllPixelsKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu, 
+MaximumOfAllPixelsKernel::MaximumOfAllPixelsKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu, 
             "maximum_of_all_pixels",
             {"dst_max", "src"}
     )
 {}
 
-void MaximumOfAllPixelsKernel::SetInput(Buffer& x)
+void MaximumOfAllPixelsKernel::SetInput(Buffer& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void MaximumOfAllPixelsKernel::SetOutput(Buffer& x)
+void MaximumOfAllPixelsKernel::SetOutput(Buffer& t_x)
 {
-    this->AddObject(x, "dst_max");
+    this->AddObject(t_x, "dst_max");
 }
 
 void MaximumOfAllPixelsKernel::Execute()
 {
-    std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("src"));
-    std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("dst_max"));
-    std::array<int,3> dim = src->GetShape();
+    std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("src"));
+    std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("dst_max"));
+    std::array<int,3> dim = src->Shape();
 
     if (dim[2] > 1)
     {
         dim[2] = 1;
-        size_t size = dim[0] * dim[1] * dim[2];
-        cl::Buffer tmp1_obj = CreateBuffer<float>(size, this->m_gpu);
-        Buffer temp1 (tmp1_obj, dim, Buffer::FLOAT);
+        cle::Buffer temp1 = this->m_gpu->CreateBuffer<float>(dim);
 
-        MaximumZProjectionKernel kernelZ(this->m_gpu);
-        kernelZ.SetInput(*src);
-        kernelZ.SetOutput(temp1);
-        kernelZ.Execute();
+        MaximumZProjectionKernel max_z_kernel(this->m_gpu);
+        max_z_kernel.SetInput(*src);
+        max_z_kernel.SetOutput(temp1);
+        max_z_kernel.Execute();
 
         *src = temp1;
     }
     if (dim[1] > 1)
     {
         dim[1] = 1;
-        size_t size = dim[0] * dim[1] * dim[2];
-        cl::Buffer tmp2_obj = CreateBuffer<float>(size, this->m_gpu);
-        Buffer temp2 (tmp2_obj, dim, Buffer::FLOAT);
+        cle::Buffer temp2 = this->m_gpu->CreateBuffer<float>(dim);
 
-        MaximumYProjectionKernel kernelY(this->m_gpu);
-        kernelY.SetInput(*src);
-        kernelY.SetOutput(temp2);
-        kernelY.Execute();
+        MaximumYProjectionKernel max_y_kernel(this->m_gpu);
+        max_y_kernel.SetInput(*src);
+        max_y_kernel.SetOutput(temp2);
+        max_y_kernel.Execute();
 
         *src = temp2;
     }
-    MaximumXProjectionKernel kernelX(this->m_gpu);
-    kernelX.SetInput(*src);
-    kernelX.SetOutput(*dst);
-    kernelX.Execute();
+    MaximumXProjectionKernel max_x_kernel(this->m_gpu);
+    max_x_kernel.SetInput(*src);
+    max_x_kernel.SetOutput(*dst);
+    max_x_kernel.Execute();
 }
 
 } // namespace cle

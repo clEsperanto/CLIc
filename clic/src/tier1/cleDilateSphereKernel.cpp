@@ -5,24 +5,24 @@
 namespace cle
 {
 
-DilateSphereKernel::DilateSphereKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu,
+DilateSphereKernel::DilateSphereKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu,
             "dilate_sphere",
             {"src" , "dst"}
     )
 {
-    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
+    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
 }
 
-void DilateSphereKernel::SetInput(Buffer& x)
+void DilateSphereKernel::SetInput(Object& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void DilateSphereKernel::SetOutput(Buffer& x)
+void DilateSphereKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
 void DilateSphereKernel::Execute()

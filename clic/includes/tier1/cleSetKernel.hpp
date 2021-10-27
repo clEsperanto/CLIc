@@ -9,18 +9,17 @@ namespace cle
     
 class SetKernel : public Kernel
 {
-
 private:
-    std::string source_2d = 
+    std::string m_OclHeader2d = 
         #include "cle_set_2d.h" 
         ;
-    std::string source_3d = 
+    std::string m_OclHeader3d = 
         #include "cle_set_3d.h" 
         ;
 
 public:
-    SetKernel (std::shared_ptr<GPU>);
-    void SetInput(Buffer&);
+    SetKernel(std::shared_ptr<GPU>);
+    void SetInput(Object&);
     void SetValue(float);
     void Execute();
 };

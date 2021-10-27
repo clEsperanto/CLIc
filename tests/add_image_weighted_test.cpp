@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 {
     // Initialise random input and valid output.
     int width (3), height (3), depth (3);
-    int dims[3] = {width, height, depth};
+    std::array<int,3> dims = {width, height, depth};
     std::vector<float> input_data1 (width*height*depth);
     std::fill(input_data1.begin(), input_data1.end(), 10.0f);
     std::vector<float> input_data2 (width*height*depth);
@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     cle::Buffer Buffer_C = cle.Create<float>(dims);
 
     // Call kernel
-    cle.AddImagesWeighted(Buffer_A, Buffer_B, Buffer_C, 1, 0.5);
+    cle.AddImagesWeighted(Buffer_A, Buffer_B, Buffer_C, 1, 0.5f);
 
     // pull device memory to host
     std::vector<float> output_data = cle.Pull<float>(Buffer_C);  
