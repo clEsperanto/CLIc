@@ -56,7 +56,7 @@ jobs:
           submodules: true 
       
       - name: Install packages [vcpkg]
-        uses: lukka/run-vcpkg@main
+        uses: lukka/run-vcpkg@10
         with:
           vcpkgArguments: ${{ matrix.packages }}
           vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
@@ -64,13 +64,12 @@ jobs:
           vcpkgGitCommitId: cdd51899f6ae3736bfbe936f9e387f86d4a63a58 #ec6fe06e8da05a8157dc8581fa96b36b571c1bd5 
 
       - name: Cmake [vcpkg]
-        uses: lukka/run-cmake@main
+        uses: lukka/run-cmake@3.20
         with:
-          buildDirectory: ${{ runner.workspace }}/build
-          cmakeBuildType: ${{ matrix.buildtype }}
-          cmakeGenerator: 'Ninja'  
-          cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          useVcpkgToolchainFile: true
+          configurePreset: 'ninja-multi-vcpkg'
+          buildPreset: 'ninja-multi-vcpkg'
+          runVcpkgEnvFormatString: true
+          
 
 
