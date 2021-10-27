@@ -14,20 +14,20 @@ int main(int argc, char **argv)
     int width (3), height (3), depth (3);
     std::array<int,3> dims = {width, height, depth};
     std::vector<float> input_data (width*height*depth);
-    std::fill(input_data.begin(), input_data.end(), 0);
+    std::fill(input_data.begin(), input_data.end(), 0.0f);
     input_data[13] = 1;
     std::vector<float> valid_data = {
-                0.0141675, 0.0233582, 0.0141675,
-                0.0233582, 0.0385112, 0.0233582,
-                0.0141675, 0.0233582, 0.0141675,
+                0.0141675f, 0.0233582f, 0.0141675f,
+                0.0233582f, 0.0385112f, 0.0233582f,
+                0.0141675f, 0.0233582f, 0.0141675f,
 
-                0.0233582, 0.0385112, 0.0233582,
-                0.0385112, 0.0634942, 0.0385112,
-                0.0233582, 0.0385112, 0.0233582,
+                0.0233582f, 0.0385112f, 0.0233582f,
+                0.0385112f, 0.0634942f, 0.0385112f,
+                0.0233582f, 0.0385112f, 0.0233582f,
 
-                0.0141675, 0.0233582, 0.0141675,
-                0.0233582, 0.0385112, 0.0233582,
-                0.0141675, 0.0233582, 0.0141675
+                0.0141675f, 0.0233582f, 0.0141675f,
+                0.0233582f, 0.0385112f, 0.0233582f,
+                0.0141675f, 0.0233582f, 0.0141675f
     };
 
 
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
     float difference = 0;
     for (size_t i = 0; i < ouput_data.size(); i++)
     {
-        difference += std::abs(valid_data[i] - std::round(ouput_data[i] * 10000000.0) / 10000000.0);
+        difference += std::abs(valid_data[i] - std::round(ouput_data[i] * 10000000.0f) / 10000000.0f);
     }
     return difference > std::numeric_limits<float>::epsilon();
 }

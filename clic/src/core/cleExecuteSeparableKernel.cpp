@@ -53,11 +53,6 @@ void ExecuteSeparableKernel::Execute()
     cle::Buffer temp1 = this->m_gpu->CreateBuffer<float>(src->Shape());
     cle::Buffer temp2 = this->m_gpu->CreateBuffer<float>(src->Shape());
 
-    // cl::Buffer tmp1_obj = cle::CreateBuffer<float>(src->GetSize(), this->m_gpu);
-    // cle::Buffer temp1 (tmp1_obj, src->GetShape(), cle::Buffer::FLOAT);
-    // cl::Buffer tmp2_obj = cle::CreateBuffer<float>(src->GetSize(), this->m_gpu);
-    // cle::Buffer temp2 (tmp2_obj, src->GetShape(), cle::Buffer::FLOAT);
-
     SeparableKernel kernel(this->m_gpu);
     kernel.SetKernelName(this->m_KernelName);
     kernel.SetSources(this->m_Sources);

@@ -16,11 +16,11 @@ int main(int argc, char **argv)
     std::vector<float> valid_data (width*height*1);
     std::default_random_engine generator;
     std::normal_distribution<float> distribution(5.0,2.0);
-    for (size_t d = 0; d < depth; d++)
+    for (int d = 0; d < depth; d++)
     {
-        for (size_t y = 0; y < height; y++)
+        for (int y = 0; y < height; y++)
         {
-            for (size_t x = 0; x < width; x++)
+            for (int x = 0; x < width; x++)
             {
                 int i = x + width*(y+height*d);
                 if ( x == y )
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
             }
         }
     }
-    for (size_t i = 0; i < width*depth*1; i++)
+    for (int i = 0; i < width*depth*1; i++)
     {
         valid_data[i] = -1000;
     }

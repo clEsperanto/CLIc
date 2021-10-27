@@ -9,6 +9,9 @@
 
 ## Miscellaneous
 - Exclude throw branches from coverage analysis. This is to avoid taking in account the branche coverage of the `stl` or other library on which we do not have control. Though it makes the coverage less precise, it is a bit more honnest of the state of our API. 
+- Consolidation of CMake code ([#53](https://github.com/clEsperanto/CLIc_prototype/pull/53))
+- Fixing MSVC warning ([#54](https://github.com/clEsperanto/CLIc_prototype/pull/54), [#56](https://github.com/clEsperanto/CLIc_prototype/pull/56))
+- Increase project OpenCL-CLHPP flexibility ([#55](https://github.com/clEsperanto/CLIc_prototype/pull/55))
 
 # 0.4.0 - August 20th 2021
 

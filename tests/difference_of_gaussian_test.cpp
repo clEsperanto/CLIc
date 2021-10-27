@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 
                 0.0f, 0.0f, 0.0f,
                 0.0f, 0.0f, 0.0f,
-                0.0f, 0.0f, 0.0f    
+                0.0f, 0.0f, 0.0f
     };
     std::vector<float>  valid_data {
                 0.003464f, 0.004077f, 0.003464f,

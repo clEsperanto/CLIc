@@ -67,7 +67,7 @@ protected:
 
     virtual void Iteration()
     {
-        cle.MeanBox(gpuInput, gpuOutput, radius, radius);
+        cle.MeanBox(gpuInput, gpuOutput, static_cast<float>(radius), static_cast<float>(radius));
     }
 
     virtual void Compile(cle::Clesperanto& cle)
@@ -94,7 +94,7 @@ map<size_t, unsigned long> getTimingsBySizes(const size_t maxSize)
     {
         cout << "\n\n# Bytes: " << elemCnt*elemCnt*sizeof(float) << "\n###" << endl;
         T d(cle);
-        d.dataWidth = elemCnt;
+        d.dataWidth = static_cast<int>(elemCnt);
         d.Run();
 
         timings[elemCnt] = d.GetAvgNormalMs();
@@ -114,8 +114,8 @@ map<size_t, unsigned long> getTimingsByRadius(const size_t elemCnt)
     {
         cout << "\n\n# Radius " << radius << "\n###" << endl;
         T d(cle);
-        d.dataWidth = elemCnt;
-        d.radius = radius;
+        d.dataWidth = static_cast<int>(elemCnt);
+        d.radius = static_cast<int>(radius);
         d.Run();
 
         timings[radius] = d.GetAvgNormalMs();
@@ -150,7 +150,7 @@ int main(int argc, char** argv) {
 
     size_t maxSize = 1 << 13;
     if (argc >= 4) {
-        maxSize = 1 << atoi(argv[3]);
+        maxSize = 1ULL << atoi(argv[3]);
         cout << "max square width: " << maxSize << endl;
     }
 

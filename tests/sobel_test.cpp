@@ -32,7 +32,7 @@ int main(int argc, char **argv)
         }
         else
         {
-            valid_data[i] = sqrt(2);
+            valid_data[i] = sqrt(2.0f);
         } 
     }
 

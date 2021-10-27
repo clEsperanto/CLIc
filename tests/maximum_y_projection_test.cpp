@@ -27,7 +27,7 @@ int main(int argc, char **argv)
          5,10, 8, 
     });
     std::vector<float> valid_data (width*1*depth);
-    std::fill(valid_data.begin(), valid_data.end(), 10);
+    std::fill(valid_data.begin(), valid_data.end(), 10.0f);
 
 
     // Initialise GPU information.

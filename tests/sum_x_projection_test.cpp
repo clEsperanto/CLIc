@@ -14,8 +14,8 @@ int main(int argc, char **argv)
     std::array<int,3> dims = {width, height, depth};
     std::vector<float> input_data (width*height*depth);
     std::vector<float> valid_data (1*height*depth);
-    std::fill(input_data.begin(), input_data.end(), 1);
-    std::fill(valid_data.begin(), valid_data.end(), 10);
+    std::fill(input_data.begin(), input_data.end(), 1.0f);
+    std::fill(valid_data.begin(), valid_data.end(), 10.0f);
 
     // Initialise GPU information.
     cle::Clesperanto cle;
