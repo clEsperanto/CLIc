@@ -13,95 +13,71 @@
 namespace cle
 {
 
-template<class T>
+template<class T =float>
 class Scalar : public LightObject
 {
 private:
-    T m_Object;
+    T m_obj;
 
 protected:
-    const char * TemplateToString() const;
+    const char* TemplateToString() const;
+
 public: 
 
     Scalar();
-    Scalar(T);
+    Scalar(const T);
     ~Scalar() =default;
 
-    int GetWidth() const;
-    int GetHeight() const;
-    int GetDepth() const;
-    int GetDimension() const;
-
-    const T GetObject() const;
+    const T Data() const;
 
     const char* GetDataType() const;
+    const bool IsDataType(const char*) const;
 
-    bool IsDataType(const char* str) const;
     const char* GetObjectType() const;  
-
-    bool IsObjectType(const char* str) const;
+    const bool IsObjectType(const char*) const;
     
 };
 
 template<class T>
-Scalar<T>::Scalar() : m_Object(0) 
-{
+Scalar<T>::Scalar() : LightObject(), m_obj(0) 
+{}
+
+template<class T>
+Scalar<T>::Scalar(const T _d) : LightObject(), m_obj(_d)
+{}
+
+template<class T>
+const T Scalar<T>::Data() const 
+{ 
+    return this->m_obj; 
 }
 
 template<class T>
-Scalar<T>::Scalar(T _d) : m_Object(_d)
-{
+const char* Scalar<T>::GetDataType() const 
+{ 
+    return TemplateToString(); 
 }
 
 template<class T>
-int Scalar<T>::GetWidth() const
+const bool Scalar<T>::IsDataType(const char* t_str) const
 {
-    return 1;
+    return strncmp(TemplateToString(), t_str, strlen(t_str)) == 0;
 }
 
 template<class T>
-int Scalar<T>::GetHeight() const
+const char* Scalar<T>::GetObjectType() const 
+{ 
+    return "scalar"; 
+}   
+
+template<class T>
+const bool Scalar<T>::IsObjectType(const char* t_str) const
 {
-    return 1;
+    return strncmp("scalar", t_str, strlen(t_str)) == 0;
 }
 
 template<class T>
-int Scalar<T>::GetDepth() const
-{
-    return 1;
-}
-
-template<class T>
-int Scalar<T>::GetDimension() const
-{
-    return 1;
-}
-
-template<class T>
-const T Scalar<T>::GetObject() const { return this->m_Object; }
-
-template<class T>
-const char* Scalar<T>::GetDataType() const { return TemplateToString(); }
-
-template<class T>
-bool Scalar<T>::IsDataType(const char* str) const
-{
-    size_t size = strlen(str);
-    return strncmp(TemplateToString(), str, size) == 0;
-}
-
-template<class T>
-const char* Scalar<T>::GetObjectType() const { return "scalar"; }   
-
-template<class T>
-bool Scalar<T>::IsObjectType(const char* str) const
-{
-    size_t size = strlen(str);
-    return strncmp("scalar", str, size) == 0;
-}
-
-template<class T>
-const char * Scalar<T>::TemplateToString() const
+const char* Scalar<T>::TemplateToString() const
 {
     if(std::is_same<T, float>::value)  return "float";
     if(std::is_same<T, int>::value) return "int";
@@ -113,7 +89,6 @@ const char * Scalar<T>::TemplateToString() const
     if(std::is_same<T, unsigned short>::value) return "ushort";
     return "unknown";
 } 
-
 
 }
 
