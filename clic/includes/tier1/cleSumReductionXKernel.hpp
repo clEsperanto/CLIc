@@ -11,19 +11,16 @@ namespace cle
 class SumReductionXKernel : public Kernel
 {
 private:
-
-private:
-    std::string source = 
+    std::string m_OclHeader = 
         #include "cle_sum_reduction_x.h" 
         ;
 
 public:
-    SumReductionXKernel (std::shared_ptr<GPU>);
-    void SetInput(Buffer&);
-    void SetOutput(Buffer&);
+    SumReductionXKernel(std::shared_ptr<GPU>);
+    void SetInput(Object&);
+    void SetOutput(Object&);
     void SetBlocksize(int);
     void Execute();
-
 };
 
 } // namespace cle

@@ -10,23 +10,19 @@ namespace cle
 class AddImageAndScalarKernel : public Kernel
 {
 private:
-    std::string source_2d = 
+    std::string m_OclHeader2d = 
         #include "cle_add_image_and_scalar_2d.h" 
         ;
-    std::string source_3d = 
+    std::string m_OclHeader3d = 
         #include "cle_add_image_and_scalar_3d.h"
         ;
 
 public:
     AddImageAndScalarKernel(std::shared_ptr<GPU>);
-
-    void SetInput(Buffer&);
-    void SetOutput(Buffer&);
-    void SetInput(Image2D&);
-    void SetOutput(Image2D&);
+    void SetInput(Object&);
+    void SetOutput(Object&);    
     void SetScalar(float);
     void Execute();
-
 };
 
 } // namespace cle

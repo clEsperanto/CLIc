@@ -8,61 +8,57 @@
 namespace cle
 {
 
-SumOfAllPixelsKernel::SumOfAllPixelsKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu,
+SumOfAllPixelsKernel::SumOfAllPixelsKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu,
             "sum_of_all_pixels",
             {"dst_sum", "src"}
     )
 {}    
     
-void SumOfAllPixelsKernel::SetInput(Buffer& x)
+void SumOfAllPixelsKernel::SetInput(Buffer& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void SumOfAllPixelsKernel::SetOutput(Buffer& x)
+void SumOfAllPixelsKernel::SetOutput(Buffer& t_x)
 {
-    this->AddObject(x, "dst_sum");
+    this->AddObject(t_x, "dst_sum");
 }
 
 void SumOfAllPixelsKernel::Execute()
 {
-    std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("src"));
-    std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(m_ParameterList.at("dst_sum"));
-    std::array<int,3> dim = src->GetShape();
+    std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("src"));
+    std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("dst_sum"));
+    std::array<int,3> dim = src->Shape();
 
     if (dim[2] > 1)
     {
         dim[2] = 1;
-        size_t size = dim[0] * dim[1] * dim[2];
-        cl::Buffer tmp1_obj = CreateBuffer<float>(size, this->m_gpu);
-        Buffer temp1 (tmp1_obj, dim, Buffer::FLOAT);
+        cle::Buffer temp1 = this->m_gpu->CreateBuffer<float>(dim);
 
-        SumZProjectionKernel kernelZ(this->m_gpu);
-        kernelZ.SetInput(*src);
-        kernelZ.SetOutput(temp1);
-        kernelZ.Execute();
+        SumZProjectionKernel sum_z_kernel(this->m_gpu);
+        sum_z_kernel.SetInput(*src);
+        sum_z_kernel.SetOutput(temp1);
+        sum_z_kernel.Execute();
 
         *src = temp1;
     }
     if (dim[1] > 1)
     {
         dim[1] = 1;
-        size_t size = dim[0] * dim[1] * dim[2];
-        cl::Buffer tmp2_obj = CreateBuffer<float>(size, this->m_gpu);
-        Buffer temp2 (tmp2_obj, dim, Buffer::FLOAT);
+        cle::Buffer temp2 = this->m_gpu->CreateBuffer<float>(dim);
 
-        SumYProjectionKernel kernelY(this->m_gpu);
-        kernelY.SetInput(*src);
-        kernelY.SetOutput(temp2);
-        kernelY.Execute();
+        SumYProjectionKernel sum_y_kernel(this->m_gpu);
+        sum_y_kernel.SetInput(*src);
+        sum_y_kernel.SetOutput(temp2);
+        sum_y_kernel.Execute();
 
         *src = temp2;
     }
-    SumXProjectionKernel kernelX(this->m_gpu);
-    kernelX.SetInput(*src);
-    kernelX.SetOutput(*dst);
-    kernelX.Execute();
+    SumXProjectionKernel sum_x_kernel(this->m_gpu);
+    sum_x_kernel.SetInput(*src);
+    sum_x_kernel.SetOutput(*dst);
+    sum_x_kernel.Execute();
 }
 
 } // namespace cle

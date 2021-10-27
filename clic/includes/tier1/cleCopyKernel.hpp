@@ -10,17 +10,17 @@ namespace cle
 class CopyKernel : public Kernel
 {
 private:
-    std::string source_2d = 
+    std::string m_OclHeader2d = 
         #include "cle_copy_2d.h" 
         ;
-    std::string source_3d = 
+    std::string m_OclHeader3d = 
         #include "cle_copy_3d.h" 
         ;
 
 public:
-    CopyKernel (std::shared_ptr<GPU>);
-    void SetInput(Buffer&);
-    void SetOutput(Buffer&);
+    CopyKernel(std::shared_ptr<GPU>);
+    void SetInput(Object&);
+    void SetOutput(Object&);
     void Execute();
 };
 

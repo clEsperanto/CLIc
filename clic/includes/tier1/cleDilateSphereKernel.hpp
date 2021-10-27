@@ -9,19 +9,18 @@ namespace cle
     
 class DilateSphereKernel : public Kernel
 {
-
 private:
-    std::string source_2d = 
+    std::string m_OclHeader2d = 
         #include "cle_dilate_sphere_2d.h" 
         ;
-    std::string source_3d = 
+    std::string m_OclHeader3d = 
         #include "cle_dilate_sphere_3d.h" 
         ;
 
 public:
-    DilateSphereKernel (std::shared_ptr<GPU>);
-    void SetInput(Buffer&);
-    void SetOutput(Buffer&);
+    DilateSphereKernel(std::shared_ptr<GPU>);
+    void SetInput(Object&);
+    void SetOutput(Object&);
     void Execute();
     
 };

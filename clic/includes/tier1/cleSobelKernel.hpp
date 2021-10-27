@@ -9,19 +9,18 @@ namespace cle
     
 class SobelKernel : public Kernel
 {
-
 private:
-    std::string source_2d = 
+    std::string m_OclHeader2d = 
         #include "cle_sobel_2d.h" 
         ;
-    std::string source_3d = 
+    std::string m_OclHeader3d = 
         #include "cle_sobel_3d.h" 
         ;
 
 public:
-    SobelKernel (std::shared_ptr<GPU>);
-    void SetInput(Buffer&);
-    void SetOutput(Buffer&);
+    SobelKernel(std::shared_ptr<GPU>);
+    void SetInput(Object&);
+    void SetOutput(Object&);
     void Execute();
 };
 

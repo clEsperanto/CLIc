@@ -10,26 +10,25 @@ namespace cle
 class GaussianBlurKernel : public Kernel
 {
 private:
-    std::string source_2d = 
+    std::string m_OclHeader2d = 
         #include "cle_gaussian_blur_separable_2d.h" 
         ;
-    std::string source_3d = 
+    std::string m_OclHeader3d = 
         #include "cle_gaussian_blur_separable_3d.h" 
         ;
 
 public:
-    GaussianBlurKernel (std::shared_ptr<GPU>);
-
+    GaussianBlurKernel(std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void SetSigma(float=0, float=0, float=0);
     void Execute();
 
 private:
-    float x;
-    float y;
-    float z;
-    float Sigma2KernelSize(float);
+    float m_x;
+    float m_y;
+    float m_z;
+    float Sigma2KernelSize(float) const;
 };
 
 } // namespace cle

@@ -10,22 +10,20 @@ namespace cle
     
 class NonzeroMinimumBoxKernel : public Kernel
 {
-
 private:
-    std::string source_2d = 
+    std::string m_OclHeader2d = 
         #include "cle_nonzero_minimum_box_2d.h" 
         ;
-    std::string source_3d = 
+    std::string m_OclHeader3d = 
         #include "cle_nonzero_minimum_box_3d.h" 
         ;
 
 public:
-    NonzeroMinimumBoxKernel (std::shared_ptr<GPU>);
-    void SetInput(Buffer&);
-    void SetOutput(Buffer&);
-    void SetOutputFlag(Buffer&);
+    NonzeroMinimumBoxKernel(std::shared_ptr<GPU>);
+    void SetInput(Object&);
+    void SetOutput(Object&);
+    void SetOutputFlag(Object&);
     void Execute();
-
 };
 
 } // namespace cle

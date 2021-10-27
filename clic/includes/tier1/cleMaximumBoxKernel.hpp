@@ -10,26 +10,25 @@ namespace cle
 class MaximumBoxKernel : public Kernel
 {
 private:
-    std::string source_2d = 
+    std::string m_OclHeader2d = 
         #include "cle_maximum_separable_2d.h" 
         ;
-    std::string source_3d = 
+    std::string m_OclHeader3d = 
         #include "cle_maximum_separable_3d.h" 
         ;
         
 public:
-    MaximumBoxKernel (std::shared_ptr<GPU>);
-
+    MaximumBoxKernel(std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void SetRadius(float=0, float=0, float=0);
     void Execute();
 
 private:
-    float x;
-    float y;
-    float z;
-    int Radius2KernelSize(float);
+    float m_x;
+    float m_y;
+    float m_z;
+    int Radius2KernelSize(float) const;
 };
 
 } // namespace cle

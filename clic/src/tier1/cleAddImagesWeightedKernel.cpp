@@ -5,39 +5,39 @@
 namespace cle
 {
 
-AddImagesWeightedKernel::AddImagesWeightedKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu,  
+AddImagesWeightedKernel::AddImagesWeightedKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu,  
             "add_images_weighted",
             {"src", "src1", "dst", "factor", "factor1"}
         )
 {
-    m_Sources.insert({this->m_KernelName + "_2d", source_2d});
-    m_Sources.insert({this->m_KernelName + "_3d", source_3d});
+    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
+    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
 }
 
-void AddImagesWeightedKernel::SetInput1(Buffer& x)
+void AddImagesWeightedKernel::SetInput1(Object& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void AddImagesWeightedKernel::SetInput2(Buffer& x)
+void AddImagesWeightedKernel::SetInput2(Object& t_x)
 {
-    this->AddObject(x, "src1");
+    this->AddObject(t_x, "src1");
 }
 
-void AddImagesWeightedKernel::SetOutput(Buffer& x)
+void AddImagesWeightedKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
-void AddImagesWeightedKernel::SetFactor1(float x)
+void AddImagesWeightedKernel::SetFactor1(float t_x)
 {
-    this->AddObject(x, "factor");
+    this->AddObject(t_x, "factor");
 }
 
-void AddImagesWeightedKernel::SetFactor2(float x)
+void AddImagesWeightedKernel::SetFactor2(float t_x)
 {
-    this->AddObject(x, "factor1");
+    this->AddObject(t_x, "factor1");
 }
 
 void AddImagesWeightedKernel::Execute()

@@ -5,28 +5,28 @@
 namespace cle
 {
 
-SumReductionXKernel::SumReductionXKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu,
+SumReductionXKernel::SumReductionXKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu,
             "sum_reduction_x",
             {"dst", "src", "blocksize"}
     )
 {
-    m_Sources.insert({this->m_KernelName + "", source});
+    this->m_Sources.insert({this->m_KernelName + "", this->m_OclHeader});
 }
 
-void SumReductionXKernel::SetInput(Buffer& x)
+void SumReductionXKernel::SetInput(Object& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void SumReductionXKernel::SetOutput(Buffer& x)
+void SumReductionXKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
-void SumReductionXKernel::SetBlocksize(int x)
+void SumReductionXKernel::SetBlocksize(int t_x)
 {
-    this->AddObject(x, "blocksize");
+    this->AddObject(t_x, "blocksize");
 }
 
 void SumReductionXKernel::Execute()

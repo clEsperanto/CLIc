@@ -10,18 +10,17 @@ namespace cle
 class AbsoluteKernel : public Kernel
 {
 private:
-    std::string source_2d = 
+    std::string m_OclHeader2d = 
         #include "cle_absolute_2d.h" 
         ;
-    std::string source_3d = 
+    std::string m_OclHeader3d = 
         #include "cle_absolute_3d.h" 
         ;
 
 public:
     AbsoluteKernel(std::shared_ptr<GPU>);
-
-    void SetInput(Buffer&);   // Set<Parameter>(<Type>)
-    void SetOutput(Buffer&);
+    void SetInput(Object&);   // Set<Parameter>(<Type>)
+    void SetOutput(Object&);
     void Execute();         
 };
 

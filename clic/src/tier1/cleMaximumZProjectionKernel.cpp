@@ -4,23 +4,23 @@
 namespace cle
 {
     
-MaximumZProjectionKernel::MaximumZProjectionKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel( gpu,
+MaximumZProjectionKernel::MaximumZProjectionKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel( t_gpu,
             "maximum_z_projection",
             {"dst_max", "src"}
     )
 {
-    m_Sources.insert({this->m_KernelName + "", source});
+    this->m_Sources.insert({this->m_KernelName + "", this->m_OclHeader});
 }
 
-void MaximumZProjectionKernel::SetInput(Buffer& x)
+void MaximumZProjectionKernel::SetInput(Object& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void MaximumZProjectionKernel::SetOutput(Buffer& x)
+void MaximumZProjectionKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(x, "dst_max");
+    this->AddObject(t_x, "dst_max");
 }
 
 void MaximumZProjectionKernel::Execute()

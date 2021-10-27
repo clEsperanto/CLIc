@@ -5,33 +5,33 @@
 namespace cle
 {
 
-ReplaceIntensityKernel::ReplaceIntensityKernel (std::shared_ptr<GPU> gpu) : 
-    Kernel(gpu,
+ReplaceIntensityKernel::ReplaceIntensityKernel(std::shared_ptr<GPU> t_gpu) : 
+    Kernel(t_gpu,
         "replace_intensity",
         {"dst", "src", "in", "out"}
     )
 {
-    m_Sources.insert({this->m_KernelName + "", source});
+    this->m_Sources.insert({this->m_KernelName + "", this->m_OclHeader});
 }
 
-void ReplaceIntensityKernel::SetInput(Buffer& x)
+void ReplaceIntensityKernel::SetInput(Object& t_x)
 {
-    this->AddObject(x, "src");
+    this->AddObject(t_x, "src");
 }
 
-void ReplaceIntensityKernel::SetOutput(Buffer& x)
+void ReplaceIntensityKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(x, "dst");
+    this->AddObject(t_x, "dst");
 }
 
-void ReplaceIntensityKernel::SetInValue(float x)
+void ReplaceIntensityKernel::SetInValue(float t_x)
 {
-    this->AddObject(x, "in");
+    this->AddObject(t_x, "in");
 }
 
-void ReplaceIntensityKernel::SetOutValue(float x)
+void ReplaceIntensityKernel::SetOutValue(float t_x)
 {
-    this->AddObject(x, "out");
+    this->AddObject(t_x, "out");
 }
 
 void ReplaceIntensityKernel::Execute()

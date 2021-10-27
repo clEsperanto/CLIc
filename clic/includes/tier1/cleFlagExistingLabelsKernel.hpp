@@ -9,18 +9,16 @@ namespace cle
     
 class FlagExistingLabelsKernel : public Kernel
 {
-
 private:
-    std::string source = 
+    std::string m_OclHeader = 
         #include "cle_flag_existing_labels.h" 
         ;
 
 public:
-    FlagExistingLabelsKernel (std::shared_ptr<GPU>);
+    FlagExistingLabelsKernel(std::shared_ptr<GPU>);
     void SetInput(Buffer&);
     void SetOutput(Buffer&);
     void Execute();
-
 };
 
 } // namespace cle

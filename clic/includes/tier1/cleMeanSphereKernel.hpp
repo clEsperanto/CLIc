@@ -10,23 +10,22 @@ namespace cle
 class MeanSphereKernel : public Kernel
 {
 private:
-    std::string source_2d = 
+    std::string m_OclHeader2d = 
         #include "cle_mean_sphere_2d.h" 
         ;
-    std::string source_3d = 
+    std::string m_OclHeader3d = 
         #include "cle_mean_sphere_3d.h" 
         ;
 
 public:
-    MeanSphereKernel (std::shared_ptr<GPU>);
-
-    void SetInput(Buffer&);
-    void SetOutput(Buffer&);
+    MeanSphereKernel(std::shared_ptr<GPU>);
+    void SetInput(Object&);
+    void SetOutput(Object&);
     void SetRadius(int=0, int=0, int=0);
     void Execute();
 
 private:
-    int Radius2KernelSize(float);
+    int Radius2KernelSize(float) const;
 };
 
 } // namespace cle

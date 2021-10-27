@@ -9,22 +9,20 @@ namespace cle
     
 class SmallerKernel : public Kernel
 {
-
 private:
-    std::string source_2d = 
+    std::string m_OclHeader2d = 
         #include "cle_smaller_2d.h" 
         ;
-    std::string source_3d = 
+    std::string m_OclHeader3d = 
         #include "cle_smaller_3d.h" 
         ;
 
 public:
-    SmallerKernel (std::shared_ptr<GPU>);
-    void SetInput1(Buffer&);
-    void SetInput2(Buffer&);
-    void SetOutput(Buffer&);
+    SmallerKernel(std::shared_ptr<GPU>);
+    void SetInput1(Object&);
+    void SetInput2(Object&);
+    void SetOutput(Object&);
     void Execute();
-
 };
 
 } // namespace cle

@@ -9,17 +9,15 @@ namespace cle
     
 class MaximumYProjectionKernel : public Kernel
 {
-
 private:
-    std::string source = 
+    std::string m_OclHeader = 
         #include "cle_maximum_y_projection.h" 
         ;
 
 public:
-
-    MaximumYProjectionKernel (std::shared_ptr<GPU>);
-    void SetInput(Buffer&);
-    void SetOutput(Buffer&);
+    MaximumYProjectionKernel(std::shared_ptr<GPU>);
+    void SetInput(Object&);
+    void SetOutput(Object&);
     void Execute();
 };
 

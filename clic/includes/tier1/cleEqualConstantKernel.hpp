@@ -9,19 +9,18 @@ namespace cle
     
 class EqualConstantKernel : public Kernel
 {
-
 private:
-    std::string source_2d = 
+    std::string m_OclHeader2d = 
         #include "cle_equal_constant_2d.h" 
         ;
-    std::string source_3d = 
+    std::string m_OclHeader3d = 
         #include "cle_equal_constant_3d.h" 
         ;
 
 public:
-    EqualConstantKernel (std::shared_ptr<GPU>);
-    void SetInput(Buffer&);
-    void SetOutput(Buffer&);
+    EqualConstantKernel(std::shared_ptr<GPU>);
+    void SetInput(Object&);
+    void SetOutput(Object&);
     void SetScalar(float);
     void Execute();
 };
