@@ -62,13 +62,20 @@ jobs:
           appendedCacheKey: vcpkginstall
           #vcpkgGitCommitId: cdd51899f6ae3736bfbe936f9e387f86d4a63a58 #ec6fe06e8da05a8157dc8581fa96b36b571c1bd5 
 
+      # - name: Configure and Build [Cmake]
+      #   uses: lukka/run-cmake@v10
+      #   with:
+      #     cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+      #     configurePreset: 'ninja-multi-vcpkg'
+      #     buildPreset: 'ninja-multi-vcpkg'
+      #     runVcpkgEnvFormatString: true
+
       - name: Configure and Build [Cmake]
-        uses: lukka/run-cmake@v10
-        with:
-          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          configurePreset: 'ninja-multi-vcpkg'
-          buildPreset: 'ninja-multi-vcpkg'
-          runVcpkgEnvFormatString: true
+        shell: bash
+        run: |
+          cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DBUILD_BENCHMARK=OFF
+          
+    
           
 
 
