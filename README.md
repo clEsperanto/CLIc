@@ -17,7 +17,7 @@ Right now, this is very preliminary, and mainly focussed on running a few kernel
 
 int main( int argc, char** argv)
 {
-    cle::Clesperanto cle();    // Initialisation of clEsperanto
+    cle::Clesperanto cle;    // Initialisation of clEsperanto
 
     // store data to process in vector
     int dimensions[3] = {width, height, depth};
