@@ -48,23 +48,27 @@ jobs:
             packages: >
               opencl
 
+
     steps:
 
       - name: Checkout
         uses: actions/checkout@v2
         with:
           submodules: true 
+
+      - name: Install CMake v3.21
+        uses: lukka/get-cmake@main
       
       - name: Install packages [vcpkg]
-        uses: lukka/run-vcpkg@main
+        uses: lukka/run-vcpkg@v7
         with:
           vcpkgArguments: ${{ matrix.packages }}
           vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
           vcpkgTriplet: ${{ matrix.triplet }}
-          vcpkgGitCommitId: cdd51899f6ae3736bfbe936f9e387f86d4a63a58 #ec6fe06e8da05a8157dc8581fa96b36b571c1bd5 
+          vcpkgGitCommitId: cdd51899f6ae3736bfbe936f9e387f86d4a63a58 #ec6fe06e8da05a8157dc8581fa96b36b571c1bd5 vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
 
       - name: Cmake [vcpkg]
-        uses: lukka/run-cmake@main
+        uses: lukka/run-cmake@v3.4
         with:
           buildDirectory: ${{ runner.workspace }}/build
           cmakeBuildType: ${{ matrix.buildtype }}
@@ -72,5 +76,6 @@ jobs:
           cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
+          
 
 

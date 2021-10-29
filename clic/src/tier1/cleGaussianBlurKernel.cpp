@@ -15,9 +15,9 @@ GaussianBlurKernel::GaussianBlurKernel (std::shared_ptr<GPU> t_gpu) :
     this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
 }    
 
-int GaussianBlurKernel::Sigma2KernelSize(float x) const
+int GaussianBlurKernel::Sigma2KernelSize(float t_x) const
 {
-    int n = static_cast<int>(x * 8.0 + 0.5);
+    int n = static_cast<int>(t_x * 8.0 + 0.5);
     if (n % 2 == 0)
     {
         n = n + 1;
