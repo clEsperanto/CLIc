@@ -20,7 +20,7 @@ int main( int argc, char** argv)
     cle::Clesperanto cle;    // Initialisation of clEsperanto
 
     // store data to process in vector
-    int dimensions[3] = {width, height, depth};
+    std::array<int,3> dimensions = {width, height, depth};
     std::vector<float> input (width * height * depth); 
 
     /*
