@@ -1,7 +1,0 @@
-{
-    "name": "ocl",
-    "version-string": "1.2",
-    "dependencies": [
-      "opencl"
-    ]
-  }
