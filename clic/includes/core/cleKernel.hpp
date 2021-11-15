@@ -33,6 +33,9 @@ private:
     cl::Program m_Program;
     cl::Kernel m_Kernel;
 
+    const std::string BufferDefines(std::string&, std::string&, std::string&, int) const;
+    const std::string ImageDefines(std::string&, std::string&, std::string&, int) const;
+
 protected:
     std::shared_ptr<GPU> m_gpu;
 
@@ -64,6 +67,12 @@ protected:
     void BuildProgramKernel();
     void SetArguments();
     void EnqueueKernel();
+
+    template<class T=cle::Object>
+    std::shared_ptr<T> GetParameter(const char* t_tag) const
+    {
+        return std::dynamic_pointer_cast<T>(this->m_Parameters.at(t_tag));
+    }
 
 public:
     Kernel(std::shared_ptr<GPU>, const char*, const std::vector<std::string>&);

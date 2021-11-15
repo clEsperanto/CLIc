@@ -32,16 +32,22 @@ protected:
     const std::vector<cl::Device> ListDevices(const cl::Platform&, const char*) const;
     void AllocateDevice();
 
-    const cl::Buffer* CreateBuffer(const int) const;
+    const cl::Buffer* CreateBuffer(const size_t) const;
     void WriteBuffer(const cl::Buffer*, void*) const;
     void ReadBuffer(const cl::Buffer*, void*) const;
     
-    const cl::Image* CreateImage(const std::array<int,3>&, const cl::ImageFormat&) const;
+    const cl::Image* CreateImage(const std::array<size_t,3>&, const cl::ImageFormat&) const;
     void WriteImage(const cl::Image*, void*) const;
     void ReadImage(const cl::Image*, void*) const;
-    
+
     template<class T>
     const cle::Object::DataType Template2DataType() const;
+
+    // todo: enable copy / cast methods
+    // void CopyBufferToBuffer(cle::Buffer&, cle::Buffer&) const;
+    // void CopyBufferToImage(cle::Buffer&, cle::Image&) const;
+    // void CopyImageToBuffer(cle::Image&, cle::Buffer&) const;
+    // void CopyImageToImage(cle::Image&, cle::Image&) const;
 
 public:
     GPU();
@@ -68,20 +74,17 @@ public:
 
     // Create / Push / Pull / Copy methods
     template<class T = float>
-    cle::Buffer CreateBuffer(const std::array<int,3>& ={1,1,1}) const;
+    cle::Buffer CreateBuffer(const std::array<size_t,3>& ={1,1,1}) const;
     template<class T = float>
-    cle::Image CreateImage(const std::array<int,3>& ={1,1,1}) const;
+    cle::Image CreateImage(const std::array<size_t,3>& ={1,1,1}) const;
     template<class T = float>
-    cle::Buffer PushBuffer(std::vector<T>&, const std::array<int,3>& ={1,1,1}) const;
+    cle::Buffer PushBuffer(std::vector<T>&, const std::array<size_t,3>& ={1,1,1}) const;
     template<class T = float>
-    cle::Image PushImage(std::vector<T>&, const std::array<int,3>& ={1,1,1}) const;
+    cle::Image PushImage(std::vector<T>&, const std::array<size_t,3>& ={1,1,1}) const;
     template<class T = float>
     std::vector<T> Pull(const cle::Buffer&) const;
     template<class T = float>
     std::vector<T> Pull(const cle::Image&) const;
-    template<class T = float>
-    void Copy(cle::Buffer&, cle::Buffer&) const;
-
 };
 
 template<class T>
@@ -99,14 +102,14 @@ const cle::Object::DataType GPU::Template2DataType() const
 }
 
 template<class T>
-cle::Buffer GPU::CreateBuffer(const std::array<int,3>& t_shape) const
+cle::Buffer GPU::CreateBuffer(const std::array<size_t,3>& t_shape) const
 {
     auto buffer = this->CreateBuffer(t_shape[0] * t_shape[1] * t_shape[2] * sizeof(T));
     return cle::Buffer(buffer, t_shape, this->Template2DataType<T>());
 }
 
 template<class T>
-cle::Buffer GPU::PushBuffer(std::vector<T>& t_arr, const std::array<int,3>& t_shape) const
+cle::Buffer GPU::PushBuffer(std::vector<T>& t_arr, const std::array<size_t,3>& t_shape) const
 {
     auto buffer = this->CreateBuffer(t_arr.size() * sizeof(T));
     this->WriteBuffer(buffer, t_arr.data());
@@ -122,14 +125,14 @@ std::vector<T> GPU::Pull(const cle::Buffer& t_buffer) const
 }
 
 template<class T>
-cle::Image GPU::CreateImage(const std::array<int,3>& t_shape) const
+cle::Image GPU::CreateImage(const std::array<size_t,3>& t_shape) const
 {
     auto image = this->CreateImage(t_shape, cl::ImageFormat(CL_INTENSITY, CL_FLOAT));
     return cle::Image(image, t_shape, this->Template2DataType<T>());
 }
 
 template<class T>
-cle::Image GPU::PushImage(std::vector<T>& t_arr, const std::array<int,3>& t_shape) const
+cle::Image GPU::PushImage(std::vector<T>& t_arr, const std::array<size_t,3>& t_shape) const
 {
     auto image = this->CreateImage(t_shape, cl::ImageFormat(CL_INTENSITY, CL_FLOAT));
     this->WriteImage(image, t_arr.data());
@@ -143,23 +146,6 @@ std::vector<T> GPU::Pull(const cle::Image& t_image) const
     this->ReadImage(t_image.Data(), arr.data());
     return arr;
 }
-
-template<class T>
-void GPU::Copy(cle::Buffer& t_src, cle::Buffer& t_dst) const
-{
-    try
-    {
-        // todo: move low level operation to protected
-        // todo: make copy for image
-        this->CommandQueue().enqueueCopyBuffer(*t_src.Data(), *t_dst.Data(), 0, 0, t_dst.Size() * sizeof(T), nullptr, nullptr);
-    }
-    catch(cl::Error& e)
-    {
-        std::cerr << "Operation Copy Buffer : Fail to copy in buffers ..." << std::endl;
-        std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
-    }
-}
-
 
 } // namespace cle
 

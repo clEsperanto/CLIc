@@ -11,13 +11,18 @@ void Kernel::ManageDimensions(const char* t_tag)
         auto it = this->m_Parameters.find(t_tag);
         if (it != this->m_Parameters.end())
         {
+            DEBUG("parameter dim = " << this->m_Parameters.at(t_tag)->nDim() << "\n");
             if(this->m_Parameters.at(t_tag)->nDim() == 3)
             {
                 this->m_nDimPrefix = "_3d";
             }
-            else
+            else if(this->m_Parameters.at(t_tag)->nDim() == 2)
             {
                 this->m_nDimPrefix = "_2d";
+            }
+            else
+            {
+                this->m_nDimPrefix = "_1d";
             }
         }
         else
@@ -45,6 +50,72 @@ const std::string Kernel::LoadSources() const
     return kernel_source;
 }
 
+const std::string Kernel::BufferDefines(std::string& t_tag, std::string& t_otype, std::string& t_dtype, int t_dim) const
+{
+    std::string pos_type ("int"), pos ("(pos0)"), dim ("1");
+    if (t_dim == 2)
+    { 
+        dim = "2";
+        pos_type = "int2";
+        pos = "(pos0, pos1)";
+    } 
+    else if (t_dim == 3)
+    { 
+        dim = "3";
+        pos_type = "int4";
+        pos = "(pos0, pos1, pos2, 0)";
+    } 
+    std::string abbr = TypeAbbr(t_dtype.c_str());  
+    std::string common_header = "\n";
+    common_header += "\n#define CONVERT_" + t_tag + "_PIXEL_TYPE clij_convert_" + t_dtype + "_sat";
+    common_header += "\n#define IMAGE_" + t_tag + "_PIXEL_TYPE " + t_dtype + "";
+    common_header += "\n#define POS_" + t_tag + "_TYPE " + pos_type;
+    common_header += "\n#define POS_" + t_tag + "_INSTANCE(pos0,pos1,pos2,pos3) (" + pos_type + ")" + pos;
+    std::string array_header = "\n";
+    array_header += "\n#define IMAGE_" + t_tag + "_TYPE __global " + t_dtype + "*";
+    array_header += "\n#define READ_" + t_tag + "_IMAGE(a,b,c) read_buffer" + dim + "d" + abbr + "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
+    array_header += "\n#define WRITE_" + t_tag + "_IMAGE(a,b,c) write_buffer" + dim + "d" + abbr + "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
+    return common_header+array_header;
+}
+
+const std::string Kernel::ImageDefines(std::string& t_tag, std::string& t_otype, std::string& t_dtype, int t_dim) const
+{
+    std::string pos_type ("int"), pos ("(pos0)"), dim ("1");
+    if (t_dim == 2)
+    { 
+        dim = "2";
+        pos_type = "int2";
+        pos = "(pos0, pos1)";
+    } 
+    else if (t_dim == 3)
+    { 
+        dim = "3";
+        pos_type = "int4";
+        pos = "(pos0, pos1, pos2, 0)";
+    } 
+    std::string img_type_name;
+    if(t_tag.find("dst")!=std::string::npos || t_tag.find("destination")!=std::string::npos || 
+       t_tag.find("output")!=std::string::npos)
+    {
+        img_type_name = "__write_only image" + dim + "d_t";
+    }
+    else
+    {
+        img_type_name = "__read_only image" + dim + "d_t";
+    }
+    std::string abbr = TypeAbbr(t_dtype.c_str());  
+    std::string common_header = "\n";
+    common_header += "\n#define CONVERT_" + t_tag + "_PIXEL_TYPE clij_convert_" + t_dtype + "_sat";
+    common_header += "\n#define IMAGE_" + t_tag + "_PIXEL_TYPE " + t_dtype + "";
+    common_header += "\n#define POS_" + t_tag + "_TYPE " + pos_type;
+    common_header += "\n#define POS_" + t_tag + "_INSTANCE(pos0,pos1,pos2,pos3) (" + pos_type + ")" + pos;
+    std::string image_header = "\n";
+    image_header += "\n#define IMAGE_" + t_tag + "_TYPE " + img_type_name;
+    image_header += "\n#define READ_" + t_tag + "_IMAGE(a,b,c) read_image" + abbr + "(a,b,c)";
+    image_header += "\n#define WRITE_" + t_tag + "_IMAGE(a,b,c) write_image" + abbr + "(a,b,c)";
+    return common_header+image_header;
+}
+
 const std::string Kernel::LoadDefines() const
 {
     std::string defines = "";  
@@ -65,59 +136,20 @@ const std::string Kernel::LoadDefines() const
             std::string data_type = itr->second->GetDataType();       // float, double, char, int, etc.
             std::string abbr_type = TypeAbbr(data_type.c_str());       // shorten type f->float, i->int, d->double, etc.
             int ndim = itr->second->nDim();
-            std::string img_type_name;
-            if(object_tag.compare("dst") == 0 || object_tag.compare("destination") == 0 || object_tag.compare("output") == 0)
-            {
-                if (ndim==1) ndim++; // todo: cl::Image1d not managed, using cl::Image2d instead
-                img_type_name = "__write_only image" + std::to_string(ndim) + "d_t";
-            }
-            else
-            {
-                if (ndim==1) ndim++; // todo: cl::Image1d not managed, using cl::Image2d instead
-                img_type_name = "__read_only image" + std::to_string(ndim) + "d_t";
-            }
-            std::string  pos_type ("int2"), pos ("(pos0, 0)"), img_dim ("2"); // default configuration for ndim = 1
-            if (ndim == 2)
-            { 
-                img_dim = "2";
-                pos_type = "int2";
-                pos = "(pos0, pos1)";
-            } 
-            else if (ndim == 3)
-            { 
-                img_dim = "3";
-                pos_type = "int4";
-                pos = "(pos0, pos1, pos2, 0)";
-            } 
-            std::string size_parameters = ""; // todo: image size independent kernel 
-            // Build argument defines 
-            std::string common_header = "\n";
-            common_header = common_header + "\n#define CONVERT_" + object_tag + "_PIXEL_TYPE clij_convert_" + data_type + "_sat";
-            common_header = common_header + "\n#define IMAGE_" + object_tag + "_PIXEL_TYPE " + data_type + "";
-            common_header = common_header + "\n#define POS_" + object_tag + "_TYPE " + pos_type;
-            common_header = common_header + "\n#define POS_" + object_tag + "_INSTANCE(pos0,pos1,pos2,pos3) (" + pos_type + ")" + pos;
+            
             std::string size_header = "\n";
             size_header = size_header + "\n#define IMAGE_SIZE_" + object_tag + "_WIDTH " + std::to_string(itr->second->Shape()[0]);
             size_header = size_header + "\n#define IMAGE_SIZE_" + object_tag + "_HEIGHT " + std::to_string(itr->second->Shape()[1]);
             size_header = size_header + "\n#define IMAGE_SIZE_" + object_tag + "_DEPTH " + std::to_string(itr->second->Shape()[2]);
             if (itr->second->IsObjectType("buffer"))
             {
-                std::string array_header = common_header + "\n";
-                array_header = array_header + "\n#define IMAGE_" + object_tag + "_TYPE " + size_parameters + " __global " + data_type + "*";
-                array_header = array_header + "\n#define READ_" + object_tag + "_IMAGE(a,b,c) read_buffer" + img_dim + "d" + abbr_type + "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
-                array_header = array_header + "\n#define WRITE_" + object_tag + "_IMAGE(a,b,c) write_buffer" + img_dim + "d" + abbr_type + "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
-                defines = defines + array_header;
+                defines += this->BufferDefines(object_tag, object_type, data_type, ndim);
             }   
             else
             {
-                std::string image_header = common_header + "\n";
-                image_header = image_header + "\n#define IMAGE_" + object_tag + "_TYPE " + size_parameters + " " + img_type_name;
-                image_header = image_header + "\n#define READ_" + object_tag + "_IMAGE(a,b,c) read_image" + abbr_type + "(a,b,c)";
-                image_header = image_header + "\n#define WRITE_" + object_tag + "_IMAGE(a,b,c) write_image" + abbr_type + "(a,b,c)";
-                defines = defines + image_header;
+                defines += this->ImageDefines(object_tag, object_type, data_type, ndim);
             }
-            defines = defines + size_header;
-            defines = defines + "\n";
+            defines += size_header + "\n";
         } // end check if not Scalar Object
     } // end of for loop on hashmap
     return defines;
@@ -155,7 +187,7 @@ void Kernel::SetArguments()
             std::string tag = it->c_str();
             if (this->m_Parameters.at(tag)->IsObjectType("buffer"))
             {    
-                std::shared_ptr<cle::Buffer> object = std::dynamic_pointer_cast<cle::Buffer>(this->m_Parameters.at(tag));
+                auto object = std::dynamic_pointer_cast<cle::Buffer>(this->m_Parameters.at(tag));
                 try
                 {
                     this->m_Kernel.setArg(index, *object->Data());
@@ -173,7 +205,7 @@ void Kernel::SetArguments()
             }
             else if (this->m_Parameters.at(tag)->IsObjectType("image"))
             {    
-                std::shared_ptr<cle::Image> object = std::dynamic_pointer_cast<cle::Image>(this->m_Parameters.at(tag));
+                auto object = std::dynamic_pointer_cast<cle::Image>(this->m_Parameters.at(tag));
                 try
                 {
                     this->m_Kernel.setArg(index, *object->Data());
@@ -192,35 +224,35 @@ void Kernel::SetArguments()
             else if (this->m_Parameters.at(tag)->IsObjectType("scalar"))  // only float and int used in kernel for now
             {    
                 if (this->m_Parameters.at(tag)->IsDataType("float")) {
-                    std::shared_ptr< cle::Scalar<float> > object = std::dynamic_pointer_cast< cle::Scalar<float> >(this->m_Parameters.at(tag));
+                    auto object = std::dynamic_pointer_cast< cle::Scalar<float> >(this->m_Parameters.at(tag));
                     this->m_Kernel.setArg(index, object->Data()); 
                 }
                 else if (this->m_Parameters.at(tag)->IsDataType("int")) {
-                    std::shared_ptr< cle::Scalar<int> > object = std::dynamic_pointer_cast< cle::Scalar<int> >(this->m_Parameters.at(tag));
+                    auto object = std::dynamic_pointer_cast< cle::Scalar<int> >(this->m_Parameters.at(tag));
                     this->m_Kernel.setArg(index, object->Data()); 
                 }
                 // else if (this->m_Parameters.at(tag)->IsDataType("double")) {
-                //     std::shared_ptr< cle::Scalar<double> > object = std::dynamic_pointer_cast< cle::Scalar<double> >(this->m_Parameters.at(tag));
+                //     auto object = std::dynamic_pointer_cast< cle::Scalar<double> >(this->m_Parameters.at(tag));
                 //     this->m_Kernel.setArg(index, object->Data()); 
                 // }
                 // else if (this->m_Parameters.at(tag)->IsDataType("char")) {
-                //     std::shared_ptr< cle::Scalar<char> > object = std::dynamic_pointer_cast< cle::Scalar<char> >(this->m_Parameters.at(tag));
+                //     autoobject = std::dynamic_pointer_cast< cle::Scalar<char> >(this->m_Parameters.at(tag));
                 //     this->m_Kernel.setArg(index, object->Data()); 
                 // }
                 // else if (this->m_Parameters.at(tag)->IsDataType("short")) {
-                //     std::shared_ptr< cle::Scalar<short> > object = std::dynamic_pointer_cast< cle::Scalar<short> >(this->m_Parameters.at(tag));
+                //     auto object = std::dynamic_pointer_cast< cle::Scalar<short> >(this->m_Parameters.at(tag));
                 //     this->m_Kernel.setArg(index, object->Data()); 
                 // }
                 // else if (this->m_Parameters.at(tag)->IsDataType("unsigned int")) {
-                //     std::shared_ptr< cle::Scalar<unsigned int> > object = std::dynamic_pointer_cast< cle::Scalar<unsigned int> >(this->m_Parameters.at(tag));
+                //     auto object = std::dynamic_pointer_cast< cle::Scalar<unsigned int> >(this->m_Parameters.at(tag));
                 //     this->m_Kernel.setArg(index, object->Data()); 
                 // }
                 // else if (this->m_Parameters.at(tag)->IsDataType("unsigned char")) {
-                //     std::shared_ptr< cle::Scalar<unsigned char> > object = std::dynamic_pointer_cast< cle::Scalar<unsigned char> >(this->m_Parameters.at(tag));
+                //     auto object = std::dynamic_pointer_cast< cle::Scalar<unsigned char> >(this->m_Parameters.at(tag));
                 //     this->m_Kernel.setArg(index, object->Data());
                 // }
                 // else if (this->m_Parameters.at(tag)->IsDataType("unsigned short")) {
-                //     std::shared_ptr< cle::Scalar<unsigned short> > object = std::dynamic_pointer_cast< cle::Scalar<unsigned short> >(this->m_Parameters.at(tag));
+                //     auto object = std::dynamic_pointer_cast< cle::Scalar<unsigned short> >(this->m_Parameters.at(tag));
                 //     this->m_Kernel.setArg(index, object->Data()); 
                 // }
             }
@@ -229,7 +261,7 @@ void Kernel::SetArguments()
 }
 
 void Kernel::AddObject(Object& t_ocl_object, const char* t_tag)
-{
+{  
     if(std::find(this->m_Tags.begin(), this->m_Tags.end(), t_tag) != this->m_Tags.end())
     {
         auto it = this->m_Parameters.find(t_tag); 
@@ -238,12 +270,12 @@ void Kernel::AddObject(Object& t_ocl_object, const char* t_tag)
             if(t_ocl_object.IsObjectType("image"))
             {
                 auto cast_object = dynamic_cast<cle::Image&>(t_ocl_object);
-                it->second = std::make_shared< cle::Image >(cast_object);
+                it->second = std::make_shared<cle::Image>(cast_object);
             }
             else
             {
                 auto cast_object = dynamic_cast<cle::Buffer&>(t_ocl_object);
-                it->second = std::make_shared< cle::Buffer >(cast_object);
+                it->second = std::make_shared<cle::Buffer>(cast_object);
             }
         }
         else    
@@ -251,12 +283,12 @@ void Kernel::AddObject(Object& t_ocl_object, const char* t_tag)
             if(t_ocl_object.IsObjectType("image"))
             {
                 auto cast_object = dynamic_cast<cle::Image&>(t_ocl_object);
-                this->m_Parameters.insert(std::make_pair(t_tag, std::make_shared< cle::Image >(cast_object)));
+                this->m_Parameters.insert(std::make_pair(t_tag, std::make_shared<cle::Image>(cast_object)));
             }
             else
             {
                 auto cast_object = dynamic_cast<cle::Buffer&>(t_ocl_object);
-                this->m_Parameters.insert(std::make_pair(t_tag, std::make_shared< cle::Buffer >(cast_object)));
+                this->m_Parameters.insert(std::make_pair(t_tag, std::make_shared<cle::Buffer>(cast_object)));
             }
         }
     }
@@ -338,7 +370,7 @@ void Kernel::BuildProgramKernel()
             }
             catch(cl::Error& e)
             {
-                std::cerr << "Kernel : Fail to build program from source." << std::endl;
+                std::cerr << "Kernel : Fail to build program \"" << this->m_KernelName << "\" from source." << std::endl;
                 std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
                 std::cerr << "build log:" << std::endl;
                 std::cerr << this->m_Program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(this->m_gpu->Device()) << std::endl;

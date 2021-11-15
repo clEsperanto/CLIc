@@ -193,7 +193,7 @@ const float GPU::Score() const
 }
 
 
-const cl::Buffer* GPU::CreateBuffer(int t_bitsize) const
+const cl::Buffer* GPU::CreateBuffer(size_t t_bitsize) const
 {
     return new cl::Buffer(this->Context(), CL_MEM_READ_WRITE, t_bitsize);
 }
@@ -207,7 +207,7 @@ void GPU::WriteBuffer(const cl::Buffer* t_ocl_object, void * t_arr) const
     }
     catch(cl::Error& e)
     {
-        std::cerr << "Operation WriteBuffer : Fail to write in buffer ..." << std::endl;
+        std::cerr << "Error caught : Fail to write Buffer ..." << std::endl;
         std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
     }
 }
@@ -221,34 +221,39 @@ void GPU::ReadBuffer(const cl::Buffer* t_ocl_object, void * t_arr) const
     }
     catch(cl::Error& e)
     {
-        std::cerr << "Operation ReadBuffer : Fail to read buffer ..." << std::endl;
+        std::cerr << "Error caught : Fail to read Buffer ..." << std::endl;
         std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
     }
 }
 
-const cl::Image* GPU::CreateImage(const std::array<int,3>& t_shape, const cl::ImageFormat& t_format) const
+const cl::Image* GPU::CreateImage(const std::array<size_t,3>& t_shape, const cl::ImageFormat& t_format) const
 {
     if (t_shape[2] > 1)
+    {
         return new cl::Image3D(this->Context(), CL_MEM_READ_WRITE, t_format, t_shape[0], t_shape[1], t_shape[2]);
-    else
+    }
+    else if (t_shape[1] > 1)
+    {
         return new cl::Image2D(this->Context(), CL_MEM_READ_WRITE, t_format, t_shape[0], t_shape[1]);
-// todo: cl::Image1D not managed. using cl::Image2d instead.
-//  else
-//      return new cl::Image1D(this->Context(), CL_MEM_READ_WRITE, t_format, t_shape[0]);
+    }
+    else
+    {
+        return new cl::Image1D(this->Context(), CL_MEM_READ_WRITE, t_format, t_shape[0]);
+    }
 }
 
 void GPU::WriteImage(const cl::Image* t_ocl_object, void* t_arr) const
 {
-    cl::size_type row_pitch = t_ocl_object->getImageInfo<CL_IMAGE_ROW_PITCH>();
-    cl::size_type slice_pitch = t_ocl_object->getImageInfo<CL_IMAGE_SLICE_PITCH>();
-    cl::size_type width = t_ocl_object->getImageInfo<CL_IMAGE_WIDTH>();
-    cl::size_type height = t_ocl_object->getImageInfo<CL_IMAGE_HEIGHT>();
-    cl::size_type depth = t_ocl_object->getImageInfo<CL_IMAGE_DEPTH>(); 
+    size_t row_pitch = t_ocl_object->getImageInfo<CL_IMAGE_ROW_PITCH>();
+    size_t slice_pitch = t_ocl_object->getImageInfo<CL_IMAGE_SLICE_PITCH>();
+    size_t width = t_ocl_object->getImageInfo<CL_IMAGE_WIDTH>();
+    size_t height = t_ocl_object->getImageInfo<CL_IMAGE_HEIGHT>();
+    size_t depth = t_ocl_object->getImageInfo<CL_IMAGE_DEPTH>(); 
 
     if(height == 0) height += 1;
     if(depth == 0) depth += 1;
-    std::array<cl::size_type,3> origin {0,0,0};
-    std::array<cl::size_type,3> region {width, height, depth};
+    std::array<size_t,3> origin {0,0,0};
+    std::array<size_t,3> region {width, height, depth};
 
     try
     {   
@@ -256,23 +261,23 @@ void GPU::WriteImage(const cl::Image* t_ocl_object, void* t_arr) const
     }
     catch(cl::Error& e)
     {
-        std::cerr << "Operation WriteImage2D : Fail to write image 2d ..." << std::endl;
+        std::cerr << "Error caught : Fail to write Image ..." << std::endl;
         std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
     }
 }
 
 void GPU::ReadImage(const cl::Image* t_ocl_object, void* t_arr) const
 {
-    cl::size_type row_pitch = t_ocl_object->getImageInfo<CL_IMAGE_ROW_PITCH>();
-    cl::size_type slice_pitch = t_ocl_object->getImageInfo<CL_IMAGE_SLICE_PITCH>();
-    cl::size_type width = t_ocl_object->getImageInfo<CL_IMAGE_WIDTH>();
-    cl::size_type height = t_ocl_object->getImageInfo<CL_IMAGE_HEIGHT>();
-    cl::size_type depth = t_ocl_object->getImageInfo<CL_IMAGE_DEPTH>();
+    size_t row_pitch = t_ocl_object->getImageInfo<CL_IMAGE_ROW_PITCH>();
+    size_t slice_pitch = t_ocl_object->getImageInfo<CL_IMAGE_SLICE_PITCH>();
+    size_t width = t_ocl_object->getImageInfo<CL_IMAGE_WIDTH>();
+    size_t height = t_ocl_object->getImageInfo<CL_IMAGE_HEIGHT>();
+    size_t depth = t_ocl_object->getImageInfo<CL_IMAGE_DEPTH>();
 
     if(height == 0) height += 1;
     if(depth == 0) depth += 1;
-    std::array<cl::size_type,3> origin {0,0,0};
-    std::array<cl::size_type,3> region {width, height, depth};
+    std::array<size_t,3> origin {0,0,0};
+    std::array<size_t,3> region {width, height, depth};
 
     try
     {
@@ -280,10 +285,66 @@ void GPU::ReadImage(const cl::Image* t_ocl_object, void* t_arr) const
     }
     catch(cl::Error& e)
     {
-        std::cerr << "Operation ReadBuffer : Fail to read buffer ..." << std::endl;
+        std::cerr << "Error caught : Fail to read Image ..." << std::endl;
         std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
     }
 }
+
+// void GPU::CopyBufferToBuffer(cle::Buffer& t_src, cle::Buffer& t_dst) const
+// {
+//     try
+//     {
+//         this->CommandQueue().enqueueCopyBuffer(*t_src.Data(), *t_dst.Data(), 0, 0, t_dst.Bitsize(), nullptr, nullptr);
+//     }
+//     catch(cl::Error& e)
+//     {
+//         std::cerr << "Error caught : Fail to copy in Buffer to Buffer ..." << std::endl;
+//         std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
+//     }
+// }
+
+// void GPU::CopyBufferToImage(cle::Buffer& t_src, cle::Image& t_dst) const
+// {
+//     try
+//     {
+//         this->CommandQueue().enqueueCopyBufferToImage(*t_src.Data(), *t_dst.Data(), 0, t_dst.Origin(), t_dst.Region(), nullptr, nullptr);        
+//     }
+//     catch(cl::Error& e)
+//     {
+//         std::cerr << "Error caught : Fail to copy in Buffer to Image ..." << std::endl;
+//         std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
+//     }
+// }
+
+// void GPU::CopyImageToBuffer(cle::Image& t_src, cle::Buffer& t_dst) const
+// {
+//     try
+//     {
+//         this->CommandQueue().enqueueCopyImageToBuffer(*t_src.Data(), *t_dst.Data(), t_src.Origin(), t_src.Region(), 0, nullptr, nullptr);    
+//     }
+//     catch(cl::Error& e)
+//     {
+//         std::cerr << "Error caught : Fail to copy in Image to Buffer ..." << std::endl;
+//         std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
+//     }
+// }
+
+// void GPU::CopyImageToImage(cle::Image& t_src, cle::Image& t_dst) const
+// {
+//     try
+//     {
+//         this->CommandQueue().enqueueCopyImage(*t_src.Data(), *t_dst.Data(), t_src.Origin(), t_dst.Origin(), t_dst.Region(), nullptr, nullptr);
+        
+//     }
+//     catch(cl::Error& e)
+//     {
+//         std::cerr << "Error caught : Fail to copy in Image to Image ..." << std::endl;
+//         std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
+//     }
+// }
+
+
+
 
 void GPU::WaitForKernelToFinish()
 {
