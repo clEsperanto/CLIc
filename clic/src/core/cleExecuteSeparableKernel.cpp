@@ -1,6 +1,7 @@
 
 #include "cleExecuteSeparableKernel.hpp"
 #include "cleSeparableKernel.hpp"
+#include "cleCopyKernel.hpp"
 
 namespace cle
 {
@@ -12,12 +13,12 @@ ExecuteSeparableKernel::ExecuteSeparableKernel (std::shared_ptr<GPU> t_gpu) :
     )
 {}    
 
-void ExecuteSeparableKernel::SetInput(Buffer& t_x)
+void ExecuteSeparableKernel::SetInput(Object& t_x)
 {
     this->AddObject(t_x, "src");
 }
 
-void ExecuteSeparableKernel::SetOutput(Buffer& t_x)
+void ExecuteSeparableKernel::SetOutput(Object& t_x)
 {
     this->AddObject(t_x, "dst");
 }
@@ -44,15 +45,14 @@ void ExecuteSeparableKernel::SetSources(const std::map<std::string, std::string>
 
 void ExecuteSeparableKernel::Execute()
 { 
-    std::shared_ptr<cle::Buffer> src = std::dynamic_pointer_cast<cle::Buffer>(this->m_Parameters.at("src"));
-    std::shared_ptr<cle::Buffer> dst = std::dynamic_pointer_cast<cle::Buffer>(this->m_Parameters.at("dst"));
-
+    std::shared_ptr<cle::Object> src = std::dynamic_pointer_cast<cle::Object>(this->m_Parameters.at("src"));
+    std::shared_ptr<cle::Object> dst = std::dynamic_pointer_cast<cle::Object>(this->m_Parameters.at("dst"));
     this->m_nDim = src->nDim();
 
-    // create temp buffer
-    cle::Buffer temp1 = this->m_gpu->CreateBuffer<float>(src->Shape());
-    cle::Buffer temp2 = this->m_gpu->CreateBuffer<float>(src->Shape());
+    auto temp1 = this->m_gpu->CreateBuffer<float>(src->Shape());
+    auto temp2 = this->m_gpu->CreateBuffer<float>(src->Shape());
 
+    CopyKernel copy(this->m_gpu);
     SeparableKernel kernel(this->m_gpu);
     kernel.SetKernelName(this->m_KernelName);
     kernel.SetSources(this->m_Sources);
@@ -67,6 +67,7 @@ void ExecuteSeparableKernel::Execute()
         {
             kernel.SetOutput(temp2);
         }
+
         kernel.SetSigma(this->m_Sigma[0]);
         kernel.SetSize(this->m_KernelSize[0]);
         kernel.SetDimension(0);
@@ -76,12 +77,15 @@ void ExecuteSeparableKernel::Execute()
     {
         if (this->m_nDim == 2)
         {
-            this->m_gpu->Copy<float>(*src, temp1);
+            copy.SetInput(*src);
+            copy.SetOutput(temp1);
         }
         else
         {
-            this->m_gpu->Copy<float>(*src, temp2);
+            copy.SetInput(*src);
+            copy.SetOutput(temp2);
         }
+        copy.Execute();
     }
 
     if (this->m_Sigma[1] > 0)
@@ -105,12 +109,15 @@ void ExecuteSeparableKernel::Execute()
     {
         if (this->m_nDim == 2)
         {
-            this->m_gpu->Copy<float>(temp1, *dst);
+            copy.SetInput(temp1);
+            copy.SetOutput(*dst);
         }
         else
         {
-            this->m_gpu->Copy<float>(temp2, temp1);
+            copy.SetInput(temp2);
+            copy.SetOutput(temp1);
         }
+        copy.Execute();
     }
     if (this->m_nDim == 3)
     {
@@ -125,7 +132,9 @@ void ExecuteSeparableKernel::Execute()
         }
         else
         {
-            this->m_gpu->Copy<float>(temp1, *dst);
+            copy.SetInput(temp1);
+            copy.SetOutput(*dst);
+            copy.Execute();        
         }
     }
 }
