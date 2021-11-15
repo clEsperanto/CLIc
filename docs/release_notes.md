@@ -3,11 +3,15 @@
 ## Bug fixes
 - Remove extra context manager class left in Tier1 folder.
 
-## New features  
+## Improvements
 - Improve error message with try/catch blocks for OpenCL error management.
+- Rework of GPU class ([#52](https://github.com/clEsperanto/CLIc_prototype/pull/52).
+<!-- - Rework of data class, creation of `Object` class allowing both `Buffer` and `Image` compatible kernel usage.
+- Extention of buffer and image compability to 1d [#57](https://github.com/clEsperanto/CLIc_prototype/issues/57). -->
+
+## New features  
 - Add more unity test for manager classes.
 - Allow the use of cl_image2d and cl_image3d with a new data class cle::Image ([#52](https://github.com/clEsperanto/CLIc_prototype/pull/52). 
-- Rework of GPU class ([#52](https://github.com/clEsperanto/CLIc_prototype/pull/52).
 
 ## Miscellaneous
 - Exclude throw branches from coverage analysis. This is to avoid taking in account the branche coverage of the `stl` or other library on which we do not have control. Though it makes the coverage less precise, it is a bit more honnest of the state of our API. 
