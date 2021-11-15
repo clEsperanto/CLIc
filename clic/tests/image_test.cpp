@@ -19,7 +19,7 @@ int main(int argc, char **argv)
     auto gpu = std::make_shared<cle::GPU>();
     gpu->WaitForKernelToFinish();
 
-    std::array<int,3> dims = {10, 1, 1};
+    std::array<size_t,3> dims = {10, 1, 1};
     std::vector<TYPE> A (dims[0]*dims[1]*dims[2]); 
     std::fill (A.begin(),A.end(), 10.0f);
 
@@ -29,20 +29,21 @@ int main(int argc, char **argv)
     std::cout << "\tpushed image: " << img_B.Info() << std::endl;
     std::vector<TYPE> C = gpu->Pull<TYPE>(img_B);
     std::cout << "\tpull image: " << img_B.Info() << std::endl;
-    
-    float diff = 0;
-    for (int i =0; i< A.size(); i++)
+
+    float difference = 0;
+    for( auto it1 = A.begin(), it2 = C.begin(); 
+         it1 != A.end() && it2 != C.end(); ++it1, ++it2)
     {
-        diff += A[i] - C[i];
+        difference += std::abs(*it1 - *it2);
     }
-    if (diff > 0)
+    if (difference > std::numeric_limits<TYPE>::epsilon())
     {
-        std::cout << "test cleImage {Create, Push, Pull} fail - diff = " << diff << std::endl;
+        std::cout << "test cleImage {Create, Push, Pull} fail - diff = " << difference << std::endl;
         return EXIT_FAILURE;
     }
     else
     {
-        std::cout << "test cleImage {Create, Push, Pull} pass - diff = " << diff << std::endl;
+        std::cout << "test cleImage {Create, Push, Pull} pass - diff = " << difference << std::endl;
     }
     }
 
@@ -52,7 +53,7 @@ int main(int argc, char **argv)
     auto gpu = std::make_shared<cle::GPU>();
     gpu->WaitForKernelToFinish();
 
-    std::array<int,3> dims = {10, 5, 1};
+    std::array<size_t,3> dims = {10, 5, 1};
     std::vector<TYPE> A (dims[0]*dims[1]*dims[2]); 
     std::fill (A.begin(),A.end(), 10.0f);
 
@@ -63,19 +64,20 @@ int main(int argc, char **argv)
     std::vector<TYPE> C = gpu->Pull<TYPE>(img_B);
     std::cout << "\tpull image: " << img_B.Info() << std::endl;
     
-    float diff = 0;
-    for (int i =0; i< A.size(); i++)
+    float difference = 0;
+    for( auto it1 = A.begin(), it2 = C.begin(); 
+         it1 != A.end() && it2 != C.end(); ++it1, ++it2)
     {
-        diff += A[i] - C[i];
+        difference += std::abs(*it1 - *it2);
     }
-    if (diff > 0)
+    if (difference > std::numeric_limits<TYPE>::epsilon())
     {
-        std::cout << "test cleImage {Create, Push, Pull} fail - diff = " << diff << std::endl;
+        std::cout << "test cleImage {Create, Push, Pull} fail - diff = " << difference << std::endl;
         return EXIT_FAILURE;
     }
     else
     {
-        std::cout << "test cleImage {Create, Push, Pull} pass - diff = " << diff << std::endl;
+        std::cout << "test cleImage {Create, Push, Pull} pass - diff = " << difference << std::endl;
     }
     }
 
@@ -84,7 +86,7 @@ int main(int argc, char **argv)
     auto gpu = std::make_shared<cle::GPU>();
     gpu->WaitForKernelToFinish();
 
-    std::array<int,3> dims = {10, 5, 2};
+    std::array<size_t,3> dims = {10, 5, 2};
     std::vector<TYPE> A (dims[0]*dims[1]*dims[2]); 
     std::fill (A.begin(),A.end(), 10.0f);
 
@@ -95,19 +97,20 @@ int main(int argc, char **argv)
     std::vector<TYPE> C = gpu->Pull<TYPE>(img_B);
     std::cout << "\tpull image: " << img_B.Info() << std::endl;
     
-    float diff = 0;
-    for (int i =0; i< A.size(); i++)
+    float difference = 0;
+    for( auto it1 = A.begin(), it2 = C.begin(); 
+         it1 != A.end() && it2 != C.end(); ++it1, ++it2)
     {
-        diff += A[i] - C[i];
+        difference += std::abs(*it1 - *it2);
     }
-    if (diff > 0)
+    if (difference > std::numeric_limits<TYPE>::epsilon())
     {
-        std::cout << "test cleImage {Create, Push, Pull} fail - diff = " << diff << std::endl;
+        std::cout << "test cleImage {Create, Push, Pull} fail - diff = " << difference << std::endl;
         return EXIT_FAILURE;
     }
     else
     {
-        std::cout << "test cleImage {Create, Push, Pull} pass - diff = " << diff << std::endl;
+        std::cout << "test cleImage {Create, Push, Pull} pass - diff = " << difference << std::endl;
     }
     }
 
@@ -116,7 +119,7 @@ int main(int argc, char **argv)
     auto gpu = std::make_shared<cle::GPU>();
     gpu->WaitForKernelToFinish();
 
-    std::array<int,3> dims = {10, 5, 2};
+    std::array<size_t,3> dims = {10, 5, 2};
     std::vector<TYPE> A (dims[0]*dims[1]*dims[2]); 
     std::fill (A.begin(),A.end(), 10.0f);
 
@@ -127,19 +130,20 @@ int main(int argc, char **argv)
     std::vector<TYPE> C = gpu->Pull<TYPE>(img_B);
     std::cout << "\tpull image: " << img_B.Info() << std::endl;
     
-    float diff = 0;
-    for (int i =0; i< A.size(); i++)
+    float difference = 0;
+    for( auto it1 = A.begin(), it2 = C.begin(); 
+         it1 != A.end() && it2 != C.end(); ++it1, ++it2)
     {
-        diff += A[i] - C[i];
+        difference += std::abs(*it1 - *it2);
     }
-    if (diff > 0)
+    if (difference > std::numeric_limits<TYPE>::epsilon())
     {
-        std::cout << "test cleImage {Create, Push, Pull} fail - diff = " << diff << std::endl;
+        std::cout << "test cleImage {Create, Push, Pull} fail - diff = " << difference << std::endl;
         return EXIT_FAILURE;
     }
     else
     {
-        std::cout << "test cleImage {Create, Push, Pull} pass - diff = " << diff << std::endl;
+        std::cout << "test cleImage {Create, Push, Pull} pass - diff = " << difference << std::endl;
     }
     }
 
@@ -148,7 +152,7 @@ int main(int argc, char **argv)
     auto gpu = std::make_shared<cle::GPU>();
     gpu->WaitForKernelToFinish();
 
-    std::array<int,3> dims = {10, 5, 2};
+    std::array<size_t,3> dims = {10, 5, 2};
     std::vector<TYPE> A (dims[0]*dims[1]*dims[2]); 
     std::fill (A.begin(),A.end(), 10.0f);
 
@@ -159,19 +163,20 @@ int main(int argc, char **argv)
     std::vector<TYPE> C = gpu->Pull<TYPE>(img_B);
     std::cout << "\tpull image: " << img_B.Info() << std::endl;
     
-    float diff = 0;
-    for (int i =0; i< A.size(); i++)
+    float difference = 0;
+    for( auto it1 = A.begin(), it2 = C.begin(); 
+         it1 != A.end() && it2 != C.end(); ++it1, ++it2)
     {
-        diff += A[i] - C[i];
+        difference += *it1 - *it2;
     }
-    if (diff > 0)
+    if (difference > std::numeric_limits<TYPE>::epsilon())
     {
-        std::cout << "test cleImage {Create, Push, Pull} fail - diff = " << diff << std::endl;
+        std::cout << "test cleImage {Create, Push, Pull} fail - diff = " << difference << std::endl;
         return EXIT_FAILURE;
     }
     else
     {
-        std::cout << "test cleImage {Create, Push, Pull} pass - diff = " << diff << std::endl;
+        std::cout << "test cleImage {Create, Push, Pull} pass - diff = " << difference << std::endl;
     }
     }
 
