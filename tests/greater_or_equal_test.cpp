@@ -1,16 +1,14 @@
 
 #include "clesperanto.hpp"
 
-/**
- * Main test function
- *
- */
+
 int main(int argc, char **argv)
 {
-    // Initialise random input and valid output.
-    int width (4), height (3), depth (2);
-    std::array<int,3> dims = {width, height, depth};
-    std::vector<float> input_data = {
+    // Test Initialisation
+    using type = float;
+    size_t width (4), height (3), depth (2);
+    std::array<size_t,3> shape = {width, height, depth};
+    std::vector<type> arr_in = {
                 1, 2, 3, 4,
                 5, 6, 7, 8,
                 9, 0, 1, 2,
@@ -19,7 +17,7 @@ int main(int argc, char **argv)
                 7, 8, 9, 0,
                 1, 2, 3, 4
     };
-    std::vector<float> valid_data = {
+    std::vector<type> arr_res = {
                 0, 0, 0, 0,
                 1, 1, 1, 1,
                 1, 0, 0, 0,
@@ -29,27 +27,22 @@ int main(int argc, char **argv)
                 0, 0, 0, 0
     };
 
-    // Initialise GPU information.
+
+    // Test Kernel
     cle::Clesperanto cle;
-
-    // Initialise device memory and push from host to device
-    cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
-    cle::Buffer Buffer_B = cle.Create<float>(dims);
+    auto Buffer_A = cle.Push<type>(arr_in, shape);
+    auto Buffer_B = cle.Create<type>(shape);
     cle.Set(Buffer_B, 5);
-
-    cle::Buffer Buffer_C = cle.Create<float>(dims);
-
-    // Call kernel
+    auto Buffer_C = cle.Create<type>(shape);
     cle.GreaterOrEqual(Buffer_A, Buffer_B, Buffer_C);
+    auto arr_out = cle.Pull<type>(Buffer_C);    
 
-    // pull device memory to host
-    std::vector<float> output_data = cle.Pull<float>(Buffer_C);    
-
-    // Verify output
+    // Test Validation
     float difference = 0;
-    for (size_t i = 0; i < width*height*depth; i++)
+    for( auto it1 = arr_res.begin(), it2 = arr_out.begin(); 
+         it1 != arr_res.end() && it2 != arr_out.end(); ++it1, ++it2)
     {
-        difference += std::abs(valid_data[i] - output_data[i]);
+        difference += std::abs(*it1 - *it2);
     }
-    return difference > std::numeric_limits<float>::epsilon();
+    return difference > std::numeric_limits<type>::epsilon();
 }

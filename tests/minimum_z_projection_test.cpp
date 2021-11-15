@@ -3,19 +3,17 @@
 
 #include "clesperanto.hpp"
 
-/**
- * Main test function
- *
- */
+
 int main(int argc, char **argv)
 {
-    // Initialise random input and valid output.
-    int width (10), height (10), depth (10);
-    std::array<int,3> dims = {width, height, depth};
-    std::vector<float> input_data (width*height*depth);
-    std::vector<float> valid_data (width*height*1);
+    // Test Initialisation
+    using type = float;
+    size_t width (10), height (10), depth (10);
+    std::array<size_t,3> shape = {width, height, depth};
+    std::vector<type> arr_in (width*height*depth);
+    std::vector<type> arr_res (width*height*1);
     std::default_random_engine generator;
-    std::normal_distribution<float> distribution(5.0,2.0);
+    std::normal_distribution<type> distribution(5.0,2.0);
     for (int d = 0; d < depth; d++)
     {
         for (int y = 0; y < height; y++)
@@ -25,39 +23,34 @@ int main(int argc, char **argv)
                 int i = x + width*(y+height*d);
                 if ( d == y )
                 {
-                    input_data[i] = distribution(generator);
+                    arr_in[i] = distribution(generator);
                 }
                 else
                 {
-                    input_data[i] = -1000;
+                    arr_in[i] = -1000;
                 }
             }
         }
     }
-    for (int i = 0; i < width*height*1; i++)
+    for (int i = 0; i < width*height*1; ++i)
     {
-        valid_data[i] = -1000;
+        arr_res[i] = -1000;
     }
 
-    // Initialise GPU information.
+    // Test Kernel
     cle::Clesperanto cle;
-
-    // Initialise device memory and push from host
-    std::array<int,3> new_dims = {width, height, 1};
-    cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
-    cle::Buffer Buffer_B = cle.Create<float>(new_dims);
-
-    // Call kernel
+    std::array<size_t,3> new_shape = {width, height, 1};
+    auto Buffer_A = cle.Push<type>(arr_in, shape);
+    auto Buffer_B = cle.Create<type>(new_shape);
     cle.MinimumZProjection(Buffer_A, Buffer_B);   
+    auto arr_out = cle.Pull<type>(Buffer_B);    
 
-    // pull device memory to host
-    std::vector<float> output_data = cle.Pull<float>(Buffer_B);    
-
-    // Verify output
+    // Test Validation
     float difference = 0;
-    for (size_t i = 0; i < output_data.size(); i++)
+    for( auto it1 = arr_res.begin(), it2 = arr_out.begin(); 
+         it1 != arr_res.end() && it2 != arr_out.end(); ++it1, ++it2)
     {
-        difference += std::abs(valid_data[i] - output_data[i]);
+        difference += std::abs(*it1 - *it2);
     }
-    return difference > std::numeric_limits<float>::epsilon();
+    return difference > std::numeric_limits<type>::epsilon();
 }

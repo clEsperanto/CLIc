@@ -3,41 +3,34 @@
 
 #include "clesperanto.hpp"
 
-/**
- * Main test function
- *
- */
+
 int main(int argc, char **argv)
 {
-    // Initialise random input and valid output.
-    int width (3), height (3), depth (3);
-    std::array<int,3> dims = {width, height, depth};
-    std::vector<float> input_data1 (width*height*depth);
-    std::fill(input_data1.begin(), input_data1.end(), 10.0f);
-    std::vector<float> input_data2 (width*height*depth);
-    std::fill(input_data2.begin(), input_data2.end(), 10.0f);
-    std::vector<float> valid_data (width*height*depth);
-    std::fill(valid_data.begin(), valid_data.end(), 15.0f);
+    // Test Initialisation
+    using type = float;
+    size_t width (3), height (3), depth (3);
+    std::array<size_t,3> shape = {width, height, depth};
+    std::vector<type> arr_in1 (width*height*depth);
+    std::fill(arr_in1.begin(), arr_in1.end(), 10.0f);
+    std::vector<type> arr_in2 (width*height*depth);
+    std::fill(arr_in2.begin(), arr_in2.end(), 10.0f);
+    std::vector<type> arr_res (width*height*depth);
+    std::fill(arr_res.begin(), arr_res.end(), 15.0f);
 
-    // Initialise GPU information.
+    // Test Kernel
     cle::Clesperanto cle;
-
-    // Initialise device memory and push from host to device
-    cle::Buffer Buffer_A = cle.Push<float>(input_data1, dims);
-    cle::Buffer Buffer_B = cle.Push<float>(input_data2, dims);
-    cle::Buffer Buffer_C = cle.Create<float>(dims);
-
-    // Call kernel
+    auto Buffer_A = cle.Push<type>(arr_in1, shape);
+    auto Buffer_B = cle.Push<type>(arr_in2, shape);
+    auto Buffer_C = cle.Create<type>(shape);
     cle.AddImagesWeighted(Buffer_A, Buffer_B, Buffer_C, 1, 0.5f);
+    auto arr_out = cle.Pull<type>(Buffer_C);  
 
-    // pull device memory to host
-    std::vector<float> output_data = cle.Pull<float>(Buffer_C);  
-
-    // Verify output
+    // Test Validation
     float difference = 0;
-    for (size_t i = 0; i < width*height*depth; i++)
+    for( auto it1 = arr_res.begin(), it2 = arr_out.begin(); 
+         it1 != arr_res.end() && it2 != arr_out.end(); ++it1, ++it2)
     {
-        difference += std::abs(valid_data[i] - output_data[i]);
+        difference += std::abs(*it1 - *it2);
     }
-    return difference > std::numeric_limits<float>::epsilon();
+    return difference > std::numeric_limits<type>::epsilon();
 }

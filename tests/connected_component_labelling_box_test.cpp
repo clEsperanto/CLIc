@@ -3,16 +3,14 @@
 
 #include "clesperanto.hpp"
 
-/**
- * Main test function
- *
- */
+
 int main(int argc, char **argv)
 {
-    // Initialise random input and valid output.
-    int width (10), height (10), depth (1);
-    std::array<int,3> dims = {width, height, depth};
-    std::vector<float> input_data {
+    // Test Initialisation
+    using type = float;
+    size_t width (10), height (10), depth (1);
+    std::array<size_t,3> shape = {width, height, depth};
+    std::vector<type> arr_in {
                 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
                 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
                 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
@@ -24,7 +22,7 @@ int main(int argc, char **argv)
                 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
                 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
     };
-    std::vector<float> valid_data {
+    std::vector<type> arr_res {
                 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
                 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 4.0f, 4.0f, 4.0f, 0.0f, 0.0f,
                 0.0f, 1.0f, 0.0f, 3.0f, 0.0f, 4.0f, 0.0f, 4.0f, 0.0f, 0.0f,
@@ -37,24 +35,20 @@ int main(int argc, char **argv)
                 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
     };
 
-    // Initialise GPU information.
+
+    // Test Kernel
     cle::Clesperanto cle;
-
-    // Initialise device memory and push from host to device
-    cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
-    cle::Buffer Buffer_B = cle.Create<float>(dims);
-
-    // Call kernel
+    auto Buffer_A = cle.Push<type>(arr_in, shape);
+    auto Buffer_B = cle.Create<type>(shape);
     cle.ConnectedComponentLabellingBox(Buffer_A, Buffer_B);
+    auto arr_out = cle.Pull<type>(Buffer_B);    
 
-    // pull device memory to host
-    std::vector<float> output_data = cle.Pull<float>(Buffer_B);    
-
-    // Verify output
+    // Test Validation
     float difference = 0;
-    for (size_t i = 0; i < output_data.size(); i++)
+    for( auto it1 = arr_res.begin(), it2 = arr_out.begin(); 
+         it1 != arr_res.end() && it2 != arr_out.end(); ++it1, ++it2)
     {
-        difference += std::abs(valid_data[i] - output_data[i]);
+        difference += std::abs(*it1 - *it2);
     }
-    return difference > std::numeric_limits<float>::epsilon();
+    return difference > std::numeric_limits<type>::epsilon();
 }

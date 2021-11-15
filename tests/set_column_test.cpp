@@ -3,41 +3,34 @@
 
 #include "clesperanto.hpp"
 
-/**
- * Main test function
- *
- */
+
 int main(int argc, char **argv)
 {
-    // Initialise random input and valid output.
-    int width (5), height (1), depth (1);
-    std::array<int,3> dims = {width, height, depth};
-    std::vector<float> input_data (width*height*depth);
-    std::vector<float> valid_data (width*height*depth);
-    for (size_t i = 0; i < input_data.size(); i++)
+    // Test Initialisation
+    using type = float;
+    size_t width (5), height (1), depth (1);
+    std::array<size_t,3> shape = {width, height, depth};
+    std::vector<type> arr_in (width*height*depth);
+    std::vector<type> arr_res (width*height*depth);
+    for (auto i = 0; i < arr_in.size(); ++i)
     {
-            input_data[i] = static_cast<float>(i);
-            valid_data[i] = static_cast<float>(i);
+            arr_in[i] = static_cast<type>(i);
+            arr_res[i] = static_cast<type>(i);
     }
-    valid_data[2] = 10.0f;
+    arr_res[2] = 10.0f;
 
-    // Initialise GPU information.
+    // Test Kernel
     cle::Clesperanto cle;
-
-    // Initialise device memory and push from host to device
-    cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
-
-    // Call kernel
+    auto Buffer_A = cle.Push<type>(arr_in, shape);
     cle.SetColumn(Buffer_A, 2, 10);
+    auto arr_out = cle.Pull<type>(Buffer_A);    
 
-    // pull device memory to host
-    std::vector<float> output_data = cle.Pull<float>(Buffer_A);    
-
-    // Verify output
+    // Test Validation
     float difference = 0;
-    for (size_t i = 0; i < output_data.size(); i++)
+    for( auto it1 = arr_res.begin(), it2 = arr_out.begin(); 
+         it1 != arr_res.end() && it2 != arr_out.end(); ++it1, ++it2)
     {
-        difference += std::abs(valid_data[i] - output_data[i]);
+        difference += std::abs(*it1 - *it2);
     }
-    return difference > std::numeric_limits<float>::epsilon();
+    return difference > std::numeric_limits<type>::epsilon();
 }

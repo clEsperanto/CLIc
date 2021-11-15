@@ -3,39 +3,31 @@
 
 #include "clesperanto.hpp"
 
-/**
- * Main test function
- *
- */
+
 int main(int argc, char **argv)
 {
-    // Initialise random input and valid output.
-    int width (10), height (10), depth (10);
-    std::array<int,3> dims = {width, height, depth};
-    std::vector<float> input_data (width*height*depth);
-    std::vector<float> valid_data (width*1*depth);
-    std::fill(input_data.begin(), input_data.end(), 1.0f);
-    std::fill(valid_data.begin(), valid_data.end(), 10.0f);
+    // Test Initialisation
+    using type = float;
+    size_t width (10), height (10), depth (10);
+    std::array<size_t,3> shape = {width, height, depth};
+    std::vector<type> arr_in (width*height*depth);
+    std::vector<type> arr_res (width*1*depth);
+    std::fill(arr_in.begin(), arr_in.end(), 1.0f);
+    std::fill(arr_res.begin(), arr_res.end(), 10.0f);
 
-    // Initialise GPU information.
+    // Test Kernel
     cle::Clesperanto cle;
-
-    // Initialise device memory and push from host
-    std::array<int, 3> new_dims = {width, depth, 1};
-    cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
-    cle::Buffer Buffer_B = cle.Create<float>(new_dims);
-
-    // Call kernel
+    std::array<size_t,3> new_shape = {width, depth, 1};
+    auto Buffer_A = cle.Push<type>(arr_in, shape);
+    auto Buffer_B = cle.Create<type>(new_shape);
     cle.SumYProjection(Buffer_A, Buffer_B);   
+    auto arr_out = cle.Pull<type>(Buffer_B);    
 
-    // pull device memory to host
-    std::vector<float> output_data = cle.Pull<float>(Buffer_B);    
-
-    // Verify output
+    // Test Validation
     float difference = 0;
-    for (size_t i = 0; i < output_data.size(); i++)
+    for (auto i = 0; i < arr_out.size(); ++i)
     {
-        difference += std::abs(valid_data[i] - output_data[i]);
+        difference += std::abs(arr_res[i] - arr_out[i]);
     }
-    return difference > std::numeric_limits<float>::epsilon();
+    return difference > std::numeric_limits<type>::epsilon();
 }

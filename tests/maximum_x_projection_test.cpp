@@ -4,49 +4,44 @@
 
 #include "clesperanto.hpp"
 
-/**
- * Main test function
- *
- */
+
 int main(int argc, char **argv)
 {
-    // Initialise random input and valid output.
-    int width (3), height (3), depth (3);
-    std::array<int,3> dims = {width, height, depth};
-    std::vector<float> input_data ({
-        10, 1, 5, 
-         1,10, 6, 
-         5, 8,10,
+    // Test Initialisation
+    using type = float;
+    size_t width (3), height (3), depth (3);
+    std::array<size_t,3> shape = {width, height, depth};
+    std::vector<type> arr_in ({
+        10.0f, 1.0f, 5.0f, 
+         1.0f,10.0f, 6.0f, 
+         5.0f, 8.0f,10.0f,
 
-         1, 1,10, 
-         1,10, 6, 
-        10, 8, 4,
+         1.0f, 1.0f,10.0f, 
+         1.0f,10.0f, 6.0f, 
+        10.0f, 8.0f, 4.0f,
 
-        10, 1, 1,
-         1, 1,10,
-         5,10, 8, 
+        10.0f, 1.0f, 1.0f,
+         1.0f, 1.0f,10.0f,
+         5.0f,10.0f, 8.0f, 
     });
-    std::vector<float> valid_data (1*height*depth);
-    std::fill(valid_data.begin(), valid_data.end(), 10.0f);
+    std::vector<type> arr_res (1*height*depth);
+    std::fill(arr_res.begin(), arr_res.end(), 10.0f);
 
-    // Initialise GPU information.
+
+    // Test Kernel
     cle::Clesperanto cle;
-
-    cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
-    std::array<int,3> new_dims = {height, depth, 1};
-    cle::Buffer Buffer_B = cle.Create<float>(new_dims);
-
-    // Call kernel
+    auto Buffer_A = cle.Push<type>(arr_in, shape);
+    std::array<size_t,3> new_shape = {height, depth, 1};
+    auto Buffer_B = cle.Create<type>(new_shape);
     cle.MaximumXProjection(Buffer_A, Buffer_B);   
+    auto arr_out = cle.Pull<type>(Buffer_B);
 
-    // pull device memory to host
-    std::vector<float> output_data = cle.Pull<float>(Buffer_B);
-
-    // Verify output
+    // Test Validation
     float difference = 0;
-    for (size_t i = 0; i < output_data.size(); i++)
+    for( auto it1 = arr_res.begin(), it2 = arr_out.begin(); 
+         it1 != arr_res.end() && it2 != arr_out.end(); ++it1, ++it2)
     {
-        difference += std::abs(valid_data[i] - output_data[i]);
+        difference += std::abs(*it1 - *it2);
     }
-    return difference > std::numeric_limits<float>::epsilon();
+    return difference > std::numeric_limits<type>::epsilon();
 }

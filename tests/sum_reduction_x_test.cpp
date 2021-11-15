@@ -3,39 +3,32 @@
 
 #include "clesperanto.hpp"
 
-/**
- * Main test function
- *
- */
+
 int main(int argc, char **argv)
 {
-    // Initialise random input and valid output.
-    int width (12), height (1), depth (1);
-    std::array<int,3> dims = {width, height, depth};
+    // Test Initialisation
+    using type = float;
+    size_t width (12), height (1), depth (1);
+    std::array<size_t,3> shape = {width, height, depth};
     int block_size = 4;
-    std::vector<float> input_data {0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0};
-    std::vector<float> valid_data {2, 2, 1};
+    std::vector<type> arr_in {0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0};
+    std::vector<type> arr_res {2, 2, 1};
 
-    // Initialise GPU information.
+
+    // Test Kernel
     cle::Clesperanto cle;
-    
-    // Initialise device memory and push from host
-    cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
-    int sum_dim = int(width / block_size);
-    std::array<int, 3> new_dims = {sum_dim, 1, 1};
-    cle::Buffer Buffer_B = cle.Create<float>(new_dims);
-
-    // Call kernel
+    auto Buffer_A = cle.Push<type>(arr_in, shape);
+    size_t sum_dim = static_cast<size_t>(width / block_size);
+    std::array<size_t,3> new_shape = {sum_dim, 1, 1};
+    auto Buffer_B = cle.Create<type>(new_shape);
     cle.SumReductionX(Buffer_A, Buffer_B, block_size);  
+    auto arr_out = cle.Pull<type>(Buffer_B);    
 
-    // pull device memory to host
-    std::vector<float> output_data = cle.Pull<float>(Buffer_B);    
-
-    // Verify output
+    // Test Validation
     float difference = 0;
-    for (size_t i = 0; i < output_data.size(); i++)
+    for (auto i = 0; i < arr_out.size(); ++i)
     {
-        difference += std::abs(valid_data[i] - output_data[i]);
+        difference += std::abs(arr_res[i] - arr_out[i]);
     }    
-    return difference > std::numeric_limits<float>::epsilon();
+    return difference > std::numeric_limits<type>::epsilon();
 }
