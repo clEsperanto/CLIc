@@ -16,28 +16,16 @@ namespace cle
 class Image : public Object
 {
 public: 
-
     Image() =default;
-    Image(const cl::Image*, const std::array<int,3>&, const DataType =cle::Object::FLOAT);
+    Image(const cl::Image*, const std::array<size_t,3>& ={1,1,1}, const DataType =cle::Object::FLOAT);
     ~Image() =default;
 
+    const size_t Bitsize() const;
     const cl::Image* Data() const;
-
     const std::string Info() const;
 
-    const std::array<int,3> Origin() const;
-    const std::array<int,3> Region() const;
-    const cl::ImageFormat Format() const;
-
-    const char* GetObjectType() const;
-    const bool IsObjectType(const char*) const;
-
 private:
-    std::shared_ptr<const cl::Image> m_Ocl;
-    cl::ImageFormat m_Format;
-    std::array<int,3> m_Origin {0, 0, 0};
-    std::array<int,3> m_Region {1, 1, 1};
-
+    std::shared_ptr<const cl::Image> m_Ocl =nullptr;
 };
 
 }

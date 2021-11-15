@@ -17,30 +17,29 @@ template<class T =float>
 class Scalar : public LightObject
 {
 private:
-    T m_obj;
+    T m_obj = 0;
 
 protected:
     const char* TemplateToString() const;
 
 public: 
-
-    Scalar();
+    Scalar() =default;
     Scalar(const T);
     ~Scalar() =default;
 
     const T Data() const;
 
+    const int nDim() const;
+    const int Size() const;
+    const std::array<size_t,3> Shape() const;
+    const std::array<size_t,3> Origin() const;
+    const std::array<size_t,3> Region() const;
+
     const char* GetDataType() const;
     const bool IsDataType(const char*) const;
-
     const char* GetObjectType() const;  
     const bool IsObjectType(const char*) const;
-    
 };
-
-template<class T>
-Scalar<T>::Scalar() : LightObject(), m_obj(0) 
-{}
 
 template<class T>
 Scalar<T>::Scalar(const T _d) : LightObject(), m_obj(_d)
@@ -53,6 +52,36 @@ const T Scalar<T>::Data() const
 }
 
 template<class T>
+const int Scalar<T>::nDim() const 
+{ 
+    return 1; 
+}
+
+template<class T>
+const int Scalar<T>::Size() const 
+{ 
+    return 1; 
+}
+
+template<class T>
+const std::array<size_t,3> Scalar<T>::Shape() const 
+{ 
+    return std::array<size_t,3>({1,1,1}); 
+}
+
+template<class T>
+const std::array<size_t,3> Scalar<T>::Origin() const 
+{ 
+    return std::array<size_t,3>({0,0,0}); 
+}
+
+template<class T>
+const std::array<size_t,3> Scalar<T>::Region() const 
+{ 
+    return std::array<size_t,3>({1,1,1}); 
+}
+
+template<class T>
 const char* Scalar<T>::GetDataType() const 
 { 
     return TemplateToString(); 
@@ -61,7 +90,7 @@ const char* Scalar<T>::GetDataType() const
 template<class T>
 const bool Scalar<T>::IsDataType(const char* t_str) const
 {
-    return strncmp(TemplateToString(), t_str, strlen(t_str)) == 0;
+    return strncmp(this->TemplateToString(), t_str, strlen(t_str)) == 0;
 }
 
 template<class T>
