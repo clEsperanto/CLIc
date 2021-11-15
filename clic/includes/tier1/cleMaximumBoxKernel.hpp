@@ -19,8 +19,8 @@ private:
         
 public:
     MaximumBoxKernel(std::shared_ptr<GPU>);
-    void SetInput(Buffer&);
-    void SetOutput(Buffer&);
+    void SetInput(Object&);
+    void SetOutput(Object&);
     void SetRadius(float=0, float=0, float=0);
     void Execute();
 

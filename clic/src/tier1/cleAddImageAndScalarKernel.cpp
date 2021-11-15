@@ -10,6 +10,7 @@ AddImageAndScalarKernel::AddImageAndScalarKernel(std::shared_ptr<GPU> t_gpu) :
             {"src", "dst", "scalar"}
         ) 
 {
+    this->m_Sources.insert({this->m_KernelName + "_1d", this->m_OclHeader1d});
     this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
     this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
 }

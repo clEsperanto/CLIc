@@ -10,6 +10,9 @@ namespace cle
 class AddImageAndScalarKernel : public Kernel
 {
 private:
+    std::string m_OclHeader1d = 
+        #include "cle_add_image_and_scalar_1d.h" 
+        ;
     std::string m_OclHeader2d = 
         #include "cle_add_image_and_scalar_2d.h" 
         ;

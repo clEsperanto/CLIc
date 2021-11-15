@@ -14,12 +14,12 @@ DifferenceOfGaussianKernel::DifferenceOfGaussianKernel(std::shared_ptr<GPU> t_gp
     )
 {}
 
-void DifferenceOfGaussianKernel::SetInput(Buffer& t_x)
+void DifferenceOfGaussianKernel::SetInput(Object& t_x)
 {
     this->AddObject(t_x, "src");
 }
 
-void DifferenceOfGaussianKernel::SetOutput(Buffer& t_x)
+void DifferenceOfGaussianKernel::SetOutput(Object& t_x)
 {
     this->AddObject(t_x, "dst");
 }
@@ -40,11 +40,11 @@ void DifferenceOfGaussianKernel::SetSigma2(float t_x, float t_y, float t_z)
 
 void DifferenceOfGaussianKernel::Execute()
 {
-    std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("src"));
-    std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("dst"));
+    auto src = this->GetParameter<Object>("src");
+    auto dst = this->GetParameter<Object>("dst");
 
-    cle::Buffer temp1 = this->m_gpu->CreateBuffer<float>(src->Shape());
-    cle::Buffer temp2 = this->m_gpu->CreateBuffer<float>(src->Shape());
+    auto temp1 = this->m_gpu->CreateBuffer<float>(src->Shape());
+    auto temp2 = this->m_gpu->CreateBuffer<float>(src->Shape());
 
     GaussianBlurKernel gaussian_1_kernel(this->m_gpu);
     gaussian_1_kernel.SetInput(*src);

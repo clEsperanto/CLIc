@@ -21,12 +21,12 @@ int MinimumBoxKernel::Radius2KernelSize(float t_r) const
     return static_cast<int>(t_r) * 2 + 1;
 }
 
-void MinimumBoxKernel::SetInput(Buffer& t_x)
+void MinimumBoxKernel::SetInput(Object& t_x)
 {
     this->AddObject(t_x, "src");
 }
 
-void MinimumBoxKernel::SetOutput(Buffer& t_x)
+void MinimumBoxKernel::SetOutput(Object& t_x)
 {
     this->AddObject(t_x, "dst");
 }
@@ -40,8 +40,8 @@ void MinimumBoxKernel::SetRadius(float t_x, float t_y, float t_z)
 
 void MinimumBoxKernel::Execute()
 {
-    std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("src"));
-    std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("dst"));
+    auto src = this->GetParameter<Object>("src");
+    auto dst = this->GetParameter<Object>("dst");
     
     int nx = Radius2KernelSize(this->m_x);
     int ny = Radius2KernelSize(this->m_y);

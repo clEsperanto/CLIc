@@ -15,8 +15,8 @@ private:
 
 public:
     DifferenceOfGaussianKernel(std::shared_ptr<GPU>);
-    void SetInput(Buffer&);
-    void SetOutput(Buffer&);
+    void SetInput(Object&);
+    void SetOutput(Object&);
     void SetSigma1(float, float, float);
     void SetSigma2(float, float, float);
     void Execute();

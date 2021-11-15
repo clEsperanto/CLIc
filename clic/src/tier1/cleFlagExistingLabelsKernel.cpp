@@ -15,19 +15,19 @@ FlagExistingLabelsKernel::FlagExistingLabelsKernel(std::shared_ptr<GPU> t_gpu) :
     this->m_Sources.insert({this->m_KernelName + "", this->m_OclHeader});
 }    
 
-void FlagExistingLabelsKernel::SetInput(Buffer& t_x)
+void FlagExistingLabelsKernel::SetInput(Object& t_x)
 {
     this->AddObject(t_x, "src");
 }
 
-void FlagExistingLabelsKernel::SetOutput(Buffer& t_x)
+void FlagExistingLabelsKernel::SetOutput(Object& t_x)
 {
     this->AddObject(t_x, "dst");
 }
 
 void FlagExistingLabelsKernel::Execute()
 {
-    std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("dst"));
+    auto dst = this->GetParameter<Object>("dst");
     SetKernel set(this->m_gpu);
     set.SetInput(*dst);
     set.SetValue(0);

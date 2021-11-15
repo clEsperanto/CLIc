@@ -25,12 +25,12 @@ int GaussianBlurKernel::Sigma2KernelSize(float t_x) const
     return n;
 }
 
-void GaussianBlurKernel::SetInput(Buffer& t_x)
+void GaussianBlurKernel::SetInput(Object& t_x)
 {
     this->AddObject(t_x, "src");
 }
 
-void GaussianBlurKernel::SetOutput(Buffer& t_x)
+void GaussianBlurKernel::SetOutput(Object& t_x)
 {
     this->AddObject(t_x, "dst");
 }
@@ -44,8 +44,8 @@ void GaussianBlurKernel::SetSigma(float t_x, float t_y, float t_z)
 
 void GaussianBlurKernel::Execute()
 {
-    std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("src"));
-    std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("dst"));
+    auto src = this->GetParameter<Object>("src");
+    auto dst = this->GetParameter<Object>("dst");
 
     int nx = Sigma2KernelSize(this->m_x);
     int ny = Sigma2KernelSize(this->m_y);
@@ -54,8 +54,8 @@ void GaussianBlurKernel::Execute()
     ExecuteSeparableKernel kernel(this->m_gpu);
     kernel.SetKernelName(this->m_KernelName);
     kernel.SetSources(this->m_Sources);
-    kernel.SetInput( *src );
-    kernel.SetOutput( *dst );
+    kernel.SetInput(*src);
+    kernel.SetOutput(*dst);
     kernel.SetSigma(this->m_x, this->m_y, this->m_z);
     kernel.SetKernelSize(nx, ny, nz);
     kernel.Execute();
