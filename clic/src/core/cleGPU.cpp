@@ -346,9 +346,9 @@ void GPU::ReadImage(const cl::Image* t_ocl_object, void* t_arr) const
 
 
 
-void GPU::WaitForKernelToFinish()
+void GPU::SetWaitForKernelToFinish(bool t_flag)
 {
-    this->m_WaitForFinish = !this->m_WaitForFinish;
+    this->m_WaitForFinish = t_flag;
 }
 
 void GPU::Finish() const
