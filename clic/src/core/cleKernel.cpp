@@ -11,7 +11,6 @@ void Kernel::ManageDimensions(const char* t_tag)
         auto it = this->m_Parameters.find(t_tag);
         if (it != this->m_Parameters.end())
         {
-            DEBUG("parameter dim = " << this->m_Parameters.at(t_tag)->nDim() << "\n");
             if(this->m_Parameters.at(t_tag)->nDim() == 3)
             {
                 this->m_nDimPrefix = "_3d";
