@@ -20,7 +20,7 @@ protected:
     virtual void Setup()
     {
         vector<float> inputData(dataWidth * dataWidth);
-        array<int,3> dim{{dataWidth, dataWidth, 1}};
+        array<size_t,3> dim{{dataWidth, dataWidth, 1}};
         
         // Initialise device memory and push from host
         gpuInput = cle.Push<float>(inputData, dim);
