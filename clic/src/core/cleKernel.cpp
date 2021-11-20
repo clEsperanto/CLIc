@@ -138,10 +138,10 @@ std::string Kernel::TypeAbbr(const char* t_str) const
     if (strncmp("float", t_str, size) == 0)  return "f";
     if (strncmp("char", t_str, size) == 0)   return "c";
     if (strncmp("uchar", t_str, size) == 0)  return "uc";
-    // if (strncmp("int", t_str, size) == 0)    return "i";    // Missing definition type in preamble
-    // if (strncmp("uint", t_str, size) == 0)   return "ui";   // Missing definition type in preamble
-    // if (strncmp("short", t_str, size) == 0)    return "s";  // Missing definition type in preamble
-    // if (strncmp("ushort", t_str, size) == 0)   return "us"; // Missing definition type in preamble
+    if (strncmp("short", t_str, size) == 0)  return "s";
+    if (strncmp("ushort", t_str, size) == 0) return "us";
+    if (strncmp("int", t_str, size) == 0)    return "i";
+    if (strncmp("uint", t_str, size) == 0)   return "ui";
     return "?"; 
 }
 
