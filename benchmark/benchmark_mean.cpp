@@ -21,6 +21,9 @@ protected:
     {
         vector<float> inputData(dataWidth * dataWidth);
         array<size_t,3> dim{{dataWidth, dataWidth, 1}};
+
+        cle.Ressources()->SetWaitForKernelToFinish(true);
+
         
         // Initialise device memory and push from host
         gpuInput = cle.Push<float>(inputData, dim);
@@ -35,7 +38,7 @@ protected:
     virtual void Teardown() {}
 
 public:
-    int dataWidth;
+    size_t dataWidth;
     MeanBenchmark() : cle(cle::Clesperanto()){}
     virtual ~MeanBenchmark(){}
 };
