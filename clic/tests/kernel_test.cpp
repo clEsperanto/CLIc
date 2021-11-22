@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     {
     using TYPE = float;
     auto gpu = std::make_shared<cle::GPU>();
-    gpu->WaitForKernelToFinish();
+    gpu->SetWaitForKernelToFinish(true);
 
     std::array<size_t,3> dims = {10, 1, 1};
     std::vector<TYPE> data (dims[0]*dims[1]*dims[2]); 
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     {
     using TYPE = float;
     auto gpu = std::make_shared<cle::GPU>();
-    gpu->WaitForKernelToFinish();
+    gpu->SetWaitForKernelToFinish(true);
 
     std::array<size_t,3> dims = {10, 5, 1};
     std::vector<TYPE> data (dims[0]*dims[1]*dims[2]); 
@@ -89,7 +89,7 @@ int main(int argc, char **argv)
     {
     using TYPE = float;
     auto gpu = std::make_shared<cle::GPU>();
-    gpu->WaitForKernelToFinish();
+    gpu->SetWaitForKernelToFinish(true);
 
     std::array<size_t,3> dims = {10, 5, 2};
     std::vector<TYPE> data (dims[0]*dims[1]*dims[2]); 
@@ -129,7 +129,7 @@ int main(int argc, char **argv)
     {
     using TYPE = float;
     auto gpu = std::make_shared<cle::GPU>();
-    gpu->WaitForKernelToFinish();
+    gpu->SetWaitForKernelToFinish(true);
 
     std::array<size_t,3> dims = {10, 5, 2};
     std::vector<TYPE> data (dims[0]*dims[1]*dims[2]); 
@@ -169,7 +169,7 @@ int main(int argc, char **argv)
     {
     using TYPE = float;
     auto gpu = std::make_shared<cle::GPU>();
-    gpu->WaitForKernelToFinish();
+    gpu->SetWaitForKernelToFinish(true);
 
     std::array<size_t,3> dims = {10, 5, 1};
     std::vector<TYPE> data (dims[0]*dims[1]*dims[2]); 
@@ -209,7 +209,7 @@ int main(int argc, char **argv)
     {
     using TYPE = float;
     auto gpu = std::make_shared<cle::GPU>();
-    gpu->WaitForKernelToFinish();
+    gpu->SetWaitForKernelToFinish(true);
 
     std::array<size_t,3> dims = {10, 1, 1};
     std::vector<TYPE> data (dims[0]*dims[1]*dims[2]); 
