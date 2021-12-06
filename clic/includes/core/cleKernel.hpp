@@ -63,7 +63,7 @@ protected:
     void AddObject(float, const char*);
 
     // Build, Set, and Run Kernel
-    void ManageDimensions(const char*);
+    void ManageDimensions();
     void BuildProgramKernel();
     void SetArguments();
     void EnqueueKernel();

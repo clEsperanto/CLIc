@@ -4,38 +4,36 @@
 namespace cle
 {
 
-void Kernel::ManageDimensions(const char* t_tag)
+void Kernel::ManageDimensions()
 {
     if(this->m_Sources.size() > 1)
     {
-        auto it = this->m_Parameters.find(t_tag);
-        if (it != this->m_Parameters.end())
+        for(auto it = this->m_Parameters.begin(); it != this->m_Parameters.end(); ++it)
         {
-            if(this->m_Parameters.at(t_tag)->nDim() == 3)
+            if (it->first.find("src") != std::string::npos || it->first.find("dst") != std::string::npos)
             {
-                this->m_nDimPrefix = "_3d";
+                if(it->second->nDim() == 3)
+                {
+                    this->m_nDimPrefix = "_3d";
+                }
+                else if(it->second->nDim() == 2)
+                {
+                    this->m_nDimPrefix = "_2d";
+                }
+                else
+                {
+                    this->m_nDimPrefix = "_1d";
+                }
             }
-            else if(this->m_Parameters.at(t_tag)->nDim() == 2)
-            {
-                this->m_nDimPrefix = "_2d";
-            }
-            else
-            {
-                this->m_nDimPrefix = "_1d";
-            }
-        }
-        else
-        {
-            std::cerr << "Kernel : Error in managing data dimensions, could not find \""<< t_tag <<"\" tag in Parameters list." << std::endl;
         }
     }
 }
     
 const std::string Kernel::LoadPreamble() const
 {
-    std::string preamble = 
+    std::string preamble = {
         #include "cle_preamble.h"
-    ;
+    };
     return preamble;
 }
 
