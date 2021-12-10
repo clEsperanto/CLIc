@@ -9,7 +9,7 @@ namespace cle
 ExecuteSeparableKernel::ExecuteSeparableKernel (std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu, 
             "",
-            {"dst" , "src", "dim", "N", "s"}
+            {"src" , "dst", "dim", "N", "s"}
     )
 {}    
 

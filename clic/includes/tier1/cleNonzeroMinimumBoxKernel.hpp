@@ -11,12 +11,9 @@ namespace cle
 class NonzeroMinimumBoxKernel : public Kernel
 {
 private:
-    std::string m_OclHeader2d = 
-        #include "cle_nonzero_minimum_box_2d.h" 
-        ;
-    std::string m_OclHeader3d = 
-        #include "cle_nonzero_minimum_box_3d.h" 
-        ;
+    std::string m_OclHeader = {
+        #include "cle_nonzero_minimum_box.h" 
+        };
 
 public:
     NonzeroMinimumBoxKernel(std::shared_ptr<GPU>);

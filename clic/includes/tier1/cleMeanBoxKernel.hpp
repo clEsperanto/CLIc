@@ -10,12 +10,9 @@ namespace cle
 class MeanBoxKernel : public Kernel
 {
 private:
-    std::string m_OclHeader2d = 
-        #include "cle_mean_separable_2d.h" 
-        ;
-    std::string m_OclHeader3d = 
-        #include "cle_mean_separable_3d.h" 
-        ;
+    std::string m_OclHeader = {
+        #include "cle_mean_separable.h" 
+        };
 
 public:
     MeanBoxKernel(std::shared_ptr<GPU>);

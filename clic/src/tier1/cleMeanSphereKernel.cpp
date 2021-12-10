@@ -7,11 +7,10 @@ namespace cle
 MeanSphereKernel::MeanSphereKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu,
             "mean_sphere",
-            {"dst", "src", "radius_x", "radius_y", "radius_z"}
+            {"src", "dst", "scalar0", "scalar1", "scalar2"}
     )
 {
-    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
-    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
+    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
 }    
     
 int MeanSphereKernel::Radius2KernelSize(float t_r) const
@@ -22,14 +21,11 @@ int MeanSphereKernel::Radius2KernelSize(float t_r) const
 void MeanSphereKernel::SetRadius(int t_x, int t_y, int t_z)
 {
     int dx = Radius2KernelSize(t_x);
-    this->AddObject(dx, "radius_x");
+    this->AddObject(dx, "scalar0");
     int dy = Radius2KernelSize(t_y);
-    this->AddObject(dy, "radius_y");
-    if(t_z > 0)
-    {
-        int dz = Radius2KernelSize(t_z);
-        this->AddObject(dz, "radius_z");
-    }
+    this->AddObject(dy, "scalar1");
+    int dz = Radius2KernelSize(t_z);
+    this->AddObject(dz, "scalar2");
 }
 
 void MeanSphereKernel::SetInput(Object& t_x)
@@ -44,7 +40,7 @@ void MeanSphereKernel::SetOutput(Object& t_x)
 
 void MeanSphereKernel::Execute()
 {
-    this->ManageDimensions("dst");
+    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

@@ -9,10 +9,10 @@ namespace cle
 FlagExistingLabelsKernel::FlagExistingLabelsKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu,
             "flag_existing_labels",
-            {"dst" , "src"}
+            {"src" , "dst"}
     )
 {
-    this->m_Sources.insert({this->m_KernelName + "", this->m_OclHeader});
+    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
 }    
 
 void FlagExistingLabelsKernel::SetInput(Object& t_x)

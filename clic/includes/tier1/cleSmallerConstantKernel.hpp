@@ -10,12 +10,9 @@ namespace cle
 class SmallerConstantKernel : public Kernel
 {
 private:
-    std::string m_OclHeader2d = 
-        #include "cle_smaller_constant_2d.h" 
-        ;
-    std::string m_OclHeader3d = 
-        #include "cle_smaller_constant_3d.h" 
-        ;
+    std::string m_OclHeader = {
+        #include "cle_smaller_constant.h" 
+        };
 
 public:
     SmallerConstantKernel(std::shared_ptr<GPU>);

@@ -8,11 +8,10 @@ namespace cle
 NonzeroMinimumBoxKernel::NonzeroMinimumBoxKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel(t_gpu,
         "nonzero_minimum_box",
-        {"dst", "flag_dst", "src"}
+        {"src", "dst0", "dst1"}
     )
 {
-    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
-    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
+    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
 }
 
 void NonzeroMinimumBoxKernel::SetInput(Object& t_x)
@@ -22,17 +21,17 @@ void NonzeroMinimumBoxKernel::SetInput(Object& t_x)
 
 void NonzeroMinimumBoxKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(t_x, "dst");
+    this->AddObject(t_x, "dst1");
 }
 
 void NonzeroMinimumBoxKernel::SetOutputFlag(Object& t_x)
 {
-    this->AddObject(t_x, "flag_dst");
+    this->AddObject(t_x, "dst0");
 }
 
 void NonzeroMinimumBoxKernel::Execute()
 {
-    this->ManageDimensions("dst");
+    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

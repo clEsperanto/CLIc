@@ -18,10 +18,10 @@ int main(int argc, char **argv)
     std::fill(arr_in.begin(), arr_in.end(), 5.0f);
     std::fill(arr_res.begin(), arr_res.end(), 5.0f + scalar);
 
-    const char* name = "add_image_and_scalar_3d";
+    const char* name = "add_image_and_scalar";
     std::vector<std::string> tags = {"src", "dst", "scalar"};
     std::string dirpath = argv[1];
-    std::string path = dirpath + "/add_image_and_scalar_3d_x.cl";
+    std::string path = dirpath + "/add_image_and_scalar.cl";
 
     // Test Kernel
     cle::Clesperanto cle;

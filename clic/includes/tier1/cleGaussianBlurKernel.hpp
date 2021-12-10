@@ -10,12 +10,9 @@ namespace cle
 class GaussianBlurKernel : public Kernel
 {
 private:
-    std::string m_OclHeader2d = 
-        #include "cle_gaussian_blur_separable_2d.h" 
-        ;
-    std::string m_OclHeader3d = 
-        #include "cle_gaussian_blur_separable_3d.h" 
-        ;
+    std::string m_OclHeader = {
+        #include "cle_gaussian_blur_separable.h" 
+        };
 
 public:
     GaussianBlurKernel(std::shared_ptr<GPU>);

@@ -8,10 +8,10 @@ namespace cle
 SumYProjectionKernel::SumYProjectionKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu,
             "sum_y_projection",
-            {"dst", "src"}
+            {"src", "dst"}
     )
 {
-    this->m_Sources.insert({this->m_KernelName + "", this->m_OclHeader});
+    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
 }   
 
 void SumYProjectionKernel::SetInput(Object& t_x)
@@ -26,7 +26,7 @@ void SumYProjectionKernel::SetOutput(Object& t_x)
 
 void SumYProjectionKernel::Execute()
 {
-    this->ManageDimensions("dst");
+    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

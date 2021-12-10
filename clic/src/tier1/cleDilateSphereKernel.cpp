@@ -11,8 +11,7 @@ DilateSphereKernel::DilateSphereKernel(std::shared_ptr<GPU> t_gpu) :
             {"src" , "dst"}
     )
 {
-    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
-    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
+    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
 }
 
 void DilateSphereKernel::SetInput(Object& t_x)
@@ -27,7 +26,7 @@ void DilateSphereKernel::SetOutput(Object& t_x)
 
 void DilateSphereKernel::Execute()
 {
-    this->ManageDimensions("dst");
+    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

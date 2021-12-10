@@ -11,9 +11,9 @@ namespace cle
 class MinimumXProjectionKernel : public Kernel
 {
 private:
-    std::string m_OclHeader = 
+    std::string m_OclHeader = {
         #include "cle_minimum_x_projection.h" 
-        ;
+        };
 
 public:
     MinimumXProjectionKernel(std::shared_ptr<GPU>);

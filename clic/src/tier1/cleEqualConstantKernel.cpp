@@ -8,16 +8,15 @@ namespace cle
 EqualConstantKernel::EqualConstantKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu, 
             "equal_constant",
-            {"src1", "scalar", "dst"}
+            {"src", "dst", "scalar"}
     )
 {
-    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
-    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
+    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
 }
 
 void EqualConstantKernel::SetInput(Object& t_x)
 {
-    this->AddObject(t_x, "src1");
+    this->AddObject(t_x, "src");
 }
 
 void EqualConstantKernel::SetOutput(Object& t_x)
@@ -32,7 +31,7 @@ void EqualConstantKernel::SetScalar(float t_x)
 
 void EqualConstantKernel::Execute()
 {
-    this->ManageDimensions("dst");
+    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

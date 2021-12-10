@@ -11,9 +11,9 @@ namespace cle
 class SumYProjectionKernel : public Kernel
 {
 private:
-    std::string m_OclHeader = 
+    std::string m_OclHeader = {
         #include "cle_sum_y_projection.h" 
-        ;
+        };
 
 public:
     SumYProjectionKernel(std::shared_ptr<GPU>);

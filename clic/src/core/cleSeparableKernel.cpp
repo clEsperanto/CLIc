@@ -7,7 +7,7 @@ namespace cle
 SeparableKernel::SeparableKernel (std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu, 
             "",
-            {"dst" , "src", "dim", "N", "s"}
+            {"src" , "dst", "dim", "N", "s"}
     )
 {}
 
@@ -48,7 +48,7 @@ void SeparableKernel::SetDimension(int t_x)
 
 void SeparableKernel::Execute()
 {
-    this->ManageDimensions("dst");
+    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

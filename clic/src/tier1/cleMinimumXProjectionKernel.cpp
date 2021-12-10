@@ -8,10 +8,10 @@ namespace cle
 MinimumXProjectionKernel::MinimumXProjectionKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu,
             "minimum_x_projection",
-            {"dst_min", "src"}
+            {"src", "dst"}
     )
 {
-    this->m_Sources.insert({this->m_KernelName + "", this->m_OclHeader});
+    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
 }
     
 void MinimumXProjectionKernel::SetInput(Object& t_x)
@@ -21,12 +21,12 @@ void MinimumXProjectionKernel::SetInput(Object& t_x)
 
 void MinimumXProjectionKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(t_x, "dst_min");
+    this->AddObject(t_x, "dst");
 }
 
 void MinimumXProjectionKernel::Execute()
 {
-    this->ManageDimensions("dst");
+    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

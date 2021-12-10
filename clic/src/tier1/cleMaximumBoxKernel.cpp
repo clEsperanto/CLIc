@@ -9,11 +9,10 @@ namespace cle
 MaximumBoxKernel::MaximumBoxKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu,
             "maximum_separable",
-            {"dst", "src"}
+            {"src", "dst"}
     )
 {
-    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
-    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d}); 
+    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
 }    
 
 int MaximumBoxKernel::Radius2KernelSize(float t_r) const
