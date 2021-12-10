@@ -11,7 +11,7 @@ namespace cle
 MaximumOfAllPixelsKernel::MaximumOfAllPixelsKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu, 
             "maximum_of_all_pixels",
-            {"dst_max", "src"}
+            {"src", "dst"}
     )
 {}
 
@@ -22,13 +22,13 @@ void MaximumOfAllPixelsKernel::SetInput(Object& t_x)
 
 void MaximumOfAllPixelsKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(t_x, "dst_max");
+    this->AddObject(t_x, "dst");
 }
 
 void MaximumOfAllPixelsKernel::Execute()
 {
     auto src = this->GetParameter<Object>("src");
-    auto dst = this->GetParameter<Object>("dst_max");
+    auto dst = this->GetParameter<Object>("dst");
     std::array<size_t,3> dim = src->Shape();
 
     if (dim[2] > 1)

@@ -11,7 +11,7 @@ namespace cle
 SumOfAllPixelsKernel::SumOfAllPixelsKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu,
             "sum_of_all_pixels",
-            {"dst_sum", "src"}
+            {"src", "dst"}
     )
 {}    
     
@@ -22,13 +22,13 @@ void SumOfAllPixelsKernel::SetInput(Object& t_x)
 
 void SumOfAllPixelsKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(t_x, "dst_sum");
+    this->AddObject(t_x, "dst");
 }
 
 void SumOfAllPixelsKernel::Execute()
 {
     auto src = this->GetParameter<Object>("src");
-    auto dst = this->GetParameter<Object>("dst_sum");
+    auto dst = this->GetParameter<Object>("dst");
     std::array<size_t,3> dim = src->Shape();
 
     if (dim[2] > 1)

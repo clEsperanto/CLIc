@@ -11,7 +11,7 @@ namespace cle
 MinimumOfAllPixelsKernel::MinimumOfAllPixelsKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu,
             "minimum_of_all_pixels",
-            {"dst_min", "src"}
+            {"src", "dst"}
     )
 {}    
     
@@ -22,13 +22,13 @@ void MinimumOfAllPixelsKernel::SetInput(Object& t_x)
 
 void MinimumOfAllPixelsKernel::SetOutput(Object& t_x)
 {
-    this->AddObject(t_x, "dst_min");
+    this->AddObject(t_x, "dst");
 }
 
 void MinimumOfAllPixelsKernel::Execute()
 {
     auto src = this->GetParameter<Object>("src");
-    auto dst = this->GetParameter<Object>("dst_min");
+    auto dst = this->GetParameter<Object>("dst");
 
     std::array<size_t,3> dim = src->Shape();
     if (dim[2] > 1)

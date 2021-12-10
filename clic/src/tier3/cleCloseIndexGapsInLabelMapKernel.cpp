@@ -17,7 +17,7 @@ namespace cle
 CloseIndexGapsInLabelMapKernel::CloseIndexGapsInLabelMapKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu,
             "close_index_gaps_in_label_map",
-            {"src", "dst", "blocksize"}
+            {"src", "dst", "scalar"}
     )
 {}
 
