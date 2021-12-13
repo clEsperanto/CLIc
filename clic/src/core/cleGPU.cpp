@@ -274,8 +274,10 @@ void GPU::ReadImage(const cl::Image* t_ocl_object, void* t_arr) const
     size_t height = t_ocl_object->getImageInfo<CL_IMAGE_HEIGHT>();
     size_t depth = t_ocl_object->getImageInfo<CL_IMAGE_DEPTH>();
 
-    if(height == 0) height += 1;
-    if(depth == 0) depth += 1;
+    DEBUG(row_pitch << " " << slice_pitch << " " << width << " " << height << " " << depth << "\n" );
+
+    if(height == 0) height = 1;
+    if(depth == 0) depth = 1;
     std::array<size_t,3> origin {0,0,0};
     std::array<size_t,3> region {width, height, depth};
 
