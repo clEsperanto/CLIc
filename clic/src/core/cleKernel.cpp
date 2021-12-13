@@ -359,7 +359,6 @@ void Kernel::BuildProgramKernel()
             {
                 std::cerr << "Kernel : Fail to create program." << std::endl;
                 std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
-                std::cerr << sources << std::endl;
             }
             try
             {
@@ -371,7 +370,6 @@ void Kernel::BuildProgramKernel()
                 std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
                 std::cerr << "build log:" << std::endl;
                 std::cerr << this->m_Program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(this->m_gpu->Device()) << std::endl;
-                std::cerr << sources << std::endl;
             }
             this->m_CurrentHash = source_hash;
             this->m_gpu->AddProgram(this->m_Program, m_CurrentHash);
