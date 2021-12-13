@@ -4,7 +4,7 @@ build
 
 # Specific files/folders
 cle_preamble.h
-clic.h
+clic/core/clic.h
 cleKernelList.h
 clic/kernels
 
