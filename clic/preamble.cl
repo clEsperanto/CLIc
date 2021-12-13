@@ -25,7 +25,7 @@
 #endif
 
 #ifndef BUFFER_READ_WRITE
-#define BUFFER_READ_WRITE 1
+    #define BUFFER_READ_WRITE 1
 
 #define MINMAX_TYPE int
 
@@ -424,7 +424,35 @@ inline uchar2 read_buffer1duc(int read_buffer_width, int read_buffer_height, int
     return (uchar2){buffer_var[pos_in_buffer],0};
 }
 
-inline short2 read_buffer1di(int read_buffer_width, int read_buffer_height, int read_buffer_depth, __global short * buffer_var, sampler_t sampler, int position )
+inline int2 read_buffer1di(int read_buffer_width, int read_buffer_height, int read_buffer_depth, __global int * buffer_var, sampler_t sampler, int position )
+{
+    int pos = (int){position};
+    if (true) { // if (CLK_ADDRESS_CLAMP_TO_EDGE & sampler) {
+        pos = max((MINMAX_TYPE)pos, (MINMAX_TYPE)0);
+        pos = min((MINMAX_TYPE)pos, (MINMAX_TYPE)read_buffer_width - 1);
+    }
+    int pos_in_buffer = pos;
+    if (pos < 0 || pos >= read_buffer_width) {
+        return (int2){0,0};
+    }
+    return (int2){buffer_var[pos_in_buffer],0};
+}
+
+inline uint2 read_buffer1dui(int read_buffer_width, int read_buffer_height, int read_buffer_depth, __global uint * buffer_var, sampler_t sampler, int position )
+{
+    int pos = (int){position};
+    if (true) { // if (CLK_ADDRESS_CLAMP_TO_EDGE & sampler) {
+        pos = max((MINMAX_TYPE)pos, (MINMAX_TYPE)0);
+        pos = min((MINMAX_TYPE)pos, (MINMAX_TYPE)read_buffer_width - 1);
+    }
+    int pos_in_buffer = pos;
+    if (pos < 0 || pos >= read_buffer_width) {
+        return (uint2){0,0};
+    }
+    return (uint2){buffer_var[pos_in_buffer],0};
+}
+
+inline short2 read_buffer1ds(int read_buffer_width, int read_buffer_height, int read_buffer_depth, __global short * buffer_var, sampler_t sampler, int position )
 {
     int pos = (int){position};
     if (true) { // if (CLK_ADDRESS_CLAMP_TO_EDGE & sampler) {
@@ -438,7 +466,7 @@ inline short2 read_buffer1di(int read_buffer_width, int read_buffer_height, int 
     return (short2){buffer_var[pos_in_buffer],0};
 }
 
-inline ushort2 read_buffer1dui(int read_buffer_width, int read_buffer_height, int read_buffer_depth, __global ushort * buffer_var, sampler_t sampler, int position )
+inline ushort2 read_buffer1dus(int read_buffer_width, int read_buffer_height, int read_buffer_depth, __global ushort * buffer_var, sampler_t sampler, int position )
 {
     int pos = (int){position};
     if (true) { // if (CLK_ADDRESS_CLAMP_TO_EDGE & sampler) {
@@ -452,7 +480,7 @@ inline ushort2 read_buffer1dui(int read_buffer_width, int read_buffer_height, in
     return (ushort2){buffer_var[pos_in_buffer],0};
 }
 
-inline float2 read_buffer1df(int read_buffer_width, int read_buffer_height, int read_buffer_depth, __global float* buffer_var, sampler_t sampler, int position )
+inline float2 read_buffer1df(int read_buffer_width, int read_buffer_height, int read_buffer_depth, __global float * buffer_var, sampler_t sampler, int position )
 {
     int pos = (int){position};
     if (true) { // if (CLK_ADDRESS_CLAMP_TO_EDGE & sampler) {
@@ -484,7 +512,7 @@ inline void write_buffer1duc(int write_buffer_width, int write_buffer_height, in
     buffer_var[pos_in_buffer] = value;
 }
 
-inline void write_buffer1di(int write_buffer_width, int write_buffer_height, int write_buffer_depth, __global short * buffer_var, int pos, short value )
+inline void write_buffer1di(int write_buffer_width, int write_buffer_height, int write_buffer_depth, __global int * buffer_var, int pos, int value )
 {
     int pos_in_buffer = pos;
     if (pos < 0 || pos >= write_buffer_width) {
@@ -493,7 +521,7 @@ inline void write_buffer1di(int write_buffer_width, int write_buffer_height, int
     buffer_var[pos_in_buffer] = value;
 }
 
-inline void write_buffer1dui(int write_buffer_width, int write_buffer_height, int write_buffer_depth, __global ushort * buffer_var, int pos, ushort value )
+inline void write_buffer1dus(int write_buffer_width, int write_buffer_height, int write_buffer_depth, __global ushort * buffer_var, int pos, ushort value )
 {
     int pos_in_buffer = pos;
     if (pos < 0 || pos >= write_buffer_width) {
@@ -502,7 +530,25 @@ inline void write_buffer1dui(int write_buffer_width, int write_buffer_height, in
     buffer_var[pos_in_buffer] = value;
 }
 
-inline void write_buffer1df(int write_buffer_width, int write_buffer_height, int write_buffer_depth, __global float* buffer_var, int pos, float value )
+inline void write_buffer1ds(int write_buffer_width, int write_buffer_height, int write_buffer_depth, __global short * buffer_var, int pos, short value )
+{
+    int pos_in_buffer = pos;
+    if (pos < 0 || pos >= write_buffer_width) {
+        return;
+    }
+    buffer_var[pos_in_buffer] = value;
+}
+
+inline void write_buffer1dui(int write_buffer_width, int write_buffer_height, int write_buffer_depth, __global uint * buffer_var, int pos, uint value )
+{
+    int pos_in_buffer = pos;
+    if (pos < 0 || pos >= write_buffer_width) {
+        return;
+    }
+    buffer_var[pos_in_buffer] = value;
+}
+
+inline void write_buffer1df(int write_buffer_width, int write_buffer_height, int write_buffer_depth, __global float * buffer_var, int pos, float value )
 {
     int pos_in_buffer = pos;
     if (pos < 0 || pos >= write_buffer_width) {
@@ -582,3 +628,6 @@ inline float clij_convert_float_sat(float value) {
 #define WRITE_IMAGE(a,b,c) WRITE_ ## a ## _IMAGE(a,b,c)
 
 #endif
+
+
+
