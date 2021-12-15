@@ -41,7 +41,6 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     auto src = this->GetParameter<Object>("src");
     auto dst = this->GetParameter<Object>("dst");
     
-    // std::array<size_t,3> one_dim = {1,1,1};
     auto max_value_buffer = this->m_gpu->CreateBuffer<float>();
 
     MaximumOfAllPixelsKernel max_of_pixel_kernel(this->m_gpu);

@@ -292,3 +292,8 @@ target_link_libraries(sum_z_projection_test PRIVATE CLIc::CLIc)
 add_test(NAME sum_z_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_z_projection_test)
 set_tests_properties(sum_z_projection_test PROPERTIES FOLDER "Tests")
 
+add_executable(close_indexgaps_in_labelmap_test close_indexgaps_in_labelmap_test.cpp)
+add_dependencies(close_indexgaps_in_labelmap_test CLIc)
+target_link_libraries(close_indexgaps_in_labelmap_test PRIVATE CLIc::CLIc)
+add_test(NAME close_indexgaps_in_labelmap_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND close_indexgaps_in_labelmap_test)
+set_tests_properties(close_indexgaps_in_labelmap_test PROPERTIES FOLDER "Tests")
