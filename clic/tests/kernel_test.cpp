@@ -89,103 +89,72 @@ int main(int argc, char **argv)
 
 { 
     std::array<size_t, 3> dims = {10,1,1};
-    // float
-    if( ! run_kernel_with_buffer<float>(dims) ) { std::cout << "test buffer float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    if( ! run_kernel_with_image<float>(dims) ) {  std::cout << "test image float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // int
-    if( ! run_kernel_with_buffer<int>(dims) ) { std::cout << "test buffer int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    if( ! run_kernel_with_image<int>(dims) ) {  std::cout << "test image int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // uint
-    if( ! run_kernel_with_buffer<unsigned int>(dims) ) { std::cout << "test buffer uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    if( ! run_kernel_with_image<unsigned int>(dims) ) {  std::cout << "test image uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // char
-    if( ! run_kernel_with_buffer<char>(dims) ) { std::cout << "test buffer char ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // uchar
-    if( ! run_kernel_with_buffer<unsigned char>(dims) ) { std::cout << "test buffer uchar ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // short
-    if( ! run_kernel_with_buffer<short>(dims) ) { std::cout << "test buffer short ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // ushort
-    if( ! run_kernel_with_buffer<unsigned short>(dims) ) { std::cout << "test buffer ushort ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
+    if( ! run_kernel_with_buffer<float>(dims) ) { std::cerr << "test buffer float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_image<float>(dims) ) {  std::cerr << "test image float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<int>(dims) ) { std::cerr << "test buffer int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_image<int>(dims) ) {  std::cerr << "test image int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<unsigned int>(dims) ) { std::cerr << "test buffer uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_image<unsigned int>(dims) ) {  std::cerr << "test image uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<char>(dims) ) { std::cerr << "test buffer char ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<unsigned char>(dims) ) { std::cerr << "test buffer uchar ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<short>(dims) ) { std::cerr << "test buffer short ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<unsigned short>(dims) ) { std::cerr << "test buffer ushort ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
 }
 {
     std::array<size_t, 3> dims = {10,5,1};
-    // float
-    if( ! run_kernel_with_buffer<float>(dims) ) { std::cout << "test buffer float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    if( ! run_kernel_with_image<float>(dims) ) {  std::cout << "test image float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // int
-    if( ! run_kernel_with_buffer<int>(dims) ) { std::cout << "test buffer int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    if( ! run_kernel_with_image<int>(dims) ) {  std::cout << "test image int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // uint
-    if( ! run_kernel_with_buffer<unsigned int>(dims) ) { std::cout << "test buffer uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    if( ! run_kernel_with_image<unsigned int>(dims) ) {  std::cout << "test image uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // char
-    if( ! run_kernel_with_buffer<char>(dims) ) { std::cout << "test buffer char ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // uchar
-    if( ! run_kernel_with_buffer<unsigned char>(dims) ) { std::cout << "test buffer uchar ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // short
-    if( ! run_kernel_with_buffer<short>(dims) ) { std::cout << "test buffer short ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // ushort
-    if( ! run_kernel_with_buffer<unsigned short>(dims) ) { std::cout << "test buffer ushort ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
+    if( ! run_kernel_with_buffer<float>(dims) ) { std::cerr << "test buffer float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_image<float>(dims) ) {  std::cerr << "test image float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<int>(dims) ) { std::cerr << "test buffer int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_image<int>(dims) ) {  std::cerr << "test image int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<unsigned int>(dims) ) { std::cerr << "test buffer uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_image<unsigned int>(dims) ) {  std::cerr << "test image uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<char>(dims) ) { std::cerr << "test buffer char ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<unsigned char>(dims) ) { std::cerr << "test buffer uchar ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<short>(dims) ) { std::cerr << "test buffer short ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<unsigned short>(dims) ) { std::cerr << "test buffer ushort ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
 }
 {
     std::array<size_t, 3> dims = {10,5,2};
-    // float
-    if( ! run_kernel_with_buffer<float>(dims) ) { std::cout << "test buffer float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    if( ! run_kernel_with_image<float>(dims) ) {  std::cout << "test image float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // int
-    if( ! run_kernel_with_buffer<int>(dims) ) { std::cout << "test buffer int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    if( ! run_kernel_with_image<int>(dims) ) {  std::cout << "test image int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // uint
-    if( ! run_kernel_with_buffer<unsigned int>(dims) ) { std::cout << "test buffer uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    if( ! run_kernel_with_image<unsigned int>(dims) ) {  std::cout << "test image uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // char
-    if( ! run_kernel_with_buffer<char>(dims) ) { std::cout << "test buffer char ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // uchar
-    if( ! run_kernel_with_buffer<unsigned char>(dims) ) { std::cout << "test buffer uchar ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // short
-    if( ! run_kernel_with_buffer<short>(dims) ) { std::cout << "test buffer short ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // ushort
-    if( ! run_kernel_with_buffer<unsigned short>(dims) ) { std::cout << "test buffer ushort ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
+    if( ! run_kernel_with_buffer<float>(dims) ) { std::cerr << "test buffer float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_image<float>(dims) ) {  std::cerr << "test image float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<int>(dims) ) { std::cerr << "test buffer int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_image<int>(dims) ) {  std::cerr << "test image int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<unsigned int>(dims) ) { std::cerr << "test buffer uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_image<unsigned int>(dims) ) {  std::cerr << "test image uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<char>(dims) ) { std::cerr << "test buffer char ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<unsigned char>(dims) ) { std::cerr << "test buffer uchar ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<short>(dims) ) { std::cerr << "test buffer short ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<unsigned short>(dims) ) { std::cerr << "test buffer ushort ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
 }
 {
     std::array<size_t, 3> dims = {1,5,2};
-    // float
-    if( ! run_kernel_with_buffer<float>(dims) ) { std::cout << "test buffer float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    if( ! run_kernel_with_image<float>(dims) ) {  std::cout << "test image float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // int
-    if( ! run_kernel_with_buffer<int>(dims) ) { std::cout << "test buffer int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    if( ! run_kernel_with_image<int>(dims) ) {  std::cout << "test image int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // uint
-    if( ! run_kernel_with_buffer<unsigned int>(dims) ) { std::cout << "test buffer uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    if( ! run_kernel_with_image<unsigned int>(dims) ) {  std::cout << "test image uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // char
-    if( ! run_kernel_with_buffer<char>(dims) ) { std::cout << "test buffer char ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // uchar
-    if( ! run_kernel_with_buffer<unsigned char>(dims) ) { std::cout << "test buffer uchar ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // short
-    if( ! run_kernel_with_buffer<short>(dims) ) { std::cout << "test buffer short ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // ushort
-    if( ! run_kernel_with_buffer<unsigned short>(dims) ) { std::cout << "test buffer ushort ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
+    if( ! run_kernel_with_buffer<float>(dims) ) { std::cerr << "test buffer float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_image<float>(dims) ) {  std::cerr << "test image float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<int>(dims) ) { std::cerr << "test buffer int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_image<int>(dims) ) {  std::cerr << "test image int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<unsigned int>(dims) ) { std::cerr << "test buffer uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_image<unsigned int>(dims) ) {  std::cerr << "test image uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<char>(dims) ) { std::cerr << "test buffer char ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<unsigned char>(dims) ) { std::cerr << "test buffer uchar ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<short>(dims) ) { std::cerr << "test buffer short ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<unsigned short>(dims) ) { std::cerr << "test buffer ushort ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
 }
 {
     std::array<size_t, 3> dims = {1,1,2};
-    // float
-    if( ! run_kernel_with_buffer<float>(dims) ) { std::cout << "test buffer float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    if( ! run_kernel_with_image<float>(dims) ) {  std::cout << "test image float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // int
-    if( ! run_kernel_with_buffer<int>(dims) ) { std::cout << "test buffer int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    if( ! run_kernel_with_image<int>(dims) ) {  std::cout << "test image int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // uint
-    if( ! run_kernel_with_buffer<unsigned int>(dims) ) { std::cout << "test buffer uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    if( ! run_kernel_with_image<unsigned int>(dims) ) {  std::cout << "test image uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // char
-    if( ! run_kernel_with_buffer<char>(dims) ) { std::cout << "test buffer char ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // uchar
-    if( ! run_kernel_with_buffer<unsigned char>(dims) ) { std::cout << "test buffer uchar ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // short
-    if( ! run_kernel_with_buffer<short>(dims) ) { std::cout << "test buffer short ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
-    // ushort
-    if( ! run_kernel_with_buffer<unsigned short>(dims) ) { std::cout << "test buffer ushort ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail.\n"; flag = false; }
+    if( ! run_kernel_with_buffer<float>(dims) ) { std::cerr << "test buffer float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_image<float>(dims) ) {  std::cerr << "test image float ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<int>(dims) ) { std::cerr << "test buffer int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_image<int>(dims) ) {  std::cerr << "test image int ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<unsigned int>(dims) ) { std::cerr << "test buffer uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_image<unsigned int>(dims) ) {  std::cerr << "test image uint ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<char>(dims) ) { std::cerr << "test buffer char ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<unsigned char>(dims) ) { std::cerr << "test buffer uchar ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<short>(dims) ) { std::cerr << "test buffer short ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
+    if( ! run_kernel_with_buffer<unsigned short>(dims) ) { std::cerr << "test buffer ushort ("<<dims[0]<<","<<dims[1]<<","<<dims[2]<<") fail! \n"; flag = false; }
 }
-    return flag;
+
+    if ( flag )
+        return EXIT_SUCCESS;
+    else
+        return EXIT_FAILURE;
 }
