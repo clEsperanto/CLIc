@@ -43,11 +43,18 @@ jobs:
       - name: Generate coverage
         shell: bash
         run: |    
-          cd ${{ runner.workspace }}/build && make -j 2 && make coverage_xml
+          cd ${{ runner.workspace }}/build && make -j 2 && ctest
+
+      - name: Format coverage
+        shell: bash
+        run: |
+          lcov --directory . --capture --output-file coverage.info
+          lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
+          lcov --list coverage.info
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          files: ${{ runner.workspace }}/build/coverage_xml.xml
+          files: ${{ runner.workspace }}/coverage.info
           fail_ci_if_error: true # optional (default = false)
