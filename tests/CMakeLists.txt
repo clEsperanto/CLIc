@@ -260,7 +260,7 @@ add_executable(sobel_test sobel_test.cpp)
 add_dependencies(sobel_test CLIc)
 target_link_libraries(sobel_test PRIVATE CLIc::CLIc)
 add_test(NAME sobel_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sobel_test)
-set_tests_properties(sobel_test PROPERTIES FOLDER "Tests" WILL_FAIL TRUE)
+set_tests_properties(sobel_test PROPERTIES FOLDER "Tests")
 
 add_executable(sum_all_pixels_test sum_all_pixels_test.cpp)
 add_dependencies(sum_all_pixels_test CLIc)
