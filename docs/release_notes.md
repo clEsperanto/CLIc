@@ -3,18 +3,24 @@
 ## Bug fixes
 - Remove extra context manager class left in Tier1 folder.
 
-## Improvements
+## Enhancement
 - Improve error message with try/catch blocks for OpenCL error management.
-- Rework of GPU class ([#52](https://github.com/clEsperanto/CLIc_prototype/pull/52).
-<!-- - Rework of data class, creation of `Object` class allowing both `Buffer` and `Image` compatible kernel usage.
-- Extention of buffer and image compability to 1d [#57](https://github.com/clEsperanto/CLIc_prototype/issues/57). -->
+- Rework of GPU branch ([#52](https://github.com/clEsperanto/CLIc_prototype/pull/52)).
+    - Remove all Manager classes into single GPU class.
+    - Force 1 Plateforme - 1 Device - 1 Context - 1 Command Queue instance. If dealing with multiple GPUs, the curent usage is to declare multiple instance of CLE.
+- Rework of data branch
+    - Creation of `Object` class from which `Buffer` and `Image` inherit.
+    - Kernel I/O can now be `Buffer`, `Image`, or `Object` depending on operation compatibility (at Dev discretion). 
+- Extention of buffer to 1d compability ([#57](https://github.com/clEsperanto/CLIc_prototype/issues/57))
+- Extention of CLIJ kernels to nd clEsperanto kernels ([#16](https://github.com/clEsperanto/clij-opencl-kernels/issues/17)).
+- Rework of kernels test to cover as much as possible usage (shape, data-type, object-type, etc.).
 
 ## New features  
-- Add more unity test for manager classes.
-- Allow the use of cl_image2d and cl_image3d with a new data class cle::Image ([#52](https://github.com/clEsperanto/CLIc_prototype/pull/52). 
+- Introduce library core class unity test.
+- Introduce new data class `Image` holding a cl_image (`cl_image1d`,`cl_image2d`,`cl_image3d`) ([#52](https://github.com/clEsperanto/CLIc_prototype/pull/52)). 
 
 ## Miscellaneous
-- Exclude throw branches from coverage analysis. This is to avoid taking in account the branche coverage of the `stl` or other library on which we do not have control. Though it makes the coverage less precise, it is a bit more honnest of the state of our API. 
+- Replace gcovr by lcov for coverage report generation to codecov.
 - Consolidation of CMake code ([#53](https://github.com/clEsperanto/CLIc_prototype/pull/53))
 - Fixing MSVC warning ([#54](https://github.com/clEsperanto/CLIc_prototype/pull/54), [#56](https://github.com/clEsperanto/CLIc_prototype/pull/56))
 - Increase project OpenCL-CLHPP flexibility ([#55](https://github.com/clEsperanto/CLIc_prototype/pull/55))
