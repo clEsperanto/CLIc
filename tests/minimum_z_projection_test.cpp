@@ -1,56 +1,110 @@
 
 #include <random>
-
 #include "clesperanto.hpp"
 
+template<class type>
+std::array<size_t,3> generate_data(std::vector<type>& arr_1, 
+                                   std::vector<type>& valid, size_t width, size_t height, size_t depth)
+{
+    arr_1.resize(width*height*depth);
+    valid.resize(width*height*1);
+    std::fill(arr_1.begin(), arr_1.end(), 10.0f);
+    std::fill(valid.begin(), valid.end(), 0.0f);
+    for(auto it1 = arr_1.begin(); (it1 - arr_1.begin()) < height*width; ++it1)
+    {
+        int idx = (it1-arr_1.begin()) + (rand() % depth) * height * width;
+        arr_1[idx] = 0;
+    }
+    return std::array<size_t,3> {width, height, depth};
+}
+
+template<class type>
+bool IsDifferent(std::vector<type>& output, std::vector<type>& valid)
+{
+    if (output.size() != valid.size())
+    {
+        std::cerr << "[FAILED] : output size does not match." << std::endl;
+        return true;
+    }
+    float difference = 0;
+    for (auto it_output = output.begin(), it_valid = valid.begin(); 
+              it_output != output.end(), it_valid != valid.end(); ++it_output, ++it_valid)
+    {
+        difference += std::abs(static_cast<float>(*it_output) - static_cast<float>(*it_valid));
+    }
+    if (difference != 0)
+    {
+        std::cerr << "[FAILED] : difference = " << difference << std::endl;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+template<class type>
+std::vector<type> run_kernel_with_buffer(std::vector<type>& arr_1, std::array<size_t,3>& shape)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto oclArray_A = cle.Push<type>(arr_1, shape);
+    auto ocl_output = cle.Create<type>({shape[0], shape[1], 1});
+    cle.MinimumZProjection(oclArray_A, ocl_output);  
+    auto output = cle.Pull<type>(ocl_output); 
+    return output; 
+}
+
+template<class type>
+std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::array<size_t,3>& shape)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto oclArray_A = cle.PushImage<type>(arr_1, shape);
+    auto ocl_output = cle.CreateImage<type>({shape[0], shape[1], 1});
+    cle.MinimumZProjection(oclArray_A, ocl_output);  
+    auto output = cle.PullImage<type>(ocl_output);  
+    return output; 
+}
+
+
+template<class type>
+bool test(size_t width, size_t height, size_t depth)
+{
+    std::vector<type> arr_1, valid;
+    std::array<size_t,3> shape = generate_data<type>(arr_1, valid, width, height, depth);
+    auto output_buffer = run_kernel_with_buffer<type>(arr_1, shape);
+    if (IsDifferent(output_buffer, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using buffer ... FAILED! " << std::endl;
+        return true;
+    }
+    auto output_image  = run_kernel_with_image<type>(arr_1, shape);
+    if (IsDifferent(output_image, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using image ... FAILED! " << std::endl;
+        return true;
+    }
+    return false;
+}
 
 int main(int argc, char **argv)
 {
-    // Test Initialisation
-    using type = float;
-    size_t width (10), height (10), depth (10);
-    std::array<size_t,3> shape = {width, height, depth};
-    std::vector<type> arr_in (width*height*depth);
-    std::vector<type> arr_res (width*height*1);
-    std::default_random_engine generator;
-    std::normal_distribution<type> distribution(5.0,2.0);
-    for (int d = 0; d < depth; d++)
+    if (test<float>(5, 3, 2))
     {
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                int i = x + width*(y+height*d);
-                if ( d == y )
-                {
-                    arr_in[i] = distribution(generator);
-                }
-                else
-                {
-                    arr_in[i] = -1000;
-                }
-            }
-        }
+        std::cerr << "MinimumZProjection kernel 3d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
     }
-    for (int i = 0; i < width*height*1; ++i)
+    if (test<float>(5, 3, 1))
     {
-        arr_res[i] = -1000;
+        std::cerr << "MinimumZProjection kernel 2d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
     }
-
-    // Test Kernel
-    cle::Clesperanto cle;
-    std::array<size_t,3> new_shape = {width, height, 1};
-    auto Buffer_A = cle.Push<type>(arr_in, shape);
-    auto Buffer_B = cle.Create<type>(new_shape);
-    cle.MinimumZProjection(Buffer_A, Buffer_B);   
-    auto arr_out = cle.Pull<type>(Buffer_B);    
-
-    // Test Validation
-    float difference = 0;
-    for( auto it1 = arr_res.begin(), it2 = arr_out.begin(); 
-         it1 != arr_res.end() && it2 != arr_out.end(); ++it1, ++it2)
-    {
-        difference += std::abs(*it1 - *it2);
+    if (test<float>(5, 1, 1))
+    {        
+        std::cerr << "MinimumZProjection kernel 1d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
     }
-    return difference > std::numeric_limits<type>::epsilon();
+    std::cout << "MinimumZProjection kernel test ... PASSED! " << std::endl;
+    return EXIT_SUCCESS;
 }

@@ -1,46 +1,112 @@
 
 #include <random>
-
 #include "clesperanto.hpp"
 
+template<class type>
+std::array<size_t,3> generate_data(std::vector<type>& arr_1, std::vector<type>& valid, size_t width, size_t height, size_t depth, float scalar)
+{
+    arr_1.resize(width*height*depth);
+    valid.resize(width*height*depth);
+    std::fill(valid.begin(), valid.end(), 0);
+    for (auto it1 = arr_1.begin(), it_valid = valid.begin(); 
+              it1 != arr_1.end(), it_valid != valid.end(); ++it1, ++it_valid)
+    {
+        *it1 = static_cast<type>((int) rand() % 4);
+        if (*it1 < scalar)
+        {
+            *it_valid = 1;
+        }
+    }
+    return std::array<size_t,3> {width, height, depth};
+}
+
+template<class type>
+bool IsDifferent(std::vector<type>& output, std::vector<type>& valid)
+{
+    if (output.size() != valid.size())
+    {
+        std::cerr << "[FAILED] : output size does not match." << std::endl;
+        return true;
+    }
+    float difference = 0;
+    for (auto it_output = output.begin(), it_valid = valid.begin(); 
+              it_output != output.end(), it_valid != valid.end(); ++it_output, ++it_valid)
+    {
+        difference += std::abs(static_cast<float>(*it_output) - static_cast<float>(*it_valid));
+    }
+    if (difference != 0)
+    {
+        std::cerr << "[FAILED] : difference = " << difference << std::endl;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+template<class type>
+std::vector<type> run_kernel_with_buffer(std::vector<type>& arr, std::array<size_t,3>& shape, float scalar)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto oclArray_A = cle.Push<type>(arr, shape);
+    auto ocl_output = cle.Create<type>(shape);
+    cle.SmallerConstant(oclArray_A, ocl_output, scalar);  
+    auto output = cle.Pull<type>(ocl_output);  
+    return output; 
+}
+
+template<class type>
+std::vector<type> run_kernel_with_image(std::vector<type>& arr, std::array<size_t,3>& shape, float scalar)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto oclArray_A = cle.PushImage<type>(arr, shape);
+    auto ocl_output = cle.CreateImage<type>(shape);
+    cle.SmallerConstant(oclArray_A, ocl_output, scalar);  
+    auto output = cle.PullImage<type>(ocl_output);  
+    return output; 
+}
+
+template<class type>
+bool test(size_t width, size_t height, size_t depth)
+{
+    float scalar ((int) rand() % 4);
+    std::vector<type> arr_1, valid;
+    std::array<size_t,3> shape = generate_data<type>(arr_1, valid, width, height, depth, scalar);
+    auto output_buffer = run_kernel_with_buffer<type>(arr_1, shape, scalar);
+    if (IsDifferent(output_buffer, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using buffer ... FAILED! " << std::endl;
+        return true;
+    }
+    auto output_image  = run_kernel_with_image<type>(arr_1, shape, scalar);
+    if (IsDifferent(output_image, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using image ... FAILED! " << std::endl;
+        return true;
+    }
+    return false;
+}
 
 int main(int argc, char **argv)
 {
-    // Test Initialisation
-    using type = float;
-    size_t width (10), height (10), depth (10);
-    std::array<size_t,3> shape = {width, height, depth};
-    std::vector<type> arr_in (width*height*depth);
-    std::vector<type> arr_res (width*height*depth);
-    float scalar = 51.0f;
-    for (auto i = 0; i < arr_in.size(); ++i)
+    if (test<float>(10, 5, 2))
     {
-        if (i%2 == 0)
-        {
-            arr_in[i] = 100;
-            arr_res[i] = 0;
-        }
-        else
-        {
-            arr_in[i] = 50;
-            arr_res[i] = 1;
-        }
+        std::cerr << "SmallerConstant kernel 3d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
     }
-
-
-    // Test Kernel
-    cle::Clesperanto cle;
-    auto Buffer_A = cle.Push<type>(arr_in, shape);
-    auto Buffer_B = cle.Create<type>(shape);
-    cle.SmallerConstant(Buffer_A, Buffer_B, scalar);  
-    auto arr_out = cle.Pull<type>(Buffer_B);    
-
-    // Test Validation
-    float difference = 0;
-    for( auto it1 = arr_res.begin(), it2 = arr_out.begin(); 
-         it1 != arr_res.end() && it2 != arr_out.end(); ++it1, ++it2)
+    if (test<float>(10, 5,  1))
     {
-        difference += std::abs(*it1 - *it2);
+        std::cerr << "SmallerConstant kernel 2d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
     }
-    return difference > std::numeric_limits<type>::epsilon();
+    if (test<float>(10,  1,  1))
+    {        
+        std::cerr << "SmallerConstant kernel 1d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
+    }
+    std::cout << "SmallerConstant kernel test ... PASSED! " << std::endl;
+    return EXIT_SUCCESS;
 }

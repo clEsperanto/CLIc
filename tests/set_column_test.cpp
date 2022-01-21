@@ -1,36 +1,112 @@
 
 #include <random>
-
 #include "clesperanto.hpp"
 
+template<class type>
+std::array<size_t,3> generate_data(std::vector<type>& arr_1, 
+                                   std::vector<type>& valid, size_t width, size_t height, size_t depth, int scalar_1, type scalar_2)
+{
+    arr_1.resize(width*height*depth);
+    valid.resize(width*height*depth);
+    for (auto it1 = arr_1.begin(), it_valid = valid.begin(); 
+              it1 != arr_1.end(), it_valid != valid.end(); ++it1, ++it_valid)
+    {
+        *it1 = static_cast<type>((int) rand() % 10);
+        *it_valid = *it1;
+        if( (it1 - arr_1.begin()) % width == scalar_1 )
+        {
+            *it_valid = scalar_2;
+        }
+    }
+    return std::array<size_t,3> {width, height, depth};
+}
+
+template<class type>
+bool IsDifferent(std::vector<type>& output, std::vector<type>& valid)
+{
+    if (output.size() != valid.size())
+    {
+        std::cerr << "[FAILED] : output size does not match." << std::endl;
+        return true;
+    }
+    float difference = 0;
+    for (auto it_output = output.begin(), it_valid = valid.begin(); 
+              it_output != output.end(), it_valid != valid.end(); ++it_output, ++it_valid)
+    {
+        difference += std::abs(static_cast<float>(*it_output) - static_cast<float>(*it_valid));
+    }
+    if (difference != 0)
+    {
+        std::cerr << "[FAILED] : difference = " << difference << std::endl;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+template<class type>
+std::vector<type> run_kernel_with_buffer(std::vector<type>& arr_1, std::array<size_t,3>& shape, int scalar_1, type scalar_2)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto ocl_output = cle.Push<type>(arr_1, shape);
+    cle.SetColumn(ocl_output, scalar_1, scalar_2);  
+    auto output = cle.Pull<type>(ocl_output);  
+    return output; 
+}
+
+template<class type>
+std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::array<size_t,3>& shape, int scalar_1, type scalar_2)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto ocl_output = cle.PushImage<type>(arr_1, shape);
+    cle.SetColumn(ocl_output, scalar_1, scalar_2);  
+    auto output = cle.PullImage<type>(ocl_output);  
+    return output; 
+}
+
+template<class type>
+bool test(size_t width, size_t height, size_t depth)
+{
+    int scalar_1 = static_cast<int>(rand() % width);
+    type scalar_2 = static_cast<type>(rand() % 100);
+    std::vector<type> arr_1, valid;
+    std::array<size_t,3> shape = generate_data<type>(arr_1, valid, width, height, depth, scalar_1, scalar_2);
+    auto output_buffer = run_kernel_with_buffer<type>(arr_1, shape, scalar_1, scalar_2);
+    if (IsDifferent(output_buffer, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using buffer ... FAILED! " << std::endl;
+        return true;
+    }
+    auto output_image  = run_kernel_with_image<type>(arr_1, shape, scalar_1, scalar_2);
+    if (IsDifferent(output_image, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using image ... FAILED! " << std::endl;
+        return true;
+    }
+    return false;
+}
 
 int main(int argc, char **argv)
 {
-    // Test Initialisation
-    using type = float;
-    size_t width (5), height (1), depth (1);
-    std::array<size_t,3> shape = {width, height, depth};
-    std::vector<type> arr_in (width*height*depth);
-    std::vector<type> arr_res (width*height*depth);
-    for (auto i = 0; i < arr_in.size(); ++i)
+    if (test<float>(10, 5, 2))
     {
-            arr_in[i] = static_cast<type>(i);
-            arr_res[i] = static_cast<type>(i);
+        std::cerr << "SetColumn kernel 3d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
     }
-    arr_res[2] = 10.0f;
-
-    // Test Kernel
-    cle::Clesperanto cle;
-    auto Buffer_A = cle.Push<type>(arr_in, shape);
-    cle.SetColumn(Buffer_A, 2, 10);
-    auto arr_out = cle.Pull<type>(Buffer_A);    
-
-    // Test Validation
-    float difference = 0;
-    for( auto it1 = arr_res.begin(), it2 = arr_out.begin(); 
-         it1 != arr_res.end() && it2 != arr_out.end(); ++it1, ++it2)
+    if (test<float>(10, 5, 1))
     {
-        difference += std::abs(*it1 - *it2);
+        std::cerr << "SetColumn kernel 2d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
     }
-    return difference > std::numeric_limits<type>::epsilon();
+    if (test<float>(10, 1, 1))
+    {        
+        std::cerr << "SetColumn kernel 1d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
+    }
+    std::cout << "SetColumn kernel test ... PASSED! " << std::endl;
+    return EXIT_SUCCESS;
 }

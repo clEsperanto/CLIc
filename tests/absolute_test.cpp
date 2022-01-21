@@ -1,38 +1,42 @@
 
 #include <random>
-
 #include "clesperanto.hpp"
 
 template<class type>
-std::vector<type> run_kernel_with_buffer(std::vector<type>& arr, std::array<size_t,3>& shape)
+std::array<size_t,3> generate_data(std::vector<type>& arr_1, 
+                                   std::vector<type>& valid, size_t width, size_t height, size_t depth)
 {
-    cle::Clesperanto cle;
-    auto oclArray_A = cle.Push<type>(arr, shape);
-    auto oclArray_B = cle.Create<type>(shape);
-    cle.Absolute(oclArray_A, oclArray_B);  
-    auto result = cle.Pull<type>(oclArray_B);  
-    return result; 
-}
-
-template<class type>
-std::vector<type> run_kernel_with_image(std::vector<type>& arr, std::array<size_t,3>& shape)
-{
-    cle::Clesperanto cle;
-    auto oclArray_A = cle.PushImage<type>(arr, shape);
-    auto oclArray_B = cle.CreateImage<type>(shape);
-    cle.Absolute(oclArray_A, oclArray_B);  
-    auto result = cle.PullImage<type>(oclArray_B);  
-    return result; 
-}
-
-template<class type>
-bool IsDifferent(std::vector<type>& arr_1, std::vector<type>& arr_2)
-{
-    float difference = 0;
-    for (auto it1 = arr_1.begin(), it2 = arr_2.begin(); 
-              it1 != arr_1.end() && it2 != arr_2.end(); ++it1, ++it2)
+    arr_1.resize(width*height*depth);
+    valid.resize(width*height*depth);
+    for (auto it1 = arr_1.begin(), it_valid = valid.begin(); 
+              it1 != arr_1.end(), it_valid != valid.end(); ++it1, ++it_valid)
     {
-        difference += std::abs(static_cast<float>(*it1) - static_cast<float>(*it2));
+        *it_valid = static_cast<type>((int) rand() % 10);
+        if ((it1 - arr_1.begin()) % 2 == 0)
+        {
+            *it1 = -(*it_valid); 
+        }
+        else
+        {
+            *it1 = *it_valid;
+        }
+    }
+    return std::array<size_t,3> {width, height, depth};
+}
+
+template<class type>
+bool IsDifferent(std::vector<type>& output, std::vector<type>& valid)
+{
+    if (output.size() != valid.size())
+    {
+        std::cerr << "[FAILED] : output size does not match." << std::endl;
+        return true;
+    }
+    float difference = 0;
+    for (auto it_output = output.begin(), it_valid = valid.begin(); 
+              it_output != output.end(), it_valid != valid.end(); ++it_output, ++it_valid)
+    {
+        difference += std::abs(static_cast<float>(*it_output) - static_cast<float>(*it_valid));
     }
     if (difference != 0)
     {
@@ -45,40 +49,68 @@ bool IsDifferent(std::vector<type>& arr_1, std::vector<type>& arr_2)
     }
 }
 
+template<class type>
+std::vector<type> run_kernel_with_buffer(std::vector<type>& arr_1, std::array<size_t,3>& shape)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto oclArray_A = cle.Push<type>(arr_1, shape);
+    auto ocl_output = cle.Create<type>(shape);
+    cle.Absolute(oclArray_A, ocl_output);  
+    auto output = cle.Pull<type>(ocl_output);  
+    return output; 
+}
+
+template<class type>
+std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::array<size_t,3>& shape)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto oclArray_A = cle.PushImage<type>(arr_1, shape);
+    auto ocl_output = cle.CreateImage<type>(shape);
+    cle.Absolute(oclArray_A, ocl_output);  
+    auto output = cle.PullImage<type>(ocl_output);  
+    return output; 
+}
+
+
+template<class type>
+bool test(size_t width, size_t height, size_t depth)
+{
+    std::vector<type> arr_1, valid;
+    std::array<size_t,3> shape = generate_data<type>(arr_1, valid, width, height, depth);
+    auto output_buffer = run_kernel_with_buffer<type>(arr_1, shape);
+    if (IsDifferent(output_buffer, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using buffer ... FAILED! " << std::endl;
+        return true;
+    }
+    auto output_image  = run_kernel_with_image<type>(arr_1, shape);
+    if (IsDifferent(output_image, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using image ... FAILED! " << std::endl;
+        return true;
+    }
+    return false;
+}
+
 int main(int argc, char **argv)
 {
-    using type = float;
-    size_t width (10), height (10), depth (10);
-    std::array<size_t,3> shape = {width, height, depth};    
-    std::vector<type> arr_in (width*height*depth);
-    std::vector<type> arr_res (width*height*depth);
-    for (auto i = 0; i < arr_in.size(); ++i)
+    if (test<float>(10, 5, 2))
     {
-        if (i % 2 == 0)
-        {
-            arr_in[i] = -1.0f;
-        }
-        else
-        {
-            arr_in[i] = 1.0f;
-        }
-        arr_res[i] = 1.0f;
-    }
-
-    auto arr_buffer = run_kernel_with_buffer<type>(arr_in, shape);
-    if (IsDifferent(arr_buffer, arr_res))
-    {
-        std::cerr << "Absolute kernel using buffer ... FAILED! " << std::endl;
+        std::cerr << "Absolute kernel 3d ... FAILED! " << std::endl;
         return EXIT_FAILURE;
     }
-
-    auto arr_image  = run_kernel_with_image<type>(arr_in, shape);
-    if (IsDifferent(arr_image, arr_res))
+    if (test<float>(10, 5,  1))
     {
-        std::cerr << "Absolute kernel using image ... FAILED! " << std::endl;
+        std::cerr << "Absolute kernel 2d ... FAILED! " << std::endl;
         return EXIT_FAILURE;
     }
-
-    std::cout << "Absolute kernel test ... PASSED!" << std::endl;
+    if (test<float>(10,  1,  1))
+    {        
+        std::cerr << "Absolute kernel 1d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
+    }
+    std::cout << "Absolute kernel test ... PASSED! " << std::endl;
     return EXIT_SUCCESS;
 }

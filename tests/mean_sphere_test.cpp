@@ -1,52 +1,119 @@
 
 #include <random>
-#include <vector>
-#include <iostream>
-
 #include "clesperanto.hpp"
 
-
-int main(int argc, char** argv)
+template<class type>
+std::array<size_t,3> generate_data(std::vector<type>& arr_1, 
+                                   std::vector<type>& valid, size_t width, size_t height, size_t depth)
 {
-    // Test Initialisation
-    using type = float;
-    size_t width(5), height(5), depth(1);
-    std::array<size_t,3> shape = {width, height, depth};
-    std::vector<type> arr_in (width*height*depth);
-    std::vector<type> arr_res (width*height*depth);
-    for (auto i = 0; i < arr_in.size(); ++i)
+    arr_1.resize(width*height*depth);
+    valid.resize(width*height*depth);
+    std::fill(arr_1.begin(), arr_1.end(), 0.0f);
+    std::fill(valid.begin(), valid.end(), 0.0f);
+    int central_idx = (width/2) + (height/2)*width + (depth/2) * height * width;
+    type d = 1;
+    if(width>1) d += 2;
+    if(height>1) d += 2;
+    if(depth>1) d += 2;
+    arr_1[central_idx] = 9.0f;
+    for (auto i = 0; i < arr_1.size(); ++i)
     {
-        if (i == 12) // center pixel
+        if ((i >= central_idx-1 && i <= central_idx+1) ||
+            (i == central_idx+width) || (i == central_idx-width) ||
+            (i == central_idx-(height*width)) ||  (i == central_idx+(height*width)) )             
         {
-            arr_in[i] = 5;
-        }
-        else
-        {
-            arr_in[i] = 0;
-        }
-        if ((i == 7) || (i > 10 && i < 14) || (i == 17)) 
-        {
-            arr_res[i] = 1;
+            valid[i] = 9/d;
         } 
-        else 
-        {
-            arr_res[i] = 0;
-        }
-    }
-    
-    // Test Kernel
-    cle::Clesperanto cle;
-    auto Buffer_A = cle.Push<type>(arr_in, shape);
-    auto Buffer_B = cle.Create<type>(shape);
-    cle.MeanSphere(Buffer_A, Buffer_B, 1, 1); 
-    auto arr_out = cle.Pull<type>(Buffer_B);
-    
-    // Test Validation
-    float difference = 0;
-    for( auto it1 = arr_res.begin(), it2 = arr_out.begin(); 
-         it1 != arr_res.end() && it2 != arr_out.end(); ++it1, ++it2)
+    }    
+    return std::array<size_t,3> {width, height, depth};
+}
+
+template<class type>
+bool IsDifferent(std::vector<type>& output, std::vector<type>& valid)
+{
+    if (output.size() != valid.size())
     {
-        difference += std::abs(*it1 - *it2);
+        std::cerr << "[FAILED] : output size does not match." << std::endl;
+        return true;
     }
-    return difference > std::numeric_limits<type>::epsilon();
+    float difference = 0;
+    for (auto it_output = output.begin(), it_valid = valid.begin(); 
+              it_output != output.end(), it_valid != valid.end(); ++it_output, ++it_valid)
+    {
+        difference += std::abs( round(static_cast<float>(*it_output)*1000)/1000 - round(static_cast<float>(*it_valid)*1000)/1000);
+    }
+    if (difference != 0)
+    {
+        std::cerr << "[FAILED] : difference = " << difference << std::endl;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+template<class type>
+std::vector<type> run_kernel_with_buffer(std::vector<type>& arr_1, std::array<size_t,3>& shape)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto oclArray_A = cle.Push<type>(arr_1, shape);
+    auto ocl_output = cle.Create<type>(shape);
+    cle.MeanSphere(oclArray_A, ocl_output, 1, 1, 1);  
+    auto output = cle.Pull<type>(ocl_output);  
+    return output; 
+}
+
+template<class type>
+std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::array<size_t,3>& shape)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto oclArray_A = cle.PushImage<type>(arr_1, shape);
+    auto ocl_output = cle.CreateImage<type>(shape);
+    cle.MeanSphere(oclArray_A, ocl_output, 1, 1, 1);  
+    auto output = cle.PullImage<type>(ocl_output);  
+    return output; 
+}
+
+template<class type>
+bool test(size_t width, size_t height, size_t depth)
+{
+    std::vector<type> arr_1, valid;
+    std::array<size_t,3> shape = generate_data<type>(arr_1, valid, width, height, depth);
+    auto output_buffer = run_kernel_with_buffer<type>(arr_1, shape);
+    if (IsDifferent(output_buffer, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using buffer ... FAILED! " << std::endl;
+        return true;
+    }
+    auto output_image  = run_kernel_with_image<type>(arr_1, shape);
+    if (IsDifferent(output_image, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using image ... FAILED! " << std::endl;
+        return true;
+    }
+    return false;
+}
+
+int main(int argc, char **argv)
+{
+    if (test<float>(10, 5, 3))
+    {
+        std::cerr << "MeanSphere kernel 3d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
+    }
+    if (test<float>(10, 5, 1))
+    {
+        std::cerr << "MeanSphere kernel 2d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
+    }
+    if (test<float>(10, 1, 1))
+    {        
+        std::cerr << "MeanSphere kernel 1d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
+    }
+    std::cout << "MeanSphere kernel test ... PASSED! " << std::endl;
+    return EXIT_SUCCESS;
 }
