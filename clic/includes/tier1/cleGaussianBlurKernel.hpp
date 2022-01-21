@@ -22,10 +22,8 @@ public:
     void Execute();
 
 private:
-    float m_x;
-    float m_y;
-    float m_z;
-    int Sigma2KernelSize(float) const;
+    std::array<float,3> m_Sigma = {0, 0, 0};
+    std::array<int,3> Sigma2KernelSize(std::array<float,3>) const;
 };
 
 } // namespace cle
