@@ -8,7 +8,7 @@ namespace cle
 SumReductionXKernel::SumReductionXKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu,
             "sum_reduction_x",
-            {"src", "dst", "scalar"}
+            {"src", "dst", "index"}
     )
 {
     this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
@@ -26,7 +26,7 @@ void SumReductionXKernel::SetOutput(Object& t_x)
 
 void SumReductionXKernel::SetBlocksize(int t_x)
 {
-    this->AddObject(t_x, "scalar");
+    this->AddObject(t_x, "index");
 }
 
 void SumReductionXKernel::Execute()

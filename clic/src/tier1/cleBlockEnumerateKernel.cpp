@@ -8,7 +8,7 @@ namespace cle
 BlockEnumerateKernel::BlockEnumerateKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu,
             "block_enumerate",
-            {"src0", "src1", "dst", "scalar"}
+            {"src0", "src1", "dst", "index"}
     )
 {
     this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
@@ -31,7 +31,7 @@ void BlockEnumerateKernel::SetOutput(Object& t_x)
 
 void BlockEnumerateKernel::SetBlocksize(int t_x)
 {
-    this->AddObject(t_x, "scalar");
+    this->AddObject(t_x, "index");
 }
 
 void BlockEnumerateKernel::Execute()
