@@ -47,7 +47,7 @@ See more complete example on usage by looking at the [operations tests](https://
 ## Requierements
 
 CLIc rely on OpenCL language for parallelisation and CMake for configuration and build.  
-Follow the [pre-requish installation guide](./prerequish.md) for a smooth and error-less installation. 
+Follow the [pre-requish installation guide](https://github.com/clEsperanto/CLIc_prototype/blob/master/docs/prerequish.md) for a smooth and error-less installation. 
 
 ## Install
 
