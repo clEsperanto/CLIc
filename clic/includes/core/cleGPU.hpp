@@ -15,76 +15,326 @@
 
 namespace cle
 {
-    
+
+/**
+ * Management of GPU ressources
+ *
+ * GPU are physically defined by a Platform (Nvidia, AMD, Intel, etc.) and
+ * a Device (GeForce RTX 3080, Radeon RX 6000, etc.). A Context is create in which 
+ * a GPU will operate and a CommandQueue of operation is associated to the Context 
+ * and Device.
+ * The low-level operation of memory allocation, reading and writing are also managed
+ * here, along with a memory list of built program.
+ */
 class GPU
 {
 private:
+    /// GPU ressources IDs
     cl::Platform m_Platform;
     cl::Device m_Device;
     cl::Context m_Context;
     cl::CommandQueue m_CommandQueue;
+    
+    /// Built program list for reusability
     std::map<size_t, cl::Program> m_ProgramList;
 
+    /// flag for enforce GPU to finish CommandQueue execution
     bool m_WaitForFinish = false;
 
 protected:
+    /**
+     * List all available Platforms.
+     * 
+     * @return list of Platforms. Empty if none are found.
+     * @exceptsafe No-throw guarantee.
+     */
     const std::vector<cl::Platform> ListPlatforms() const;
-    const std::vector<cl::Device> ListDevices(const cl::Platform&, const char*) const;
+
+    /**
+     * List all available Devices.
+     * 
+     * @param t_platform Platform you want to search the devices from.
+     * @param t_device_type Device type (gpu, cpu, all).
+     * @return list of Devices. Empty if none are found.
+     * @exceptsafe No-throw guarantee.
+     */
+    const std::vector<cl::Device> ListDevices(const cl::Platform& t_platform, const char* t_device_type) const;
+
+    /**
+     * Allocate device by creating Context and CommandQueue.
+     * @exceptsafe No-throw guarantee.
+     */    
     void AllocateDevice();
 
-    const cl::Buffer* CreateBuffer(const size_t) const;
-    void WriteBuffer(const cl::Buffer*, void*) const;
-    void ReadBuffer(const cl::Buffer*, void*) const;
-    
-    const cl::Image* CreateImage(const std::array<size_t,3>&, const cl::ImageFormat&) const;
-    void WriteImage(const cl::Image*, void*) const;
-    void ReadImage(const cl::Image*, void*) const;
+    /**
+     * low-level create buffer space on device.
+     * 
+     * @param t_bitsize memory bitsize to allocate.
+     * @return ocl buffer pointer.
+     * @exceptsafe No-throw guarantee.
+     */ 
+    const cl::Buffer CreateBuffer(const size_t t_bitsize) const;
+    /**
+     * low-level write ocl buffer from host to device.
+     * 
+     * @param t_buffer ocl buffer pointer write on device.
+     * @param t_data data pointer to read from host.
+     * @exceptsafe No-throw guarantee.
+     */ 
+    void WriteBuffer(const cl::Buffer& t_buffer, void* t_data) const;
+    /**
+     * low-level read ocl buffer from device to host.
+     * 
+     * @param t_buffer ocl buffer pointer to read from device.
+     * @param t_data data pointer to write on host.
+     */ 
+    void ReadBuffer(const cl::Buffer& t_buffer, void* t_data) const;
+       
+    /**
+     * low-level create image space on device.
+     * 
+     * @param t_shape image shape to allocate.
+     * @param t_format image format (number channels, data type)
+     * @return ocl image pointer.
+     * @exceptsafe No-throw guarantee.
+     */ 
+    const cl::Image* CreateImage(const std::array<size_t,3>& t_shape, const cl::ImageFormat& t_format) const;
 
+    /**
+     * low-level write ocl image from host to device.
+     * 
+     * @param t_image ocl image pointer write on device.
+     * @param t_data data pointer to read from host.
+     * @exceptsafe No-throw guarantee.
+     */  
+    void WriteImage(const cl::Image* t_image, void* t_data) const;
+
+    /**
+     * low-level read ocl image from device to host.
+     * 
+     * @param t_image ocl image pointer to read from device.
+     * @param t_data data pointer to write on host.
+     * @exceptsafe No-throw guarantee.
+     */ 
+    void ReadImage(const cl::Image* t_image, void* t_data) const;
+
+
+    /**
+     * convert template type to data type.
+     * 
+     * @return data type (FLOAT, INT, UINT, CHAR, UCHAR, SHORT, USHORT)
+     * @exceptsafe No-throw guarantee.
+     */ 
     template<class T>
     const cle::Object::DataType Template2DataType() const;
 
-    // todo: enable copy / cast methods
-    // void CopyBufferToBuffer(cle::Buffer&, cle::Buffer&) const;
-    // void CopyBufferToImage(cle::Buffer&, cle::Image&) const;
-    // void CopyImageToBuffer(cle::Image&, cle::Buffer&) const;
-    // void CopyImageToImage(cle::Image&, cle::Image&) const;
+    // todo: low-level copy / cast methods buffer <-> image
+    // todo: void CopyBufferToBuffer(cle::Buffer&, cle::Buffer&) const;
+    // todo: void CopyBufferToImage(cle::Buffer&, cle::Image&) const;
+    // todo: void CopyImageToBuffer(cle::Image&, cle::Buffer&) const;
+    // todo: void CopyImageToImage(cle::Image&, cle::Image&) const;
 
 public:
+
+    /**
+     * Default constructor. Will allocate the first available device.
+     * 
+     * @exceptsafe No-throw guarantee.
+     */
     GPU();
-    GPU(const char*, const char* ="all");
+
+    /**
+     * Constructor. Will allocate device based on name and type.
+     * 
+     * @param t_device_name name of device to allocate.
+     * @param t_device_type type of device to allocate (default all).
+     * @exceptsafe No-throw guarantee.
+     */
+    GPU(const char* t_device_name, const char* t_device_type ="all");
+
+    /**
+     * Default destructor.
+     * 
+     * @exceptsafe No-throw guarantee.
+     */
     ~GPU();
 
-    void SelectDevice(const char*, const char* ="all");
+    /**
+     * Will allocate device based on name and type.
+     * 
+     * @param t_device_name name of device to allocate.
+     * @param t_device_type type of device to allocate (default all).
+     * @exceptsafe No-throw guarantee.
+     */    
+    void SelectDevice(const char* t_device_name, const char* t_device_type ="all");
+
+    /**
+     * Get information on current device.
+     * 
+     * @return formated string of information on current device
+     * @exceptsafe No-throw guarantee.
+     */
     const std::string Info() const;
+
+    /**
+     * Get name on current device.
+     * 
+     * @return name of current device
+     * @exceptsafe No-throw guarantee.
+     */
     const std::string Name() const;
+
+    /**
+     * Compute indicative score based on memory and device type.
+     * 
+     * @return score value
+     * @exceptsafe No-throw guarantee.
+     */
     const float Score() const;
 
+    /**
+     * Get device method.
+     * 
+     * @return Device
+     * @exceptsafe No-throw guarantee.
+     */
     cl::Device Device() const;
+
+    /**
+     * Get context method.
+     * 
+     * @return Context
+     * @exceptsafe No-throw guarantee.
+     */
     cl::Context Context() const;
+
+    /**
+     * Get Commande Queue method.
+     * 
+     * @return CommandQueue
+     * @exceptsafe No-throw guarantee.
+     */
     cl::CommandQueue CommandQueue() const;
+
+    /**
+     * Get platform method.
+     * 
+     * @return Platform
+     * @exceptsafe No-throw guarantee.
+     */
     cl::Platform Platform() const;
 
-    const bool FindProgram(const size_t) const;
-    const cl::Program GetProgram(const size_t);
-    void AddProgram(const cl::Program&, const size_t);
+    /**
+     * Find program in program list.
+     * 
+     * @param t_hash hash key generated from program sources.
+     * @return true if found, false otherwise.
+     * @exceptsafe No-throw guarantee.
+     */    
+    const bool FindProgram(const size_t t_hash) const;
 
+    /**
+     * Get program in program list.
+     * 
+     * @param t_hash hash key generated from program sources.
+     * @return Program corresponding to hash key.
+     * @exceptsafe No-throw guarantee.
+     */
+    const cl::Program GetProgram(const size_t t_hash);
+
+    /**
+     * Add program to list.
+     * 
+     * @param t_program compiled program.
+     * @param t_hash hash key generated from program sources.
+     * @return Program corresponding to hash key.
+     * @exceptsafe No-throw guarantee.
+     */
+    void AddProgram(const cl::Program& t_program, const size_t t_hash);
+
+    /**
+     * Force GPU to wait for kernel to execute before going on.
+     * 
+     * @param t_flag switch true or false.
+     * @exceptsafe No-throw guarantee.
+     */
     void SetWaitForKernelToFinish(bool);
+
+    /**
+     * Call CommandQueue to finish.
+     * 
+     * @exceptsafe No-throw guarantee.
+     */
     void Finish() const;
+
+    /**
+     * Call CommandQueue to flush.
+     * 
+     * @exceptsafe No-throw guarantee.
+     */
     void Flush() const;
 
-    // Create / Push / Pull / Copy methods
+    /**
+     * Create empty Buffer space in device.
+     * 
+     * @param t_shape shape of Buffer space to allocate (default {1,1,1}).
+     * @return Buffer object.
+     * @exceptsafe No-throw guarantee.
+     */    
     template<class T = float>
-    cle::Buffer CreateBuffer(const std::array<size_t,3>& ={1,1,1}) const;
+    cle::Buffer CreateBuffer(const std::array<size_t,3>& t_shape ={1,1,1}) const;
+
+    /**
+     * Create empty Image space in device.
+     * 
+     * @param t_shape shape of Image space to allocate (default {1,1,1}).
+     * @return Image object.
+     * @exceptsafe No-throw guarantee.
+     */ 
     template<class T = float>
-    cle::Image CreateImage(const std::array<size_t,3>& ={1,1,1}) const;
+    cle::Image CreateImage(const std::array<size_t,3>& t_shape ={1,1,1}) const;
+
+    /**
+     * Create and write Buffer space from host to device.
+     * 
+     * @param t_data data to write into Buffer.
+     * @param t_shape shape of Buffer space to allocate (default {1,1,1}).
+     * @return Buffer object.
+     * @exceptsafe No-throw guarantee.
+     */ 
     template<class T = float>
-    cle::Buffer PushBuffer(std::vector<T>&, const std::array<size_t,3>& ={1,1,1}) const;
+    cle::Buffer PushBuffer(std::vector<T>& t_data, const std::array<size_t,3>& t_shape ={1,1,1}) const;
+
+    /**
+     * Create and write Image space from host to device.
+     * 
+     * @param t_data data to write into Image.
+     * @param t_shape shape of Image space to allocate (default {1,1,1}).
+     * @return Image object.
+     * @exceptsafe No-throw guarantee.
+     */ 
     template<class T = float>
-    cle::Image PushImage(std::vector<T>&, const std::array<size_t,3>& ={1,1,1}) const;
+    cle::Image PushImage(std::vector<T>& t_data, const std::array<size_t,3>& t_shape ={1,1,1}) const;
+
+    /**
+     * Read Buffer from Device to host.
+     * 
+     * @param t_buffer Buffer to read.
+     * @return array of data.
+     * @exceptsafe No-throw guarantee.
+     */ 
     template<class T = float>
-    std::vector<T> Pull(const cle::Buffer&) const;
+    std::vector<T> Pull(const cle::Buffer& t_buffer) const;
+
+    /**
+     * Read Image from Device to host.
+     * 
+     * @param t_image Image to read.
+     * @return array of data.
+     * @exceptsafe No-throw guarantee.
+     */ 
     template<class T = float>
-    std::vector<T> Pull(const cle::Image&) const;
+    std::vector<T> Pull(const cle::Image& t_image) const;
 };
 
 template<class T>
@@ -109,19 +359,19 @@ cle::Buffer GPU::CreateBuffer(const std::array<size_t,3>& t_shape) const
 }
 
 template<class T>
-cle::Buffer GPU::PushBuffer(std::vector<T>& t_arr, const std::array<size_t,3>& t_shape) const
+cle::Buffer GPU::PushBuffer(std::vector<T>& t_data, const std::array<size_t,3>& t_shape) const
 {
-    auto buffer = this->CreateBuffer(t_arr.size() * sizeof(T));
-    this->WriteBuffer(buffer, t_arr.data());
+    auto buffer = this->CreateBuffer(t_data.size() * sizeof(T));
+    this->WriteBuffer(buffer, t_data.data());
     return cle::Buffer(buffer, t_shape, this->Template2DataType<T>());
 }
 
 template<class T>
 std::vector<T> GPU::Pull(const cle::Buffer& t_buffer) const
 {
-    std::vector<T> arr (t_buffer.Size());
-    this->ReadBuffer(t_buffer.Data(), arr.data());
-    return arr;
+    std::vector<T> array (t_buffer.Size());
+    this->ReadBuffer(t_buffer.Data(), array.data());
+    return array;
 }
 
 template<class T>
@@ -132,21 +382,21 @@ cle::Image GPU::CreateImage(const std::array<size_t,3>& t_shape) const
 }
 
 template<class T>
-cle::Image GPU::PushImage(std::vector<T>& t_arr, const std::array<size_t,3>& t_shape) const
+cle::Image GPU::PushImage(std::vector<T>& t_data, const std::array<size_t,3>& t_shape) const
 {
     auto image = this->CreateImage(t_shape, cl::ImageFormat(CL_INTENSITY, CL_FLOAT));
-    this->WriteImage(image, t_arr.data());
+    this->WriteImage(image, t_data.data());
     return cle::Image(image, t_shape, this->Template2DataType<T>());
 }
 
 template<class T>
 std::vector<T> GPU::Pull(const cle::Image& t_image) const
 {
-    std::vector<T> arr (t_image.Size());
-    this->ReadImage(t_image.Data(), arr.data());
-    return arr;
+    std::vector<T> array (t_image.Size());
+    this->ReadImage(t_image.Data(), array.data());
+    return array;
 }
 
 } // namespace cle
 
-#endif //__clgpu_hpp
+#endif //__cleGPU_hpp
