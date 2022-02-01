@@ -7,6 +7,8 @@
 #include <iostream>
 #include <limits>
 
+#include <math.h>
+
 template<class type>
 bool IsDifferent(std::vector<type>& output, std::vector<type>& valid)
 {
@@ -19,7 +21,7 @@ bool IsDifferent(std::vector<type>& output, std::vector<type>& valid)
     for (auto it_output = output.begin(), it_valid = valid.begin(); 
               it_output != output.end() && it_valid != valid.end(); ++it_output, ++it_valid)
     {
-        difference += std::abs( static_cast<float>(*it_output) - static_cast<float>(*it_valid) );
+        difference += std::abs( roundf(static_cast<float>(*it_output) * 100000)/100000 - roundf(static_cast<float>(*it_valid) * 100000)/100000 );
     }
     if (difference > std::numeric_limits<float>::epsilon())
     {
