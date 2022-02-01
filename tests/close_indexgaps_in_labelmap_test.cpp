@@ -50,17 +50,13 @@ bool test(size_t width, size_t height, size_t depth)
 {
     std::vector<type> arr_1, valid;
     std::array<size_t,3> shape = generate_data<type>(arr_1, valid, width, height, depth);
-    // auto output_buffer = run_kernel_with_buffer<type>(arr_1, shape);
-    // std::cout << "output buffer \n";
-    // PrintData(output_buffer, shape);
-    // if (IsDifferent(output_buffer, valid))
-    // {
-    //     std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using buffer ... FAILED! " << std::endl;
-    //     return true;
-    // }
+    auto output_buffer = run_kernel_with_buffer<type>(arr_1, shape);
+    if (IsDifferent(output_buffer, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using buffer ... FAILED! " << std::endl;
+        return true;
+    }
     auto output_image  = run_kernel_with_image<type>(arr_1, shape);
-    std::cout << "output image \n";
-    PrintData(output_image, shape);
     if (IsDifferent(output_image, valid))
     {
         std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using image ... FAILED! " << std::endl;
@@ -71,16 +67,16 @@ bool test(size_t width, size_t height, size_t depth)
 
 int main(int argc, char **argv)
 {
-    // if (test<float>(10, 5, 3))
-    // {
-    //     std::cerr << "CloseIndexGapsInLabelMap kernel 3d ... FAILED! " << std::endl;
-    //     return EXIT_FAILURE;
-    // }
-    // if (test<float>(10, 5, 1))
-    // {
-    //     std::cerr << "CloseIndexGapsInLabelMap kernel 2d ... FAILED! " << std::endl;
-    //     return EXIT_FAILURE;
-    // }
+    if (test<float>(10, 5, 3))
+    {
+        std::cerr << "CloseIndexGapsInLabelMap kernel 3d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
+    }
+    if (test<float>(10, 5, 1))
+    {
+        std::cerr << "CloseIndexGapsInLabelMap kernel 2d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
+    }
     if (test<float>(10, 1, 1))
     {        
         std::cerr << "CloseIndexGapsInLabelMap kernel 1d ... FAILED! " << std::endl;
