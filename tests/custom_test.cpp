@@ -2,6 +2,7 @@
 #include <random>
 
 #include "clesperanto.hpp"
+#include "utils.hpp"
 #include "cleCustomKernel.hpp"
 
 

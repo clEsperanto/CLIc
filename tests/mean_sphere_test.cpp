@@ -1,6 +1,7 @@
 
 #include <random>
 #include "clesperanto.hpp"
+#include "utils.hpp"
 
 template<class type>
 std::array<size_t,3> generate_data(std::vector<type>& arr_1, 
@@ -11,47 +12,24 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
     std::fill(arr_1.begin(), arr_1.end(), 0.0f);
     std::fill(valid.begin(), valid.end(), 0.0f);
     int central_idx = (width/2) + (height/2)*width + (depth/2) * height * width;
-    type d = 1;
-    if(width>1) d += 2;
-    if(height>1) d += 2;
-    if(depth>1) d += 2;
-    arr_1[central_idx] = 9.0f;
+    type d = 1.0f;
+    if(width>1) d += 2.0f;
+    if(height>1) d += 2.0f;
+    if(depth>1) d += 2.0f;
+    arr_1[central_idx] = d;
     for (auto i = 0; i < arr_1.size(); ++i)
     {
         if ((i >= central_idx-1 && i <= central_idx+1) ||
             (i == central_idx+width) || (i == central_idx-width) ||
             (i == central_idx-(height*width)) ||  (i == central_idx+(height*width)) )             
         {
-            valid[i] = 9/d;
+            valid[i] = 1;
         } 
-    }    
+    } 
     return std::array<size_t,3> {width, height, depth};
 }
 
-template<class type>
-bool IsDifferent(std::vector<type>& output, std::vector<type>& valid)
-{
-    if (output.size() != valid.size())
-    {
-        std::cerr << "[FAILED] : output size does not match." << std::endl;
-        return true;
-    }
-    float difference = 0;
-    for (auto it_output = output.begin(), it_valid = valid.begin(); 
-              it_output != output.end(), it_valid != valid.end(); ++it_output, ++it_valid)
-    {
-        difference += std::abs( round(static_cast<float>(*it_output)*1000)/1000 - round(static_cast<float>(*it_valid)*1000)/1000);
-    }
-    if (difference != 0)
-    {
-        std::cerr << "[FAILED] : difference = " << difference << std::endl;
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
+
 
 template<class type>
 std::vector<type> run_kernel_with_buffer(std::vector<type>& arr_1, std::array<size_t,3>& shape)

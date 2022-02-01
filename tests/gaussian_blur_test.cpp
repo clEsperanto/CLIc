@@ -1,54 +1,7 @@
 
-// #include <random>
-// #include <iostream>
-
-// #include "clesperanto.hpp"
-
-
-// int main(int argc, char **argv)
-// {
-//     // Test Initialisation
-//     using type = float;
-//     size_t width (3), height (3), depth (3);
-//     std::array<size_t,3> shape = {width, height, depth};
-//     std::vector<type> arr_in (width*height*depth);
-//     std::fill(arr_in.begin(), arr_in.end(), 0.0f);
-//     arr_in[13] = 100.0f;
-//     std::vector<type> arr_res = {
-//                 0.0141675f, 0.0233582f, 0.0141675f,
-//                 0.0233582f, 0.0385112f, 0.0233582f,
-//                 0.0141675f, 0.0233582f, 0.0141675f,
-
-//                 0.0233582f, 0.0385112f, 0.0233582f,
-//                 0.0385112f, 0.0634942f, 0.0385112f,
-//                 0.0233582f, 0.0385112f, 0.0233582f,
-
-//                 0.0141675f, 0.0233582f, 0.0141675f,
-//                 0.0233582f, 0.0385112f, 0.0233582f,
-//                 0.0141675f, 0.0233582f, 0.0141675f
-//     };
-
-//     // Test Kernel
-//     cle::Clesperanto cle;
-//     auto Buffer_A = cle.PushImage<type>(arr_in, shape);
-//     auto Buffer_B = cle.CreateImage<type>(shape);
-//     cle.GaussianBlur(Buffer_A, Buffer_B, 1.0f, 1.0f, 1.0f);
-//     auto arr_out = cle.PullImage<type>(Buffer_B);  
-
-//     // Test Validation
-//     float difference = 0;
-//     for( auto it1 = arr_res.begin(), it2 = arr_out.begin(); 
-//          it1 != arr_res.end() && it2 != arr_out.end(); ++it1, ++it2)
-//     {
-//         difference += std::abs(*it1 - std::round(*it2 * 10000000.0f) / 10000000.0f);
-//     }
-//     return difference > std::numeric_limits<type>::epsilon();
-// }
-
-
-
 #include <random>
 #include "clesperanto.hpp"
+#include "utils.hpp"
 
 template<class type>
 std::array<size_t,3> generate_data(std::vector<type>& arr_1, 
@@ -61,56 +14,28 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
     arr_1[central_idx] = 100.0f;
     if(valid.size() == 27)
         valid = {
-            1.41673, 2.33580, 1.41673,
-            2.33580, 3.85108, 2.33580,
-            1.41673, 2.33580, 1.41673,
-
-            2.33580, 3.85108, 2.33580,
-            3.85108, 6.34936, 3.85108,
-            2.33580, 3.85108, 2.33580,
-
-            1.41673, 2.33580, 1.41673,
-            2.33580, 3.85108, 2.33580,
-            1.41673, 2.33580, 1.41673
+            1.41674721, 2.33582091, 1.41674721, 
+            2.33582115, 3.85111761, 2.33582115, 
+            1.41674721, 2.33582091, 1.41674721, 
+            2.33582115, 3.85111761, 2.33582115, 
+            3.85111785, 6.34941959, 3.85111785, 
+            2.33582115, 3.85111761, 2.33582115, 
+            1.41674721, 2.33582091, 1.41674721, 
+            2.33582115, 3.85111761, 2.33582115, 
+            1.41674721, 2.33582091, 1.41674721
             };
-
     if(valid.size() == 9)
         valid = {
-            5.8550,  9.6532, 5.8550,
-            9.6532, 15.9155, 9.6532,
-            5.8550,  9.6532, 5.8550
+            5.85501814, 9.6532917, 5.85501814, 
+            9.65329266, 15.9155874, 9.65329266, 
+            5.85501814, 9.6532917, 5.85501814
         };
 
     if(valid.size() == 3)
         valid = {
-            24.1971, 39.8942, 24.1971 
+            24.1971455, 39.8943443, 24.1971455 
         };
     return std::array<size_t,3> {width, height, depth};
-}
-
-template<class type>
-bool IsDifferent(std::vector<type>& output, std::vector<type>& valid)
-{
-    if (output.size() != valid.size())
-    {
-        std::cerr << "[FAILED] : output size does not match." << std::endl;
-        return true;
-    }
-    float difference = 0;
-    for (auto it_output = output.begin(), it_valid = valid.begin(); 
-              it_output != output.end(), it_valid != valid.end(); ++it_output, ++it_valid)
-    {
-        difference += std::abs( round(static_cast<float>(*it_output)*1000)/1000 - round(static_cast<float>(*it_valid)*1000)/1000);
-    }
-    if (difference != 0)
-    {
-        std::cerr << "[FAILED] : difference = " << difference << std::endl;
-        return true;
-    }
-    else
-    {
-        return false;
-    }
 }
 
 template<class type>

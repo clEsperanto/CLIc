@@ -1,6 +1,7 @@
 
 #include <random>
 #include "clesperanto.hpp"
+#include "utils.hpp"
 
 template<class type>
 std::array<size_t,3> generate_data(std::vector<type>& arr_1, 
@@ -11,35 +12,19 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
     std::fill(valid.begin(), valid.end(), 0.0f);
     for (auto it1 = arr_1.begin(); it1 != arr_1.end(); ++it1)
     {
-        *it1 = static_cast<type>((int) rand() % width);
-        valid[*it1] = 1;
+        int value = (int) rand() % width;
+        if((value%2) ==0)
+        {
+            *it1 = value;
+            valid[value] = 1;
+        }
+        else
+        {
+            *it1 = 0;
+            valid[0] = 1;
+        }
     }
     return std::array<size_t,3> {width, height, depth};
-}
-
-template<class type>
-bool IsDifferent(std::vector<type>& output, std::vector<type>& valid)
-{
-    if (output.size() != valid.size())
-    {
-        std::cerr << "[FAILED] : output size does not match." << std::endl;
-        return true;
-    }
-    float difference = 0;
-    for (auto it_output = output.begin(), it_valid = valid.begin(); 
-              it_output != output.end(), it_valid != valid.end(); ++it_output, ++it_valid)
-    {
-        difference += std::abs( round(static_cast<float>(*it_output)*1000)/1000 - round(static_cast<float>(*it_valid)*1000)/1000);
-    }
-    if (difference != 0)
-    {
-        std::cerr << "[FAILED] : difference = " << difference << std::endl;
-        return true;
-    }
-    else
-    {
-        return false;
-    }
 }
 
 template<class type>

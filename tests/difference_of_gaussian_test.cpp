@@ -1,6 +1,7 @@
 
 #include <random>
 #include "clesperanto.hpp"
+#include "utils.hpp"
 
 template<class type>
 std::array<size_t,3> generate_data(std::vector<type>& arr_1, 
@@ -13,58 +14,33 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
     arr_1[central_idx] = 100.0f;
     if(valid.size() == 27)
         valid = {
-            1.21767, 2.12536, 1.21767,
-            2.12536, 3.62863, 2.12536,
-            1.21767, 2.12536, 1.21767,
-
-            2.12536, 3.62863, 2.12536,
-            3.62863, 6.11420, 3.62863,
-            2.12536, 3.62863, 2.12536,
-
-            1.21767, 2.12536, 1.21767,
-            2.12536, 3.62863, 2.12536,
-            1.21767, 2.12536, 1.21767
+            1.21767032, 2.12537122, 1.21767032, 
+            2.12537146, 3.62864542, 2.12537146, 
+            1.21767032, 2.12537122, 1.21767032, 
+            2.12537146, 3.62864542, 2.12537146, 
+            3.62864566, 6.11423779, 3.62864566, 
+            2.12537146, 3.62864542, 2.12537146, 
+            1.21767032, 2.12537122, 1.21767032, 
+            2.12537146, 3.62864542, 2.12537146, 
+            1.21767032, 2.12537122, 1.21767032
             };
 
     if(valid.size() == 9)
         valid = {
-            4.2725,  7.9804, 4.2725,
-            7.9804, 14.1471, 7.9804,
-            4.2725,  7.9804, 4.2725
+            4.27250481, 7.98037338, 4.27250481, 
+            7.98037434, 14.1470985, 7.98037434, 
+            4.27250481, 7.98037338, 4.27250481
         };
 
     if(valid.size() == 3)
         valid = {
-            11.6176, 26.5961, 11.6176 
+            11.6173477, 26.59589, 11.6173477 
         };
 
     return std::array<size_t,3> {width, height, depth};
 }
 
-template<class type>
-bool IsDifferent(std::vector<type>& output, std::vector<type>& valid)
-{
-    if (output.size() != valid.size())
-    {
-        std::cerr << "[FAILED] : output size does not match." << std::endl;
-        return true;
-    }
-    float difference = 0;
-    for (auto it_output = output.begin(), it_valid = valid.begin(); 
-              it_output != output.end(), it_valid != valid.end(); ++it_output, ++it_valid)
-    {
-        difference += std::abs( round(static_cast<float>(*it_output)*100)/100 - round(static_cast<float>(*it_valid)*100)/100);
-    }
-    if (difference != 0)
-    {
-        std::cerr << "[FAILED] : difference = " << difference << std::endl;
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
+
 
 template<class type>
 std::vector<type> run_kernel_with_buffer(std::vector<type>& arr_1, std::array<size_t,3>& shape)
