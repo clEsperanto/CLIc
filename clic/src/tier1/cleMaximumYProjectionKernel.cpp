@@ -25,7 +25,6 @@ void MaximumYProjectionKernel::SetOutput(Object& t_x)
 
 void MaximumYProjectionKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

@@ -26,7 +26,6 @@ void MinimumZProjectionKernel::SetOutput(Object& t_x)
 
 void MinimumZProjectionKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

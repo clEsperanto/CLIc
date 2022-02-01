@@ -31,7 +31,6 @@ void EqualKernel::SetOutput(Object& t_x)
 
 void EqualKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

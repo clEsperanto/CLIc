@@ -25,7 +25,6 @@ void CopyKernel::SetOutput(Object& t_x)
 
 void CopyKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

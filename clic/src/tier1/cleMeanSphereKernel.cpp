@@ -40,7 +40,6 @@ void MeanSphereKernel::SetOutput(Object& t_x)
 
 void MeanSphereKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

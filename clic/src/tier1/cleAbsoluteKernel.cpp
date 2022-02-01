@@ -26,7 +26,6 @@ void AbsoluteKernel::SetOutput(Object& t_x)
 
 void AbsoluteKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

@@ -10,6 +10,7 @@
 #include "cleBlockEnumerateKernel.hpp"
 #include "cleReplaceIntensitiesKernel.hpp"
 
+#include "utils.hpp"
 
 namespace cle
 {
@@ -40,6 +41,12 @@ void CloseIndexGapsInLabelMapKernel::Execute()
 {
     auto src = this->GetParameter<Object>("src");
     auto dst = this->GetParameter<Object>("dst");
+
+    // std::cout << "dst at start of CloseIndexGapsInLabelMapKernel = " << dst.get() << " is used : " << dst.use_count() << std::endl;
+    // auto dst_array_1 = this->m_gpu->Pull<float>( *dst.get() );
+    // PrintData<float>(dst_array_1, dst->Shape());
+    // std::cout << "\n";
+
     
     auto max_value_buffer = this->m_gpu->CreateBuffer<float>();
 
@@ -90,6 +97,11 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     replace_intensities_kernel.SetOutput(*dst);
     replace_intensities_kernel.SetMap(new_indices);
     replace_intensities_kernel.Execute();
+
+    // std::cout << "dst at end of CloseIndexGapsInLabelMapKernel = " << dst.get() << " is used : " << dst.use_count() << std::endl;
+    // auto dst_array_2 = this->m_gpu->Pull<float>( *dst.get() );
+    // PrintData<float>(dst_array_2, dst->Shape());
+    // std::cout << "\n";
 }
 
 } // namespace cle

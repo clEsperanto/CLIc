@@ -31,7 +31,6 @@ void NotEqualConstantKernel::SetScalar(float t_x)
 
 void NotEqualConstantKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

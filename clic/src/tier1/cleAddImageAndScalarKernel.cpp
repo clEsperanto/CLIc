@@ -30,7 +30,6 @@ void AddImageAndScalarKernel::SetScalar(float t_x)
 
 void AddImageAndScalarKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

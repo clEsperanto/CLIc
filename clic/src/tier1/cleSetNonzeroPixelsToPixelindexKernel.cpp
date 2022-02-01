@@ -31,7 +31,6 @@ void SetNonzeroPixelsToPixelindexKernel::SetOffset(int t_x)
 
 void SetNonzeroPixelsToPixelindexKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

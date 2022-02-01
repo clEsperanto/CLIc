@@ -31,7 +31,6 @@ void GreaterOrEqualConstantKernel::SetScalar(float t_x)
 
 void GreaterOrEqualConstantKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

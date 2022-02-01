@@ -32,7 +32,6 @@ void NotEqualKernel::SetOutput(Object& t_x)
 
 void NotEqualKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

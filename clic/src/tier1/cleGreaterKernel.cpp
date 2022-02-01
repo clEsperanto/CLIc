@@ -31,7 +31,6 @@ void GreaterKernel::SetOutput(Object& t_x)
 
 void GreaterKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

@@ -26,7 +26,6 @@ void SetKernel::SetValue(float t_x)
 
 void SetKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

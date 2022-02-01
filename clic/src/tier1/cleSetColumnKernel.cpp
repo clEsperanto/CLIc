@@ -31,7 +31,6 @@ void SetColumnKernel::SetValue(float t_x)
 
 void SetColumnKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

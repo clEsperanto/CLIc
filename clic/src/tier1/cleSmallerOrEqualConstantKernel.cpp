@@ -31,7 +31,6 @@ void SmallerOrEqualConstantKernel::SetConstant(float t_x)
 
 void SmallerOrEqualConstantKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

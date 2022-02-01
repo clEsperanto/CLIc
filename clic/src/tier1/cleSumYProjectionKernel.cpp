@@ -26,7 +26,6 @@ void SumYProjectionKernel::SetOutput(Object& t_x)
 
 void SumYProjectionKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

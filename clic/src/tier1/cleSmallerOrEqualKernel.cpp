@@ -31,7 +31,6 @@ void SmallerOrEqualKernel::SetOutput(Object& t_x)
 
 void SmallerOrEqualKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

@@ -31,9 +31,9 @@ void NonzeroMinimumBoxKernel::SetOutputFlag(Object& t_x)
 
 void NonzeroMinimumBoxKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
+    this->SetGlobalNDRange("dst1");
     this->EnqueueKernel();
 }
 } // namespace cle

@@ -41,7 +41,6 @@ void AddImagesWeightedKernel::SetFactor2(float t_x)
 
 void AddImagesWeightedKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

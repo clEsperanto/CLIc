@@ -26,7 +26,6 @@ void SobelKernel::SetOutput(Object& t_x)
    
 void SobelKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

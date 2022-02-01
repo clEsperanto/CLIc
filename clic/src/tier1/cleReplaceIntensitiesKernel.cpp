@@ -31,7 +31,6 @@ void ReplaceIntensitiesKernel::SetMap(Object& t_x)
 
 void ReplaceIntensitiesKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

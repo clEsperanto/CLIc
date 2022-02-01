@@ -28,6 +28,7 @@ void FlagExistingLabelsKernel::SetOutput(Object& t_x)
 void FlagExistingLabelsKernel::Execute()
 {
     auto dst = this->GetParameter<Object>("dst");
+
     SetKernel set(this->m_gpu);
     set.SetInput(*dst);
     set.SetValue(0);
@@ -35,6 +36,7 @@ void FlagExistingLabelsKernel::Execute()
 
     this->BuildProgramKernel();
     this->SetArguments();
+    this->SetGlobalNDRange("src");
     this->EnqueueKernel();
 }
 

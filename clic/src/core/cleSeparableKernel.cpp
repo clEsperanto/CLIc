@@ -48,7 +48,6 @@ void SeparableKernel::SetDimension(int t_x)
 
 void SeparableKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

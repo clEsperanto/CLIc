@@ -31,7 +31,6 @@ void EqualConstantKernel::SetScalar(float t_x)
 
 void EqualConstantKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

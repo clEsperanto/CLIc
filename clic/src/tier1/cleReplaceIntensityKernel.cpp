@@ -36,7 +36,6 @@ void ReplaceIntensityKernel::SetOutValue(float t_x)
 
 void ReplaceIntensityKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

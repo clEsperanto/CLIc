@@ -31,10 +31,10 @@ void SumReductionXKernel::SetBlocksize(int t_x)
 
 void SumReductionXKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();
+
 }
 
 } // namespace cle

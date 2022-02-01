@@ -26,7 +26,6 @@ void ErodeSphereKernel::SetOutput(Object& t_x)
 
 void ErodeSphereKernel::Execute()
 {
-    this->ManageDimensions();
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();
