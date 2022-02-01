@@ -13,36 +13,111 @@
 namespace cle
 {
 
+/**
+ * template Scalar class 
+ *
+ * Inherit from LighObject, the class define a holder for float and int type.
+ * This enable to process scalar arguments along buffer and image arguments.
+ * The template define the scalar type.
+ */
 template<class T =float>
 class Scalar : public LightObject
 {
 private:
+    /// scalar value
     T m_obj = 0;
 
 protected:
+
+    /**     
+     * Convert template to string.
+     * @return template type as string
+     */
     const char* TemplateToString() const;
 
 public: 
+
+    /**     
+     * Default constructor.
+     */
     Scalar() =default;
-    Scalar(const T);
+
+    /**     
+     * Constructor.
+     * @param t_value value to allocate.
+     */
+    Scalar(const T t_value);
+
+    /**     
+     * Default destructor.
+     */
     ~Scalar() =default;
 
+    /**     
+     * Get value.
+     * @return value of templated type.
+     */
     const T Data() const;
 
+    /**     
+     * Get scalar dimension.
+     * @return dimension equal to 1.
+     */
     const int nDim() const;
+
+    /**     
+     * Get scalar size.
+     * @return size equal to 1.
+     */
     const int Size() const;
+
+    /**     
+     * Get scalar shape.
+     * @return shape array equal to {1,1,1}.
+     */
     const std::array<size_t,3> Shape() const;
+
+    /**     
+     * Get scalar origin.
+     * @return origin array equal to {0,0,0}.
+     */
     const std::array<size_t,3> Origin() const;
+
+    /**     
+     * Get scalar region.
+     * @return region array equal to {1,1,1}.
+     */
     const std::array<size_t,3> Region() const;
 
-    const char* GetDataType() const;
-    const bool IsDataType(const char*) const;
-    const char* GetObjectType() const;  
-    const bool IsObjectType(const char*) const;
+    /**
+     * Get object data type (float or int).
+     * @return data type as string.
+     */
+    virtual const char* GetDataType() const;
+
+    /**
+     * Compare object data type with template (float or int).
+     * @param t_dtype data type to compare with
+     * @return true if same data type, false otherwise.
+     */
+    virtual const bool IsDataType(const char* t_dtype) const; 
+
+    /**
+     * Get object type (Buffer, Image, etc.).
+     * @return Scalar as string.
+     */   
+    virtual const char* GetObjectType() const;
+
+    /**
+     * Compare object type (Scalar).
+     * @param t_otype object type to compare with
+     * @return true if same object type, false otherwise.
+     */
+    virtual const bool IsObjectType(const char* t_otype) const;
 };
 
 template<class T>
-Scalar<T>::Scalar(const T _d) : LightObject(), m_obj(_d)
+Scalar<T>::Scalar(const T t_value) : LightObject(), m_obj(t_value)
 {}
 
 template<class T>
@@ -119,6 +194,6 @@ const char* Scalar<T>::TemplateToString() const
     return "unknown";
 } 
 
-}
+} // namespace cle
 
 #endif //__cleScalar_hpp
