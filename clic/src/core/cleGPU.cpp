@@ -1,17 +1,18 @@
-
+#include <iostream>
+#include <stdexcept>
 
 #include "cleGPU.hpp"
-#include <iostream>
 
 namespace cle
 {
 
 GPU::GPU() 
 {
+    // todo: make constructor safe
     std::vector<cl::Platform> m_PlatformList = this->ListPlatforms();
-    this->m_Platform = m_PlatformList.front();
+    this->m_Platform = m_PlatformList.front(); //! not safe if platform list is empty
     std::vector<cl::Device> m_DeviceList = ListDevices(this->m_Platform, "all");
-    this->m_Device = m_DeviceList.front();
+    this->m_Device = m_DeviceList.front();     //! not safe if device list is empty
     this->AllocateDevice();
 }
 
@@ -37,8 +38,8 @@ const std::vector<cl::Platform> GPU::ListPlatforms() const
     }
     catch(cl::Error& e)
     {
-        std::cerr << "Error : Fail to get platforms ..." << std::endl;
-        std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
+        std::cerr << "Exception caught in GPU class. Error when fetching Platforms list." << std::endl;
+        std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
     }
     return m_PlatformList;
 }
@@ -57,8 +58,8 @@ const std::vector<cl::Device> GPU::ListDevices(const cl::Platform& t_platform, c
     }
     catch(cl::Error& e)
     {
-        std::cerr << "Error : Fail to get devices from platform ..." << std::endl;
-        std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
+        std::cerr << "Exception caught in GPU class. Error when fetching Device list." << std::endl;
+        std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
     }
     return m_DeviceList;
 }
@@ -71,8 +72,8 @@ void GPU::AllocateDevice()
     }
     catch(const cl::Error& e)
     {
-        std::cerr << "Error : Error creating context on provided device." << std::endl;
-        std::cerr << "\tException caught! " << e.what() << " -> " << e.err() << '\n';
+        std::cerr << "Exception caught in GPU class. Error when instantiating Context." << std::endl;
+        std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
     }
     try
     {
@@ -80,8 +81,8 @@ void GPU::AllocateDevice()
     }
     catch(cl::Error& e)
     {
-        std::cerr << "Error : Fail to create command queue from context and device." << std::endl;
-        std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
+        std::cerr << "Exception caught in GPU class. Error when instantiating Command Queue." << std::endl;
+        std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
     }
 }
 
@@ -117,6 +118,8 @@ void GPU::SelectDevice(const char* t_device_name, const char* t_device_type)
     if (!found)
     {
         // We take the first {platform|device}.
+        //! not safe because we do not know if platform list is empty or not
+        // todo: make safe
         this->m_Platform = m_PlatformList.front();
         this->m_Device = ListDevices(this->m_Platform, "all").front();
     }
@@ -145,6 +148,8 @@ cl::Platform GPU::Platform() const
 
 const cl::Program GPU::GetProgram(const size_t t_hash)
 {
+    //! not safe if FindProgram() is not used before
+    // todo: check it != end()
     auto it = m_ProgramList.find(t_hash);
     return it->second;
 }
@@ -157,16 +162,21 @@ const bool GPU::FindProgram(const size_t t_hash) const
 
 void GPU::AddProgram(const cl::Program& t_program, const size_t t_hash)
 {
+    // todo: should return true or false
     m_ProgramList.insert({t_hash, t_program});
 }
 
 const std::string GPU::Name() const
 {
+    //! not safe if device is null
+    // todo: check device allocation before fetching name
     return this->m_Device.getInfo<CL_DEVICE_NAME>();
 }
 
 const std::string GPU::Info() const
 {
+    //! not safe if platform and device are null
+    // todo: check platform and device allocation before fetching info
     std::string out = "";
     out += "[" + this->m_Platform.getInfo<CL_PLATFORM_NAME>() + " - " + this->Name() + "]\n";
     out += "\tDevicedeviceType: " + std::to_string(this->m_Device.getInfo<CL_DEVICE_TYPE>()) + "\n";
@@ -183,72 +193,93 @@ const std::string GPU::Info() const
 
 const float GPU::Score() const
 {
+    // todo: make safe
     float score = 0;
     if(this->m_Device.getInfo<CL_DEVICE_TYPE>() == CL_DEVICE_TYPE_GPU)
         score += 4e12;
     else
         score += 2e12;
-    score += this->m_Device.getInfo<CL_DEVICE_GLOBAL_MEM_SIZE>();
+    score += this->m_Device.getInfo<CL_DEVICE_GLOBAL_MEM_SIZE>();  //! not safe if no device
     return score;
 }
 
-
-const cl::Buffer* GPU::CreateBuffer(size_t t_bitsize) const
+const cl::Buffer GPU::CreateBuffer(size_t t_bitsize) const
 {
-    return new cl::Buffer(this->Context(), CL_MEM_READ_WRITE, t_bitsize);
+    cl_int error = CL_SUCCESS;
+    cl::Buffer object (this->Context(), CL_MEM_READ_WRITE, t_bitsize, nullptr, &error);
+    if(error != CL_SUCCESS)
+    {
+        throw std::runtime_error("Error in creating Buffer with return message \'" + std::string(GetErrorString(error)) + "\' (" + std::to_string(error) + ")\n");
+    }
+    return object;
 }
 
-void GPU::WriteBuffer(const cl::Buffer* t_ocl_object, void * t_arr) const
+void GPU::WriteBuffer(const cl::Buffer& t_buffer, void * t_data) const
 {
-    size_t bitsize = t_ocl_object->getInfo<CL_MEM_SIZE>();
+    size_t bitsize = t_buffer.getInfo<CL_MEM_SIZE>();
     try
     {
-        this->CommandQueue().enqueueWriteBuffer(*t_ocl_object, CL_TRUE, 0, bitsize, t_arr);
+        this->CommandQueue().enqueueWriteBuffer(t_buffer, CL_TRUE, 0, bitsize, t_data);
     }
     catch(cl::Error& e)
     {
-        std::cerr << "Error caught : Fail to write Buffer ..." << std::endl;
-        std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
+        std::cerr << "Exception caught in GPU class. Error when enqueuing Write instruction to Buffer." << std::endl;
+        std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
     }
 }
 
-void GPU::ReadBuffer(const cl::Buffer* t_ocl_object, void * t_arr) const
+void GPU::ReadBuffer(const cl::Buffer& t_buffer, void * t_data) const
 {
-    size_t bitsize = t_ocl_object->getInfo<CL_MEM_SIZE>();
+    size_t bitsize = t_buffer.getInfo<CL_MEM_SIZE>();
     try
     {
-        this->CommandQueue().enqueueReadBuffer(*t_ocl_object, CL_TRUE, 0, bitsize, t_arr);
+        this->CommandQueue().enqueueReadBuffer(t_buffer, CL_TRUE, 0, bitsize, t_data);
     }
     catch(cl::Error& e)
     {
-        std::cerr << "Error caught : Fail to read Buffer ..." << std::endl;
-        std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
+        std::cerr << "Exception caught in GPU class. Error when enqueuing Read instruction to Buffer." << std::endl;
+        std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
     }
 }
 
 const cl::Image* GPU::CreateImage(const std::array<size_t,3>& t_shape, const cl::ImageFormat& t_format) const
 {
+    cl_int error = CL_SUCCESS;
+    cl::Image* object_ptr = nullptr;
     if (t_shape[2] > 1)
     {
-        return new cl::Image3D(this->Context(), CL_MEM_READ_WRITE, t_format, t_shape[0], t_shape[1], t_shape[2]);
+        object_ptr = new cl::Image3D (this->Context(), CL_MEM_READ_WRITE, t_format, t_shape[0], t_shape[1], t_shape[2], 0, 0, nullptr, &error);
+        if(error != CL_SUCCESS)
+        {
+            throw std::runtime_error("Error in creating Image3D with return message \'" + std::string(GetErrorString(error)) + "\' (" + std::to_string(error) + ")\n");
+        }
     }
     else if (t_shape[1] > 1)
     {
-        return new cl::Image2D(this->Context(), CL_MEM_READ_WRITE, t_format, t_shape[0], t_shape[1]);
+        object_ptr = new cl::Image2D (this->Context(), CL_MEM_READ_WRITE, t_format, t_shape[0], t_shape[1], 0, nullptr, &error);
+        if(error != CL_SUCCESS)
+        {
+            throw std::runtime_error("Error in creating Image2D with return message \'" + std::string(GetErrorString(error)) + "\' (" + std::to_string(error) + ")\n");
+        }
     }
     else
     {
-        return new cl::Image1D(this->Context(), CL_MEM_READ_WRITE, t_format, t_shape[0]);
+        object_ptr = new cl::Image1D (this->Context(), CL_MEM_READ_WRITE, t_format, t_shape[0], nullptr, &error);
+        if(error != CL_SUCCESS)
+        {
+            throw std::runtime_error("Error in creating Image1D with return message \'" + std::string(GetErrorString(error)) + "\' (" + std::to_string(error) + ")\n");
+        }
     }
+    return object_ptr;
 }
 
-void GPU::WriteImage(const cl::Image* t_ocl_object, void* t_arr) const
+void GPU::WriteImage(const cl::Image* t_image, void* t_data) const
 {
-    size_t row_pitch = t_ocl_object->getImageInfo<CL_IMAGE_ROW_PITCH>();
-    size_t slice_pitch = t_ocl_object->getImageInfo<CL_IMAGE_SLICE_PITCH>();
-    size_t width = t_ocl_object->getImageInfo<CL_IMAGE_WIDTH>();
-    size_t height = t_ocl_object->getImageInfo<CL_IMAGE_HEIGHT>();
-    size_t depth = t_ocl_object->getImageInfo<CL_IMAGE_DEPTH>(); 
+    size_t row_pitch = t_image->getImageInfo<CL_IMAGE_ROW_PITCH>();
+    size_t slice_pitch = t_image->getImageInfo<CL_IMAGE_SLICE_PITCH>();
+    size_t width = t_image->getImageInfo<CL_IMAGE_WIDTH>();
+    size_t height = t_image->getImageInfo<CL_IMAGE_HEIGHT>();
+    size_t depth = t_image->getImageInfo<CL_IMAGE_DEPTH>(); 
 
     if(height == 0) height += 1;
     if(depth == 0) depth += 1;
@@ -257,22 +288,22 @@ void GPU::WriteImage(const cl::Image* t_ocl_object, void* t_arr) const
 
     try
     {   
-        this->CommandQueue().enqueueWriteImage(*t_ocl_object, CL_TRUE, origin, region, row_pitch, slice_pitch, t_arr);
+        this->CommandQueue().enqueueWriteImage(*t_image, CL_TRUE, origin, region, row_pitch, slice_pitch, t_data);
     }
     catch(cl::Error& e)
     {
-        std::cerr << "Error caught : Fail to write Image ..." << std::endl;
-        std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
+        std::cerr << "Exception caught in GPU class. Error when enqueuing Write instruction to Image." << std::endl;
+        std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
     }
 }
 
-void GPU::ReadImage(const cl::Image* t_ocl_object, void* t_arr) const
+void GPU::ReadImage(const cl::Image* t_image, void* t_data) const
 {
-    size_t row_pitch = t_ocl_object->getImageInfo<CL_IMAGE_ROW_PITCH>();
-    size_t slice_pitch = t_ocl_object->getImageInfo<CL_IMAGE_SLICE_PITCH>();
-    size_t width = t_ocl_object->getImageInfo<CL_IMAGE_WIDTH>();
-    size_t height = t_ocl_object->getImageInfo<CL_IMAGE_HEIGHT>();
-    size_t depth = t_ocl_object->getImageInfo<CL_IMAGE_DEPTH>();
+    size_t row_pitch = t_image->getImageInfo<CL_IMAGE_ROW_PITCH>();
+    size_t slice_pitch = t_image->getImageInfo<CL_IMAGE_SLICE_PITCH>();
+    size_t width = t_image->getImageInfo<CL_IMAGE_WIDTH>();
+    size_t height = t_image->getImageInfo<CL_IMAGE_HEIGHT>();
+    size_t depth = t_image->getImageInfo<CL_IMAGE_DEPTH>();
 
     if(height == 0) height = 1;
     if(depth == 0) depth = 1;
@@ -281,70 +312,14 @@ void GPU::ReadImage(const cl::Image* t_ocl_object, void* t_arr) const
 
     try
     {
-        this->CommandQueue().enqueueReadImage(*t_ocl_object, CL_TRUE, origin, region, row_pitch, slice_pitch, t_arr);
+        this->CommandQueue().enqueueReadImage(*t_image, CL_TRUE, origin, region, row_pitch, slice_pitch, t_data);
     }
     catch(cl::Error& e)
     {
-        std::cerr << "Error caught : Fail to read Image ..." << std::endl;
-        std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
+        std::cerr << "Exception caught in GPU class. Error when enqueuing Read instruction to Image." << std::endl;
+        std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
     }
 }
-
-// void GPU::CopyBufferToBuffer(cle::Buffer& t_src, cle::Buffer& t_dst) const
-// {
-//     try
-//     {
-//         this->CommandQueue().enqueueCopyBuffer(*t_src.Data(), *t_dst.Data(), 0, 0, t_dst.Bitsize(), nullptr, nullptr);
-//     }
-//     catch(cl::Error& e)
-//     {
-//         std::cerr << "Error caught : Fail to copy in Buffer to Buffer ..." << std::endl;
-//         std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
-//     }
-// }
-
-// void GPU::CopyBufferToImage(cle::Buffer& t_src, cle::Image& t_dst) const
-// {
-//     try
-//     {
-//         this->CommandQueue().enqueueCopyBufferToImage(*t_src.Data(), *t_dst.Data(), 0, t_dst.Origin(), t_dst.Region(), nullptr, nullptr);        
-//     }
-//     catch(cl::Error& e)
-//     {
-//         std::cerr << "Error caught : Fail to copy in Buffer to Image ..." << std::endl;
-//         std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
-//     }
-// }
-
-// void GPU::CopyImageToBuffer(cle::Image& t_src, cle::Buffer& t_dst) const
-// {
-//     try
-//     {
-//         this->CommandQueue().enqueueCopyImageToBuffer(*t_src.Data(), *t_dst.Data(), t_src.Origin(), t_src.Region(), 0, nullptr, nullptr);    
-//     }
-//     catch(cl::Error& e)
-//     {
-//         std::cerr << "Error caught : Fail to copy in Image to Buffer ..." << std::endl;
-//         std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
-//     }
-// }
-
-// void GPU::CopyImageToImage(cle::Image& t_src, cle::Image& t_dst) const
-// {
-//     try
-//     {
-//         this->CommandQueue().enqueueCopyImage(*t_src.Data(), *t_dst.Data(), t_src.Origin(), t_dst.Origin(), t_dst.Region(), nullptr, nullptr);
-        
-//     }
-//     catch(cl::Error& e)
-//     {
-//         std::cerr << "Error caught : Fail to copy in Image to Image ..." << std::endl;
-//         std::cerr << "\tException caught! " << e.what() << " error code " << e.err() << std::endl;
-//     }
-// }
-
-
-
 
 void GPU::SetWaitForKernelToFinish(bool t_flag)
 {
@@ -353,14 +328,39 @@ void GPU::SetWaitForKernelToFinish(bool t_flag)
 
 void GPU::Finish() const
 {
+    // todo: this should be in kernel class
     if(m_WaitForFinish)
-        this->m_CommandQueue.finish();
+    {
+        try
+        { 
+            this->m_CommandQueue.finish();
+        }
+        catch(const cl::Error& e)
+        {
+            std::cerr << "Exception caught in GPU class. Error when blocking Command Queue until list completion." << std::endl;
+            std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
+        }       
+    }
 }
 
 void GPU::Flush() const
 {
-    this->m_CommandQueue.flush();
+    // todo: usefullness? to delete or not?
+    try
+    { 
+        this->m_CommandQueue.flush();
+    }
+    catch(const cl::Error& e)
+    {
+            std::cerr << "Exception caught in GPU class. Error when sending Command Queue to device." << std::endl;
+            std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
+    }   
 }
 
+// todo: Copy/Cast operations between buffers and images
+// void CopyBufferToBuffer(cle::Buffer& t_src, cle::Buffer& t_dst) const;
+// void CopyBufferToImage(cle::Buffer& t_src, cle::Image& t_dst) const;
+// void CopyImageToBuffer(cle::Image& t_src, cle::Buffer& t_dst) const;
+// void CopyImageToImage(cle::Image& t_src, cle::Image& t_dst) const;
 
 } // namespace cle

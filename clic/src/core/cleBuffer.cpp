@@ -3,18 +3,18 @@
 namespace cle
 {
 
-Buffer::Buffer(const cl::Buffer* t_ocl_buffer, const std::array<size_t,3>& t_shape, const DataType t_dtype) : 
-    Object(t_shape, t_dtype, "buffer"), m_Ocl(std::shared_ptr<const cl::Buffer>(t_ocl_buffer))
+Buffer::Buffer(const cl::Buffer& t_buffer, const std::array<size_t,3>& t_shape, const DataType t_dtype) : 
+    Object(t_shape, t_dtype, "buffer"), m_Ocl(t_buffer)
 {}
 
-const cl::Buffer* Buffer::Data() const 
+const cl::Buffer Buffer::Data() const 
 { 
-    return const_cast<cl::Buffer*>(this->m_Ocl.get()); 
+    return this->m_Ocl; 
 }
 
 const size_t Buffer::Bitsize() const
 {
-    return this->m_Ocl->getInfo<CL_MEM_SIZE>();   
+    return this->m_Ocl.getInfo<CL_MEM_SIZE>();   
 }
 
 const std::string Buffer::Info() const
@@ -24,4 +24,4 @@ const std::string Buffer::Info() const
     return out;
 }
 
-}
+}// namespace cle

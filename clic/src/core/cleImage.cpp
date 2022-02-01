@@ -3,8 +3,8 @@
 namespace cle
 {
 
-Image::Image(const cl::Image* t_ocl_image, const std::array<size_t,3>& t_shape, const DataType t_dtype) : 
-    Object(t_shape, t_dtype, "image"), m_Ocl(std::shared_ptr<const cl::Image>(t_ocl_image))
+Image::Image(const cl::Image* t_image, const std::array<size_t,3>& t_shape, const DataType t_dtype) : 
+    Object(t_shape, t_dtype, "image"), m_Ocl(std::shared_ptr<const cl::Image>(t_image))
 {}
 
 const cl::Image* Image::Data() const
