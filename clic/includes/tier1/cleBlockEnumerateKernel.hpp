@@ -6,6 +6,8 @@
 
 namespace cle
 {
+
+// todo: make kernel work with Image
     
 class BlockEnumerateKernel : public Kernel
 {
@@ -16,9 +18,9 @@ private:
 
 public:
     BlockEnumerateKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetInputSums(Object&);
-    void SetOutput(Object&);
+    void SetInput(Buffer&);
+    void SetInputSums(Buffer&);
+    void SetOutput(Buffer&);
     void SetBlocksize(int);
     void Execute();
 };

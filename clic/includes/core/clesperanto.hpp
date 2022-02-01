@@ -85,7 +85,7 @@ public:
     void ReplaceIntensities(Object&, Object&, Object&);
     void SetColumn(Object&, int=0, float=0);
     void SumReductionX(Object&, Object&, int=0);
-    void BlockEnumerate(Object&, Object&, Object&, int=0);
+    void BlockEnumerate(Buffer&, Buffer&, Buffer&, int=0);  //! block enumarate fail when running with Image
     void FlagExistingLabels(Object&, Object&);
     void CloseIndexGapsInLabelMap(Object&, Object&, int=4096);
 };

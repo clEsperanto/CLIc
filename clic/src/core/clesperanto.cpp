@@ -423,7 +423,7 @@ void Clesperanto::SumReductionX(Object& t_src, Object& t_dst, int t_blocksize)
     kernel.Execute();   
 }
 
-void Clesperanto::BlockEnumerate(Object& t_src, Object& sum, Object& t_dst, int t_blocksize)
+void Clesperanto::BlockEnumerate(Buffer& t_src, Buffer& sum, Buffer& t_dst, int t_blocksize)
 {
     BlockEnumerateKernel kernel(this->m_gpu);
     kernel.SetInput(t_src);
