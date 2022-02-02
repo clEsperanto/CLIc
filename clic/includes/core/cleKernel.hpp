@@ -46,24 +46,22 @@ private:
     cl::Kernel m_Kernel;
 
     /**
-     * compute part of the clEsperanto defines specific to Buffer.
-     * 
+     * compute part of the clEsperanto defines specific to Buffer. 
      * @param t_tag buffer tag (src, dst, etc.).
      * @param t_dtype buffer data type (float, int, char, etc.).
      * @param t_dim buffer dimensionality (1, 2, 3).
      * @return buffer specific defines as string.
-     * @exceptsafe No-throw guarantee.
+     * @exceptsafe No-throw.
      */
     const std::string BufferDefines(std::string& t_tag, std::string& t_dtype, std::string& t_dim) const;
     
     /**
-     * compute part of the clEsperanto defines specific to Image.
-     * 
+     * compute part of the clEsperanto defines specific to Image. 
      * @param t_tag image tag (src, dst, etc.).
      * @param t_dtype image data type (float, int, char, etc.).
      * @param t_dim image dimensionality (1, 2, 3).
      * @return image specific defines as string.
-     * @exceptsafe No-throw guarantee.
+     * @exceptsafe No-throw.
      */
     const std::string ImageDefines(std::string& t_tag, std::string& t_dtype, std::string& t_dim) const;
 
@@ -86,100 +84,101 @@ protected:
     bool m_BuildProgram = true;
 
     /**
-     * Load clEsperanto `preamble.h`.
-     * 
+     * Load clEsperanto `preamble.h`. 
      * @return preamble source code as string.
-     * @exceptsafe No-throw guarantee.
+     * @exceptsafe No-throw.
      */
     const std::string LoadPreamble() const;
 
     /**
-     * Load kernel operation source defined in daughter class.
-     * 
+     * Load kernel operation source defined in daughter class. 
      * @return kernel source code as string.
-     * @exceptsafe No-throw guarantee.
+     * @exceptsafe No-throw.
      */
     const std::string LoadSources() const;
 
     /**
-     * Generate opencl define code based on kernel I/O parameters.
-     * 
+     * Generate opencl define code based on kernel I/O parameters. 
      * @return defines source code as string.
-     * @exceptsafe No-throw guarantee.
+     * @exceptsafe No-throw.
      */
     const std::string LoadDefines() const;
 
     /**
-     * return short version of data type name.
-     * 
+     * return short version of data type name. 
      * @param t_str data type as string (float, int, etc.)
      * @return short name of data type (f, i, c, etc.).
-     * @exceptsafe No-throw guarantee.
+     * @exceptsafe No-throw.
      */
     std::string TypeAbbr(const char*) const;
 
     /**
      * Add Object (Buffer or Image) to the parameter list with associated tag.
-     * If {tag,object} pair already exist, replace.
-     * 
+     * If {tag,object} pair already exist, replace. 
      * @param t_object Object type (Buffer or Image) to add to the paramters
      * @param t_tag paramter tag associated to the object
+     * @throws std::exception::runtime_error throw if could not find `t_tag` in kernel tag list. 
+     * @exceptsafe No-throw.     
      */
     void AddObject(Object& t_object, const char* t_tag);
 
     /**
      * Add int to the parameter list with associated tag.
-     * If {tag,scalar} pair already exist, replace.
-     * 
+     * If {tag,scalar} pair already exist, replace. 
      * @param t_scalar scalar type (int) to add to the paramters
      * @param t_tag parameter tag associated to the object
+     * @throws std::exception::runtime_error throw if could not find `t_tag` in kernel tag list. 
+     * @exceptsafe No-throw.
      */
     void AddObject(int t_scalar, const char* t_tag);
 
     /**
      * Add float to the parameter list with associated tag.
-     * If {tag,scalar} pair already exist, replace.
-     * 
+     * If {tag,scalar} pair already exist, replace. 
      * @param t_scalar scalar type (float) to add to the paramters
      * @param t_tag parameter tag associated to the object
+     * @throws std::exception::runtime_error throw if could not find `t_tag` in kernel tag list. 
+     * @exceptsafe No-throw.
      */
     void AddObject(float t_scalar, const char* t_tag);
 
     /**
-     * Method to detect I/O dimensionality and adapte kernel if needed.
-     * 
-     * @exceptsafe No-throw guarantee.
+     * Method to detect I/O dimensionality and adapte kernel if needed. 
+     * @exceptsafe No-throw.
      */
     void ManageDimensions();
 
     /**
      * Method to build program from source and store it in a kernel.
+     * @exceptsafe No-throw.
      */
     void BuildProgramKernel();
 
     /**
      * Method to set each arguments from the parameter list to the kernel.
+     * @exceptsafe No-throw.
      */
     void SetArguments();
 
     /**
-     * Method to define global range base on argument shape.
-     * 
+     * Method to define global range base on argument shape. 
      * @param t_tag tag of parameter to use. 
-     * @exceptsafe No-throw guarantee.
+     * @exceptsafe No-throw.
      */
     bool SetGlobalNDRange(const char* t_tag);
 
     /**
-     * Method to define global range base shape.
-     * 
+     * Method to define global range base shape. 
      * @param t_shape shape to use. 
-     * @exceptsafe No-throw guarantee.
+     * @exceptsafe No-throw.
      */
     bool SetGlobalNDRange(const std::array<size_t,3>& t_shape);
 
     /**
      * Enqueue Kernel in the device command queue for execution.
+     * @throws std::exception::runtime_error throw if could not define a global ND range.
+     * @throws std::exception::runtime_error throw if could not enqueue ND range in command queue.
+     * @exceptsafe Basic.
      */
     void EnqueueKernel();
 
@@ -188,7 +187,7 @@ protected:
      *  
      * @param t_tag tag of parameter to retrieve.
      * @return Pointer to object, null if not found.
-     * @exceptsafe No-throw guarantee.
+     * @exceptsafe No-throw.
      */
     template<class T>
     std::shared_ptr<T> GetParameter(const char* t_tag) const
@@ -206,21 +205,23 @@ protected:
 public:
     /**
      * Constructor.
-     *  
      * @param t_gpu gpu ressources to be used.
      * @param t_name kernel operation name.
      * @param t_tags tag list of parameters.
+     * @exceptsafe No-throw.
      */
     Kernel(std::shared_ptr<GPU> t_gpu, const char* t_name, const std::vector<std::string>& t_tags);
 
     /**
      * Destructor.
+     * @exceptsafe No-throw.
      */
     ~Kernel();
 
     /**
      * Virtual method execute, to be implemented in the subclass.
      * The method is a placeholder for host code needed to run the kernel.
+     * @exceptsafe No-throw.
      */
     virtual void Execute() = 0;
 };

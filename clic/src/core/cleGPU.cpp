@@ -8,17 +8,44 @@ namespace cle
 
 GPU::GPU() 
 {
-    // todo: make constructor safe
     std::vector<cl::Platform> m_PlatformList = this->ListPlatforms();
-    this->m_Platform = m_PlatformList.front(); //! not safe if platform list is empty
+    if (m_PlatformList.empty())
+    {
+        throw std::runtime_error("No platform were detected.\n");
+    }
+    else
+    {
+        this->m_Platform = m_PlatformList.front();
+    }
     std::vector<cl::Device> m_DeviceList = ListDevices(this->m_Platform, "all");
-    this->m_Device = m_DeviceList.front();     //! not safe if device list is empty
-    this->AllocateDevice();
+    if (m_DeviceList.empty())
+    {
+        throw std::runtime_error("No device were detected.\n");
+    }
+    else
+    {
+        this->m_Device = m_DeviceList.front();
+    }
+    try
+    {
+        this->AllocateDevice();
+    }
+    catch(std::exception& e)
+    {
+        throw std::runtime_error("Fail in allocating ressources on device.\n");
+    }
 }
 
 GPU::GPU(const char* t_device_name, const char* t_device_type) 
 {
-    this->SelectDevice(t_device_name, t_device_type);
+    try
+    {
+        this->SelectDevice(t_device_name, t_device_type);
+    }
+    catch(std::exception& e)
+    {
+        throw std::runtime_error("Fail in selecting device to allocate.\n");
+    }
 }
 
 GPU::~GPU() 
@@ -58,7 +85,7 @@ const std::vector<cl::Device> GPU::ListDevices(const cl::Platform& t_platform, c
     }
     catch(cl::Error& e)
     {
-        std::cerr << "Exception caught in GPU class. Error when fetching Device list." << std::endl;
+        std::cerr << "Exception caught in GPU class. Error when fetching list of Devices." << std::endl;
         std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
     }
     return m_DeviceList;
@@ -74,6 +101,7 @@ void GPU::AllocateDevice()
     {
         std::cerr << "Exception caught in GPU class. Error when instantiating Context." << std::endl;
         std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
+        throw std::runtime_error("Fail in instantiating Context during device allocation.\n");
     }
     try
     {
@@ -83,6 +111,7 @@ void GPU::AllocateDevice()
     {
         std::cerr << "Exception caught in GPU class. Error when instantiating Command Queue." << std::endl;
         std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
+        throw std::runtime_error("Fail in instantiating Command Queue during device allocation.\n");
     }
 }
 
@@ -91,6 +120,10 @@ void GPU::SelectDevice(const char* t_device_name, const char* t_device_type)
     bool found (false), deviceCheck(false);
     // Loop on all platforms
     std::vector<cl::Platform> m_PlatformList = this->ListPlatforms();
+    if (m_PlatformList.empty())
+    {
+        throw std::runtime_error("No platform were detected when searching for a device.\n");
+    }
     auto platform_ite = m_PlatformList.begin();
     while(!found && platform_ite != m_PlatformList.end() )
     {
@@ -117,13 +150,25 @@ void GPU::SelectDevice(const char* t_device_name, const char* t_device_type)
     }
     if (!found)
     {
-        // We take the first {platform|device}.
-        //! not safe because we do not know if platform list is empty or not
-        // todo: make safe
         this->m_Platform = m_PlatformList.front();
-        this->m_Device = ListDevices(this->m_Platform, "all").front();
+        std::vector<cl::Device> m_DeviceList = ListDevices(this->m_Platform, "all");
+        if (m_DeviceList.empty())
+        {
+            throw std::runtime_error("No device were detected.\n");
+        }
+        else
+        {
+            this->m_Device = m_DeviceList.front();
+        }
     }
-    this->AllocateDevice();
+    try
+    {
+        this->AllocateDevice();
+    }
+    catch(std::exception& e)
+    {
+        throw std::runtime_error("Fail in Allocating ressources on device.\n");
+    }
 }
 
 cl::Device GPU::Device() const
@@ -148,9 +193,11 @@ cl::Platform GPU::Platform() const
 
 const cl::Program GPU::GetProgram(const size_t t_hash)
 {
-    //! not safe if FindProgram() is not used before
-    // todo: check it != end()
     auto it = m_ProgramList.find(t_hash);
+    if (it == this->m_ProgramList.end())
+    {
+        throw std::runtime_error("Could not load Program from saved program list.\n");
+    }
     return it->second;
 }
 
@@ -160,23 +207,26 @@ const bool GPU::FindProgram(const size_t t_hash) const
     return it != m_ProgramList.end();
 }
 
-void GPU::AddProgram(const cl::Program& t_program, const size_t t_hash)
+bool GPU::AddProgram(const cl::Program& t_program, const size_t t_hash)
 {
-    // todo: should return true or false
-    m_ProgramList.insert({t_hash, t_program});
+    try
+    {
+        m_ProgramList.insert({t_hash, t_program});
+    }
+    catch (std::exception& e)
+    {
+        return false;
+    }
+    return true;
 }
 
 const std::string GPU::Name() const
 {
-    //! not safe if device is null
-    // todo: check device allocation before fetching name
     return this->m_Device.getInfo<CL_DEVICE_NAME>();
 }
 
 const std::string GPU::Info() const
 {
-    //! not safe if platform and device are null
-    // todo: check platform and device allocation before fetching info
     std::string out = "";
     out += "[" + this->m_Platform.getInfo<CL_PLATFORM_NAME>() + " - " + this->Name() + "]\n";
     out += "\tDevicedeviceType: " + std::to_string(this->m_Device.getInfo<CL_DEVICE_TYPE>()) + "\n";
@@ -193,13 +243,12 @@ const std::string GPU::Info() const
 
 const float GPU::Score() const
 {
-    // todo: make safe
     float score = 0;
     if(this->m_Device.getInfo<CL_DEVICE_TYPE>() == CL_DEVICE_TYPE_GPU)
         score += 4e12;
     else
         score += 2e12;
-    score += this->m_Device.getInfo<CL_DEVICE_GLOBAL_MEM_SIZE>();  //! not safe if no device
+    score += this->m_Device.getInfo<CL_DEVICE_GLOBAL_MEM_SIZE>();
     return score;
 }
 

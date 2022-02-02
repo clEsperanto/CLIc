@@ -28,7 +28,7 @@
 ## New features  
 - Introduce library core class unity test.
 - Introduce new data class `Image` holding a cl_image (`cl_image1d`,`cl_image2d`,`cl_image3d`) ([#52](https://github.com/clEsperanto/CLIc_prototype/pull/52)). 
-- Add documentation comments in core classes (`cle::GPU`, `todo`).
+- Add documentation comments in core classes.
 
 ## Miscellaneous
 - Replace `gcovr` by `lcov` for coverage report generation to code-cov.
