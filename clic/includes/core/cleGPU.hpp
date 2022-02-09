@@ -4,11 +4,7 @@
 #define __cleGPU_hpp
 
 #include "clic.hpp"
-
-#include "cleBuffer.hpp"
-#include "cleImage.hpp"
 #include "cleObject.hpp"
-
 
 #include <map>
 #include <iostream>
@@ -42,87 +38,37 @@ private:
     bool m_WaitForFinish = false;
 
 protected:
+
     /**
-     * List all available Platforms.
+     * @brief List all available Platforms.
+     * 
      * @return list of Platforms. Empty if none are found.
-     * @exceptsafe No-throw.
      */
     const std::vector<cl::Platform> ListPlatforms() const;
 
     /**
-     * List all available Devices.
+     * @brief List all available Devices.
+     * 
      * @param t_platform Platform you want to search the devices from.
      * @param t_device_type Device type (gpu, cpu, all).
      * @return list of Devices. Empty if none are found.
-     * @exceptsafe No-throw.
      */
     const std::vector<cl::Device> ListDevices(const cl::Platform& t_platform, const char* t_device_type) const;
 
     /**
-     * Allocate device by creating Context and CommandQueue.
+     * @brief Allocate device by creating Context and CommandQueue.
+     * 
      * @throws std::exception::runtime_error throw if could not instantiate context.
      * @throws std::exception::runtime_error throw if could not instantiate command queue.
-     * @exceptsafe Basic.
      */    
     void AllocateDevice();
 
     /**
-     * low-level create buffer space on device.
-     * @param t_bitsize memory bitsize to allocate.
-     * @return ocl buffer pointer.
-     * @throws std::exception::runtime_error throw if could not create buffer.
-     * @exceptsafe strong.
-     */ 
-    const cl::Buffer CreateBuffer(const size_t t_bitsize) const;
-    /**
-     * low-level write ocl buffer from host to device.
-     * @param t_buffer ocl buffer pointer write on device.
-     * @param t_data data pointer to read from host.
-     * @exceptsafe No-throw.
-     */ 
-    void WriteBuffer(const cl::Buffer& t_buffer, void* t_data) const;
-    /**
-     * low-level read ocl buffer from device to host.
-     * @param t_buffer ocl buffer pointer to read from device.
-     * @param t_data data pointer to write on host.
-     */ 
-    void ReadBuffer(const cl::Buffer& t_buffer, void* t_data) const;
-       
-    /**
-     * low-level create image space on device.
-     * @param t_shape image shape to allocate.
-     * @param t_format image format (number channels, data type)
-     * @return ocl image pointer.
-     * @throws std::exception::runtime_error throw if could not create image1d.
-     * @throws std::exception::runtime_error throw if could not create image2d.
-     * @throws std::exception::runtime_error throw if could not create image3d.
-     * @exceptsafe strong.
-     */ 
-    const cl::Image* CreateImage(const std::array<size_t,3>& t_shape, const cl::ImageFormat& t_format) const;
-
-    /**
-     * low-level write ocl image from host to device.
-     * @param t_image ocl image pointer write on device.
-     * @param t_data data pointer to read from host.
-     * @exceptsafe No-throw.
-     */  
-    void WriteImage(const cl::Image* t_image, void* t_data) const;
-
-    /**
-     * low-level read ocl image from device to host.
-     * @param t_image ocl image pointer to read from device.
-     * @param t_data data pointer to write on host.
-     * @exceptsafe No-throw.
-     */ 
-    void ReadImage(const cl::Image* t_image, void* t_data) const;
-
-
-    /**
-     * convert template type to data type.
+     * @brief convert template type to data type.
+     * 
      * @return data type (FLOAT, INT, UINT, CHAR, UCHAR, SHORT, USHORT)
-     * @exceptsafe No-throw.
      */ 
-    template<class T>
+    template<class Type>
     const cle::Object::DataType Template2DataType() const;
 
     // todo: low-level copy / cast methods buffer <-> image
@@ -131,252 +77,366 @@ protected:
     // todo: void CopyImageToBuffer(cle::Image&, cle::Buffer&) const;
     // todo: void CopyImageToImage(cle::Image&, cle::Image&) const;
 
+    /**
+     * @brief Allocate memory on device
+     * 
+     * @param t_buffer buffer address
+     * @param t_bitsize memory size
+     * @throws std::exception::runtime_error throw if fail creating buffer
+     */
+    void AllocateMemory(cl::Buffer& t_buffer, const size_t t_bitsize) const;
+
+    /**
+     * @brief Allocate memory on device
+     * 
+     * @param t_image 3d image address
+     * @param t_shape image shape (x,y,z) 
+     * @param t_format image format 
+     * @throws std::exception::runtime_error throw if fail creating image
+     */
+    void AllocateMemory(cl::Image3D& t_image, const std::array<size_t,3> t_shape, const cl::ImageFormat& t_format) const;
+
+    /**
+     * @brief Allocate memory on device
+     * 
+     * @param t_image 2d image address
+     * @param t_shape image shape (x,y,z) 
+     * @param t_format image format 
+     * @throws std::exception::runtime_error throw if fail creating image
+     */
+    void AllocateMemory(cl::Image2D& t_image, const std::array<size_t,3> t_shape, const cl::ImageFormat& t_format) const;
+
+    /**
+     * @brief Allocate memory on device
+     * 
+     * @param t_image 1d image address
+     * @param t_shape image shape (x,y,z) 
+     * @param t_format image format 
+     * @throws std::exception::runtime_error throw if fail creating image
+     */
+    void AllocateMemory(cl::Image1D& t_image, const std::array<size_t,3> t_shape, const cl::ImageFormat& t_format) const;
+
+    /**
+     * @brief Write memory on device
+     * 
+     * @param t_buffer buffer address to write in
+     * @param t_data data to write from host to device
+     */
+    void WriteMemory(const cl::Buffer& t_buffer, const void* t_data) const;
+
+    /**
+     * @brief Write memory on device
+     * 
+     * @param t_image image address to write in
+     * @param t_data data to write from host to device
+     */
+    void WriteMemory(const cl::Image& t_image, const void* t_data) const;
+
+    /**
+     * @brief Read memory from device
+     * 
+     * @param t_buffer buffer address to read from
+     * @param t_data data to write from device to host
+     */
+    void ReadMemory(const cl::Buffer& t_buffer, void* t_data) const;
+
+    /**
+     * @brief Read memory from device
+     * 
+     * @param t_buffer image address to read from
+     * @param t_data data to write from device to host
+     */
+    void ReadMemory(const cl::Image& t_image, void* t_data) const;
+
 public:
 
     /**
-     * Default constructor. Will allocate the first available device.
+     * @brief Default constructor. Will allocate the first available device.
+     * 
      * @throws std::exception::runtime_error throw if no platform detected.
      * @throws std::exception::runtime_error throw if no device detected.
      * @throws std::exception::runtime_error throw if could not allocate ressources on device.
-     * @exceptsafe Basic.
      */
     GPU();
 
     /**
-     * Constructor. Will allocate device based on name and type.
+     * @brief Constructor. Will allocate device based on name and type.
+     * 
      * @param t_device_name name of device to allocate.
      * @param t_device_type type of device to allocate (default all).
      * @throws std::exception::runtime_error Fail in selecting device to allocate.
-     * @exceptsafe Basic.
      */
     GPU(const char* t_device_name, const char* t_device_type ="all");
 
     /**
-     * Default destructor.
-     * @exceptsafe No-throw.
+     * @brief Default destructor.
      */
     ~GPU();
 
     /**
-     * Will allocate device based on name and type.
+     * @brief Will allocate device based on name and type.
+     * 
      * @param t_device_name name of device to allocate.
      * @param t_device_type type of device to allocate (default all).
      * @throws std::exception::runtime_error throw if no platform detected.
      * @throws std::exception::runtime_error throw if no device detected.
      * @throws std::exception::runtime_error throw if could not allocate ressources on device.
-     * @exceptsafe Basic.
      */    
     void SelectDevice(const char* t_device_name, const char* t_device_type ="all");
 
     /**
-     * Get information on current device.
+     * @brief Get information on current device.
+     * 
      * @return formated string of information on current device
-     * @exceptsafe No-throw.
      */
     const std::string Info() const;
 
     /**
-     * Get name on current device.
+     * @brief Get name on current device.
+     * 
      * @return name of current device
-     * @exceptsafe No-throw.
      */
     const std::string Name() const;
 
     /**
-     * Compute indicative score based on memory and device type.
+     * @brief Compute indicative score based on memory and device type.
+     * 
      * @return score value
-     * @exceptsafe No-throw.
      */
     const float Score() const;
 
     /**
-     * Get device method.
+     * @brief Get device method.
+     * 
      * @return Device
-     * @exceptsafe No-throw.
      */
     cl::Device Device() const;
 
     /**
-     * Get context method.
+     * @brief Get context method.
+     * 
      * @return Context
-     * @exceptsafe No-throw.
      */
     cl::Context Context() const;
 
     /**
-     * Get Commande Queue method.
+     * @brief Get Commande Queue method.
+     * 
      * @return CommandQueue
-     * @exceptsafe No-throw.
      */
     cl::CommandQueue CommandQueue() const;
 
     /**
-     * Get platform method.
+     * @brief Get platform method.
+     * 
      * @return Platform
-     * @exceptsafe No-throw.
      */
     cl::Platform Platform() const;
 
     /**
-     * Find program in program list.
+     * @brief Find program in program list.
+     * 
      * @param t_hash hash key generated from program sources.
      * @return true if found, false otherwise.
-     * @exceptsafe No-throw.
      */    
     const bool FindProgram(const size_t t_hash) const;
 
     /**
-     * Get program in program list.
+     * @brief Get program in program list.
+     * 
      * @param t_hash hash key generated from program sources.
      * @return Program corresponding to hash key.
      * @throws std::exception::runtime_error throw if could not find program in program list.
-     * @exceptsafe No-throw.
      */
     const cl::Program GetProgram(const size_t t_hash);
 
     /**
-     * Add program to list.
+     * @brief Add program to list.
+     * 
      * @param t_program compiled program.
      * @param t_hash hash key generated from program sources.
      * @return true if program was added with success, false otherwise.
-     * @exceptsafe No-throw.
      */
     bool AddProgram(const cl::Program& t_program, const size_t t_hash);
 
     /**
-     * Force GPU to wait for kernel to execute before going on.
+     * @brief Force GPU to wait for kernel to execute before going on.
+     * 
      * @param t_flag switch true or false.
-     * @exceptsafe No-throw.
      */
     void SetWaitForKernelToFinish(bool);
 
     /**
-     * Call CommandQueue to finish.
-     * @exceptsafe No-throw.
+     * @brief Call CommandQueue to finish.
      */
     void Finish() const;
 
     /**
-     * Call CommandQueue to flush.
-     * @exceptsafe No-throw.
+     * @brief Call CommandQueue to flush.
      */
     void Flush() const;
 
     /**
-     * Create empty Buffer space in device.
-     * @param t_shape shape of Buffer space to allocate (default {1,1,1}).
-     * @return Buffer object.
-     * @exceptsafe No-throw.
-     */    
-    template<class T = float>
-    cle::Buffer CreateBuffer(const std::array<size_t,3>& t_shape ={1,1,1}) const;
-
-    /**
-     * Create empty Image space in device.
-     * @param t_shape shape of Image space to allocate (default {1,1,1}).
-     * @return Image object.
-     * @exceptsafe No-throw.
+     * @brief Create empty object in device.
+     * 
+     * @param t_shape shape of object to allocate (default {1,1,1}).
+     * @param t_type object type, buffer or image (default buffer).
+     * @return empty object.
      */ 
-    template<class T = float>
-    cle::Image CreateImage(const std::array<size_t,3>& t_shape ={1,1,1}) const;
+    template<class Type>
+    const Object Create(const std::array<size_t,3>& t_shape ={1,1,1}, const std::string t_type ="buffer") const;
 
     /**
-     * Create and write Buffer space from host to device.
-     * @param t_data data to write into Buffer.
-     * @param t_shape shape of Buffer space to allocate (default {1,1,1}).
-     * @return Buffer object.
-     * @exceptsafe No-throw.
-     */ 
-    template<class T = float>
-    cle::Buffer PushBuffer(std::vector<T>& t_data, const std::array<size_t,3>& t_shape ={1,1,1}) const;
-
-    /**
-     * Create and write Image space from host to device.
+     * @brief Create object in device and write data from host to device.
+     * 
      * @param t_data data to write into Image.
      * @param t_shape shape of Image space to allocate (default {1,1,1}).
+     * @param t_type object type, buffer or image (default buffer).
      * @return Image object.
-     * @exceptsafe No-throw.
      */ 
-    template<class T = float>
-    cle::Image PushImage(std::vector<T>& t_data, const std::array<size_t,3>& t_shape ={1,1,1}) const;
+    template<class Type>
+    const Object Push(const std::vector<Type>& t_data ={0}, const std::array<size_t,3>& t_shape ={1,1,1}, const std::string t_type ="buffer") const;
 
     /**
-     * Read Buffer from Device to host.
-     * @param t_buffer Buffer to read.
+     * @brief Read object from Device to host.
+     * 
+     * @param t_object object in device.
      * @return array of data.
-     * @exceptsafe No-throw.
      */ 
-    template<class T = float>
-    std::vector<T> Pull(const cle::Buffer& t_buffer) const;
-
-    /**
-     * Read Image from Device to host.
-     * @param t_image Image to read.
-     * @return array of data.
-     * @exceptsafe No-throw.
-     */ 
-    template<class T = float>
-    std::vector<T> Pull(const cle::Image& t_image) const;
+    template<class Type>
+    const std::vector<Type> Pull(const Object& t_object) const;
 };
 
-template<class T>
+template<class Type>
 const cle::Object::DataType GPU::Template2DataType() const
 {
-    if(std::is_same<T, float>::value) return cle::Object::FLOAT;
-    if(std::is_same<T, int>::value) return cle::Object::INT;
-    if(std::is_same<T, unsigned int>::value) return cle::Object::UINT;
-    if(std::is_same<T, char>::value) return cle::Object::CHAR;
-    if(std::is_same<T, unsigned char>::value) return cle::Object::UCHAR;
-    if(std::is_same<T, double>::value) return cle::Object::DOUBLE;
-    if(std::is_same<T, short>::value) return cle::Object::SHORT;
-    if(std::is_same<T, unsigned short>::value) return cle::Object::USHORT;
+    if(std::is_same<Type, float>::value) return cle::Object::FLOAT;
+    if(std::is_same<Type, int>::value) return cle::Object::INT;
+    if(std::is_same<Type, unsigned int>::value) return cle::Object::UINT;
+    if(std::is_same<Type, char>::value) return cle::Object::CHAR;
+    if(std::is_same<Type, unsigned char>::value) return cle::Object::UCHAR;
+    if(std::is_same<Type, double>::value) return cle::Object::DOUBLE;
+    if(std::is_same<Type, short>::value) return cle::Object::SHORT;
+    if(std::is_same<Type, unsigned short>::value) return cle::Object::USHORT;
     return cle::Object::FLOAT;
 }
 
-template<class T>
-cle::Buffer GPU::CreateBuffer(const std::array<size_t,3>& t_shape) const
+template<class Type>
+const Object GPU::Create(const std::array<size_t,3>& t_shape, const std::string t_type) const
 {
-    auto buffer = this->CreateBuffer(t_shape[0] * t_shape[1] * t_shape[2] * sizeof(T));
-    return cle::Buffer(buffer, t_shape, this->Template2DataType<T>());
+    cl::Memory mem;
+    if(t_type.find("buffer") != std::string::npos) 
+    {
+        cl::Buffer buffer;
+        AllocateMemory(buffer, t_shape[0]*t_shape[1]*t_shape[2]*sizeof(Type));
+        mem = cl::Memory(buffer.get(), true);
+    }
+    else if(t_type.find("image") != std::string::npos) 
+    {
+        cl::ImageFormat image_format (CL_INTENSITY, CL_FLOAT);
+        if(t_shape[2]>1)
+        {
+            cl::Image3D image;
+            AllocateMemory(image, t_shape, image_format);
+            mem = cl::Memory(image.get(), true);
+        }
+        else if(t_shape[1]>1)
+        {
+            cl::Image2D image;
+            AllocateMemory(image, t_shape, image_format);
+            mem = cl::Memory(image.get(), true);
+        }
+        else
+        {
+            cl::Image1D image;
+            AllocateMemory(image, t_shape, image_format);
+            mem = cl::Memory(image.get(), true);
+        }
+    }
+    else
+    {
+        throw std::runtime_error("");
+    }
+    return Object(mem, t_shape, this->Template2DataType<Type>());
 }
 
-template<class T>
-cle::Buffer GPU::PushBuffer(std::vector<T>& t_data, const std::array<size_t,3>& t_shape) const
+template<class Type>
+const Object GPU::Push(const std::vector<Type>& t_data, const std::array<size_t,3>& t_shape, const std::string t_type) const
 {
-    auto buffer = this->CreateBuffer(t_data.size() * sizeof(T));
-    this->WriteBuffer(buffer, t_data.data());
-    return cle::Buffer(buffer, t_shape, this->Template2DataType<T>());
+    cl::Memory mem;
+    if(t_type.find("buffer") != std::string::npos) 
+    {
+        cl::Buffer buffer;
+        AllocateMemory(buffer, t_shape[0]*t_shape[1]*t_shape[2]*sizeof(Type));
+        WriteMemory(buffer, t_data.data());
+        mem = cl::Memory(buffer.get(), true);
+    }
+    else if(t_type.find("image") != std::string::npos) 
+    {
+        cl::ImageFormat image_format (CL_INTENSITY, CL_FLOAT);
+        if(t_shape[2]>1)
+        {
+            cl::Image3D image;
+            AllocateMemory(image, t_shape, image_format);
+            WriteMemory(image, t_data.data());
+            mem = cl::Memory(image.get(), true);
+        }
+        else if(t_shape[1]>1)
+        {
+            cl::Image2D image;
+            AllocateMemory(image, t_shape, image_format);
+            WriteMemory(image, t_data.data());
+            mem = cl::Memory(image.get(), true);
+        }
+        else
+        {
+            cl::Image1D image;
+            AllocateMemory(image, t_shape, image_format);
+            WriteMemory(image, t_data.data());
+            mem = cl::Memory(image.get(), true);
+        }
+    }
+    else
+    {
+        throw std::runtime_error("");
+    }
+    return Object(mem, t_shape, this->Template2DataType<Type>());
 }
 
-template<class T>
-std::vector<T> GPU::Pull(const cle::Buffer& t_buffer) const
+template<class Type>
+const std::vector<Type> GPU::Pull(const Object& t_object) const
 {
-    std::vector<T> array (t_buffer.Size());
-    this->ReadBuffer(t_buffer.Data(), array.data());
-    return array;
-}
-
-template<class T>
-cle::Image GPU::CreateImage(const std::array<size_t,3>& t_shape) const
-{
-    auto image = this->CreateImage(t_shape, cl::ImageFormat(CL_INTENSITY, CL_FLOAT));
-    return cle::Image(image, t_shape, this->Template2DataType<T>());
-}
-
-template<class T>
-cle::Image GPU::PushImage(std::vector<T>& t_data, const std::array<size_t,3>& t_shape) const
-{
-    auto image = this->CreateImage(t_shape, cl::ImageFormat(CL_INTENSITY, CL_FLOAT));
-    this->WriteImage(image, t_data.data());
-    return cle::Image(image, t_shape, this->Template2DataType<T>());
-}
-
-template<class T>
-std::vector<T> GPU::Pull(const cle::Image& t_image) const
-{
-    std::vector<T> array (t_image.Size());
-    this->ReadImage(t_image.Data(), array.data());
-    return array;
+    std::vector<Type> out (t_object.Size());
+    switch(t_object.MemoryType())
+    {
+        case CL_MEM_OBJECT_BUFFER:
+            {
+            cl::Buffer buffer(t_object.Data().get(), true);
+            ReadMemory(buffer, out.data());
+            break;
+            }
+        case CL_MEM_OBJECT_IMAGE3D: 
+            {
+            cl::Image3D image(t_object.Data().get(), true);
+            ReadMemory(image, out.data());
+            break;
+            }
+        case CL_MEM_OBJECT_IMAGE2D: 
+            {
+            cl::Image2D image(t_object.Data().get(), true);
+            ReadMemory(image, out.data());
+            break;
+            }
+        case CL_MEM_OBJECT_IMAGE1D: 
+            {
+            cl::Image1D image(t_object.Data().get(), true);
+            ReadMemory(image, out.data());
+            break;
+            }
+        default:
+            throw std::runtime_error("");
+    }
+    return out;
 }
 
 } // namespace cle

@@ -2,22 +2,26 @@
 
 ## Known issues
 - Incompatiblity using Image with kernel [cleBlockEnumerateKernel](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/includes/tier1/cleBlockEnumerateKernel.hpp).
+  - Kernel must use Buffer memory object or will fail.
+
 ## Bug fixes
 - Remove extra context manager class left in Tier1 folder.
 
 ## Enhancement
 - Improve error management
   - try/catch blocks for OpenCL error management.
-  - throw runtime_error
-  - OpenCL error code to string translation
+  - throw runtime_error if fail during execution.
+  - OpenCL error code to string translation, improve debuging.
 - Rework of GPU branch ([#52](https://github.com/clEsperanto/CLIc_prototype/pull/52)).
     - Remove all Manager classes into single GPU class.
     - Force 1 Platform - 1 Device - 1 Context - 1 Command Queue instance. If dealing with multiple GPUs, the current usage is to declare multiple instance of CLE.
     - `Push`, `Pull`, `Create`, and other low-level operation are now done at the GPU class level.
 - Rework of data branch
-    - Creation of `Object` class from which `Buffer` and `Image` inherit.
-    - Kernel I/O can now be `Buffer`, `Image`, or `Object` depending on operation compatibility (at Dev discretion). 
-    - Remove `shared_ptr` usage in favor of reference/copy (only for `Buffer` for now).
+    - Creation of `Object` which replace `Buffer` or `Image` class.
+    - `Object` class hold a `cl::Memory` which can be a `cl::Buffer`, `cl::Image1D`, `cl::Image2D`, `cl::Image3D`.
+    - Kernel I/O is now `Object`, no matter if its holding a Buffer or an Image. 
+    - Remove `shared_ptr` usage in favor of reference/copy.
+    - `Object` holding `Buffer` or `Image` can swapped seamlessly, at user will.
 - Extension of buffer to 1d compatibility ([#57](https://github.com/clEsperanto/CLIc_prototype/issues/57))
 - Extension of CLIJ kernels to nd clEsperanto kernels ([#16](https://github.com/clEsperanto/clij-opencl-kernels/issues/17)).
 - Rework how `GlobalNDRange` is defined ([#69](https://github.com/clEsperanto/CLIc_prototype/issues/69)). 
@@ -27,15 +31,14 @@
 
 ## New features  
 - Introduce library core class unity test.
-- Introduce new data class `Image` holding a cl_image (`cl_image1d`,`cl_image2d`,`cl_image3d`) ([#52](https://github.com/clEsperanto/CLIc_prototype/pull/52)). 
-- Add documentation comments in core classes.
+- Introduce new data class `Object` holding a cl::Memory, generic OpenCL holder for (`cl_buffer`,`cl_image1d`,`cl_image2d`,`cl_image3d`) ([#52](https://github.com/clEsperanto/CLIc_prototype/pull/52)). 
 
 ## Miscellaneous
 - Replace `gcovr` by `lcov` for coverage report generation to code-cov.
 - Consolidation of CMake code ([#53](https://github.com/clEsperanto/CLIc_prototype/pull/53))
 - Fixing MSVC warning ([#54](https://github.com/clEsperanto/CLIc_prototype/pull/54), [#56](https://github.com/clEsperanto/CLIc_prototype/pull/56))
 - Increase project OpenCL-CLHPP flexibility ([#55](https://github.com/clEsperanto/CLIc_prototype/pull/55))
-- Basic documentation of class and methods.
+- Add documentation comments in core classes.
 
 # 0.4.0 - August 20th 2021
 

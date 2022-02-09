@@ -1,59 +1,4 @@
 
-// #include <random>
-
-// #include "clesperanto.hpp"
-#include "utils.hpp"
-
-// int main(int argc, char **argv)
-// {
-//     // Test Initialisation
-//     using type = float;
-//     size_t width (5), height (5), depth (1);
-//     std::array<size_t,3> shape = {width, height, depth};
-//     std::vector<type> arr_in {
-//                 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-//                 0.0f, 1.0f, 2.0f, 3.0f, 0.0f,
-//                 0.0f, 2.0f, 3.0f, 4.0f, 0.0f,
-//                 0.0f, 4.0f, 4.0f, 5.0f, 0.0f,
-//                 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
-//     };
-
-//     std::vector<type> arr_res {
-//                 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-//                 0.0f, 9.0f, 8.0f, 7.0f, 0.0f,
-//                 0.0f, 8.0f, 7.0f, 6.0f, 0.0f,
-//                 0.0f, 6.0f, 6.0f, 5.0f, 0.0f,
-//                 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
-//     }; 
-//     std::vector<type> reference_data {
-//                 0.0f, 9.0f, 8.0f, 7.0f, 6.0f, 5.0f
-//     };
-
-
-//     // Test Kernel
-//     cle::Clesperanto cle;
-//     auto Buffer_A = cle.Push<type>(arr_in, shape);
-//     std::array<size_t,3> Buffer_B_shape = {6, 1, 1};
-//     auto Buffer_B = cle.Push<type>(reference_data, Buffer_B_shape);
-//     auto Buffer_C = cle.Create<type>(shape);
-//     cle.ReplaceIntensities(Buffer_A, Buffer_B, Buffer_C);
-//     auto arr_out = cle.Pull<type>(Buffer_C);    
-
-
-//     // Test Validation
-//     float difference = 0;
-//     for( auto it1 = arr_res.begin(), it2 = arr_out.begin(); 
-//          it1 != arr_res.end() && it2 != arr_out.end(); ++it1, ++it2)
-//     {
-//         difference += std::abs(*it1 - *it2);
-//     }
-//     return difference > std::numeric_limits<type>::epsilon();
-// }
-
-
-
-
-
 #include <random>
 #include "clesperanto.hpp"
 #include "utils.hpp"
@@ -98,11 +43,11 @@ std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::vector<ty
 {
     cle::Clesperanto cle;
     cle.Ressources()->SetWaitForKernelToFinish(true);
-    auto oclArray_A = cle.PushImage<type>(arr_1, shape);
-    auto oclArray_B = cle.PushImage<type>(arr_2, {arr_2.size(),1,1});
-    auto ocl_output = cle.CreateImage<type>(shape);
+    auto oclArray_A = cle.Push<type>(arr_1, shape, "image");
+    auto oclArray_B = cle.Push<type>(arr_2, {arr_2.size(),1,1}, "image");
+    auto ocl_output = cle.Create<type>(shape, "image");
     cle.ReplaceIntensities(oclArray_A, oclArray_B, ocl_output);  
-    auto output = cle.PullImage<type>(ocl_output);  
+    auto output = cle.Pull<type>(ocl_output);  
     return output; 
 }
 

@@ -48,8 +48,8 @@ void ExecuteSeparableKernel::Execute()
     auto src = this->GetParameter<Object>("src");
     auto dst = this->GetParameter<Object>("dst");
 
-    auto temp1 = this->m_gpu->CreateBuffer<float>(src->Shape());
-    auto temp2 = this->m_gpu->CreateBuffer<float>(src->Shape());
+    auto temp1 = this->m_gpu->Create<float>(src->Shape());
+    auto temp2 = this->m_gpu->Create<float>(src->Shape());
 
     CopyKernel copy(this->m_gpu);
     SeparableKernel kernel(this->m_gpu);

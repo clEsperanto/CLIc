@@ -34,10 +34,10 @@ std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::array<siz
 {
     cle::Clesperanto cle;
     cle.Ressources()->SetWaitForKernelToFinish(true);
-    auto oclArray_A = cle.PushImage<type>(arr_1, shape);
-    auto ocl_output = cle.CreateImage<type>(shape);
+    auto oclArray_A = cle.Push<type>(arr_1, shape, "image");
+    auto ocl_output = cle.Create<type>(shape, "image");
     cle.DetectMaximaBox(oclArray_A, ocl_output);  
-    auto output = cle.PullImage<type>(ocl_output);  
+    auto output = cle.Pull<type>(ocl_output);  
     return output; 
 }
 

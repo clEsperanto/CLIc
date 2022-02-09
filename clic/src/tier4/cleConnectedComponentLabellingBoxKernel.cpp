@@ -32,9 +32,9 @@ void ConnectedComponentLabellingBoxKernel::Execute()
     auto src = this->GetParameter<Object>("src");
     auto dst = this->GetParameter<Object>("dst");
 
-    auto temp1 = this->m_gpu->CreateBuffer<float>(src->Shape());
-    auto temp2 = this->m_gpu->CreateBuffer<float>(src->Shape());
-    auto temp3 = this->m_gpu->CreateBuffer<float>(src->Shape());
+    auto temp1 = this->m_gpu->Create<float>(src->Shape());
+    auto temp2 = this->m_gpu->Create<float>(src->Shape());
+    auto temp3 = this->m_gpu->Create<float>(src->Shape());
 
     SetNonzeroPixelsToPixelindexKernel set_nonzero_to_index_kernel(this->m_gpu);
     set_nonzero_to_index_kernel.SetInput(*src);
@@ -49,7 +49,7 @@ void ConnectedComponentLabellingBoxKernel::Execute()
 
     std::array<size_t,3> flag_dim = {1,1,2};
     std::vector<float> arr = {0,0};
-    cle::Buffer flag = this->m_gpu->PushBuffer<float>(arr, flag_dim);
+    auto flag = this->m_gpu->Push<float>(arr, flag_dim);
 
     std::vector<float> flag_value = {1, 1};
     int iteration_count = 0;

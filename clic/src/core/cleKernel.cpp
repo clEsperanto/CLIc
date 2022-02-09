@@ -1,7 +1,8 @@
 
-#include <stdexcept>
-
 #include "cleKernel.hpp"
+#include "cleScalar.hpp"
+
+#include <numeric>
 
 namespace cle
 {
@@ -152,6 +153,55 @@ std::string Kernel::TypeAbbr(const char* t_str) const
     return "?"; 
 }
 
+// void Kernel::SetArguments()
+// {
+//     for(auto it = this->m_Tags.begin(); it != this->m_Tags.end(); it++ )
+//     {
+//         size_t index = it - this->m_Tags.begin();
+//         if(this->m_Parameters.find(it->c_str()) != this->m_Parameters.end())
+//         {
+//             std::string tag = it->c_str();
+//             if (this->m_Parameters.at(tag)->IsObjectType("buffer"))
+//             {    
+//                 auto object = this->GetParameter<Buffer>(tag.c_str());
+//                 try
+//                 {
+//                     this->m_Kernel.setArg(index, object->Data());
+//                 }
+//                 catch(cl::Error& e)
+//                 {
+//                     std::cerr << "Exception caught in Kernel class " << this->m_KernelName <<". Error when setting Buffer arguments to kernel." << std::endl;
+//                     std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;       
+//                 }
+//             }
+//             else if (this->m_Parameters.at(tag)->IsObjectType("image"))
+//             {    
+//                 auto object = this->GetParameter<Image>(tag.c_str());
+//                 try
+//                 {
+//                     this->m_Kernel.setArg(index, *object->Data());
+//                 }
+//                 catch(cl::Error& e)
+//                 {
+//                     std::cerr << "Exception caught in Kernel class " << this->m_KernelName <<". Error when setting Image arguments to kernel." << std::endl;
+//                     std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;       
+//                 }
+//             }
+//             else if (this->m_Parameters.at(tag)->IsObjectType("scalar"))
+//             {    
+//                 if (this->m_Parameters.at(tag)->IsDataType("float")) {
+//                     auto object = this->GetParameter<Scalar<float>>(tag.c_str());
+//                     this->m_Kernel.setArg(index, object->Data()); 
+//                 }
+//                 else if (this->m_Parameters.at(tag)->IsDataType("int")) {
+//                     auto object = this->GetParameter<Scalar<int>>(tag.c_str());
+//                     this->m_Kernel.setArg(index, object->Data()); 
+//                 }
+//             }
+//         }
+//     }
+// }
+
 void Kernel::SetArguments()
 {
     for(auto it = this->m_Tags.begin(); it != this->m_Tags.end(); it++ )
@@ -160,51 +210,75 @@ void Kernel::SetArguments()
         if(this->m_Parameters.find(it->c_str()) != this->m_Parameters.end())
         {
             std::string tag = it->c_str();
-            if (this->m_Parameters.at(tag)->IsObjectType("buffer"))
+            if (this->m_Parameters.at(tag)->IsObjectType("scalar"))
             {    
-                // auto object = std::dynamic_pointer_cast<cle::Buffer>(this->m_Parameters.at(tag));
-                auto object = this->GetParameter<Buffer>(tag.c_str());
+                if (this->m_Parameters.at(tag)->IsDataType("float")) 
+                {
+                    auto object = this->GetParameter<Scalar<float>>(tag.c_str());
+                    this->m_Kernel.setArg(index, object->Data()); 
+                }
+                else if (this->m_Parameters.at(tag)->IsDataType("int")) 
+                {
+                    auto object = this->GetParameter<Scalar<int>>(tag.c_str());
+                    this->m_Kernel.setArg(index, object->Data()); 
+                }
+            }
+            else
+            {
+                auto object = this->GetParameter<Object>(tag.c_str());
                 try
                 {
                     this->m_Kernel.setArg(index, object->Data());
                 }
                 catch(cl::Error& e)
                 {
-                    std::cerr << "Exception caught in Kernel class " << this->m_KernelName <<". Error when setting Buffer arguments to kernel." << std::endl;
+                    std::cerr << "Exception caught in Kernel class " << this->m_KernelName <<". Error when setting Object arguments to kernel." << std::endl;
                     std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;       
-                }
-            }
-            else if (this->m_Parameters.at(tag)->IsObjectType("image"))
-            {    
-                // auto object = std::dynamic_pointer_cast<cle::Image>(this->m_Parameters.at(tag));
-                auto object = this->GetParameter<Image>(tag.c_str());
-                try
-                {
-                    this->m_Kernel.setArg(index, *object->Data());
-                }
-                catch(cl::Error& e)
-                {
-                    std::cerr << "Exception caught in Kernel class " << this->m_KernelName <<". Error when setting Image arguments to kernel." << std::endl;
-                    std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;       
-                }
-            }
-            else if (this->m_Parameters.at(tag)->IsObjectType("scalar"))
-            {    
-                if (this->m_Parameters.at(tag)->IsDataType("float")) {
-                    
-                    // auto object = std::dynamic_pointer_cast< cle::Scalar<float> >(this->m_Parameters.at(tag));
-                    auto object = this->GetParameter<Scalar<float>>(tag.c_str());
-                    this->m_Kernel.setArg(index, object->Data()); 
-                }
-                else if (this->m_Parameters.at(tag)->IsDataType("int")) {
-                    // auto object = std::dynamic_pointer_cast< cle::Scalar<int> >(this->m_Parameters.at(tag));
-                    auto object = this->GetParameter<Scalar<int>>(tag.c_str());
-                    this->m_Kernel.setArg(index, object->Data()); 
                 }
             }
         }
     }
 }
+
+
+
+// void Kernel::AddObject(Object& t_object, const char* t_tag)
+// {  
+//     if(std::find(this->m_Tags.begin(), this->m_Tags.end(), t_tag) != this->m_Tags.end())
+//     {
+//         auto it = this->m_Parameters.find(t_tag); 
+//         if (it != this->m_Parameters.end())
+//         {
+//             if(t_object.IsObjectType("image"))
+//             {
+//                 auto cast_object = dynamic_cast<cle::Image&>(t_object);
+//                 it->second = std::make_shared<cle::Image>(cast_object);
+//             }
+//             else
+//             {
+//                 auto cast_object = dynamic_cast<cle::Buffer&>(t_object);
+//                 it->second = std::make_shared<cle::Buffer>(cast_object);
+//             }
+//         }
+//         else    
+//         {
+//             if(t_object.IsObjectType("image"))
+//             {
+//                 auto cast_object = dynamic_cast<cle::Image&>(t_object);
+//                 this->m_Parameters.insert(std::make_pair(t_tag, std::make_shared<cle::Image>(cast_object)));
+//             }
+//             else
+//             {
+//                 auto cast_object = dynamic_cast<cle::Buffer&>(t_object);
+//                 this->m_Parameters.insert(std::make_pair(t_tag, std::make_shared<cle::Buffer>(cast_object)));
+//             }
+//         }
+//     }
+//     else
+//     {
+//         throw std::runtime_error("Error in kernel " + this->m_KernelName + " execution. Invalid tag '" + t_tag + "' used to add Object.\n");      
+//     }
+// }
 
 void Kernel::AddObject(Object& t_object, const char* t_tag)
 {  
@@ -213,29 +287,13 @@ void Kernel::AddObject(Object& t_object, const char* t_tag)
         auto it = this->m_Parameters.find(t_tag); 
         if (it != this->m_Parameters.end())
         {
-            if(t_object.IsObjectType("image"))
-            {
-                auto cast_object = dynamic_cast<cle::Image&>(t_object);
-                it->second = std::make_shared<cle::Image>(cast_object);
-            }
-            else
-            {
-                auto cast_object = dynamic_cast<cle::Buffer&>(t_object);
-                it->second = std::make_shared<cle::Buffer>(cast_object);
-            }
+            auto cast_object = dynamic_cast<cle::Object&>(t_object);
+            it->second = std::make_shared<cle::Object>(cast_object);
         }
         else    
         {
-            if(t_object.IsObjectType("image"))
-            {
-                auto cast_object = dynamic_cast<cle::Image&>(t_object);
-                this->m_Parameters.insert(std::make_pair(t_tag, std::make_shared<cle::Image>(cast_object)));
-            }
-            else
-            {
-                auto cast_object = dynamic_cast<cle::Buffer&>(t_object);
-                this->m_Parameters.insert(std::make_pair(t_tag, std::make_shared<cle::Buffer>(cast_object)));
-            }
+            auto cast_object = dynamic_cast<cle::Object&>(t_object);
+            this->m_Parameters.insert(std::make_pair(t_tag, std::make_shared<cle::Object>(cast_object)));
         }
     }
     else

@@ -41,14 +41,8 @@ void CloseIndexGapsInLabelMapKernel::Execute()
 {
     auto src = this->GetParameter<Object>("src");
     auto dst = this->GetParameter<Object>("dst");
-
-    // std::cout << "dst at start of CloseIndexGapsInLabelMapKernel = " << dst.get() << " is used : " << dst.use_count() << std::endl;
-    // auto dst_array_1 = this->m_gpu->Pull<float>( *dst.get() );
-    // PrintData<float>(dst_array_1, dst->Shape());
-    // std::cout << "\n";
-
     
-    auto max_value_buffer = this->m_gpu->CreateBuffer<float>();
+    auto max_value_buffer = this->m_gpu->Create<float>();
 
     MaximumOfAllPixelsKernel max_of_pixel_kernel(this->m_gpu);
     max_of_pixel_kernel.SetInput(*src);
@@ -59,7 +53,7 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     size_t nb_indices = static_cast<size_t>(max_value) + 1;
 
     std::array<size_t,3> indices_dim = {nb_indices, 1, 1};
-    auto flagged_indices = this->m_gpu->CreateBuffer<float>(indices_dim);
+    auto flagged_indices = this->m_gpu->Create<float>(indices_dim);
 
     FlagExistingLabelsKernel flag_labels_kernel(this->m_gpu);
     flag_labels_kernel.SetInput(*src);
@@ -74,7 +68,7 @@ void CloseIndexGapsInLabelMapKernel::Execute()
 
     size_t nb_sums = static_cast<size_t>(nb_indices / this->m_Blocksize) + 1;
     std::array<size_t,3> sums_dim = {nb_sums, 1, 1};
-    auto block_sums = this->m_gpu->CreateBuffer<float>(sums_dim);
+    auto block_sums = this->m_gpu->Create<float>(sums_dim);
 
     SumReductionXKernel sum_reduction_x_kernel(this->m_gpu);
     sum_reduction_x_kernel.SetInput(flagged_indices);
@@ -83,7 +77,7 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     sum_reduction_x_kernel.Execute();
 
     std::array<size_t,3> new_indices_dim = {nb_indices, 1, 1};
-    auto new_indices = this->m_gpu->CreateBuffer<float>(new_indices_dim);
+    auto new_indices = this->m_gpu->Create<float>(new_indices_dim);
 
     BlockEnumerateKernel block_enumerate_kernel(this->m_gpu);
     block_enumerate_kernel.SetInput(flagged_indices);
@@ -97,11 +91,6 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     replace_intensities_kernel.SetOutput(*dst);
     replace_intensities_kernel.SetMap(new_indices);
     replace_intensities_kernel.Execute();
-
-    // std::cout << "dst at end of CloseIndexGapsInLabelMapKernel = " << dst.get() << " is used : " << dst.use_count() << std::endl;
-    // auto dst_array_2 = this->m_gpu->Pull<float>( *dst.get() );
-    // PrintData<float>(dst_array_2, dst->Shape());
-    // std::cout << "\n";
 }
 
 } // namespace cle

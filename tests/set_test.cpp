@@ -33,9 +33,9 @@ std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::array<siz
 {
     cle::Clesperanto cle;
     cle.Ressources()->SetWaitForKernelToFinish(true);
-    auto ocl_output = cle.PushImage<type>(arr_1, shape);
+    auto ocl_output = cle.Push<type>(arr_1, shape, "image");
     cle.Set(ocl_output, scalar);  
-    auto output = cle.PullImage<type>(ocl_output);  
+    auto output = cle.Pull<type>(ocl_output);  
     return output; 
 }
 

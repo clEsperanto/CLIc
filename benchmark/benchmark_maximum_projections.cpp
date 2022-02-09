@@ -17,7 +17,7 @@ class MaximumProjectionBenchmarkBase : public BenchmarkBase
 {
 protected:
     cle::Clesperanto cle;
-    cle::Buffer gpuInput, gpuOutput;
+    cle::Object gpuInput, gpuOutput;
 
     virtual void Setup()
     {

@@ -18,9 +18,9 @@ private:
 
 public:
     BlockEnumerateKernel(std::shared_ptr<GPU>);
-    void SetInput(Buffer&);
-    void SetInputSums(Buffer&);
-    void SetOutput(Buffer&);
+    void SetInput(Object&);
+    void SetInputSums(Object&);
+    void SetOutput(Object&);
     void SetBlocksize(int);
     void Execute();
 };

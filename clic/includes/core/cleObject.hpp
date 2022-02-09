@@ -2,14 +2,6 @@
 #define __cleObject_hpp
 
 #include "clic.hpp"
-#include <string>
-#include <memory>
-#include <algorithm>
-#include <iterator>
-#include <array>
-#include <functional>
-#include <numeric>
-
 #include "cleLightObject.hpp"
 
 namespace cle
@@ -18,136 +10,146 @@ namespace cle
 /**
  * generic class defining object properties
  *
- * ! cl::buffer, cl::image1d, cl::image2d, and cl::image3d, as the rest of opencl memory object
- * ! inherit of cl::memory. Possibility to make an gpu object generic for all type and apply 
- * ! object convertion when only when needed (a.k.a when defining sources and setting arguments of kernel)
- * todo: v0.6 future refont of data class for code clarity and scalability. PoC needed before commiting. 
  */
 class Object : public LightObject
 {
 public: 
 
     /**
-     * enum for DataType.
+     * @brief enum for DataType.
      */
     enum DataType { FLOAT, DOUBLE, INT, UINT, CHAR, UCHAR, SHORT, USHORT };
 
     /**
-     * Default constructor.
+     * @brief Default constructor.
      */
-    Object() = default;
-
-    /**
-     * constructor.
-     * @param t_shape the shape of the image as an array of size 3.
-     * @param t_dtype the data type of the image.
-     * @param t_otype the object type, buffer or image,
-     */
-    Object(const std::array<size_t,3>& t_shape, const DataType t_dtype, const char* t_otype): LightObject(), m_dType(t_dtype), m_oType(t_otype), m_Shape(t_shape), m_Region(t_shape)
-    {
-        if (this->m_Shape[2]>1) this->m_ndim = 3;
-        else if (this->m_Shape[1]>1) this->m_ndim = 2;
-        else this->m_ndim = 1;
-    };   
+    Object() = default; 
     
     /**
-     * Default destructor.
+     * @brief constructor.
+     * 
+     * @param t_object memory object in device.
+     * @param t_shape data shape as an array of 3.
+     * @param t_dtype data type of the image.
+     */
+    Object(const cl::Memory& t_object, const std::array<size_t,3>& t_shape, const DataType t_dtype);
+
+    /**
+     * @brief Default destructor.
      */
     ~Object() =default;
 
     /**
-     * Get object dimension.
+     * @brief Get object memory.
+     * 
+     * @return memory object pointing to data in device.
+     */
+    const cl::Memory& Data() const;
+
+    /**
+     * @brief Get object memory type.
+     * 
+     * @return memory type (CL_MEM_OBJECT_BUFFER, CL_MEM_OBJECT_IMAGE1D, etc.).
+     */
+    const cl_mem_object_type MemoryType() const;
+
+    /**
+     * @brief Get object memory size.
+     * 
+     * @return memory size (in bits).
+     */
+    const cl::size_type MemorySize() const;
+
+    /**
+     * @brief Get object dimension.
+     * 
      * @return dimensionality.
      */
-    const int nDim() const { return m_ndim; };
+    const int nDim() const;
 
     /**
-     * Get object size as number of elements.
+     * @brief Get object size as number of elements.
+     * 
      * @return number of elements.
      */
-    const int Size() const { return static_cast<int>(std::accumulate(m_Shape.begin(), m_Shape.end(), 1, std::multiplies<size_t>())); };
+    const int Size() const;
     
     /**
-     * Get object shape (width, height, depth).
+     * @brief Get object shape (width, height, depth).
+     * 
      * @return shape array of size 3.
      */
-    const std::array<size_t,3> Shape() const { return m_Shape; };
+    const std::array<size_t,3> Shape() const;
 
     /**
-     * Get object origin coordinate (x, y, z).
+     * @brief Get object origin coordinate (x, y, z).
+     * 
      * @return coordinate array of size 3.
      */
-    const std::array<size_t,3> Origin() const { return m_Origin; };
+    const std::array<size_t,3> Origin() const;
 
     /**
-     * Get object region shape (width, height, depth).
+     * @brief Get object region shape (width, height, depth).
+     * 
      * @return shape array of size 3.
      */
-    const std::array<size_t,3> Region() const { return m_Region; };
+    const std::array<size_t,3> Region() const;
 
     /**
-     * Get object data type.
+     * @brief Get object data type.
+     * 
      * @return data type as Object::DataType.
      */
-    const DataType Type() const { return m_dType; };
+    const DataType Type() const;
 
     /**
-     * Get object data type.
+     * @brief Get object data type.
+     * 
      * @return data type as string.
      */
-    const char* GetDataType() const 
-    { 
-        if (this->m_dType == cle::Object::DataType::FLOAT) return "float"; 
-        if (this->m_dType == cle::Object::DataType::DOUBLE) return "double"; 
-        if (this->m_dType == cle::Object::DataType::INT) return "int"; 
-        if (this->m_dType == cle::Object::DataType::CHAR) return "char"; 
-        if (this->m_dType == cle::Object::DataType::UINT) return "uint"; 
-        if (this->m_dType == cle::Object::DataType::UCHAR) return "uchar"; 
-        if (this->m_dType == cle::Object::DataType::SHORT) return "short"; 
-        if (this->m_dType == cle::Object::DataType::USHORT) return "ushort"; 
-        return "";
-    };
+    const char* GetDataType() const;
 
     /**
-     * Compare object data type (float, int, char, etc.).
+     * @brief Compare object data type (float, int, char, etc.).
+     * 
      * @param t_dtype data type to compare with
      * @return true if same data type, false otherwise.
      */
-    const bool IsDataType(const char* t_dtype) const
-    {
-        size_t size = strlen(t_dtype);
-        if (this->m_dType == DataType::FLOAT && strncmp("float", t_dtype, size) == 0) return true; 
-        if (this->m_dType == DataType::DOUBLE && strncmp("double", t_dtype, size) == 0) return true; 
-        if (this->m_dType == DataType::INT && strncmp("int", t_dtype, size) == 0) return true; 
-        if (this->m_dType == DataType::CHAR && strncmp("char", t_dtype, size) == 0) return true;
-        if (this->m_dType == DataType::UINT && strncmp("uint", t_dtype, size) == 0) return true; 
-        if (this->m_dType == DataType::UCHAR && strncmp("uchar", t_dtype, size) == 0) return true; 
-        if (this->m_dType == DataType::SHORT && strncmp("short", t_dtype, size) == 0) return true; 
-        if (this->m_dType == DataType::USHORT && strncmp("ushort", t_dtype, size) == 0) return true; 
-        return false;
-    };
+    const bool IsDataType(const char* t_dtype) const;
 
     /**
-     * Get object type (Buffer, Image, etc.).
+     * @brief Get object type (Buffer, Image, etc.).
+     * 
      * @return data type as string.
      */ 
-    const char* GetObjectType() const { return m_oType; };
+    const char* GetObjectType() const;
 
     /**
-     * Compare object type (Buffer, Image, etc.).
+     * @brief Compare object type (Buffer, Image, etc.).
+     * 
      * @param t_otype object type to compare with
      * @return true if same object type, false otherwise.
      */
-    const bool IsObjectType(const char* t_otype) const { return strncmp(this->m_oType, t_otype, strlen(t_otype)) == 0; };
+    const bool IsObjectType(const char* t_otype) const;
+
+    /**
+     * @brief Compare Memory type.
+     * 
+     * @param t_type object type to compare with
+     * @return true if same object type, false otherwise.
+     */
+    const bool IsMemoryType(const cl_mem_object_type t_type) const;
 
 protected:
 
+    /// OpenCL memory object (buffer, image, etc.)
+    cl::Memory m_Ocl;
     /// data type holder
     DataType m_dType = DataType::FLOAT;
     /// object type holder
     const char* m_oType = "object";
     /// objet dimension
-    int m_ndim = 1;
+    int m_ndim = 0;
     /// object shape
     std::array<size_t,3> m_Shape {1, 1, 1};
     /// object origin

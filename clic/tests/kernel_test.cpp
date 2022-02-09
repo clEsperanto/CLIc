@@ -1,7 +1,5 @@
 
 #include "cleGPU.hpp"
-#include "cleBuffer.hpp"
-#include "cleImage.hpp"
 #include "cleKernelList.hpp"
 
 template<class type>
@@ -35,8 +33,8 @@ bool run_kernel_with_buffer(std::array<size_t, 3> dims)
     std::fill (data.begin(),data.end(), static_cast<T>(10.0f));
     std::fill (valid.begin(),valid.end(), static_cast<T>(100.0f));
 
-    auto buff_A = gpu->PushBuffer<T>(data, dims);
-    auto buff_B = gpu->CreateBuffer<T>(dims);
+    auto buff_A = gpu->Push<T>(data, dims);
+    auto buff_B = gpu->Create<T>(dims);
 
     cle::AddImageAndScalarKernel kernel(gpu);
     kernel.SetInput(buff_A);
@@ -60,8 +58,8 @@ bool run_kernel_with_image(std::array<size_t, 3> dims)
     std::fill (data.begin(),data.end(), static_cast<T>(10.0f));
     std::fill (valid.begin(),valid.end(), static_cast<T>(100.0f));
 
-    auto buff_A = gpu->PushImage<T>(data, dims);
-    auto buff_B = gpu->CreateImage<T>(dims);
+    auto buff_A = gpu->Push<T>(data, dims, "image");
+    auto buff_B = gpu->Create<T>(dims, "image");
 
     cle::AddImageAndScalarKernel kernel(gpu);
     kernel.SetInput(buff_A);

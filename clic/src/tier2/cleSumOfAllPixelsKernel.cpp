@@ -36,16 +36,16 @@ void SumOfAllPixelsKernel::Execute()
         dim[2] = 1;
         SumZProjectionKernel kernel(this->m_gpu);
         kernel.SetInput(*src);
-        if (src->IsObjectType("buffer"))
+        if (src->IsMemoryType(CL_MEM_OBJECT_BUFFER))
         {
-            auto tmp = std::make_shared<Buffer>(this->m_gpu->CreateBuffer<float>(dim));
+            auto tmp = std::make_shared<Object>(this->m_gpu->Create<float>(dim));
             kernel.SetOutput(*tmp);
             kernel.Execute();
             src = tmp;
         }
         else
         {
-            auto tmp = std::make_shared<Image>(this->m_gpu->CreateImage<float>(dim));
+            auto tmp = std::make_shared<Object>(this->m_gpu->Create<float>(dim, "image"));
             kernel.SetOutput(*tmp);
             kernel.Execute();
             src = tmp;
@@ -56,16 +56,16 @@ void SumOfAllPixelsKernel::Execute()
         dim[1] = 1;
         SumYProjectionKernel kernel(this->m_gpu);
         kernel.SetInput(*src);
-        if (src->IsObjectType("buffer"))
+        if (src->IsMemoryType(CL_MEM_OBJECT_BUFFER))
         {
-            auto tmp = std::make_shared<Buffer>(this->m_gpu->CreateBuffer<float>(dim));
+            auto tmp = std::make_shared<Object>(this->m_gpu->Create<float>(dim));
             kernel.SetOutput(*tmp);
             kernel.Execute();
             src = tmp;
         }
         else
         { 
-            auto tmp = std::make_shared<Image>(this->m_gpu->CreateImage<float>(dim));
+            auto tmp = std::make_shared<Object>(this->m_gpu->Create<float>(dim, "image"));
             kernel.SetOutput(*tmp);
             kernel.Execute();
             src = tmp;

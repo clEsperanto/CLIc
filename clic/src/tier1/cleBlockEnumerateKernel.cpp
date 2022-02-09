@@ -14,17 +14,17 @@ BlockEnumerateKernel::BlockEnumerateKernel(std::shared_ptr<GPU> t_gpu) :
     this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
 }
 
-void BlockEnumerateKernel::SetInput(Buffer& t_x)
+void BlockEnumerateKernel::SetInput(Object& t_x)
 {
     this->AddObject(t_x, "src0");
 }
 
-void BlockEnumerateKernel::SetInputSums(Buffer& t_x)
+void BlockEnumerateKernel::SetInputSums(Object& t_x)
 {
     this->AddObject(t_x, "src1");
 }
 
-void BlockEnumerateKernel::SetOutput(Buffer& t_x)
+void BlockEnumerateKernel::SetOutput(Object& t_x)
 {
     this->AddObject(t_x, "dst");
 }

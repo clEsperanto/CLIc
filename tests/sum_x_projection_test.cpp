@@ -31,10 +31,10 @@ std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::array<siz
 {
     cle::Clesperanto cle;
     cle.Ressources()->SetWaitForKernelToFinish(true);
-    auto oclArray_A = cle.PushImage<type>(arr_1, shape);
-    auto ocl_output = cle.CreateImage<type>({shape[2], shape[1], 1});
+    auto oclArray_A = cle.Push<type>(arr_1, shape, "image");
+    auto ocl_output = cle.Create<type>({shape[2], shape[1], 1}, "image");
     cle.SumXProjection(oclArray_A, ocl_output);  
-    auto output = cle.PullImage<type>(ocl_output);  
+    auto output = cle.Pull<type>(ocl_output);  
     return output; 
 }
 

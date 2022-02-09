@@ -30,7 +30,7 @@ private:
 protected:
 
     /**     
-     * Convert template to string.
+     * @brief Convert template to string.
      * @return template type as string
      */
     const char* TemplateToString() const;
@@ -38,78 +38,89 @@ protected:
 public: 
 
     /**     
-     * Default constructor.
+     * @brief Default constructor.
      */
     Scalar() =default;
 
     /**     
-     * Constructor.
+     * @brief Constructor.
+     * 
      * @param t_value value to allocate.
      */
     Scalar(const T t_value);
 
     /**     
-     * Default destructor.
+     * @brief Default destructor.
      */
     ~Scalar() =default;
 
     /**     
-     * Get value.
+     * @brief Get value.
+     * 
      * @return value of templated type.
      */
     const T Data() const;
 
     /**     
-     * Get scalar dimension.
+     * @brief Get scalar dimension.
+     * 
      * @return dimension equal to 1.
      */
     const int nDim() const;
 
     /**     
-     * Get scalar size.
+     * @brief Get scalar size.
+     * 
      * @return size equal to 1.
      */
     const int Size() const;
 
     /**     
-     * Get scalar shape.
+     * @brief Get scalar shape.
+     * 
      * @return shape array equal to {1,1,1}.
      */
     const std::array<size_t,3> Shape() const;
 
     /**     
-     * Get scalar origin.
+     * @brief Get scalar origin.
+     * 
      * @return origin array equal to {0,0,0}.
      */
     const std::array<size_t,3> Origin() const;
 
     /**     
-     * Get scalar region.
+     * @brief Get scalar region.
+     * 
      * @return region array equal to {1,1,1}.
      */
     const std::array<size_t,3> Region() const;
 
     /**
-     * Get object data type (float or int).
+     * @brief Get object data type (float or int).
+     * 
      * @return data type as string.
      */
     virtual const char* GetDataType() const;
 
     /**
-     * Compare object data type with template (float or int).
+     * @brief Compare object data type with template (float or int).
+     * 
      * @param t_dtype data type to compare with
      * @return true if same data type, false otherwise.
      */
     virtual const bool IsDataType(const char* t_dtype) const; 
 
     /**
-     * Get object type (Buffer, Image, etc.).
+     * @brief Get object type (Buffer, Image, etc.).
+     * 
      * @return Scalar as string.
      */   
     virtual const char* GetObjectType() const;
 
     /**
-     * Compare object type (Scalar).
+     * @brief Compare object type (Scalar).
+     * 
      * @param t_otype object type to compare with
      * @return true if same object type, false otherwise.
      */
