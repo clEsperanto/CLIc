@@ -22,6 +22,7 @@
     - Kernel I/O is now `Object`, no matter if its holding a Buffer or an Image. 
     - Remove `shared_ptr` usage in favor of reference/copy.
     - `Object` holding `Buffer` or `Image` can swapped seamlessly, at user will.
+    - Reset method, allow to free memory hold in `Object`, to be handle carefully.
 - Extension of buffer to 1d compatibility ([#57](https://github.com/clEsperanto/CLIc_prototype/issues/57))
 - Extension of CLIJ kernels to nd clEsperanto kernels ([#16](https://github.com/clEsperanto/clij-opencl-kernels/issues/17)).
 - Rework how `GlobalNDRange` is defined ([#69](https://github.com/clEsperanto/CLIc_prototype/issues/69)). 
