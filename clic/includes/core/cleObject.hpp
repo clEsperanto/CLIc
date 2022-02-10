@@ -39,6 +39,20 @@ public:
      */
     ~Object() =default;
 
+    void Reset()
+    {
+        if(this->m_Ocl.get() != nullptr)
+        {
+            this->m_Ocl = cl::Memory();
+        }
+        this->m_dType = DataType::FLOAT;
+        this->m_oType = "object";
+        this->m_ndim = 0;
+        this->m_Shape = {1, 1, 1};
+        this->m_Origin = {0, 0, 0};
+        this->m_Region = {1, 1, 1};
+    }
+
     /**
      * @brief Get object memory.
      * 
