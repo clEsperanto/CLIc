@@ -129,10 +129,10 @@ const bool Object::IsMemoryType(const cl_mem_object_type t_type) const
     return m_Ocl.getInfo<CL_MEM_TYPE>() == t_type; 
 };
 
-std::ostream& operator<<(std::ostream& os, const Object& obj)
-{
-    os << std::string("cle::") << std::string(obj.GetObjectType()) << "(shape=[" << std::to_string(obj.Shape()[0])<<","<< std::to_string(obj.Shape()[1])<<","<< std::to_string(obj.Shape()[2]) << "],type=\'" << std::string(obj.GetDataType())<<"\')";
-    return os;
-}
+// std::ostream& operator<<(std::ostream& os, const Object& obj)
+// {
+//     os << std::string("cle::") << std::string(obj.GetObjectType()) << "(shape=[" << std::to_string(obj.Shape()[0])<<","<< std::to_string(obj.Shape()[1])<<","<< std::to_string(obj.Shape()[2]) << "],type=\'" << std::string(obj.GetDataType())<<"\')";
+//     return os;
+// }
 
 } // namespace cle

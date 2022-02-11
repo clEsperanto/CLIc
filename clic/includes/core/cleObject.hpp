@@ -161,7 +161,7 @@ public:
      * @param obj object to print out
      * @return output stream reference
      */
-    friend std::ostream& operator<<(std::ostream& os, const Object& obj);
+    // friend std::ostream& operator<<(std::ostream& os, const Object& obj);
 
 protected:
 
