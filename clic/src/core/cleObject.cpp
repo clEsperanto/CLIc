@@ -131,7 +131,7 @@ const bool Object::IsMemoryType(const cl_mem_object_type t_type) const
 
 std::ostream& operator<<(std::ostream& os, const Object& obj)
 {
-    os << "cle::" <<obj.GetObjectType() << "(shape=[" << obj.Shape()[0]<<","<< obj.Shape()[1]<<","<< obj.Shape()[2] << "],type=\'" << obj.GetDataType()<<"\')";
+    os << std::string("cle::") << obj.GetObjectType() << "(shape=[" << obj.Shape()[0]<<","<< obj.Shape()[1]<<","<< obj.Shape()[2] << "],type=\'" << obj.GetDataType()<<"\')";
     return os;
 }
 
