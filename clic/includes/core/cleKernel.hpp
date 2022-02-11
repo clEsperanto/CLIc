@@ -91,10 +91,11 @@ protected:
     /**
      * @brief return short version of data type name. 
      * 
+     * @param t_buffer flag, true if processing buffer, false if processing an image
      * @param t_str data type as string (float, int, etc.)
      * @return short name of data type (f, i, c, etc.).
      */
-    std::string TypeAbbr(const char* t_str) const;
+    std::string TypeAbbr(const char* t_str, const bool t_buffer =true) const;
 
     /**
      * @brief Add Object (Buffer or Image) to the parameter list with associated tag. 

@@ -72,7 +72,7 @@ const std::string Kernel::ImageDefines(std::string& t_tag, std::string& t_dtype,
     {
         img_type_name = "__read_only image" + t_dim + "d_t";
     }
-    std::string abbr = TypeAbbr(t_dtype.c_str());  
+    std::string abbr = TypeAbbr(t_dtype.c_str(), false);  
     std::string image_header = "\n";
     image_header += "\n#define IMAGE_" + t_tag + "_TYPE " + img_type_name;
     image_header += "\n#define READ_" + t_tag + "_IMAGE(a,b,c) read_image" + abbr + "(a,b,c)";
@@ -99,7 +99,6 @@ const std::string Kernel::LoadDefines() const
             std::string object_tag = itr->first;                   
             std::string object_type = itr->second->GetObjectType();
             std::string data_type = itr->second->GetDataType();    
-            std::string abbr_type = TypeAbbr(data_type.c_str());   
             int ndim = itr->second->nDim();
 
             // define position (x,y,z) information
@@ -140,67 +139,18 @@ const std::string Kernel::LoadDefines() const
     return defines;
 }
 
-std::string Kernel::TypeAbbr(const char* t_str) const
+std::string Kernel::TypeAbbr(const char* t_str, const bool buffer) const
 {
     size_t size = strlen(t_str);
     if (strncmp( "float", t_str, size) == 0) return "f";
-    if (strncmp(  "char", t_str, size) == 0) return "c";
-    if (strncmp( "uchar", t_str, size) == 0) return "uc";
-    if (strncmp( "short", t_str, size) == 0) return "s";
-    if (strncmp("ushort", t_str, size) == 0) return "us";
+    if (strncmp(  "char", t_str, size) == 0) return (buffer)? "c" : "i";
+    if (strncmp( "uchar", t_str, size) == 0) return (buffer)? "uc" : "ui";
+    if (strncmp( "short", t_str, size) == 0) return (buffer)? "s" : "i";
+    if (strncmp("ushort", t_str, size) == 0) return (buffer)? "us" : "ui";
     if (strncmp(   "int", t_str, size) == 0) return "i";
     if (strncmp(  "uint", t_str, size) == 0) return "ui";
     return "?"; 
 }
-
-// void Kernel::SetArguments()
-// {
-//     for(auto it = this->m_Tags.begin(); it != this->m_Tags.end(); it++ )
-//     {
-//         size_t index = it - this->m_Tags.begin();
-//         if(this->m_Parameters.find(it->c_str()) != this->m_Parameters.end())
-//         {
-//             std::string tag = it->c_str();
-//             if (this->m_Parameters.at(tag)->IsObjectType("buffer"))
-//             {    
-//                 auto object = this->GetParameter<Buffer>(tag.c_str());
-//                 try
-//                 {
-//                     this->m_Kernel.setArg(index, object->Data());
-//                 }
-//                 catch(cl::Error& e)
-//                 {
-//                     std::cerr << "Exception caught in Kernel class " << this->m_KernelName <<". Error when setting Buffer arguments to kernel." << std::endl;
-//                     std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;       
-//                 }
-//             }
-//             else if (this->m_Parameters.at(tag)->IsObjectType("image"))
-//             {    
-//                 auto object = this->GetParameter<Image>(tag.c_str());
-//                 try
-//                 {
-//                     this->m_Kernel.setArg(index, *object->Data());
-//                 }
-//                 catch(cl::Error& e)
-//                 {
-//                     std::cerr << "Exception caught in Kernel class " << this->m_KernelName <<". Error when setting Image arguments to kernel." << std::endl;
-//                     std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;       
-//                 }
-//             }
-//             else if (this->m_Parameters.at(tag)->IsObjectType("scalar"))
-//             {    
-//                 if (this->m_Parameters.at(tag)->IsDataType("float")) {
-//                     auto object = this->GetParameter<Scalar<float>>(tag.c_str());
-//                     this->m_Kernel.setArg(index, object->Data()); 
-//                 }
-//                 else if (this->m_Parameters.at(tag)->IsDataType("int")) {
-//                     auto object = this->GetParameter<Scalar<int>>(tag.c_str());
-//                     this->m_Kernel.setArg(index, object->Data()); 
-//                 }
-//             }
-//         }
-//     }
-// }
 
 void Kernel::SetArguments()
 {
@@ -233,52 +183,12 @@ void Kernel::SetArguments()
                 catch(cl::Error& e)
                 {
                     std::cerr << "Exception caught in Kernel class " << this->m_KernelName <<". Error when setting Object arguments to kernel." << std::endl;
-                    std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;       
+                    std::cerr << GetOpenCLErrorInfo(e.err()) << std::endl;     
                 }
             }
         }
     }
 }
-
-
-
-// void Kernel::AddObject(Object& t_object, const char* t_tag)
-// {  
-//     if(std::find(this->m_Tags.begin(), this->m_Tags.end(), t_tag) != this->m_Tags.end())
-//     {
-//         auto it = this->m_Parameters.find(t_tag); 
-//         if (it != this->m_Parameters.end())
-//         {
-//             if(t_object.IsObjectType("image"))
-//             {
-//                 auto cast_object = dynamic_cast<cle::Image&>(t_object);
-//                 it->second = std::make_shared<cle::Image>(cast_object);
-//             }
-//             else
-//             {
-//                 auto cast_object = dynamic_cast<cle::Buffer&>(t_object);
-//                 it->second = std::make_shared<cle::Buffer>(cast_object);
-//             }
-//         }
-//         else    
-//         {
-//             if(t_object.IsObjectType("image"))
-//             {
-//                 auto cast_object = dynamic_cast<cle::Image&>(t_object);
-//                 this->m_Parameters.insert(std::make_pair(t_tag, std::make_shared<cle::Image>(cast_object)));
-//             }
-//             else
-//             {
-//                 auto cast_object = dynamic_cast<cle::Buffer&>(t_object);
-//                 this->m_Parameters.insert(std::make_pair(t_tag, std::make_shared<cle::Buffer>(cast_object)));
-//             }
-//         }
-//     }
-//     else
-//     {
-//         throw std::runtime_error("Error in kernel " + this->m_KernelName + " execution. Invalid tag '" + t_tag + "' used to add Object.\n");      
-//     }
-// }
 
 void Kernel::AddObject(Object& t_object, const char* t_tag)
 {  
@@ -369,7 +279,7 @@ void Kernel::BuildProgramKernel()
             catch(cl::Error& e)
             {
                 std::cerr << "Exception caught in Kernel class " << this->m_KernelName << ". Error when creating Program from source." << std::endl;
-                std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;   
+                std::cerr << GetOpenCLErrorInfo(e.err()) << std::endl;
             }
             try
             {
@@ -378,7 +288,7 @@ void Kernel::BuildProgramKernel()
             catch(cl::Error& e)
             {
                 std::cerr << "Exception caught in Kernel class " << this->m_KernelName << ". Error when building Program." << std::endl;
-                std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl; 
+                std::cerr << GetOpenCLErrorInfo(e.err()) << std::endl;
                 std::cerr << "build log:" << std::endl;
                 std::cerr << this->m_Program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(this->m_gpu->Device()) << std::endl;
             }
@@ -393,7 +303,7 @@ void Kernel::BuildProgramKernel()
         catch(cl::Error& e)
         {
             std::cerr << "Exception caught in Kernel class " << this->m_KernelName << ". Error when creating Kernel from program." << std::endl;
-            std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl; 
+            std::cerr << GetOpenCLErrorInfo(e.err()) << std::endl;
         }
     }
 }
@@ -435,7 +345,7 @@ void Kernel::EnqueueKernel()
     catch(const cl::Error& e)
     {
         std::cerr << "Exception caught in Kernel class " << this->m_KernelName << ". Error when enqueuing NDRange kernel." << std::endl;
-        std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl; 
+        std::cerr << GetOpenCLErrorInfo(e.err()) << std::endl;
     }
     this->m_gpu->Finish();
 }

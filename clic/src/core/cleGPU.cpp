@@ -64,7 +64,8 @@ const std::vector<cl::Platform> GPU::ListPlatforms() const
     catch(cl::Error& e)
     {
         std::cerr << "Exception caught in GPU class. Error when fetching Platforms list." << std::endl;
-        std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
+        std::cerr << GetOpenCLErrorInfo(e.err()) << std::endl;
+        // std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
     }
     return m_PlatformList;
 }
@@ -84,7 +85,7 @@ const std::vector<cl::Device> GPU::ListDevices(const cl::Platform& t_platform, c
     catch(cl::Error& e)
     {
         std::cerr << "Exception caught in GPU class. Error when fetching list of Devices." << std::endl;
-        std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
+        std::cerr << GetOpenCLErrorInfo(e.err()) << std::endl;
     }
     return m_DeviceList;
 }
@@ -98,7 +99,7 @@ void GPU::AllocateDevice()
     catch(const cl::Error& e)
     {
         std::cerr << "Exception caught in GPU class. Error when instantiating Context." << std::endl;
-        std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
+        std::cerr << GetOpenCLErrorInfo(e.err()) << std::endl;
         throw std::runtime_error("Fail in instantiating Context during device allocation.\n");
     }
     try
@@ -108,7 +109,7 @@ void GPU::AllocateDevice()
     catch(cl::Error& e)
     {
         std::cerr << "Exception caught in GPU class. Error when instantiating Command Queue." << std::endl;
-        std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
+        std::cerr << GetOpenCLErrorInfo(e.err()) << std::endl;
         throw std::runtime_error("Fail in instantiating Command Queue during device allocation.\n");
     }
 }
@@ -267,7 +268,7 @@ void GPU::Finish() const
         catch(const cl::Error& e)
         {
             std::cerr << "Exception caught in GPU class. Error when blocking Command Queue until list completion." << std::endl;
-            std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
+            std::cerr << GetOpenCLErrorInfo(e.err()) << std::endl;
         }       
     }
 }
@@ -282,7 +283,7 @@ void GPU::Flush() const
     catch(const cl::Error& e)
     {
             std::cerr << "Exception caught in GPU class. Error when sending Command Queue to device." << std::endl;
-            std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
+            std::cerr << GetOpenCLErrorInfo(e.err()) << std::endl;
     }   
 }
 
@@ -299,7 +300,7 @@ void GPU::AllocateMemory(cl::Buffer& t_buffer, const size_t t_bitsize) const
     t_buffer = cl::Buffer (this->Context(), CL_MEM_READ_WRITE, t_bitsize, nullptr, &error);
     if(error != CL_SUCCESS)
     {
-        throw std::runtime_error("Error in creating Buffer with return message \'" + std::string(GetErrorString(error)) + "\' (" + std::to_string(error) + ")\n");
+        throw std::runtime_error("Error in creating Buffer with return message \'" + GetOpenCLErrorName(error) + "\' (" + std::to_string(error) + ")\n");
     }  
 }
 
@@ -309,7 +310,7 @@ void GPU::AllocateMemory(cl::Image3D& t_image, const std::array<size_t,3> t_shap
     t_image = cl::Image3D (this->Context(), CL_MEM_READ_WRITE, t_format, t_shape[0], t_shape[1], t_shape[2], 0, 0, nullptr, &error);
     if(error != CL_SUCCESS)
     {
-        throw std::runtime_error("Error in creating Image3D with return message \'" + std::string(GetErrorString(error)) + "\' (" + std::to_string(error) + ")\n");
+        throw std::runtime_error("Error in creating Image3D with return message \'" + GetOpenCLErrorName(error) + "\' (" + std::to_string(error) + ")\n");
     }
 }
 
@@ -319,7 +320,7 @@ void GPU::AllocateMemory(cl::Image2D& t_image, const std::array<size_t,3> t_shap
     t_image = cl::Image2D (this->Context(), CL_MEM_READ_WRITE, t_format, t_shape[0], t_shape[1], 0, nullptr, &error);
     if(error != CL_SUCCESS)
     {
-        throw std::runtime_error("Error in creating Image2D with return message \'" + std::string(GetErrorString(error)) + "\' (" + std::to_string(error) + ")\n");
+        throw std::runtime_error("Error in creating Image2D with return message \'" + GetOpenCLErrorName(error) + "\' (" + std::to_string(error) + ")\n");
     }
 }
 
@@ -329,7 +330,7 @@ void GPU::AllocateMemory(cl::Image1D& t_image, const std::array<size_t,3> t_shap
     t_image = cl::Image1D (this->Context(), CL_MEM_READ_WRITE, t_format, t_shape[0], nullptr, &error);
     if(error != CL_SUCCESS)
     {
-        throw std::runtime_error("Error in creating Image1D with return message \'" + std::string(GetErrorString(error)) + "\' (" + std::to_string(error) + ")\n");
+        throw std::runtime_error("Error in creating Image1D with return message \'" + GetOpenCLErrorName(error) + "\' (" + std::to_string(error) + ")\n");
     }
 }
 
@@ -343,7 +344,7 @@ void GPU::WriteMemory(const cl::Buffer& t_buffer, const void* t_data) const
     catch(cl::Error& e)
     {
         std::cerr << "Exception caught in GPU class. Error when enqueuing Write instruction to Buffer." << std::endl;
-        std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
+        std::cerr << GetOpenCLErrorInfo(e.err()) << std::endl;
     }
 }
 
@@ -365,7 +366,7 @@ void GPU::WriteMemory(const cl::Image& t_image, const void* t_data) const
     catch(cl::Error& e)
     {
         std::cerr << "Exception caught in GPU class. Error when enqueuing Write instruction to Image." << std::endl;
-        std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
+        std::cerr << GetOpenCLErrorInfo(e.err()) << std::endl;
     }
 }
 
@@ -379,7 +380,7 @@ void GPU::ReadMemory(const cl::Buffer& t_buffer, void* t_data) const
     catch(cl::Error& e)
     {
         std::cerr << "Exception caught in GPU class. Error when enqueuing Read instruction to Buffer." << std::endl;
-        std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
+        std::cerr << GetOpenCLErrorInfo(e.err()) << std::endl;
     }
 }
 
@@ -401,7 +402,7 @@ void GPU::ReadMemory(const cl::Image& t_image, void* t_data) const
     catch(cl::Error& e)
     {
         std::cerr << "Exception caught in GPU class. Error when enqueuing Read instruction to Image." << std::endl;
-        std::cerr << "\tError in \"" << e.what() << "\" with return message \'" << GetErrorString(e.err()) << "\' (" << e.err() << ")" << std::endl;
+        std::cerr << GetOpenCLErrorInfo(e.err()) << std::endl;
     }
 }
 

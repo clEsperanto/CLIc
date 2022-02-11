@@ -279,6 +279,7 @@ public:
     /**
      * @brief Create empty object in device.
      * 
+     * @tparam Type data pixel type 
      * @param t_shape shape of object to allocate (default {1,1,1}).
      * @param t_type object type, buffer or image (default buffer).
      * @return empty object.
@@ -289,6 +290,7 @@ public:
     /**
      * @brief Create object in device and write data from host to device.
      * 
+     * @tparam Type data pixel type 
      * @param t_data data to write into Image.
      * @param t_shape shape of Image space to allocate (default {1,1,1}).
      * @param t_type object type, buffer or image (default buffer).
@@ -300,11 +302,20 @@ public:
     /**
      * @brief Read object from Device to host.
      * 
+     * @tparam Type data pixel type 
      * @param t_object object in device.
      * @return array of data.
      */ 
     template<class Type>
     const std::vector<Type> Pull(const Object& t_object) const;
+
+    /**
+     * @brief Define image format based on data type
+     * 
+     * @tparam Type data pixel type 
+     */
+    template<class Type>
+    const cl::ImageFormat SetImageFormat() const;
 };
 
 template<class Type>
@@ -321,6 +332,20 @@ const cle::Object::DataType GPU::Template2DataType() const
     return cle::Object::FLOAT;
 }
 
+
+template<class Type>
+const cl::ImageFormat GPU::SetImageFormat() const
+{
+    if(std::is_same<Type, float>::value)               return cl::ImageFormat (CL_INTENSITY, CL_FLOAT);
+    else if(std::is_same<Type, int>::value)            return cl::ImageFormat (CL_INTENSITY, CL_SIGNED_INT32);
+    else if(std::is_same<Type, unsigned int>::value)   return cl::ImageFormat (CL_INTENSITY, CL_UNSIGNED_INT32);
+    else if(std::is_same<Type, char>::value)           return cl::ImageFormat (CL_INTENSITY, CL_SIGNED_INT8);
+    else if(std::is_same<Type, unsigned char>::value)  return cl::ImageFormat (CL_INTENSITY, CL_UNSIGNED_INT8);
+    else if(std::is_same<Type, short>::value)          return cl::ImageFormat (CL_INTENSITY, CL_SIGNED_INT16);
+    else if(std::is_same<Type, unsigned short>::value) return cl::ImageFormat (CL_INTENSITY, CL_UNSIGNED_INT16);
+    else return cl::ImageFormat (CL_INTENSITY, CL_FLOAT);
+}
+
 template<class Type>
 const Object GPU::Create(const std::array<size_t,3>& t_shape, const std::string t_type) const
 {
@@ -333,7 +358,7 @@ const Object GPU::Create(const std::array<size_t,3>& t_shape, const std::string 
     }
     else if(t_type.find("image") != std::string::npos) 
     {
-        cl::ImageFormat image_format (CL_INTENSITY, CL_FLOAT);
+        const cl::ImageFormat image_format = this->SetImageFormat<Type>();
         if(t_shape[2]>1)
         {
             cl::Image3D image;
@@ -373,7 +398,7 @@ const Object GPU::Push(const std::vector<Type>& t_data, const std::array<size_t,
     }
     else if(t_type.find("image") != std::string::npos) 
     {
-        cl::ImageFormat image_format (CL_INTENSITY, CL_FLOAT);
+        const cl::ImageFormat image_format = this->SetImageFormat<Type>();
         if(t_shape[2]>1)
         {
             cl::Image3D image;
