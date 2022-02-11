@@ -46,7 +46,7 @@ public:
             this->m_Ocl = cl::Memory();
         }
         this->m_dType = DataType::FLOAT;
-        this->m_oType = "object";
+        this->m_oType = "empty";
         this->m_ndim = 0;
         this->m_Shape = {1, 1, 1};
         this->m_Origin = {0, 0, 0};
@@ -154,6 +154,15 @@ public:
      */
     const bool IsMemoryType(const cl_mem_object_type t_type) const;
 
+    /**
+     * @brief Print out operator
+     * 
+     * @param os output stream
+     * @param obj object to print out
+     * @return output stream reference
+     */
+    friend std::ostream& operator<<(std::ostream& os, const Object& obj);
+
 protected:
 
     /// OpenCL memory object (buffer, image, etc.)
@@ -161,7 +170,7 @@ protected:
     /// data type holder
     DataType m_dType = DataType::FLOAT;
     /// object type holder
-    const char* m_oType = "object";
+    const char* m_oType = "empty";
     /// objet dimension
     int m_ndim = 0;
     /// object shape
