@@ -89,55 +89,7 @@ int main(int argc, char **argv)
         std::cerr << "Absolute kernel 1d ... FAILED! " << std::endl;
         return EXIT_FAILURE;
     }
-
-    if (test<int>(10, 5, 2))
-    {
-        std::cerr << "Absolute kernel 3d ... FAILED! " << std::endl;
-        return EXIT_FAILURE;
-    }
-    if (test<int>(10, 5,  1))
-    {
-        std::cerr << "Absolute kernel 2d ... FAILED! " << std::endl;
-        return EXIT_FAILURE;
-    }
-    if (test<int>(10,  1,  1))
-    {        
-        std::cerr << "Absolute kernel 1d ... FAILED! " << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    if (test<char>(10, 5, 2))
-    {
-        std::cerr << "Absolute kernel 3d ... FAILED! " << std::endl;
-        return EXIT_FAILURE;
-    }
-    if (test<char>(10, 5,  1))
-    {
-        std::cerr << "Absolute kernel 2d ... FAILED! " << std::endl;
-        return EXIT_FAILURE;
-    }
-    if (test<char>(10,  1,  1))
-    {        
-        std::cerr << "Absolute kernel 1d ... FAILED! " << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    if (test<short>(10, 5, 2))
-    {
-        std::cerr << "Absolute kernel 3d ... FAILED! " << std::endl;
-        return EXIT_FAILURE;
-    }
-    if (test<short>(10, 5,  1))
-    {
-        std::cerr << "Absolute kernel 2d ... FAILED! " << std::endl;
-        return EXIT_FAILURE;
-    }
-    if (test<short>(10,  1,  1))
-    {        
-        std::cerr << "Absolute kernel 1d ... FAILED! " << std::endl;
-        return EXIT_FAILURE;
-    }
-
+    
     std::cout << "Absolute kernel test ... PASSED! " << std::endl;
     return EXIT_SUCCESS;
 }

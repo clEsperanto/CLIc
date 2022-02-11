@@ -336,14 +336,15 @@ const cle::Object::DataType GPU::Template2DataType() const
 template<class Type>
 const cl::ImageFormat GPU::SetImageFormat() const
 {
-    if(std::is_same<Type, float>::value)               return cl::ImageFormat (CL_INTENSITY, CL_FLOAT);
-    else if(std::is_same<Type, int>::value)            return cl::ImageFormat (CL_INTENSITY, CL_SIGNED_INT32);
-    else if(std::is_same<Type, unsigned int>::value)   return cl::ImageFormat (CL_INTENSITY, CL_UNSIGNED_INT32);
-    else if(std::is_same<Type, char>::value)           return cl::ImageFormat (CL_INTENSITY, CL_SIGNED_INT8);
-    else if(std::is_same<Type, unsigned char>::value)  return cl::ImageFormat (CL_INTENSITY, CL_UNSIGNED_INT8);
-    else if(std::is_same<Type, short>::value)          return cl::ImageFormat (CL_INTENSITY, CL_SIGNED_INT16);
-    else if(std::is_same<Type, unsigned short>::value) return cl::ImageFormat (CL_INTENSITY, CL_UNSIGNED_INT16);
-    else return cl::ImageFormat (CL_INTENSITY, CL_FLOAT);
+    // if(std::is_same<Type, float>::value)               return cl::ImageFormat (CL_INTENSITY, CL_FLOAT);
+    // else if(std::is_same<Type, int>::value)            return cl::ImageFormat (CL_INTENSITY, CL_SIGNED_INT32);
+    // else if(std::is_same<Type, unsigned int>::value)   return cl::ImageFormat (CL_INTENSITY, CL_UNSIGNED_INT32);
+    // else if(std::is_same<Type, char>::value)           return cl::ImageFormat (CL_INTENSITY, CL_SIGNED_INT8);
+    // else if(std::is_same<Type, unsigned char>::value)  return cl::ImageFormat (CL_INTENSITY, CL_UNSIGNED_INT8);
+    // else if(std::is_same<Type, short>::value)          return cl::ImageFormat (CL_INTENSITY, CL_SIGNED_INT16);
+    // else if(std::is_same<Type, unsigned short>::value) return cl::ImageFormat (CL_INTENSITY, CL_UNSIGNED_INT16);
+    // else return cl::ImageFormat (CL_INTENSITY, CL_FLOAT);
+    return cl::ImageFormat (CL_INTENSITY, CL_FLOAT);
 }
 
 template<class Type>
