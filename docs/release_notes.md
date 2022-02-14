@@ -1,8 +1,10 @@
-# 0.5.0 - On-going
+# 0.5.0 - February 14th 2022
 
 ## Known issues
 - Incompatiblity using Image with kernel [cleBlockEnumerateKernel](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/includes/tier1/cleBlockEnumerateKernel.hpp).
-  - Kernel must use Buffer memory object or will fail.
+  - Kernel must use Buffer memory object or will fail, possible issue in kernel code.
+- `Object::Image` only works with `float` data type for now.
+- Possible multiple MSCV warning remaining.
 
 ## Bug fixes
 - Remove extra context manager class left in Tier1 folder.
