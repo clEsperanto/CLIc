@@ -9,11 +9,10 @@ namespace cle
 MaximumBoxKernel::MaximumBoxKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu,
             "maximum_separable",
-            {"dst", "src"}
+            {"src", "dst"}
     )
 {
-    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
-    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d}); 
+    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
 }    
 
 int MaximumBoxKernel::Radius2KernelSize(float t_r) const
@@ -21,12 +20,12 @@ int MaximumBoxKernel::Radius2KernelSize(float t_r) const
     return static_cast<int>(t_r) * 2 + 1;
 }
 
-void MaximumBoxKernel::SetInput(Buffer& t_x)
+void MaximumBoxKernel::SetInput(Object& t_x)
 {
     this->AddObject(t_x, "src");
 }
 
-void MaximumBoxKernel::SetOutput(Buffer& t_x)
+void MaximumBoxKernel::SetOutput(Object& t_x)
 {
     this->AddObject(t_x, "dst");
 }
@@ -40,8 +39,8 @@ void MaximumBoxKernel::SetRadius(float x, float y, float z)
 
 void MaximumBoxKernel::Execute()
 {
-    std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("src"));
-    std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("dst"));
+    auto src = this->GetParameter<Object>("src");
+    auto dst = this->GetParameter<Object>("dst");
 
     int nx = Radius2KernelSize(this->m_x);
     int ny = Radius2KernelSize(this->m_y);

@@ -9,13 +9,12 @@ namespace cle
 
 class SeparableKernel : public Kernel
 {
-    
 public:
     SeparableKernel(std::shared_ptr<GPU>);
     void SetSources(const std::map<std::string, std::string>&);
     void SetKernelName(const std::string&);
-    void SetInput(Buffer&);
-    void SetOutput(Buffer&);
+    void SetInput(Object&);
+    void SetOutput(Object&);
     void SetSize(int);
     void SetSigma(float);
     void SetDimension(int);

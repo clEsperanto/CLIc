@@ -10,12 +10,9 @@ namespace cle
 class GreaterOrEqualConstantKernel : public Kernel
 {
 private:
-    std::string m_OclHeader2d = 
-        #include "cle_greater_or_equal_constant_2d.h" 
-        ;
-    std::string m_OclHeader3d = 
-        #include "cle_greater_or_equal_constant_3d.h" 
-        ;
+    std::string m_OclHeader = {
+        #include "cle_greater_or_equal_constant.h" 
+        };
 
 public:
     GreaterOrEqualConstantKernel(std::shared_ptr<GPU>);

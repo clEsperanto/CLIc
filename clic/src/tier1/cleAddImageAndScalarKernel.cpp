@@ -10,8 +10,7 @@ AddImageAndScalarKernel::AddImageAndScalarKernel(std::shared_ptr<GPU> t_gpu) :
             {"src", "dst", "scalar"}
         ) 
 {
-    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
-    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
+    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
 }
 
 void AddImageAndScalarKernel::SetInput(Object& t_x)
@@ -31,7 +30,6 @@ void AddImageAndScalarKernel::SetScalar(float t_x)
 
 void AddImageAndScalarKernel::Execute()
 {
-    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

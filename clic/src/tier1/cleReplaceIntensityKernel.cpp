@@ -8,10 +8,10 @@ namespace cle
 ReplaceIntensityKernel::ReplaceIntensityKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel(t_gpu,
         "replace_intensity",
-        {"dst", "src", "in", "out"}
+        {"src", "dst", "scalar0", "scalar1"}
     )
 {
-    this->m_Sources.insert({this->m_KernelName + "", this->m_OclHeader});
+    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
 }
 
 void ReplaceIntensityKernel::SetInput(Object& t_x)
@@ -26,17 +26,16 @@ void ReplaceIntensityKernel::SetOutput(Object& t_x)
 
 void ReplaceIntensityKernel::SetInValue(float t_x)
 {
-    this->AddObject(t_x, "in");
+    this->AddObject(t_x, "scalar0");
 }
 
 void ReplaceIntensityKernel::SetOutValue(float t_x)
 {
-    this->AddObject(t_x, "out");
+    this->AddObject(t_x, "scalar1");
 }
 
 void ReplaceIntensityKernel::Execute()
 {
-    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

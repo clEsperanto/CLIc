@@ -17,16 +17,16 @@ class MaximumProjectionBenchmarkBase : public BenchmarkBase
 {
 protected:
     cle::Clesperanto cle;
-    cle::Buffer gpuInput, gpuOutput;
+    cle::Object gpuInput, gpuOutput;
 
     virtual void Setup()
     {
         std::vector<float> inputData (dataWidth * dataWidth * dataWidth);
 
         // Initialise device memory and push from host
-        std::array<int, 3> dimensionsInput = {dataWidth, dataWidth, dataWidth};
+        std::array<size_t, 3> dimensionsInput = {dataWidth, dataWidth, dataWidth};
         gpuInput = cle.Push<float>(inputData, dimensionsInput);
-        std::array<int, 3> dimensionsOutput = {dataWidth, dataWidth, 1};
+        std::array<size_t, 3> dimensionsOutput = {dataWidth, dataWidth, 1};
         gpuOutput = cle.Create<float>(dimensionsOutput);
     }
 
@@ -35,7 +35,7 @@ protected:
     virtual void Teardown(){};
 
 public:
-    int dataWidth;
+    size_t dataWidth;
     MaximumProjectionBenchmarkBase() : cle(cle::Clesperanto()){}
     virtual ~MaximumProjectionBenchmarkBase(){}
 };

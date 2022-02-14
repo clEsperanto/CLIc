@@ -1,37 +1,86 @@
 
 #include <random>
-
 #include "clesperanto.hpp"
+#include "utils.hpp"
 
-/**
- * Main test function
- *
- */
+template<class type>
+std::array<size_t,3> generate_data(std::vector<type>& arr_1, 
+                                   std::vector<type>& valid, size_t width, size_t height, size_t depth)
+{
+    arr_1.resize(width*height*depth);
+    valid.resize(1);
+    for (auto it1 = arr_1.begin(); it1 != arr_1.end(); ++it1)
+    {
+        *it1 = static_cast<type>((int) rand() % 100 + 10);
+    }
+    valid[0] = 1;
+    arr_1[(width/2) + (height/2)*width + (depth/2) * height * width] = 1;
+    return std::array<size_t,3> {width, height, depth};
+}
+
+
+
+template<class type>
+std::vector<type> run_kernel_with_buffer(std::vector<type>& arr_1, std::array<size_t,3>& shape)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto oclArray_A = cle.Push<type>(arr_1, shape);
+    auto ocl_output = cle.Create<type>();
+    cle.MinimumOfAllPixels(oclArray_A, ocl_output);  
+    auto output = cle.Pull<type>(ocl_output);  
+    return output; 
+}
+
+template<class type>
+std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::array<size_t,3>& shape)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto oclArray_A = cle.Push<type>(arr_1, shape, "image");
+    auto ocl_output = cle.Create<type>({1,1,1}, "image");
+    cle.MinimumOfAllPixels(oclArray_A, ocl_output);  
+    auto output = cle.Pull<type>(ocl_output);
+    return output; 
+}
+
+template<class type>
+bool test(size_t width, size_t height, size_t depth)
+{
+    std::vector<type> arr_1, valid;
+    std::array<size_t,3> shape = generate_data<type>(arr_1, valid, width, height, depth);
+    auto output_buffer = run_kernel_with_buffer<type>(arr_1, shape);
+    if (IsDifferent(output_buffer, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using buffer ... FAILED! " << std::endl;
+        return true;
+    }
+    auto output_image  = run_kernel_with_image<type>(arr_1, shape);
+    if (IsDifferent(output_image, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using image ... FAILED! " << std::endl;
+        return true;
+    }
+    return false;
+}
+
 int main(int argc, char **argv)
 {
-    // Initialise random input and valid output.
-    int width (10), height (10), depth (10);
-    std::array<int,3> dims = {width, height, depth};
-    std::vector<float> input_data (width*height*depth);
-    std::vector<float> valid_data (1);
-    std::fill(input_data.begin(), input_data.end(), 1000.0f);
-    input_data[50] = 10;
-    valid_data[0] = 10;
-
-    // Initialise GPU information.
-    cle::Clesperanto cle;
-
-    // Initialise device memory and push from host
-    cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
-    cle::Buffer Buffer_B = cle.Create<float>();
-
-    // Call kernel
-    cle.MinimumOfAllPixels(Buffer_A, Buffer_B);   
-
-    // pull device memory to host
-    std::vector<float> output_data = cle.Pull<float>(Buffer_B);    
-
-    // Verify output
-    float difference = std::abs(valid_data[0] - output_data[0]); 
-    return difference > std::numeric_limits<float>::epsilon();
+    if (test<float>(10, 5, 2))
+    {
+        std::cerr << "MinimumOfAllPixels kernel 3d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
+    }
+    if (test<float>(10, 5,  1))
+    {
+        std::cerr << "MinimumOfAllPixels kernel 2d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
+    }
+    if (test<float>(10,  1,  1))
+    {        
+        std::cerr << "MinimumOfAllPixels kernel 1d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
+    }
+    std::cout << "MinimumOfAllPixels kernel test ... PASSED! " << std::endl;
+    return EXIT_SUCCESS;
 }

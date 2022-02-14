@@ -11,12 +11,9 @@ namespace cle
 class SmallerOrEqualKernel : public Kernel
 {
 private:
-    std::string m_OclHeader2d = 
-        #include "cle_smaller_or_equal_2d.h" 
-        ;
-    std::string m_OclHeader3d = 
-        #include "cle_smaller_or_equal_3d.h" 
-        ;
+    std::string m_OclHeader = {
+        #include "cle_smaller_or_equal.h" 
+        };
 
 public:
     SmallerOrEqualKernel(std::shared_ptr<GPU>);

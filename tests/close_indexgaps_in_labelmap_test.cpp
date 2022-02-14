@@ -8,13 +8,16 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
                                    std::vector<type>& valid, size_t width, size_t height, size_t depth)
 {
     arr_1.resize(width*height*depth);
-    valid.resize(1);
-    for (auto it1 = arr_1.begin(); it1 != arr_1.end(); ++it1)
+    valid.resize(width*height*depth);
+    type index = 0;
+    for (auto it1 = arr_1.begin(),it_valid = valid.begin(); 
+              it1 != arr_1.end(),it_valid != valid.end(); ++it1, ++it_valid)
     {
-        *it1 = static_cast<type>((int) rand() % 10);
+        index = (it1 - arr_1.begin())+1;
+        *it_valid = index;
+        *it1 = index + arr_1.size() +1;
     }
-    valid[0] = 1000;
-    arr_1[(width/2) + (height/2)*width + (depth/2) * height * width] = 1000;
+    
     return std::array<size_t,3> {width, height, depth};
 }
 
@@ -24,8 +27,8 @@ std::vector<type> run_kernel_with_buffer(std::vector<type>& arr_1, std::array<si
     cle::Clesperanto cle;
     cle.Ressources()->SetWaitForKernelToFinish(true);
     auto oclArray_A = cle.Push<type>(arr_1, shape);
-    auto ocl_output = cle.Create<type>();
-    cle.MaximumOfAllPixels(oclArray_A, ocl_output);  
+    auto ocl_output = cle.Create<type>(shape);
+    cle.CloseIndexGapsInLabelMap(oclArray_A, ocl_output);  
     auto output = cle.Pull<type>(ocl_output);  
     return output; 
 }
@@ -36,9 +39,9 @@ std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::array<siz
     cle::Clesperanto cle;
     cle.Ressources()->SetWaitForKernelToFinish(true);
     auto oclArray_A = cle.Push<type>(arr_1, shape, "image");
-    auto ocl_output = cle.Create<type>({1,1,1}, "image");
-    cle.MaximumOfAllPixels(oclArray_A, ocl_output);  
-    auto output = cle.Pull<type>(ocl_output);
+    auto ocl_output = cle.Create<type>(shape, "image");
+    cle.CloseIndexGapsInLabelMap(oclArray_A, ocl_output);  
+    auto output = cle.Pull<type>(ocl_output);  
     return output; 
 }
 
@@ -64,21 +67,22 @@ bool test(size_t width, size_t height, size_t depth)
 
 int main(int argc, char **argv)
 {
-    if (test<float>(10, 5, 2))
+    if (test<float>(10, 5, 3))
     {
-        std::cerr << "MaximumOfAllPixels kernel 3d ... FAILED! " << std::endl;
+        std::cerr << "CloseIndexGapsInLabelMap kernel 3d ... FAILED! " << std::endl;
         return EXIT_FAILURE;
     }
-    if (test<float>(10, 5,  1))
+    if (test<float>(10, 5, 1))
     {
-        std::cerr << "MaximumOfAllPixels kernel 2d ... FAILED! " << std::endl;
+        std::cerr << "CloseIndexGapsInLabelMap kernel 2d ... FAILED! " << std::endl;
         return EXIT_FAILURE;
     }
-    if (test<float>(10,  1,  1))
+    if (test<float>(10, 1, 1))
     {        
-        std::cerr << "MaximumOfAllPixels kernel 1d ... FAILED! " << std::endl;
+        std::cerr << "CloseIndexGapsInLabelMap kernel 1d ... FAILED! " << std::endl;
         return EXIT_FAILURE;
     }
-    std::cout << "MaximumOfAllPixels kernel test ... PASSED! " << std::endl;
+    std::cout << "CloseIndexGapsInLabelMap kernel test ... PASSED! " << std::endl;
     return EXIT_SUCCESS;
 }
+

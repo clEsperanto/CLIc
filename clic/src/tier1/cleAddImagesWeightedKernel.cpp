@@ -8,16 +8,15 @@ namespace cle
 AddImagesWeightedKernel::AddImagesWeightedKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu,  
             "add_images_weighted",
-            {"src", "src1", "dst", "factor", "factor1"}
+            {"src0", "src1", "dst", "scalar0", "scalar1"}
         )
 {
-    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
-    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
+    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
 }
 
 void AddImagesWeightedKernel::SetInput1(Object& t_x)
 {
-    this->AddObject(t_x, "src");
+    this->AddObject(t_x, "src0");
 }
 
 void AddImagesWeightedKernel::SetInput2(Object& t_x)
@@ -32,17 +31,16 @@ void AddImagesWeightedKernel::SetOutput(Object& t_x)
 
 void AddImagesWeightedKernel::SetFactor1(float t_x)
 {
-    this->AddObject(t_x, "factor");
+    this->AddObject(t_x, "scalar0");
 }
 
 void AddImagesWeightedKernel::SetFactor2(float t_x)
 {
-    this->AddObject(t_x, "factor1");
+    this->AddObject(t_x, "scalar1");
 }
 
 void AddImagesWeightedKernel::Execute()
 {
-    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

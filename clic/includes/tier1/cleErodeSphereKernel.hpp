@@ -10,13 +10,10 @@ namespace cle
 class ErodeSphereKernel : public Kernel
 {
 private:
-    std::string m_OclHeader2d = 
-        #include "cle_erode_sphere_2d.h" 
-        ;
-    std::string m_OclHeader3d = 
-        #include "cle_erode_sphere_3d.h" 
-        ;
-
+    std::string m_OclHeader = {
+        #include "cle_erode_sphere.h" 
+        };
+        
 public:
     ErodeSphereKernel(std::shared_ptr<GPU>);
     void SetInput(Object&);

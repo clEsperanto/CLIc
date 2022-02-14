@@ -19,20 +19,20 @@ class MeanBoxBenchmark : public BenchmarkBase
 {
 protected:
     cle::Clesperanto cle;
-    cle::Buffer gpuInput, gpuOutput;
+    cle::Object gpuInput, gpuOutput;
 
     virtual void Setup()
     {
         vector<float> inputData(dataWidth * dataWidth);
         
-        array<int,3> dim{{dataWidth, dataWidth, 1}};
+        array<size_t,3> dim{{dataWidth, dataWidth, 1}};
         gpuInput = cle.Push<float>(inputData, dim);
         gpuOutput = cle.Create<float>(dim);
     }
     virtual void Teardown() {}
 
 public:
-    int dataWidth;
+    size_t dataWidth;
     int radius = 3;
     MeanBoxBenchmark(const cle::Clesperanto& _cle) : cle(_cle){}
     MeanBoxBenchmark() : cle(cle::Clesperanto()){}
@@ -49,9 +49,9 @@ protected:
 
     virtual void Compile(cle::Clesperanto& cle)
     {
-        array<int,3> dim{{1, 1, 1}};
-        cle::Buffer in = cle.Create<float>(dim);
-        cle::Buffer out = cle.Create<float>(dim);
+        array<size_t,3> dim{{1, 1, 1}};
+        cle::Object in = cle.Create<float>(dim);
+        cle::Object out = cle.Create<float>(dim);
         cle.MeanSphere(in, out, 1, 1);
     }
 
@@ -72,9 +72,9 @@ protected:
 
     virtual void Compile(cle::Clesperanto& cle)
     {
-        array<int,3> dim{{1, 1, 1}};
-        cle::Buffer in = cle.Create<float>(dim);
-        cle::Buffer out = cle.Create<float>(dim);
+        array<size_t,3> dim{{1, 1, 1}};
+        cle::Object in = cle.Create<float>(dim);
+        cle::Object out = cle.Create<float>(dim);
         cle.MeanBox(in, out, 1, 1);
     }
 

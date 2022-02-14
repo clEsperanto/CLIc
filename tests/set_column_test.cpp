@@ -1,43 +1,88 @@
 
 #include <random>
-
 #include "clesperanto.hpp"
+#include "utils.hpp"
 
-/**
- * Main test function
- *
- */
+template<class type>
+std::array<size_t,3> generate_data(std::vector<type>& arr_1, 
+                                   std::vector<type>& valid, size_t width, size_t height, size_t depth, int scalar_1, type scalar_2)
+{
+    arr_1.resize(width*height*depth);
+    valid.resize(width*height*depth);
+    for (auto it1 = arr_1.begin(), it_valid = valid.begin(); 
+              it1 != arr_1.end(), it_valid != valid.end(); ++it1, ++it_valid)
+    {
+        *it1 = static_cast<type>((int) rand() % 10);
+        *it_valid = *it1;
+        if( (it1 - arr_1.begin()) % width == scalar_1 )
+        {
+            *it_valid = scalar_2;
+        }
+    }
+    return std::array<size_t,3> {width, height, depth};
+}
+
+template<class type>
+std::vector<type> run_kernel_with_buffer(std::vector<type>& arr_1, std::array<size_t,3>& shape, int scalar_1, type scalar_2)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto ocl_output = cle.Push<type>(arr_1, shape);
+    cle.SetColumn(ocl_output, scalar_1, scalar_2);  
+    auto output = cle.Pull<type>(ocl_output);  
+    return output; 
+}
+
+template<class type>
+std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::array<size_t,3>& shape, int scalar_1, type scalar_2)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto ocl_output = cle.Push<type>(arr_1, shape, "image");
+    cle.SetColumn(ocl_output, scalar_1, scalar_2);  
+    auto output = cle.Pull<type>(ocl_output);  
+    return output; 
+}
+
+template<class type>
+bool test(size_t width, size_t height, size_t depth)
+{
+    int scalar_1 = static_cast<int>(rand() % width);
+    type scalar_2 = static_cast<type>(rand() % 100);
+    std::vector<type> arr_1, valid;
+    std::array<size_t,3> shape = generate_data<type>(arr_1, valid, width, height, depth, scalar_1, scalar_2);
+    auto output_buffer = run_kernel_with_buffer<type>(arr_1, shape, scalar_1, scalar_2);
+    if (IsDifferent(output_buffer, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using buffer ... FAILED! " << std::endl;
+        return true;
+    }
+    auto output_image  = run_kernel_with_image<type>(arr_1, shape, scalar_1, scalar_2);
+    if (IsDifferent(output_image, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using image ... FAILED! " << std::endl;
+        return true;
+    }
+    return false;
+}
+
 int main(int argc, char **argv)
 {
-    // Initialise random input and valid output.
-    int width (5), height (1), depth (1);
-    std::array<int,3> dims = {width, height, depth};
-    std::vector<float> input_data (width*height*depth);
-    std::vector<float> valid_data (width*height*depth);
-    for (size_t i = 0; i < input_data.size(); i++)
+    if (test<float>(10, 5, 2))
     {
-            input_data[i] = static_cast<float>(i);
-            valid_data[i] = static_cast<float>(i);
+        std::cerr << "SetColumn kernel 3d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
     }
-    valid_data[2] = 10.0f;
-
-    // Initialise GPU information.
-    cle::Clesperanto cle;
-
-    // Initialise device memory and push from host to device
-    cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
-
-    // Call kernel
-    cle.SetColumn(Buffer_A, 2, 10);
-
-    // pull device memory to host
-    std::vector<float> output_data = cle.Pull<float>(Buffer_A);    
-
-    // Verify output
-    float difference = 0;
-    for (size_t i = 0; i < output_data.size(); i++)
+    if (test<float>(10, 5, 1))
     {
-        difference += std::abs(valid_data[i] - output_data[i]);
+        std::cerr << "SetColumn kernel 2d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
     }
-    return difference > std::numeric_limits<float>::epsilon();
+    if (test<float>(10, 1, 1))
+    {        
+        std::cerr << "SetColumn kernel 1d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
+    }
+    std::cout << "SetColumn kernel test ... PASSED! " << std::endl;
+    return EXIT_SUCCESS;
 }

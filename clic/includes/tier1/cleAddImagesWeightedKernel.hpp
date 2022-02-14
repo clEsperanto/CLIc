@@ -10,12 +10,9 @@ namespace cle
 class AddImagesWeightedKernel : public Kernel
 {
 private:
-    std::string m_OclHeader2d = 
-        #include "cle_add_images_weighted_2d.h" 
-        ;
-    std::string m_OclHeader3d = 
-        #include "cle_add_images_weighted_3d.h" 
-        ;
+    std::string m_OclHeader = {
+        #include "cle_add_images_weighted.h" 
+        };
 
 public:
     AddImagesWeightedKernel(std::shared_ptr<GPU>);

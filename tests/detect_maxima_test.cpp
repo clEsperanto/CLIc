@@ -1,50 +1,83 @@
 
 #include <random>
-
 #include "clesperanto.hpp"
+#include "utils.hpp"
 
-/**
- * Main test function
- *
- */
+template<class type>
+std::array<size_t,3> generate_data(std::vector<type>& arr_1, 
+                                   std::vector<type>& valid, size_t width, size_t height, size_t depth)
+{
+    arr_1.resize(width*height*depth);
+    valid.resize(width*height*depth);
+    std::fill(arr_1.begin(), arr_1.end(), 0.0f);
+    std::fill(valid.begin(), valid.end(), 0.0f);
+    int center = (width/2) + (height/2)*width + (depth/2)*width*height;
+    arr_1[center] = 10;
+    valid[center] = 1;
+    return std::array<size_t,3> {width, height, depth};
+}
+
+template<class type>
+std::vector<type> run_kernel_with_buffer(std::vector<type>& arr_1, std::array<size_t,3>& shape)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto oclArray_A = cle.Push<type>(arr_1, shape);
+    auto ocl_output = cle.Create<type>(shape);
+    cle.DetectMaximaBox(oclArray_A, ocl_output);  
+    auto output = cle.Pull<type>(ocl_output); 
+    return output; 
+}
+
+template<class type>
+std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::array<size_t,3>& shape)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto oclArray_A = cle.Push<type>(arr_1, shape, "image");
+    auto ocl_output = cle.Create<type>(shape, "image");
+    cle.DetectMaximaBox(oclArray_A, ocl_output);  
+    auto output = cle.Pull<type>(ocl_output);  
+    return output; 
+}
+
+template<class type>
+bool test(size_t width, size_t height, size_t depth)
+{
+    std::vector<type> arr_1, valid;
+    std::array<size_t,3> shape = generate_data<type>(arr_1, valid, width, height, depth);
+    auto output_buffer = run_kernel_with_buffer<type>(arr_1, shape);
+    if (IsDifferent(output_buffer, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using buffer ... FAILED! " << std::endl;
+        return true;
+    }
+    auto output_image  = run_kernel_with_image<type>(arr_1, shape);
+    if (IsDifferent(output_image, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using image ... FAILED! " << std::endl;
+        return true;
+    }
+    return false;
+}
+
 int main(int argc, char **argv)
 {
-    // Initialise random input and valid output.
-    int width (5), height (5), depth (1);
-    std::array<int,3> dims = {width, height, depth};
-    std::vector<float> input_data {
-            0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f, 2.0f, 0.0f,
-            1.0f, 2.0f, 1.0f, 3.0f, 2.0f,
-            0.0f, 1.0f, 0.0f, 2.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 0.0f, 0.0f
-    };
-    std::vector<float> valid_data {
-            0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 0.0f, 0.0f
-    };
-
-    // Initialise GPU information.
-    cle::Clesperanto cle;
-
-    // Initialise device memory and push from host to device
-    cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
-    cle::Buffer Buffer_B = cle.Create<float>(dims);
-
-    // Call kernel
-    cle.DetectMaximaBox(Buffer_A, Buffer_B);
-
-    // pull device memory to host
-    std::vector<float> output_data = cle.Pull<float>(Buffer_B);    
-
-    // Verify output
-    float difference = 0;
-    for (size_t i = 0; i < output_data.size(); i++)
+    if (test<float>(5, 3, 2))
     {
-        difference += std::abs(valid_data[i] - output_data[i]);
+        std::cerr << "DetectMaximaBox kernel 3d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
     }
-    return difference > std::numeric_limits<float>::epsilon();
+    if (test<float>(5, 3, 1))
+    {
+        std::cerr << "DetectMaximaBox kernel 2d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
+    }
+    if (test<float>(5, 1, 1))
+    {        
+        std::cerr << "DetectMaximaBox kernel 1d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
+    }
+    std::cout << "DetectMaximaBox kernel test ... PASSED! " << std::endl;
+    return EXIT_SUCCESS;
 }

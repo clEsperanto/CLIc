@@ -30,7 +30,7 @@ private:
         Iteration();
         std::chrono::time_point<std::chrono::high_resolution_clock> end = std::chrono::high_resolution_clock::now();
 
-        timingResultWriteback.push_back((unsigned long) std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count());
+        timingResultWriteback.push_back((unsigned long) std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
     }
 
 protected:
@@ -91,7 +91,7 @@ public:
                 Compile(cle);
                 std::chrono::time_point<std::chrono::high_resolution_clock> end = std::chrono::high_resolution_clock::now();
 
-                compilationTimings.push_back((unsigned long) std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count());
+                compilationTimings.push_back((unsigned long) std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
             }
 
             maybeCompilationMs = getAverage<unsigned long>(compilationTimings);
@@ -145,8 +145,8 @@ public:
         cout.width(8);
         cout << endl;
         cout << endl;
-        cout << "Avg Warmup: " << GetAvgWarmupMs() << " ms" << endl; // " \u03BCs" << endl;
-        cout << "Avg Normal: " << GetAvgNormalMs() << " ms" << endl; // " \u03BCs" << endl;
-        cout << "Avg Total:  " << GetAvgTotalMs()  << " ms" << endl; // " \u03BCs" << endl;
+        cout << "Avg Warmup: " << GetAvgWarmupMs() << " \u03BCs" << endl; // " \u03BCs" << endl;
+        cout << "Avg Normal: " << GetAvgNormalMs() << " \u03BCs" << endl; // " \u03BCs" << endl;
+        cout << "Avg Total:  " << GetAvgTotalMs()  << " \u03BCs" << endl; // " \u03BCs" << endl;
     }
 };

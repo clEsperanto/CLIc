@@ -8,10 +8,10 @@ namespace cle
 SetNonzeroPixelsToPixelindexKernel::SetNonzeroPixelsToPixelindexKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu, 
             "set_nonzero_pixels_to_pixelindex",
-            {"dst" , "src", "offset"}
+            {"src" , "dst", "offset"}
     )
 {
-    this->m_Sources.insert({this->m_KernelName + "", this->m_OclHeader});
+    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
 }
 
 void SetNonzeroPixelsToPixelindexKernel::SetInput(Object& t_x)
@@ -31,7 +31,6 @@ void SetNonzeroPixelsToPixelindexKernel::SetOffset(int t_x)
 
 void SetNonzeroPixelsToPixelindexKernel::Execute()
 {
-    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

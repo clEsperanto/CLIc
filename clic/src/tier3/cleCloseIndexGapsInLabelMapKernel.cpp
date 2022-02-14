@@ -10,6 +10,7 @@
 #include "cleBlockEnumerateKernel.hpp"
 #include "cleReplaceIntensitiesKernel.hpp"
 
+#include "utils.hpp"
 
 namespace cle
 {
@@ -17,16 +18,16 @@ namespace cle
 CloseIndexGapsInLabelMapKernel::CloseIndexGapsInLabelMapKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu,
             "close_index_gaps_in_label_map",
-            {"src", "dst", "blocksize"}
+            {"src", "dst", "scalar"}
     )
 {}
 
-void CloseIndexGapsInLabelMapKernel::SetInput(Buffer& t_x)
+void CloseIndexGapsInLabelMapKernel::SetInput(Object& t_x)
 {
     this->AddObject(t_x, "src");
 }
 
-void CloseIndexGapsInLabelMapKernel::SetOutput(Buffer& t_x)
+void CloseIndexGapsInLabelMapKernel::SetOutput(Object& t_x)
 {
     this->AddObject(t_x, "dst");
 }
@@ -38,11 +39,10 @@ void CloseIndexGapsInLabelMapKernel::SetBlockSize(int t_x)
 
 void CloseIndexGapsInLabelMapKernel::Execute()
 {
-    std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("src"));
-    std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("dst"));
+    auto src = this->GetParameter<Object>("src");
+    auto dst = this->GetParameter<Object>("dst");
     
-    // std::array<int,3> one_dim = {1,1,1};
-    cle::Buffer max_value_buffer = this->m_gpu->CreateBuffer<float>();
+    auto max_value_buffer = this->m_gpu->Create<float>();
 
     MaximumOfAllPixelsKernel max_of_pixel_kernel(this->m_gpu);
     max_of_pixel_kernel.SetInput(*src);
@@ -50,10 +50,10 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     max_of_pixel_kernel.Execute();
 
     float max_value = m_gpu->Pull<float>(max_value_buffer).front();
-    int nb_indices = static_cast<int>(max_value) + 1;
+    size_t nb_indices = static_cast<size_t>(max_value) + 1;
 
-    std::array<int,3> indices_dim = {nb_indices, 1, 1};
-    cle::Buffer flagged_indices = this->m_gpu->CreateBuffer<float>(indices_dim);
+    std::array<size_t,3> indices_dim = {nb_indices, 1, 1};
+    auto flagged_indices = this->m_gpu->Create<float>(indices_dim);
 
     FlagExistingLabelsKernel flag_labels_kernel(this->m_gpu);
     flag_labels_kernel.SetInput(*src);
@@ -66,9 +66,9 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     set_column_kernel.SetValue(0);
     set_column_kernel.Execute();
 
-    int nb_sums = static_cast<int>(nb_indices / this->m_Blocksize) + 1;
-    std::array<int,3> sums_dim = {nb_sums, 1, 1};
-    cle::Buffer block_sums = this->m_gpu->CreateBuffer<float>(sums_dim);
+    size_t nb_sums = static_cast<size_t>(nb_indices / this->m_Blocksize) + 1;
+    std::array<size_t,3> sums_dim = {nb_sums, 1, 1};
+    auto block_sums = this->m_gpu->Create<float>(sums_dim);
 
     SumReductionXKernel sum_reduction_x_kernel(this->m_gpu);
     sum_reduction_x_kernel.SetInput(flagged_indices);
@@ -76,8 +76,8 @@ void CloseIndexGapsInLabelMapKernel::Execute()
     sum_reduction_x_kernel.SetBlocksize(this->m_Blocksize);
     sum_reduction_x_kernel.Execute();
 
-    std::array<int,3> new_indices_dim = {nb_indices, 1, 1};
-    cle::Buffer new_indices = this->m_gpu->CreateBuffer<float>(new_indices_dim);
+    std::array<size_t,3> new_indices_dim = {nb_indices, 1, 1};
+    auto new_indices = this->m_gpu->Create<float>(new_indices_dim);
 
     BlockEnumerateKernel block_enumerate_kernel(this->m_gpu);
     block_enumerate_kernel.SetInput(flagged_indices);

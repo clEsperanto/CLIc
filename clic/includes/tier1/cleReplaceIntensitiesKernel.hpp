@@ -11,9 +11,9 @@ namespace cle
 class ReplaceIntensitiesKernel : public Kernel
 {
 private:
-    std::string m_OclHeader = 
+    std::string m_OclHeader = {
         #include "cle_replace_intensities.h" 
-        ;
+        };
 
 public:
     ReplaceIntensitiesKernel(std::shared_ptr<GPU>);  

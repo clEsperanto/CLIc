@@ -17,24 +17,24 @@ ConnectedComponentLabellingBoxKernel::ConnectedComponentLabellingBoxKernel(std::
     )
 {}    
 
-void ConnectedComponentLabellingBoxKernel::SetInput(Buffer& t_x)
+void ConnectedComponentLabellingBoxKernel::SetInput(Object& t_x)
 {
     this->AddObject(t_x, "src");
 }
 
-void ConnectedComponentLabellingBoxKernel::SetOutput(Buffer& t_x)
+void ConnectedComponentLabellingBoxKernel::SetOutput(Object& t_x)
 {
     this->AddObject(t_x, "dst");
 }
 
 void ConnectedComponentLabellingBoxKernel::Execute()
 {
-    std::shared_ptr<Buffer> src = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("src"));
-    std::shared_ptr<Buffer> dst = std::dynamic_pointer_cast<Buffer>(this->m_Parameters.at("dst"));
+    auto src = this->GetParameter<Object>("src");
+    auto dst = this->GetParameter<Object>("dst");
 
-    cle::Buffer temp1 = this->m_gpu->CreateBuffer<float>(src->Shape());
-    cle::Buffer temp2 = this->m_gpu->CreateBuffer<float>(src->Shape());
-    cle::Buffer temp3 = this->m_gpu->CreateBuffer<float>(src->Shape());
+    auto temp1 = this->m_gpu->Create<float>(src->Shape());
+    auto temp2 = this->m_gpu->Create<float>(src->Shape());
+    auto temp3 = this->m_gpu->Create<float>(src->Shape());
 
     SetNonzeroPixelsToPixelindexKernel set_nonzero_to_index_kernel(this->m_gpu);
     set_nonzero_to_index_kernel.SetInput(*src);
@@ -47,9 +47,9 @@ void ConnectedComponentLabellingBoxKernel::Execute()
     set_init_kernel.SetValue(0);
     set_init_kernel.Execute();
 
-    std::array<int,3> flag_dim = {1,1,2};
+    std::array<size_t,3> flag_dim = {1,1,2};
     std::vector<float> arr = {0,0};
-    cle::Buffer flag = this->m_gpu->PushBuffer<float>(arr, flag_dim);
+    auto flag = this->m_gpu->Push<float>(arr, flag_dim);
 
     std::vector<float> flag_value = {1, 1};
     int iteration_count = 0;

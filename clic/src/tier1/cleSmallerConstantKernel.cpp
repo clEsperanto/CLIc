@@ -8,16 +8,15 @@ namespace cle
 SmallerConstantKernel::SmallerConstantKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu,
             "smaller_constant",
-            {"src1" , "scalar", "dst"}
+            {"src" , "dst", "scalar"}
     )
 {
-    this->m_Sources.insert({this->m_KernelName + "_2d", this->m_OclHeader2d});
-    this->m_Sources.insert({this->m_KernelName + "_3d", this->m_OclHeader3d});
+    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
 }
 
 void SmallerConstantKernel::SetInput(Object& t_x)
 {
-    this->AddObject(t_x, "src1");
+    this->AddObject(t_x, "src");
 }
 
 void SmallerConstantKernel::SetOutput(Object& t_x)
@@ -32,7 +31,6 @@ void SmallerConstantKernel::SetConstant(float t_x)
 
 void SmallerConstantKernel::Execute()
 {
-    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

@@ -3,6 +3,8 @@
 [![Codecov](https://codecov.io/gh/clEsperanto/CLIc_prototype/branch/master/graph/badge.svg?token=QRSZHYDFIF)](https://codecov.io/gh/clEsperanto/CLIc_prototype)
 [![License](https://img.shields.io/badge/license-BSD-informational)](https://github.com/clEsperanto/CLIc_prototype/blob/master/LICENSE)
 [![Website](https://img.shields.io/website?url=http%3A%2F%2Fclesperanto.net)](http://clesperanto.net)
+[![GitHub stars](https://img.shields.io/github/stars/clEsperanto/CLIc_prototype?style=social)](https://github.com/clEsperanto/CLIc_prototype)
+[![GitHub forks](https://img.shields.io/github/forks/clEsperanto/CLIc_prototype?style=social)](https://github.com/clEsperanto/CLIc_prototype)
 
 # CLIc
 
@@ -17,30 +19,30 @@ Right now, this is very preliminary, and mainly focussed on running a few kernel
 
 int main( int argc, char** argv)
 {
-    cle::Clesperanto cle;    // Initialisation of clEsperanto
+    // Initialisation of clEsperanto with default device
+    cle::Clesperanto cle;
 
     // store data to process in vector
-    std::array<int,3> dimensions = {width, height, depth};
-    std::vector<float> input (width * height * depth); 
+    std::array<size_t,3> dimensions = {width, height, depth};
+    std::vector<float> data (width * height * depth); 
 
     /*
      * ... fill input with data to process  
      */
 
-    // push data into GPU, and create the output into GPU
-    cle::Buffer src = cle.Push<float>(input, dimensions);
-    cle::Buffer dst = cle.Create<float>(dimensions);
-
+    // push data from host to device
+    auto gpu_src = cle.Push<float>(data, dimensions);
+    // allocate space on device
+    auto gpu_dst = cle.Create<float>(dimensions);
     // apply filter with parameters
-    cle.AddImageAndScalar(src, dst, 10);  
-
-    // pull output from GPU into vector
-    std::vector<float> output = cle.Pull<float>(dst); 
+    cle.AddImageAndScalar(gpu_src, gpu_dst, 10);
+    // pull output from device to host
+    auto output = cle.Pull<float>(gpu_dst); 
 
     return EXIT_SUCCESS;
 }
 ```
-See more complete example on usage by looking at the [operations tests](https://github.com/clEsperanto/CLIc_prototype/tree/master/tests).
+See more complete example on usage by looking at the kernels [tests](https://github.com/clEsperanto/CLIc_prototype/tree/master/tests).
 
 # Installation
 

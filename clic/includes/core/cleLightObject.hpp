@@ -11,32 +11,92 @@
 namespace cle
 {
 
+/**
+ * Abstract class defining object to be processed by a kernel 
+ *
+ * LightObject define the general information that an object must have
+ * to be process through GPU.
+ * The class is abstract and define the pure base from which Image, Buffer,
+ * and Scalar will inherit.
+ */
 class LightObject
 {
-protected:
-    int m_ndim =1;
-    std::array<int,3> m_Shape = {1, 1, 1};
-
 public: 
+    /**
+     * @brief Default constructor.
+     */
     LightObject() =default;
-    LightObject(const std::array<int,3>& t_shape) : m_Shape(t_shape)
-    {
-        if (this->m_Shape[2]>1) this->m_ndim = 3;
-        else if (this->m_Shape[1]>1) this->m_ndim = 2;
-        else this->m_ndim = 1;
-    }
+
+    /**
+     * @brief Virtual default destructor.
+     */
     virtual ~LightObject() =default;
 
-    const int nDim() const { return m_ndim; };
-    const std::array<int,3> Shape() const { return m_Shape; };
-    const int Size() const { return this->m_Shape[0]*this->m_Shape[1]*this->m_Shape[2]; };
+    /**
+     * @brief Virtual get object dimension.
+     * 
+     * @return dimensionality.
+     */
+    virtual const int nDim() const =0;
 
+    /**
+     * @brief Virtual get object size as number of elements.
+     * 
+     * @return number of elements.
+     */
+    virtual const int Size() const =0;
+
+    /**
+     * @brief Virtual get object shape (width, height, depth).
+     * 
+     * @return shape array of size 3.
+     */
+    virtual const std::array<size_t,3> Shape() const =0;
+
+    /**
+     * @brief Virtual get object origin coordinate (x, y, z).
+     * 
+     * @return coordinate array of size 3.
+     */
+    virtual const std::array<size_t,3> Origin() const =0;
+
+    /**
+     * @brief Virtual get object region shape (width, height, depth).
+     * 
+     * @return shape array of size 3.
+     */
+    virtual const std::array<size_t,3> Region() const =0;
+
+    /**
+     * @brief Virtual get object data type (float, int, char, etc.).
+     * 
+     * @return data type as string.
+     */
     virtual const char* GetDataType() const =0;
-    virtual const bool IsDataType(const char*) const =0;    
+
+    /**
+     * @brief Virtual compare object data type (float, int, char, etc.).
+     * 
+     * @param t_dtype data type to compare with
+     * @return true if same data type, false otherwise.
+     */
+    virtual const bool IsDataType(const char* t_dtype) const =0; 
+
+    /**
+     * @brief Virtual get object type (Buffer, Image, etc.).
+     * @return data type as string.
+     */   
     virtual const char* GetObjectType() const =0;
-    virtual const bool IsObjectType(const char*) const =0;
+
+    /**
+     * @brief Virtual compare object type (Buffer, Image, etc.).
+     * 
+     * @param t_otype object type to compare with
+     * @return true if same object type, false otherwise.
+     */
+    virtual const bool IsObjectType(const char* t_otype) const =0;
 };
 
-}
+} // namespace cle
 
 #endif //__cleLightObject_hpp

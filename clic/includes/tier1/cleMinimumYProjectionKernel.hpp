@@ -11,9 +11,9 @@ namespace cle
 class MinimumYProjectionKernel : public Kernel
 {
 private:
-    std::string m_OclHeader = 
+    std::string m_OclHeader = {
         #include "cle_minimum_y_projection.h" 
-        ;
+        };
 
 public:
     MinimumYProjectionKernel(std::shared_ptr<GPU>);

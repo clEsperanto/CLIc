@@ -7,7 +7,7 @@ namespace cle
 SeparableKernel::SeparableKernel (std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu, 
             "",
-            {"dst" , "src", "dim", "N", "s"}
+            {"src" , "dst", "dim", "N", "s"}
     )
 {}
 
@@ -21,12 +21,12 @@ void SeparableKernel::SetSources(const std::map<std::string, std::string>& t_sou
     this->m_Sources = t_sources;
 }
 
-void SeparableKernel::SetInput(Buffer& t_x)
+void SeparableKernel::SetInput(Object& t_x)
 {
     this->AddObject(t_x, "src");
 }
 
-void SeparableKernel::SetOutput(Buffer& t_x)
+void SeparableKernel::SetOutput(Object& t_x)
 {
     this->AddObject(t_x, "dst");
 }
@@ -48,7 +48,6 @@ void SeparableKernel::SetDimension(int t_x)
 
 void SeparableKernel::Execute()
 {
-    this->ManageDimensions("dst");
     this->BuildProgramKernel();
     this->SetArguments();
     this->EnqueueKernel();

@@ -19,30 +19,30 @@ if(BUILD_TESTING)
     include(CTest)
     add_subdirectory(${LIBRARY_DIR}/tests)
     add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
-endif()
+endif(BUILD_TESTING)
 
 # Build and run benchmark
 if(BUILD_BENCHMARK)
     add_subdirectory(benchmark)
-endif()
+endif(BUILD_BENCHMARK)
 
-if(BUILD_CODE_COVERAGE)
-    set(GCOVR_ADDITIONAL_ARGS "--exclude-throw-branches") # deal with thirdparty throw branche coverage.
-    set(COVERAGE_EXCLUDES "*/benchmark/*" "*/thirdparty/*")
-    setup_target_for_coverage_lcov(
-        NAME coverage
-        EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage
-        BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
-        )
-    setup_target_for_coverage_gcovr_html(
-        NAME coverage_html
-        EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage
-        BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
-        )
-    setup_target_for_coverage_gcovr_xml(
-        NAME coverage_xml
-        EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage
-        BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
-        )
-endif()
+# if(BUILD_CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    # set(GCOVR_ADDITIONAL_ARGS "--exclude-throw-branches") # deal with thirdparty throw branche coverage.
+    # set(COVERAGE_EXCLUDES "*/benchmark/*" "*/thirdparty/*")
+    # setup_target_for_coverage_lcov(
+    #     NAME coverage
+    #     EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage
+    #     BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
+    #     )
+    # setup_target_for_coverage_gcovr_html(
+    #     NAME coverage_html
+    #     EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage
+    #     BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
+    #     )
+    # setup_target_for_coverage_gcovr_xml(
+    #     NAME coverage_xml
+    #     EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage
+    #     BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
+    #     )
+# endif(BUILD_CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 

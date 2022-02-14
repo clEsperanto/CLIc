@@ -1,56 +1,93 @@
 
 #include <random>
-
 #include "clesperanto.hpp"
+#include "utils.hpp"
 
-/**
- * Main test function
- *
- */
+template<class type>
+std::array<size_t,3> generate_data(std::vector<type>& arr_1, std::vector<type>& arr_2, std::vector<type>& valid, size_t width, size_t height, size_t depth)
+{
+    arr_2.resize(10);
+    arr_1.resize(width*height*depth);
+    valid.resize(width*height*depth);
+    type value = 0;
+    for (auto it1 = arr_2.begin(); it1 != arr_2.end(); ++it1)
+    {
+        *it1 = static_cast<type>((int)rand() % 10 + 10);
+    }    
+    for (auto it1 = arr_1.begin(), it_valid = valid.begin(); 
+              it1 != arr_1.end(), it_valid != valid.end(); ++it1, ++it_valid)
+    {
+        value = static_cast<type>((int)rand() % 10);
+        *it1 = value;
+        *it_valid = arr_2[value];
+
+    }
+    return std::array<size_t,3> {width, height, depth};
+}
+
+template<class type>
+std::vector<type> run_kernel_with_buffer(std::vector<type>& arr_1, std::vector<type>& arr_2, std::array<size_t,3>& shape)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto oclArray_A = cle.Push<type>(arr_1, shape);
+    auto oclArray_B = cle.Push<type>(arr_2, {arr_2.size(),1,1});
+    auto ocl_output = cle.Create<type>(shape);
+    cle.ReplaceIntensities(oclArray_A, oclArray_B, ocl_output);  
+    auto output = cle.Pull<type>(ocl_output);  
+    return output; 
+}
+
+template<class type>
+std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::vector<type>& arr_2, std::array<size_t,3>& shape)
+{
+    cle::Clesperanto cle;
+    cle.Ressources()->SetWaitForKernelToFinish(true);
+    auto oclArray_A = cle.Push<type>(arr_1, shape, "image");
+    auto oclArray_B = cle.Push<type>(arr_2, {arr_2.size(),1,1}, "image");
+    auto ocl_output = cle.Create<type>(shape, "image");
+    cle.ReplaceIntensities(oclArray_A, oclArray_B, ocl_output);  
+    auto output = cle.Pull<type>(ocl_output);  
+    return output; 
+}
+
+template<class type>
+bool test(size_t width, size_t height, size_t depth)
+{
+    std::vector<type> arr_1, arr_2, valid;
+    std::array<size_t,3> shape = generate_data<type>(arr_1, arr_2, valid, width, height, depth);
+    auto output_buffer = run_kernel_with_buffer<type>(arr_1, arr_2, shape);
+    if (IsDifferent(output_buffer, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using buffer ... FAILED! " << std::endl;
+        return true;
+    }
+    auto output_image = run_kernel_with_image<type>(arr_1, arr_2, shape);
+    if (IsDifferent(output_image, valid))
+    {
+        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using image ... FAILED! " << std::endl;
+        return true;
+    }
+    return false;
+}
+
 int main(int argc, char **argv)
 {
-    // Initialise random input and valid output.
-    int width (5), height (5), depth (1);
-    std::array<int,3> dims = {width, height, depth};
-    std::vector<float> input_data {
-                0, 0, 0, 0, 0,
-                0, 1, 2, 3, 0,
-                0, 2, 3, 4, 0,
-                0, 4, 4, 5, 0,
-                0, 0, 0, 0, 0
-    };
-
-    std::vector<float> valid_data {
-                0, 0, 0, 0, 0,
-                0, 9, 8, 7, 0,
-                0, 8, 7, 6, 0,
-                0, 6, 6, 5, 0,
-                0, 0, 0, 0, 0
-    }; 
-    std::vector<float> reference_data {
-                0, 9, 8, 7, 6, 5
-    };
-
-    // Initialise GPU information.
-    cle::Clesperanto cle;
-
-    // Initialise device memory and push from host to device
-    cle::Buffer Buffer_A = cle.Push<float>(input_data, dims);
-    std::array<int,3> Buffer_B_dims = {6, 1, 1};
-    cle::Buffer Buffer_B = cle.Push<float>(reference_data, Buffer_B_dims);
-    cle::Buffer Buffer_C = cle.Create<float>(dims);
-
-    // Call kernel
-    cle.ReplaceIntensities(Buffer_A, Buffer_B, Buffer_C);
-
-    // pull device memory to host
-    std::vector<float> output_data = cle.Pull<float>(Buffer_C);    
-
-    // Verify output
-    float difference = 0;
-    for (size_t i = 0; i < output_data.size(); i++)
+    if (test<float>(10, 5, 2))
     {
-        difference += std::abs(valid_data[i] - output_data[i]);
+        std::cerr << "ReplaceIntensities kernel 3d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
     }
-    return difference > std::numeric_limits<float>::epsilon();
+    if (test<float>(10, 5,  1))
+    {
+        std::cerr << "ReplaceIntensities kernel 2d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
+    }
+    if (test<float>(10,  1,  1))
+    {        
+        std::cerr << "ReplaceIntensities kernel 1d ... FAILED! " << std::endl;
+        return EXIT_FAILURE;
+    }
+    std::cout << "ReplaceIntensities kernel test ... PASSED! " << std::endl;
+    return EXIT_SUCCESS;
 }
