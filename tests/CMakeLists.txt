@@ -303,3 +303,10 @@ add_dependencies(gpu_information_test CLIc)
 target_link_libraries(gpu_information_test PRIVATE CLIc::CLIc)
 add_test(NAME gpu_information_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gpu_information_test)
 set_tests_properties(gpu_information_test PROPERTIES FOLDER "Tests")
+
+add_executable(histogram_test histogram_test.cpp)
+add_dependencies(histogram_test CLIc)
+target_link_libraries(histogram_test PRIVATE CLIc::CLIc)
+add_test(NAME histogram_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND histogram_test)
+set_tests_properties(histogram_test PROPERTIES FOLDER "Tests")
+

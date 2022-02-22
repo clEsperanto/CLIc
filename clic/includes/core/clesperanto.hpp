@@ -7,6 +7,7 @@
 
 #include <type_traits>
 #include <iostream>
+#include <limits>
 
 namespace cle
 {
@@ -80,6 +81,8 @@ public:
     void BlockEnumerate(Object&, Object&, Object&, int=0);  //! block enumarate fail when running with Image
     void FlagExistingLabels(Object&, Object&);
     void CloseIndexGapsInLabelMap(Object&, Object&, int=4096);
+    void Histogram(Object&, Object&, int =256, float =std::numeric_limits<float>::infinity(), float =std::numeric_limits<float>::infinity());
+
 };
 
     template<class T>

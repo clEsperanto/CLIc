@@ -450,4 +450,16 @@ void Clesperanto::CloseIndexGapsInLabelMap(Object& t_src, Object& t_dst, int t_b
     kernel.Execute();
 }
 
+void Clesperanto::Histogram(Object& t_src, Object& t_dst, int t_bins, float t_min, float t_max)
+{
+    HistogramKernel kernel(this->m_gpu);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetSteps(1, 1, 1);
+    kernel.SetNumBins(t_bins);
+    kernel.SetMinimumIntensity(t_min);
+    kernel.SetMaximumIntensity(t_max);
+    kernel.Execute();
+}
+
 }

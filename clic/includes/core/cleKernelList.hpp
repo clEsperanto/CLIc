@@ -20,6 +20,7 @@
 #include "cleGreaterKernel.hpp"
 #include "cleGreaterOrEqualConstantKernel.hpp"
 #include "cleGreaterOrEqualKernel.hpp"
+#include "cleHistogramKernel.hpp"
 #include "cleMaximumBoxKernel.hpp"
 #include "cleMaximumOfAllPixelsKernel.hpp"
 #include "cleMaximumXProjectionKernel.hpp"
