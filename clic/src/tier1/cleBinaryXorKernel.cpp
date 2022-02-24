@@ -7,7 +7,7 @@ namespace cle
 
 BinaryXorKernel::BinaryXorKernel(std::shared_ptr<GPU> t_gpu) :    
     Kernel( t_gpu, 
-            "binary_and", 
+            "binary_xor", 
             {"src0", "src1" , "dst"}
     )
 {

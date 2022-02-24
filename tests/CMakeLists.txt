@@ -73,7 +73,7 @@ set_target_properties(copy_test PROPERTIES FOLDER "Tests")
 add_executable(custom_test custom_test.cpp)
 add_dependencies(custom_test CLIc)
 target_link_libraries(custom_test PRIVATE CLIc::CLIc)
-add_test(NAME custom_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND custom_test $\{PROJECT_SOURCE_DIR\}/thirdparty/clij/kernels)
+add_test(NAME custom_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND custom_test ${PROJECT_SOURCE_DIR}/thirdparty/clij/kernels)
 set_target_properties(custom_test PROPERTIES FOLDER "Tests")
 
 add_executable(detect_maxima_test detect_maxima_test.cpp)
