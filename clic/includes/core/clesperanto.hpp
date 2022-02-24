@@ -33,6 +33,13 @@ public:
     void AddImageAndScalar(Object&, Object&, float=0);
     void AddImagesWeighted(Object&, Object&, Object&, float=1, float=1);
     void AddImages(Object&, Object&, Object&);
+
+    void BinaryAnd(Object&, Object&, Object&);
+    void BinaryOr(Object&, Object&, Object&);
+    void BinaryNot(Object&, Object&);
+    void BinarySubtract(Object&, Object&, Object&);
+    void BinaryXor(Object&, Object&, Object&);
+
     void SubtractImages(Object&, Object&, Object&);
     void DilateSphere(Object&, Object&);
     void ErodeSphere(Object&, Object&);

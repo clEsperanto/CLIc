@@ -39,6 +39,50 @@ void Clesperanto::AddImages(Object& t_src1, Object& t_src2, Object& t_dst)
     this->AddImagesWeighted(t_src1, t_src2, t_dst, 1, 1);
 }
 
+void Clesperanto::BinaryAnd(Object& t_src1, Object& t_src2, Object& t_dst)
+{
+    BinaryAndKernel kernel(this->m_gpu);
+    kernel.SetInput1(t_src1);
+    kernel.SetInput2(t_src2);
+    kernel.SetOutput(t_dst);
+    kernel.Execute();
+}
+
+void Clesperanto::BinaryOr(Object& t_src1, Object& t_src2, Object& t_dst)
+{
+    BinaryOrKernel kernel(this->m_gpu);
+    kernel.SetInput1(t_src1);
+    kernel.SetInput2(t_src2);
+    kernel.SetOutput(t_dst);
+    kernel.Execute();
+}
+
+void Clesperanto::BinaryNot(Object& t_src, Object& t_dst)
+{
+    BinaryNotKernel kernel(this->m_gpu);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.Execute();
+}
+
+void Clesperanto::BinarySubtract(Object& t_src1, Object& t_src2, Object& t_dst)
+{
+    BinarySubtractKernel kernel(this->m_gpu);
+    kernel.SetInput1(t_src1);
+    kernel.SetInput2(t_src2);
+    kernel.SetOutput(t_dst);
+    kernel.Execute();
+}
+
+void Clesperanto::BinaryXor(Object& t_src1, Object& t_src2, Object& t_dst)
+{
+    BinaryXorKernel kernel(this->m_gpu);
+    kernel.SetInput1(t_src1);
+    kernel.SetInput2(t_src2);
+    kernel.SetOutput(t_dst);
+    kernel.Execute();
+}
+
 void Clesperanto::SubtractImages(Object& t_src1, Object& t_src2, Object& t_dst)
 {
     this->AddImagesWeighted(t_src1, t_src2, t_dst, 1, -1);
