@@ -506,4 +506,12 @@ void Clesperanto::Histogram(Object& t_src, Object& t_dst, int t_bins, float t_mi
     kernel.Execute();
 }
 
+void Clesperanto::ThresholdOtsu(Object& t_src, Object& t_dst)
+{
+    ThresholdOtsuKernel kernel(this->m_gpu);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.Execute(); 
+}
+
 }

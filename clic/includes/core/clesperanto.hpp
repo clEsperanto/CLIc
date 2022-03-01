@@ -89,6 +89,7 @@ public:
     void FlagExistingLabels(Object&, Object&);
     void CloseIndexGapsInLabelMap(Object&, Object&, int=4096);
     void Histogram(Object&, Object&, int =256, float =std::numeric_limits<float>::infinity(), float =std::numeric_limits<float>::infinity());
+    void ThresholdOtsu(Object&, Object&);
 
 };
 

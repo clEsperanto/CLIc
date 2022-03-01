@@ -56,5 +56,6 @@
 #include "cleSumXProjectionKernel.hpp"
 #include "cleSumYProjectionKernel.hpp"
 #include "cleSumZProjectionKernel.hpp"
+#include "cleThresholdOtsuKernel.hpp"
 
 #endif //__cleKernelList_hpp

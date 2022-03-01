@@ -340,3 +340,9 @@ target_link_libraries(sum_z_projection_test PRIVATE CLIc::CLIc)
 add_test(NAME sum_z_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_z_projection_test)
 set_target_properties(sum_z_projection_test PROPERTIES FOLDER "Tests")
 
+add_executable(threshold_otsu_test threshold_otsu_test.cpp)
+add_dependencies(threshold_otsu_test CLIc)
+target_link_libraries(threshold_otsu_test PRIVATE CLIc::CLIc)
+add_test(NAME threshold_otsu_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND threshold_otsu_test)
+set_target_properties(threshold_otsu_test PROPERTIES FOLDER "Tests")
+
