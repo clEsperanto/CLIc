@@ -7,7 +7,7 @@ bool IsDifferent(std::vector<type>& arr_1, std::vector<type>& arr_2)
 {
     float difference = 0;
     for (auto it1 = arr_1.begin(), it2 = arr_2.begin(); 
-              it1 != arr_1.end(), it2 != arr_2.end(); ++it1, ++it2)
+              (it1 != arr_1.end()) && (it2 != arr_2.end()); ++it1, ++it2)
     {
         difference += std::abs(static_cast<float>(*it1) - static_cast<float>(*it2));
     }
