@@ -17,9 +17,9 @@ GaussianBlurKernel::GaussianBlurKernel (std::shared_ptr<GPU> t_gpu) :
 std::array<int,3> GaussianBlurKernel::Sigma2KernelSize(std::array<float,3> t_sigma) const
 {
     std::array<int,3> ksize = {0,0,0};
-    auto it_size = ksize.begin(); 
-    auto it_sigma = t_sigma.begin();
-    for( ; it_sigma != t_sigma.end(), it_size!= ksize.end(); ++it_sigma, ++it_size)
+    auto it_size (ksize.begin()), size_end (ksize.end());
+    auto it_sigma (t_sigma.begin()), sigma_end (t_sigma.end());
+    for( ; it_sigma != sigma_end, it_size != size_end; ++it_sigma, ++it_size)
     {
         *it_size = static_cast<int>(*it_sigma * 8.0 + 0.5);
         if (*it_size % 2 == 0)
@@ -27,6 +27,7 @@ std::array<int,3> GaussianBlurKernel::Sigma2KernelSize(std::array<float,3> t_sig
             *it_size += 1;
         }
     }
+
     return ksize;
 }
 
