@@ -19,7 +19,7 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1, std::vector<type>& 
     {
         value = static_cast<type>((int)rand() % 10);
         *it1 = value;
-        *it_valid = arr_2[value];
+        *it_valid = static_cast<type>(arr_2[value]);
 
     }
     return std::array<size_t,3> {width, height, depth};

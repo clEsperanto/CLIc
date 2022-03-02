@@ -9,8 +9,8 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
 {
     arr_1.resize(width*height*depth);
     valid.resize(1*height*depth);
-    std::fill(arr_1.begin(), arr_1.end(), 1.0f);
-    std::fill(valid.begin(), valid.end(), width);
+    std::fill(arr_1.begin(), arr_1.end(), static_cast<type>(1));
+    std::fill(valid.begin(), valid.end(), static_cast<type>(width));
     return std::array<size_t,3> {width, height, depth};
 }\
 

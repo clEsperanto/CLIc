@@ -15,13 +15,13 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
     {
         if( (it1-arr_1.begin()) % 2 == 0)
         {
-            *it_valid = ++index;
-            *it1 = 1;
+            *it_valid = static_cast<type>(++index);
+            *it1 = static_cast<type>(1);
         }
         else
         {
-            *it_valid = 0;
-            *it1 = 0;
+            *it_valid = static_cast<type>(0);
+            *it1 = static_cast<type>(0);
         }
     }
 

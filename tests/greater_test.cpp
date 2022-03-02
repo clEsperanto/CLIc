@@ -17,7 +17,7 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1, std::vector<type>& 
         *it2 = static_cast<type>((int) rand() % 4);
         if (*it1 > *it2)
         {
-            *it_valid = 1;
+            *it_valid = static_cast<type>(1);
         }
     }
     return std::array<size_t,3> {width, height, depth};

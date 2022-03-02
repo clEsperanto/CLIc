@@ -25,7 +25,7 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
             (i >= central_idx+(height*width)-1 && i <= central_idx+(height*width)+1) || 
             (i >= central_idx+(height*width)+width-1 && i <= central_idx+(height*width)+width+1) )             
         {
-            valid[i] = 1;
+            valid[i] = static_cast<type>(1);
         } 
     }
     return std::array<size_t,3> {width, height, depth};

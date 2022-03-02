@@ -9,15 +9,15 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
 {
     arr_1.resize(width*height*depth);
     valid.resize(width*1*depth);
-    std::fill(arr_1.begin(), arr_1.end(), 10.0f);
-    std::fill(valid.begin(), valid.end(), 0.0f);
+    std::fill(arr_1.begin(), arr_1.end(), static_cast<type>(10));
+    std::fill(valid.begin(), valid.end(), static_cast<type>(0));
 
     for(auto it1 = arr_1.begin(); it1 != arr_1.end(); std::advance(it1,width*height))
     {
         for(auto j=0;j<width;++j)
         {
             int idx = (it1-arr_1.begin()+j) + (rand() % height) * width;
-            arr_1[idx] = 0;
+            arr_1[idx] = static_cast<type>(0);
         }
 
     }

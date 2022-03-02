@@ -14,8 +14,8 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
               (it1 != arr_1.end()) && (it_valid != valid.end()); ++it1, ++it_valid)
     {
         index = (it1 - arr_1.begin())+1;
-        *it_valid = index;
-        *it1 = index + arr_1.size() +1;
+        *it_valid = static_cast<type>(index);
+        *it1 = static_cast<type>(index + arr_1.size() +1);
     }
     
     return std::array<size_t,3> {width, height, depth};

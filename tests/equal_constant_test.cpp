@@ -15,7 +15,7 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1, std::vector<type>& 
         *it1 = static_cast<type>((int) rand() % 4);
         if (*it1 == scalar)
         {
-            *it_valid = 1;
+            *it_valid = static_cast<type>(1);
         }
     }
     return std::array<size_t,3> {width, height, depth};

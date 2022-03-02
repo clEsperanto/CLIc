@@ -16,7 +16,7 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
         *it_valid = *it1;
         if( (it1 - arr_1.begin()) % width == scalar_1 )
         {
-            *it_valid = scalar_2;
+            *it_valid = static_cast<type>(scalar_2);
         }
     }
     return std::array<size_t,3> {width, height, depth};

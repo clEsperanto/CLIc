@@ -11,8 +11,8 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
     std::fill(valid.begin(), valid.end(), 0);
     for(auto it = arr_1.begin(); it < arr_1.end(); ++it)
     {
-        *it =  static_cast<type>(rand() % width);
-        valid[*it] += 1;
+        *it = static_cast<type>(rand() % width);
+        valid[*it] += static_cast<type>(1);
     }
     return std::array<size_t,3> {width, height, depth};
 }

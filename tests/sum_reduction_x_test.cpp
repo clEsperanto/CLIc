@@ -9,8 +9,8 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
 {
     arr_1.resize(width*height*depth);
     valid.resize((width/4)*height*depth);
-    arr_1={0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0};
-    valid={2, 2, 1};
+    arr_1={0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f};
+    valid={2.0f, 2.0f, 1.0f};
 
     return std::array<size_t,3> {width, height, depth};
 }

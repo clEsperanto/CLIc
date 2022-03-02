@@ -15,8 +15,8 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1, std::vector<type>& 
     {
         if ( (it1 - arr_1.begin()) % 2 == 0)
         {
-            *it1 = scalar_1;
-            *it_valid = scalar_2;
+            *it1 = static_cast<type>(scalar_1);
+            *it_valid = static_cast<type>(scalar_2);
         }
         else
         {

@@ -13,8 +13,8 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
     {
         *it1 = static_cast<type>((int) rand() % 100 + 10);
     }
-    valid[0] = 1;
-    arr_1[(width/2) + (height/2)*width + (depth/2) * height * width] = 1;
+    valid[0] = static_cast<type>(1);
+    arr_1[(width/2) + (height/2)*width + (depth/2) * height * width] = static_cast<type>(1);
     return std::array<size_t,3> {width, height, depth};
 }
 
