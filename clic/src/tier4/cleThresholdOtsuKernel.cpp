@@ -6,6 +6,8 @@
 #include "cleGreaterConstantKernel.hpp"
 #include "cleHistogramKernel.hpp"
 
+#include <math.h>
+
 namespace cle
 {
 
@@ -63,6 +65,7 @@ void ThresholdOtsuKernel::Execute()
     //! currently not adapted to input data type and only computed on float
     //! this can lead to rounding error
     //! [1,2,3,4,5,6,7,8,9,10] -> T=5 (int), T=4.9 (float)
+    //? current solution is to round threshold if data type is not a float
     float threshold (0), variance (0), max_variance (0), sum_1 (0), sum_2 (0), weight_1 (0), weight_2 (0), mean_1 (0), mean_2 (0);
     std::vector<float> range (hist_array.size());
     for(auto i = 0; i < range.size(); ++i)
@@ -95,6 +98,11 @@ void ThresholdOtsuKernel::Execute()
             threshold = *it_range;
             max_variance = variance;
         }
+    }
+
+    if (src->Type() != Object::DataType::FLOAT)
+    {
+        threshold = round(threshold);
     }
 
     // apply threshold value
