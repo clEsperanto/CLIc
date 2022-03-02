@@ -15,7 +15,7 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1, std::vector<type>& 
         *it1 = static_cast<type>((int)rand() % 10 + 10);
     }    
     for (auto it1 = arr_1.begin(), it_valid = valid.begin(); 
-              it1 != arr_1.end(), it_valid != valid.end(); ++it1, ++it_valid)
+              (it1 != arr_1.end()) && (it_valid != valid.end()); ++it1, ++it_valid)
     {
         value = static_cast<type>((int)rand() % 10);
         *it1 = value;

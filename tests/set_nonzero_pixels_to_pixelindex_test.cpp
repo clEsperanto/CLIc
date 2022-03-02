@@ -10,7 +10,7 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
     arr_1.resize(width*height*depth);
     valid.resize(width*height*depth);
     for (auto it1 = arr_1.begin(), it_valid = valid.begin(); 
-              it1 != arr_1.end(), it_valid != valid.end(); ++it1, ++it_valid)
+              (it1 != arr_1.end()) && (it_valid != valid.end()); ++it1, ++it_valid)
     {
         *it1 = static_cast<type>((int) rand() % 2);
         if (*it1 != 0)

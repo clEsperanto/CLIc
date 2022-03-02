@@ -11,7 +11,7 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1, std::vector<type>& 
     std::fill(valid.begin(), valid.end(), 0);
     type value = 0;
     for (auto it1 = arr_1.begin(), it_valid = valid.begin(); 
-              it1 != arr_1.end(), it_valid != valid.end(); ++it1, ++it_valid)
+              (it1 != arr_1.end()) && (it_valid != valid.end()); ++it1, ++it_valid)
     {
         if ( (it1 - arr_1.begin()) % 2 == 0)
         {
