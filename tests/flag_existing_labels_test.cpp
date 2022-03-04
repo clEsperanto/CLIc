@@ -9,7 +9,7 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
 {
     arr_1.resize(width*height*depth);
     valid.resize(width);
-    std::fill(valid.begin(), valid.end(), 0.0f);
+    std::fill(valid.begin(), valid.end(), static_cast<type>(0));
     for (auto it1 = arr_1.begin(); it1 != arr_1.end(); ++it1)
     {
         int value = (int) rand() % width;

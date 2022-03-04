@@ -16,8 +16,8 @@ int main(int argc, char **argv)
     std::vector<type> arr_in (width*height*depth);
     std::vector<type> arr_res (width*height*depth);
     float scalar = 100.0f;
-    std::fill(arr_in.begin(), arr_in.end(), 5.0f);
-    std::fill(arr_res.begin(), arr_res.end(), 5.0f + scalar);
+    std::fill(arr_in.begin(), arr_in.end(), static_cast<type>(5));
+    std::fill(arr_res.begin(), arr_res.end(), static_cast<type>(5 + scalar));
 
     const char* name = "add_image_and_scalar";
     std::vector<std::string> tags = {"src", "dst", "scalar"};

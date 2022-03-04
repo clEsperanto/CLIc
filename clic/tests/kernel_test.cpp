@@ -30,8 +30,8 @@ bool run_kernel_with_buffer(std::array<size_t, 3> dims)
 
     std::vector<T> data (dims[0]*dims[1]*dims[2]);
     std::vector<T> valid (dims[0]*dims[1]*dims[2]);
-    std::fill (data.begin(),data.end(), static_cast<T>(10.0f));
-    std::fill (valid.begin(),valid.end(), static_cast<T>(100.0f));
+    std::fill (data.begin(),data.end(), static_cast<T>(10));
+    std::fill (valid.begin(),valid.end(), static_cast<T>(100));
 
     auto buff_A = gpu->Push<T>(data, dims);
     auto buff_B = gpu->Create<T>(dims);
@@ -55,8 +55,8 @@ bool run_kernel_with_image(std::array<size_t, 3> dims)
 
     std::vector<T> data (dims[0]*dims[1]*dims[2]);
     std::vector<T> valid (dims[0]*dims[1]*dims[2]);
-    std::fill (data.begin(),data.end(), static_cast<T>(10.0f));
-    std::fill (valid.begin(),valid.end(), static_cast<T>(100.0f));
+    std::fill (data.begin(),data.end(), static_cast<T>(10));
+    std::fill (valid.begin(),valid.end(), static_cast<T>(100));
 
     auto buff_A = gpu->Push<T>(data, dims, "image");
     auto buff_B = gpu->Create<T>(dims, "image");

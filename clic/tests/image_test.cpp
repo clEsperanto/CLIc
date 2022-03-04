@@ -15,17 +15,17 @@
 int main(int argc, char **argv)
 {
     {
-    using TYPE = float;
+    using type = float;
     auto gpu = std::make_shared<cle::GPU>();
     gpu->SetWaitForKernelToFinish(true);
 
     std::array<size_t,3> dims = {10, 1, 1};
-    std::vector<TYPE> A (dims[0]*dims[1]*dims[2]); 
-    std::fill (A.begin(),A.end(), 10.0f);
+    std::vector<type> A (dims[0]*dims[1]*dims[2]); 
+    std::fill (A.begin(),A.end(), static_cast<type>(10));
 
-    auto img_A = gpu->Create<TYPE>(dims, "image");
-    auto img_B = gpu->Push<TYPE>(A, dims, "image");
-    auto C = gpu->Pull<TYPE>(img_B);
+    auto img_A = gpu->Create<type>(dims, "image");
+    auto img_B = gpu->Push<type>(A, dims, "image");
+    auto C = gpu->Pull<type>(img_B);
 
     if(IsDifferent(C,A))
     {
@@ -35,17 +35,17 @@ int main(int argc, char **argv)
 
 
    {
-    using TYPE = float;
+    using type = float;
     auto gpu = std::make_shared<cle::GPU>();
     gpu->SetWaitForKernelToFinish(true);
 
     std::array<size_t,3> dims = {10, 5, 1};
-    std::vector<TYPE> A (dims[0]*dims[1]*dims[2]); 
-    std::fill (A.begin(),A.end(), 10.0f);
+    std::vector<type> A (dims[0]*dims[1]*dims[2]); 
+    std::fill (A.begin(),A.end(), static_cast<type>(10));
 
-    auto img_A = gpu->Create<TYPE>(dims, "image");
-    auto img_B = gpu->Push<TYPE>(A, dims, "image");
-    auto C = gpu->Pull<TYPE>(img_B);
+    auto img_A = gpu->Create<type>(dims, "image");
+    auto img_B = gpu->Push<type>(A, dims, "image");
+    auto C = gpu->Pull<type>(img_B);
     
     if(IsDifferent(C,A))
     {
@@ -54,17 +54,17 @@ int main(int argc, char **argv)
     }
 
     {
-    using TYPE = float;
+    using type = float;
     auto gpu = std::make_shared<cle::GPU>();
     gpu->SetWaitForKernelToFinish(true);
 
     std::array<size_t,3> dims = {10, 5, 2};
-    std::vector<TYPE> A (dims[0]*dims[1]*dims[2]); 
-    std::fill (A.begin(),A.end(), 10.0f);
+    std::vector<type> A (dims[0]*dims[1]*dims[2]); 
+    std::fill (A.begin(),A.end(), static_cast<type>(10));
 
-    auto img_A = gpu->Create<TYPE>(dims, "image");
-    auto img_B = gpu->Push<TYPE>(A, dims, "image");
-    auto C = gpu->Pull<TYPE>(img_B);
+    auto img_A = gpu->Create<type>(dims, "image");
+    auto img_B = gpu->Push<type>(A, dims, "image");
+    auto C = gpu->Pull<type>(img_B);
     
     if(IsDifferent(C,A))
     {
@@ -73,17 +73,17 @@ int main(int argc, char **argv)
     }
 
     {
-    using TYPE = int;
+    using type = int;
     auto gpu = std::make_shared<cle::GPU>();
     gpu->SetWaitForKernelToFinish(true);
 
     std::array<size_t,3> dims = {10, 5, 2};
-    std::vector<TYPE> A (dims[0]*dims[1]*dims[2]); 
-    std::fill (A.begin(),A.end(), 10.0f);
+    std::vector<type> A (dims[0]*dims[1]*dims[2]); 
+    std::fill (A.begin(),A.end(), static_cast<type>(10));
 
-    auto img_A = gpu->Create<TYPE>(dims, "image");
-    auto img_B = gpu->Push<TYPE>(A, dims, "image");
-    auto C = gpu->Pull<TYPE>(img_B);
+    auto img_A = gpu->Create<type>(dims, "image");
+    auto img_B = gpu->Push<type>(A, dims, "image");
+    auto C = gpu->Pull<type>(img_B);
     
     if(IsDifferent(C,A))
     {
@@ -92,17 +92,17 @@ int main(int argc, char **argv)
     }
 
     {
-    using TYPE = unsigned int;
+    using type = unsigned int;
     auto gpu = std::make_shared<cle::GPU>();
     gpu->SetWaitForKernelToFinish(true);
 
     std::array<size_t,3> dims = {10, 5, 2};
-    std::vector<TYPE> A (dims[0]*dims[1]*dims[2]); 
-    std::fill (A.begin(),A.end(), 10.0f);
+    std::vector<type> A (dims[0]*dims[1]*dims[2]); 
+    std::fill (A.begin(),A.end(), static_cast<type>(10));
 
-    auto img_A = gpu->Create<TYPE>(dims, "image");
-    auto img_B = gpu->Push<TYPE>(A, dims, "image");
-    auto C = gpu->Pull<TYPE>(img_B);
+    auto img_A = gpu->Create<type>(dims, "image");
+    auto img_B = gpu->Push<type>(A, dims, "image");
+    auto C = gpu->Pull<type>(img_B);
     
     if(IsDifferent(C,A))
     {

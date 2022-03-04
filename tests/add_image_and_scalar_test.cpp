@@ -9,8 +9,8 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
     arr_1.resize(width*height*depth);
     valid.resize(width*height*depth);
     type value = static_cast<type>(rand() % 100);
-    std::fill(arr_1.begin(), arr_1.end(), value);
-    std::fill(valid.begin(), valid.end(), value + scalar);
+    std::fill(arr_1.begin(), arr_1.end(), static_cast<type>(value));
+    std::fill(valid.begin(), valid.end(), static_cast<type>(value + scalar));
     return std::array<size_t,3> {width, height, depth};
 }
 

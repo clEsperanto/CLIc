@@ -9,8 +9,8 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
 {
     arr_1.resize(width*height*depth);
     valid.resize(width*height*depth);
-    std::fill(arr_1.begin(), arr_1.end(), 0.0f);
-    std::fill(valid.begin(), valid.end(), 0.0f);
+    std::fill(arr_1.begin(), arr_1.end(), static_cast<type>(0));
+    std::fill(valid.begin(), valid.end(), static_cast<type>(0));
     int central_idx = (width/2) + (height/2)*width + (depth/2) * height * width;
     type d = 1.0f;
     if(width>1) d += 2.0f;

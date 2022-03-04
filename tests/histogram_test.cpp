@@ -8,7 +8,7 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
 {
     arr_1.resize(width*height*depth);
     valid.resize(256);
-    std::fill(valid.begin(), valid.end(), 0);
+    std::fill(valid.begin(), valid.end(), static_cast<type>(0));
     for(auto it = arr_1.begin(); it < arr_1.end(); ++it)
     {
         *it = static_cast<type>(rand() % width);
