@@ -2,14 +2,14 @@
 cmake_minimum_required(VERSION 3.20)
 
 # Set project name and version
-project(CLIc VERSION 0.3.0)
+project(CLIc VERSION 0.5.1)
 
 # Set environment variables
 include(${PROJECT_SOURCE_DIR}/cmake/SetEnv.cmake)
 
 # find required package
 find_package(OpenCL REQUIRED)
-find_package(Python3 COMPONENTS Interpreter REQUIRED)
+find_package(Python COMPONENTS Interpreter Development REQUIRED)
 
 # Library sources
 add_subdirectory(${LIBRARY_DIR})
@@ -26,23 +26,4 @@ if(BUILD_BENCHMARK)
     add_subdirectory(benchmark)
 endif(BUILD_BENCHMARK)
 
-# if(BUILD_CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    # set(GCOVR_ADDITIONAL_ARGS "--exclude-throw-branches") # deal with thirdparty throw branche coverage.
-    # set(COVERAGE_EXCLUDES "*/benchmark/*" "*/thirdparty/*")
-    # setup_target_for_coverage_lcov(
-    #     NAME coverage
-    #     EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage
-    #     BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
-    #     )
-    # setup_target_for_coverage_gcovr_html(
-    #     NAME coverage_html
-    #     EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage
-    #     BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
-    #     )
-    # setup_target_for_coverage_gcovr_xml(
-    #     NAME coverage_xml
-    #     EXECUTABLE ctest -C ${CMAKE_BUILD_TYPE} -T test -T coverage
-    #     BASE_DIRECTORY ${PROJECT_SOURCE_DIR}
-    #     )
-# endif(BUILD_CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 

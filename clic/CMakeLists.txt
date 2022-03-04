@@ -33,7 +33,7 @@ if(OpenCL_FOUND)
     endif()
 endif()
 
-if(NOT Python3_Interpreter_FOUND)
+if(NOT Python_Interpreter_FOUND)
     message(FATAL_ERROR "FATAL_ERROR: no Python interpreter found on the system.")
 endif()
 
@@ -44,7 +44,7 @@ add_library(${LIBRARY_NAME} ${SOURCES_FILES})
 # generate preamble headers
 add_custom_target(
     generate_preamble ALL
-    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/convert_clij_to_header.py ${CLIC_PREAMBLE_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/includes/core/
+    COMMAND ${Python_EXECUTABLE} ${UTILITIES_DIR}/convert_clij_to_header.py ${CLIC_PREAMBLE_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/includes/core/
     BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/includes/core/cle_preamble.h
     COMMENT "Generating cle_preamble header."
 )
@@ -52,7 +52,7 @@ add_custom_target(
 # generate kernel headers
 add_custom_target(
     generate_kernels ALL
-    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/convert_clij_to_header.py ${CLIC_KERNELS_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/kernels/
+    COMMAND ${Python_EXECUTABLE} ${UTILITIES_DIR}/convert_clij_to_header.py ${CLIC_KERNELS_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/kernels/
     BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/kernels 
     COMMENT "Generating kernels header from clij opencl files."
 )
@@ -60,7 +60,7 @@ add_custom_target(
 # generate kernel headers
 add_custom_target(
     generate_kernels_list ALL
-    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/generate_kernellist_header.py ${CMAKE_CURRENT_SOURCE_DIR}/includes
+    COMMAND ${Python_EXECUTABLE} ${UTILITIES_DIR}/generate_kernellist_header.py ${CMAKE_CURRENT_SOURCE_DIR}/includes
     BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/includes/core/cleKernelList.h 
     COMMENT "Generating cleKernelList header."
 )
