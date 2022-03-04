@@ -334,7 +334,7 @@ bool Kernel::SetGlobalNDRange(const std::array<size_t,3>& t_shape)
 
 void Kernel::EnqueueKernel()
 {
-    if(std::accumulate(this->m_GlobalRange.begin(), this->m_GlobalRange.end(), 0) == 0)
+    if(std::accumulate(this->m_GlobalRange.begin(), this->m_GlobalRange.end(), static_cast<size_t>(0)) == static_cast<size_t>(0))
     {
         if(!this->SetGlobalNDRange("dst"))
         {
