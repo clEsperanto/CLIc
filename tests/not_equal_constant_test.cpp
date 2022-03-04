@@ -8,14 +8,14 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1, std::vector<type>& 
 {
     arr_1.resize(width*height*depth);
     valid.resize(width*height*depth);
-    std::fill(valid.begin(), valid.end(), 0);
+    std::fill(valid.begin(), valid.end(), static_cast<type>(0));
     for (auto it1 = arr_1.begin(), it_valid = valid.begin(); 
-              it1 != arr_1.end(), it_valid != valid.end(); ++it1, ++it_valid)
+              (it1 != arr_1.end()) && (it_valid != valid.end()); ++it1, ++it_valid)
     {
         *it1 = static_cast<type>((int) rand() % 4);
         if (*it1 != scalar)
         {
-            *it_valid = 1;
+            *it_valid = static_cast<type>(1);
         }
     }
     return std::array<size_t,3> {width, height, depth};

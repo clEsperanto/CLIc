@@ -1,14 +1,20 @@
+# 0.5.1 - On-going
+## New features
+- add new kernel operations [[#71](https://github.com/clEsperanto/CLIc_prototype/pull/71)]
+  - binary operation and, or, xor, not, subtract
+  - histogram
+  - threshold otsu
+- Add Constant variable declaration.
+  - This allows to define a constant value accessible by all threads executing the same kernel.
+## Miscellaneous
+- Fixing some warning [[#71](https://github.com/clEsperanto/CLIc_prototype/pull/71)]
 # 0.5.0 - February 14th 2022
-
 ## Known issues
 - Incompatiblity using Image with kernel [cleBlockEnumerateKernel](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/includes/tier1/cleBlockEnumerateKernel.hpp).
   - Kernel must use Buffer memory object or will fail, possible issue in kernel code.
 - `Object::Image` only works with `float` data type for now.
-- Possible multiple MSCV warning remaining.
-
 ## Bug fixes
 - Remove extra context manager class left in Tier1 folder.
-
 ## Enhancement
 - Improve error management
   - try/catch blocks for OpenCL error management.
@@ -31,23 +37,18 @@
   - Default, is set to `dst.Shape()` before `enqueueNDRange()` is call. 
   - `SetGlobalNDRange()` methods is available at kernel class level for defining specific range.
 - Rework of kernels test to cover as much as possible usage (shape, data-type, object-type, etc.).
-
 ## New features  
 - Introduce library core class unity test.
 - Introduce new data class `Object` holding a cl::Memory, generic OpenCL holder for (`cl_buffer`,`cl_image1d`,`cl_image2d`,`cl_image3d`) ([#52](https://github.com/clEsperanto/CLIc_prototype/pull/52)). 
-
 ## Miscellaneous
 - Replace `gcovr` by `lcov` for coverage report generation to code-cov.
 - Consolidation of CMake code ([#53](https://github.com/clEsperanto/CLIc_prototype/pull/53))
 - Fixing MSVC warning ([#54](https://github.com/clEsperanto/CLIc_prototype/pull/54), [#56](https://github.com/clEsperanto/CLIc_prototype/pull/56))
 - Increase project OpenCL-CLHPP flexibility ([#55](https://github.com/clEsperanto/CLIc_prototype/pull/55))
 - Add documentation comments in core classes.
-
 # 0.4.0 - August 20th 2021
-
 ## Bug fixes
 - Fixe display compiling log when error occur during program build.
-
 ## New features  
 - Rework of the Data classes (`LightObject`, `Int`, `Float`, `Buffer`) into (`LightObject`, `Scalar<T>`, `Buffer`).
 - Add new type for `Scalar` and `Buffer`: float, double, int, unsigned int, char, unsigned char, short, unsigned short.
@@ -55,19 +56,14 @@
 - Integrate `GPU` class in `clEsperanto` class.
 - Add `CustomKernel` class to run kernel from source (not integrated into `clEsperanto` class, must be run from lower level).
 - Improve error message details during kernel construction and compilation.
-
 ## Miscellaneous
 - Rename `.h` extension to `.hpp` for the library header. Auto-generation of OpenCL Header file remain in `.h`.
 - Rename `CLE` class into `clEsperanto` class for clarity.
-
 # 0.3.0 - July 23th 2021
-
 ## Bug fixes
 - Fix issue of `#include <cl2.hpp>` vs `#include <opencl.hpp>` ([#37](https://github.com/clEsperanto/CLIc_prototype/issues/37))
 - Fix cross-platform OpenCL include `#include <opencl.hpp>` vs `#include <CL/opencl.hpp>` vs `#include <OpenCL/opencl.hpp>`
-
 ## New features  
-
 - OpenCL kernels are now stored included into header instead of behind read at execution time. ([#32](https://github.com/clEsperanto/CLIc_prototype/issues/32))
 - Rework of CMake project configuration
   - CMake search for OpenCL system installation: `find_package(OpenCL REQUIRED)`
@@ -80,16 +76,12 @@
 - Organising filters into Tiers folders
 - `cleGPU` now display information on all platform and device or on specific device.
 - User can now select specific device based on name.
-
 ## Miscellaneous
 - Split library tests into two sets, low level for testing library classes, methods, and functions (developer oriented, unity tests, etc.), and high level to test get-way operations (user oriented, clEsperanto functionalities, etc.).
 - Remove 2D and 3D from function call name. Dimensionality is defined by 3rd dimension parameters not equal to 0. 
-
 # 0.2.0 - February 1st 2020 (not released)
-
 ## Bug fixes
 - Fix memory leak from GPU due to a wrong object deletion
-
 ## New features
 - CI github actions for testing build
 - Generic benchmark for execution speed comparison between two filters
@@ -102,14 +94,10 @@
   - difference_of_Gaussian
   - close_index_gaps_in_label_map
   - connected_component_labelling_box
-
 ## Miscellaneous
-
 - Rework on Manager classes, now relying on [OpenCL API C++ Binding](https://github.com/KhronosGroup/OpenCL-CLHPP).
-  
 # 0.1.0 - November 30th 2020
 First release for I2K2020 Tutorial.
-
 ## New features
 - Setup of CMake configuration
 - Creation of the core classes

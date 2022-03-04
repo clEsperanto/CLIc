@@ -136,6 +136,18 @@ const std::string Kernel::LoadDefines() const
             defines += common_header + size_header + "\n";
         }
     }
+
+    // add constant definition if provided.
+    if(!this->m_Constants.empty())
+    {
+        std::string constants = "";
+        for (auto itr = this->m_Constants.begin(); itr != this->m_Constants.end(); ++itr)
+        {
+            constants += "#define " + itr->first + " " + itr->second + "\n"; 
+        }
+        defines += constants + "\n";
+    }
+
     return defines;
 }
 
@@ -190,67 +202,59 @@ void Kernel::SetArguments()
     }
 }
 
+void Kernel::AddConstant(std::string t_value, std::string t_key)
+{
+    auto it = this->m_Constants.find(t_key); 
+    if (it != this->m_Constants.end())
+    {
+        it->second = t_value;
+    }
+    else    
+    {
+        this->m_Constants.insert({t_key, t_value});
+    }
+}
+
 void Kernel::AddObject(Object& t_object, const char* t_tag)
 {  
-    if(std::find(this->m_Tags.begin(), this->m_Tags.end(), t_tag) != this->m_Tags.end())
+    auto it = this->m_Parameters.find(t_tag); 
+    if (it != this->m_Parameters.end())
     {
-        auto it = this->m_Parameters.find(t_tag); 
-        if (it != this->m_Parameters.end())
-        {
-            auto cast_object = dynamic_cast<cle::Object&>(t_object);
-            it->second = std::make_shared<cle::Object>(cast_object);
-        }
-        else    
-        {
-            auto cast_object = dynamic_cast<cle::Object&>(t_object);
-            this->m_Parameters.insert(std::make_pair(t_tag, std::make_shared<cle::Object>(cast_object)));
-        }
+        auto cast_object = dynamic_cast<cle::Object&>(t_object);
+        it->second = std::make_shared<cle::Object>(cast_object);
     }
-    else
+    else    
     {
-        throw std::runtime_error("Error in kernel " + this->m_KernelName + " execution. Invalid tag '" + t_tag + "' used to add Object.\n");      
+        auto cast_object = dynamic_cast<cle::Object&>(t_object);
+        this->m_Parameters.insert(std::make_pair(t_tag, std::make_shared<cle::Object>(cast_object)));
     }
 }
 
 void Kernel::AddObject(int t_scalar, const char* t_tag)
 {
-    if(std::find(this->m_Tags.begin(), this->m_Tags.end(), t_tag) != this->m_Tags.end())
+    cle::Scalar<int> ocl_scalar(t_scalar);
+    auto it = this->m_Parameters.find(t_tag); 
+    if (it != this->m_Parameters.end())
     {
-        cle::Scalar<int> ocl_scalar(t_scalar);
-        auto it = this->m_Parameters.find(t_tag); 
-        if (it != this->m_Parameters.end())
-        {
-            it->second = std::make_shared< cle::Scalar<int> >(ocl_scalar);
-        }
-        else    
-        {
-            this->m_Parameters.insert(std::make_pair(t_tag, std::make_shared< cle::Scalar<int> >(ocl_scalar)));
-        }
+        it->second = std::make_shared< cle::Scalar<int> >(ocl_scalar);
     }
-    else
+    else    
     {
-        throw std::runtime_error("Error in kernel " + this->m_KernelName + " execution. Invalid tag '" + t_tag + "' used to add integer.\n");      
+        this->m_Parameters.insert(std::make_pair(t_tag, std::make_shared< cle::Scalar<int> >(ocl_scalar)));
     }
 }
 
 void Kernel::AddObject(float t_scalar, const char* t_tag)
 {
-    if(std::find(this->m_Tags.begin(), this->m_Tags.end(), t_tag) != this->m_Tags.end())
+    cle::Scalar<float> ocl_scalar(t_scalar);
+    auto it = this->m_Parameters.find(t_tag); 
+    if (it != this->m_Parameters.end())
     {
-        cle::Scalar<float> ocl_scalar(t_scalar);
-        auto it = this->m_Parameters.find(t_tag); 
-        if (it != this->m_Parameters.end())
-        {
-            it->second = std::make_shared< cle::Scalar<float> >(ocl_scalar);
-        }
-        else    
-        {
-            this->m_Parameters.insert(std::make_pair(t_tag, std::make_shared< Scalar<float> >(ocl_scalar)));
-        }
+        it->second = std::make_shared< cle::Scalar<float> >(ocl_scalar);
     }
-    else
+    else    
     {
-        throw std::runtime_error("Error in kernel " + this->m_KernelName + " execution. Invalid tag '" + t_tag + "' used to add float.\n");      
+        this->m_Parameters.insert(std::make_pair(t_tag, std::make_shared< Scalar<float> >(ocl_scalar)));
     }
 }
 
@@ -330,7 +334,7 @@ bool Kernel::SetGlobalNDRange(const std::array<size_t,3>& t_shape)
 
 void Kernel::EnqueueKernel()
 {
-    if(std::accumulate(this->m_GlobalRange.begin(), this->m_GlobalRange.end(), 0) == 0)
+    if(std::accumulate(this->m_GlobalRange.begin(), this->m_GlobalRange.end(), static_cast<size_t>(0)) == static_cast<size_t>(0))
     {
         if(!this->SetGlobalNDRange("dst"))
         {

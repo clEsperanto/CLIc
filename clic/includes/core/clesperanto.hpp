@@ -7,6 +7,7 @@
 
 #include <type_traits>
 #include <iostream>
+#include <limits>
 
 namespace cle
 {
@@ -32,6 +33,13 @@ public:
     void AddImageAndScalar(Object&, Object&, float=0);
     void AddImagesWeighted(Object&, Object&, Object&, float=1, float=1);
     void AddImages(Object&, Object&, Object&);
+
+    void BinaryAnd(Object&, Object&, Object&);
+    void BinaryOr(Object&, Object&, Object&);
+    void BinaryNot(Object&, Object&);
+    void BinarySubtract(Object&, Object&, Object&);
+    void BinaryXor(Object&, Object&, Object&);
+
     void SubtractImages(Object&, Object&, Object&);
     void DilateSphere(Object&, Object&);
     void ErodeSphere(Object&, Object&);
@@ -80,6 +88,9 @@ public:
     void BlockEnumerate(Object&, Object&, Object&, int=0);  //! block enumarate fail when running with Image
     void FlagExistingLabels(Object&, Object&);
     void CloseIndexGapsInLabelMap(Object&, Object&, int=4096);
+    void Histogram(Object&, Object&, int =256, float =std::numeric_limits<float>::infinity(), float =std::numeric_limits<float>::infinity());
+    void ThresholdOtsu(Object&, Object&);
+
 };
 
     template<class T>

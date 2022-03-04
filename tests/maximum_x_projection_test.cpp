@@ -9,12 +9,12 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
 {
     arr_1.resize(width*height*depth);
     valid.resize(1*height*depth);
-    std::fill(arr_1.begin(), arr_1.end(), 0.0f);
-    std::fill(valid.begin(), valid.end(), 10.0f);
+    std::fill(arr_1.begin(), arr_1.end(), static_cast<type>(0));
+    std::fill(valid.begin(), valid.end(), static_cast<type>(10));
     for(auto it1 = arr_1.begin(); it1 != arr_1.end(); std::advance(it1,width))
     {
         int idx = (it1-arr_1.begin()) + (rand() % width);
-        arr_1[idx] = 10;
+        arr_1[idx] = static_cast<type>(10);
     }
     return std::array<size_t,3> {width, height, depth};
 }

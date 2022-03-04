@@ -11,17 +11,17 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
     valid.resize(width*height*depth);
     type index = 0;
     for (auto it1 = arr_1.begin(),it_valid = valid.begin(); 
-              it1 != arr_1.end(),it_valid != valid.end(); ++it1, ++it_valid)
+              (it1 != arr_1.end()) && (it_valid != valid.end()); ++it1, ++it_valid)
     {
         if( (it1-arr_1.begin()) % 2 == 0)
         {
-            *it_valid = ++index;
-            *it1 = 1;
+            *it_valid = static_cast<type>(++index);
+            *it1 = static_cast<type>(1);
         }
         else
         {
-            *it_valid = 0;
-            *it1 = 0;
+            *it_valid = static_cast<type>(0);
+            *it1 = static_cast<type>(0);
         }
     }
 

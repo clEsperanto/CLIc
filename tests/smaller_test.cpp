@@ -11,13 +11,13 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1, std::vector<type>& 
     arr_2.resize(width*height*depth);
     valid.resize(width*height*depth);
     for (auto it1 = arr_1.begin(),it2 = arr_2.begin(), it_valid = valid.begin(); 
-              it1 != arr_1.end(),it2 != arr_2.end(), it_valid != valid.end(); ++it1, ++it2, ++it_valid)
+              (it1 != arr_1.end()) && (it2 != arr_2.end()) && (it_valid != valid.end()); ++it1, ++it2, ++it_valid)
     {
         *it1 = static_cast<type>((int) rand() % 4);
         *it2 = static_cast<type>((int) rand() % 4);
         if (*it1 < *it2)
         {
-            *it_valid = 1;
+            *it_valid = static_cast<type>(1);
         }
     }
     return std::array<size_t,3> {width, height, depth};

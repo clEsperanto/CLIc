@@ -62,6 +62,7 @@ protected:
     std::vector<std::string> m_Tags;
     std::map<std::string, std::string> m_Sources;
     std::map<std::string, std::shared_ptr<cle::LightObject> > m_Parameters;
+    std::map<std::string, std::string> m_Constants;
 
     /// Source code hash and build flag parameters
     size_t m_CurrentHash = 0;
@@ -128,6 +129,14 @@ protected:
     void AddObject(float t_scalar, const char* t_tag);
 
     /**
+     * @brief Add a constant value to be defined in the kernel source.
+     * 
+     * @param t_value constant value in string to be written in source
+     * @param t_key constant variable name
+     */
+    void AddConstant(std::string t_value, std::string t_key);
+
+    /**
      * @brief Method to detect I/O dimensionality and adapte kernel if needed. 
      */
     void ManageDimensions();
@@ -180,6 +189,18 @@ protected:
         else
         {
             return nullptr;
+        }
+    }
+
+    size_t GetConstant(const char* t_tag) const
+    {
+        if(this->m_Constants.find(t_tag) != this->m_Constants.end())
+        {
+            return std::stoi(this->m_Constants.at(t_tag));
+        }
+        else
+        {
+            return 0;
         }
     }
 

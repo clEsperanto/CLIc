@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 
         std::array<size_t,3> dims = {10, 1, 1};
         std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), 10.0f);
+        std::fill (A.begin(),A.end(), static_cast<type>(10));
 
         auto buff_A = gpu->Create<type>(dims);
         auto buff_B = gpu->Push<type>(A, dims);
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 
         std::array<size_t,3> dims = {10, 5, 1};
         std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), 10.0f);
+        std::fill (A.begin(),A.end(), static_cast<type>(10));
 
         auto buff_A = gpu->Create<type>(dims);
         auto buff_B = gpu->Push<type>(A, dims);
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
 
         std::array<size_t,3> dims = {10, 5, 2};
         std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), 10.0f);
+        std::fill (A.begin(),A.end(), static_cast<type>(10));
 
         auto buff_A = gpu->Create<type>(dims);
         auto buff_B = gpu->Push<type>(A, dims);
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 
         std::array<size_t,3> dims = {10, 5, 2};
         std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), 10.0f);
+        std::fill (A.begin(),A.end(), static_cast<type>(10));
 
         auto buff_A = gpu->Create<type>(dims);
         auto buff_B = gpu->Push<type>(A, dims);
@@ -98,7 +98,7 @@ int main(int argc, char **argv)
 
         std::array<size_t,3> dims = {10, 5, 2};
         std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), 10.0f);
+        std::fill (A.begin(),A.end(), static_cast<type>(10));
 
         auto buff_A = gpu->Create<type>(dims);
         auto buff_B = gpu->Push<type>(A, dims);
@@ -116,7 +116,7 @@ int main(int argc, char **argv)
 
         std::array<size_t,3> dims = {10, 5, 2};
         std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), 10.0f);
+        std::fill (A.begin(),A.end(), static_cast<type>(10));
 
         auto buff_A = gpu->Create<type>(dims);
         auto buff_B = gpu->Push<type>(A, dims);
@@ -134,7 +134,7 @@ int main(int argc, char **argv)
 
         std::array<size_t,3> dims = {10, 5, 2};
         std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), 10.0f);
+        std::fill (A.begin(),A.end(), static_cast<type>(10));
 
         auto buff_A = gpu->Create<type>(dims);
         auto buff_B = gpu->Push<type>(A, dims);
@@ -152,7 +152,7 @@ int main(int argc, char **argv)
 
         std::array<size_t,3> dims = {10, 5, 2};
         std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), 10.0f);
+        std::fill (A.begin(),A.end(), static_cast<type>(10));
 
         auto buff_A = gpu->Create<type>(dims);
         auto buff_B = gpu->Push<type>(A, dims);
@@ -170,7 +170,7 @@ int main(int argc, char **argv)
 
         std::array<size_t,3> dims = {10, 5, 2};
         std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), 10.0f);
+        std::fill (A.begin(),A.end(), static_cast<type>(10));
 
         auto buff_A = gpu->Create<type>(dims);
         auto buff_B = gpu->Push<type>(A, dims);
@@ -188,7 +188,7 @@ int main(int argc, char **argv)
 
         std::array<size_t,3> dims = {10, 5, 2};
         std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), 10.0f);
+        std::fill (A.begin(),A.end(), static_cast<type>(10));
 
         auto buff_A = gpu->Create<type>(dims);
         auto buff_B = gpu->Push<type>(A, dims);
@@ -206,7 +206,7 @@ int main(int argc, char **argv)
 
         std::array<size_t,3> dims = {10, 5, 2};
         std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), 10.0f);
+        std::fill (A.begin(),A.end(), static_cast<type>(10));
 
         auto buff_A = gpu->Create<type>(dims);
         auto buff_B = gpu->Push<type>(A, dims);

@@ -9,8 +9,8 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
 {
     arr_1.resize(width*height*depth);
     valid.resize(width*height*depth);
-    std::fill(arr_1.begin(), arr_1.end(), 0.0f);
-    std::fill(valid.begin(), valid.end(), 0.0f);
+    std::fill(arr_1.begin(), arr_1.end(), static_cast<type>(0));
+    std::fill(valid.begin(), valid.end(), static_cast<type>(0));
     int index(0), central((width/2) + (height/2)*width + (depth/2) * height * width);
 
     int i = 1, j =1;
@@ -19,39 +19,39 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
     {
         i = (height==1 && depth==1)? 4 : 2;
         j = (height>1 && depth>1)? 2 : 1;
-        valid[central-1] = 4 / i * j;
-        valid[central+1] = 4 / i * j;  
+        valid[central-1] = static_cast<type>(4 / i * j);
+        valid[central+1] = static_cast<type>(4 / i * j);  
     }
     if(height>1)
     {
         i = (depth==1)? 2 : 1;
-        valid[central-width] = 4 / i;
-        valid[central+width] = 4 / i; 
-        valid[central-width-1] = sqrt(2) * (2 / i);
-        valid[central-width+1] = sqrt(2) * (2 / i);
-        valid[central+width-1] = sqrt(2) * (2 / i);
-        valid[central+width+1] = sqrt(2) * (2 / i);
+        valid[central-width] = static_cast<type>(4 / i);
+        valid[central+width] = static_cast<type>(4 / i); 
+        valid[central-width-1] = static_cast<type>(sqrt(2) * (2 / i));
+        valid[central-width+1] = static_cast<type>(sqrt(2) * (2 / i));
+        valid[central+width-1] = static_cast<type>(sqrt(2) * (2 / i));
+        valid[central+width+1] = static_cast<type>(sqrt(2) * (2 / i));
     }
     if(depth>1)
     {
-        valid[central-(height*width)] = 4; 
-        valid[central-(height*width)-1] = sqrt(2) * 2;
-        valid[central-(height*width)+1] = sqrt(2) * 2;
-        valid[central-(height*width)+width] = sqrt(2) * 2;
-        valid[central-(height*width)-width] = sqrt(2) * 2;
-        valid[central-(height*width)+width-1] = sqrt(3);
-        valid[central-(height*width)+width+1] = sqrt(3);
-        valid[central-(height*width)-width-1] = sqrt(3);
-        valid[central-(height*width)-width+1] = sqrt(3);
-        valid[central+(height*width)] = 4; 
-        valid[central+(height*width)-1] = sqrt(2) * 2;
-        valid[central+(height*width)+1] = sqrt(2) * 2;
-        valid[central+(height*width)+width] = sqrt(2) * 2;
-        valid[central+(height*width)-width] = sqrt(2) * 2;
-        valid[central+(height*width)+width-1] = sqrt(3);
-        valid[central+(height*width)+width+1] = sqrt(3);
-        valid[central+(height*width)-width-1] = sqrt(3);
-        valid[central+(height*width)-width+1] = sqrt(3);
+        valid[central-(height*width)] = static_cast<type>(4); 
+        valid[central-(height*width)-1] = static_cast<type>(sqrt(2) * 2);
+        valid[central-(height*width)+1] = static_cast<type>(sqrt(2) * 2);
+        valid[central-(height*width)+width] = static_cast<type>(sqrt(2) * 2);
+        valid[central-(height*width)-width] = static_cast<type>(sqrt(2) * 2);
+        valid[central-(height*width)+width-1] = static_cast<type>(sqrt(3));
+        valid[central-(height*width)+width+1] = static_cast<type>(sqrt(3));
+        valid[central-(height*width)-width-1] = static_cast<type>(sqrt(3));
+        valid[central-(height*width)-width+1] = static_cast<type>(sqrt(3));
+        valid[central+(height*width)] = static_cast<type>(4); 
+        valid[central+(height*width)-1] = static_cast<type>(sqrt(2) * 2);
+        valid[central+(height*width)+1] = static_cast<type>(sqrt(2) * 2);
+        valid[central+(height*width)+width] = static_cast<type>(sqrt(2) * 2);
+        valid[central+(height*width)-width] = static_cast<type>(sqrt(2) * 2);
+        valid[central+(height*width)+width-1] = static_cast<type>(sqrt(3));
+        valid[central+(height*width)+width+1] = static_cast<type>(sqrt(3));
+        valid[central+(height*width)-width-1] = static_cast<type>(sqrt(3));
+        valid[central+(height*width)-width+1] = static_cast<type>(sqrt(3));
     }
     return std::array<size_t,3> {width, height, depth};
 }

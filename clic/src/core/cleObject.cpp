@@ -64,7 +64,7 @@ const int Object::nDim() const
 
 const int Object::Size() const 
 { 
-    return static_cast<int>(std::accumulate(m_Shape.begin(), m_Shape.end(), 1, std::multiplies<size_t>())); 
+    return static_cast<int>(std::accumulate(m_Shape.begin(), m_Shape.end(), static_cast<size_t>(1), std::multiplies<size_t>())); 
 };
 
 const std::array<size_t,3> Object::Shape() const 

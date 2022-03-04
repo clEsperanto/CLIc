@@ -145,8 +145,8 @@ public:
         cout.width(8);
         cout << endl;
         cout << endl;
-        cout << "Avg Warmup: " << GetAvgWarmupMs() << " \u03BCs" << endl; // " \u03BCs" << endl;
-        cout << "Avg Normal: " << GetAvgNormalMs() << " \u03BCs" << endl; // " \u03BCs" << endl;
-        cout << "Avg Total:  " << GetAvgTotalMs()  << " \u03BCs" << endl; // " \u03BCs" << endl;
+        cout << "Avg Warmup: " << GetAvgWarmupMs() << " microseconds" << endl; // " \u03BCs" << endl;
+        cout << "Avg Normal: " << GetAvgNormalMs() << " microseconds" << endl; // " \u03BCs" << endl;
+        cout << "Avg Total:  " << GetAvgTotalMs()  << " microseconds" << endl; // " \u03BCs" << endl;
     }
 };
