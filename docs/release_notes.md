@@ -1,22 +1,18 @@
 # 0.5.1 - On-going
-## Enhancement
+## New features
 - add new kernel operations [[#71](https://github.com/clEsperanto/CLIc_prototype/pull/71)]
   - binary operation and, or, xor, not, subtract
   - histogram
   - threshold otsu
+- Add Constant variable declaration.
+  - This allows to define a constant value accessible by all threads executing the same kernel.
 ## Miscellaneous
 - Fixing some warning [[#71](https://github.com/clEsperanto/CLIc_prototype/pull/71)]
-## Known issues
-- Incompatiblity using Image with kernel [cleBlockEnumerateKernel](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/includes/tier1/cleBlockEnumerateKernel.hpp).
-  - Kernel must use Buffer memory object or will fail, possible issue in kernel code.
-- `Object::Image` only works with `float` data type for now.
-- Possible multiple MSCV warning remaining.
 # 0.5.0 - February 14th 2022
 ## Known issues
 - Incompatiblity using Image with kernel [cleBlockEnumerateKernel](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/includes/tier1/cleBlockEnumerateKernel.hpp).
   - Kernel must use Buffer memory object or will fail, possible issue in kernel code.
 - `Object::Image` only works with `float` data type for now.
-- Possible multiple MSCV warning remaining.
 ## Bug fixes
 - Remove extra context manager class left in Tier1 folder.
 ## Enhancement
