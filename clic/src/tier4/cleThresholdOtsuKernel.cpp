@@ -71,9 +71,6 @@ void ThresholdOtsuKernel::Execute()
     for(auto i = 0; i < range.size(); ++i)
     {
         range[i] = i * (max_intensity - min_intensity) / (range.size()-1) + min_intensity;
-    }
-    for(auto i = 0; i < range.size(); ++i)
-    {
         sum_1 += range[i] * hist_array[i];
     }
     auto range_end = range.end();
