@@ -10,7 +10,7 @@
 
 CLIc is a **prototype** for [CLesperanto](https://github.com/clEsperanto) - a multi-language framework for GPU-accelerated image processing. It uses [OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/development/src/main/java/net/haesleinhuepf/clij/kernels) from [CLIJ](https://clij.github.io/)
 
-Right now, this is very preliminary, and mainly focussed on running a few kernel using the OpenCL C++ API.
+It is a preliminary projet and mainly focussed on running a few kernel using the OpenCL C++ API from Khronos.
 
 # Usage example
 
@@ -53,26 +53,30 @@ Follow the [pre-requish installation guide](https://github.com/clEsperanto/CLIc_
 
 ## Install
 
-Clone the repository and submodule
+Clone the repository and update the submodules
 ```
 git clone git@github.com:clEsperanto/CLIc_prototype.git CLIc
 cd CLIc
 git submodule update --init --recursive
 ```
 
-Create a build folder and configure cmake to generate the adapted makefile
+Create a build folder and configure cmake to generate the adapted makefile.
+Then compile the library and install it at specified location on your system.
 ```
-mkdir build && cd build
-cmake .. -DPREFIX=/path/to/installation/folder
-make
-make test
-make install
+cmake -S . -B ./build -D CMAKE_INSTALL_PREFIX=/path/to/installation/folder
+cmake --build ./build --parallel 10 --target install
 ```
 
-You can modify installation location using `-DPREFIX=/path/to/installation/folder` when calling cmake.
+You can modify installation location using `-D CMAKE_INSTALL_PREFIX=/path/to/installation/folder`.
+
+CLIc can be uninstall by running the following command
+```
+cmake --build ./build --target uninstall
+```
 
 ### Kernels
-CLIc filters rely on the [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels).
+CLIc filters rely on the clEsperanto branch of [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels).
 
 # Feedback welcome!
-clEsperanto is developed in the open because we believe in the [open source community](https://clij.github.io/clij2-docs/community_guidelines). Feel free to drop feedback as [github issue](https://github.com/clEsperanto/CLIc_prototype/issues) or via [image.sc](https://image.sc)
+clEsperanto is developed in the open because we believe in the [open source community](https://clij.github.io/clij2-docs/community_guidelines). 
+Feel free to drop feedback as [github issue](https://github.com/clEsperanto/CLIc_prototype/issues) or via [image.sc](https://image.sc).

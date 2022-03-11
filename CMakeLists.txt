@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 # Set project name and version
-project(CLIc VERSION 0.5.1)
+project(CLIc VERSION 0.5.2)
 
 # Set environment variables
 include(${PROJECT_SOURCE_DIR}/cmake/SetEnv.cmake)
@@ -12,6 +12,7 @@ find_package(OpenCL REQUIRED)
 find_package(Python COMPONENTS Interpreter Development REQUIRED)
 
 # Library sources
+add_subdirectory(${THIRDPARTY_DIR})
 add_subdirectory(${LIBRARY_DIR})
 
 # Build and run tests

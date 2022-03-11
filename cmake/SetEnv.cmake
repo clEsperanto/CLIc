@@ -1,71 +1,53 @@
 
-## Project environement variables
-
-set(CMAKE_CXX_STANDARD 11) # Use C++11
-set(CMAKE_CXX_STANDARD_REQUIRED ON) # Require (at least) it
-set(CMAKE_CXX_EXTENSIONS OFF) # Don't use e.g. GNU extension (like -std=gnu++11) for portability
+### Project environement variables
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-# Set PROJECT_NAME_UPPERCASE and PROJECT_NAME_LOWERCASE variables
+# C++ compilation settings
+set(CMAKE_CXX_STANDARD 11)          # Use C++11
+set(CMAKE_CXX_STANDARD_REQUIRED ON) # Require (at least) it
+set(CMAKE_CXX_EXTENSIONS OFF)       # Don't use e.g. GNU extension (like -std=gnu++11) for portability
+
+# Define upper and lower case project name
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPERCASE)
 string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWERCASE)
 
-# Library name (by default is the project name)
+# Define library name (by default is the project name)
 if(NOT LIBRARY_NAME)
   set(LIBRARY_NAME ${PROJECT_NAME})
 endif()
 
-# Library folder name (by default is the project name in lowercase), Example: #include <foo/foo.h>
+# Define library folder name (by default is the project name in lowercase)
 if(NOT LIBRARY_DIR)
   set(LIBRARY_DIR ${PROJECT_NAME_LOWERCASE})
 endif()
 
-# Set additional folder path
+# Define additional directory needed by the project
 if(NOT THIRDPARTY_DIR)
   set(THIRDPARTY_DIR "${PROJECT_SOURCE_DIR}/thirdparty" CACHE PATH "Third party libraries")
 endif()
-
 if(NOT UTILITIES_DIR)
   set(UTILITIES_DIR "${PROJECT_SOURCE_DIR}/utilities" CACHE PATH "Utilities folder")
 endif()
 
 
 ## Configuration and Build options
-
 # Set Code coverage options (default: OFF)
-option(BUILD_CODE_COVERAGE "Enable coverage reporting" OFF)
-message(STATUS "BUILD_CODE_COVERAGE: ${BUILD_CODE_COVERAGE}")
-mark_as_advanced(BUILD_CODE_COVERAGE)
-
+option(BUILD_COVERAGE "Enable coverage reporting" OFF)
+message(STATUS "Build project code coverage: ${BUILD_COVERAGE}")
+mark_as_advanced(BUILD_COVERAGE)
 # Set library type optiONs (default: STATIC)
 option(BUILD_SHARED_LIBS "Build ${LIBRARY_NAME} as a shared library." OFF)
-message(STATUS "BUILD_SHARED_LIBS: ${BUILD_SHARED_LIBS}")
-
+message(STATUS "Build ${LIBRARY_NAME} as shared lib: ${BUILD_SHARED_LIBS}")
 # Set Test compilation (default: ON)
 option(BUILD_TESTING "Build ${LIBRARY_NAME} Tests." ON)
-message(STATUS "BUILD_TESTING: ${BUILD_TESTING}")
-
+message(STATUS "Build tests: ${BUILD_TESTING}")
 # Set Doc compilation (default: ON) (NOT IMPLEMENTED)
 option(BUILD_DOCUMENTATION "Build ${LIBRARY_NAME} Documentation." ON)
-message(STATUS "BUILD_DOCUMENTATION: ${BUILD_DOCUMENTATION} (NOT IMPLEMENTED)")
-
+message(STATUS "Build documentation: ${BUILD_DOCUMENTATION} (WIP)")
 # Set Benchmark compilation (default: ON)
-option(BUILD_BENCHMARK "build example benchmarks" ON)
-message(STATUS "BUILD_BENCHMARK: ${BUILD_BENCHMARK}")
-
-# Set OpenCL Standard version number (default: 120 - v1.2)
-set(OPENCL_VERSION 120)
-message(STATUS "OPENCL_VERSION: ${OPENCL_VERSION}")
-mark_as_advanced(OPENCL_VERSION)
-
-# Set Preamble file 
-set(CLIC_PREAMBLE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_DIR}/preamble.cl" CACHE FILEPATH "CLIJ preamble file")
-mark_as_advanced(CLIC_PREAMBLE_FILE)
-
-# Set clij folder file 
-set(CLIC_KERNELS_DIR "${THIRDPARTY_DIR}/clij/kernels" CACHE PATH "CLIJ kernels directory")
-mark_as_advanced(CLIC_KERNELS_DIR)
+option(BUILD_BENCHMARK "build benchmarks tests" ON)
+message(STATUS "Build benchmark: ${BUILD_BENCHMARK}")
 
 # Manage build type options (default: RELEASE)
 get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
@@ -88,28 +70,13 @@ set(CMAKE_DEBUG_POSTFIX "_d")
 set(CMAKE_RELEASE_POSTFIX "")
 
 # Coverage flags and includes
-if(BUILD_CODE_COVERAGE)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -O0 -g --coverage")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -g --coverage")
-  # list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-  # include(CodeCoverage) 
-  # append_coverage_compiler_flags()
-  # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O1")
+if(BUILD_COVERAGE)
+  set(COVERAGE_TAG " -O0 -g --coverage")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  ${COVERAGE_TAG}")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COVERAGE_TAG}")
 endif()
 
-# List subdirectory macro
-macro(subdirlist result curdir)
-  file(GLOB children ${curdir} ${curdir}/*)
-  set(dirlist "")
-  foreach(child ${children})
-    if(IS_DIRECTORY ${child})
-      list(APPEND dirlist ${child})
-    endif()
-  endforeach()
-  set(${result} ${dirlist})
-endmacro()
-
-# Introduce variables:
+### Install preset:
 #   - CMAKE_INSTALL_LIBDIR
 #   - CMAKE_INSTALL_BINDIR
 #   - CMAKE_INSTALL_INCLUDEDIR
@@ -123,16 +90,12 @@ set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
 if(BUILD_SHARED_LIBS)
   # use, i.e. don't skip the full RPATH for the build tree
   set(CMAKE_SKIP_BUILD_RPATH FALSE)
-
-  # when building, don't use the install RPATH already
-  # (but later on when installing)
+  # when building, don't use the install RPATH already (but later on when installing)
   set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
   set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-
   # add the automatically determined parts of the RPATH
   # which point to directories outside the build tree to the install RPATH
   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-
   # the RPATH to be used when installing, but only if it's not a system directory
   list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
   if("${isSystemDir}" STREQUAL "-1")
@@ -141,5 +104,5 @@ if(BUILD_SHARED_LIBS)
 endif()
 
 
-# CMake Registry
+### CMake Registry
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CMakeRegistry.cmake)

@@ -1,22 +1,13 @@
 @PACKAGE_INIT@
 
-set_and_check(@PROJECT_NAME@Targets "${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+if(NOT TARGET ${PROJECT_NAME}::${PROJECT_NAME})
+    include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+endif()
 
-include(${@PROJECT_NAME@Targets})
-
-set_and_check(INSTALL_DIR "@PACKAGE_CMAKE_INSTALL_PREFIX@")
-set_and_check(INCLUDE_DIR "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@/@PROJECT_NAME@")
-set_and_check(KERNELS_DIR "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@/@PROJECT_NAME@/kernels")
-set_and_check(LIBRARY_DIR "@PACKAGE_CMAKE_INSTALL_LIBDIR@")
+set(@PROJECT_NAME_UPPERCASE@_LIBRARIES @PROJECT_NAME@::@PROJECT_NAME@)
 
 find_package(OpenCL REQUIRED)
-if(OpenCL_FOUND)
-    include_directories(${OpenCL_INCLUDE_DIR})
-    if(NOT TARGET OpenCL::OpenCL)
-      add_library(OpenCL::OpenCL INTERFACE IMPORTED)
-      target_include_directories(OpenCL::OpenCL INTERFACE "${OpenCL_INCLUDE_DIR}")
-    endif()
-endif()
 
 check_required_components(OpenCL)
 check_required_components("@PROJECT_NAME@")
+

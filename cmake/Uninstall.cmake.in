@@ -25,14 +25,14 @@ function(delete_empty_folder DIR)
 endfunction(delete_empty_folder)
 
 # find 'install_manifest.txt'
-if(NOT EXISTS "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt")
-  message(FATAL_ERROR "Cannot find install manifest: @CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt")
+if(NOT EXISTS "@PROJECT_BINARY_DIR@/install_manifest.txt")
+  message(FATAL_ERROR "Cannot find install manifest: @PROJECT_BINARY_DIR@/install_manifest.txt")
 endif()
 
 # remove files from 'install_manifest.txt'
 message(STATUS "")
 message(STATUS "Removing files from 'install_manifest.txt'")
-file(READ "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt" files)
+file(READ "@PROJECT_BINARY_DIR@/install_manifest.txt" files)
 string(REGEX REPLACE "\n" ";" files "${files}")
 foreach(file ${files})
   message(STATUS "Uninstalling $ENV{DESTDIR}${file}")
@@ -58,10 +58,9 @@ message(STATUS "")
 message(STATUS "Removing empty folders")
 
 list(REMOVE_DUPLICATES FOLDERS)
+list(SORT FOLDERS COMPARE FILE_BASENAME ORDER ASCENDING)
 foreach(dir ${FOLDERS})
-#   message(STATUS ${dir})
   delete_empty_folder(${dir})
-#   message(STATUS "")
 endforeach(dir)
 
 delete_empty_folder("@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@")
