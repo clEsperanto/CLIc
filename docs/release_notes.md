@@ -1,4 +1,4 @@
-# 0.5.1 - On-going
+# 0.5.2 - On-going
 ## New features
 - add new kernel operations [[#71](https://github.com/clEsperanto/CLIc_prototype/pull/71)]
   - binary operation and, or, xor, not, subtract
@@ -8,6 +8,12 @@
   - This allows to define a constant value accessible by all threads executing the same kernel.
 ## Miscellaneous
 - Fixing some warning [[#71](https://github.com/clEsperanto/CLIc_prototype/pull/71)]
+- Rename thirdparty submodules
+  - clij-opencl-kernels => clesperanto-kernels
+  - add opencl-headers
+  - regroupe opencl submodules into opencl folder
+- Consolidation of CMakeList.txt
+
 # 0.5.0 - February 14th 2022
 ## Known issues
 - Incompatiblity using Image with kernel [cleBlockEnumerateKernel](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/includes/tier1/cleBlockEnumerateKernel.hpp).
