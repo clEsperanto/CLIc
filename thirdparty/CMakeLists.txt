@@ -1,6 +1,8 @@
 # define path dir to kernel and preamble from clesperanto kernel git repo.
 set(OCL_KERNELS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/clesperanto-kernels/kernels CACHE PATH "Path to opencl kernel files (.cl)" FORCE)
+mark_as_advanced(OCL_KERNELS_DIR)
 set(OCL_PREAMBLE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/clesperanto-kernels/preamble CACHE FILEPATH "Path to opencl preamble files (.cl)" FORCE)
+mark_as_advanced(OCL_PREAMBLE_FILE)
 
 if(OpenCL_FOUND)
     set(OpenCL_HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/opencl/ocl-headers/" CACHE PATH "Path to opencl headers" FORCE)  
