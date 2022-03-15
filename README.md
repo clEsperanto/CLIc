@@ -42,22 +42,21 @@ int main( int argc, char** argv)
     return EXIT_SUCCESS;
 }
 ```
-See more complete example on usage by looking at the kernels [tests](https://github.com/clEsperanto/CLIc_prototype/tree/master/tests).
+See more complete example on usage by looking at the kernels [tests](./tests/).
 
 # Installation
 
-## Requierements
+## Requirements
 
 CLIc rely on OpenCL language for parallelisation and CMake for configuration and build.  
-Follow the [pre-requish installation guide](https://github.com/clEsperanto/CLIc_prototype/blob/master/docs/prerequish.md) for a smooth and error-less installation. 
+Follow the [installation guide](./docs/guidelines.md) for helps on compilation and installation. 
 
-## Install
+## Quick install
 
 Clone the repository and update the submodules
 ```
 git clone git@github.com:clEsperanto/CLIc_prototype.git CLIc
-cd CLIc
-git submodule update --init --recursive
+cd CLIc && git submodule update --init --recursive
 ```
 
 Create a build folder and configure cmake to generate the adapted makefile.
