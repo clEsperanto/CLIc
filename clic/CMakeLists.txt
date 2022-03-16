@@ -96,6 +96,7 @@ install(
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
 )
 
+
 #------------------------------------------------------------------------------
 # CMake Export Configuration
 # This layout works for all platforms:
@@ -121,7 +122,7 @@ export(
 configure_package_config_file(
     "${PROJECT_SOURCE_DIR}/cmake/Config.cmake.in"
     "${PROJECT_BINARY_DIR}/${PROJECT_CONFIG_FILE}"
-    INSTALL_DESTINATION "${PROJECT_BINARY_DIR}"
+    INSTALL_DESTINATION "${PYCLIC_CMAKE_PACKAGE_INSTALL_SUBDIR}"
 )
 
 # Uninstall targets (build tree only)
@@ -136,11 +137,11 @@ install(
     EXPORT      ${TARGETS_EXPORT_NAME}
     NAMESPACE   ${PROJECT_NAME}::
     FILE        ${TARGETS_EXPORT_NAME}.cmake
-    DESTINATION ${CONFIG_INSTALL_DIR}
+    DESTINATION ${PYCLIC_CMAKE_PACKAGE_INSTALL_SUBDIR}
 )
 install(
     FILES       "${PROJECT_BINARY_DIR}/${PROJECT_CONFIG_FILE}"
                 "${PROJECT_BINARY_DIR}/${VERSION_CONFIG_FILE}"
-    DESTINATION "${CONFIG_INSTALL_DIR}"
+    DESTINATION "${PYCLIC_CMAKE_PACKAGE_INSTALL_SUBDIR}"
 )
 

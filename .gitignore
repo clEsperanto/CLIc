@@ -1,6 +1,7 @@
 # Folders
 .vscode
 build
+__pycache__
 
 # Specific files/folders
 cle_preamble.h
@@ -42,3 +43,6 @@ clic/kernels
 *.app
 *.iml
 /.idea/
+
+
+# python
