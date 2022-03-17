@@ -42,7 +42,7 @@ jobs:
         shell: bash -l {0}
         run: |
           python --version
-          conda install -c -y pocl scikit-build cmake numpy setuptools wheel pytest pytest-cov pytest-benchmark dask networkx igraph
+          conda install -y pocl scikit-build cmake numpy setuptools pytest pytest-cov pytest-benchmark   
 
       - name: Compile
         shell: bash -l {0}
