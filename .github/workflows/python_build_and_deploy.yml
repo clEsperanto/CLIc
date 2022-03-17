@@ -27,7 +27,7 @@ jobs:
       
       - name: OCL install
         shell: bash -l {0}
-        run: sudo apt install opencl-headers ocl-icd-dev beignet-dev
+        run: sudo apt install opencl-headers ocl-icd-dev
 
       # - name: Install packages [vcpkg]
       #   uses: lukka/run-vcpkg@v7
@@ -54,7 +54,7 @@ jobs:
         shell: bash -l {0}
         run: |
           python --version
-          conda install -y scikit-build cmake numpy setuptools pytest pytest-cov pytest-benchmark   
+          conda install -y oclgrind scikit-build cmake numpy setuptools pytest pytest-cov pytest-benchmark   
 
       - name: Compile
         shell: bash -l {0}
