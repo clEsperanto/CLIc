@@ -46,7 +46,7 @@ jobs:
         shell: bash -l {0}
         run: |
           python --version
-          conda install -y pocl scikit-build cmake numpy setuptools pytest pytest-cov pytest-benchmark   
+          conda install -y scikit-build cmake numpy setuptools pytest pytest-cov pytest-benchmark   
 
       - name: Compile
         shell: bash -l {0}
