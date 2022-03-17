@@ -8,3 +8,7 @@ requires = [
     "pybind11>=2.6"
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["python/tests"]
+addopts= "-v --cov=./ --cov-report=xml"

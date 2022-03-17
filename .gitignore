@@ -2,6 +2,10 @@
 .vscode
 build
 __pycache__
+.pytest
+.benchmarks
+.pytest_cache
+_skbuild
 
 # Specific files/folders
 cle_preamble.h

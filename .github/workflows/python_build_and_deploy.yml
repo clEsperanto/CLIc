@@ -1,0 +1,57 @@
+name: CI-Python
+
+on:
+  push:
+    branches: [ python-wrapper-prototype ]
+  pull_request:
+    branches: [ python-wrapper-prototype ]
+
+jobs:
+
+  build:
+
+    name: ${{ matrix.platform }} ( ${{ matrix.python-version }})
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        python-version: [3.7, 3.8, 3.9, 3.10]
+        platform: [ubuntu-latest] #, windows-latest, macos-latest] 
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true 
+
+      - name: Set up conda ${{ matrix.python-version }}
+        uses: conda-incubator/setup-miniconda@v2.0.0
+        with:
+          auto-update-conda: true
+          activate-environment: test
+          python-version: ${{ matrix.python-version }}
+          channels: conda-forge
+
+      - name: Conda info
+        shell: bash -l {0}
+        run: conda info
+
+      - name: Install dependencies
+        if: runner.os == 'Linux'
+        shell: bash -l {0}
+        run: |
+          python --version
+          conda install -c -y pocl scikit-build cmake numpy setuptools wheel pytest pytest-cov pytest-benchmark dask networkx igraph
+
+      - name: Compile
+        shell: bash -l {0}
+        run: pip install -e .
+
+      - name: Test
+        shell: bash -l {0}
+        run: python -m pytest . 
+
+      - name: Coverage
+        uses: codecov/codecov-action@v1
+      
