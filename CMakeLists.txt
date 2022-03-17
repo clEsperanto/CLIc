@@ -8,7 +8,7 @@ project(CLIc VERSION 0.5.2 LANGUAGES CXX)
 include(${PROJECT_SOURCE_DIR}/cmake/SetEnv.cmake)
 
 # find required package
-find_package(OpenCL REQUIRED)
+find_package(OpenCL )
 find_package(Python COMPONENTS Interpreter Development REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")

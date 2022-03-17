@@ -30,7 +30,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt upgrade
-          sudo apt install essential-build opencl-headers ocl-icd-dev ocl-icd-libopencl1
+          sudo apt install build-essential opencl-headers ocl-icd-dev ocl-icd-libopencl1
 
       # - name: Install packages [vcpkg]
       #   uses: lukka/run-vcpkg@v7
