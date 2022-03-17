@@ -8,7 +8,8 @@
 | <!-- -->   | <!-- -->  | <!-- -->  | <!-- -->  |
 | -          |:---------:|:---------:|:---------:| 
 | **C++**    |[![CI-Build](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/build.yml/badge.svg)](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/build.yml)|[![CI-Tests](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/tests_and_coverage.yml/badge.svg)](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/tests_and_coverage.yml)|[![Codecov](https://codecov.io/gh/clEsperanto/CLIc_prototype/branch/master/graph/badge.svg?token=QRSZHYDFIF)](https://codecov.io/gh/clEsperanto/CLIc_prototype)| 
-<!-- | **Python** |[![CI-Build](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/build.yml/badge.svg)](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/build.yml)|[![CI-Tests](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/tests_and_coverage.yml/badge.svg)](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/tests_and_coverage.yml)|[![Codecov](https://codecov.io/gh/clEsperanto/CLIc_prototype/branch/master/graph/badge.svg?token=QRSZHYDFIF)](https://codecov.io/gh/clEsperanto/CLIc_prototype)| -->
+| **Python** |[![CI-Python](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/python_build.yml/badge.svg?branch=python-wrapper-prototype)](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/python_build.yml)| | |
+
 # CLIc
 
 CLIc is a **prototype** for [CLesperanto](https://github.com/clEsperanto) - a multi-language framework for GPU-accelerated image processing. It uses [OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/development/src/main/java/net/haesleinhuepf/clij/kernels) from [CLIJ](https://clij.github.io/)
