@@ -27,7 +27,10 @@ jobs:
       
       - name: OCL install
         shell: bash -l {0}
-        run: sudo apt install opencl-headers ocl-icd-dev ocl-icd-libopencl1
+        run: |
+          sudo apt update
+          sudo apt upgrade
+          sudo apt install essential-build opencl-headers ocl-icd-dev ocl-icd-libopencl1
 
       # - name: Install packages [vcpkg]
       #   uses: lukka/run-vcpkg@v7

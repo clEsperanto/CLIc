@@ -1,11 +1,14 @@
-[![CI-Build](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/build.yml/badge.svg)](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/build.yml)
-[![CI-Tests](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/tests_and_coverage.yml/badge.svg)](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/tests_and_coverage.yml) 
-[![Codecov](https://codecov.io/gh/clEsperanto/CLIc_prototype/branch/master/graph/badge.svg?token=QRSZHYDFIF)](https://codecov.io/gh/clEsperanto/CLIc_prototype)
+
 [![License](https://img.shields.io/badge/license-BSD-informational)](https://github.com/clEsperanto/CLIc_prototype/blob/master/LICENSE)
 [![Website](https://img.shields.io/website?url=http%3A%2F%2Fclesperanto.net)](http://clesperanto.net)
 [![GitHub stars](https://img.shields.io/github/stars/clEsperanto/CLIc_prototype?style=social)](https://github.com/clEsperanto/CLIc_prototype)
 [![GitHub forks](https://img.shields.io/github/forks/clEsperanto/CLIc_prototype?style=social)](https://github.com/clEsperanto/CLIc_prototype)
 
+
+| <!-- -->   | <!-- -->  | <!-- -->  | <!-- -->  |
+| -          |:---------:|:---------:|:---------:| 
+| **C++**    |[![CI-Build](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/build.yml/badge.svg)](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/build.yml)|[![CI-Tests](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/tests_and_coverage.yml/badge.svg)](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/tests_and_coverage.yml)|[![Codecov](https://codecov.io/gh/clEsperanto/CLIc_prototype/branch/master/graph/badge.svg?token=QRSZHYDFIF)](https://codecov.io/gh/clEsperanto/CLIc_prototype)| 
+| **Python** |[![CI-Build](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/build.yml/badge.svg)](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/build.yml)|[![CI-Tests](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/tests_and_coverage.yml/badge.svg)](https://github.com/clEsperanto/CLIc_prototype/actions/workflows/tests_and_coverage.yml)|[![Codecov](https://codecov.io/gh/clEsperanto/CLIc_prototype/branch/master/graph/badge.svg?token=QRSZHYDFIF)](https://codecov.io/gh/clEsperanto/CLIc_prototype)|
 # CLIc
 
 CLIc is a **prototype** for [CLesperanto](https://github.com/clEsperanto) - a multi-language framework for GPU-accelerated image processing. It uses [OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/development/src/main/java/net/haesleinhuepf/clij/kernels) from [CLIJ](https://clij.github.io/)
