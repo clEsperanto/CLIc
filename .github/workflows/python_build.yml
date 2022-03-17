@@ -28,17 +28,7 @@ jobs:
       - name: OCL install
         shell: bash -l {0}
         run: |
-          sudo apt update
-          sudo apt upgrade
-          sudo apt install build-essential opencl-headers ocl-icd-dev ocl-icd-opencl-dev
-
-      # - name: Install packages [vcpkg]
-      #   uses: lukka/run-vcpkg@v7
-      #   with:
-      #     vcpkgArguments: opencl
-      #     vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
-      #     vcpkgTriplet: x64-linux
-      #     vcpkgGitCommitId: cdd51899f6ae3736bfbe936f9e387f86d4a63a58
+          sudo apt install opencl-headers ocl-icd-dev ocl-icd-opencl-dev
 
       - name: Set up conda ${{ matrix.python-version }}
         uses: conda-incubator/setup-miniconda@v2.0.0
@@ -63,10 +53,10 @@ jobs:
         shell: bash -l {0}
         run: pip install -e .
 
-      - name: Test
-        shell: bash -l {0}
-        run: python -m pytest . 
+      # - name: Test
+      #   shell: bash -l {0}
+      #   run: python -m pytest . 
 
-      - name: Coverage
-        uses: codecov/codecov-action@v1
+      # - name: Coverage
+      #   uses: codecov/codecov-action@v1
       
