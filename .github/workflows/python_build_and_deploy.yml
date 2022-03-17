@@ -25,9 +25,9 @@ jobs:
         with:
           submodules: true 
       
-      - name: OCL install
-        shell: bash -l {0}
-        run: sudo apt install opencl-headers ocl-icd-dev
+      # - name: OCL install
+      #   shell: bash -l {0}
+      #   run: sudo apt install opencl-headers ocl-icd-dev
 
       # - name: Install packages [vcpkg]
       #   uses: lukka/run-vcpkg@v7
