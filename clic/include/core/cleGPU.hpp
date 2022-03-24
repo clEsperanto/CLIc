@@ -82,9 +82,10 @@ protected:
      * 
      * @param t_buffer buffer address
      * @param t_bitsize memory size
+     * @param t_ptr pointer to host memory (optional)
      * @throws std::exception::runtime_error throw if fail creating buffer
      */
-    void AllocateMemory(cl::Buffer& t_buffer, const size_t t_bitsize) const;
+    void AllocateMemory(cl::Buffer& t_buffer, const size_t t_bitsize, void* t_ptr =nullptr) const;
 
     /**
      * @brief Allocate memory on device
@@ -92,9 +93,10 @@ protected:
      * @param t_image 3d image address
      * @param t_shape image shape (x,y,z) 
      * @param t_format image format 
+     * @param t_ptr pointer to host memory (optional)
      * @throws std::exception::runtime_error throw if fail creating image
      */
-    void AllocateMemory(cl::Image3D& t_image, const std::array<size_t,3> t_shape, const cl::ImageFormat& t_format) const;
+    void AllocateMemory(cl::Image3D& t_image, const std::array<size_t,3> t_shape, const cl::ImageFormat& t_format, void* t_ptr =nullptr) const;
 
     /**
      * @brief Allocate memory on device
@@ -102,9 +104,10 @@ protected:
      * @param t_image 2d image address
      * @param t_shape image shape (x,y,z) 
      * @param t_format image format 
+     * @param t_ptr pointer to host memory (optional)
      * @throws std::exception::runtime_error throw if fail creating image
      */
-    void AllocateMemory(cl::Image2D& t_image, const std::array<size_t,3> t_shape, const cl::ImageFormat& t_format) const;
+    void AllocateMemory(cl::Image2D& t_image, const std::array<size_t,3> t_shape, const cl::ImageFormat& t_format, void* t_ptr =nullptr) const;
 
     /**
      * @brief Allocate memory on device
@@ -112,9 +115,10 @@ protected:
      * @param t_image 1d image address
      * @param t_shape image shape (x,y,z) 
      * @param t_format image format 
+     * @param t_ptr pointer to host memory (optional)
      * @throws std::exception::runtime_error throw if fail creating image
      */
-    void AllocateMemory(cl::Image1D& t_image, const std::array<size_t,3> t_shape, const cl::ImageFormat& t_format) const;
+    void AllocateMemory(cl::Image1D& t_image, const std::array<size_t,3> t_shape, const cl::ImageFormat& t_format, void* t_ptr =nullptr) const;
 
     /**
      * @brief Write memory on device
@@ -393,7 +397,7 @@ const Object GPU::Push(const std::vector<Type>& t_data, const std::array<size_t,
     if(t_type.find("buffer") != std::string::npos) 
     {
         cl::Buffer buffer;
-        AllocateMemory(buffer, t_shape[0]*t_shape[1]*t_shape[2]*sizeof(Type));
+        AllocateMemory(buffer, t_shape[0]*t_shape[1]*t_shape[2]*sizeof(Type), const_cast<Type*>(t_data.data()));
         WriteMemory(buffer, t_data.data());
         mem = cl::Memory(buffer.get(), true);
     }
@@ -403,21 +407,21 @@ const Object GPU::Push(const std::vector<Type>& t_data, const std::array<size_t,
         if(t_shape[2]>1)
         {
             cl::Image3D image;
-            AllocateMemory(image, t_shape, image_format);
+            AllocateMemory(image, t_shape, image_format, const_cast<Type*>(t_data.data()));
             WriteMemory(image, t_data.data());
             mem = cl::Memory(image.get(), true);
         }
         else if(t_shape[1]>1)
         {
             cl::Image2D image;
-            AllocateMemory(image, t_shape, image_format);
+            AllocateMemory(image, t_shape, image_format, const_cast<Type*>(t_data.data()));
             WriteMemory(image, t_data.data());
             mem = cl::Memory(image.get(), true);
         }
         else
         {
             cl::Image1D image;
-            AllocateMemory(image, t_shape, image_format);
+            AllocateMemory(image, t_shape, image_format, const_cast<Type*>(t_data.data()));
             WriteMemory(image, t_data.data());
             mem = cl::Memory(image.get(), true);
         }

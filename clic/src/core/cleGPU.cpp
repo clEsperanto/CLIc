@@ -294,40 +294,60 @@ void GPU::Flush() const
 // * void CopyImageToImage(cle::Image& t_src, cle::Image& t_dst) const;
 
 
-void GPU::AllocateMemory(cl::Buffer& t_buffer, const size_t t_bitsize) const
+void GPU::AllocateMemory(cl::Buffer& t_buffer, const size_t t_bitsize, void* t_ptr) const
 {
     cl_int error = CL_SUCCESS;
-    t_buffer = cl::Buffer (this->Context(), CL_MEM_READ_WRITE, t_bitsize, nullptr, &error);
+    cl_mem_flags mem_flags = CL_MEM_READ_WRITE;
+    if (t_ptr != nullptr)
+    {
+        mem_flags = mem_flags | CL_MEM_USE_HOST_PTR;
+    }
+    t_buffer = cl::Buffer (this->Context(), mem_flags, t_bitsize, t_ptr, &error);
     if(error != CL_SUCCESS)
     {
         throw std::runtime_error("Error in creating Buffer with return message \'" + GetOpenCLErrorName(error) + "\' (" + std::to_string(error) + ")\n");
     }  
 }
 
-void GPU::AllocateMemory(cl::Image3D& t_image, const std::array<size_t,3> t_shape, const cl::ImageFormat& t_format) const
+void GPU::AllocateMemory(cl::Image3D& t_image, const std::array<size_t,3> t_shape, const cl::ImageFormat& t_format, void* t_ptr) const
 {
     cl_int error = CL_SUCCESS;
-    t_image = cl::Image3D (this->Context(), CL_MEM_READ_WRITE, t_format, t_shape[0], t_shape[1], t_shape[2], 0, 0, nullptr, &error);
+    cl_mem_flags mem_flags = CL_MEM_READ_WRITE;
+    if (t_ptr != nullptr)
+    {
+        mem_flags = mem_flags | CL_MEM_USE_HOST_PTR;
+    }
+    t_image = cl::Image3D (this->Context(), mem_flags, t_format, t_shape[0], t_shape[1], t_shape[2], 0, 0, t_ptr, &error);
     if(error != CL_SUCCESS)
     {
         throw std::runtime_error("Error in creating Image3D with return message \'" + GetOpenCLErrorName(error) + "\' (" + std::to_string(error) + ")\n");
     }
 }
 
-void GPU::AllocateMemory(cl::Image2D& t_image, const std::array<size_t,3> t_shape, const cl::ImageFormat& t_format) const
+void GPU::AllocateMemory(cl::Image2D& t_image, const std::array<size_t,3> t_shape, const cl::ImageFormat& t_format, void* t_ptr) const
 {
     cl_int error = CL_SUCCESS;
-    t_image = cl::Image2D (this->Context(), CL_MEM_READ_WRITE, t_format, t_shape[0], t_shape[1], 0, nullptr, &error);
+    cl_mem_flags mem_flags = CL_MEM_READ_WRITE;
+    if (t_ptr != nullptr)
+    {
+        mem_flags = mem_flags | CL_MEM_USE_HOST_PTR;
+    }
+    t_image = cl::Image2D (this->Context(), mem_flags, t_format, t_shape[0], t_shape[1], 0, t_ptr, &error);
     if(error != CL_SUCCESS)
     {
         throw std::runtime_error("Error in creating Image2D with return message \'" + GetOpenCLErrorName(error) + "\' (" + std::to_string(error) + ")\n");
     }
 }
 
-void GPU::AllocateMemory(cl::Image1D& t_image, const std::array<size_t,3> t_shape, const cl::ImageFormat& t_format) const
+void GPU::AllocateMemory(cl::Image1D& t_image, const std::array<size_t,3> t_shape, const cl::ImageFormat& t_format, void* t_ptr) const
 {
     cl_int error = CL_SUCCESS;
-    t_image = cl::Image1D (this->Context(), CL_MEM_READ_WRITE, t_format, t_shape[0], nullptr, &error);
+    cl_mem_flags mem_flags = CL_MEM_READ_WRITE;
+    if (t_ptr != nullptr)
+    {
+        mem_flags = mem_flags | CL_MEM_USE_HOST_PTR;
+    }
+    t_image = cl::Image1D (this->Context(), mem_flags, t_format, t_shape[0], t_ptr, &error);
     if(error != CL_SUCCESS)
     {
         throw std::runtime_error("Error in creating Image1D with return message \'" + GetOpenCLErrorName(error) + "\' (" + std::to_string(error) + ")\n");
