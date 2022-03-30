@@ -1,15 +1,19 @@
 # OpenCL installation
 
-clEsperanto is relying on [OpenCL](https://www.khronos.org/opencl/) for computation. This means that if you do not have a valid OpenCL installation, it will not run (nor compile).
+clEsperanto is relying on [OpenCL](https://www.khronos.org/opencl/) for computation. This means that if you do not have OpenCL available on your system, it will not run (nor compile).
 
-OpenCL is not hardware specific, it is an open standard for parallel programming. Hence, it can run on GPUs and CPUs. However, in order to access a specific hardware to run on, a hardware corresponding Installable Client Driver (ICD) must be provided. Those ICD are usually proprietary implementation. 
-They come as runtime library with various naming, for example `amdocl.so/dll`, `intelOpenCL.so/dll`, `nvidia-libopencl.so/dll`, and are normally provided by the hardware vendor along with their drivers.
+OpenCL is not hardware specific, it is an open standard for parallel programming. Hence, it can run on GPUs and CPUs. However, in order to access a specific hardware to run on, you need to provide its corresponding Installable Client Driver (ICD). Those ICD are usually proprietary implementation and they are provided by vendors with their drivers package. 
+They come as runtime library with various naming, for example `amdocl.dll`, `nvcuda.dll`, `libamdocl.so`, `libcuda.so`, *etc*.
 
-To avoid building clEsperanto against a specific vendor ICD, we are building it against an *ICD-loader*. It is a generic ICD interface which will then load the correct ICD corresponding to the hardware you are trying to access. These comes has more generic named libraries installed in your system, for example `libOpenCL.so`, `OpenCL.lib`, or `OpenCL.dll`.
+To avoid building OpenCL project against a specific vendor ICD, we are building it against an *ICD-loader*. It is a generic ICD interface library. It does not contain any OpenCL implementation like ICDs, but work as a dispatcher and redirect OpenCL operation towards selected ICDs associated to the hardware you are trying run on. These comes with more generic names, for example `libOpenCL.so` or `OpenCL.dll`.
+
+Finally, OpenCL project requires header files. These usually come with the installation of vendors ICDs but are then usually adapted to their ICD. To avoid complication over versions and installation, all headers are provided in our project through the Khronos official repository.
 
 ## Installation
 
-For now, we would suggest to install your hardware specific drivers and Software Development Kit (SDK). The most common one are Intel, AMD, and Nvidia. 
+For now, we would suggest you to install your hardware specific drivers and Software Development Kit (SDK). The most common one are Intel, AMD, and Nvidia. 
+
+
 
 <center>
 <table>
@@ -46,7 +50,7 @@ Alternatively, minimal installation can be done as followed:
 1. First by running the following commands in a terminal
 ```
 sudo apt update
-sudo apt install opencl-headers ocl-icd-dev
+sudo apt install opencl-headers ocl-icd-dev ocl-icd-opencl-dev
 ```
 2. Then, 
    - **Nvidia**:  install drivers through `software-properties-gtk`, in the "Additional Drivers" menu. Select the most recent and tested version.
@@ -55,4 +59,8 @@ sudo apt install opencl-headers ocl-icd-dev
 
 ### MacOS
 
-<center><b>WIP</b</center>
+Contrary to Windows and Linux, MacOS is bit simpler. Indeed, Apple computer cannot hold any type of devices and their configuration depend on the year the computer was made. If your system is from 2016 or earlier, you should be equipped with Intel and Nvidia devices. From 2016 to 2021, with Intel and AMD. And from 2021 and later with new processor M1 produce by Apple.
+
+This is not so much an issue as, in any cases you are, OpenCL is already provided by MacOS system. Not particular need is then required for our project to run.
+
+**WARNING:** Latest M1 chips have not yet been fully tested, though no particular issue is to be expected but
