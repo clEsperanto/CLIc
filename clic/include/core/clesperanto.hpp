@@ -90,7 +90,8 @@ public:
     void CloseIndexGapsInLabelMap(Object&, Object&, int=4096);
     void Histogram(Object&, Object&, int =256, float =std::numeric_limits<float>::infinity(), float =std::numeric_limits<float>::infinity());
     void ThresholdOtsu(Object&, Object&);
-
+    void OnlyzeroOverwriteMaximumBox(Object&, Object&, Object&);    
+    void OnlyzeroOverwriteMaximumDiamond(Object&, Object&, Object&);
 };
 
     template<class T>

@@ -43,6 +43,8 @@
 #include "cleNonzeroMinimumBoxKernel.hpp"
 #include "cleNotEqualConstantKernel.hpp"
 #include "cleNotEqualKernel.hpp"
+#include "cleOnlyzeroOverwriteMaximumBoxKernel.hpp"
+#include "cleOnlyzeroOverwriteMaximumDiamondKernel.hpp"
 #include "cleReplaceIntensitiesKernel.hpp"
 #include "cleReplaceIntensityKernel.hpp"
 #include "cleSeparableKernel.hpp"

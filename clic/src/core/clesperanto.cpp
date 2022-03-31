@@ -514,4 +514,22 @@ void Clesperanto::ThresholdOtsu(Object& t_src, Object& t_dst)
     kernel.Execute(); 
 }
 
+void Clesperanto::OnlyzeroOverwriteMaximumBox(Object& t_src, Object& t_dst1, Object& t_dst2)
+{
+    OnlyzeroOverwriteMaximumBoxKernel kernel(this->m_gpu);
+    kernel.SetInput(t_src);
+    kernel.SetOutput1(t_dst1);
+    kernel.SetOutput2(t_dst2);
+    kernel.Execute();
+}   
+
+void Clesperanto::OnlyzeroOverwriteMaximumDiamond(Object& t_src, Object& t_dst1, Object& t_dst2)
+{
+    OnlyzeroOverwriteMaximumDiamondKernel kernel(this->m_gpu);
+    kernel.SetInput(t_src);
+    kernel.SetOutput1(t_dst1);
+    kernel.SetOutput2(t_dst2);
+    kernel.Execute();
+}
+
 }
