@@ -4,6 +4,8 @@
   - binary operation and, or, xor, not, subtract
   - histogram
   - threshold otsu
+  - mask
+  - masked voronoi labeling
 - Add Constant variable declaration.
   - This allows to define a constant value accessible by all threads executing the same kernel.
 ## Miscellaneous
@@ -13,6 +15,7 @@
   - add opencl-headers
   - regroupe opencl submodules into opencl folder
 - Consolidation of CMakeList.txt
+- Renaming `labelling` into `labeling`
 
 # 0.5.0 - February 14th 2022
 ## Known issues
