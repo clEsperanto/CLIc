@@ -194,6 +194,15 @@ void Clesperanto::GreaterOrEqualConstant(Object& t_src, Object& t_dst, float t_s
     kernel.Execute();
 }
 
+void Clesperanto::Mask(Object& t_src, Object& t_mask, Object& t_dst)
+{
+    MaskKernel kernel(this->m_gpu);
+    kernel.SetInput(t_src);
+    kernel.SetMask(t_mask);
+    kernel.SetOutput(t_dst);
+    kernel.Execute();  
+}
+
 void Clesperanto::MaximumZProjection(Object& t_src, Object& t_dst)
 {
     MaximumZProjectionKernel kernel(this->m_gpu);
@@ -422,9 +431,9 @@ void Clesperanto::SumOfAllPixels(Object& t_src, Object& t_dst)
     kernel.Execute(); 
 }  
 
-void Clesperanto::ConnectedComponentLabelingBox(Object& t_src, Object& t_dst)
+void Clesperanto::ConnectedComponentsLabelingBox(Object& t_src, Object& t_dst)
 {
-    ConnectedComponentLabelingBoxKernel kernel(this->m_gpu);
+    ConnectedComponentsLabelingBoxKernel kernel(this->m_gpu);
     kernel.SetInput(t_src);
     kernel.SetOutput(t_dst);
     kernel.Execute(); 

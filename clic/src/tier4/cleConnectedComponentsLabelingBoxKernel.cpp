@@ -1,7 +1,7 @@
 
 #include "cleCloseIndexGapsInLabelMapKernel.hpp"
 
-#include "cleConnectedComponentLabelingBoxKernel.hpp"
+#include "cleConnectedComponentsLabelingBoxKernel.hpp"
 #include "cleSetNonzeroPixelsToPixelindexKernel.hpp"
 #include "cleNonzeroMinimumBoxKernel.hpp"
 #include "cleSetKernel.hpp"
@@ -10,24 +10,24 @@
 namespace cle
 {
 
-ConnectedComponentLabelingBoxKernel::ConnectedComponentLabelingBoxKernel(std::shared_ptr<GPU> t_gpu) : 
+ConnectedComponentsLabelingBoxKernel::ConnectedComponentsLabelingBoxKernel(std::shared_ptr<GPU> t_gpu) : 
     Kernel( t_gpu,
             "connected_components_labeling_box",
             {"src" , "dst"}
     )
 {}    
 
-void ConnectedComponentLabelingBoxKernel::SetInput(Object& t_x)
+void ConnectedComponentsLabelingBoxKernel::SetInput(Object& t_x)
 {
     this->AddObject(t_x, "src");
 }
 
-void ConnectedComponentLabelingBoxKernel::SetOutput(Object& t_x)
+void ConnectedComponentsLabelingBoxKernel::SetOutput(Object& t_x)
 {
     this->AddObject(t_x, "dst");
 }
 
-void ConnectedComponentLabelingBoxKernel::Execute()
+void ConnectedComponentsLabelingBoxKernel::Execute()
 {
     auto src = this->GetParameter<Object>("src");
     auto dst = this->GetParameter<Object>("dst");
