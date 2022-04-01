@@ -203,6 +203,15 @@ void Clesperanto::Mask(Object& t_src, Object& t_mask, Object& t_dst)
     kernel.Execute();  
 }
 
+void Clesperanto::MaskedVoronoiLabeling(Object& t_src, Object& t_mask, Object& t_dst)
+{
+    MaskedVoronoiLabelingKernel kernel(this->m_gpu);
+    kernel.SetInput(t_src);
+    kernel.SetMask(t_mask);
+    kernel.SetOutput(t_dst);
+    kernel.Execute();  
+}
+
 void Clesperanto::MaximumZProjection(Object& t_src, Object& t_dst)
 {
     MaximumZProjectionKernel kernel(this->m_gpu);

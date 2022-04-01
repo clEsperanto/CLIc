@@ -54,6 +54,7 @@ public:
     void GreaterConstant(Object&, Object&, float=0);
     void GreaterOrEqualConstant(Object&, Object&, float=0);
     void Mask(Object&, Object&, Object&);
+    void MaskedVoronoiLabeling(Object&, Object&, Object&);
     void MaximumZProjection(Object&, Object&);
     void MaximumYProjection(Object&, Object&);
     void MaximumXProjection(Object&, Object&);

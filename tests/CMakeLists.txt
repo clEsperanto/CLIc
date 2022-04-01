@@ -166,6 +166,12 @@ target_link_libraries(mask_test PRIVATE CLIc::CLIc)
 add_test(NAME mask_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND mask_test)
 set_target_properties(mask_test PROPERTIES FOLDER "Tests")
 
+add_executable(masked_voronoi_labeling_test masked_voronoi_labeling_test.cpp)
+add_dependencies(masked_voronoi_labeling_test CLIc)
+target_link_libraries(masked_voronoi_labeling_test PRIVATE CLIc::CLIc)
+add_test(NAME masked_voronoi_labeling_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND masked_voronoi_labeling_test)
+set_target_properties(masked_voronoi_labeling_test PROPERTIES FOLDER "Tests")
+
 add_executable(maximum_all_pixels_test maximum_all_pixels_test.cpp)
 add_dependencies(maximum_all_pixels_test CLIc)
 target_link_libraries(maximum_all_pixels_test PRIVATE CLIc::CLIc)
