@@ -14,7 +14,7 @@ def generate_script(folder):
                 output_file.write("add_test(NAME {0} ".format(name))
                 output_file.write("WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} ")
                 if name == "custom_test":
-                    output_file.write("COMMAND {0} {1}/thirdparty/clij/kernels)\n".format(name, constant))
+                    output_file.write("COMMAND {0} {1}/thirdparty/clesperanto-kernels/kernels)\n".format(name, constant))
                 else:     
                     output_file.write("COMMAND {0})\n".format(name))
                 output_file.write("set_target_properties({0} PROPERTIES FOLDER \"Tests\")\n".format(name))
