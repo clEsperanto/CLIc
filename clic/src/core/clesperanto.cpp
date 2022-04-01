@@ -422,9 +422,9 @@ void Clesperanto::SumOfAllPixels(Object& t_src, Object& t_dst)
     kernel.Execute(); 
 }  
 
-void Clesperanto::ConnectedComponentLabellingBox(Object& t_src, Object& t_dst)
+void Clesperanto::ConnectedComponentLabelingBox(Object& t_src, Object& t_dst)
 {
-    ConnectedComponentLabellingBoxKernel kernel(this->m_gpu);
+    ConnectedComponentLabelingBoxKernel kernel(this->m_gpu);
     kernel.SetInput(t_src);
     kernel.SetOutput(t_dst);
     kernel.Execute(); 

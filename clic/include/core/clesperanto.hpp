@@ -80,7 +80,7 @@ public:
     void SumYProjection(Object&, Object&);
     void SumXProjection(Object&, Object&);
     void SumOfAllPixels(Object&, Object&);
-    void ConnectedComponentLabellingBox(Object&, Object&);
+    void ConnectedComponentLabelingBox(Object&, Object&);
     void ReplaceIntensity(Object&, Object&, float=0, float=0);
     void ReplaceIntensities(Object&, Object&, Object&);
     void SetColumn(Object&, int=0, float=0);
