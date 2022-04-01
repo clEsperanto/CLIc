@@ -42,10 +42,12 @@ void MaskedVoronoiLabelingKernel::Execute()
     auto msk = this->GetParameter<Object>("src1");
     auto dst = this->GetParameter<Object>("dst");
 
+    std::vector<float> oneValue = {1.0f};
+
     auto flup = this->m_gpu->Create<float>(dst->Shape());
     auto flip = this->m_gpu->Create<float>(dst->Shape());
     auto flop = this->m_gpu->Create<float>(dst->Shape());
-    auto flag = this->m_gpu->Push<float>(std::vector<float>{1.0f}, {1,1,1});
+    auto flag = this->m_gpu->Push<float>(oneValue, {1,1,1});
 
     AddImageAndScalarKernel subtractOne(this->m_gpu);
     subtractOne.SetInput(*msk);
