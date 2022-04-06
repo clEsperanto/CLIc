@@ -8,8 +8,13 @@ project(CLIc VERSION 0.5.2)
 include(${PROJECT_SOURCE_DIR}/cmake/SetEnv.cmake)
 
 # find required package
-find_package(OpenCL REQUIRED)
-find_package(Python COMPONENTS Interpreter Development REQUIRED)
+if(NOT OpenCL_FOUND)
+    find_package(OpenCL REQUIRED)
+endif(NOT OpenCL_FOUND)
+
+if(NOT Python_FOUND)
+    find_package(Python COMPONENTS Interpreter Development REQUIRED)
+endif(NOT Python_FOUND)
 
 # Library sources
 add_subdirectory(${THIRDPARTY_DIR})
