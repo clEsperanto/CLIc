@@ -10,11 +10,11 @@ include(${PROJECT_SOURCE_DIR}/cmake/SetEnv.cmake)
 # find required package
 if(NOT OpenCL_FOUND)
     find_package(OpenCL REQUIRED)
-endif(NOT OpenCL_FOUND)
+endif()
 
 if(NOT Python_FOUND)
     find_package(Python COMPONENTS Interpreter Development REQUIRED)
-endif(NOT Python_FOUND)
+endif()
 
 # Library sources
 add_subdirectory(${THIRDPARTY_DIR})
