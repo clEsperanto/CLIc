@@ -560,4 +560,13 @@ void Clesperanto::VoronoiOtsuLabeling(Object& t_src, Object& t_dst, float t_sigm
     kernel.Execute();
 }
 
+void Clesperanto::ExtendLabelingViaVoronoi(Object& t_src, Object& t_dst)
+{
+    ExtendLabelingViaVoronoiKernel kernel(this->m_gpu);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.Execute();
+}
+
+
 }

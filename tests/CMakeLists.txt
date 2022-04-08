@@ -112,6 +112,12 @@ target_link_libraries(erode_sphere_test PRIVATE CLIc::CLIc)
 add_test(NAME erode_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND erode_sphere_test)
 set_target_properties(erode_sphere_test PROPERTIES FOLDER "Tests")
 
+add_executable(extend_labeling_via_voronoi_test extend_labeling_via_voronoi_test.cpp)
+add_dependencies(extend_labeling_via_voronoi_test CLIc)
+target_link_libraries(extend_labeling_via_voronoi_test PRIVATE CLIc::CLIc)
+add_test(NAME extend_labeling_via_voronoi_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND extend_labeling_via_voronoi_test)
+set_target_properties(extend_labeling_via_voronoi_test PROPERTIES FOLDER "Tests")
+
 add_executable(flag_existing_labels_test flag_existing_labels_test.cpp)
 add_dependencies(flag_existing_labels_test CLIc)
 target_link_libraries(flag_existing_labels_test PRIVATE CLIc::CLIc)

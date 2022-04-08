@@ -53,6 +53,7 @@ public:
     void ErodeSphere(Object&, Object&);
     void Equal(Object&, Object&, Object&);
     void EqualConstant(Object&, Object&, float=0);
+    void ExtendLabelingViaVoronoi(Object&, Object&);
     
     void FlagExistingLabels(Object&, Object&);
 
