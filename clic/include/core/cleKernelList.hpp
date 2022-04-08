@@ -21,6 +21,7 @@
 #include "cleEqualKernel.hpp"
 #include "cleErodeSphereKernel.hpp"
 #include "cleExecuteSeparableKernel.hpp"
+#include "cleExtendLabelingViaVoronoiKernel.hpp"
 #include "cleFlagExistingLabelsKernel.hpp"
 #include "cleGaussianBlurKernel.hpp"
 #include "cleGreaterConstantKernel.hpp"
