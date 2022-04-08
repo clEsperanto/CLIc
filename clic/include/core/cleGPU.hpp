@@ -189,6 +189,15 @@ public:
     void SelectDevice(const char* t_device_name, const char* t_device_type ="all");
 
     /**
+     * @brief List all visible devices.
+     * 
+     * @param t_device_type type of device to allocate (default all).
+     * @throws std::exception::runtime_error throw if no platform detected.
+     * @throws std::exception::runtime_error throw if no device detected.
+     */    
+    const std::string ListDevices(const char* t_device_type ="all") const;
+
+    /**
      * @brief Get information on current device.
      * 
      * @return formated string of information on current device
