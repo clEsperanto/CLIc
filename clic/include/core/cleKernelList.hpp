@@ -64,5 +64,6 @@
 #include "cleSumYProjectionKernel.hpp"
 #include "cleSumZProjectionKernel.hpp"
 #include "cleThresholdOtsuKernel.hpp"
+#include "cleVoronoiOtsuLabelingKernel.hpp"
 
 #endif //__cleKernelList_hpp

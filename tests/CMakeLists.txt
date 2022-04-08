@@ -370,3 +370,9 @@ target_link_libraries(threshold_otsu_test PRIVATE CLIc::CLIc)
 add_test(NAME threshold_otsu_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND threshold_otsu_test)
 set_target_properties(threshold_otsu_test PROPERTIES FOLDER "Tests")
 
+add_executable(voronoi_otsu_labeling_test voronoi_otsu_labeling_test.cpp)
+add_dependencies(voronoi_otsu_labeling_test CLIc)
+target_link_libraries(voronoi_otsu_labeling_test PRIVATE CLIc::CLIc)
+add_test(NAME voronoi_otsu_labeling_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND voronoi_otsu_labeling_test)
+set_target_properties(voronoi_otsu_labeling_test PROPERTIES FOLDER "Tests")
+

@@ -30,6 +30,7 @@ public:
 
     std::shared_ptr<GPU> Ressources();
 
+    void Absolute(Object&, Object&);
     void AddImageAndScalar(Object&, Object&, float=0);
     void AddImagesWeighted(Object&, Object&, Object&, float=1, float=1);
     void AddImages(Object&, Object&, Object&);
@@ -39,20 +40,33 @@ public:
     void BinaryNot(Object&, Object&);
     void BinarySubtract(Object&, Object&, Object&);
     void BinaryXor(Object&, Object&, Object&);
+    void BlockEnumerate(Object&, Object&, Object&, int=0);  //! block enumarate fail when running with Image
 
-    void SubtractImages(Object&, Object&, Object&);
+    void Copy(Object&, Object&);
+    void ConnectedComponentsLabelingBox(Object&, Object&);
+    void CloseIndexGapsInLabelMap(Object&, Object&, int=4096);
+
     void DilateSphere(Object&, Object&);
+    void DifferenceOfGaussian(Object&, Object&, float=0, float=0, float=0, float=1, float=1, float=0);
+    void DetectMaximaBox(Object&, Object&);
+
     void ErodeSphere(Object&, Object&);
     void Equal(Object&, Object&, Object&);
     void EqualConstant(Object&, Object&, float=0);
+    
+    void FlagExistingLabels(Object&, Object&);
+
     void GaussianBlur(Object&, Object&, float=1, float=1, float=0);
-    void MeanBox(Object&, Object&, float=1, float=1, float=0);
-    void MaximumBox(Object&, Object&, float=1, float=1, float=0);
-    void MinimumBox(Object&, Object&, float=1, float=1, float=0);
     void Greater(Object&, Object&, Object&);
     void GreaterOrEqual(Object&, Object&, Object&);
     void GreaterConstant(Object&, Object&, float=0);
     void GreaterOrEqualConstant(Object&, Object&, float=0);
+    
+    void Histogram(Object&, Object&, int =256, float =std::numeric_limits<float>::infinity(), float =std::numeric_limits<float>::infinity());
+
+    void MeanBox(Object&, Object&, float=1, float=1, float=0);
+    void MaximumBox(Object&, Object&, float=1, float=1, float=0);
+    void MinimumBox(Object&, Object&, float=1, float=1, float=0);
     void Mask(Object&, Object&, Object&);
     void MaskedVoronoiLabeling(Object&, Object&, Object&);
     void MaximumZProjection(Object&, Object&);
@@ -64,36 +78,35 @@ public:
     void MinimumXProjection(Object&, Object&);
     void MinimumOfAllPixels(Object&, Object&);
     void MeanSphere(Object&, Object&, int=1, int=1, int=0);
+
     void NonzeroMinimumBox(Object&, Object&, Object&);
     void NotEqual(Object&, Object&, Object&);
     void NotEqualConstant(Object&, Object&, float=0);
-    void Absolute(Object&, Object&);
+
+    void OnlyzeroOverwriteMaximumBox(Object&, Object&, Object&);    
+    void OnlyzeroOverwriteMaximumDiamond(Object&, Object&, Object&);
+
+    void ReplaceIntensity(Object&, Object&, float=0, float=0);
+    void ReplaceIntensities(Object&, Object&, Object&);
+
     void Sobel(Object&, Object&);
+    void SubtractImages(Object&, Object&, Object&);
     void Set(Object&, float=0);
     void SetNonzeroPixelsToPixelindex(Object&, Object&);
-    void DifferenceOfGaussian(Object&, Object&, float=0, float=0, float=0, float=1, float=1, float=0);
     void Smaller(Object&, Object&, Object&);
     void SmallerOrEqual(Object&, Object&, Object&);
     void SmallerConstant(Object&, Object&, float=0);
     void SmallerOrEqualConstant(Object&, Object&, float=0);
-    void Copy(Object&, Object&);
-    void DetectMaximaBox(Object&, Object&);
     void SumZProjection(Object&, Object&);
     void SumYProjection(Object&, Object&);
     void SumXProjection(Object&, Object&);
     void SumOfAllPixels(Object&, Object&);
-    void ConnectedComponentsLabelingBox(Object&, Object&);
-    void ReplaceIntensity(Object&, Object&, float=0, float=0);
-    void ReplaceIntensities(Object&, Object&, Object&);
     void SetColumn(Object&, int=0, float=0);
     void SumReductionX(Object&, Object&, int=0);
-    void BlockEnumerate(Object&, Object&, Object&, int=0);  //! block enumarate fail when running with Image
-    void FlagExistingLabels(Object&, Object&);
-    void CloseIndexGapsInLabelMap(Object&, Object&, int=4096);
-    void Histogram(Object&, Object&, int =256, float =std::numeric_limits<float>::infinity(), float =std::numeric_limits<float>::infinity());
+
     void ThresholdOtsu(Object&, Object&);
-    void OnlyzeroOverwriteMaximumBox(Object&, Object&, Object&);    
-    void OnlyzeroOverwriteMaximumDiamond(Object&, Object&, Object&);
+
+    void VoronoiOtsuLabeling(Object&, Object&, float=2, float=2);
 };
 
     template<class T>

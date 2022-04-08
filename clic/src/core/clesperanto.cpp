@@ -550,4 +550,14 @@ void Clesperanto::OnlyzeroOverwriteMaximumDiamond(Object& t_src, Object& t_dst1,
     kernel.Execute();
 }
 
+void Clesperanto::VoronoiOtsuLabeling(Object& t_src, Object& t_dst, float t_sigma_spot, float t_sigma_outline)
+{
+    VoronoiOtsuLabelingKernel kernel(this->m_gpu);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetSpotSigma(t_sigma_spot);
+    kernel.SetOutlineSigma(t_sigma_outline);
+    kernel.Execute();
+}
+
 }
