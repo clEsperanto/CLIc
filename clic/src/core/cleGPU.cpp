@@ -170,6 +170,35 @@ void GPU::SelectDevice(const char* t_device_name, const char* t_device_type)
     }
 }
 
+const std::string GPU::ListDevices(const char* t_device_type) const
+{
+    // Loop on all platforms
+    std::string list = "['"; 
+    std::vector<cl::Platform> m_PlatformList = this->ListPlatforms();
+    if (m_PlatformList.empty())
+    {
+        throw std::runtime_error("No platform were detected.\n");
+    }
+    for(auto platform_ite = m_PlatformList.begin(); platform_ite != m_PlatformList.end(); ++platform_ite)
+    {
+        std::vector<cl::Device> m_DeviceList = ListDevices(*platform_ite, t_device_type);
+        if (m_DeviceList.empty())
+        {
+            throw std::runtime_error("No device were detected.\n");
+        }
+        for(auto device_ite = m_DeviceList.begin(); device_ite != m_DeviceList.end(); ++device_ite)
+        {
+            if(device_ite->getInfo<CL_DEVICE_AVAILABLE>())
+            {
+                list += device_ite->getInfo<CL_DEVICE_NAME>() + "';'";
+            }
+        }
+    }
+    list.erase(list.length()-2);
+    list += "]";
+    return list;
+}
+
 cl::Device GPU::Device() const
 {
     return this->m_Device;
