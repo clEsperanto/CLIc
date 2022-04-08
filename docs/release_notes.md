@@ -1,4 +1,4 @@
-# 0.5.2 - On-going
+# 0.5.3 - On-going
 ## New features
 - add new kernel operations [[#71](https://github.com/clEsperanto/CLIc_prototype/pull/71)]
   - binary operation and, or, xor, not, subtract
@@ -6,8 +6,11 @@
   - threshold otsu
   - mask
   - masked voronoi labeling
+  - extend labeling via voronoi
+  - voronoi otsu labeling
 - Add Constant variable declaration.
   - This allows to define a constant value accessible by all threads executing the same kernel.
+- Add GPU method to list all devices
 ## Miscellaneous
 - Fixing some warning [[#71](https://github.com/clEsperanto/CLIc_prototype/pull/71)]
 - Rename thirdparty submodules
