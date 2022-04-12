@@ -298,6 +298,7 @@ void GPU::AllocateMemory(cl::Buffer& t_buffer, const size_t t_bitsize, void* t_p
 {
     cl_int error = CL_SUCCESS;
     cl_mem_flags mem_flags = CL_MEM_READ_WRITE;
+    t_ptr = nullptr; //! compatibility with python wrapper that cannot use CL_MEM_USE_HOST_PTR
     if (t_ptr != nullptr)
     {
         mem_flags = mem_flags | CL_MEM_USE_HOST_PTR;
@@ -313,6 +314,7 @@ void GPU::AllocateMemory(cl::Image3D& t_image, const std::array<size_t,3> t_shap
 {
     cl_int error = CL_SUCCESS;
     cl_mem_flags mem_flags = CL_MEM_READ_WRITE;
+    t_ptr = nullptr; //! compatibility with python wrapper that cannot use CL_MEM_USE_HOST_PTR
     if (t_ptr != nullptr)
     {
         mem_flags = mem_flags | CL_MEM_USE_HOST_PTR;
@@ -328,6 +330,7 @@ void GPU::AllocateMemory(cl::Image2D& t_image, const std::array<size_t,3> t_shap
 {
     cl_int error = CL_SUCCESS;
     cl_mem_flags mem_flags = CL_MEM_READ_WRITE;
+    t_ptr = nullptr; //! compatibility with python wrapper that cannot use CL_MEM_USE_HOST_PTR
     if (t_ptr != nullptr)
     {
         mem_flags = mem_flags | CL_MEM_USE_HOST_PTR;
@@ -343,6 +346,7 @@ void GPU::AllocateMemory(cl::Image1D& t_image, const std::array<size_t,3> t_shap
 {
     cl_int error = CL_SUCCESS;
     cl_mem_flags mem_flags = CL_MEM_READ_WRITE;
+    t_ptr = nullptr; //! compatibility with python wrapper that cannot use CL_MEM_USE_HOST_PTR
     if (t_ptr != nullptr)
     {
         mem_flags = mem_flags | CL_MEM_USE_HOST_PTR;
