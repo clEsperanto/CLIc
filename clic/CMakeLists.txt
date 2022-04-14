@@ -19,7 +19,7 @@ add_library(${LIBRARY_NAME} ${SOURCES_FILES})
 set_target_properties(${LIBRARY_NAME} PROPERTIES FOLDER ${LIBRARY_DIR})
 
 # Target links
-target_link_libraries(${LIBRARY_NAME} OpenCL::OpenCL)
+target_link_libraries(${LIBRARY_NAME} PUBLIC ${OpenCL_LIBRARIES})
 
 # Alias: -> Foo::foo alias of foo
 add_library(${PROJECT_NAME}::${LIBRARY_NAME} ALIAS ${LIBRARY_NAME})
