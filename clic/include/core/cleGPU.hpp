@@ -44,7 +44,7 @@ protected:
      * 
      * @return list of Platforms. Empty if none are found.
      */
-    const std::vector<cl::Platform> ListPlatforms() const;
+    const std::vector<cl::Platform> FetchPlatforms() const;
 
     /**
      * @brief List all available Devices.
@@ -53,7 +53,7 @@ protected:
      * @param t_device_type Device type (gpu, cpu, all).
      * @return list of Devices. Empty if none are found.
      */
-    const std::vector<cl::Device> ListDevices(const cl::Platform& t_platform, const char* t_device_type) const;
+    const std::vector<cl::Device> FetchDevices(const cl::Platform& t_platform, const char* t_device_type) const;
 
     /**
      * @brief Allocate device by creating Context and CommandQueue.
@@ -186,7 +186,7 @@ public:
      * @throws std::exception::runtime_error throw if no device detected.
      * @throws std::exception::runtime_error throw if could not allocate ressources on device.
      */    
-    void SelectDevice(const char* t_device_name, const char* t_device_type ="all");
+    const std::string SelectDevice(const char* t_device_name, const char* t_device_type ="all");
 
     /**
      * @brief List all visible devices.
@@ -195,7 +195,7 @@ public:
      * @throws std::exception::runtime_error throw if no platform detected.
      * @throws std::exception::runtime_error throw if no device detected.
      */    
-    const std::string ListDevices(const char* t_device_type ="all") const;
+    const std::vector<std::string> ListAvailableDevices(const char* t_device_type ="all") const;
 
     /**
      * @brief Get information on current device.

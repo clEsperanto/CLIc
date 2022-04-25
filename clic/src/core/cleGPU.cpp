@@ -6,7 +6,7 @@ namespace cle
 
 GPU::GPU() 
 {
-    std::vector<cl::Platform> m_PlatformList = this->ListPlatforms();
+    std::vector<cl::Platform> m_PlatformList = this->FetchPlatforms();
     if (m_PlatformList.empty())
     {
         throw std::runtime_error("No platform were detected.\n");
@@ -15,7 +15,7 @@ GPU::GPU()
     {
         this->m_Platform = m_PlatformList.front();
     }
-    std::vector<cl::Device> m_DeviceList = ListDevices(this->m_Platform, "all");
+    std::vector<cl::Device> m_DeviceList = FetchDevices(this->m_Platform, "all");
     if (m_DeviceList.empty())
     {
         throw std::runtime_error("No device were detected.\n");
@@ -54,7 +54,7 @@ GPU::~GPU()
     }
 }
 
-const std::vector<cl::Platform> GPU::ListPlatforms() const
+const std::vector<cl::Platform> GPU::FetchPlatforms() const
 {
     std::vector<cl::Platform> m_PlatformList;
     try
@@ -70,7 +70,7 @@ const std::vector<cl::Platform> GPU::ListPlatforms() const
     return m_PlatformList;
 }
 
-const std::vector<cl::Device> GPU::ListDevices(const cl::Platform& t_platform, const char* t_device_type) const
+const std::vector<cl::Device> GPU::FetchDevices(const cl::Platform& t_platform, const char* t_device_type) const
 {
     std::vector<cl::Device> m_DeviceList;
     try
@@ -114,11 +114,11 @@ void GPU::AllocateDevice()
     }
 }
 
-void GPU::SelectDevice(const char* t_device_name, const char* t_device_type)
+const std::string GPU::SelectDevice(const char* t_device_name, const char* t_device_type)
 {
     bool found (false), deviceCheck(false);
     // Loop on all platforms
-    std::vector<cl::Platform> m_PlatformList = this->ListPlatforms();
+    std::vector<cl::Platform> m_PlatformList = this->FetchPlatforms();
     if (m_PlatformList.empty())
     {
         throw std::runtime_error("No platform were detected when searching for a device.\n");
@@ -127,7 +127,7 @@ void GPU::SelectDevice(const char* t_device_name, const char* t_device_type)
     while(!found && platform_ite != m_PlatformList.end() )
     {
         // Loop on all devices
-        std::vector<cl::Device> m_DeviceList = ListDevices(*platform_ite, t_device_type);
+        std::vector<cl::Device> m_DeviceList = FetchDevices(*platform_ite, t_device_type);
         auto device_ite = m_DeviceList.begin();
         while(!found && device_ite != m_DeviceList.end() )
         {
@@ -150,7 +150,7 @@ void GPU::SelectDevice(const char* t_device_name, const char* t_device_type)
     if (!found)
     {
         this->m_Platform = m_PlatformList.front();
-        std::vector<cl::Device> m_DeviceList = ListDevices(this->m_Platform, "all");
+        std::vector<cl::Device> m_DeviceList = FetchDevices(this->m_Platform, "all");
         if (m_DeviceList.empty())
         {
             throw std::runtime_error("No device were detected.\n");
@@ -168,20 +168,21 @@ void GPU::SelectDevice(const char* t_device_name, const char* t_device_type)
     {
         throw std::runtime_error("Fail in Allocating ressources on device.\n");
     }
+    return this->m_Device.getInfo<CL_DEVICE_NAME>();
 }
 
-const std::string GPU::ListDevices(const char* t_device_type) const
+const std::vector<std::string> GPU::ListAvailableDevices(const char* t_device_type) const
 {
     // Loop on all platforms
-    std::string list = "['"; 
-    std::vector<cl::Platform> m_PlatformList = this->ListPlatforms();
+    std::vector<std::string> list; 
+    std::vector<cl::Platform> m_PlatformList = this->FetchPlatforms();
     if (m_PlatformList.empty())
     {
         throw std::runtime_error("No platform were detected.\n");
     }
     for(auto platform_ite = m_PlatformList.begin(); platform_ite != m_PlatformList.end(); ++platform_ite)
     {
-        std::vector<cl::Device> m_DeviceList = ListDevices(*platform_ite, t_device_type);
+        std::vector<cl::Device> m_DeviceList = FetchDevices(*platform_ite, t_device_type);
         if (m_DeviceList.empty())
         {
             throw std::runtime_error("No device were detected.\n");
@@ -190,12 +191,10 @@ const std::string GPU::ListDevices(const char* t_device_type) const
         {
             if(device_ite->getInfo<CL_DEVICE_AVAILABLE>())
             {
-                list += device_ite->getInfo<CL_DEVICE_NAME>() + "';'";
+                list.push_back(device_ite->getInfo<CL_DEVICE_NAME>());
             }
         }
     }
-    list.erase(list.length()-2);
-    list += "]";
     return list;
 }
 
