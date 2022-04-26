@@ -7,13 +7,9 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
                                    std::vector<type>& valid, size_t width, size_t height, size_t depth)
 {
     arr_1.resize(width*height*depth);
-    valid.resize(256);
-    std::fill(valid.begin(), valid.end(), static_cast<type>(0));
-    for(auto it = arr_1.begin(); it < arr_1.end(); ++it)
-    {
-        *it = static_cast<type>(rand() % width);
-        valid[*it] += static_cast<type>(1);
-    }
+    valid.resize(5);
+    arr_1 = {1,2,3,1,2,3,5,2,1,3,2,1};
+    valid = {4,4,3,0,1};
     return std::array<size_t,3> {width, height, depth};
 }
 
@@ -23,8 +19,8 @@ std::vector<type> run_kernel_with_buffer(std::vector<type>& arr_1, std::array<si
     cle::Clesperanto cle;
     cle.Ressources()->SetWaitForKernelToFinish(true);
     auto oclArray_A = cle.Push<type>(arr_1, shape);
-    auto ocl_output = cle.Create<type>({256,1,1});
-    cle.Histogram(oclArray_A, ocl_output, 256, 0, 256-1);  
+    auto ocl_output = cle.Create<type>({5,1,1});
+    cle.Histogram(oclArray_A, ocl_output, 5);  
     auto output = cle.Pull<type>(ocl_output); 
     return output; 
 }
@@ -35,8 +31,8 @@ std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::array<siz
     cle::Clesperanto cle;
     cle.Ressources()->SetWaitForKernelToFinish(true);
     auto oclArray_A = cle.Push<type>(arr_1, shape, "image");
-    auto ocl_output = cle.Create<type>({256,1,1}, "image");
-    cle.Histogram(oclArray_A, ocl_output, 256, 0, 256-1);  
+    auto ocl_output = cle.Create<type>({5,1,1}, "image");
+    cle.Histogram(oclArray_A, ocl_output, 5);  
     auto output = cle.Pull<type>(ocl_output); 
     return output; 
 }
@@ -63,17 +59,17 @@ bool test(size_t width, size_t height, size_t depth)
 
 int main(int argc, char **argv)
 {
-    if (test<float>(10, 5, 2))
+    if (test<float>(3, 2, 2))
     {
         std::cerr << "Histogram kernel 3d ... FAILED! " << std::endl;
         return EXIT_FAILURE;
     }
-    if (test<float>(10, 5, 1))
+    if (test<float>(6, 2, 1))
     {
         std::cerr << "Histogram kernel 2d ... FAILED! " << std::endl;
         return EXIT_FAILURE;
     }
-    if (test<float>(10, 1, 1))
+    if (test<float>(12, 1, 1))
     {        
         std::cerr << "Histogram kernel 1d ... FAILED! " << std::endl;
         return EXIT_FAILURE;

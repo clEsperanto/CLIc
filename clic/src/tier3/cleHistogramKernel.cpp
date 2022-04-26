@@ -93,7 +93,6 @@ void HistogramKernel::Execute()
     sum.SetInput(partial_hist);
     sum.SetOutput(*dst);
     sum.Execute();
-
 }
 
 } // namespace cle

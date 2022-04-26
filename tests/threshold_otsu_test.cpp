@@ -11,35 +11,9 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
 {
     arr_1.resize(width*height*depth);
     valid.resize(width*height*depth);
-    if(depth>1)
-    {
-        arr_1 = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f,
-                 6.0f, 7.0f, 8.0f, 9.0f, 10.0f,
-                 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 
-                 14.0f, 13.0f, 12.0f, 11.0f, 10.0f, 
-                 9.0f, 8.0f, 7.0f, 6.0f, 5.0f,
-                 4.0f, 3.0f, 2.0f, 1.0f, 0.0f}; // 7.001953
-        valid = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-                 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 
-                 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 
-                 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 
-                 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 
-                 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    }
-    else if(height>1)
-    {
-        arr_1 = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 
-                 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 
-                 11.0f, 12.0f, 13.0f, 14.0f, 15.0f}; // 6.9882812
-        valid = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 
-                 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-                 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
-    }
-    else
-    {
-        arr_1 = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f};  // 4.9902344
-        valid = {0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
-    }
+
+    arr_1 = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f};  // 6.0058594 skimage
+    valid = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};     // 6.00392 clic
 
     return std::array<size_t,3> {width, height, depth};
 }
@@ -91,17 +65,17 @@ bool test(size_t width, size_t height, size_t depth)
 
 int main(int argc, char **argv)
 {
-    if (test<float>(5, 3, 2))
+    if (test<float>(3, 2, 2))
     {
         std::cerr << "ThresholdOtsu kernel 3d ... FAILED! " << std::endl;
         return EXIT_FAILURE;
     }
-    if (test<float>(5, 3,  1))
+    if (test<float>(6, 2,  1))
     {
         std::cerr << "ThresholdOtsu kernel 2d ... FAILED! " << std::endl;
         return EXIT_FAILURE;
     }
-    if (test<float>(10,  1,  1))
+    if (test<float>(12,  1,  1))
     {        
         std::cerr << "ThresholdOtsu kernel 1d ... FAILED! " << std::endl;
         return EXIT_FAILURE;
