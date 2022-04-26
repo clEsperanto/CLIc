@@ -53,24 +53,24 @@ void HistogramKernel::SetNumBins(unsigned int t_bin)
 void HistogramKernel::Execute()
 {
     auto dst = this->GetParameter<Object>("histogram");
+    auto src = this->GetParameter<Object>("src");
     size_t nb_bins = this->GetConstant("NUMBER_OF_HISTOGRAM_BINS");
 
     // set min-max intensity of src, if not provided.
     if(this->m_MinIntensity == std::numeric_limits<float>::infinity() ||
        this->m_MaxIntensity == std::numeric_limits<float>::infinity() )
     {
-        auto input = this->GetParameter<Object>("src");
         auto temp_scalar_buffer = this->m_gpu->Create<float>({1,1,1});
         float temp_scalar_intensity;
 
         MinimumOfAllPixelsKernel minimum_intensity_kernel(this->m_gpu);
-        minimum_intensity_kernel.SetInput(*input);
+        minimum_intensity_kernel.SetInput(*src);
         minimum_intensity_kernel.SetOutput(temp_scalar_buffer);
         minimum_intensity_kernel.Execute();
         this->m_MinIntensity = this->m_gpu->Pull<float>(temp_scalar_buffer).front();
 
         MaximumOfAllPixelsKernel maximum_intensity_kernel(this->m_gpu);
-        maximum_intensity_kernel.SetInput(*input);
+        maximum_intensity_kernel.SetInput(*src);
         maximum_intensity_kernel.SetOutput(temp_scalar_buffer);
         maximum_intensity_kernel.Execute();
         this->m_MaxIntensity = this->m_gpu->Pull<float>(temp_scalar_buffer).front();
@@ -79,7 +79,7 @@ void HistogramKernel::Execute()
     this->AddObject(this->m_MaxIntensity, "maximum");
 
     // create partial histogram step
-    size_t nb_temp_hist = this->GetParameter<Object>("src")->Shape()[1];
+    size_t nb_temp_hist = src->Shape()[1];
     auto partial_hist = this->m_gpu->Create<float>({nb_bins,1,nb_temp_hist});
     this->AddObject(partial_hist, "dst");
 
