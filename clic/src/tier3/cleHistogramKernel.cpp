@@ -86,6 +86,7 @@ void HistogramKernel::Execute()
     // run histogram kernel
     this->BuildProgramKernel();
     this->SetArguments();
+    this->SetGlobalNDRange({nb_temp_hist,1,1});
     this->EnqueueKernel();
 
     // run projection
