@@ -3,7 +3,8 @@
 
 #include "cleMaximumOfAllPixelsKernel.hpp"
 #include "cleMinimumOfAllPixelsKernel.hpp"
-#include "cleSumYProjectionKernel.hpp"
+#include "cleSumZProjectionKernel.hpp"
+#include "utils.hpp"
 
 namespace cle
 {
@@ -52,7 +53,7 @@ void HistogramKernel::SetNumBins(unsigned int t_bin)
 void HistogramKernel::Execute()
 {
     auto dst = this->GetParameter<Object>("histogram");
-    size_t nb_int = this->GetConstant("NUMBER_OF_HISTOGRAM_BINS");
+    size_t nb_bins = this->GetConstant("NUMBER_OF_HISTOGRAM_BINS");
 
     // set min-max intensity of src, if not provided.
     if(this->m_MinIntensity == std::numeric_limits<float>::infinity() ||
@@ -79,7 +80,7 @@ void HistogramKernel::Execute()
 
     // create partial histogram step
     size_t nb_temp_hist = this->GetParameter<Object>("src")->Shape()[1];
-    auto partial_hist = this->m_gpu->Create<float>({nb_int,nb_temp_hist,1});
+    auto partial_hist = this->m_gpu->Create<float>({nb_bins,1,nb_temp_hist});
     this->AddObject(partial_hist, "dst");
 
     // run histogram kernel
@@ -88,7 +89,7 @@ void HistogramKernel::Execute()
     this->EnqueueKernel();
 
     // run projection
-    SumYProjectionKernel sum(this->m_gpu);
+    SumZProjectionKernel sum(this->m_gpu);
     sum.SetInput(partial_hist);
     sum.SetOutput(*dst);
     sum.Execute();

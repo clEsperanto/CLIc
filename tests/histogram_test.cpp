@@ -25,7 +25,7 @@ std::vector<type> run_kernel_with_buffer(std::vector<type>& arr_1, std::array<si
     auto oclArray_A = cle.Push<type>(arr_1, shape);
     auto ocl_output = cle.Create<type>({256,1,1});
     cle.Histogram(oclArray_A, ocl_output, 256, 0, 256-1);  
-    auto output = cle.Pull<type>(ocl_output);  
+    auto output = cle.Pull<type>(ocl_output); 
     return output; 
 }
 
@@ -37,7 +37,7 @@ std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::array<siz
     auto oclArray_A = cle.Push<type>(arr_1, shape, "image");
     auto ocl_output = cle.Create<type>({256,1,1}, "image");
     cle.Histogram(oclArray_A, ocl_output, 256, 0, 256-1);  
-    auto output = cle.Pull<type>(ocl_output);  
+    auto output = cle.Pull<type>(ocl_output); 
     return output; 
 }
 
