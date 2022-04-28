@@ -106,6 +106,7 @@ public:
     void SumReductionX(Object&, Object&, int=0);
 
     void ThresholdOtsu(Object&, Object&);
+    void TopHatBox(Object&, Object&, float=1, float=1, float=1);
 
     void VoronoiOtsuLabeling(Object&, Object&, float=2, float=2);
 };

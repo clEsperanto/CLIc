@@ -568,5 +568,13 @@ void Clesperanto::ExtendLabelingViaVoronoi(Object& t_src, Object& t_dst)
     kernel.Execute();
 }
 
+void Clesperanto::TopHatBox(Object& t_src, Object& t_dst, float t_radius_x, float t_radius_y, float t_radius_z)
+{
+    TopHatBoxKernel kernel(this->m_gpu);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetRadius(t_radius_x, t_radius_y, t_radius_z);
+    kernel.Execute();
+}
 
 }
