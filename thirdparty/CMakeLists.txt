@@ -10,12 +10,4 @@ if(OpenCL_FOUND)
     set(OpenCL_INCLUDE_DIR ${OpenCL_HEADERS_DIR} ${OpenCL_CLHPP_DIR} CACHE PATH "Path to opencl (header and clhpp)" FORCE)
     #set(OpenCL_VERSION "${OpenCL_VERSION_MAJOR}${OpenCL_VERSION_MINOR}0" CACHE STRING "OpenCL version" FORCE)
     set(OpenCL_VERSION "120" CACHE STRING "OpenCL version" FORCE)
-
-# message(STATUS "OpenCL_FOUND:${OpenCL_FOUND}")         
-# message(STATUS "OpenCL_INCLUDE_DIRS:${OpenCL_INCLUDE_DIRS}")  
-# message(STATUS "OpenCL_LIBRARIES:${OpenCL_LIBRARIES}")     
-# message(STATUS "OpenCL_VERSION_STRING:${OpenCL_VERSION_STRING}")
-# message(STATUS "OpenCL_INCLUDE_DIR:${OpenCL_INCLUDE_DIR}")   
-# message(STATUS "OpenCL_LIBRARY:${OpenCL_LIBRARY}")       
-
 endif()
