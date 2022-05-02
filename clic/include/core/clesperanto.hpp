@@ -50,6 +50,8 @@ public:
     void DifferenceOfGaussian(Object&, Object&, float=0, float=0, float=0, float=1, float=1, float=0);
     void DetectMaximaBox(Object&, Object&, int=1, int=1, int=1);
     void DivideImages(Object&, Object&, Object&);
+    void DilateLabels(Object&, Object&, int =1);
+
 
     void ErodeSphere(Object&, Object&);
     void Equal(Object&, Object&, Object&);

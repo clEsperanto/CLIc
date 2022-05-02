@@ -605,5 +605,14 @@ void Clesperanto::SubtractImageFromScalar(Object& t_src, Object& t_dst, float t_
     kernel.Execute();
 }
 
+void Clesperanto::DilateLabels(Object& t_src, Object& t_dst, int t_radius)
+{
+    DilateLabelsKernel kernel(this->m_gpu);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetRadius(t_radius);
+    kernel.Execute();
+}
+
 
 }

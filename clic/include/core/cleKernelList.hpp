@@ -16,6 +16,7 @@
 #include "cleCustomKernel.hpp"
 #include "cleDetectMaximaKernel.hpp"
 #include "cleDifferenceOfGaussianKernel.hpp"
+#include "cleDilateLabelsKernel.hpp"
 #include "cleDilateSphereKernel.hpp"
 #include "cleDivideImagesKernel.hpp"
 #include "cleEqualConstantKernel.hpp"
