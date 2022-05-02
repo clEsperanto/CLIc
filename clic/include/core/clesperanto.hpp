@@ -106,6 +106,7 @@ public:
     void SumOfAllPixels(Object&, Object&);
     void SetColumn(Object&, int=0, float=0);
     void SumReductionX(Object&, Object&, int=0);
+    void SubtractImageFromScalar(Object&, Object&, float =0);
 
     void ThresholdOtsu(Object&, Object&);
     void TopHatBox(Object&, Object&, float=1, float=1, float=1);

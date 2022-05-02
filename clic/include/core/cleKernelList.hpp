@@ -61,6 +61,7 @@
 #include "cleSmallerOrEqualConstantKernel.hpp"
 #include "cleSmallerOrEqualKernel.hpp"
 #include "cleSobelKernel.hpp"
+#include "cleSubtractImageFromScalarKernel.hpp"
 #include "cleSumOfAllPixelsKernel.hpp"
 #include "cleSumReductionXKernel.hpp"
 #include "cleSumXProjectionKernel.hpp"

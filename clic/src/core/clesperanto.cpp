@@ -596,5 +596,14 @@ void Clesperanto::DivideImages(Object& t_src1, Object& t_src2, Object& t_dst)
     kernel.Execute();
 }
 
+void Clesperanto::SubtractImageFromScalar(Object& t_src, Object& t_dst, float t_scalar)
+{
+    SubtractImageFromScalarKernel kernel(this->m_gpu);
+    kernel.SetInput(t_src);
+    kernel.SetOutput(t_dst);
+    kernel.SetScalar(t_scalar);
+    kernel.Execute();
+}
+
 
 }
