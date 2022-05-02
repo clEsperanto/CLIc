@@ -392,11 +392,12 @@ void Clesperanto::SetNonzeroPixelsToPixelindex(Object& t_src, Object& t_dst)
     kernel.Execute();  
 }
 
-void Clesperanto::DetectMaximaBox(Object& t_src, Object& t_dst)
+void Clesperanto::DetectMaximaBox(Object& t_src, Object& t_dst, int t_radius_x, int t_radius_y, int t_radius_z)
 {
     DetectMaximaKernel kernel(this->m_gpu);
     kernel.SetInput(t_src);
     kernel.SetOutput(t_dst);
+    kernel.SetRadius(t_radius_x, t_radius_y, t_radius_z);
     kernel.Execute();  
 }
 
@@ -576,5 +577,24 @@ void Clesperanto::TopHatBox(Object& t_src, Object& t_dst, float t_radius_x, floa
     kernel.SetRadius(t_radius_x, t_radius_y, t_radius_z);
     kernel.Execute();
 }
+
+void Clesperanto::MultiplyImages(Object& t_src1, Object& t_src2, Object& t_dst)
+{
+    MultiplyImagesKernel kernel(this->m_gpu);
+    kernel.SetInput1(t_src1);
+    kernel.SetInput2(t_src2);
+    kernel.SetOutput(t_dst);
+    kernel.Execute();
+}
+
+void Clesperanto::DivideImages(Object& t_src1, Object& t_src2, Object& t_dst)
+{
+    DivideImagesKernel kernel(this->m_gpu);
+    kernel.SetInput1(t_src1);
+    kernel.SetInput2(t_src2);
+    kernel.SetOutput(t_dst);
+    kernel.Execute();
+}
+
 
 }

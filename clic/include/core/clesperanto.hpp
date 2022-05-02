@@ -48,7 +48,8 @@ public:
 
     void DilateSphere(Object&, Object&);
     void DifferenceOfGaussian(Object&, Object&, float=0, float=0, float=0, float=1, float=1, float=0);
-    void DetectMaximaBox(Object&, Object&);
+    void DetectMaximaBox(Object&, Object&, int=1, int=1, int=1);
+    void DivideImages(Object&, Object&, Object&);
 
     void ErodeSphere(Object&, Object&);
     void Equal(Object&, Object&, Object&);
@@ -79,6 +80,7 @@ public:
     void MinimumXProjection(Object&, Object&);
     void MinimumOfAllPixels(Object&, Object&);
     void MeanSphere(Object&, Object&, int=1, int=1, int=0);
+    void MultiplyImages(Object&, Object&, Object&);
 
     void NonzeroMinimumBox(Object&, Object&, Object&);
     void NotEqual(Object&, Object&, Object&);
