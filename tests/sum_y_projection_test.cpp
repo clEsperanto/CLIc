@@ -8,7 +8,7 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
                                    std::vector<type>& valid, size_t width, size_t height, size_t depth)
 {
     arr_1.resize(width*height*depth);
-    valid.resize(1*height*depth);
+    valid.resize(width*1*depth);
     std::fill(arr_1.begin(), arr_1.end(), static_cast<type>(1));
     std::fill(valid.begin(), valid.end(), static_cast<type>(height));
     return std::array<size_t,3> {width, height, depth};
@@ -20,7 +20,7 @@ std::vector<type> run_kernel_with_buffer(std::vector<type>& arr_1, std::array<si
     cle::Clesperanto cle;
     cle.Ressources()->SetWaitForKernelToFinish(true);
     auto oclArray_A = cle.Push<type>(arr_1, shape);
-    auto ocl_output = cle.Create<type>({shape[2], shape[1], 1});
+    auto ocl_output = cle.Create<type>({shape[0], shape[2], 1});
     cle.SumYProjection(oclArray_A, ocl_output);  
     auto output = cle.Pull<type>(ocl_output); 
     return output; 
@@ -32,7 +32,7 @@ std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::array<siz
     cle::Clesperanto cle;
     cle.Ressources()->SetWaitForKernelToFinish(true);
     auto oclArray_A = cle.Push<type>(arr_1, shape, "image");
-    auto ocl_output = cle.Create<type>({shape[2], shape[1], 1}, "image");
+    auto ocl_output = cle.Create<type>({shape[0], shape[2], 1}, "image");
     cle.SumYProjection(oclArray_A, ocl_output);  
     auto output = cle.Pull<type>(ocl_output);  
     return output; 
