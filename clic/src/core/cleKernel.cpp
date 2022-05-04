@@ -317,7 +317,7 @@ bool Kernel::SetGlobalNDRange(const char* t_tag)
     try
     {
         auto object = this->GetParameter<Object>(t_tag);
-        this->m_GlobalRange = object->Shape();
+        this->m_globalND = this->ComputeNDRange(object->Shape()); 
         return true; 
     }
     catch(const std::exception &err_dst)
@@ -328,23 +328,44 @@ bool Kernel::SetGlobalNDRange(const char* t_tag)
 
 bool Kernel::SetGlobalNDRange(const std::array<size_t,3>& t_shape)
 {
-    this->m_GlobalRange = t_shape; 
+    this->m_globalND = this->ComputeNDRange(t_shape); 
     return true;
+}
+
+cl::NDRange Kernel::ComputeNDRange(const std::array<size_t,3>& t_shape)
+{
+    if (t_shape[2] > 1)
+    {
+        return cl::NDRange (t_shape[0], t_shape[1], t_shape[2]); 
+    }
+    else
+    {
+        if (t_shape[1] > 1)
+        {
+            return cl::NDRange (t_shape[0], t_shape[1]); 
+        }
+        else
+        {
+            return cl::NDRange (t_shape[0]); 
+        }
+    }
 }
 
 void Kernel::EnqueueKernel()
 {
-    if(this->m_GlobalRange[0] == 0 && this->m_GlobalRange[1] == 0 && this->m_GlobalRange[2] == 0)
+    if(this->m_globalND.dimensions() == 0)
     {
         if(!this->SetGlobalNDRange("dst"))
         {
             throw std::runtime_error("Error in \"Kernel::EnqueueKernel()\". Default GlobalNDRange could not be set. Provide a specific GlobalNDRange using \'Kernel::SetGlobalNDRange()\'.\n");
         }
     }
-    cl::NDRange globalND(this->m_GlobalRange[0], this->m_GlobalRange[1], this->m_GlobalRange[2]);  
+    // cl::NDRange globalND(this->m_GlobalRange[0], this->m_GlobalRange[1], this->m_GlobalRange[2]); 
+    // cl::NDRange globalND(this->m_GlobalRange[0], this->m_GlobalRange[1]);  
+    // std::cout << "NDRANGE= " << this->m_globalND[0] << "," << this->m_globalND[1] << "," << this->m_globalND[2] << "\n";
     try
     {
-        this->m_gpu->CommandQueue().enqueueNDRangeKernel(this->m_Kernel, cl::NullRange, globalND, cl::NullRange);
+        this->m_gpu->CommandQueue().enqueueNDRangeKernel(this->m_Kernel, cl::NullRange, this->m_globalND, cl::NullRange);
     }
     catch(const cl::Error& e)
     {

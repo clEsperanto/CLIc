@@ -55,6 +55,7 @@ protected:
 
     /// Device global range
     std::array<size_t, 3> m_GlobalRange = {{0, 0, 0}};
+    cl::NDRange m_globalND;
 
     /// kernel specifics parameters to be defined in subclass
     std::string m_KernelName ="";
@@ -164,6 +165,14 @@ protected:
      * @param t_shape shape to use. 
      */
     bool SetGlobalNDRange(const std::array<size_t,3>& t_shape);
+
+    /**
+     * @brief Convert buffer or image shape into GlobalNDRange
+     * 
+     * @param t_shape 3d shape array
+     * @return cl::NDRange 
+     */
+    cl::NDRange ComputeNDRange(const std::array<size_t,3>& t_shape);
 
     /**
      * @brief Enqueue Kernel in the device command queue for execution.
