@@ -359,10 +359,7 @@ void Kernel::EnqueueKernel()
         {
             throw std::runtime_error("Error in \"Kernel::EnqueueKernel()\". Default GlobalNDRange could not be set. Provide a specific GlobalNDRange using \'Kernel::SetGlobalNDRange()\'.\n");
         }
-    }
-    // cl::NDRange globalND(this->m_GlobalRange[0], this->m_GlobalRange[1], this->m_GlobalRange[2]); 
-    // cl::NDRange globalND(this->m_GlobalRange[0], this->m_GlobalRange[1]);  
-    // std::cout << "NDRANGE= " << this->m_globalND[0] << "," << this->m_globalND[1] << "," << this->m_globalND[2] << "\n";
+    } 
     try
     {
         this->m_gpu->CommandQueue().enqueueNDRangeKernel(this->m_Kernel, cl::NullRange, this->m_globalND, cl::NullRange);
