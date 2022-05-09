@@ -13,7 +13,14 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1,
     std::fill(valid.begin(), valid.end(), static_cast<type>(0));
     int center = (width/2) + (height/2)*width + (depth/2)*width*height;
     arr_1[center] = static_cast<type>(10);
-    valid[center] = static_cast<type>(1);
+    if (height > 1)
+    {
+        valid[center-width-1] = static_cast<type>(1);
+    }   
+    else
+    {
+        valid[center-1] = static_cast<type>(1);
+    }
     return std::array<size_t,3> {width, height, depth};
 }
 
@@ -24,7 +31,7 @@ std::vector<type> run_kernel_with_buffer(std::vector<type>& arr_1, std::array<si
     cle.Ressources()->SetWaitForKernelToFinish(true);
     auto oclArray_A = cle.Push<type>(arr_1, shape);
     auto ocl_output = cle.Create<type>(shape);
-    cle.DetectMaximaBox(oclArray_A, ocl_output);  
+    cle.DetectMaximaBox(oclArray_A, ocl_output, 1, 1, 0);  
     auto output = cle.Pull<type>(ocl_output); 
     return output; 
 }
@@ -36,7 +43,7 @@ std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::array<siz
     cle.Ressources()->SetWaitForKernelToFinish(true);
     auto oclArray_A = cle.Push<type>(arr_1, shape, "image");
     auto ocl_output = cle.Create<type>(shape, "image");
-    cle.DetectMaximaBox(oclArray_A, ocl_output);  
+    cle.DetectMaximaBox(oclArray_A, ocl_output, 1, 1, 0); 
     auto output = cle.Pull<type>(ocl_output);  
     return output; 
 }
@@ -63,17 +70,17 @@ bool test(size_t width, size_t height, size_t depth)
 
 int main(int argc, char **argv)
 {
-    if (test<float>(5, 3, 2))
+    if (test<float>(9, 7, 3))
     {
         std::cerr << "DetectMaximaBox kernel 3d ... FAILED! " << std::endl;
         return EXIT_FAILURE;
     }
-    if (test<float>(5, 3, 1))
+    if (test<float>(9, 7, 1))
     {
         std::cerr << "DetectMaximaBox kernel 2d ... FAILED! " << std::endl;
         return EXIT_FAILURE;
     }
-    if (test<float>(5, 1, 1))
+    if (test<float>(9, 1, 1))
     {        
         std::cerr << "DetectMaximaBox kernel 1d ... FAILED! " << std::endl;
         return EXIT_FAILURE;
