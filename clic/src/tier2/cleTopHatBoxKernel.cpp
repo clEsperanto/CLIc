@@ -25,7 +25,7 @@ void TopHatBoxKernel::SetOutput(Object& t_x)
     this->AddObject(t_x, "dst");
 }
 
-void TopHatBoxKernel::SetRadius(float t_x, float t_y, float t_z)
+void TopHatBoxKernel::SetRadius(int t_x, int t_y, int t_z)
 {
     this->m_x = t_x;
     this->m_y = t_y;

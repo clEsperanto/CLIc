@@ -13,13 +13,13 @@ public:
     TopHatBoxKernel(std::shared_ptr<GPU>);
     void SetInput(Object&);
     void SetOutput(Object&);
-    void SetRadius(float =1, float =1, float =1);
+    void SetRadius(int =0, int =0, int =0);
     void Execute();
 
 private:
-    float m_x =1;
-    float m_y =1;
-    float m_z =1;
+    int m_x =0;
+    int m_y =0;
+    int m_z =0;
 };
 
 } // namespace cle

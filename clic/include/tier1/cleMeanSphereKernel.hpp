@@ -18,7 +18,7 @@ public:
     MeanSphereKernel(std::shared_ptr<GPU>);
     void SetInput(Object&);
     void SetOutput(Object&);
-    void SetRadius(int=0, int=0, int=0);
+    void SetRadius(float=0, float=0, float=0);
     void Execute();
 
 private:

@@ -131,7 +131,7 @@ void Clesperanto::GaussianBlur(Object& t_src, Object& t_dst, float t_sigmaX, flo
     kernel.Execute();
 }
 
-void Clesperanto::MaximumBox(Object& t_src, Object& t_dst, float t_radius_x, float t_radius_y, float t_radius_z)
+void Clesperanto::MaximumBox(Object& t_src, Object& t_dst, int t_radius_x, int t_radius_y, int t_radius_z)
 {
     MaximumBoxKernel kernel(this->m_gpu);
     kernel.SetInput(t_src);
@@ -140,7 +140,7 @@ void Clesperanto::MaximumBox(Object& t_src, Object& t_dst, float t_radius_x, flo
     kernel.Execute();
 }
 
-void Clesperanto::MinimumBox(Object& t_src, Object& t_dst, float t_radius_x, float t_radius_y, float t_radius_z)
+void Clesperanto::MinimumBox(Object& t_src, Object& t_dst, int t_radius_x, int t_radius_y, int t_radius_z)
 {
     MinimumBoxKernel kernel(this->m_gpu);
     kernel.SetInput(t_src);
@@ -149,7 +149,7 @@ void Clesperanto::MinimumBox(Object& t_src, Object& t_dst, float t_radius_x, flo
     kernel.Execute();
 }
 
-void Clesperanto::MeanBox(Object& t_src, Object& t_dst, float t_radius_x, float t_radius_y, float t_radius_z)
+void Clesperanto::MeanBox(Object& t_src, Object& t_dst, int t_radius_x, int t_radius_y, int t_radius_z)
 {
     MeanBoxKernel kernel(this->m_gpu);
     kernel.SetInput(t_src);
@@ -569,7 +569,7 @@ void Clesperanto::ExtendLabelingViaVoronoi(Object& t_src, Object& t_dst)
     kernel.Execute();
 }
 
-void Clesperanto::TopHatBox(Object& t_src, Object& t_dst, float t_radius_x, float t_radius_y, float t_radius_z)
+void Clesperanto::TopHatBox(Object& t_src, Object& t_dst, int t_radius_x, int t_radius_y, int t_radius_z)
 {
     TopHatBoxKernel kernel(this->m_gpu);
     kernel.SetInput(t_src);

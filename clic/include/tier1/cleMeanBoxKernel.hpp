@@ -18,14 +18,14 @@ public:
     MeanBoxKernel(std::shared_ptr<GPU>);
     void SetInput(Object&);
     void SetOutput(Object&);
-    void SetRadius(float=0, float=0, float=0);
+    void SetRadius(int=0, int=0, int=0);
     void Execute();
 
 private:
-    float m_x;
-    float m_y;
-    float m_z;
-    int Radius2KernelSize(float) const;
+    int m_x;
+    int m_y;
+    int m_z;
+    int Radius2KernelSize(int) const;
 };
 
 } // namespace cle

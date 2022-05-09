@@ -48,7 +48,7 @@ public:
 
     void DilateSphere(Object&, Object&);
     void DifferenceOfGaussian(Object&, Object&, float=0, float=0, float=0, float=1, float=1, float=0);
-    void DetectMaximaBox(Object&, Object&, int=1, int=1, int=1);
+    void DetectMaximaBox(Object&, Object&, int=0, int=0, int=0);
     void DivideImages(Object&, Object&, Object&);
     void DilateLabels(Object&, Object&, int =1);
 
@@ -68,9 +68,9 @@ public:
     
     void Histogram(Object&, Object&, int =256, float =std::numeric_limits<float>::infinity(), float =std::numeric_limits<float>::infinity());
 
-    void MeanBox(Object&, Object&, float=1, float=1, float=0);
-    void MaximumBox(Object&, Object&, float=1, float=1, float=0);
-    void MinimumBox(Object&, Object&, float=1, float=1, float=0);
+    void MeanBox(Object&, Object&, int=1, int=1, int=1);
+    void MaximumBox(Object&, Object&, int=1, int=1, int=1);
+    void MinimumBox(Object&, Object&, int=1, int=1, int=1);
     void Mask(Object&, Object&, Object&);
     void MaskedVoronoiLabeling(Object&, Object&, Object&);
     void MaximumZProjection(Object&, Object&);
@@ -111,9 +111,9 @@ public:
     void SubtractImageFromScalar(Object&, Object&, float =0);
 
     void ThresholdOtsu(Object&, Object&);
-    void TopHatBox(Object&, Object&, float=1, float=1, float=1);
+    void TopHatBox(Object&, Object&, int=1, int=1, int=1);
 
-    void VoronoiOtsuLabeling(Object&, Object&, float=2, float=2);
+    void VoronoiOtsuLabeling(Object&, Object&, float=1, float=1);
 };
 
     template<class T>

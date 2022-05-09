@@ -15,7 +15,7 @@ MinimumBoxKernel::MinimumBoxKernel(std::shared_ptr<GPU> t_gpu) :
     this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
 }    
 
-int MinimumBoxKernel::Radius2KernelSize(float t_r) const
+int MinimumBoxKernel::Radius2KernelSize(int t_r) const
 {
     return static_cast<int>(t_r) * 2 + 1;
 }
@@ -30,7 +30,7 @@ void MinimumBoxKernel::SetOutput(Object& t_x)
     this->AddObject(t_x, "dst");
 }
 
-void MinimumBoxKernel::SetRadius(float t_x, float t_y, float t_z)
+void MinimumBoxKernel::SetRadius(int t_x, int t_y, int t_z)
 {
     this->m_x = t_x;
     this->m_y = t_y;

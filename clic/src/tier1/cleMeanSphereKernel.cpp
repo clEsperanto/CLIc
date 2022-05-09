@@ -18,7 +18,7 @@ int MeanSphereKernel::Radius2KernelSize(float t_r) const
     return static_cast<int>(t_r) * 2 + 1;
 }
 
-void MeanSphereKernel::SetRadius(int t_x, int t_y, int t_z)
+void MeanSphereKernel::SetRadius(float t_x, float t_y, float t_z)
 {
     int dx = Radius2KernelSize(t_x);
     this->AddObject(dx, "scalar0");

@@ -15,7 +15,7 @@ MaximumBoxKernel::MaximumBoxKernel(std::shared_ptr<GPU> t_gpu) :
     this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
 }    
 
-int MaximumBoxKernel::Radius2KernelSize(float t_r) const
+int MaximumBoxKernel::Radius2KernelSize(int t_r) const
 {
     return static_cast<int>(t_r) * 2 + 1;
 }
@@ -30,7 +30,7 @@ void MaximumBoxKernel::SetOutput(Object& t_x)
     this->AddObject(t_x, "dst");
 }
 
-void MaximumBoxKernel::SetRadius(float x, float y, float z)
+void MaximumBoxKernel::SetRadius(int x, int y, int z)
 {
     this->m_x = x;
     this->m_y = y;
