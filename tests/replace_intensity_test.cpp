@@ -11,18 +11,17 @@ std::array<size_t,3> generate_data(std::vector<type>& arr_1, std::vector<type>& 
     std::fill(valid.begin(), valid.end(), static_cast<type>(0));
     type value = 0;
     for (auto it1 = arr_1.begin(), it_valid = valid.begin(); 
-              (it1 != arr_1.end()) && (it_valid != valid.end()); ++it1, ++it_valid)
+             (it1 != arr_1.end()) && (it_valid != valid.end()); ++it1, ++it_valid)
     {
         if ( (it1 - arr_1.begin()) % 2 == 0)
         {
-            *it1 = static_cast<type>(scalar_1);
-            *it_valid = static_cast<type>(scalar_2);
+            *it1 = 0;
+            *it_valid = 10;
         }
         else
         {
-            value = static_cast<type>((int) rand() % 4);
-            *it1 = value;
-            *it_valid = value;
+            *it1 = 5;
+            *it_valid = 5;
         }
     }
     return std::array<size_t,3> {width, height, depth};
@@ -55,7 +54,7 @@ std::vector<type> run_kernel_with_image(std::vector<type>& arr, std::array<size_
 template<class type>
 bool test(size_t width, size_t height, size_t depth)
 {
-    float scalar_1 (rand() % 100), scalar_2 (rand() % 100);
+    float scalar_1 (0), scalar_2 (10);
     std::vector<type> arr_1, valid;
     std::array<size_t,3> shape = generate_data<type>(arr_1, valid, width, height, depth, scalar_1, scalar_2);
     auto output_buffer = run_kernel_with_buffer<type>(arr_1, shape, scalar_1, scalar_2);
