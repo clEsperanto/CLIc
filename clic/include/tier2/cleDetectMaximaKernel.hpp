@@ -17,12 +17,12 @@ public:
     DetectMaximaKernel(std::shared_ptr<GPU>);
     void SetInput(Object&);
     void SetOutput(Object&);
-    void SetRadius(int =1, int =1, int =1);
+    void SetRadius(int =0, int =0, int =0);
     void Execute();
 private:
-    int m_x = 1;
-    int m_y = 1;
-    int m_z = 1;
+    int m_x = 0;
+    int m_y = 0;
+    int m_z = 0;
 };
 
 } // namespace cle

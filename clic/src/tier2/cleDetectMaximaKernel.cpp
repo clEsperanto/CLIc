@@ -3,6 +3,8 @@
 #include "cleCopyKernel.hpp"
 #include "cleDetectMaximaKernel.hpp"
 
+#include "utils.hpp"
+
 namespace cle
 {
 
@@ -34,15 +36,15 @@ void DetectMaximaKernel::SetRadius(int t_x, int t_y, int t_z)
 
 void DetectMaximaKernel::Execute()
 {
-    auto src = this->GetParameter<Object>("src");
-    auto dst = this->GetParameter<Object>("dst");
-    if (this->m_x > 2 || this->m_z > 2 || this->m_z > 2)
+    if (this->m_x > 0 || this->m_z > 0 || this->m_z > 0)
     {
+        auto src = this->GetParameter<Object>("src");
+        auto dst = this->GetParameter<Object>("dst");
         MeanBoxKernel mean(this->m_gpu);
         mean.SetInput(*src);
-        mean.SetInput(*dst);
+        mean.SetOutput(*dst);
         mean.SetRadius(m_x,m_y,m_z);
-        mean.Execute();
+        mean.Execute();        
         CopyKernel copy(this->m_gpu);
         copy.SetInput(*dst);
         copy.SetOutput(*src);
