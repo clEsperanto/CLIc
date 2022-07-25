@@ -1,4 +1,5 @@
 #include "cleExecuteSeparableKernel.hpp"
+#include "cleCopyKernel.hpp"
 #include "cleMemory.hpp"
 #include "cleSeparableKernel.hpp"
 
@@ -41,9 +42,10 @@ ExecuteSeparableKernel::Execute ()
 
     // * check src/dst is float type ?
 
-    auto temp1 = Memory::AllocateObject (*dst); // ! replace with generic copy allocator to adapt Image and Buffer
-    auto temp2 = Memory::AllocateObject (*dst); // ! replace with generic copy allocator to adapt Image and Buffer
+    auto temp1 = Memory::AllocateObject (*dst);
+    auto temp2 = Memory::AllocateObject (*dst);
 
+    CopyKernel copy (this->Device ());
     SeparableKernel kernel (this->Device ());
     kernel.SetSource (this->GetName (), this->GetSource ());
     if (dst->Shape ()[0] > 1 && this->sigma_[0] > 0)
@@ -57,7 +59,10 @@ ExecuteSeparableKernel::Execute ()
         }
     else
         {
-            src->CopyDataTo (temp1); // * replace by copy kernel ?
+            copy.SetInput (*src);
+            copy.SetOutput (temp1);
+            copy.Execute ();
+            // src->CopyDataTo (temp1); // * Byte-wise copy ?
         }
     if (dst->Shape ()[1] > 1 && this->sigma_[1] > 0)
         {
@@ -70,7 +75,10 @@ ExecuteSeparableKernel::Execute ()
         }
     else
         {
-            temp1.CopyDataTo (temp2); // * replace by copy kernel ?
+            copy.SetInput (temp1);
+            copy.SetOutput (temp2);
+            copy.Execute ();
+            // temp1.CopyDataTo (temp2); // * Byte-wise copy ?
         }
     if (dst->Shape ()[2] > 1 && this->sigma_[2] > 0)
         {
@@ -83,7 +91,10 @@ ExecuteSeparableKernel::Execute ()
         }
     else
         {
-            temp2.CopyDataTo (*dst); // * replace by copy kernel ?
+            copy.SetInput (temp2);
+            copy.SetOutput (*dst);
+            copy.Execute ();
+            // temp2.CopyDataTo (*dst); // * Byte-wise copy ?
         }
 }
 
