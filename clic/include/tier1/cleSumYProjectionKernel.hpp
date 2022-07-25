@@ -1,27 +1,21 @@
 
 
-#ifndef __cleSumYProjectionKernel_hpp
-#define __cleSumYProjectionKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLESUMYPROJECTIONKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLESUMYPROJECTIONKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class SumYProjectionKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_sum_y_projection.h" 
-        };
 
-public:
-    SumYProjectionKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void Execute();
+class SumYProjectionKernel : public Operation
+{
+  public:
+    explicit SumYProjectionKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleSumYProjectionKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLESUMYPROJECTIONKERNEL_HPP

@@ -5,41 +5,37 @@
 namespace cle
 {
 
-BlockEnumerateKernel::BlockEnumerateKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "block_enumerate",
-            {"src0", "src1", "dst", "index"}
-    )
+BlockEnumerateKernel::BlockEnumerateKernel (const ProcessorPointer &device) : Operation (device, 4)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+    std::string cl_header = {
+#include "cle_block_enumerate.h"
+    };
+    this->SetSource ("cle_block_enumerate", cl_header);
 }
 
-void BlockEnumerateKernel::SetInput(Object& t_x)
+void
+BlockEnumerateKernel::SetInput (const Image &object)
 {
-    this->AddObject(t_x, "src0");
+    this->AddParameter ("src0", object);
 }
 
-void BlockEnumerateKernel::SetInputSums(Object& t_x)
+void
+BlockEnumerateKernel::SetInputSums (const Image &object)
 {
-    this->AddObject(t_x, "src1");
+    this->AddParameter ("src1", object);
+    this->SetRange ("src1");
 }
 
-void BlockEnumerateKernel::SetOutput(Object& t_x)
+void
+BlockEnumerateKernel::SetOutput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("dst", object);
 }
 
-void BlockEnumerateKernel::SetBlocksize(int t_x)
+void
+BlockEnumerateKernel::SetBlocksize (const int &value)
 {
-    this->AddObject(t_x, "index");
-}
-
-void BlockEnumerateKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->SetGlobalNDRange("src1");
-    this->EnqueueKernel();
+    this->AddParameter ("index", value);
 }
 
 } // namespace cle

@@ -1,27 +1,20 @@
-    
-#ifndef __cleDilateSphereKernel_hpp
-#define __cleDilateSphereKernel_hpp
 
-#include "cleKernel.hpp"
+#ifndef CLIC_INCLUDE_TIER1_CLEDILATESPHEREKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLEDILATESPHEREKERNEL_HPP
+
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class DilateSphereKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_dilate_sphere.h" 
-        };
 
-public:
-    DilateSphereKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void Execute();
-    
+class DilateSphereKernel : public Operation
+{
+  public:
+    explicit DilateSphereKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleDilateSphereKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLEDILATESPHEREKERNEL_HPP

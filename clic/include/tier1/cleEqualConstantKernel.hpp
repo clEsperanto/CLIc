@@ -1,27 +1,21 @@
 
-#ifndef __cleEqualConstantKernel_hpp
-#define __cleEqualConstantKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLEEQUALCONSTANTKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLEEQUALCONSTANTKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class EqualConstantKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_equal_constant.h" 
-        };
 
-public:
-    EqualConstantKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetScalar(float);
-    void Execute();
+class EqualConstantKernel : public Operation
+{
+  public:
+    explicit EqualConstantKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto SetScalar (const float &value) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleEqualConstantKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLEEQUALCONSTANTKERNEL_HPP

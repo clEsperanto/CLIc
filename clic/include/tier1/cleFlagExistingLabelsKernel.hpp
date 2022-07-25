@@ -1,26 +1,21 @@
 
-#ifndef __cleFlagExistingLabelsKernel_hpp
-#define __cleFlagExistingLabelsKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLEFLAGEXISTINGLABELSKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLEFLAGEXISTINGLABELSKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class FlagExistingLabelsKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_flag_existing_labels.h" 
-        };
 
-public:
-    FlagExistingLabelsKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void Execute();
+class FlagExistingLabelsKernel : public Operation
+{
+  public:
+    explicit FlagExistingLabelsKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto Execute () -> void override;
 };
 
 } // namespace cle
 
-#endif // __cleFlagExistingLabelsKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLEFLAGEXISTINGLABELSKERNEL_HPP

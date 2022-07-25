@@ -1,27 +1,21 @@
 
-#ifndef __cleSetNonzeroPixelsToPixelindexKernel_hpp
-#define __cleSetNonzeroPixelsToPixelindexKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLESETNONZEROPIXELSTOPIXELINDEXKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLESETNONZEROPIXELSTOPIXELINDEXKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class SetNonzeroPixelsToPixelindexKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_set_nonzero_pixels_to_pixelindex.h" 
-        };
 
-public:
-    SetNonzeroPixelsToPixelindexKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetOffset(int);
-    void Execute();
+class SetNonzeroPixelsToPixelindexKernel : public Operation
+{
+  public:
+    explicit SetNonzeroPixelsToPixelindexKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto SetOffset (const int &value) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleSetNonzeroPixelsToPixelindexKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLESETNONZEROPIXELSTOPIXELINDEXKERNEL_HPP

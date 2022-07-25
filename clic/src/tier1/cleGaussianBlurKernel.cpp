@@ -1,66 +1,71 @@
-
 #include "cleGaussianBlurKernel.hpp"
 #include "cleExecuteSeparableKernel.hpp"
 
 namespace cle
 {
 
-GaussianBlurKernel::GaussianBlurKernel (std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "gaussian_blur_separable",
-            {"src", "dst"}
-        )
+GaussianBlurKernel::GaussianBlurKernel (const ProcessorPointer &device) : Operation (device)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
-}    
+    std::string cl_header = {
+#include "cle_gaussian_blur_separable.h"
+    };
+    this->SetSource ("cle_gaussian_blur_separable", cl_header);
+}
 
-std::array<int,3> GaussianBlurKernel::Sigma2KernelSize(std::array<float,3> t_sigma) const
+auto
+GaussianBlurKernel::SetInput (const Image &object) -> void
 {
-    std::array<int,3> ksize = {0,0,0};
-    auto it_size (ksize.begin()), size_end (ksize.end());
-    auto it_sigma (t_sigma.begin()), sigma_end (t_sigma.end());
-    for( ; (it_sigma != sigma_end) && (it_size != size_end); ++it_sigma, ++it_size)
-    {
-        *it_size = static_cast<int>(*it_sigma * 8.0 + 0.5);
-        if (*it_size % 2 == 0)
+    this->AddParameter ("src", object);
+}
+
+auto
+GaussianBlurKernel::SetOutput (const Image &object) -> void
+{
+    this->AddParameter ("dst", object);
+}
+
+auto
+GaussianBlurKernel::SetSigma (const float &sigma_x, const float &sigma_y, const float &sigma_z) -> void
+{
+    this->sigma_ = { sigma_x, sigma_y, sigma_z };
+}
+
+auto
+GaussianBlurKernel::Sigma2KernelSize (const std::array<float, 3> &sigmas) -> std::array<size_t, 3>
+{
+    const float factor = 8.0;
+    const float rounding = 5.0;
+    std::array<size_t, 3> kernel_size{};
+    auto it_size (kernel_size.begin ());
+    auto size_end (kernel_size.end ());
+    auto it_sigma (sigmas.begin ());
+    auto sigma_end (sigmas.end ());
+    for (; (it_sigma != sigma_end) && (it_size != size_end); ++it_sigma, ++it_size)
         {
-            *it_size += 1;
+            *it_size = static_cast<size_t> (*it_sigma * factor + rounding);
+            if (*it_size % 2 == 0)
+                {
+                    *it_size += 1;
+                }
         }
-    }
-
-    return ksize;
+    return kernel_size;
 }
 
-void GaussianBlurKernel::SetInput(Object& t_x)
+auto
+GaussianBlurKernel::Execute () -> void
 {
-    this->AddObject(t_x, "src");
-}
+    auto src = this->GetImage ("src");
+    auto dst = this->GetImage ("dst");
 
-void GaussianBlurKernel::SetOutput(Object& t_x)
-{
-    this->AddObject(t_x, "dst");
-}
+    auto kernel_size = Sigma2KernelSize (this->sigma_);
 
-void GaussianBlurKernel::SetSigma(float t_x, float t_y, float t_z)
-{
-    this->m_Sigma = {t_x, t_y, t_z};
-}
-
-void GaussianBlurKernel::Execute()
-{
-    auto src = this->GetParameter<Object>("src");
-    auto dst = this->GetParameter<Object>("dst");
-
-    std::array<int,3> kernel_size = this->Sigma2KernelSize(this->m_Sigma);
-
-    ExecuteSeparableKernel kernel(this->m_gpu);
-    kernel.SetKernelName(this->m_KernelName);
-    kernel.SetSources(this->m_Sources);
-    kernel.SetInput(*src);
-    kernel.SetOutput(*dst);
-    kernel.SetSigma(this->m_Sigma[0], this->m_Sigma[1], this->m_Sigma[2]);
-    kernel.SetKernelSize(kernel_size[0], kernel_size[1], kernel_size[2]);
-    kernel.Execute();
+    ExecuteSeparableKernel kernel (this->Device ());
+    kernel.SetSource (this->GetName (), this->GetSource ());
+    kernel.SetInput (*src);
+    kernel.SetOutput (*dst);
+    kernel.SetSigma (this->sigma_[0], this->sigma_[1], this->sigma_[2]);
+    kernel.SetKernelSize (kernel_size[0], kernel_size[1], kernel_size[2]);
+    kernel.Execute ();
 }
 
 } // namespace cle

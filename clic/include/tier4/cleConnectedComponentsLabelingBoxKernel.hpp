@@ -1,21 +1,21 @@
 
-#ifndef __cleConnectedComponentsLabelingBoxKernel_hpp
-#define __cleConnectedComponentsLabelingBoxKernel_hpp
+#ifndef CLIC_INCLUDE_TIER4_CLECONNECTEDCOMPONENTSLABELINGBOXKERNEL_HPP
+#define CLIC_INCLUDE_TIER4_CLECONNECTEDCOMPONENTSLABELINGBOXKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class ConnectedComponentsLabelingBoxKernel : public Kernel
+
+class ConnectedComponentsLabelingBoxKernel : public Operation
 {
-public:
-    ConnectedComponentsLabelingBoxKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void Execute();
+  public:
+    explicit ConnectedComponentsLabelingBoxKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto Execute () -> void override;
 };
 
 } // namespace cle
 
-#endif // __cleConnectedComponentsLabelingBoxKernel_hpp
+#endif // CLIC_INCLUDE_TIER4_CLECONNECTEDCOMPONENTSLABELINGBOXKERNEL_HPP

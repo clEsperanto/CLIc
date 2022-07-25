@@ -5,29 +5,24 @@
 namespace cle
 {
 
-SetKernel::SetKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "set",
-            {"dst", "scalar"}
-    )
+SetKernel::SetKernel (const ProcessorPointer &device) : Operation (device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+    std::string cl_header = {
+#include "cle_set.h"
+    };
+    this->SetSource ("cle_set", cl_header);
 }
 
-void SetKernel::SetInput(Object& t_x)
+void
+SetKernel::SetInput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("dst", object);
 }
 
-void SetKernel::SetValue(float t_x)
+void
+SetKernel::SetValue (const float &value)
 {
-    this->AddObject(t_x, "scalar");
+    this->AddParameter ("scalar", value);
 }
 
-void SetKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-}
 } // namespace cle

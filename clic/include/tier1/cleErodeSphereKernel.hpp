@@ -1,26 +1,20 @@
 
-#ifndef __cleErodeSphereKernel_hpp
-#define __cleErodeSphereKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLEERODESPHEREKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLEERODESPHEREKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class ErodeSphereKernel : public Kernel
+
+class ErodeSphereKernel : public Operation
 {
-private:
-    std::string m_OclHeader = {
-        #include "cle_erode_sphere.h" 
-        };
-        
-public:
-    ErodeSphereKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void Execute();
+  public:
+    ErodeSphereKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleErodeSphereKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLEERODESPHEREKERNEL_HPP

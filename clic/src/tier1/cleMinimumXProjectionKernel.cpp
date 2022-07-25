@@ -5,30 +5,24 @@
 namespace cle
 {
 
-MinimumXProjectionKernel::MinimumXProjectionKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "minimum_x_projection",
-            {"src", "dst"}
-    )
+MinimumXProjectionKernel::MinimumXProjectionKernel (const ProcessorPointer &device) : Operation (device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
-}
-    
-void MinimumXProjectionKernel::SetInput(Object& t_x)
-{
-    this->AddObject(t_x, "src");
+    std::string cl_header = {
+#include "cle_minimum_x_projection.h"
+    };
+    this->SetSource ("cle_minimum_x_projection", cl_header);
 }
 
-void MinimumXProjectionKernel::SetOutput(Object& t_x)
+void
+MinimumXProjectionKernel::SetInput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("src", object);
 }
 
-void MinimumXProjectionKernel::Execute()
+void
+MinimumXProjectionKernel::SetOutput (const Image &object)
 {
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+    this->AddParameter ("dst", object);
 }
 
 } // namespace cle

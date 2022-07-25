@@ -1,17 +1,13 @@
-#ifndef @PROJECT_NAME_LOWERCASE@_h
-#define @PROJECT_NAME_LOWERCASE@_h
+#ifndef __@PROJECT_NAME_UPPERCASE@_HPP
+#define __@PROJECT_NAME_UPPERCASE@_HPP
 
 #define @PROJECT_NAME_UPPERCASE@_MAJOR_VERSION (@PROJECT_VERSION_MAJOR@)
 #define @PROJECT_NAME_UPPERCASE@_MINOR_VERSION (@PROJECT_VERSION_MINOR@)
 #define @PROJECT_NAME_UPPERCASE@_PATCH_VERSION (@PROJECT_VERSION_PATCH@)
 #define @PROJECT_NAME_UPPERCASE@_VERSION "@PROJECT_VERSION@"
 
-#ifndef CL_HPP_ENABLE_EXCEPTIONS
-#   define CL_HPP_ENABLE_EXCEPTIONS
-#endif
-
-#ifndef __CL_ENABLE_EXCEPTIONS
-#   define __CL_ENABLE_EXCEPTIONS
+#ifndef CL_HPP_DISABLE_EXCEPTIONS
+#   define CL_HPP_DISABLE_EXCEPTIONS
 #endif
 
 #ifndef CL_HPP_TARGET_OPENCL_VERSION
@@ -26,7 +22,9 @@
 #  define CL_TARGET_OPENCL_VERSION @OpenCL_VERSION@
 #endif
 
+// #include <CL/opencl.h>
 #include <CL/opencl.hpp>
+#include <string>
 
 static const std::string GetOpenCLErrorName(cl_int error)
 {
@@ -197,4 +195,4 @@ static const std::string GetOpenCLErrorInfo(cl_int error)
 	return "Error " + GetOpenCLErrorName(error) + " (" + std::to_string(static_cast<int>(error)) + ")\n\tDescription: " + GetOpenCLErrorDescription(error);
 }
 
-#endif  // @PROJECT_NAME_LOWERCASE@_h
+#endif  // __@PROJECT_NAME_UPPERCASE@_HPP

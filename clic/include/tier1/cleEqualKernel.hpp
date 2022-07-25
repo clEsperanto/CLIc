@@ -1,27 +1,20 @@
+#ifndef CLIC_INCLUDE_TIER1_CLEEQUALKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLEEQUALKERNEL_HPP
 
-#ifndef __cleEqualKernel_hpp
-#define __cleEqualKernel_hpp
-
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class EqualKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_equal.h" 
-        };
 
-public:
-    EqualKernel(std::shared_ptr<GPU>);
-    void SetInput1(Object&);
-    void SetInput2(Object&);
-    void SetOutput(Object&);
-    void Execute();
+class EqualKernel : public Operation
+{
+  public:
+    EqualKernel (const ProcessorPointer &device);
+    auto SetInput1 (const Image &object) -> void;
+    auto SetInput2 (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleGreaterKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLEEQUALKERNEL_HPP

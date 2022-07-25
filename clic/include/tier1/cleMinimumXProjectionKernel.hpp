@@ -1,27 +1,21 @@
 
 
-#ifndef __cleMinimumXProjectionKernel_hpp
-#define __cleMinimumXProjectionKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLEMINIMUMXPROJECTIONKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLEMINIMUMXPROJECTIONKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class MinimumXProjectionKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_minimum_x_projection.h" 
-        };
 
-public:
-    MinimumXProjectionKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void Execute();
+class MinimumXProjectionKernel : public Operation
+{
+  public:
+    explicit MinimumXProjectionKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleMinimumXProjectionKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLEMINIMUMXPROJECTIONKERNEL_HPP

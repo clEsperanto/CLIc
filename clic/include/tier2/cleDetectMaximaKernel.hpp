@@ -1,30 +1,25 @@
 
-#ifndef __cleDetectMaximaKernel_hpp
-#define __cleDetectMaximaKernel_hpp
+#ifndef CLIC_INCLUDE_TIER2_CLEDETECTMAXIMAKERNEL_HPP
+#define CLIC_INCLUDE_TIER2_CLEDETECTMAXIMAKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class DetectMaximaKernel : public Kernel
+
+class DetectMaximaKernel : public Operation
 {
-private:
-    std::string m_OclHeader = {
-        #include "cle_detect_maxima.h" 
-        };
-public:
-    DetectMaximaKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetRadius(int =0, int =0, int =0);
-    void Execute();
-private:
-    int m_x = 0;
-    int m_y = 0;
-    int m_z = 0;
+  public:
+    explicit DetectMaximaKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto SetRadius (const int &radius_x = 0, const int &radius_y = 0, const int &radius_z = 0) -> void;
+    auto Execute () -> void override;
+
+  private:
+    std::array<int, 3> radius_{ 0, 0, 0 };
 };
 
 } // namespace cle
 
-#endif // __cleDetectMaximaKernel_hpp
+#endif // CLIC_INCLUDE_TIER2_CLEDETECTMAXIMAKERNEL_HPP

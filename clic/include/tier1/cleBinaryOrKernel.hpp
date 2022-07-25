@@ -1,27 +1,21 @@
 
-#ifndef __cleBinaryOrKernel_hpp
-#define __cleBinaryOrKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLEBINARYORKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLEBINARYORKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class BinaryOrKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_binary_or.h" 
-        };
 
-public:
-    BinaryOrKernel(std::shared_ptr<GPU>);
-    void SetInput1(Object&);
-    void SetInput2(Object&);
-    void SetOutput(Object&);
-    void Execute();
+class BinaryOrKernel : public Operation
+{
+  public:
+    explicit BinaryOrKernel (const ProcessorPointer &device);
+    auto SetInput1 (const Image &object) -> void;
+    auto SetInput2 (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleBinaryOrKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLEBINARYORKERNEL_HPP

@@ -1,27 +1,20 @@
+#ifndef CLIC_INCLUDE_TIER1_CLEMASKKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLEMASKKERNEL_HPP
 
-#ifndef __cleMaskKernel_hpp
-#define __cleMaskKernel_hpp
-
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class MaskKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_mask.h" 
-        };
 
-public:
-    MaskKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetMask(Object&);
-    void SetOutput(Object&);
-    void Execute();
+class MaskKernel : public Operation
+{
+  public:
+    explicit MaskKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetMask (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleGreaterKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLEMASKKERNEL_HPP

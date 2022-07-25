@@ -1,30 +1,24 @@
 
-#ifndef __cleMeanSphereKernel_hpp
-#define __cleMeanSphereKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLEMEANSPHEREKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLEMEANSPHEREKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class MeanSphereKernel : public Kernel
+
+class MeanSphereKernel : public Operation
 {
-private:
-    std::string m_OclHeader = {
-        #include "cle_mean_sphere.h" 
-        };
+  public:
+    explicit MeanSphereKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto SetRadius (const float &radius_x, const float &radius_y, const float &radius_z) -> void;
 
-public:
-    MeanSphereKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetRadius(float=0, float=0, float=0);
-    void Execute();
-
-private:
-    int Radius2KernelSize(float) const;
+  private:
+    auto Radius2KernelSize (const float &) const -> int;
 };
 
 } // namespace cle
 
-#endif // __cleMeanSphereKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLEMEANSPHEREKERNEL_HPP

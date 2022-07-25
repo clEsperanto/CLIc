@@ -1,56 +1,40 @@
-
 #include "cleSeparableKernel.hpp"
 
 namespace cle
 {
 
-SeparableKernel::SeparableKernel (std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu, 
-            "",
-            {"src" , "dst", "dim", "N", "s"}
-    )
-{}
-
-void SeparableKernel::SetKernelName(const std::string& t_name)
+SeparableKernel::SeparableKernel (const ProcessorPointer &device) : Operation (device, 5)
 {
-    this->m_KernelName = t_name;
 }
 
-void SeparableKernel::SetSources(const std::map<std::string, std::string>& t_sources)
+auto
+SeparableKernel::SetInput (const Image &object) -> void
 {
-    this->m_Sources = t_sources;
+    this->AddParameter ("src", object);
 }
 
-void SeparableKernel::SetInput(Object& t_x)
+auto
+SeparableKernel::SetOutput (const Image &object) -> void
 {
-    this->AddObject(t_x, "src");
+    this->AddParameter ("dst", object);
 }
 
-void SeparableKernel::SetOutput(Object& t_x)
+auto
+SeparableKernel::SetSigma (const float &sigma) -> void
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("s", sigma);
 }
 
-void SeparableKernel::SetSize(int t_x)
+auto
+SeparableKernel::SetSize (const int &radius) -> void
 {
-    this->AddObject(t_x, "N");
+    this->AddParameter ("N", radius);
 }
 
-void SeparableKernel::SetSigma(float t_x)
+auto
+SeparableKernel::SetDimension (const int &dimension) -> void
 {
-    this->AddObject(t_x, "s");
-}
-
-void SeparableKernel::SetDimension(int t_x)
-{
-    this->AddObject(t_x, "dim");
-}
-
-void SeparableKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+    this->AddParameter ("dim", dimension);
 }
 
 } // namespace cle

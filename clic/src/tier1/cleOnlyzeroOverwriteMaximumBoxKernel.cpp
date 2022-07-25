@@ -5,36 +5,31 @@
 namespace cle
 {
 
-
-OnlyzeroOverwriteMaximumBoxKernel::OnlyzeroOverwriteMaximumBoxKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "onlyzero_overwrite_maximum_box",
-            {"src", "dst0", "dst1"}
-    )
+OnlyzeroOverwriteMaximumBoxKernel::OnlyzeroOverwriteMaximumBoxKernel (const ProcessorPointer &device) : Operation (device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
-}    
-
-void OnlyzeroOverwriteMaximumBoxKernel::SetInput(Object& t_x)
-{
-    this->AddObject(t_x, "src");
+    std::string cl_header = {
+#include "cle_onlyzero_overwrite_maximum_box.h"
+    };
+    this->SetSource ("cle_onlyzero_overwrite_maximum_box", cl_header);
 }
 
-void OnlyzeroOverwriteMaximumBoxKernel::SetOutput1(Object& t_x)
+void
+OnlyzeroOverwriteMaximumBoxKernel::SetInput (const Image &object)
 {
-    this->AddObject(t_x, "dst0");
+    this->AddParameter ("src", object);
 }
 
-void OnlyzeroOverwriteMaximumBoxKernel::SetOutput2(Object& t_x)
+void
+OnlyzeroOverwriteMaximumBoxKernel::SetOutput1 (const Image &object)
 {
-    this->AddObject(t_x, "dst1");
+    this->AddParameter ("dst0", object);
 }
 
-void OnlyzeroOverwriteMaximumBoxKernel::Execute()
+void
+OnlyzeroOverwriteMaximumBoxKernel::SetOutput2 (const Image &object)
 {
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->SetGlobalNDRange("dst1");
-    this->EnqueueKernel();
+    this->AddParameter ("dst1", object);
+    this->SetRange ("dst1");
 }
+
 } // namespace cle

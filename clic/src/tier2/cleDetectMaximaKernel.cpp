@@ -1,57 +1,55 @@
 
-#include "cleMeanBoxKernel.hpp"
-#include "cleCopyKernel.hpp"
 #include "cleDetectMaximaKernel.hpp"
+#include "cleCopyKernel.hpp"
+#include "cleMeanBoxKernel.hpp"
 
-#include "utils.hpp"
+#include "cleUtils.hpp"
 
 namespace cle
 {
 
-DetectMaximaKernel::DetectMaximaKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu, 
-            "detect_maxima",
-            {"src" , "dst"}
-    )
+DetectMaximaKernel::DetectMaximaKernel (const ProcessorPointer &device) : Operation (device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+    std::string cl_header_ = {
+#include "cle_detect_maxima.h"
+    };
+    this->SetSource ("cle_detect_maxima", cl_header_);
 }
 
-void DetectMaximaKernel::SetInput(Object& t_x)
+void
+DetectMaximaKernel::SetInput (const Image &object)
 {
-    this->AddObject(t_x, "src");
+    this->AddParameter ("src", object);
 }
 
-void DetectMaximaKernel::SetOutput(Object& t_x)
+void
+DetectMaximaKernel::SetOutput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("dst", object);
 }
 
-void DetectMaximaKernel::SetRadius(int t_x, int t_y, int t_z)
+void
+DetectMaximaKernel::SetRadius (const int &radius_x, const int &radius_y, const int &radius_z)
 {
-    this->m_x = t_x;
-    this->m_y = t_y;
-    this->m_z = t_z;
+    this->radius_ = { radius_x, radius_y, radius_z };
 }
 
-void DetectMaximaKernel::Execute()
+void
+DetectMaximaKernel::Execute ()
 {
-    if (this->m_x > 0 || this->m_z > 0 || this->m_z > 0)
-    {
-        auto src = this->GetParameter<Object>("src");
-        auto dst = this->GetParameter<Object>("dst");
-        MeanBoxKernel mean(this->m_gpu);
-        mean.SetInput(*src);
-        mean.SetOutput(*dst);
-        mean.SetRadius(m_x,m_y,m_z);
-        mean.Execute();        
-        CopyKernel copy(this->m_gpu);
-        copy.SetInput(*dst);
-        copy.SetOutput(*src);
-        copy.Execute();
-    }
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+    // if (this->radius_[0] > 0 || this->radius_[1] > 0 || this->radius_[2] > 0)
+    //     {
+    //         auto src = this->GetParameter<Object> ("src");
+    //         auto dst = this->GetParameter<Object> ("dst");
+    //         MeanBoxKernel mean (this->m_gpu);
+    //         mean.SetInput (*src);
+    //         mean.SetOutput (*dst);
+    //         mean.SetRadius (this->radius_[0], this->radius_[1], this->radius_[2]);
+    //         mean.Execute ();
+    //         CopyKernel copy (this->m_gpu);
+    //         copy.SetInput (*dst);
+    //         copy.SetOutput (*src);
+    //         copy.Execute ();
+    //     }
 }
 } // namespace cle

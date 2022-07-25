@@ -1,60 +1,67 @@
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
 
 #include "clesperanto.hpp"
 
 #include <benchmark_base.cpp>
 
-using std::string;
-using std::vector;
 using std::array;
 using std::cout;
+using std::string;
+using std::vector;
 
 class MeanBenchmark : public BenchmarkBase
 {
-protected:
+  protected:
     cle::Clesperanto cle;
-    cle::Object gpuInput, gpuOutput;
+    cle::Image gpuInput, gpuOutput;
 
-    virtual void Setup()
+    virtual void
+    Setup ()
     {
-        vector<float> inputData(dataWidth * dataWidth);
-        array<size_t,3> dim{{dataWidth, dataWidth, 1}};
+        vector<float> inputData (dataWidth * dataWidth);
+        array<size_t, 3> dim{ { dataWidth, dataWidth, 1 } };
 
-        cle.Ressources()->SetWaitForKernelToFinish(true);
+        cle.GetDevice ()->WaitForKernelToFinish ();
 
-        
         // Initialise device memory and push from host
-        gpuInput = cle.Push<float>(inputData, dim);
-        gpuOutput = cle.Create<float>(dim);
+        gpuInput = cle.Push<float> (inputData, dim);
+        gpuOutput = cle.Create<float> (dim);
     }
 
-    virtual void Iteration()
+    virtual void
+    Iteration ()
     {
-        cle.MeanBox(gpuInput, gpuOutput, 4, 4);
+        cle.MeanBox (gpuInput, gpuOutput, 4, 4);
     }
 
-    virtual void Teardown() {}
+    virtual void
+    Teardown ()
+    {
+    }
 
-public:
+  public:
     size_t dataWidth;
-    MeanBenchmark() : cle(cle::Clesperanto()){}
-    virtual ~MeanBenchmark(){}
+    MeanBenchmark () : cle (cle::Clesperanto ()) {}
+    virtual ~MeanBenchmark () {}
 };
 
-int main(int argc, char** argv) {
+int
+main (int argc, char **argv)
+{
     MeanBenchmark d;
     d.dataWidth = 1 << 10;
 
     d.iterationWarmupCount = 18;
 
-    if (argc >= 2) {
-        d.dataWidth = std::stoi(argv[1]);
-        cout << "using " << d.dataWidth * d.dataWidth * sizeof(float) << " bytes memory" << endl;
-    }
+    if (argc >= 2)
+        {
+            d.dataWidth = std::stoi (argv[1]);
+            cout << "using " << d.dataWidth * d.dataWidth * sizeof (float) << " bytes memory" << endl;
+        }
 
-    d.Run();
+    d.Run ();
 
     return 0;
 }

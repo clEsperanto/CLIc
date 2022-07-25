@@ -5,34 +5,30 @@
 namespace cle
 {
 
-GreaterKernel::GreaterKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "greater",
-            {"src0", "src1", "dst"}
-    )
+GreaterKernel::GreaterKernel (const ProcessorPointer &device) : Operation (device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+    std::string cl_header = {
+#include "cle_greater.h"
+    };
+    this->SetSource ("cle_greater", cl_header);
 }
 
-void GreaterKernel::SetInput1(Object& t_x)
+void
+GreaterKernel::SetInput1 (const Image &object)
 {
-    this->AddObject(t_x, "src0");
+    this->AddParameter ("src0", object);
 }
 
-void GreaterKernel::SetInput2(Object& t_x)
+void
+GreaterKernel::SetInput2 (const Image &object)
 {
-    this->AddObject(t_x, "src1");
+    this->AddParameter ("src1", object);
 }
 
-void GreaterKernel::SetOutput(Object& t_x)
+void
+GreaterKernel::SetOutput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("dst", object);
 }
 
-void GreaterKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-}
 } // namespace cle

@@ -1,27 +1,21 @@
 
-#ifndef __cleGreaterOrEqualConstantKernel_hpp
-#define __cleGreaterOrEqualConstantKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLEGREATEROREQUALCONSTANTKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLEGREATEROREQUALCONSTANTKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class GreaterOrEqualConstantKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_greater_or_equal_constant.h" 
-        };
 
-public:
-    GreaterOrEqualConstantKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetScalar(float);
-    void Execute();
+class GreaterOrEqualConstantKernel : public Operation
+{
+  public:
+    explicit GreaterOrEqualConstantKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto SetScalar (const float &value) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleGreaterOrEqualConstantKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLEGREATEROREQUALCONSTANTKERNEL_HPP

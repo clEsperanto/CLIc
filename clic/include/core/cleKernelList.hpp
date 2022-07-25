@@ -13,7 +13,6 @@
 #include "cleCloseIndexGapsInLabelMapKernel.hpp"
 #include "cleConnectedComponentsLabelingBoxKernel.hpp"
 #include "cleCopyKernel.hpp"
-#include "cleCustomKernel.hpp"
 #include "cleDetectMaximaKernel.hpp"
 #include "cleDifferenceOfGaussianKernel.hpp"
 #include "cleDilateLabelsKernel.hpp"

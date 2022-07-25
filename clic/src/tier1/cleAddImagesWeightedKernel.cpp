@@ -1,48 +1,44 @@
-
-
 #include "cleAddImagesWeightedKernel.hpp"
 
 namespace cle
 {
 
-AddImagesWeightedKernel::AddImagesWeightedKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,  
-            "add_images_weighted",
-            {"src0", "src1", "dst", "scalar0", "scalar1"}
-        )
+AddImagesWeightedKernel::AddImagesWeightedKernel (const ProcessorPointer &device) : Operation (device, 5)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+    std::string cl_header = {
+#include "cle_add_images_weighted.h"
+    };
+    this->SetSource ("add_images_weighted", cl_header);
 }
 
-void AddImagesWeightedKernel::SetInput1(Object& t_x)
+void
+AddImagesWeightedKernel::SetInput1 (const Image &object)
 {
-    this->AddObject(t_x, "src0");
+    this->AddParameter ("src0", object);
 }
 
-void AddImagesWeightedKernel::SetInput2(Object& t_x)
+void
+AddImagesWeightedKernel::SetInput2 (const Image &object)
 {
-    this->AddObject(t_x, "src1");
+    this->AddParameter ("src1", object);
 }
 
-void AddImagesWeightedKernel::SetOutput(Object& t_x)
+void
+AddImagesWeightedKernel::SetOutput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("dst", object);
 }
 
-void AddImagesWeightedKernel::SetFactor1(float t_x)
+void
+AddImagesWeightedKernel::SetFactor1 (const float &value)
 {
-    this->AddObject(t_x, "scalar0");
+    this->AddParameter ("scalar0", value);
 }
 
-void AddImagesWeightedKernel::SetFactor2(float t_x)
+void
+AddImagesWeightedKernel::SetFactor2 (const float &value)
 {
-    this->AddObject(t_x, "scalar1");
+    this->AddParameter ("scalar1", value);
 }
 
-void AddImagesWeightedKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-}
 } // namespace cle

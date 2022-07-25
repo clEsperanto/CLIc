@@ -1,26 +1,20 @@
+#ifndef CLIC_INCLUDE_TIER1_CLEMAXIMUMYPROJECTIONKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLEMAXIMUMYPROJECTIONKERNEL_HPP
 
-#ifndef __cleMaximumYProjectionKernel_hpp
-#define __cleMaximumYProjectionKernel_hpp
-
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class MaximumYProjectionKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_maximum_y_projection.h" 
-        };
 
-public:
-    MaximumYProjectionKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void Execute();
+class MaximumYProjectionKernel : public Operation
+{
+  public:
+    explicit MaximumYProjectionKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto GetOutput () -> Image;
 };
 
 } // namespace cle
 
-#endif // __cleMaximumYProjectionKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLEMAXIMUMYPROJECTIONKERNEL_HPP

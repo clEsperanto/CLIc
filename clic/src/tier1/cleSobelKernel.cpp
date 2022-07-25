@@ -5,29 +5,24 @@
 namespace cle
 {
 
-SobelKernel::SobelKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "sobel",
-            {"src" , "dst"}
-    )
+SobelKernel::SobelKernel (const ProcessorPointer &device) : Operation (device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+    std::string cl_header = {
+#include "cle_sobel.h"
+    };
+    this->SetSource ("cle_sobel", cl_header);
 }
 
-void SobelKernel::SetInput(Object& t_x)
+void
+SobelKernel::SetInput (const Image &object)
 {
-    this->AddObject(t_x, "src");
+    this->AddParameter ("src", object);
 }
 
-void SobelKernel::SetOutput(Object& t_x)
+void
+SobelKernel::SetOutput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("dst", object);
 }
-   
-void SobelKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-}
+
 } // namespace cle

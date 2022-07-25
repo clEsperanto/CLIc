@@ -1,223 +1,58 @@
 
-#include <random>
+#include <cassert>
 #include <iostream>
 #include <vector>
 
-#include "cleGPU.hpp"
-#include "utils.hpp"
+#include "cleMemory.hpp"
+#include "cleProcessor.hpp"
+#include "cleUtils.hpp"
 
-
-/**
- * Main test function
- *
- */
-
-int main(int argc, char **argv)
+template <class type>
+auto
+run_test (std::shared_ptr<cle::Processor> gpu, std::array<size_t, 3> shape) -> bool
 {
-    
-    {
-        using type = float;
-        auto gpu = std::make_shared<cle::GPU>();
+    auto object_type = CL_MEM_OBJECT_BUFFER;
 
-        std::array<size_t,3> dims = {10, 1, 1};
-        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), static_cast<type>(10));
+    cle::DataType data_type{};
+    data_type.Set<type> ();
 
-        auto buff_A = gpu->Create<type>(dims);
-        auto buff_B = gpu->Push<type>(A, dims);
-        auto C = gpu->Pull<type>(buff_B);
-        
-        if(IsDifferent(C, A))
-        {
-            return EXIT_FAILURE;
-        }
-    }
+    const type data = 10;
+    std::vector<type> array (shape[0] * shape[1] * shape[2]);
+    std::fill (array.begin (), array.end (), data);
 
-    {
-        using type = float;
-        auto gpu = std::make_shared<cle::GPU>();
+    auto gpu_output = cle::Memory::AllocateObject (gpu, shape, data_type.Get (), object_type);
+    auto gpu_input = cle::Memory::AllocateObject (gpu_output);
+    cle::Memory::WriteObject (gpu_input, array);
+    gpu_input.CopyDataTo (gpu_output);
 
-        std::array<size_t,3> dims = {10, 5, 1};
-        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), static_cast<type>(10));
+    std::cout << "gpu buffer : " << gpu_output.ToString () << std::endl;
 
-        auto buff_A = gpu->Create<type>(dims);
-        auto buff_B = gpu->Push<type>(A, dims);
-        auto C = gpu->Pull<type>(buff_B);
-        
-        float diff = 0;
-        for (int i =0; i< A.size(); i++)
-        {
-            diff += A[i] - C[i];
-        }
-        if (diff > 0)
-        {
-            return EXIT_FAILURE;
-        }
-        }
+    auto output = cle::Memory::ReadObject<type> (gpu_output);
 
-    {
-        using type = float;
-        auto gpu = std::make_shared<cle::GPU>();
+    return std::equal (output.begin (), output.end (), array.begin ());
+}
 
-        std::array<size_t,3> dims = {10, 5, 2};
-        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), static_cast<type>(10));
+auto
+main (int argc, char **argv) -> int
+{
+    int idx = 0;
+    size_t w = std::atoi (argv[++idx]);
+    size_t h = std::atoi (argv[++idx]);
+    size_t d = std::atoi (argv[++idx]);
 
-        auto buff_A = gpu->Create<type>(dims);
-        auto buff_B = gpu->Push<type>(A, dims);
-        auto C = gpu->Pull<type>(buff_B);
+    std::array<size_t, 3> shape = { w, h, d };
 
-        if(IsDifferent(C, A))
-        {
-            return EXIT_FAILURE;
-        }
-    }
+    auto gpu = std::make_shared<cle::Processor> ();
+    gpu->SelectDevice ();
+    gpu->WaitForKernelToFinish ();
 
-    {
-        using type = double;
-        auto gpu = std::make_shared<cle::GPU>();
-
-        std::array<size_t,3> dims = {10, 5, 2};
-        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), static_cast<type>(10));
-
-        auto buff_A = gpu->Create<type>(dims);
-        auto buff_B = gpu->Push<type>(A, dims);
-        auto C = gpu->Pull<type>(buff_B);
-        
-        if(IsDifferent(C, A))
-        {
-            return EXIT_FAILURE;
-        }
-    }
-
-    {
-        using type = int;
-        auto gpu = std::make_shared<cle::GPU>();
-
-        std::array<size_t,3> dims = {10, 5, 2};
-        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), static_cast<type>(10));
-
-        auto buff_A = gpu->Create<type>(dims);
-        auto buff_B = gpu->Push<type>(A, dims);
-        auto C = gpu->Pull<type>(buff_B);
-        
-        if(IsDifferent(C, A))
-        {
-            return EXIT_FAILURE;
-        }
-    }
-
-    {
-        using type = unsigned int;
-        auto gpu = std::make_shared<cle::GPU>();
-
-        std::array<size_t,3> dims = {10, 5, 2};
-        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), static_cast<type>(10));
-
-        auto buff_A = gpu->Create<type>(dims);
-        auto buff_B = gpu->Push<type>(A, dims);
-        auto C = gpu->Pull<type>(buff_B);
-        
-        if(IsDifferent(C, A))
-        {
-            return EXIT_FAILURE;
-        }
-    }
-
-    {
-        using type = char;
-        auto gpu = std::make_shared<cle::GPU>();
-
-        std::array<size_t,3> dims = {10, 5, 2};
-        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), static_cast<type>(10));
-
-        auto buff_A = gpu->Create<type>(dims);
-        auto buff_B = gpu->Push<type>(A, dims);
-        auto C = gpu->Pull<type>(buff_B);
-        
-        if(IsDifferent(C, A))
-        {
-            return EXIT_FAILURE;
-        }
-    }
-
-    {
-        using type = unsigned char;
-        auto gpu = std::make_shared<cle::GPU>();
-
-        std::array<size_t,3> dims = {10, 5, 2};
-        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), static_cast<type>(10));
-
-        auto buff_A = gpu->Create<type>(dims);
-        auto buff_B = gpu->Push<type>(A, dims);
-        auto C = gpu->Pull<type>(buff_B);
-        
-        if(IsDifferent(C, A))
-        {
-            return EXIT_FAILURE;
-        }
-    }
-
-    {
-        using type = short;
-        auto gpu = std::make_shared<cle::GPU>();
-
-        std::array<size_t,3> dims = {10, 5, 2};
-        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), static_cast<type>(10));
-
-        auto buff_A = gpu->Create<type>(dims);
-        auto buff_B = gpu->Push<type>(A, dims);
-        auto C = gpu->Pull<type>(buff_B);
-        
-        if(IsDifferent(C, A))
-        {
-            return EXIT_FAILURE;
-        }
-    }
-
-    {
-        using type = unsigned short;
-        auto gpu = std::make_shared<cle::GPU>();
-
-        std::array<size_t,3> dims = {10, 5, 2};
-        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), static_cast<type>(10));
-
-        auto buff_A = gpu->Create<type>(dims);
-        auto buff_B = gpu->Push<type>(A, dims);
-        auto C = gpu->Pull<type>(buff_B);
-        
-        if(IsDifferent(C, A))
-        {
-            return EXIT_FAILURE;
-        }
-    }
-
-    {
-        using type = float;
-        auto gpu = std::make_shared<cle::GPU>();
-
-        std::array<size_t,3> dims = {10, 5, 2};
-        std::vector<type> A (dims[0]*dims[1]*dims[2]); 
-        std::fill (A.begin(),A.end(), static_cast<type>(10));
-
-        auto buff_A = gpu->Create<type>(dims);
-        auto buff_B = gpu->Push<type>(A, dims);
-        buff_A = buff_B;
-        auto C = gpu->Pull<type>(buff_A);
-        
-        if(IsDifferent(C, A))
-        {
-            return EXIT_FAILURE;
-        }
-    }    
+    assert (run_test<float> (gpu, shape));
+    assert (run_test<int> (gpu, shape));
+    assert (run_test<char> (gpu, shape));
+    assert (run_test<short> (gpu, shape));
+    assert (run_test<unsigned int> (gpu, shape));
+    assert (run_test<unsigned char> (gpu, shape));
+    assert (run_test<unsigned short> (gpu, shape));
 
     return EXIT_SUCCESS;
 }

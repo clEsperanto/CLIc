@@ -1,33 +1,32 @@
-
 #include "cleMaximumYProjectionKernel.hpp"
 
 namespace cle
 {
 
-MaximumYProjectionKernel::MaximumYProjectionKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "maximum_y_projection",
-            {"src", "dst"}
-    )
+MaximumYProjectionKernel::MaximumYProjectionKernel (const ProcessorPointer &device) : Operation (device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+    std::string cl_header = {
+#include "cle_maximum_y_projection.h"
+    };
+    this->SetSource ("cle_maximum_y_projection", cl_header);
 }
 
-void MaximumYProjectionKernel::SetInput(Object& t_x)
+auto
+MaximumYProjectionKernel::SetInput (const Image &object) -> void
 {
-    this->AddObject(t_x, "src");
+    this->AddParameter ("src", object);
 }
 
-void MaximumYProjectionKernel::SetOutput(Object& t_x)
+auto
+MaximumYProjectionKernel::SetOutput (const Image &object) -> void
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("dst", object);
 }
 
-void MaximumYProjectionKernel::Execute()
+auto
+MaximumYProjectionKernel::GetOutput () -> Image
 {
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+    return *this->GetImage ("dst");
 }
 
 } // namespace cle

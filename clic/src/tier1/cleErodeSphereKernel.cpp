@@ -5,29 +5,24 @@
 namespace cle
 {
 
-ErodeSphereKernel::ErodeSphereKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "erode_sphere",
-            {"src" , "dst"}
-    )
+ErodeSphereKernel::ErodeSphereKernel (const ProcessorPointer &device) : Operation (device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+    std::string cl_header = {
+#include "cle_erode_sphere.h"
+    };
+    this->SetSource ("cle_erode_sphere", cl_header);
 }
 
-void ErodeSphereKernel::SetInput(Object& t_x)
+void
+ErodeSphereKernel::SetInput (const Image &object)
 {
-    this->AddObject(t_x, "src");
+    this->AddParameter ("src", object);
 }
 
-void ErodeSphereKernel::SetOutput(Object& t_x)
+void
+ErodeSphereKernel::SetOutput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("dst", object);
 }
 
-void ErodeSphereKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-}
 } // namespace cle

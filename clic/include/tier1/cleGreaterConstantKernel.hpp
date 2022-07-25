@@ -1,27 +1,21 @@
 
-#ifndef __cleGreaterConstantKernel_hpp
-#define __cleGreaterConstantKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLEGREATERCONSTANTKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLEGREATERCONSTANTKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class GreaterConstantKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_greater_constant.h" 
-        };
 
-public:
-    GreaterConstantKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetScalar(float);
-    void Execute();
+class GreaterConstantKernel : public Operation
+{
+  public:
+    explicit GreaterConstantKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto SetScalar (const float &value) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleGreaterConstantKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLEGREATERCONSTANTKERNEL_HPP

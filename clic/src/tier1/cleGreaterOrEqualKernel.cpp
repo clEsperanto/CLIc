@@ -5,34 +5,30 @@
 namespace cle
 {
 
-GreaterOrEqualKernel::GreaterOrEqualKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "greater_or_equal",
-            {"src0", "src1", "dst"}
-    )
+GreaterOrEqualKernel::GreaterOrEqualKernel (const ProcessorPointer &device) : Operation (device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+    std::string cl_header = {
+#include "cle_greater_or_equal.h"
+    };
+    this->SetSource ("cle_greater_or_equal", cl_header);
 }
 
-void GreaterOrEqualKernel::SetInput1(Object& t_x)
+void
+GreaterOrEqualKernel::SetInput1 (const Image &object)
 {
-    this->AddObject(t_x, "src0");
+    this->AddParameter ("src0", object);
 }
 
-void GreaterOrEqualKernel::SetInput2(Object& t_x)
+void
+GreaterOrEqualKernel::SetInput2 (const Image &object)
 {
-    this->AddObject(t_x, "src1");
+    this->AddParameter ("src1", object);
 }
 
-void GreaterOrEqualKernel::SetOutput(Object& t_x)
+void
+GreaterOrEqualKernel::SetOutput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("dst", object);
 }
 
-void GreaterOrEqualKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-}
 } // namespace cle

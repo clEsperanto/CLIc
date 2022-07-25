@@ -1,36 +1,29 @@
 
-#ifndef __cleHistogramKernel_hpp
-#define __cleHistogramKernel_hpp
+#ifndef CLIC_INCLUDE_TIER3_CLEHISTOGRAMKERNEL_HPP
+#define CLIC_INCLUDE_TIER3_CLEHISTOGRAMKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class HistogramKernel : public Kernel
+
+class HistogramKernel : public Operation
 {
-private:
-    std::string m_OclHeader = {
-        #include "cle_histogram.h" 
-        };
+  public:
+    explicit HistogramKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto SetMinimumIntensity (const float &value) -> void;
+    auto SetMaximumIntensity (const float &value) -> void;
+    auto SetSteps (const int &step_x = 1, const int &step_y = 1, const int &step_z = 1) -> void;
+    auto SetNumBins (const unsigned int &bin = 256) -> void;
+    auto Execute () -> void override;
 
-public:
-    HistogramKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&); 
-    void SetOutput(Object&);
-    void SetMinimumIntensity(float); 
-    void SetMaximumIntensity(float);
-    void SetSteps(int =1, int =1, int =1);
-    void SetNumBins(unsigned int =256);
-    void Execute(); 
-
-
-private:
-    float m_MinIntensity = std::numeric_limits<float>::infinity();
-    float m_MaxIntensity = std::numeric_limits<float>::infinity();     
-
+  private:
+    float min_intensity_ = std::numeric_limits<float>::infinity ();
+    float max_intensity_ = std::numeric_limits<float>::infinity ();
 };
 
 } // namespace cle
 
-#endif // __cleHistogramKernel_hpp
+#endif // CLIC_INCLUDE_TIER3_CLEHISTOGRAMKERNEL_HPP

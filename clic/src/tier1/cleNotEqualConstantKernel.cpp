@@ -5,34 +5,30 @@
 namespace cle
 {
 
-NotEqualConstantKernel::NotEqualConstantKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "not_equal_constant",
-            {"src", "dst", "scalar"}
-    )
+NotEqualConstantKernel::NotEqualConstantKernel (const ProcessorPointer &device) : Operation (device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
-}    
-
-void NotEqualConstantKernel::SetInput(Object& t_x)
-{
-    this->AddObject(t_x, "src");
+    std::string cl_header = {
+#include "cle_not_equal_constant.h"
+    };
+    this->SetSource ("cle_not_equal_constant", cl_header);
 }
 
-void NotEqualConstantKernel::SetOutput(Object& t_x)
+void
+NotEqualConstantKernel::SetInput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("src", object);
 }
 
-void NotEqualConstantKernel::SetScalar(float t_x)
+void
+NotEqualConstantKernel::SetOutput (const Image &object)
 {
-    this->AddObject(t_x, "scalar");
+    this->AddParameter ("dst", object);
 }
 
-void NotEqualConstantKernel::Execute()
+void
+NotEqualConstantKernel::SetScalar (const float &value)
 {
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+    this->AddParameter ("scalar", value);
 }
+
 } // namespace cle

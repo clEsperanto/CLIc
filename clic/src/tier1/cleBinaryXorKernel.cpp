@@ -5,35 +5,30 @@
 namespace cle
 {
 
-BinaryXorKernel::BinaryXorKernel(std::shared_ptr<GPU> t_gpu) :    
-    Kernel( t_gpu, 
-            "binary_xor", 
-            {"src0", "src1" , "dst"}
-    )
+BinaryXorKernel::BinaryXorKernel (const ProcessorPointer &device) : Operation (device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+    std::string cl_header = {
+#include "cle_binary_xor.h"
+    };
+    this->SetSource ("cle_binary_xor", cl_header);
 }
 
-void BinaryXorKernel::SetInput1(Object& t_x)
+void
+BinaryXorKernel::SetInput1 (const Image &object)
 {
-    this->AddObject(t_x, "src0");
+    this->AddParameter ("src0", object);
 }
 
-void BinaryXorKernel::SetInput2(Object& t_x)
+void
+BinaryXorKernel::SetInput2 (const Image &object)
 {
-    this->AddObject(t_x, "src1");
+    this->AddParameter ("src1", object);
 }
 
-void BinaryXorKernel::SetOutput(Object& t_x)
+void
+BinaryXorKernel::SetOutput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
-}
-
-void BinaryXorKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+    this->AddParameter ("dst", object);
 }
 
 } // namespace cle

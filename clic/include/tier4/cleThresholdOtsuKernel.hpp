@@ -1,20 +1,20 @@
-#ifndef __cleThresholdOtsuKernel_hpp
-#define __cleThresholdOtsuKernel_hpp
+#ifndef CLIC_INCLUDE_TIER4_CLETHRESHOLDOTSUKERNEL_HPP
+#define CLIC_INCLUDE_TIER4_CLETHRESHOLDOTSUKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class ThresholdOtsuKernel : public Kernel
+
+class ThresholdOtsuKernel : public Operation
 {
-public:
-    ThresholdOtsuKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void Execute();
+  public:
+    explicit ThresholdOtsuKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto Execute () -> void override;
 };
 
 } // namespace cle
 
-#endif // __cleThresholdOtsuKernel_hpp
+#endif // CLIC_INCLUDE_TIER4_CLETHRESHOLDOTSUKERNEL_HPP

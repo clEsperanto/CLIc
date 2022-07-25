@@ -1,31 +1,27 @@
+#ifndef CLIC_INCLUDE_TIER1_CLEEXECUTESEPARABLEKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLEEXECUTESEPARABLEKERNEL_HPP
 
-
-#ifndef __cleExecuteSeparableKernel_hpp
-#define __cleExecuteSeparableKernel_hpp
-
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
 
-class ExecuteSeparableKernel : public Kernel
+class ExecuteSeparableKernel : public Operation
 {
-private:
-    int m_nDim = 1;
-    std::array<float, 3> m_Sigma;
-    std::array<int, 3> m_KernelSize;
+  public:
+    explicit ExecuteSeparableKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto SetSigma (const float &sigma_x, const float &sigma_y, const float &sigma_z) -> void;
+    auto SetKernelSize (const int &radius_x, const int &radius_y, const int &radius_z) -> void;
+    auto Execute () -> void override;
 
-public:
-    ExecuteSeparableKernel(std::shared_ptr<GPU>);
-    void SetSources(const std::map<std::string, std::string>&);
-    void SetKernelName(const std::string&);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetSigma(float, float, float);
-    void SetKernelSize(int, int, int);
-    void Execute();
+  private:
+    int dim_ = 1;
+    std::array<float, 3> sigma_{ 0, 0, 0 };
+    std::array<int, 3> kernel_size_{ 0, 0, 0 };
 };
 
 } // namespace cle
 
-#endif // __cleExecuteSeparableKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLEEXECUTESEPARABLEKERNEL_HPP

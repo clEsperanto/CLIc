@@ -5,30 +5,24 @@
 namespace cle
 {
 
-BinaryNotKernel::BinaryNotKernel(std::shared_ptr<GPU> t_gpu) :    
-    Kernel( t_gpu, 
-            "binary_not",
-            {"src", "dst"}
-    )
+BinaryNotKernel::BinaryNotKernel (const ProcessorPointer &device) : Operation (device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+    std::string cl_header = {
+#include "cle_binary_not.h"
+    };
+    this->SetSource ("binary_not", cl_header);
 }
 
-void BinaryNotKernel::SetInput(Object& t_x)
+void
+BinaryNotKernel::SetInput (const Image &object)
 {
-    this->AddObject(t_x, "src");
+    this->AddParameter ("src", object);
 }
 
-void BinaryNotKernel::SetOutput(Object& t_x)
+void
+BinaryNotKernel::SetOutput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
-}
-
-void BinaryNotKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+    this->AddParameter ("dst", object);
 }
 
 } // namespace cle

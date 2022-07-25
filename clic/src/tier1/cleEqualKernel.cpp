@@ -5,34 +5,30 @@
 namespace cle
 {
 
-EqualKernel::EqualKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "equal",
-            {"src0", "src1", "dst"}
-    )
+EqualKernel::EqualKernel (const ProcessorPointer &device) : Operation (device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+    std::string cl_header = {
+#include "cle_equal.h"
+    };
+    this->SetSource ("cle_equal", cl_header);
 }
 
-void EqualKernel::SetInput1(Object& t_x)
+void
+EqualKernel::SetInput1 (const Image &object)
 {
-    this->AddObject(t_x, "src0");
+    this->AddParameter ("src0", object);
 }
 
-void EqualKernel::SetInput2(Object& t_x)
+void
+EqualKernel::SetInput2 (const Image &object)
 {
-    this->AddObject(t_x, "src1");
+    this->AddParameter ("src1", object);
 }
 
-void EqualKernel::SetOutput(Object& t_x)
+void
+EqualKernel::SetOutput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("dst", object);
 }
 
-void EqualKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-}
 } // namespace cle

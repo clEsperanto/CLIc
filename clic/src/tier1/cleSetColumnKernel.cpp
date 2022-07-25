@@ -5,34 +5,30 @@
 namespace cle
 {
 
-SetColumnKernel::SetColumnKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "set_column",
-            {"dst" , "index", "scalar"}
-    )
+SetColumnKernel::SetColumnKernel (const ProcessorPointer &device) : Operation (device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+    std::string cl_header = {
+#include "cle_set_column.h"
+    };
+    this->SetSource ("cle_set_column", cl_header);
 }
 
-void SetColumnKernel::SetInput(Object& t_x)
+void
+SetColumnKernel::SetInput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("dst", object);
 }
 
-void SetColumnKernel::SetColumn(int t_x)
+void
+SetColumnKernel::SetColumn (const int &index)
 {
-    this->AddObject(t_x, "index");
+    this->AddParameter ("index", index);
 }
 
-void SetColumnKernel::SetValue(float t_x)
+void
+SetColumnKernel::SetValue (const float &value)
 {
-    this->AddObject(t_x, "scalar");
+    this->AddParameter ("scalar", value);
 }
 
-void SetColumnKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-}
 } // namespace cle

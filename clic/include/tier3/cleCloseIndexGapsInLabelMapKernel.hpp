@@ -1,25 +1,25 @@
 
-#ifndef __cleCloseIndexGapsInLabelMapKernel_hpp
-#define __cleCloseIndexGapsInLabelMapKernel_hpp
+#ifndef CLIC_INCLUDE_TIER3_CLECLOSEINDEXGAPSINLABELMAPKERNEL_HPP
+#define CLIC_INCLUDE_TIER3_CLECLOSEINDEXGAPSINLABELMAPKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class CloseIndexGapsInLabelMapKernel : public Kernel
-{
-private:
-    int m_Blocksize = 0;
 
-public:
-    CloseIndexGapsInLabelMapKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetBlockSize(int);
-    void Execute();
+class CloseIndexGapsInLabelMapKernel : public Operation
+{
+  private:
+    int block_size_ = 0;
+
+  public:
+    explicit CloseIndexGapsInLabelMapKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto SetBlockSize (const int &value) -> void;
+    auto Execute () -> void override;
 };
 
 } // namespace cle
 
-#endif // __cleCloseIndexGapsInLabelMapKernel_hpp
+#endif // CLIC_INCLUDE_TIER3_CLECLOSEINDEXGAPSINLABELMAPKERNEL_HPP

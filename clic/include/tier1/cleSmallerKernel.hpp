@@ -1,27 +1,21 @@
 
-#ifndef __cleSmallerKernel_hpp
-#define __cleSmallerKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLESMALLERKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLESMALLERKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class SmallerKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_smaller.h" 
-        };
 
-public:
-    SmallerKernel(std::shared_ptr<GPU>);
-    void SetInput1(Object&);
-    void SetInput2(Object&);
-    void SetOutput(Object&);
-    void Execute();
+class SmallerKernel : public Operation
+{
+  public:
+    explicit SmallerKernel (const ProcessorPointer &device);
+    auto SetInput1 (const Image &object) -> void;
+    auto SetInput2 (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleSmallerKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLESMALLERKERNEL_HPP

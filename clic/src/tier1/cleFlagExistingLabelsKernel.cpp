@@ -6,38 +6,40 @@
 namespace cle
 {
 
-FlagExistingLabelsKernel::FlagExistingLabelsKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "flag_existing_labels",
-            {"src" , "dst"}
-    )
+FlagExistingLabelsKernel::FlagExistingLabelsKernel (const ProcessorPointer &device) : Operation (device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
-}    
-
-void FlagExistingLabelsKernel::SetInput(Object& t_x)
-{
-    this->AddObject(t_x, "src");
+    std::string cl_header = {
+#include "cle_flag_existing_labels.h"
+    };
+    this->SetSource ("cle_flag_existing_labels", cl_header);
 }
 
-void FlagExistingLabelsKernel::SetOutput(Object& t_x)
+void
+FlagExistingLabelsKernel::SetInput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("src", object);
 }
 
-void FlagExistingLabelsKernel::Execute()
+void
+FlagExistingLabelsKernel::SetOutput (const Image &object)
 {
-    auto dst = this->GetParameter<Object>("dst");
+    this->AddParameter ("dst", object);
+}
 
-    SetKernel set(this->m_gpu);
-    set.SetInput(*dst);
-    set.SetValue(0);
-    set.Execute();
+void
+FlagExistingLabelsKernel::Execute ()
+{
+    // auto dst = this->GetParameter<Object> ("dst");
 
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->SetGlobalNDRange("src");
-    this->EnqueueKernel();
+    // SetKernel set (this->m_gpu);
+    // set.SetInput (*dst);
+    // set.SetValue (0);
+    // set.Execute ();
+
+    // this->BuildProgramKernel ();
+    // this->SetArguments ();
+    // this->SetGlobalNDRange ("src");
+    // this->EnqueueKernel ();
 }
 
 } // namespace cle

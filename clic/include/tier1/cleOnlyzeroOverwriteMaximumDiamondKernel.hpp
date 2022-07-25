@@ -1,27 +1,21 @@
 
-#ifndef __cleOnlyzeroOverwriteMaximumDiamondKernel_hpp
-#define __cleOnlyzeroOverwriteMaximumDiamondKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLEONLYZEROOVERWRITEMAXIMUMDIAMONDKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLEONLYZEROOVERWRITEMAXIMUMDIAMONDKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class OnlyzeroOverwriteMaximumDiamondKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_onlyzero_overwrite_maximum_diamond.h" 
-        };
 
-public:
-    OnlyzeroOverwriteMaximumDiamondKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput1(Object&);
-    void SetOutput2(Object&);
-    void Execute();
+class OnlyzeroOverwriteMaximumDiamondKernel : public Operation
+{
+  public:
+    explicit OnlyzeroOverwriteMaximumDiamondKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput1 (const Image &object) -> void;
+    auto SetOutput2 (const Image &object) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleOnlyzeroOverwriteMaximumDiamondKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLEONLYZEROOVERWRITEMAXIMUMDIAMONDKERNEL_HPP

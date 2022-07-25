@@ -1,78 +1,32 @@
 
-#include <random>
-#include <iostream>
-#include <vector>
-
 #include "cleScalar.hpp"
 
+#include <cassert>
+#include <iostream>
+
+template <class type>
+auto
+test_scalar (const type &x) -> bool
+{
+    cle::Scalar<type> scalar (x);
+    std::cout << scalar.ToString () << std::endl;
+    return (x == scalar.Get ());
+}
 
 /**
  * Main test function
  *
  */
-int main(int argc, char **argv)
+auto
+main (int argc, char **argv) -> int
 {
+    double input = std::atof (argv[1]);
     {
-    cle::Scalar<int> x;
-    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
-    std::cout << " " << x.nDim() << "d ";
-    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
+        assert (test_scalar<int> (static_cast<int> (input)));
     }
 
     {
-    cle::Scalar<unsigned int> x(10);        
-    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
-    std::cout << " " << x.nDim() << "d ";
-    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
-    }
-
-    {
-    cle::Scalar<float> x(1.2f);        
-    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
-    std::cout << " " << x.nDim() << "d ";
-    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
-    }
-
-    {
-    cle::Scalar<double> x(1.2f);        
-    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
-    std::cout << " " << x.nDim() << "d ";
-    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
-    }
-
-    {
-    cle::Scalar<char> x(5);        
-    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
-    std::cout << " " << x.nDim() << "d ";
-    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
-    }
-
-    {
-    cle::Scalar<unsigned char> x(5);        
-    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
-    std::cout << " " << x.nDim() << "d ";
-    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
-    }
-
-    {
-    cle::Scalar<short> x(5);        
-    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
-    std::cout << " " << x.nDim() << "d ";
-    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
-    }
-
-    {
-    cle::Scalar<unsigned short> x(5);        
-    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
-    std::cout << " " << x.nDim() << "d ";
-    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
-    }
-
-    {
-    cle::Scalar<> x(5);        
-    std::cout << x.GetObjectType() << ": ("<< x.GetDataType() << ") " << x.Data();
-    std::cout << " " << x.nDim() << "d ";
-    std::cout << "[" << x.Shape()[0] << "," << x.Shape()[1] << ","<< x.Shape()[2] << "]" << std::endl;
+        assert (test_scalar<float> (static_cast<float> (input)));
     }
 
     return EXIT_SUCCESS;

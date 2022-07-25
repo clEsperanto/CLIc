@@ -1,28 +1,22 @@
 
 
-#ifndef __cleSetColumnKernel_hpp
-#define __cleSetColumnKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLESETCOLUMNKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLESETCOLUMNKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class SetColumnKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_set_column.h" 
-        };
 
-public:
-    SetColumnKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetColumn(int);
-    void SetValue(float);
-    void Execute();
+class SetColumnKernel : public Operation
+{
+  public:
+    SetColumnKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetColumn (const int &value) -> void;
+    auto SetValue (const float &value) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleSetColumnKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLESETCOLUMNKERNEL_HPP

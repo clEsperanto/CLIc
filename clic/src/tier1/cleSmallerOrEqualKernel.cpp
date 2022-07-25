@@ -5,34 +5,30 @@
 namespace cle
 {
 
-SmallerOrEqualKernel::SmallerOrEqualKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "smaller_or_equal",
-            {"src0" , "src1", "dst"}
-    )
+SmallerOrEqualKernel::SmallerOrEqualKernel (const ProcessorPointer &device) : Operation (device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
-}    
-
-void SmallerOrEqualKernel::SetInput1(Object& t_x)
-{
-    this->AddObject(t_x, "src0");
+    std::string cl_header = {
+#include "cle_smaller_or_equal.h"
+    };
+    this->SetSource ("cle_smaller_or_equal", cl_header);
 }
 
-void SmallerOrEqualKernel::SetInput2(Object& t_x)
+void
+SmallerOrEqualKernel::SetInput1 (const Image &object)
 {
-    this->AddObject(t_x, "src1");
+    this->AddParameter ("src0", object);
 }
 
-void SmallerOrEqualKernel::SetOutput(Object& t_x)
+void
+SmallerOrEqualKernel::SetInput2 (const Image &object)
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("src1", object);
 }
 
-void SmallerOrEqualKernel::Execute()
+void
+SmallerOrEqualKernel::SetOutput (const Image &object)
 {
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+    this->AddParameter ("dst", object);
 }
+
 } // namespace cle

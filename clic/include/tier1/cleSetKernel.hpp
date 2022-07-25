@@ -1,26 +1,20 @@
 
-#ifndef __cleSetKernel_hpp
-#define __cleSetKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLESETKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLESETKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class SetKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_set.h" 
-        };
 
-public:
-    SetKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetValue(float);
-    void Execute();
+class SetKernel : public Operation
+{
+  public:
+    explicit SetKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetValue (const float &value) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleSetKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLESETKERNEL_HPP

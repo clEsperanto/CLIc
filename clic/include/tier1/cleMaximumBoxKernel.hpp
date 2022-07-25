@@ -1,33 +1,26 @@
 
-#ifndef __cleMaximumBoxKernel_hpp
-#define __cleMaximumBoxKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLEMAXIMUMBOXKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLEMAXIMUMBOXKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class MaximumBoxKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_maximum_separable.h" 
-        };
-        
-public:
-    MaximumBoxKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetRadius(int=0, int=0, int=0);
-    void Execute();
 
-private:
-    int m_x;
-    int m_y;
-    int m_z;
-    int Radius2KernelSize(int) const;
+class MaximumBoxKernel : public Operation
+{
+  public:
+    explicit MaximumBoxKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto SetRadius (const int &radius_x, const int &radius_y, const int &radius_z) -> void;
+    auto Execute () -> void override;
+
+  private:
+    std::array<int, 3> radius_{ 0, 0, 0 };
+    auto Radius2KernelSize (const int &radius) const -> int;
 };
 
 } // namespace cle
 
-#endif // __cleMaximumBoxKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLEMAXIMUMBOXKERNEL_HPP

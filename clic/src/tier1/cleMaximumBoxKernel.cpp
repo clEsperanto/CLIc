@@ -6,54 +6,56 @@
 namespace cle
 {
 
-MaximumBoxKernel::MaximumBoxKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "maximum_separable",
-            {"src", "dst"}
-    )
+MaximumBoxKernel::MaximumBoxKernel (const ProcessorPointer &device) : Operation (device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
-}    
-
-int MaximumBoxKernel::Radius2KernelSize(int t_r) const
-{
-    return static_cast<int>(t_r) * 2 + 1;
+    std::string cl_header = {
+#include "cle_maximum_separable.h"
+    };
+    this->SetSource ("cle_maximum_separable", cl_header);
 }
 
-void MaximumBoxKernel::SetInput(Object& t_x)
+int
+MaximumBoxKernel::Radius2KernelSize (const int &radius) const
 {
-    this->AddObject(t_x, "src");
+    return radius * 2 + 1;
 }
 
-void MaximumBoxKernel::SetOutput(Object& t_x)
+void
+MaximumBoxKernel::SetInput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("src", object);
 }
 
-void MaximumBoxKernel::SetRadius(int x, int y, int z)
+void
+MaximumBoxKernel::SetOutput (const Image &object)
 {
-    this->m_x = x;
-    this->m_y = y;
-    this->m_z = z;
+    this->AddParameter ("dst", object);
 }
 
-void MaximumBoxKernel::Execute()
+void
+MaximumBoxKernel::SetRadius (const int &radius_x, const int &radius_y, const int &radius_z)
 {
-    auto src = this->GetParameter<Object>("src");
-    auto dst = this->GetParameter<Object>("dst");
+    this->radius_ = { radius_x, radius_y, radius_z };
+}
 
-    int nx = Radius2KernelSize(this->m_x);
-    int ny = Radius2KernelSize(this->m_y);
-    int nz = Radius2KernelSize(this->m_z);
+void
+MaximumBoxKernel::Execute ()
+{
+    // auto src = this->GetParameter<Object> ("src");
+    // auto dst = this->GetParameter<Object> ("dst");
 
-    ExecuteSeparableKernel kernel(this->m_gpu);
-    kernel.SetKernelName(this->m_KernelName);
-    kernel.SetSources(this->m_Sources);
-    kernel.SetInput(*src);
-    kernel.SetOutput(*dst);
-    kernel.SetSigma(this->m_x, this->m_y, this->m_z);
-    kernel.SetKernelSize(nx, ny, nz);
-    kernel.Execute();
+    // int nx = Radius2KernelSize (this->radius_[0]);
+    // int ny = Radius2KernelSize (this->radius_[1]);
+    // int nz = Radius2KernelSize (this->radius_[2]);
+
+    // ExecuteSeparableKernel kernel (this->m_gpu);
+    // kernel.SetKernelName (this->m_KernelName);
+    // kernel.SetSources (this->m_Sources);
+    // kernel.SetInput (*src);
+    // kernel.SetOutput (*dst);
+    // kernel.SetSigma (this->m_x, this->m_y, this->m_z);
+    // kernel.SetKernelSize (nx, ny, nz);
+    // kernel.Execute ();
 }
 
 } // namespace cle

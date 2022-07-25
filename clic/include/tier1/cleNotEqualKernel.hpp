@@ -1,27 +1,21 @@
 
-#ifndef __cleNotEqualKernel_hpp
-#define __cleNotEqualKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLENOTEQUALKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLENOTEQUALKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class NotEqualKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_not_equal.h" 
-        };
 
-public:
-    NotEqualKernel(std::shared_ptr<GPU>);
-    void SetInput1(Object&);
-    void SetInput2(Object&);
-    void SetOutput(Object&);
-    void Execute();
+class NotEqualKernel : public Operation
+{
+  public:
+    explicit NotEqualKernel (const ProcessorPointer &device);
+    auto SetInput1 (const Image &object) -> void;
+    auto SetInput2 (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleNotEqualKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLENOTEQUALKERNEL_HPP

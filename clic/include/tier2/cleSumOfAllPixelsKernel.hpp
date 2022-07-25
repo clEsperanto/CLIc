@@ -1,21 +1,21 @@
 
-#ifndef __cleSumOfAllPixelsKernel_hpp
-#define __cleSumOfAllPixelsKernel_hpp
+#ifndef CLIC_INCLUDE_TIER2_CLESUMOFALLPIXELSKERNEL_HPP
+#define CLIC_INCLUDE_TIER2_CLESUMOFALLPIXELSKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class SumOfAllPixelsKernel : public Kernel
+
+class SumOfAllPixelsKernel : public Operation
 {
-public:
-    SumOfAllPixelsKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void Execute();
+  public:
+    explicit SumOfAllPixelsKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto Execute () -> void override;
 };
 
 } // namespace cle
 
-#endif // __cleSumOfAllPixelsKernel_hpp
+#endif // CLIC_INCLUDE_TIER2_CLESUMOFALLPIXELSKERNEL_HPP

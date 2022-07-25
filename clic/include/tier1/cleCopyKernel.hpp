@@ -1,26 +1,20 @@
 
-#ifndef __cleCopyKernel_hpp
-#define __cleCopyKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLECOPYKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLECOPYKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class CopyKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_copy.h" 
-        };
 
-public:
-    CopyKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void Execute();
+class CopyKernel : public Operation
+{
+  public:
+    explicit CopyKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleCopyKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLECOPYKERNEL_HPP

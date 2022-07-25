@@ -1,27 +1,21 @@
 
-#ifndef __cleSubtractImageFromScalarKernel_hpp
-#define __cleSubtractImageFromScalarKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLESUBTRACTIMAGEFROMSCALARKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLESUBTRACTIMAGEFROMSCALARKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
 
-class SubtractImageFromScalarKernel : public Kernel
+class SubtractImageFromScalarKernel : public Operation
 {
-private:
-    std::string m_OclHeader = {
-        #include "cle_subtract_image_from_scalar.h" 
-        };
-
-public:
-    SubtractImageFromScalarKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);    
-    void SetScalar(float);
-    void Execute();
+  public:
+    explicit SubtractImageFromScalarKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto SetScalar (const float &value) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleSubtractImageFromScalarKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLESUBTRACTIMAGEFROMSCALARKERNEL_HPP

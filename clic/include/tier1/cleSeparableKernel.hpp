@@ -1,26 +1,22 @@
+#ifndef CLIC_INCLUDE_TIER1_CLESEPARABLEKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLESEPARABLEKERNEL_HPP
 
-#ifndef __cleSeparableKernel_hpp
-#define __cleSeparableKernel_hpp
-
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
 
-class SeparableKernel : public Kernel
+class SeparableKernel : public Operation
 {
-public:
-    SeparableKernel(std::shared_ptr<GPU>);
-    void SetSources(const std::map<std::string, std::string>&);
-    void SetKernelName(const std::string&);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetSize(int);
-    void SetSigma(float);
-    void SetDimension(int);
-    void Execute();
+  public:
+    explicit SeparableKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto SetSigma (const float &sigma) -> void;
+    auto SetSize (const int &radius) -> void;
+    auto SetDimension (const int &dimension) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleSeparableKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLESEPARABLEKERNEL_HPP

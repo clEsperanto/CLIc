@@ -5,29 +5,24 @@
 namespace cle
 {
 
-DilateSphereKernel::DilateSphereKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "dilate_sphere",
-            {"src" , "dst"}
-    )
+DilateSphereKernel::DilateSphereKernel (const ProcessorPointer &device) : Operation (device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+    std::string cl_header = {
+#include "cle_dilate_sphere.h"
+    };
+    this->SetSource ("cle_dilate_sphere", cl_header);
 }
 
-void DilateSphereKernel::SetInput(Object& t_x)
+void
+DilateSphereKernel::SetInput (const Image &object)
 {
-    this->AddObject(t_x, "src");
+    this->AddParameter ("src", object);
 }
 
-void DilateSphereKernel::SetOutput(Object& t_x)
+void
+DilateSphereKernel::SetOutput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("dst", object);
 }
 
-void DilateSphereKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-}
 } // namespace cle

@@ -1,21 +1,21 @@
 
-#ifndef __cleMinimumOfAllPixelsKernel_hpp
-#define __cleMinimumOfAllPixelsKernel_hpp
+#ifndef CLIC_INCLUDE_TIER2_CLEMINIMUMOFALLPIXELSKERNEL_HPP
+#define CLIC_INCLUDE_TIER2_CLEMINIMUMOFALLPIXELSKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class MinimumOfAllPixelsKernel : public Kernel
+
+class MinimumOfAllPixelsKernel : public Operation
 {
-public:
-    MinimumOfAllPixelsKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void Execute();
+  public:
+    explicit MinimumOfAllPixelsKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto Execute () -> void override;
 };
 
 } // namespace cle
 
-#endif // __cleMinimumOfAllPixelsKernel_hpp
+#endif // CLIC_INCLUDE_TIER2_CLEMINIMUMOFALLPIXELSKERNEL_HPP

@@ -4,31 +4,25 @@
 
 namespace cle
 {
-    
-SumXProjectionKernel::SumXProjectionKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "sum_x_projection",
-            {"src", "dst"}
-    )
+
+SumXProjectionKernel::SumXProjectionKernel (const ProcessorPointer &device) : Operation (device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+    std::string cl_header = {
+#include "cle_sum_x_projection.h"
+    };
+    this->SetSource ("cle_sum_x_projection", cl_header);
 }
 
-void SumXProjectionKernel::SetInput(Object& t_x)
+void
+SumXProjectionKernel::SetInput (const Image &object)
 {
-    this->AddObject(t_x, "src");
+    this->AddParameter ("src", object);
 }
 
-void SumXProjectionKernel::SetOutput(Object& t_x)
+void
+SumXProjectionKernel::SetOutput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
-}
-
-void SumXProjectionKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+    this->AddParameter ("dst", object);
 }
 
 } // namespace cle

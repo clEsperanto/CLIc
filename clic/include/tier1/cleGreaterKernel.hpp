@@ -1,28 +1,21 @@
 
-#ifndef __cleGreaterKernel_hpp
-#define __cleGreaterKernel_hpp
+#ifndef CLIC_INCLUDE_TIER1_CLEGREATERKERNEL_HPP
+#define CLIC_INCLUDE_TIER1_CLEGREATERKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class GreaterKernel : public Kernel
+
+class GreaterKernel : public Operation
 {
-
-private:
-    std::string m_OclHeader = {
-        #include "cle_greater.h" 
-        };
-
-public:
-    GreaterKernel(std::shared_ptr<GPU>);
-    void SetInput1(Object&);
-    void SetInput2(Object&);
-    void SetOutput(Object&);
-    void Execute();
+  public:
+    explicit GreaterKernel (const ProcessorPointer &device);
+    auto SetInput1 (const Image &object) -> void;
+    auto SetInput2 (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
 };
 
 } // namespace cle
 
-#endif // __cleGreaterKernel_hpp
+#endif // CLIC_INCLUDE_TIER1_CLEGREATERKERNEL_HPP

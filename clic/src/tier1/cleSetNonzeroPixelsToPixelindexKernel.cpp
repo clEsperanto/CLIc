@@ -5,35 +5,30 @@
 namespace cle
 {
 
-SetNonzeroPixelsToPixelindexKernel::SetNonzeroPixelsToPixelindexKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu, 
-            "set_nonzero_pixels_to_pixelindex",
-            {"src" , "dst", "offset"}
-    )
+SetNonzeroPixelsToPixelindexKernel::SetNonzeroPixelsToPixelindexKernel (const ProcessorPointer &device) : Operation (device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+    std::string cl_header = {
+#include "cle_set_nonzero_pixels_to_pixelindex.h"
+    };
+    this->SetSource ("cle_set_nonzero_pixels_to_pixelindex", cl_header);
 }
 
-void SetNonzeroPixelsToPixelindexKernel::SetInput(Object& t_x)
+void
+SetNonzeroPixelsToPixelindexKernel::SetInput (const Image &object)
 {
-    this->AddObject(t_x, "src");
+    this->AddParameter ("src", object);
 }
 
-void SetNonzeroPixelsToPixelindexKernel::SetOutput(Object& t_x)
+void
+SetNonzeroPixelsToPixelindexKernel::SetOutput (const Image &object)
 {
-    this->AddObject(t_x, "dst");
+    this->AddParameter ("dst", object);
 }
 
-void SetNonzeroPixelsToPixelindexKernel::SetOffset(int t_x)
+void
+SetNonzeroPixelsToPixelindexKernel::SetOffset (const int &value)
 {
-    this->AddObject(t_x, "offset");
-}
-
-void SetNonzeroPixelsToPixelindexKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+    this->AddParameter ("offset", value);
 }
 
 } // namespace cle

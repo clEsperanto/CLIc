@@ -1,24 +1,25 @@
 
-#ifndef __cleDilateLabelsKernel_hpp
-#define __cleDilateLabelsKernel_hpp
+#ifndef CLIC_INCLUDE_TIER2_CLEDILATELABELSKERNEL_HPP
+#define CLIC_INCLUDE_TIER2_CLEDILATELABELSKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class DilateLabelsKernel : public Kernel
+
+class DilateLabelsKernel : public Operation
 {
-public:
-    DilateLabelsKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetRadius(int =1);
-    void Execute();
-private:
-    int m_Radius = 1;
+  public:
+    explicit DilateLabelsKernel (const ProcessorPointer &device);
+    auto SetInput (const Image &object) -> void;
+    auto SetOutput (const Image &object) -> void;
+    auto SetRadius (const int &radius) -> void;
+    auto Execute () -> void override;
+
+  private:
+    int radius_ = 1;
 };
 
 } // namespace cle
 
-#endif // __cleDilateLabelsKernel_hpp
+#endif // CLIC_INCLUDE_TIER2_CLEDILATELABELSKERNEL_HPP
