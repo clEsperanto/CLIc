@@ -1,6 +1,6 @@
 
-#ifndef CLIC_INCLUDE_TIER1_CLESOBELKERNEL_HPP
-#define CLIC_INCLUDE_TIER1_CLESOBELKERNEL_HPP
+#ifndef __TIER1_CLESOBELKERNEL_HPP
+#define __TIER1_CLESOBELKERNEL_HPP
 
 #include "cleOperation.hpp"
 
@@ -17,4 +17,4 @@ class SobelKernel : public Operation
 
 } // namespace cle
 
-#endif // CLIC_INCLUDE_TIER1_CLESOBELKERNEL_HPP
+#endif // __TIER1_CLESOBELKERNEL_HPP

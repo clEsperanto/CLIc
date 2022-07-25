@@ -1,6 +1,6 @@
 
-#ifndef CLIC_INCLUDE_TIER1_CLEBINARYXORKERNEL_HPP
-#define CLIC_INCLUDE_TIER1_CLEBINARYXORKERNEL_HPP
+#ifndef __TIER1_CLEBINARYXORKERNEL_HPP
+#define __TIER1_CLEBINARYXORKERNEL_HPP
 
 #include "cleOperation.hpp"
 
@@ -18,4 +18,4 @@ class BinaryXorKernel : public Operation
 
 } // namespace cle
 
-#endif // CLIC_INCLUDE_TIER1_CLEBINARYXORKERNEL_HPP
+#endif // __TIER1_CLEBINARYXORKERNEL_HPP

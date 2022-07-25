@@ -1,6 +1,6 @@
 
-#ifndef CLIC_INCLUDE_TIER1_CLEBINARYNOTKERNEL_HPP
-#define CLIC_INCLUDE_TIER1_CLEBINARYNOTKERNEL_HPP
+#ifndef __TIER1_CLEBINARYNOTKERNEL_HPP
+#define __TIER1_CLEBINARYNOTKERNEL_HPP
 
 #include "cleOperation.hpp"
 
@@ -17,4 +17,4 @@ class BinaryNotKernel : public Operation
 
 } // namespace cle
 
-#endif // CLIC_INCLUDE_TIER1_CLEBINARYNOTKERNEL_HPP
+#endif // __TIER1_CLEBINARYNOTKERNEL_HPP

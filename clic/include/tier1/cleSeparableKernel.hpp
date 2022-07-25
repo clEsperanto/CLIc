@@ -1,5 +1,5 @@
-#ifndef CLIC_INCLUDE_TIER1_CLESEPARABLEKERNEL_HPP
-#define CLIC_INCLUDE_TIER1_CLESEPARABLEKERNEL_HPP
+#ifndef __TIER1_CLESEPARABLEKERNEL_HPP
+#define __TIER1_CLESEPARABLEKERNEL_HPP
 
 #include "cleOperation.hpp"
 
@@ -19,4 +19,4 @@ class SeparableKernel : public Operation
 
 } // namespace cle
 
-#endif // CLIC_INCLUDE_TIER1_CLESEPARABLEKERNEL_HPP
+#endif // __TIER1_CLESEPARABLEKERNEL_HPP

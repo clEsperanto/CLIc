@@ -1,6 +1,6 @@
 
-#ifndef CLIC_INCLUDE_TIER2_CLETOPHATBOXKERNEL_HPP
-#define CLIC_INCLUDE_TIER2_CLETOPHATBOXKERNEL_HPP
+#ifndef __TIER2_CLETOPHATBOXKERNEL_HPP
+#define __TIER2_CLETOPHATBOXKERNEL_HPP
 
 #include "cleOperation.hpp"
 
@@ -22,4 +22,4 @@ class TopHatBoxKernel : public Operation
 
 } // namespace cle
 
-#endif // CLIC_INCLUDE_TIER2_CLETOPHATBOXKERNEL_HPP
+#endif // __TIER2_CLETOPHATBOXKERNEL_HPP

@@ -1,6 +1,6 @@
 
-#ifndef CLIC_INCLUDE_TIER3_CLEHISTOGRAMKERNEL_HPP
-#define CLIC_INCLUDE_TIER3_CLEHISTOGRAMKERNEL_HPP
+#ifndef __TIER3_CLEHISTOGRAMKERNEL_HPP
+#define __TIER3_CLEHISTOGRAMKERNEL_HPP
 
 #include "cleOperation.hpp"
 
@@ -26,4 +26,4 @@ class HistogramKernel : public Operation
 
 } // namespace cle
 
-#endif // CLIC_INCLUDE_TIER3_CLEHISTOGRAMKERNEL_HPP
+#endif // __TIER3_CLEHISTOGRAMKERNEL_HPP

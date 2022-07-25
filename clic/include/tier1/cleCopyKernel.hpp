@@ -1,6 +1,6 @@
 
-#ifndef CLIC_INCLUDE_TIER1_CLECOPYKERNEL_HPP
-#define CLIC_INCLUDE_TIER1_CLECOPYKERNEL_HPP
+#ifndef __TIER1_CLECOPYKERNEL_HPP
+#define __TIER1_CLECOPYKERNEL_HPP
 
 #include "cleOperation.hpp"
 
@@ -17,4 +17,4 @@ class CopyKernel : public Operation
 
 } // namespace cle
 
-#endif // CLIC_INCLUDE_TIER1_CLECOPYKERNEL_HPP
+#endif // __TIER1_CLECOPYKERNEL_HPP

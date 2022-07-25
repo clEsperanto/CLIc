@@ -1,5 +1,5 @@
-#ifndef CLIC_INCLUDE_TIER1_CLEMASKKERNEL_HPP
-#define CLIC_INCLUDE_TIER1_CLEMASKKERNEL_HPP
+#ifndef __TIER1_CLEMASKKERNEL_HPP
+#define __TIER1_CLEMASKKERNEL_HPP
 
 #include "cleOperation.hpp"
 
@@ -17,4 +17,4 @@ class MaskKernel : public Operation
 
 } // namespace cle
 
-#endif // CLIC_INCLUDE_TIER1_CLEMASKKERNEL_HPP
+#endif // __TIER1_CLEMASKKERNEL_HPP

@@ -1,6 +1,6 @@
 
-#ifndef CLIC_INCLUDE_TIER1_CLEGREATERKERNEL_HPP
-#define CLIC_INCLUDE_TIER1_CLEGREATERKERNEL_HPP
+#ifndef __TIER1_CLEGREATERKERNEL_HPP
+#define __TIER1_CLEGREATERKERNEL_HPP
 
 #include "cleOperation.hpp"
 
@@ -18,4 +18,4 @@ class GreaterKernel : public Operation
 
 } // namespace cle
 
-#endif // CLIC_INCLUDE_TIER1_CLEGREATERKERNEL_HPP
+#endif // __TIER1_CLEGREATERKERNEL_HPP

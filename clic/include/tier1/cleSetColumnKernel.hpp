@@ -1,7 +1,7 @@
 
 
-#ifndef CLIC_INCLUDE_TIER1_CLESETCOLUMNKERNEL_HPP
-#define CLIC_INCLUDE_TIER1_CLESETCOLUMNKERNEL_HPP
+#ifndef __TIER1_CLESETCOLUMNKERNEL_HPP
+#define __TIER1_CLESETCOLUMNKERNEL_HPP
 
 #include "cleOperation.hpp"
 
@@ -19,4 +19,4 @@ class SetColumnKernel : public Operation
 
 } // namespace cle
 
-#endif // CLIC_INCLUDE_TIER1_CLESETCOLUMNKERNEL_HPP
+#endif // __TIER1_CLESETCOLUMNKERNEL_HPP

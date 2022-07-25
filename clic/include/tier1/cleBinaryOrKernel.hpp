@@ -1,6 +1,6 @@
 
-#ifndef CLIC_INCLUDE_TIER1_CLEBINARYORKERNEL_HPP
-#define CLIC_INCLUDE_TIER1_CLEBINARYORKERNEL_HPP
+#ifndef __TIER1_CLEBINARYORKERNEL_HPP
+#define __TIER1_CLEBINARYORKERNEL_HPP
 
 #include "cleOperation.hpp"
 
@@ -18,4 +18,4 @@ class BinaryOrKernel : public Operation
 
 } // namespace cle
 
-#endif // CLIC_INCLUDE_TIER1_CLEBINARYORKERNEL_HPP
+#endif // __TIER1_CLEBINARYORKERNEL_HPP

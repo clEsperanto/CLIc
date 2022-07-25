@@ -1,6 +1,6 @@
 
-#ifndef __cleDifferenceOfGaussianKernel_hpp
-#define __cleDifferenceOfGaussianKernel_hpp
+#ifndef __TIER3_CLEDIFFERENCEOFGAUSSIANKERNEL_HPP
+#define __TIER3_CLEDIFFERENCEOFGAUSSIANKERNEL_HPP
 
 #include "cleOperation.hpp"
 
@@ -24,4 +24,4 @@ class DifferenceOfGaussianKernel : public Operation
 
 } // namespace cle
 
-#endif // __cleDifferenceOfGaussianKernel_hpp
+#endif // __TIER3_CLEDIFFERENCEOFGAUSSIANKERNEL_HPP

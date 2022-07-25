@@ -1,6 +1,6 @@
 
-#ifndef CLIC_INCLUDE_TIER1_CLESETKERNEL_HPP
-#define CLIC_INCLUDE_TIER1_CLESETKERNEL_HPP
+#ifndef __TIER1_CLESETKERNEL_HPP
+#define __TIER1_CLESETKERNEL_HPP
 
 #include "cleOperation.hpp"
 
@@ -17,4 +17,4 @@ class SetKernel : public Operation
 
 } // namespace cle
 
-#endif // CLIC_INCLUDE_TIER1_CLESETKERNEL_HPP
+#endif // __TIER1_CLESETKERNEL_HPP
