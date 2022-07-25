@@ -23,10 +23,4 @@ AbsoluteKernel::SetOutput (const Image &object) -> void
     this->AddParameter ("dst", object);
 }
 
-auto
-AbsoluteKernel::GetOutput () -> Image
-{
-    return *this->GetImage ("dst");
-}
-
 } // namespace cle
