@@ -1,5 +1,5 @@
-#ifndef CLIC_INCLUDE_CORE_CLEUTILS_HPP
-#define CLIC_INCLUDE_CORE_CLEUTILS_HPP
+#ifndef __CORE_CLEUTILS_HPP
+#define __CORE_CLEUTILS_HPP
 
 #include "clic.hpp"
 #include <string>
@@ -441,4 +441,4 @@ exec (const char *cmd) -> std::string
 
 } // namespace cle
 
-#endif // CLIC_INCLUDE_CORE_CLEUTILS_HPP
+#endif // __CORE_CLEUTILS_HPP
