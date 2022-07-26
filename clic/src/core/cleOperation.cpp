@@ -259,9 +259,22 @@ Operation::MakeDefines () const -> std::string
                                 {
                                     img_type_name = "__read_only image" + ndim + "d_t";
                                 }
+                            std::string prefix;
+                            switch (ite.second->DataInfoShort ().front ())
+                                {
+                                case 'u':
+                                    prefix = "ui";
+                                    break;
+                                case 'f':
+                                    prefix = "f";
+                                    break;
+                                default:
+                                    prefix = "i";
+                                    break;
+                                }
                             defines += "\n#define IMAGE_" + ite.first + "_TYPE " + img_type_name;
-                            defines += "\n#define READ_" + ite.first + "_IMAGE(a,b,c) read_image" + ite.second->DataInfoShort () + "(a,b,c)";
-                            defines += "\n#define WRITE_" + ite.first + "_IMAGE(a,b,c) write_image" + ite.second->DataInfoShort () + "(a,b,c)";
+                            defines += "\n#define READ_" + ite.first + "_IMAGE(a,b,c) read_image" + prefix + "(a,b,c)";
+                            defines += "\n#define WRITE_" + ite.first + "_IMAGE(a,b,c) write_image" + prefix + "(a,b,c)";
                         }
                     // define size information
                     defines += "\n";
