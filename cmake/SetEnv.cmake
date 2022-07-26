@@ -41,7 +41,7 @@ option(BUILD_SHARED_LIBS "Build ${LIBRARY_NAME} as a shared library." OFF)
 message(STATUS "Build ${LIBRARY_NAME} as shared lib: ${BUILD_SHARED_LIBS}")
 
 # Set Test compilation (default: ON)
-option(BUILD_TESTING "Build ${LIBRARY_NAME} Tests." OFF)
+option(BUILD_TESTING "Build ${LIBRARY_NAME} Tests." ON)
 message(STATUS "Build tests: ${BUILD_TESTING}")
 
 # Set Doc compilation (default: ON) (NOT IMPLEMENTED)
@@ -49,7 +49,7 @@ option(BUILD_DOCUMENTATION "Build ${LIBRARY_NAME} Documentation." ON)
 message(STATUS "Build documentation: ${BUILD_DOCUMENTATION} (WIP)")
 
 # Set Benchmark compilation (default: ON)
-option(BUILD_BENCHMARK "build benchmarks tests" OFF)
+option(BUILD_BENCHMARK "build benchmarks tests" ON)
 message(STATUS "Build benchmark: ${BUILD_BENCHMARK}")
 
 # Manage build type options (default: RELEASE)

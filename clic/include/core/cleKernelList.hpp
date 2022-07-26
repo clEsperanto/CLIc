@@ -11,7 +11,7 @@
 #include "cleBinaryXorKernel.hpp"
 #include "cleBlockEnumerateKernel.hpp"
 #include "cleCloseIndexGapsInLabelMapKernel.hpp"
-#include "cleConnectedComponentsLabelingBoxKernel.hpp"
+#include "cleConnectedComponentLabelingBoxKernel.hpp"
 #include "cleCopyKernel.hpp"
 #include "cleDetectMaximaKernel.hpp"
 #include "cleDifferenceOfGaussianKernel.hpp"
