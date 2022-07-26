@@ -492,9 +492,9 @@ Clesperanto::SumOfAllPixels (const Image &t_src, const Image &t_dst) -> void
 }
 
 auto
-Clesperanto::ConnectedComponentsLabelingBox (const Image &t_src, const Image &t_dst) -> void
+Clesperanto::ConnectedComponentLabelingBox (const Image &t_src, const Image &t_dst) -> void
 {
-    ConnectedComponentsLabelingBoxKernel kernel (this->GetDevice ());
+    ConnectedComponentLabelingBoxKernel kernel (this->GetDevice ());
     kernel.SetInput (t_src);
     kernel.SetOutput (t_dst);
     kernel.Execute ();

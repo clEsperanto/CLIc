@@ -49,7 +49,7 @@ class Clesperanto
     auto BlockEnumerate (const Image &, const Image &, const Image &, const int & = 0) -> void; //! block enumarate fail when running with Image
 
     auto Copy (const Image &, const Image &) -> void;
-    auto ConnectedComponentsLabelingBox (const Image &, const Image &) -> void;
+    auto ConnectedComponentLabelingBox (const Image &, const Image &) -> void;
     auto CloseIndexGapsInLabelMap (const Image &, const Image &, const int & = 4096) -> void;
 
     auto DilateSphere (const Image &, const Image &) -> void;

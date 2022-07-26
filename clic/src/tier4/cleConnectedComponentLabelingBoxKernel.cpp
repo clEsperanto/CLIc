@@ -1,7 +1,7 @@
 
 #include "cleCloseIndexGapsInLabelMapKernel.hpp"
 
-#include "cleConnectedComponentsLabelingBoxKernel.hpp"
+#include "cleConnectedComponentLabelingBoxKernel.hpp"
 #include "cleCopyKernel.hpp"
 #include "cleMemory.hpp"
 #include "cleNonzeroMinimumBoxKernel.hpp"
@@ -11,24 +11,24 @@
 namespace cle
 {
 
-ConnectedComponentsLabelingBoxKernel::ConnectedComponentsLabelingBoxKernel (const ProcessorPointer &device) : Operation (device, 2)
+ConnectedComponentLabelingBoxKernel::ConnectedComponentLabelingBoxKernel (const ProcessorPointer &device) : Operation (device, 2)
 {
 }
 
 void
-ConnectedComponentsLabelingBoxKernel::SetInput (const Image &object)
+ConnectedComponentLabelingBoxKernel::SetInput (const Image &object)
 {
     this->AddParameter ("src", object);
 }
 
 void
-ConnectedComponentsLabelingBoxKernel::SetOutput (const Image &object)
+ConnectedComponentLabelingBoxKernel::SetOutput (const Image &object)
 {
     this->AddParameter ("dst", object);
 }
 
 void
-ConnectedComponentsLabelingBoxKernel::Execute ()
+ConnectedComponentLabelingBoxKernel::Execute ()
 {
     auto src = this->GetImage ("src");
     auto dst = this->GetImage ("dst");
