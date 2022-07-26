@@ -51,7 +51,7 @@ run_kernel_with_buffer (std::vector<type> &arr_1, std::array<size_t, 3> &shape)
     cle.GetDevice ()->WaitForKernelToFinish ();
     auto oclArray_A = cle.Push<type> (arr_1, shape);
     auto ocl_output = cle.Create<type> (shape);
-    cle.ConnectedComponentsLabelingBox (oclArray_A, ocl_output);
+    cle.ConnectedComponentLabelingBox (oclArray_A, ocl_output);
     auto output = cle.Pull<type> (ocl_output);
     return output;
 }
@@ -64,7 +64,7 @@ run_kernel_with_image (std::vector<type> &arr_1, std::array<size_t, 3> &shape)
     cle.GetDevice ()->WaitForKernelToFinish ();
     auto oclArray_A = cle.Push<type> (arr_1, shape, "image");
     auto ocl_output = cle.Create<type> (shape, "image");
-    cle.ConnectedComponentsLabelingBox (oclArray_A, ocl_output);
+    cle.ConnectedComponentLabelingBox (oclArray_A, ocl_output);
     auto output = cle.Pull<type> (ocl_output);
     return output;
 }
@@ -95,19 +95,19 @@ main (int argc, char **argv)
 {
     if (test<float> (5, 3, 2))
         {
-            std::cerr << "ConnectedComponentsLabelingBox kernel 3d ... FAILED! " << std::endl;
+            std::cerr << "ConnectedComponentLabelingBox kernel 3d ... FAILED! " << std::endl;
             return EXIT_FAILURE;
         }
     if (test<float> (5, 3, 1))
         {
-            std::cerr << "ConnectedComponentsLabelingBox kernel 2d ... FAILED! " << std::endl;
+            std::cerr << "ConnectedComponentLabelingBox kernel 2d ... FAILED! " << std::endl;
             return EXIT_FAILURE;
         }
     if (test<float> (5, 1, 1))
         {
-            std::cerr << "ConnectedComponentsLabelingBox kernel 1d ... FAILED! " << std::endl;
+            std::cerr << "ConnectedComponentLabelingBox kernel 1d ... FAILED! " << std::endl;
             return EXIT_FAILURE;
         }
-    std::cout << "ConnectedComponentsLabelingBox kernel test ... PASSED! " << std::endl;
+    std::cout << "ConnectedComponentLabelingBox kernel test ... PASSED! " << std::endl;
     return EXIT_SUCCESS;
 }

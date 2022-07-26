@@ -3,7 +3,7 @@
 
 #include "cleAddImageAndScalarKernel.hpp"
 #include "cleAddImagesWeightedKernel.hpp"
-#include "cleConnectedComponentsLabelingBoxKernel.hpp"
+#include "cleConnectedComponentLabelingBoxKernel.hpp"
 #include "cleHistogramKernel.hpp"
 #include "cleMaskKernel.hpp"
 #include "cleMemory.hpp"
@@ -55,7 +55,7 @@ MaskedVoronoiLabelingKernel::Execute ()
     subtractOne.SetScalar (-1);
     subtractOne.Execute ();
 
-    ConnectedComponentsLabelingBoxKernel labeling (this->Device ());
+    ConnectedComponentLabelingBoxKernel labeling (this->Device ());
     labeling.SetInput (*src);
     labeling.SetOutput (flop);
     labeling.Execute ();
