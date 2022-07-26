@@ -82,7 +82,7 @@ ReadImageObject (const Image &object,
 }
 
 auto
-AllocateObject (const ProcessorPointer &device, const ShapeArray &shape, const BitType &type = CL_FLOAT, const MemType &object = CL_MEM_OBJECT_BUFFER) -> Image;
+AllocateObject (const ProcessorPointer &device, const ShapeArray &shape = { 1, 1, 1 }, const BitType &type = CL_FLOAT, const MemType &object = CL_MEM_OBJECT_BUFFER) -> Image;
 
 auto
 AllocateObject (const Image &object) -> Image;
@@ -101,7 +101,7 @@ WriteObject (const Image &object, const std::vector<type> &array) -> void
         }
 }
 
-template <class type>
+template <class type = float>
 auto
 ReadObject (const Image &object) -> std::vector<type>
 {
