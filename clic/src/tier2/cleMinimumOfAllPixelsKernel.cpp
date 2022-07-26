@@ -1,6 +1,7 @@
 
 
 #include "cleMinimumOfAllPixelsKernel.hpp"
+#include "cleMemory.hpp"
 #include "cleMinimumXProjectionKernel.hpp"
 #include "cleMinimumYProjectionKernel.hpp"
 #include "cleMinimumZProjectionKernel.hpp"
@@ -27,54 +28,38 @@ MinimumOfAllPixelsKernel::SetOutput (const Image &object)
 void
 MinimumOfAllPixelsKernel::Execute ()
 {
-    // auto src = this->GetParameter<Object> ("src");
-    // auto dst = this->GetParameter<Object> ("dst");
+    auto src = this->GetImage ("src");
+    auto dst = this->GetImage ("dst");
+    std::array<size_t, 3> dim = src->Shape ();
 
-    // std::array<size_t, 3> dim = src->Shape ();
-    // if (dim[2] > 1)
-    //     {
-    //         dim[2] = 1;
-    //         MinimumZProjectionKernel kernel (this->m_gpu);
-    //         kernel.SetInput (*src);
-    //         if (src->IsMemoryType (CL_MEM_OBJECT_BUFFER))
-    //             {
-    //                 auto tmp = std::make_shared<Object> (this->m_gpu->Create<float> (dim));
-    //                 kernel.SetOutput (*tmp);
-    //                 kernel.Execute ();
-    //                 src = tmp;
-    //             }
-    //         else
-    //             {
-    //                 auto tmp = std::make_shared<Object> (this->m_gpu->Create<float> (dim, "image"));
-    //                 kernel.SetOutput (*tmp);
-    //                 kernel.Execute ();
-    //                 src = tmp;
-    //             }
-    //     }
-    // if (dim[1] > 1)
-    //     {
-    //         dim[1] = 1;
-    //         MinimumYProjectionKernel kernel (this->m_gpu);
-    //         kernel.SetInput (*src);
-    //         if (src->IsMemoryType (CL_MEM_OBJECT_BUFFER))
-    //             {
-    //                 auto tmp = std::make_shared<Object> (this->m_gpu->Create<float> (dim));
-    //                 kernel.SetOutput (*tmp);
-    //                 kernel.Execute ();
-    //                 src = tmp;
-    //             }
-    //         else
-    //             {
-    //                 auto tmp = std::make_shared<Object> (this->m_gpu->Create<float> (dim, "image"));
-    //                 kernel.SetOutput (*tmp);
-    //                 kernel.Execute ();
-    //                 src = tmp;
-    //             }
-    //     }
-    // MinimumXProjectionKernel kernel (this->m_gpu);
-    // kernel.SetInput (*src);
-    // kernel.SetOutput (*dst);
-    // kernel.Execute ();
+    if (dim[2] > 1)
+        {
+            dim[2] = 1;
+            auto temp = Memory::AllocateObject (this->Device (), dim, dst->BitType ().Get (), dst->MemType ().Get ());
+
+            MinimumZProjectionKernel kernel (this->Device ());
+            kernel.SetInput (*src);
+            kernel.SetOutput (temp);
+            kernel.Execute ();
+            src = std::make_shared<Image> (temp);
+        }
+
+    if (dim[1] > 1)
+        {
+            dim[1] = 1;
+            auto temp = Memory::AllocateObject (this->Device (), dim, dst->BitType ().Get (), dst->MemType ().Get ());
+
+            MinimumYProjectionKernel kernel (this->Device ());
+            kernel.SetInput (*src);
+            kernel.SetOutput (temp);
+            kernel.Execute ();
+            src = std::make_shared<Image> (temp);
+        }
+
+    MinimumXProjectionKernel kernel (this->Device ());
+    kernel.SetInput (*src);
+    kernel.SetOutput (*dst);
+    kernel.Execute ();
 }
 
 } // namespace cle

@@ -2,6 +2,7 @@
 #include "cleHistogramKernel.hpp"
 
 #include "cleMaximumOfAllPixelsKernel.hpp"
+#include "cleMemory.hpp"
 #include "cleMinimumOfAllPixelsKernel.hpp"
 #include "cleSumZProjectionKernel.hpp"
 #include "cleUtils.hpp"
@@ -52,53 +53,50 @@ HistogramKernel::SetSteps (const int &step_x, const int &step_y, const int &step
 void
 HistogramKernel::SetNumBins (const unsigned int &bin)
 {
-    this->AddConstant (std::to_string (bin), "NUMBER_OF_HISTOGRAM_BINS");
+    this->nb_bins_ = bin;
+    this->AddConstant (std::to_string (this->nb_bins_), "NUMBER_OF_HISTOGRAM_BINS");
 }
 
 void
 HistogramKernel::Execute ()
 {
-    // auto dst = this->GetParameter<Object> ("histogram");
-    // auto src = this->GetParameter<Object> ("src");
-    // size_t nb_bins = this->GetConstant ("NUMBER_OF_HISTOGRAM_BINS");
+    float infinity = std::numeric_limits<float>::infinity ();
 
-    // // set min-max intensity of src, if not provided.
-    // if (this->min_intensity_ == std::numeric_limits<float>::infinity () || this->max_intensity_ == std::numeric_limits<float>::infinity ())
-    //     {
-    //         auto temp_scalar_buffer = this->m_gpu->Create<float> ({ 1, 1, 1 });
-    //         float temp_scalar_intensity;
+    auto dst = this->GetImage ("histogram");
+    auto src = this->GetImage ("src");
 
-    //         MinimumOfAllPixelsKernel minimum_intensity_kernel (this->m_gpu);
-    //         minimum_intensity_kernel.SetInput (*src);
-    //         minimum_intensity_kernel.SetOutput (temp_scalar_buffer);
-    //         minimum_intensity_kernel.Execute ();
-    //         this->min_intensity_ = this->m_gpu->Pull<float> (temp_scalar_buffer).front ();
+    if (this->min_intensity_ == infinity || this->max_intensity_ == infinity)
+        {
+            auto temp_scalar_buffer = Memory::AllocateObject (this->Device (), { 1, 1, 1 });
 
-    //         MaximumOfAllPixelsKernel maximum_intensity_kernel (this->m_gpu);
-    //         maximum_intensity_kernel.SetInput (*src);
-    //         maximum_intensity_kernel.SetOutput (temp_scalar_buffer);
-    //         maximum_intensity_kernel.Execute ();
-    //         this->max_intensity_ = this->m_gpu->Pull<float> (temp_scalar_buffer).front ();
-    //     }
-    // this->AddObject (this->min_intensity_, "minimum");
-    // this->AddObject (this->max_intensity_, "maximum");
+            MinimumOfAllPixelsKernel minimum_intensity_kernel (this->Device ());
+            minimum_intensity_kernel.SetInput (*src);
+            minimum_intensity_kernel.SetOutput (temp_scalar_buffer);
+            minimum_intensity_kernel.Execute ();
+            this->min_intensity_ = Memory::ReadObject<float> (temp_scalar_buffer).front ();
 
-    // // create partial histogram step
-    // size_t nb_temp_hist = src->Shape ()[1];
-    // auto partial_hist = this->m_gpu->Create<float> ({ nb_bins, 1, nb_temp_hist });
-    // this->AddObject (partial_hist, "dst");
+            MaximumOfAllPixelsKernel maximum_intensity_kernel (this->Device ());
+            maximum_intensity_kernel.SetInput (*src);
+            maximum_intensity_kernel.SetOutput (temp_scalar_buffer);
+            maximum_intensity_kernel.Execute ();
+            this->max_intensity_ = Memory::ReadObject<float> (temp_scalar_buffer).front ();
+        }
+    this->AddParameter ("minimum", this->min_intensity_);
+    this->AddParameter ("maximum", this->max_intensity_);
 
-    // // run histogram kernel
-    // this->BuildProgramKernel ();
-    // this->SetArguments ();
-    // this->SetGlobalNDRange ({ nb_temp_hist, 1, 1 });
-    // this->EnqueueKernel ();
+    // create partial histogram step
+    size_t nb_temp_hist = src->Shape ()[1];
+    auto partial_hist = Memory::AllocateObject (this->Device (), { this->nb_bins_, 1, nb_temp_hist });
+    this->AddParameter ("dst", partial_hist);
 
-    // // run projection
-    // SumZProjectionKernel sum (this->m_gpu);
-    // sum.SetInput (partial_hist);
-    // sum.SetOutput (*dst);
-    // sum.Execute ();
+    this->SetRange (std::array<size_t, 3>{ nb_temp_hist, 1, 1 });
+    this->Operation::Execute ();
+
+    // run projection
+    SumZProjectionKernel sum (this->Device ());
+    sum.SetInput (partial_hist);
+    sum.SetOutput (*dst);
+    sum.Execute ();
 }
 
 } // namespace cle

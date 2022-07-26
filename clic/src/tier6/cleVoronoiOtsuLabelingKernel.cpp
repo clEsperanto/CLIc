@@ -6,8 +6,8 @@
 #include "cleGaussianBlurKernel.hpp"
 #include "cleMaskKernel.hpp"
 #include "cleMaskedVoronoiLabelingKernel.hpp"
+#include "cleMemory.hpp"
 #include "cleThresholdOtsuKernel.hpp"
-
 #include "cleUtils.hpp"
 
 namespace cle
@@ -44,53 +44,52 @@ VoronoiOtsuLabelingKernel::SetOutlineSigma (const float &sigma)
 void
 VoronoiOtsuLabelingKernel::Execute ()
 {
-    // // get I/O pointers
-    // auto src = this->GetParameter<Object> ("src");
-    // auto dst = this->GetParameter<Object> ("dst");
+    auto src = this->GetImage ("src");
+    auto dst = this->GetImage ("dst");
 
-    // auto temp = this->m_gpu->Create<float> (src->Shape ());
-    // GaussianBlurKernel gaussianSpot (this->m_gpu);
-    // gaussianSpot.SetInput (*src);
-    // gaussianSpot.SetOutput (temp);
-    // gaussianSpot.SetSigma (spot_sigma_, spot_sigma_, spot_sigma_);
-    // gaussianSpot.Execute ();
+    auto temp = Memory::AllocateObject (this->Device (), src->Shape (), src->BitType ().Get (), src->MemType ().Get ());
+    GaussianBlurKernel gaussianSpot (this->Device ());
+    gaussianSpot.SetInput (*src);
+    gaussianSpot.SetOutput (temp);
+    gaussianSpot.SetSigma (spot_sigma_, spot_sigma_, spot_sigma_);
+    gaussianSpot.Execute ();
 
-    // auto spot = this->m_gpu->Create<float> (src->Shape ());
-    // DetectMaximaKernel maxima (this->m_gpu);
-    // maxima.SetInput (temp);
-    // maxima.SetOutput (spot);
-    // maxima.Execute ();
+    auto spot = Memory::AllocateObject (temp);
+    DetectMaximaKernel maxima (this->Device ());
+    maxima.SetInput (temp);
+    maxima.SetOutput (spot);
+    maxima.Execute ();
 
-    // GaussianBlurKernel gaussianOutline (this->m_gpu);
-    // gaussianOutline.SetInput (*src);
-    // gaussianOutline.SetOutput (temp);
-    // gaussianOutline.SetSigma (output_sigma_, output_sigma_, output_sigma_);
-    // gaussianOutline.Execute ();
+    GaussianBlurKernel gaussianOutline (this->Device ());
+    gaussianOutline.SetInput (*src);
+    gaussianOutline.SetOutput (temp);
+    gaussianOutline.SetSigma (output_sigma_, output_sigma_, output_sigma_);
+    gaussianOutline.Execute ();
 
-    // auto segmentation = this->m_gpu->Create<float> (src->Shape ());
-    // ThresholdOtsuKernel threshold (this->m_gpu);
-    // threshold.SetInput (temp);
-    // threshold.SetOutput (segmentation);
-    // threshold.Execute ();
+    auto segmentation = Memory::AllocateObject (temp);
+    ThresholdOtsuKernel threshold (this->Device ());
+    threshold.SetInput (temp);
+    threshold.SetOutput (segmentation);
+    threshold.Execute ();
 
-    // auto binary = this->m_gpu->Create<float> (src->Shape ());
-    // BinaryAndKernel bin (this->m_gpu);
-    // bin.SetInput1 (segmentation);
-    // bin.SetInput2 (spot);
-    // bin.SetOutput (binary);
-    // bin.Execute ();
+    auto binary = Memory::AllocateObject (temp);
+    BinaryAndKernel bin (this->Device ());
+    bin.SetInput1 (segmentation);
+    bin.SetInput2 (spot);
+    bin.SetOutput (binary);
+    bin.Execute ();
 
-    // MaskedVoronoiLabelingKernel labeling (this->m_gpu);
-    // labeling.SetInput (binary);
-    // labeling.SetMask (segmentation);
-    // labeling.SetOutput (temp);
-    // labeling.Execute ();
+    MaskedVoronoiLabelingKernel labeling (this->Device ());
+    labeling.SetInput (binary);
+    labeling.SetMask (segmentation);
+    labeling.SetOutput (temp);
+    labeling.Execute ();
 
-    // MaskKernel mask (this->m_gpu);
-    // mask.SetInput (temp);
-    // mask.SetMask (segmentation);
-    // mask.SetOutput (*dst);
-    // mask.Execute ();
+    MaskKernel mask (this->Device ());
+    mask.SetInput (temp);
+    mask.SetMask (segmentation);
+    mask.SetOutput (*dst);
+    mask.Execute ();
 }
 
 } // namespace cle

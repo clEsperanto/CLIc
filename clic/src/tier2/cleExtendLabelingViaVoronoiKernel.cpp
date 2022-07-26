@@ -2,6 +2,7 @@
 #include "cleExtendLabelingViaVoronoiKernel.hpp"
 
 #include "cleCopyKernel.hpp"
+#include "cleMemory.hpp"
 #include "cleOnlyzeroOverwriteMaximumBoxKernel.hpp"
 #include "cleOnlyzeroOverwriteMaximumDiamondKernel.hpp"
 #include "cleSetKernel.hpp"
@@ -29,58 +30,55 @@ void
 ExtendLabelingViaVoronoiKernel::Execute ()
 {
     // // get I/O pointers
-    // auto src = this->GetParameter<Object> ("src");
-    // auto dst = this->GetParameter<Object> ("dst");
+    auto src = this->GetImage ("src");
+    auto dst = this->GetImage ("dst");
 
-    // std::vector<float> oneValue = { 1.0f };
+    auto flip = Memory::AllocateObject (this->Device (), dst->Shape (), dst->BitType ().Get (), dst->MemType ().Get ());
+    auto flop = Memory::AllocateObject (this->Device (), dst->Shape (), dst->BitType ().Get (), dst->MemType ().Get ());
+    auto flag = Memory::AllocateObject (this->Device (), { 1, 1, 1 }, CL_FLOAT, CL_MEM_OBJECT_BUFFER);
+    flag.Fill (1.0F);
 
-    // auto flip = this->m_gpu->Create<float> (dst->Shape ());
-    // auto flop = this->m_gpu->Create<float> (dst->Shape ());
-    // auto flag = this->m_gpu->Push<float> (oneValue, { 1, 1, 1 });
+    CopyKernel copy (this->Device ());
+    copy.SetInput (*src);
+    copy.SetOutput (flip);
+    copy.Execute ();
 
-    // CopyKernel copy (this->m_gpu);
-    // copy.SetInput (*src);
-    // copy.SetOutput (flip);
-    // copy.Execute ();
+    float flag_value = 1;
+    int iteration_count = 0;
+    while (flag_value > 0)
+        {
+            if ((iteration_count % 2) == 0)
+                {
+                    OnlyzeroOverwriteMaximumBoxKernel boxMaximum (this->Device ());
+                    boxMaximum.SetInput (flip);
+                    boxMaximum.SetOutput1 (flag);
+                    boxMaximum.SetOutput2 (flop);
+                    boxMaximum.Execute ();
+                }
+            else
+                {
+                    OnlyzeroOverwriteMaximumBoxKernel diamondMaximum (this->Device ());
+                    diamondMaximum.SetInput (flop);
+                    diamondMaximum.SetOutput1 (flag);
+                    diamondMaximum.SetOutput2 (flip);
+                    diamondMaximum.Execute ();
+                }
+            flag_value = Memory::ReadObject<float> (flag).front ();
+            SetKernel set (this->Device ());
+            set.SetInput (flag);
+            set.SetValue (0);
+            set.Execute ();
+            iteration_count++;
+        }
 
-    // float flag_value = 1;
-    // int iteration_count = 0;
-    // while (flag_value > 0)
-    //     {
-    //         if ((iteration_count % 2) == 0)
-    //             {
-    //                 OnlyzeroOverwriteMaximumBoxKernel boxMaximum (this->m_gpu);
-    //                 boxMaximum.SetInput (flip);
-    //                 boxMaximum.SetOutput1 (flag);
-    //                 boxMaximum.SetOutput2 (flop);
-    //                 boxMaximum.Execute ();
-    //             }
-    //         else
-    //             {
-    //                 OnlyzeroOverwriteMaximumBoxKernel diamondMaximum (this->m_gpu);
-    //                 diamondMaximum.SetInput (flop);
-    //                 diamondMaximum.SetOutput1 (flag);
-    //                 diamondMaximum.SetOutput2 (flip);
-    //                 diamondMaximum.Execute ();
-    //             }
-    //         flag_value = this->m_gpu->Pull<float> (flag).front ();
-    //         SetKernel set (this->m_gpu);
-    //         set.SetInput (flag);
-    //         set.SetValue (0);
-    //         set.Execute ();
-    //         iteration_count++;
-    //     }
-
-    // if ((iteration_count % 2) == 0)
-    //     {
-    //         copy.SetInput (flip);
-    //     }
-    // else
-    //     {
-    //         copy.SetInput (flop);
-    //     }
-    // copy.SetOutput (*dst);
-    // copy.Execute ();
+    if ((iteration_count % 2) == 0)
+        {
+            flip.CopyDataTo (*dst);
+        }
+    else
+        {
+            flop.CopyDataTo (*dst);
+        }
 }
 
 } // namespace cle

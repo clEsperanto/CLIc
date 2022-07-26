@@ -29,17 +29,8 @@ FlagExistingLabelsKernel::SetOutput (const Image &object)
 void
 FlagExistingLabelsKernel::Execute ()
 {
-    // auto dst = this->GetParameter<Object> ("dst");
-
-    // SetKernel set (this->m_gpu);
-    // set.SetInput (*dst);
-    // set.SetValue (0);
-    // set.Execute ();
-
-    // this->BuildProgramKernel ();
-    // this->SetArguments ();
-    // this->SetGlobalNDRange ("src");
-    // this->EnqueueKernel ();
+    this->GetImage ("dst")->Fill (0);
+    this->Operation::Execute ();
 }
 
 } // namespace cle

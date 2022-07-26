@@ -37,19 +37,20 @@ DetectMaximaKernel::SetRadius (const int &radius_x, const int &radius_y, const i
 void
 DetectMaximaKernel::Execute ()
 {
-    // if (this->radius_[0] > 0 || this->radius_[1] > 0 || this->radius_[2] > 0)
-    //     {
-    //         auto src = this->GetParameter<Object> ("src");
-    //         auto dst = this->GetParameter<Object> ("dst");
-    //         MeanBoxKernel mean (this->m_gpu);
-    //         mean.SetInput (*src);
-    //         mean.SetOutput (*dst);
-    //         mean.SetRadius (this->radius_[0], this->radius_[1], this->radius_[2]);
-    //         mean.Execute ();
-    //         CopyKernel copy (this->m_gpu);
-    //         copy.SetInput (*dst);
-    //         copy.SetOutput (*src);
-    //         copy.Execute ();
-    //     }
+    if (std::any_of (radius_.begin (), radius_.end (), [] (int i) { return i > 0; }))
+        {
+            auto src = this->GetImage ("src");
+            auto dst = this->GetImage ("dst");
+            MeanBoxKernel mean (this->Device ());
+            mean.SetInput (*src);
+            mean.SetOutput (*dst);
+            mean.SetRadius (this->radius_[0], this->radius_[1], this->radius_[2]);
+            mean.Execute ();
+            CopyKernel copy (this->Device ());
+            copy.SetInput (*dst);
+            copy.SetOutput (*src);
+            copy.Execute ();
+        }
+    this->Operation::Execute ();
 }
 } // namespace cle

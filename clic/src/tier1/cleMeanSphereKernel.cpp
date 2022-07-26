@@ -21,12 +21,9 @@ MeanSphereKernel::Radius2KernelSize (const float &radius) const
 void
 MeanSphereKernel::SetRadius (const float &radius_x, const float &radius_y, const float &radius_z)
 {
-    int rx = Radius2KernelSize (radius_x);
-    int ry = Radius2KernelSize (radius_y);
-    int rz = Radius2KernelSize (radius_z);
-    this->AddParameter ("scalar0", rx);
-    this->AddParameter ("scalar1", ry);
-    this->AddParameter ("scalar2", rz);
+    this->AddParameter ("scalar0", Radius2KernelSize (radius_x));
+    this->AddParameter ("scalar1", Radius2KernelSize (radius_y));
+    this->AddParameter ("scalar2", Radius2KernelSize (radius_z));
 }
 
 void
