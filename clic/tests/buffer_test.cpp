@@ -25,10 +25,10 @@ run_test (std::shared_ptr<cle::Processor> gpu, std::array<size_t, 3> shape) -> b
     cle::Memory::WriteObject (gpu_input, array);
     gpu_input.CopyDataTo (gpu_output);
 
-    std::cout << "gpu buffer : " << gpu_output.ToString () << std::endl;
+    std::cout << "gpu input : " << gpu_input.ToString () << std::endl;
+    std::cout << "gpu output : " << gpu_output.ToString () << std::endl;
 
     auto output = cle::Memory::ReadObject<type> (gpu_output);
-
     return std::equal (output.begin (), output.end (), array.begin ());
 }
 
@@ -36,23 +36,43 @@ auto
 main (int argc, char **argv) -> int
 {
     int idx = 0;
+    std::string data_t = argv[++idx];
     size_t w = std::atoi (argv[++idx]);
     size_t h = std::atoi (argv[++idx]);
     size_t d = std::atoi (argv[++idx]);
-
     std::array<size_t, 3> shape = { w, h, d };
 
     auto gpu = std::make_shared<cle::Processor> ();
     gpu->SelectDevice ();
     gpu->WaitForKernelToFinish ();
 
-    assert (run_test<float> (gpu, shape));
-    assert (run_test<int> (gpu, shape));
-    assert (run_test<char> (gpu, shape));
-    assert (run_test<short> (gpu, shape));
-    assert (run_test<unsigned int> (gpu, shape));
-    assert (run_test<unsigned char> (gpu, shape));
-    assert (run_test<unsigned short> (gpu, shape));
-
+    if (data_t == "float")
+        {
+            assert (run_test<float> (gpu, shape));
+        }
+    if (data_t == "int")
+        {
+            assert (run_test<int> (gpu, shape));
+        }
+    if (data_t == "short")
+        {
+            assert (run_test<short> (gpu, shape));
+        }
+    if (data_t == "char")
+        {
+            assert (run_test<char> (gpu, shape));
+        }
+    if (data_t == "uint")
+        {
+            assert (run_test<unsigned int> (gpu, shape));
+        }
+    if (data_t == "ushort")
+        {
+            assert (run_test<unsigned short> (gpu, shape));
+        }
+    if (data_t == "uchar")
+        {
+            assert (run_test<unsigned char> (gpu, shape));
+        }
     return EXIT_SUCCESS;
 }
