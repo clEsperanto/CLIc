@@ -4,7 +4,7 @@
 namespace cle
 {
 
-Clesperanto::Clesperanto () : device_ (ProcessorPointer ())
+Clesperanto::Clesperanto () : device_ (std::make_shared<Processor> ())
 {
     this->GetDevice ()->SelectDevice ();
 }
