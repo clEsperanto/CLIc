@@ -10,7 +10,7 @@ NonzeroMinimumBoxKernel::NonzeroMinimumBoxKernel (const ProcessorPointer &device
     std::string cl_header = {
 #include "cle_nonzero_minimum_box.h"
     };
-    this->SetSource ("cle_nonzero_minimum_box", cl_header);
+    this->SetSource ("nonzero_minimum_box", cl_header);
 }
 
 void

@@ -10,7 +10,7 @@ SumYProjectionKernel::SumYProjectionKernel (const ProcessorPointer &device) : Op
     std::string cl_header = {
 #include "cle_sum_y_projection.h"
     };
-    this->SetSource ("cle_sum_y_projection", cl_header);
+    this->SetSource ("sum_y_projection", cl_header);
 }
 
 void

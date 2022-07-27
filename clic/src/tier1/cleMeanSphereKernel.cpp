@@ -9,7 +9,7 @@ MeanSphereKernel::MeanSphereKernel (const ProcessorPointer &device) : Operation 
     std::string cl_header = {
 #include "cle_mean_sphere.h"
     };
-    this->SetSource ("cle_mean_sphere", cl_header);
+    this->SetSource ("mean_sphere", cl_header);
 }
 
 int

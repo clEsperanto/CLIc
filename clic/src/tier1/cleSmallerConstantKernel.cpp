@@ -10,7 +10,7 @@ SmallerConstantKernel::SmallerConstantKernel (const ProcessorPointer &device) : 
     std::string cl_header = {
 #include "cle_smaller_constant.h"
     };
-    this->SetSource ("cle_smaller_constant", cl_header);
+    this->SetSource ("smaller_constant", cl_header);
 }
 
 void

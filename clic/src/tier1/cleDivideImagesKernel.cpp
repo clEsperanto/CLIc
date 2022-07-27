@@ -10,7 +10,7 @@ DivideImagesKernel::DivideImagesKernel (const ProcessorPointer &device) : Operat
     std::string cl_header = {
 #include "cle_divide_images.h"
     };
-    this->SetSource ("cle_divide_images", cl_header);
+    this->SetSource ("divide_images", cl_header);
 }
 
 void

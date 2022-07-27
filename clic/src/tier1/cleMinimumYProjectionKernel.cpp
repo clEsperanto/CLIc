@@ -10,7 +10,7 @@ MinimumYProjectionKernel::MinimumYProjectionKernel (const ProcessorPointer &devi
     std::string cl_header = {
 #include "cle_minimum_y_projection.h"
     };
-    this->SetSource ("cle_minimum_y_projection", cl_header);
+    this->SetSource ("minimum_y_projection", cl_header);
 }
 
 void

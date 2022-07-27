@@ -10,7 +10,7 @@ GreaterOrEqualKernel::GreaterOrEqualKernel (const ProcessorPointer &device) : Op
     std::string cl_header = {
 #include "cle_greater_or_equal.h"
     };
-    this->SetSource ("cle_greater_or_equal", cl_header);
+    this->SetSource ("greater_or_equal", cl_header);
 }
 
 void

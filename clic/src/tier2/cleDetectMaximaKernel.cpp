@@ -13,7 +13,7 @@ DetectMaximaKernel::DetectMaximaKernel (const ProcessorPointer &device) : Operat
     std::string cl_header_ = {
 #include "cle_detect_maxima.h"
     };
-    this->SetSource ("cle_detect_maxima", cl_header_);
+    this->SetSource ("detect_maxima", cl_header_);
 }
 
 void

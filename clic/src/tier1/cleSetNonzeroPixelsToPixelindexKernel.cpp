@@ -10,7 +10,7 @@ SetNonzeroPixelsToPixelindexKernel::SetNonzeroPixelsToPixelindexKernel (const Pr
     std::string cl_header = {
 #include "cle_set_nonzero_pixels_to_pixelindex.h"
     };
-    this->SetSource ("cle_set_nonzero_pixels_to_pixelindex", cl_header);
+    this->SetSource ("set_nonzero_pixels_to_pixelindex", cl_header);
 }
 
 void

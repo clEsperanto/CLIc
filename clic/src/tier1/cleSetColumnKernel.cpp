@@ -10,7 +10,7 @@ SetColumnKernel::SetColumnKernel (const ProcessorPointer &device) : Operation (d
     std::string cl_header = {
 #include "cle_set_column.h"
     };
-    this->SetSource ("cle_set_column", cl_header);
+    this->SetSource ("set_column", cl_header);
 }
 
 void

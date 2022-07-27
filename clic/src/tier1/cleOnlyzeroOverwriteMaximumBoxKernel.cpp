@@ -10,7 +10,7 @@ OnlyzeroOverwriteMaximumBoxKernel::OnlyzeroOverwriteMaximumBoxKernel (const Proc
     std::string cl_header = {
 #include "cle_onlyzero_overwrite_maximum_box.h"
     };
-    this->SetSource ("cle_onlyzero_overwrite_maximum_box", cl_header);
+    this->SetSource ("onlyzero_overwrite_maximum_box", cl_header);
 }
 
 void

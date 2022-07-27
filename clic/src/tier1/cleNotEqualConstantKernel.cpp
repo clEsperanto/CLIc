@@ -10,7 +10,7 @@ NotEqualConstantKernel::NotEqualConstantKernel (const ProcessorPointer &device) 
     std::string cl_header = {
 #include "cle_not_equal_constant.h"
     };
-    this->SetSource ("cle_not_equal_constant", cl_header);
+    this->SetSource ("not_equal_constant", cl_header);
 }
 
 void

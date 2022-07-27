@@ -11,7 +11,7 @@ FlagExistingLabelsKernel::FlagExistingLabelsKernel (const ProcessorPointer &devi
     std::string cl_header = {
 #include "cle_flag_existing_labels.h"
     };
-    this->SetSource ("cle_flag_existing_labels", cl_header);
+    this->SetSource ("flag_existing_labels", cl_header);
 }
 
 void

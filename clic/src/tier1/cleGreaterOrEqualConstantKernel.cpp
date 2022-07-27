@@ -10,7 +10,7 @@ GreaterOrEqualConstantKernel::GreaterOrEqualConstantKernel (const ProcessorPoint
     std::string cl_header = {
 #include "cle_greater_or_equal_constant.h"
     };
-    this->SetSource ("cle_greater_or_equal_constant", cl_header);
+    this->SetSource ("greater_or_equal_constant", cl_header);
 }
 
 void

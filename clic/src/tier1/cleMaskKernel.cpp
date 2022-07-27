@@ -10,7 +10,7 @@ MaskKernel::MaskKernel (const ProcessorPointer &device) : Operation (device, 3)
     std::string cl_header = {
 #include "cle_mask.h"
     };
-    this->SetSource ("cle_mask", cl_header);
+    this->SetSource ("mask", cl_header);
 }
 
 void

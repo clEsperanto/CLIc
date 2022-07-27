@@ -10,7 +10,7 @@ GreaterKernel::GreaterKernel (const ProcessorPointer &device) : Operation (devic
     std::string cl_header = {
 #include "cle_greater.h"
     };
-    this->SetSource ("cle_greater", cl_header);
+    this->SetSource ("greater", cl_header);
 }
 
 void

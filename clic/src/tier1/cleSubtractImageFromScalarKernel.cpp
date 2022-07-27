@@ -9,7 +9,7 @@ SubtractImageFromScalarKernel::SubtractImageFromScalarKernel (const ProcessorPoi
     std::string cl_header = {
 #include "cle_subtract_image_from_scalar.h"
     };
-    this->SetSource ("cle_subtract_image_from_scalar", cl_header);
+    this->SetSource ("subtract_image_from_scalar", cl_header);
 }
 
 void

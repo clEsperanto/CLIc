@@ -10,7 +10,7 @@ GreaterConstantKernel::GreaterConstantKernel (const ProcessorPointer &device) : 
     std::string cl_header = {
 #include "cle_greater_constant.h"
     };
-    this->SetSource ("cle_greater_constant", cl_header);
+    this->SetSource ("greater_constant", cl_header);
 }
 
 void

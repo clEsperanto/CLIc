@@ -8,7 +8,7 @@ MaximumXProjectionKernel::MaximumXProjectionKernel (const ProcessorPointer &devi
     std::string cl_header = {
 #include "cle_maximum_x_projection.h"
     };
-    this->SetSource ("cle_maximum_x_projection", cl_header);
+    this->SetSource ("maximum_x_projection", cl_header);
 }
 
 auto

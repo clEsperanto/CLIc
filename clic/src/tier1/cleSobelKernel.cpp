@@ -10,7 +10,7 @@ SobelKernel::SobelKernel (const ProcessorPointer &device) : Operation (device, 2
     std::string cl_header = {
 #include "cle_sobel.h"
     };
-    this->SetSource ("cle_sobel", cl_header);
+    this->SetSource ("sobel", cl_header);
 }
 
 void

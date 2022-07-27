@@ -10,7 +10,7 @@ ErodeSphereKernel::ErodeSphereKernel (const ProcessorPointer &device) : Operatio
     std::string cl_header = {
 #include "cle_erode_sphere.h"
     };
-    this->SetSource ("cle_erode_sphere", cl_header);
+    this->SetSource ("erode_sphere", cl_header);
 }
 
 void

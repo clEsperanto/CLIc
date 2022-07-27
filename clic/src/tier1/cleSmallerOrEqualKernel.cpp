@@ -10,7 +10,7 @@ SmallerOrEqualKernel::SmallerOrEqualKernel (const ProcessorPointer &device) : Op
     std::string cl_header = {
 #include "cle_smaller_or_equal.h"
     };
-    this->SetSource ("cle_smaller_or_equal", cl_header);
+    this->SetSource ("smaller_or_equal", cl_header);
 }
 
 void

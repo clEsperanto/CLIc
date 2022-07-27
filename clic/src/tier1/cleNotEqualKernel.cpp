@@ -10,7 +10,7 @@ NotEqualKernel::NotEqualKernel (const ProcessorPointer &device) : Operation (dev
     std::string cl_header = {
 #include "cle_not_equal.h"
     };
-    this->SetSource ("cle_not_equal", cl_header);
+    this->SetSource ("not_equal", cl_header);
 }
 
 void

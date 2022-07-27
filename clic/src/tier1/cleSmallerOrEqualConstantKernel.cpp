@@ -10,7 +10,7 @@ SmallerOrEqualConstantKernel::SmallerOrEqualConstantKernel (const ProcessorPoint
     std::string cl_header = {
 #include "cle_smaller_or_equal_constant.h"
     };
-    this->SetSource ("cle_smaller_or_equal_constant", cl_header);
+    this->SetSource ("smaller_or_equal_constant", cl_header);
 }
 
 void

@@ -10,7 +10,7 @@ ReplaceIntensitiesKernel::ReplaceIntensitiesKernel (const ProcessorPointer &devi
     std::string cl_header = {
 #include "cle_replace_intensities.h"
     };
-    this->SetSource ("cle_replace_intensities", cl_header);
+    this->SetSource ("replace_intensities", cl_header);
 }
 
 void

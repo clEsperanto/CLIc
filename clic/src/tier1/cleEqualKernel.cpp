@@ -10,7 +10,7 @@ EqualKernel::EqualKernel (const ProcessorPointer &device) : Operation (device, 3
     std::string cl_header = {
 #include "cle_equal.h"
     };
-    this->SetSource ("cle_equal", cl_header);
+    this->SetSource ("equal", cl_header);
 }
 
 void

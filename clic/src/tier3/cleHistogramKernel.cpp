@@ -15,7 +15,7 @@ HistogramKernel::HistogramKernel (const ProcessorPointer &device) : Operation (d
     std::string cl_header_ = {
 #include "cle_histogram.h"
     };
-    this->SetSource ("cle_histogram", cl_header_);
+    this->SetSource ("histogram", cl_header_);
 }
 
 void

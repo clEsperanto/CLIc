@@ -10,7 +10,7 @@ ReplaceIntensityKernel::ReplaceIntensityKernel (const ProcessorPointer &device) 
     std::string cl_header = {
 #include "cle_replace_intensity.h"
     };
-    this->SetSource ("cle_replace_intensity", cl_header);
+    this->SetSource ("replace_intensity", cl_header);
 }
 
 void

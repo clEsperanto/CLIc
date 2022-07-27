@@ -10,7 +10,7 @@ SetKernel::SetKernel (const ProcessorPointer &device) : Operation (device, 2)
     std::string cl_header = {
 #include "cle_set.h"
     };
-    this->SetSource ("cle_set", cl_header);
+    this->SetSource ("set", cl_header);
 }
 
 void

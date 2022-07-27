@@ -10,7 +10,7 @@ BinaryXorKernel::BinaryXorKernel (const ProcessorPointer &device) : Operation (d
     std::string cl_header = {
 #include "cle_binary_xor.h"
     };
-    this->SetSource ("cle_binary_xor", cl_header);
+    this->SetSource ("binary_xor", cl_header);
 }
 
 void

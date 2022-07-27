@@ -11,7 +11,7 @@ MinimumBoxKernel::MinimumBoxKernel (const ProcessorPointer &device) : Operation 
     std::string cl_header = {
 #include "cle_minimum_separable.h"
     };
-    this->SetSource ("cle_minimum_separable", cl_header);
+    this->SetSource ("minimum_separable", cl_header);
 }
 
 std::array<int, 3>

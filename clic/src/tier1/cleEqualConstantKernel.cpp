@@ -10,7 +10,7 @@ EqualConstantKernel::EqualConstantKernel (const ProcessorPointer &device) : Oper
     std::string cl_header = {
 #include "cle_equal_constant.h"
     };
-    this->SetSource ("cle_equal_constant", cl_header);
+    this->SetSource ("equal_constant", cl_header);
 }
 
 void

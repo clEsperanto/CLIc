@@ -10,7 +10,7 @@ DilateSphereKernel::DilateSphereKernel (const ProcessorPointer &device) : Operat
     std::string cl_header = {
 #include "cle_dilate_sphere.h"
     };
-    this->SetSource ("cle_dilate_sphere", cl_header);
+    this->SetSource ("dilate_sphere", cl_header);
 }
 
 void

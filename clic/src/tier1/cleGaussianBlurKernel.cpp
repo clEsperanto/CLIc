@@ -9,7 +9,7 @@ GaussianBlurKernel::GaussianBlurKernel (const ProcessorPointer &device) : Operat
     std::string cl_header = {
 #include "cle_gaussian_blur_separable.h"
     };
-    this->SetSource ("cle_gaussian_blur_separable", cl_header);
+    this->SetSource ("gaussian_blur_separable", cl_header);
 }
 
 auto

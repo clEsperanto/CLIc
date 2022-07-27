@@ -10,7 +10,7 @@ SumReductionXKernel::SumReductionXKernel (const ProcessorPointer &device) : Oper
     std::string cl_header = {
 #include "cle_sum_reduction_x.h"
     };
-    this->SetSource ("cle_sum_reduction_x", cl_header);
+    this->SetSource ("sum_reduction_x", cl_header);
 }
 
 void

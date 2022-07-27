@@ -11,7 +11,7 @@ MeanBoxKernel::MeanBoxKernel (const ProcessorPointer &device) : Operation (devic
     std::string cl_header = {
 #include "cle_mean_separable.h"
     };
-    this->SetSource ("cle_mean_separable", cl_header);
+    this->SetSource ("mean_separable", cl_header);
 }
 
 int

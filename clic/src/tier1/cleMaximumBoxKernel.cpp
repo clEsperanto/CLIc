@@ -11,7 +11,7 @@ MaximumBoxKernel::MaximumBoxKernel (const ProcessorPointer &device) : Operation 
     std::string cl_header = {
 #include "cle_maximum_separable.h"
     };
-    this->SetSource ("cle_maximum_separable", cl_header);
+    this->SetSource ("maximum_separable", cl_header);
 }
 
 std::array<int, 3>

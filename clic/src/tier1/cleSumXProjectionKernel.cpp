@@ -10,7 +10,7 @@ SumXProjectionKernel::SumXProjectionKernel (const ProcessorPointer &device) : Op
     std::string cl_header = {
 #include "cle_sum_x_projection.h"
     };
-    this->SetSource ("cle_sum_x_projection", cl_header);
+    this->SetSource ("sum_x_projection", cl_header);
 }
 
 void

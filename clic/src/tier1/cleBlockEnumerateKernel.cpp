@@ -10,7 +10,7 @@ BlockEnumerateKernel::BlockEnumerateKernel (const ProcessorPointer &device) : Op
     std::string cl_header = {
 #include "cle_block_enumerate.h"
     };
-    this->SetSource ("cle_block_enumerate", cl_header);
+    this->SetSource ("block_enumerate", cl_header);
 }
 
 void

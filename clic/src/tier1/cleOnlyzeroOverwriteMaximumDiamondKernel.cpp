@@ -10,7 +10,7 @@ OnlyzeroOverwriteMaximumDiamondKernel::OnlyzeroOverwriteMaximumDiamondKernel (co
     std::string cl_header = {
 #include "cle_onlyzero_overwrite_maximum_diamond.h"
     };
-    this->SetSource ("cle_onlyzero_overwrite_maximum_diamond", cl_header);
+    this->SetSource ("onlyzero_overwrite_maximum_diamond", cl_header);
 }
 
 void

@@ -10,7 +10,7 @@ BinarySubtractKernel::BinarySubtractKernel (const ProcessorPointer &device) : Op
     std::string cl_header = {
 #include "cle_binary_subtract.h"
     };
-    this->SetSource ("cle_binary_subtract", cl_header);
+    this->SetSource ("binary_subtract", cl_header);
 }
 
 void

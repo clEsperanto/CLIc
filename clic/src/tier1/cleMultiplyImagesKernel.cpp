@@ -10,7 +10,7 @@ MultiplyImagesKernel::MultiplyImagesKernel (const ProcessorPointer &device) : Op
     std::string cl_header = {
 #include "cle_multiply_images.h"
     };
-    this->SetSource ("cle_multiply_images", cl_header);
+    this->SetSource ("multiply_images", cl_header);
 }
 
 void

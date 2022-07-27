@@ -10,7 +10,7 @@ SmallerKernel::SmallerKernel (const ProcessorPointer &device) : Operation (devic
     std::string cl_header = {
 #include "cle_smaller.h"
     };
-    this->SetSource ("cle_smaller", cl_header);
+    this->SetSource ("smaller", cl_header);
 }
 
 void

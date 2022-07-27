@@ -10,7 +10,7 @@ MinimumXProjectionKernel::MinimumXProjectionKernel (const ProcessorPointer &devi
     std::string cl_header = {
 #include "cle_minimum_x_projection.h"
     };
-    this->SetSource ("cle_minimum_x_projection", cl_header);
+    this->SetSource ("minimum_x_projection", cl_header);
 }
 
 void
