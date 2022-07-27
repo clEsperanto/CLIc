@@ -18,7 +18,7 @@ add_test(NAME core_scalar_test_int COMMAND ${CMAKE_CURRENT_BINARY_DIR}/scalar_te
 add_test(NAME core_scalar_test_float COMMAND ${CMAKE_CURRENT_BINARY_DIR}/scalar_test float 1.5)
 set_tests_properties(
     core_scalar_test_int
-    core_scalar_test_float PROPERTIES LABELS "SCALAR" WILL_FAIL FALSE
+    core_scalar_test_float PROPERTIES LABELS "DATA STRUCTURE" WILL_FAIL FALSE
 )
 
 add_executable(buffer_test buffer_test.cpp)
@@ -68,7 +68,7 @@ set_tests_properties(
     core_buffer_test_char_3d
     core_buffer_test_uint_3d
     core_buffer_test_ushort_3d
-    core_buffer_test_uchar_3d PROPERTIES LABELS "BUFFER" WILL_FAIL FALSE
+    core_buffer_test_uchar_3d PROPERTIES LABELS "DATA STRUCTURE" WILL_FAIL FALSE
 )
 
 add_executable(image_test image_test.cpp)
@@ -118,7 +118,7 @@ set_tests_properties(
     core_image_test_char_3d
     core_image_test_uint_3d
     core_image_test_ushort_3d
-    core_image_test_uchar_3d PROPERTIES LABELS "IMAGE" WILL_FAIL FALSE
+    core_image_test_uchar_3d PROPERTIES LABELS "DATA STRUCTURE" WILL_FAIL FALSE
 )
 
 add_executable(kernel_test kernel_test.cpp)
@@ -210,5 +210,5 @@ set_tests_properties(
     core_kernel_test_short_image_3d
     core_kernel_test_uint_image_3d
     core_kernel_test_ushort_image_3d
-    core_kernel_test_uchar_image_3d PROPERTIES LABELS "KERNEL" WILL_FAIL FALSE
+    core_kernel_test_uchar_image_3d PROPERTIES LABELS "OPERATION" WILL_FAIL FALSE
 )
