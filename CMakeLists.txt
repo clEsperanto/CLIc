@@ -24,8 +24,7 @@ add_subdirectory(${LIBRARY_DIR})
 if(BUILD_TESTING)
     include(CTest)
     add_subdirectory(${LIBRARY_DIR}/tests)
-
-    # add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
 endif(BUILD_TESTING)
 
 # Build and run benchmark
