@@ -18,6 +18,7 @@ void
 FlagExistingLabelsKernel::SetInput (const Image &object)
 {
     this->AddParameter ("src", object);
+    this->SetRange ("src");
 }
 
 void
