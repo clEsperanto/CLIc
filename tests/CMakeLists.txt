@@ -312,132 +312,132 @@ add_dependencies(voronoi_otsu_labeling_test CLIc)
 target_link_libraries(voronoi_otsu_labeling_test PRIVATE CLIc::CLIc)
 set_target_properties(voronoi_otsu_labeling_test PROPERTIES FOLDER "Tests")
 
-# add_test(NAME absolute_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND absolute_test)
-# add_test(NAME add_image_and_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_and_scalar_test)
-# add_test(NAME add_image_weighted_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_weighted_test)
-# add_test(NAME binary_and_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_and_test)
-# add_test(NAME binary_not_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_not_test)
-# add_test(NAME binary_or_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_or_test)
-# add_test(NAME binary_subtract_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_subtract_test)
-# add_test(NAME binary_xor_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_xor_test)
-# add_test(NAME block_enumerate_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND block_enumerate_test)
-# add_test(NAME close_indexgaps_in_labelmap_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND close_indexgaps_in_labelmap_test)
-# add_test(NAME connected_components_labeling_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND connected_components_labeling_box_test)
-# add_test(NAME copy_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND copy_test)
-# add_test(NAME custom_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND custom_test ${PROJECT_SOURCE_DIR}/thirdparty/clesperanto-kernels/kernels)
-# add_test(NAME detect_maxima_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND detect_maxima_test)
-# add_test(NAME difference_of_gaussian_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND difference_of_gaussian_test)
-# add_test(NAME dilate_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND dilate_sphere_test)
-# add_test(NAME equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND equal_constant_test)
-# add_test(NAME equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND equal_test)
-# add_test(NAME erode_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND erode_sphere_test)
-# add_test(NAME extend_labeling_via_voronoi_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND extend_labeling_via_voronoi_test)
-# add_test(NAME flag_existing_labels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND flag_existing_labels_test)
-# add_test(NAME gaussian_blur_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gaussian_blur_test)
-# add_test(NAME gpu_information_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gpu_information_test)
-# add_test(NAME greater_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_constant_test)
-# add_test(NAME greater_or_equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_or_equal_constant_test)
-# add_test(NAME greater_or_equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_or_equal_test)
-# add_test(NAME greater_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_test)
-# add_test(NAME histogram_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND histogram_test)
-# add_test(NAME mask_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND mask_test)
-# add_test(NAME masked_voronoi_labeling_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND masked_voronoi_labeling_test)
-# add_test(NAME maximum_all_pixels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND maximum_all_pixels_test)
-# add_test(NAME maximum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND maximum_box_test)
-# add_test(NAME maximum_x_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND maximum_x_projection_test)
-# add_test(NAME maximum_y_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND maximum_y_projection_test)
-# add_test(NAME maximum_z_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND maximum_z_projection_test)
-# add_test(NAME mean_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND mean_box_test)
-# add_test(NAME mean_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND mean_sphere_test)
-# add_test(NAME minimum_all_pixels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_all_pixels_test)
-# add_test(NAME minimum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_box_test)
-# add_test(NAME minimum_x_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_x_projection_test)
-# add_test(NAME minimum_y_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_y_projection_test)
-# add_test(NAME minimum_z_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_z_projection_test)
-# add_test(NAME nonzero_minimum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND nonzero_minimum_box_test)
-# add_test(NAME not_equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND not_equal_constant_test)
-# add_test(NAME not_equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND not_equal_test)
-# add_test(NAME onlyzero_overwrite_maximum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND onlyzero_overwrite_maximum_box_test)
-# add_test(NAME onlyzero_overwrite_maximum_diamond_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND onlyzero_overwrite_maximum_diamond_test)
-# add_test(NAME replace_intensities_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND replace_intensities_test)
-# add_test(NAME replace_intensity_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND replace_intensity_test)
-# add_test(NAME set_column_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND set_column_test)
-# add_test(NAME set_nonzero_pixels_to_pixelindex_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND set_nonzero_pixels_to_pixelindex_test)
-# add_test(NAME set_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND set_test)
-# add_test(NAME smaller_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND smaller_constant_test)
-# add_test(NAME smaller_or_equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND smaller_or_equal_constant_test)
-# add_test(NAME smaller_or_equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND smaller_or_equal_test)
-# add_test(NAME smaller_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND smaller_test)
-# add_test(NAME sobel_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sobel_test)
-# add_test(NAME sum_all_pixels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_all_pixels_test)
-# add_test(NAME sum_reduction_x_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_reduction_x_test)
-# add_test(NAME sum_x_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_x_projection_test)
-# add_test(NAME sum_y_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_y_projection_test)
-# add_test(NAME sum_z_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_z_projection_test)
-# add_test(NAME threshold_otsu_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND threshold_otsu_test)
-# add_test(NAME voronoi_otsu_labeling_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND voronoi_otsu_labeling_test)
+add_test(NAME absolute_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND absolute_test)
+add_test(NAME add_image_and_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_and_scalar_test)
+add_test(NAME add_image_weighted_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_weighted_test)
+add_test(NAME binary_and_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_and_test)
+add_test(NAME binary_not_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_not_test)
+add_test(NAME binary_or_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_or_test)
+add_test(NAME binary_subtract_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_subtract_test)
+add_test(NAME binary_xor_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_xor_test)
+add_test(NAME block_enumerate_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND block_enumerate_test)
+add_test(NAME close_indexgaps_in_labelmap_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND close_indexgaps_in_labelmap_test)
+add_test(NAME connected_components_labeling_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND connected_components_labeling_box_test)
+add_test(NAME copy_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND copy_test)
+add_test(NAME custom_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND custom_test ${PROJECT_SOURCE_DIR}/thirdparty/clesperanto-kernels/kernels)
+add_test(NAME detect_maxima_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND detect_maxima_test)
+add_test(NAME difference_of_gaussian_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND difference_of_gaussian_test)
+add_test(NAME dilate_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND dilate_sphere_test)
+add_test(NAME equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND equal_constant_test)
+add_test(NAME equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND equal_test)
+add_test(NAME erode_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND erode_sphere_test)
+add_test(NAME extend_labeling_via_voronoi_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND extend_labeling_via_voronoi_test)
+add_test(NAME flag_existing_labels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND flag_existing_labels_test)
+add_test(NAME gaussian_blur_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gaussian_blur_test)
+add_test(NAME gpu_information_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gpu_information_test)
+add_test(NAME greater_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_constant_test)
+add_test(NAME greater_or_equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_or_equal_constant_test)
+add_test(NAME greater_or_equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_or_equal_test)
+add_test(NAME greater_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_test)
+add_test(NAME histogram_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND histogram_test)
+add_test(NAME mask_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND mask_test)
+add_test(NAME masked_voronoi_labeling_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND masked_voronoi_labeling_test)
+add_test(NAME maximum_all_pixels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND maximum_all_pixels_test)
+add_test(NAME maximum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND maximum_box_test)
+add_test(NAME maximum_x_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND maximum_x_projection_test)
+add_test(NAME maximum_y_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND maximum_y_projection_test)
+add_test(NAME maximum_z_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND maximum_z_projection_test)
+add_test(NAME mean_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND mean_box_test)
+add_test(NAME mean_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND mean_sphere_test)
+add_test(NAME minimum_all_pixels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_all_pixels_test)
+add_test(NAME minimum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_box_test)
+add_test(NAME minimum_x_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_x_projection_test)
+add_test(NAME minimum_y_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_y_projection_test)
+add_test(NAME minimum_z_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_z_projection_test)
+add_test(NAME nonzero_minimum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND nonzero_minimum_box_test)
+add_test(NAME not_equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND not_equal_constant_test)
+add_test(NAME not_equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND not_equal_test)
+add_test(NAME onlyzero_overwrite_maximum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND onlyzero_overwrite_maximum_box_test)
+add_test(NAME onlyzero_overwrite_maximum_diamond_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND onlyzero_overwrite_maximum_diamond_test)
+add_test(NAME replace_intensities_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND replace_intensities_test)
+add_test(NAME replace_intensity_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND replace_intensity_test)
+add_test(NAME set_column_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND set_column_test)
+add_test(NAME set_nonzero_pixels_to_pixelindex_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND set_nonzero_pixels_to_pixelindex_test)
+add_test(NAME set_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND set_test)
+add_test(NAME smaller_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND smaller_constant_test)
+add_test(NAME smaller_or_equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND smaller_or_equal_constant_test)
+add_test(NAME smaller_or_equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND smaller_or_equal_test)
+add_test(NAME smaller_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND smaller_test)
+add_test(NAME sobel_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sobel_test)
+add_test(NAME sum_all_pixels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_all_pixels_test)
+add_test(NAME sum_reduction_x_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_reduction_x_test)
+add_test(NAME sum_x_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_x_projection_test)
+add_test(NAME sum_y_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_y_projection_test)
+add_test(NAME sum_z_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_z_projection_test)
+add_test(NAME threshold_otsu_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND threshold_otsu_test)
+add_test(NAME voronoi_otsu_labeling_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND voronoi_otsu_labeling_test)
 
-# set_tests_properties(absolute_test
-# add_image_and_scalar_test
-# add_image_weighted_test
-# binary_and_test
-# binary_not_test
-# binary_or_test
-# binary_subtract_test
-# binary_xor_test
-# block_enumerate_test
-# close_indexgaps_in_labelmap_test
-# connected_components_labeling_box_test
-# copy_test
-# custom_test
-# detect_maxima_test
-# difference_of_gaussian_test
-# dilate_sphere_test
-# equal_constant_test
-# equal_test
-# erode_sphere_test
-# extend_labeling_via_voronoi_test
-# flag_existing_labels_test
-# gaussian_blur_test
-# gpu_information_test
-# greater_constant_test
-# greater_or_equal_constant_test
-# greater_or_equal_test
-# greater_test
-# histogram_test
-# mask_test
-# masked_voronoi_labeling_test
-# maximum_all_pixels_test
-# maximum_box_test
-# maximum_x_projection_test
-# maximum_y_projection_test
-# maximum_z_projection_test
-# mean_box_test
-# mean_sphere_test
-# minimum_all_pixels_test
-# minimum_box_test
-# minimum_x_projection_test
-# minimum_y_projection_test
-# minimum_z_projection_test
-# nonzero_minimum_box_test
-# not_equal_constant_test
-# not_equal_test
-# onlyzero_overwrite_maximum_box_test
-# onlyzero_overwrite_maximum_diamond_test
-# replace_intensities_test
-# replace_intensity_test
-# set_column_test
-# set_nonzero_pixels_to_pixelindex_test
-# set_test
-# smaller_constant_test
-# smaller_or_equal_constant_test
-# smaller_or_equal_test
-# smaller_test
-# sobel_test
-# sum_all_pixels_test
-# sum_reduction_x_test
-# sum_x_projection_test
-# sum_y_projection_test
-# sum_z_projection_test
-# threshold_otsu_test
-# voronoi_otsu_labeling_test PROPERTIES LABELS "KERNELS" WILL_FAIL FALSE)
+set_tests_properties(absolute_test
+    add_image_and_scalar_test
+    add_image_weighted_test
+    binary_and_test
+    binary_not_test
+    binary_or_test
+    binary_subtract_test
+    binary_xor_test
+    block_enumerate_test
+    close_indexgaps_in_labelmap_test
+    connected_components_labeling_box_test
+    copy_test
+    custom_test
+    detect_maxima_test
+    difference_of_gaussian_test
+    dilate_sphere_test
+    equal_constant_test
+    equal_test
+    erode_sphere_test
+    extend_labeling_via_voronoi_test
+    flag_existing_labels_test
+    gaussian_blur_test
+    gpu_information_test
+    greater_constant_test
+    greater_or_equal_constant_test
+    greater_or_equal_test
+    greater_test
+    histogram_test
+    mask_test
+    masked_voronoi_labeling_test
+    maximum_all_pixels_test
+    maximum_box_test
+    maximum_x_projection_test
+    maximum_y_projection_test
+    maximum_z_projection_test
+    mean_box_test
+    mean_sphere_test
+    minimum_all_pixels_test
+    minimum_box_test
+    minimum_x_projection_test
+    minimum_y_projection_test
+    minimum_z_projection_test
+    nonzero_minimum_box_test
+    not_equal_constant_test
+    not_equal_test
+    onlyzero_overwrite_maximum_box_test
+    onlyzero_overwrite_maximum_diamond_test
+    replace_intensities_test
+    replace_intensity_test
+    set_column_test
+    set_nonzero_pixels_to_pixelindex_test
+    set_test
+    smaller_constant_test
+    smaller_or_equal_constant_test
+    smaller_or_equal_test
+    smaller_test
+    sobel_test
+    sum_all_pixels_test
+    sum_reduction_x_test
+    sum_x_projection_test
+    sum_y_projection_test
+    sum_z_projection_test
+    threshold_otsu_test
+    voronoi_otsu_labeling_test PROPERTIES LABELS "KERNELS" WILL_FAIL FALSE)
