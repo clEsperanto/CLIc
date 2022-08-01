@@ -46,7 +46,7 @@ class Clesperanto
     auto BinaryNot (const Image &, const Image &) -> void;
     auto BinarySubtract (const Image &, const Image &, const Image &) -> void;
     auto BinaryXor (const Image &, const Image &, const Image &) -> void;
-    auto BlockEnumerate (const Image &, const Image &, const Image &, const int & = 0) -> void; //! block enumarate fail when running with Image
+    auto BlockEnumerate (const Image &, const Image &, const Image &, const int & = 0) -> void; //! only 1d ?
 
     auto Copy (const Image &, const Image &) -> void;
     auto ConnectedComponentLabelingBox (const Image &, const Image &) -> void;
@@ -54,7 +54,7 @@ class Clesperanto
 
     auto DilateSphere (const Image &, const Image &) -> void;
     auto DifferenceOfGaussian (const Image &, const Image &, const float & = 0, const float & = 0, const float & = 0, const float & = 1, const float & = 1, const float & = 0) -> void;
-    auto DetectMaximaBox (const Image &, const Image &, const int & = 0, const int & = 0, const int & = 0) -> void;
+    auto DetectMaximaBox (const Image &, const Image &, const int & = 0, const int & = 0, const int & = 0) -> void; //! unsigned not supported?
     auto DivideImages (const Image &, const Image &, const Image &) -> void;
     auto DilateLabels (const Image &, const Image &, const int & = 1) -> void;
 
