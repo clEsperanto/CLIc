@@ -1,84 +1,78 @@
-#include "cleUtils.hpp"
-#include "clesperanto.hpp"
+
+#include <cassert>
 #include <random>
 
-template <class type>
-std::array<size_t, 3>
-generate_data (std::vector<type> &arr_1,
-               std::vector<type> &valid, size_t width, size_t height, size_t depth)
-{
-    arr_1.resize (width * height * depth);
-    valid.resize (5);
-    arr_1 = { 1, 2, 3, 1, 2, 3, 5, 2, 1, 3, 2, 1 };
-    valid = { 4, 4, 3, 0, 1 };
-    return std::array<size_t, 3>{ width, height, depth };
-}
+#include "clesperanto.hpp"
 
 template <class type>
-std::vector<type>
-run_kernel_with_buffer (std::vector<type> &arr_1, std::array<size_t, 3> &shape)
+auto
+run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type) -> bool
 {
+    std::vector<type> input (shape[0] * shape[1] * shape[2]);
+    std::vector<type> valid (shape[0]);
+    static std::uniform_int_distribution<int> distribution (0, shape[0] - 1);
+    static std::default_random_engine generator;
+    std::generate (input.begin (), input.end (), [] () { return static_cast<type> (distribution (generator)); });
+    std::fill (valid.begin (), valid.end (), 0);
+    for (auto &&i : valid)
+        {
+            valid[i] += 1;
+        }
+
     cle::Clesperanto cle;
     cle.GetDevice ()->WaitForKernelToFinish ();
-    auto oclArray_A = cle.Push<type> (arr_1, shape);
-    auto ocl_output = cle.Create<type> ({ 5, 1, 1 });
-    cle.Histogram (oclArray_A, ocl_output, 5);
-    auto output = cle.Pull<type> (ocl_output);
-    return output;
+    auto gpu_input = cle.Push<type> (input, shape, mem_type);
+    auto gpu_output = cle.Create<type> ({ shape[0] }, mem_type);
+    cle.Histogram (gpu_input, gpu_output);
+    auto output = cle.Pull<type> (gpu_output);
+
+    return std::equal (output.begin (), output.end (), valid.begin ());
 }
 
-template <class type>
-std::vector<type>
-run_kernel_with_image (std::vector<type> &arr_1, std::array<size_t, 3> &shape)
+auto
+main (int argc, char **argv) -> int
 {
-    cle::Clesperanto cle;
-    cle.GetDevice ()->WaitForKernelToFinish ();
-    auto oclArray_A = cle.Push<type> (arr_1, shape, "image");
-    auto ocl_output = cle.Create<type> ({ 5, 1, 1 }, "image");
-    cle.Histogram (oclArray_A, ocl_output, 5);
-    auto output = cle.Pull<type> (ocl_output);
-    return output;
-}
-
-template <class type>
-bool
-test (size_t width, size_t height, size_t depth)
-{
-    std::vector<type> arr_1, valid;
-    std::array<size_t, 3> shape = generate_data<type> (arr_1, valid, width, height, depth);
-    auto output_buffer = run_kernel_with_buffer<type> (arr_1, shape);
-    if (IsDifferent (output_buffer, valid))
-        {
-            std::cerr << "kernel (" << width << "," << height << "," << depth << ") using buffer ... FAILED! " << std::endl;
-            return true;
-        }
-    auto output_image = run_kernel_with_image<type> (arr_1, shape);
-    if (IsDifferent (output_image, valid))
-        {
-            std::cerr << "kernel (" << width << "," << height << "," << depth << ") using image ... FAILED! " << std::endl;
-            return true;
-        }
-    return false;
-}
-
-int
-main (int argc, char **argv)
-{
-    if (test<float> (3, 2, 2))
-        {
-            std::cerr << "Histogram kernel 3d ... FAILED! " << std::endl;
-            return EXIT_FAILURE;
-        }
-    if (test<float> (6, 2, 1))
-        {
-            std::cerr << "Histogram kernel 2d ... FAILED! " << std::endl;
-            return EXIT_FAILURE;
-        }
-    if (test<float> (12, 1, 1))
-        {
-            std::cerr << "Histogram kernel 1d ... FAILED! " << std::endl;
-            return EXIT_FAILURE;
-        }
-    std::cout << "Histogram kernel test ... PASSED! " << std::endl;
+    assert (run_test<float> ({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<int> ({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned int> ({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<short> ({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned short> ({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<char> ({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned char> ({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<float> ({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<int> ({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned int> ({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<short> ({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned short> ({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<char> ({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned char> ({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<float> ({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<int> ({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned int> ({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<short> ({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned short> ({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<char> ({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned char> ({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<float> ({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<int> ({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned int> ({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<short> ({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned short> ({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<char> ({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned char> ({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<float> ({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<int> ({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned int> ({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<short> ({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned short> ({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<char> ({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned char> ({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<float> ({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<int> ({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned int> ({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<short> ({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned short> ({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<char> ({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned char> ({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D));
     return EXIT_SUCCESS;
 }

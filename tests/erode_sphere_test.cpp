@@ -31,25 +31,10 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
 
     cle::Clesperanto cle;
     cle.GetDevice ()->WaitForKernelToFinish ();
-    auto gpu_input = cle.Push<type> (input, shape);
-    auto gpu_output = cle.Create<type> (shape);
+    auto gpu_input = cle.Push<type> (input, shape, mem_type);
+    auto gpu_output = cle.Create<type> (shape, mem_type);
     cle.ErodeSphere (gpu_input, gpu_output);
     auto output = cle.Pull<type> (gpu_output);
-
-    std::copy (std::begin (input),
-               std::end (input),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
-
-    std::copy (std::begin (valid),
-               std::end (valid),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
-
-    std::copy (std::begin (output),
-               std::end (output),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
 
     return std::equal (output.begin (), output.end (), valid.begin ());
 }

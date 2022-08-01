@@ -19,8 +19,8 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
 
     cle::Clesperanto cle;
     cle.GetDevice ()->WaitForKernelToFinish ();
-    auto gpu_input = cle.Push<type> (input, shape);
-    auto gpu_output = cle.Create<type> (shape);
+    auto gpu_input = cle.Push<type> (input, shape, mem_type);
+    auto gpu_output = cle.Create<type> (shape, mem_type);
     cle.CloseIndexGapsInLabelMap (gpu_input, gpu_output);
     auto output = cle.Pull<type> (gpu_output);
 

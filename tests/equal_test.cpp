@@ -19,9 +19,9 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
 
     cle::Clesperanto cle;
     cle.GetDevice ()->WaitForKernelToFinish ();
-    auto gpu_input1 = cle.Push<type> (input1, shape);
-    auto gpu_input2 = cle.Push<type> (input2, shape);
-    auto gpu_output = cle.Create<type> (shape);
+    auto gpu_input1 = cle.Push<type> (input1, shape, mem_type);
+    auto gpu_input2 = cle.Push<type> (input2, shape, mem_type);
+    auto gpu_output = cle.Create<type> (shape, mem_type);
     cle.Equal (gpu_input1, gpu_input2, gpu_output);
     auto output = cle.Pull<type> (gpu_output);
 

@@ -1,90 +1,77 @@
 
-#include "cleUtils.hpp"
-#include "clesperanto.hpp"
+#include <cassert>
 #include <random>
 
+#include "clesperanto.hpp"
+
 template <class type>
-std::array<size_t, 3>
-generate_data (std::vector<type> &arr_1,
-               std::vector<type> &valid, size_t width, size_t height, size_t depth)
+auto
+run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type) -> bool
 {
-    arr_1.resize (width * height * depth);
-    valid.resize (width * height * 1);
-    std::fill (arr_1.begin (), arr_1.end (), static_cast<type> (10));
+    std::vector<type> input (shape[0] * shape[1] * shape[2]);
+    std::vector<type> valid (shape[0] * shape[1] * 0);
+    std::fill (input.begin (), input.end (), static_cast<type> (10));
     std::fill (valid.begin (), valid.end (), static_cast<type> (0));
-    for (auto it1 = arr_1.begin (); (it1 - arr_1.begin ()) < height * width; ++it1)
+    for (auto it = input.begin (); (it - input.begin ()) < shape[1] * shape[0]; ++it)
         {
-            int idx = (it1 - arr_1.begin ()) + (rand () % depth) * height * width;
-            arr_1[idx] = static_cast<type> (0);
+            int idx = (it - input.begin ()) + (rand () % shape[2]) * shape[1] * shape[0];
+            input[idx] = static_cast<type> (0);
         }
-    return std::array<size_t, 3>{ width, height, depth };
-}
 
-template <class type>
-std::vector<type>
-run_kernel_with_buffer (std::vector<type> &arr_1, std::array<size_t, 3> &shape)
-{
     cle::Clesperanto cle;
     cle.GetDevice ()->WaitForKernelToFinish ();
-    auto oclArray_A = cle.Push<type> (arr_1, shape);
-    auto ocl_output = cle.Create<type> ({ shape[0], shape[1], 1 });
-    cle.MinimumZProjection (oclArray_A, ocl_output);
-    auto output = cle.Pull<type> (ocl_output);
-    return output;
+    auto gpu_input = cle.Push<type> (input, shape, mem_type);
+    auto gpu_output = cle.Create<type> ({ shape[0], shape[1], 1 }, mem_type);
+    cle.MinimumZProjection (gpu_input, gpu_output);
+    auto output = cle.Pull<type> (gpu_output);
+
+    return std::equal (output.begin (), output.end (), valid.begin ());
 }
 
-template <class type>
-std::vector<type>
-run_kernel_with_image (std::vector<type> &arr_1, std::array<size_t, 3> &shape)
+auto
+main (int argc, char **argv) -> int
 {
-    cle::Clesperanto cle;
-    cle.GetDevice ()->WaitForKernelToFinish ();
-    auto oclArray_A = cle.Push<type> (arr_1, shape, "image");
-    auto ocl_output = cle.Create<type> ({ shape[0], shape[1], 1 }, "image");
-    cle.MinimumZProjection (oclArray_A, ocl_output);
-    auto output = cle.Pull<type> (ocl_output);
-    return output;
-}
-
-template <class type>
-bool
-test (size_t width, size_t height, size_t depth)
-{
-    std::vector<type> arr_1, valid;
-    std::array<size_t, 3> shape = generate_data<type> (arr_1, valid, width, height, depth);
-    auto output_buffer = run_kernel_with_buffer<type> (arr_1, shape);
-    if (IsDifferent (output_buffer, valid))
-        {
-            std::cerr << "kernel (" << width << "," << height << "," << depth << ") using buffer ... FAILED! " << std::endl;
-            return true;
-        }
-    auto output_image = run_kernel_with_image<type> (arr_1, shape);
-    if (IsDifferent (output_image, valid))
-        {
-            std::cerr << "kernel (" << width << "," << height << "," << depth << ") using image ... FAILED! " << std::endl;
-            return true;
-        }
-    return false;
-}
-
-int
-main (int argc, char **argv)
-{
-    if (test<float> (5, 3, 2))
-        {
-            std::cerr << "MinimumZProjection kernel 3d ... FAILED! " << std::endl;
-            return EXIT_FAILURE;
-        }
-    if (test<float> (5, 3, 1))
-        {
-            std::cerr << "MinimumZProjection kernel 2d ... FAILED! " << std::endl;
-            return EXIT_FAILURE;
-        }
-    if (test<float> (5, 1, 1))
-        {
-            std::cerr << "MinimumZProjection kernel 1d ... FAILED! " << std::endl;
-            return EXIT_FAILURE;
-        }
-    std::cout << "MinimumZProjection kernel test ... PASSED! " << std::endl;
+    assert (run_test<float> ({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<int> ({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned int> ({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<short> ({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned short> ({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<char> ({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned char> ({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<float> ({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<int> ({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned int> ({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<short> ({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned short> ({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<char> ({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned char> ({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<float> ({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<int> ({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned int> ({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<short> ({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned short> ({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<char> ({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned char> ({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<float> ({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<int> ({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned int> ({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<short> ({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned short> ({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<char> ({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned char> ({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<float> ({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<int> ({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned int> ({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<short> ({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned short> ({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<char> ({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned char> ({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<float> ({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<int> ({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned int> ({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<short> ({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned short> ({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<char> ({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned char> ({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D));
     return EXIT_SUCCESS;
 }

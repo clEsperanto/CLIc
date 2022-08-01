@@ -10,7 +10,7 @@
 namespace cle
 {
 
-HistogramKernel::HistogramKernel (const ProcessorPointer &device) : Operation (device, 8)
+HistogramKernel::HistogramKernel (const ProcessorPointer &device) : Operation (device, 8, 1)
 {
     std::string cl_header_ = {
 #include "cle_histogram.h"
