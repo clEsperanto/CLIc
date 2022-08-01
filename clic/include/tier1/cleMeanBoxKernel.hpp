@@ -18,7 +18,7 @@ class MeanBoxKernel : public Operation
 
   private:
     std::array<int, 3> radius_{ 0, 0, 0 };
-    auto Radius2KernelSize (int) const -> int;
+    auto Radius2KernelSize () const -> std::array<int, 3>;
 };
 
 } // namespace cle
