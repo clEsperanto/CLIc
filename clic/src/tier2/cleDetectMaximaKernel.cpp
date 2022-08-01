@@ -41,16 +41,19 @@ DetectMaximaKernel::Execute ()
         {
             auto src = this->GetImage ("src");
             auto dst = this->GetImage ("dst");
+
             MeanBoxKernel mean (this->Device ());
             mean.SetInput (*src);
             mean.SetOutput (*dst);
             mean.SetRadius (this->radius_[0], this->radius_[1], this->radius_[2]);
             mean.Execute ();
+
             CopyKernel copy (this->Device ());
             copy.SetInput (*dst);
             copy.SetOutput (*src);
             copy.Execute ();
         }
+
     this->Operation::Execute ();
 }
 } // namespace cle
