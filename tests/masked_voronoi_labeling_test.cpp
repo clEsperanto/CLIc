@@ -11,9 +11,11 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
     std::vector<type> input1 (shape[0] * shape[1] * shape[2]);
     std::vector<type> input2 (shape[0] * shape[1] * shape[2]);
     std::vector<type> valid (shape[0] * shape[1] * shape[2]);
-    if (shape[2] == 2)
+    if (shape[2] > 1)
         {
             input1 = { 1, 0, 0, 0, 0, 1,
+                       0, 0, 0, 0, 0, 0,
+                       0, 0, 0, 0, 0, 0,
                        0, 0, 0, 0, 0, 0,
                        0, 0, 0, 0, 0, 0,
                        0, 0, 0, 0, 0, 0,
@@ -21,18 +23,22 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
                        1, 0, 0, 0, 0, 1 };
             input2 = { 1, 1, 1, 1, 0, 1,
                        1, 0, 0, 1, 0, 1,
-                       0, 0, 0, 1, 0, 0,
+                       0, 0, 0, 0, 0, 0,
+                       0, 0, 0, 0, 0, 0,
+                       0, 0, 0, 0, 0, 0,
                        0, 0, 0, 0, 0, 0,
                        1, 0, 0, 0, 0, 1,
                        1, 1, 1, 0, 1, 1 };
             valid = { 1, 1, 1, 1, 0, 2,
                       1, 0, 0, 1, 0, 2,
-                      0, 0, 0, 1, 0, 0,
+                      0, 0, 0, 0, 0, 0,
+                      0, 0, 0, 0, 0, 0,
+                      0, 0, 0, 0, 0, 0,
                       0, 0, 0, 0, 0, 0,
                       3, 0, 0, 0, 0, 4,
                       3, 3, 3, 0, 4, 4 };
         }
-    else if (shape[1] == 3)
+    else if (shape[1] > 1)
         {
             input1 = { 1, 0, 0, 0, 0, 1,
                        0, 0, 0, 0, 0, 0,
@@ -59,21 +65,6 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
     cle.MaskedVoronoiLabeling (gpu_input1, gpu_input2, gpu_output);
     auto output = cle.Pull<type> (gpu_output);
 
-    std::copy (std::begin (input1),
-               std::end (input1),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
-
-    std::copy (std::begin (valid),
-               std::end (valid),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
-
-    std::copy (std::begin (output),
-               std::end (output),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
-
     return std::equal (output.begin (), output.end (), valid.begin ());
 }
 
@@ -94,13 +85,13 @@ main (int argc, char **argv) -> int
     assert (run_test<unsigned short> ({ 6, 3, 1 }, CL_MEM_OBJECT_BUFFER));
     assert (run_test<char> ({ 6, 3, 1 }, CL_MEM_OBJECT_BUFFER));
     assert (run_test<unsigned char> ({ 6, 3, 1 }, CL_MEM_OBJECT_BUFFER));
-    // assert (run_test<float> ({ 6, 3, 2 }, CL_MEM_OBJECT_BUFFER));
-    // assert (run_test<int> ({ 6, 3, 2 }, CL_MEM_OBJECT_BUFFER));
-    // assert (run_test<unsigned int> ({ 6, 3, 2 }, CL_MEM_OBJECT_BUFFER));
-    // assert (run_test<short> ({ 6, 3, 2 }, CL_MEM_OBJECT_BUFFER));
-    // assert (run_test<unsigned short> ({ 6, 3, 2 }, CL_MEM_OBJECT_BUFFER));
-    // assert (run_test<char> ({ 6, 3, 2 }, CL_MEM_OBJECT_BUFFER));
-    // assert (run_test<unsigned char> ({ 6, 3, 2 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<float> ({ 6, 4, 2 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<int> ({ 6, 4, 2 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned int> ({ 6, 4, 2 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<short> ({ 6, 4, 2 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned short> ({ 6, 4, 2 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<char> ({ 6, 4, 2 }, CL_MEM_OBJECT_BUFFER));
+    assert (run_test<unsigned char> ({ 6, 4, 2 }, CL_MEM_OBJECT_BUFFER));
     assert (run_test<float> ({ 6, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
     assert (run_test<int> ({ 6, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
     assert (run_test<unsigned int> ({ 6, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
@@ -115,12 +106,12 @@ main (int argc, char **argv) -> int
     assert (run_test<unsigned short> ({ 6, 3, 1 }, CL_MEM_OBJECT_IMAGE1D));
     assert (run_test<char> ({ 6, 3, 1 }, CL_MEM_OBJECT_IMAGE1D));
     assert (run_test<unsigned char> ({ 6, 3, 1 }, CL_MEM_OBJECT_IMAGE1D));
-    // assert (run_test<float> ({ 6, 3, 2 }, CL_MEM_OBJECT_IMAGE1D));
-    // assert (run_test<int> ({ 6, 3, 2 }, CL_MEM_OBJECT_IMAGE1D));
-    // assert (run_test<unsigned int> ({ 6, 3, 2 }, CL_MEM_OBJECT_IMAGE1D));
-    // assert (run_test<short> ({ 6, 3, 2 }, CL_MEM_OBJECT_IMAGE1D));
-    // assert (run_test<unsigned short> ({ 6, 3, 2 }, CL_MEM_OBJECT_IMAGE1D));
-    // assert (run_test<char> ({ 6, 3, 2 }, CL_MEM_OBJECT_IMAGE1D));
-    // assert (run_test<unsigned char> ({ 6, 3, 2 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<float> ({ 6, 4, 2 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<int> ({ 6, 4, 2 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned int> ({ 6, 4, 2 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<short> ({ 6, 4, 2 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned short> ({ 6, 4, 2 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<char> ({ 6, 4, 2 }, CL_MEM_OBJECT_IMAGE1D));
+    assert (run_test<unsigned char> ({ 6, 4, 2 }, CL_MEM_OBJECT_IMAGE1D));
     return EXIT_SUCCESS;
 }
