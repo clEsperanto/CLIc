@@ -14,7 +14,7 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
     static std::uniform_int_distribution<int> distribution (0, 1);
     static std::default_random_engine generator;
     std::generate (input.begin (), input.end (), [] () { return static_cast<type> (distribution (generator)); });
-    std::transform (input.begin (), input.end (), input.begin (), valid.begin (), std::multiplies<type> ());
+    std::transform (input.begin (), input.end (), valid.begin (), [] (const type &x) { return static_cast<type> (std::abs (static_cast<float> (x) - 1)); });
 
     cle::Clesperanto cle;
     cle.GetDevice ()->WaitForKernelToFinish ();
