@@ -57,11 +57,16 @@ Operation::AddParameter (const std::string &tag, const Image &parameter) -> void
 }
 
 auto
-Operation::AddConstant (const std::string &tag, const std::string &constant) -> void
+Operation::AddConstant (const std::string &tag, const size_t &constant) -> void
 {
-    this->constant_map_.emplace (
-        tag,
-        constant);
+    auto success_flag = this->constant_map_.emplace (
+                                               tag,
+                                               std::to_string (constant))
+                            .second;
+    if (!success_flag)
+        {
+            this->constant_map_[tag] = std::to_string (constant);
+        }
 }
 
 auto

@@ -33,7 +33,7 @@ class Operation
     auto AddParameter (const std::string &tag, const float &parameter) -> void;
     auto AddParameter (const std::string &tag, const int &parameter) -> void;
     auto AddParameter (const std::string &tag, const Image &parameter) -> void;
-    auto AddConstant (const std::string &tag, const std::string &constant) -> void;
+    auto AddConstant (const std::string &tag, const size_t &constant) -> void;
     auto GetParameter (const std::string &tag) -> ObjectPointer;
     auto GetImage (const std::string &tag) -> ImagePointer;
     auto SetRange (const ShapeArray &range) -> void;
