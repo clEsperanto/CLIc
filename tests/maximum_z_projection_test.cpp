@@ -14,7 +14,7 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
     std::fill (valid.begin (), valid.end (), static_cast<type> (10));
     for (auto it = input.begin (); (it - input.begin ()) < shape[1] * shape[0]; it++)
         {
-            int idx = (it - input.begin ()) + (rand () % shape[2]) * shape[0] * shape[0];
+            int idx = (it - input.begin ()) + (rand () % shape[2]) * shape[0] * shape[1];
             input[idx] = static_cast<type> (10);
         }
 
@@ -24,21 +24,6 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
     auto gpu_output = cle.Create<type> ({ shape[0], shape[1], 1 }, mem_type);
     cle.MaximumZProjection (gpu_input, gpu_output);
     auto output = cle.Pull<type> (gpu_output);
-
-    std::copy (std::begin (input),
-               std::end (input),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
-
-    std::copy (std::begin (valid),
-               std::end (valid),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
-
-    std::copy (std::begin (output),
-               std::end (output),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
 
     return std::equal (output.begin (), output.end (), valid.begin ());
 }

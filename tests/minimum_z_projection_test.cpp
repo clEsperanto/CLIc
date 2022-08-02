@@ -9,7 +9,7 @@ auto
 run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type) -> bool
 {
     std::vector<type> input (shape[0] * shape[1] * shape[2]);
-    std::vector<type> valid (shape[0] * shape[1] * 0);
+    std::vector<type> valid (shape[0] * shape[1] * 1);
     std::fill (input.begin (), input.end (), static_cast<type> (10));
     std::fill (valid.begin (), valid.end (), static_cast<type> (0));
     for (auto it = input.begin (); (it - input.begin ()) < shape[1] * shape[0]; ++it)
