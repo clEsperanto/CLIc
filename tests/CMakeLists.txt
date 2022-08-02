@@ -103,10 +103,6 @@ add_dependencies(gaussian_blur_test CLIc)
 target_link_libraries(gaussian_blur_test PRIVATE CLIc::CLIc)
 set_target_properties(gaussian_blur_test PROPERTIES FOLDER "Tests")
 
-# add_executable(gpu_information_test gpu_information_test.cpp)
-# add_dependencies(gpu_information_test CLIc)
-# target_link_libraries(gpu_information_test PRIVATE CLIc::CLIc)
-# set_target_properties(gpu_information_test PROPERTIES FOLDER "Tests")
 add_executable(greater_constant_test greater_constant_test.cpp)
 add_dependencies(greater_constant_test CLIc)
 target_link_libraries(greater_constant_test PRIVATE CLIc::CLIc)
@@ -324,7 +320,6 @@ add_test(NAME block_enumerate_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 add_test(NAME close_indexgaps_in_labelmap_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND close_indexgaps_in_labelmap_test)
 add_test(NAME connected_components_labeling_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND connected_components_labeling_box_test)
 add_test(NAME copy_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND copy_test)
-add_test(NAME custom_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND custom_test ${PROJECT_SOURCE_DIR}/thirdparty/clesperanto-kernels/kernels)
 add_test(NAME detect_maxima_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND detect_maxima_test)
 add_test(NAME difference_of_gaussian_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND difference_of_gaussian_test)
 add_test(NAME dilate_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND dilate_sphere_test)
@@ -389,7 +384,6 @@ set_tests_properties(absolute_test
     close_indexgaps_in_labelmap_test
     connected_components_labeling_box_test
     copy_test
-    custom_test
     detect_maxima_test
     difference_of_gaussian_test
     dilate_sphere_test
@@ -399,7 +393,6 @@ set_tests_properties(absolute_test
     extend_labeling_via_voronoi_test
     flag_existing_labels_test
     gaussian_blur_test
-    gpu_information_test
     greater_constant_test
     greater_or_equal_constant_test
     greater_or_equal_test
