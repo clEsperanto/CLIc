@@ -16,7 +16,7 @@ class HistogramKernel : public Operation
     auto SetMinimumIntensity (const float &value) -> void;
     auto SetMaximumIntensity (const float &value) -> void;
     auto SetSteps (const int &step_x = 1, const int &step_y = 1, const int &step_z = 1) -> void;
-    auto SetNumBins (const unsigned int &bin) -> void;
+    auto SetNumBins (const size_t &bin) -> void;
     auto Execute () -> void override;
 
   private:

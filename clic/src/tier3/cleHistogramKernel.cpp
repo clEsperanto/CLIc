@@ -51,10 +51,10 @@ HistogramKernel::SetSteps (const int &step_x, const int &step_y, const int &step
 }
 
 void
-HistogramKernel::SetNumBins (const unsigned int &bin)
+HistogramKernel::SetNumBins (const size_t &bin)
 {
     this->nb_bins_ = bin;
-    this->AddConstant (std::to_string (this->nb_bins_), "NUMBER_OF_HISTOGRAM_BINS");
+    this->AddConstant ("NUMBER_OF_HISTOGRAM_BINS", this->nb_bins_);
 }
 
 void
@@ -64,6 +64,8 @@ HistogramKernel::Execute ()
 
     auto dst = this->GetImage ("histogram");
     auto src = this->GetImage ("src");
+
+    const size_t nb_partial_hist = src->Shape ()[1];
 
     if (this->min_intensity_ == infinity || this->max_intensity_ == infinity)
         {
@@ -85,11 +87,10 @@ HistogramKernel::Execute ()
     this->AddParameter ("maximum", this->max_intensity_);
 
     // create partial histogram step
-    size_t nb_temp_hist = src->Shape ()[1];
-    auto partial_hist = Memory::AllocateObject (this->Device (), { this->nb_bins_, 1, nb_temp_hist });
+    auto partial_hist = Memory::AllocateObject (this->Device (), { this->nb_bins_, 1, nb_partial_hist });
     this->AddParameter ("dst", partial_hist);
 
-    this->SetRange (std::array<size_t, 3>{ nb_temp_hist, 1, 1 });
+    this->SetRange (std::array<size_t, 3>{ nb_partial_hist, 1, 1 });
     this->Operation::Execute ();
 
     // run projection

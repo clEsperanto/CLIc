@@ -14,7 +14,7 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
     static std::default_random_engine generator;
     std::generate (input.begin (), input.end (), [] () { return static_cast<type> (distribution (generator)); });
     std::fill (valid.begin (), valid.end (), 0);
-    for (auto &&i : valid)
+    for (auto &&i : input)
         {
             valid[i] += 1;
         }
@@ -22,9 +22,26 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
     cle::Clesperanto cle;
     cle.GetDevice ()->WaitForKernelToFinish ();
     auto gpu_input = cle.Push<type> (input, shape, mem_type);
-    auto gpu_output = cle.Create<type> ({ shape[0] }, mem_type);
-    cle.Histogram (gpu_input, gpu_output);
+    auto gpu_output = cle.Create<type> ({ shape[0], 1, 1 }, mem_type);
+    cle.Histogram (gpu_input, gpu_output, shape[0], 0, shape[0] - 1);
     auto output = cle.Pull<type> (gpu_output);
+
+    std::cout << std::endl;
+
+    std::copy (std::begin (input),
+               std::end (input),
+               std::ostream_iterator<type> (std::cout, ", "));
+    std::cout << std::endl;
+
+    std::copy (std::begin (valid),
+               std::end (valid),
+               std::ostream_iterator<type> (std::cout, ", "));
+    std::cout << std::endl;
+
+    std::copy (std::begin (output),
+               std::end (output),
+               std::ostream_iterator<type> (std::cout, ", "));
+    std::cout << std::endl;
 
     return std::equal (output.begin (), output.end (), valid.begin ());
 }
