@@ -10,12 +10,31 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
 {
     std::vector<type> input (shape[0] * shape[1] * shape[2]);
     std::vector<type> valid (shape[0] * shape[1] * shape[2]);
-    if (shape[2] == 2)
+    if (shape[2] > 1)
         {
-            std::fill (input.begin (), input.end (), 0);
-            std::fill (valid.begin (), valid.end (), 0);
+            input = { 0, 0, 0, 0, 0,
+                      0, 1, 2, 3, 0,
+                      0, 2, 3, 4, 0,
+                      0, 4, 4, 5, 0,
+                      0, 0, 0, 0, 0,
+                      0, 0, 0, 0, 0,
+                      0, 0, 0, 0, 0,
+                      0, 0, 0, 0, 0,
+                      0, 0, 0, 0, 0,
+                      0, 0, 0, 0, 0 };
+
+            valid = { 0, 1, 2, 3, 0,
+                      1, 1, 2, 3, 3,
+                      2, 2, 3, 4, 4,
+                      4, 4, 4, 5, 5,
+                      0, 4, 4, 5, 0,
+                      0, 0, 0, 0, 0,
+                      0, 1, 2, 3, 0,
+                      0, 2, 3, 4, 0,
+                      0, 4, 4, 5, 0,
+                      0, 0, 0, 0, 0 };
         }
-    if (shape[1] == 5)
+    else if (shape[1] > 1)
         {
             input = { 0, 0, 0, 0, 0,
                       0, 1, 2, 3, 0,
@@ -41,21 +60,6 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
     auto gpu_output = cle.Create<type> (shape, mem_type);
     cle.OnlyzeroOverwriteMaximumDiamond (gpu_input, gpu_flag, gpu_output);
     auto output = cle.Pull<type> (gpu_output);
-
-    std::copy (std::begin (input),
-               std::end (input),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
-
-    std::copy (std::begin (valid),
-               std::end (valid),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
-
-    std::copy (std::begin (output),
-               std::end (output),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
 
     return std::equal (output.begin (), output.end (), valid.begin ());
 }
