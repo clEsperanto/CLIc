@@ -27,21 +27,6 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
     cle.SetColumn (gpu_input, 1, 100);
     auto output = cle.Pull<type> (gpu_input);
 
-    std::copy (std::begin (input),
-               std::end (input),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
-
-    std::copy (std::begin (valid),
-               std::end (valid),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
-
-    std::copy (std::begin (output),
-               std::end (output),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
-
     return std::equal (output.begin (), output.end (), valid.begin ());
 }
 

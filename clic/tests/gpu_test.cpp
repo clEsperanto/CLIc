@@ -44,8 +44,6 @@ main (int argc, char **argv)
             }
         std::cout << "]" << std::endl;
         gpu->SelectDevice (device_list.front ());
-        std::cout << "device name : " << gpu->DeviceName () << std::endl;
-        std::cout << "device memory : " << gpu->MemoryAvailable () << std::endl;
     }
 
     return EXIT_SUCCESS;

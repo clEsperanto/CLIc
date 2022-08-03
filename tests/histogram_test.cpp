@@ -26,23 +26,6 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
     cle.Histogram (gpu_input, gpu_output, shape[0], 0, shape[0] - 1);
     auto output = cle.Pull<type> (gpu_output);
 
-    std::cout << std::endl;
-
-    std::copy (std::begin (input),
-               std::end (input),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
-
-    std::copy (std::begin (valid),
-               std::end (valid),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
-
-    std::copy (std::begin (output),
-               std::end (output),
-               std::ostream_iterator<type> (std::cout, ", "));
-    std::cout << std::endl;
-
     return std::equal (output.begin (), output.end (), valid.begin ());
 }
 

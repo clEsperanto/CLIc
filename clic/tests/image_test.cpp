@@ -24,9 +24,6 @@ run_test (const std::shared_ptr<cle::Processor> &gpu, const std::array<size_t, 3
     cle::Memory::WriteObject (gpu_input, array);
     gpu_input.CopyDataTo (gpu_output);
 
-    std::cout << "gpu input : " << gpu_input.ToString () << std::endl;
-    std::cout << "gpu output : " << gpu_output.ToString () << std::endl;
-
     auto output = cle::Memory::ReadObject<type> (gpu_output);
     return std::equal (output.begin (), output.end (), array.begin ());
 }
