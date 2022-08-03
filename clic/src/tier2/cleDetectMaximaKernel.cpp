@@ -37,7 +37,9 @@ DetectMaximaKernel::SetRadius (const int &radius_x, const int &radius_y, const i
 void
 DetectMaximaKernel::Execute ()
 {
-    if (std::any_of (radius_.begin (), radius_.end (), [] (int i) { return i > 0; }))
+    // if (std::any_of (radius_.begin (), radius_.end (), [] (int i) { return i > 0; }))
+    //     {
+    if (this->radius_[0] > 0 || this->radius_[1] > 0 || this->radius_[1] > 0)
         {
             auto src = this->GetImage ("src");
             auto dst = this->GetImage ("dst");
