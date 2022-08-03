@@ -48,10 +48,10 @@ add_dependencies(close_indexgaps_in_labelmap_test CLIc)
 target_link_libraries(close_indexgaps_in_labelmap_test PRIVATE CLIc::CLIc)
 set_target_properties(close_indexgaps_in_labelmap_test PROPERTIES FOLDER "Tests")
 
-add_executable(connected_components_labeling_box_test connected_components_labeling_box_test.cpp)
-add_dependencies(connected_components_labeling_box_test CLIc)
-target_link_libraries(connected_components_labeling_box_test PRIVATE CLIc::CLIc)
-set_target_properties(connected_components_labeling_box_test PROPERTIES FOLDER "Tests")
+add_executable(connected_component_labeling_box_test connected_component_labeling_box_test.cpp)
+add_dependencies(connected_component_labeling_box_test CLIc)
+target_link_libraries(connected_component_labeling_box_test PRIVATE CLIc::CLIc)
+set_target_properties(connected_component_labeling_box_test PROPERTIES FOLDER "Tests")
 
 add_executable(copy_test copy_test.cpp)
 add_dependencies(copy_test CLIc)
@@ -318,7 +318,7 @@ add_test(NAME binary_subtract_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 add_test(NAME binary_xor_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_xor_test)
 add_test(NAME block_enumerate_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND block_enumerate_test)
 add_test(NAME close_indexgaps_in_labelmap_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND close_indexgaps_in_labelmap_test)
-add_test(NAME connected_components_labeling_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND connected_components_labeling_box_test)
+add_test(NAME connected_component_labeling_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND connected_component_labeling_box_test)
 add_test(NAME copy_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND copy_test)
 add_test(NAME detect_maxima_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND detect_maxima_test)
 add_test(NAME difference_of_gaussian_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND difference_of_gaussian_test)
@@ -382,7 +382,7 @@ set_tests_properties(absolute_test
     binary_xor_test
     block_enumerate_test
     close_indexgaps_in_labelmap_test
-    connected_components_labeling_box_test
+    connected_component_labeling_box_test
     copy_test
     detect_maxima_test
     difference_of_gaussian_test
