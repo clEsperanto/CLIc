@@ -10,7 +10,7 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
 {
     std::vector<type> input (shape[0] * shape[1] * shape[2]);
     std::vector<type> valid (shape[0] * shape[1] * shape[2]);
-    if (shape[2] == 2)
+    if (shape[2] > 1)
         {
             input = { 0, 0, 0, 0, 0, 0,
                       0, 2, 0, 0, 0, 0,
@@ -25,7 +25,7 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
                       2, 2, 2, 1, 1, 1,
                       2, 2, 2, 1, 1, 1 };
         }
-    else if (shape[1] == 3)
+    else if (shape[1] > 1)
         {
             input = { 0, 0, 0, 0, 0, 0,
                       0, 2, 0, 0, 1, 0,
