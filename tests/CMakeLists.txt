@@ -329,7 +329,6 @@ add_test(NAME erode_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} CO
 add_test(NAME extend_labeling_via_voronoi_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND extend_labeling_via_voronoi_test)
 add_test(NAME flag_existing_labels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND flag_existing_labels_test)
 add_test(NAME gaussian_blur_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gaussian_blur_test)
-add_test(NAME gpu_information_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gpu_information_test)
 add_test(NAME greater_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_constant_test)
 add_test(NAME greater_or_equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_or_equal_constant_test)
 add_test(NAME greater_or_equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_or_equal_test)
