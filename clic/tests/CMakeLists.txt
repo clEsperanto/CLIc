@@ -77,48 +77,55 @@ target_link_libraries(image_test PRIVATE CLIc::CLIc)
 set_target_properties(image_test PROPERTIES FOLDER "Tests")
 
 add_test(NAME core_image_test_float_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test float 10 1 1)
-add_test(NAME core_image_test_int_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test int 10 1 1)
-add_test(NAME core_image_test_short_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test short 10 1 1)
-add_test(NAME core_image_test_char_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test char 10 1 1)
-add_test(NAME core_image_test_uint_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test uint 10 1 1)
-add_test(NAME core_image_test_ushort_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test ushort 10 1 1)
-add_test(NAME core_image_test_uchar_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test uchar 10 1 1)
+
+# add_test(NAME core_image_test_int_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test int 10 1 1)
+# add_test(NAME core_image_test_short_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test short 10 1 1)
+# add_test(NAME core_image_test_char_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test char 10 1 1)
+# add_test(NAME core_image_test_uint_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test uint 10 1 1)
+# add_test(NAME core_image_test_ushort_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test ushort 10 1 1)
+# add_test(NAME core_image_test_uchar_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test uchar 10 1 1)
 add_test(NAME core_image_test_float_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test float 10 5 1)
-add_test(NAME core_image_test_int_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test int 10 5 1)
-add_test(NAME core_image_test_short_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test short 10 5 1)
-add_test(NAME core_image_test_char_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test char 10 5 1)
-add_test(NAME core_image_test_uint_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test uint 10 5 1)
-add_test(NAME core_image_test_ushort_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test ushort 10 5 1)
-add_test(NAME core_image_test_uchar_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test uchar 10 5 1)
+
+# add_test(NAME core_image_test_int_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test int 10 5 1)
+# add_test(NAME core_image_test_short_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test short 10 5 1)
+# add_test(NAME core_image_test_char_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test char 10 5 1)
+# add_test(NAME core_image_test_uint_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test uint 10 5 1)
+# add_test(NAME core_image_test_ushort_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test ushort 10 5 1)
+# add_test(NAME core_image_test_uchar_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test uchar 10 5 1)
 add_test(NAME core_image_test_float_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test float 10 5 3)
-add_test(NAME core_image_test_int_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test int 10 5 3)
-add_test(NAME core_image_test_short_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test short 10 5 3)
-add_test(NAME core_image_test_char_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test char 10 5 3)
-add_test(NAME core_image_test_uint_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test uint 10 5 3)
-add_test(NAME core_image_test_ushort_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test ushort 10 5 3)
-add_test(NAME core_image_test_uchar_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test uchar 10 5 3)
+
+# add_test(NAME core_image_test_int_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test int 10 5 3)
+# add_test(NAME core_image_test_short_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test short 10 5 3)
+# add_test(NAME core_image_test_char_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test char 10 5 3)
+# add_test(NAME core_image_test_uint_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test uint 10 5 3)
+# add_test(NAME core_image_test_ushort_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test ushort 10 5 3)
+# add_test(NAME core_image_test_uchar_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/image_test uchar 10 5 3)
 set_tests_properties(
     core_image_test_float_1d
-    core_image_test_int_1d
-    core_image_test_short_1d
-    core_image_test_char_1d
-    core_image_test_uint_1d
-    core_image_test_ushort_1d
-    core_image_test_uchar_1d
+
+    # core_image_test_int_1d
+    # core_image_test_short_1d
+    # core_image_test_char_1d
+    # core_image_test_uint_1d
+    # core_image_test_ushort_1d
+    # core_image_test_uchar_1d
     core_image_test_float_2d
-    core_image_test_int_2d
-    core_image_test_short_2d
-    core_image_test_char_2d
-    core_image_test_uint_2d
-    core_image_test_ushort_2d
-    core_image_test_uchar_2d
+
+    # core_image_test_int_2d
+    # core_image_test_short_2d
+    # core_image_test_char_2d
+    # core_image_test_uint_2d
+    # core_image_test_ushort_2d
+    # core_image_test_uchar_2d
     core_image_test_float_3d
-    core_image_test_int_3d
-    core_image_test_short_3d
-    core_image_test_char_3d
-    core_image_test_uint_3d
-    core_image_test_ushort_3d
-    core_image_test_uchar_3d PROPERTIES LABELS "DATA STRUCTURE" WILL_FAIL FALSE
+
+    # core_image_test_int_3d
+    # core_image_test_short_3d
+    # core_image_test_char_3d
+    # core_image_test_uint_3d
+    # core_image_test_ushort_3d
+    # core_image_test_uchar_3d
+    PROPERTIES LABELS "DATA STRUCTURE" WILL_FAIL FALSE
 )
 
 add_executable(kernel_test kernel_test.cpp)
@@ -148,26 +155,29 @@ add_test(NAME core_kernel_test_uint_buffer_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR
 add_test(NAME core_kernel_test_ushort_buffer_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test ushort buffer 10 7 4)
 add_test(NAME core_kernel_test_uchar_buffer_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test char buffer 10 7 4)
 add_test(NAME core_kernel_test_float_image_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test float image 10 1 1)
-add_test(NAME core_kernel_test_int_image_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test int image 10 1 1)
-add_test(NAME core_kernel_test_short_image_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test short image 10 1 1)
-add_test(NAME core_kernel_test_char_image_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test char image 10 1 1)
-add_test(NAME core_kernel_test_uint_image_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test uint image 10 1 1)
-add_test(NAME core_kernel_test_ushort_image_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test ushort image 10 1 1)
-add_test(NAME core_kernel_test_uchar_image_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test uchar image 10 1 1)
+
+# add_test(NAME core_kernel_test_int_image_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test int image 10 1 1)
+# add_test(NAME core_kernel_test_short_image_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test short image 10 1 1)
+# add_test(NAME core_kernel_test_char_image_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test char image 10 1 1)
+# add_test(NAME core_kernel_test_uint_image_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test uint image 10 1 1)
+# add_test(NAME core_kernel_test_ushort_image_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test ushort image 10 1 1)
+# add_test(NAME core_kernel_test_uchar_image_1d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test uchar image 10 1 1)
 add_test(NAME core_kernel_test_float_image_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test float image 10 7 1)
-add_test(NAME core_kernel_test_int_image_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test int image 10 7 1)
-add_test(NAME core_kernel_test_short_image_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test short image 10 7 1)
-add_test(NAME core_kernel_test_char_image_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test char image 10 7 1)
-add_test(NAME core_kernel_test_uint_image_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test uint image 10 7 1)
-add_test(NAME core_kernel_test_ushort_image_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test ushort image 10 7 1)
-add_test(NAME core_kernel_test_uchar_image_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test uchar image 10 7 1)
+
+# add_test(NAME core_kernel_test_int_image_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test int image 10 7 1)
+# add_test(NAME core_kernel_test_short_image_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test short image 10 7 1)
+# add_test(NAME core_kernel_test_char_image_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test char image 10 7 1)
+# add_test(NAME core_kernel_test_uint_image_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test uint image 10 7 1)
+# add_test(NAME core_kernel_test_ushort_image_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test ushort image 10 7 1)
+# add_test(NAME core_kernel_test_uchar_image_2d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test uchar image 10 7 1)
 add_test(NAME core_kernel_test_float_image_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test float image 10 7 4)
-add_test(NAME core_kernel_test_int_image_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test int image 10 7 4)
-add_test(NAME core_kernel_test_char_image_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test char image 10 7 4)
-add_test(NAME core_kernel_test_short_image_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test short image 10 7 4)
-add_test(NAME core_kernel_test_uint_image_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test uint image 10 7 4)
-add_test(NAME core_kernel_test_ushort_image_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test ushort image 10 7 4)
-add_test(NAME core_kernel_test_uchar_image_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test uchar image 10 7 4)
+
+# add_test(NAME core_kernel_test_int_image_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test int image 10 7 4)
+# add_test(NAME core_kernel_test_char_image_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test char image 10 7 4)
+# add_test(NAME core_kernel_test_short_image_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test short image 10 7 4)
+# add_test(NAME core_kernel_test_uint_image_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test uint image 10 7 4)
+# add_test(NAME core_kernel_test_ushort_image_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test ushort image 10 7 4)
+# add_test(NAME core_kernel_test_uchar_image_3d COMMAND ${CMAKE_CURRENT_BINARY_DIR}/kernel_test uchar image 10 7 4)
 set_tests_properties(
     core_kernel_test_float_buffer_1d
     core_kernel_test_int_buffer_1d
@@ -191,24 +201,28 @@ set_tests_properties(
     core_kernel_test_ushort_buffer_3d
     core_kernel_test_uchar_buffer_3d
     core_kernel_test_float_image_1d
-    core_kernel_test_int_image_1d
-    core_kernel_test_short_image_1d
-    core_kernel_test_char_image_1d
-    core_kernel_test_uint_image_1d
-    core_kernel_test_ushort_image_1d
-    core_kernel_test_uchar_image_1d
+
+    # core_kernel_test_int_image_1d
+    # core_kernel_test_short_image_1d
+    # core_kernel_test_char_image_1d
+    # core_kernel_test_uint_image_1d
+    # core_kernel_test_ushort_image_1d
+    # core_kernel_test_uchar_image_1d
     core_kernel_test_float_image_2d
-    core_kernel_test_int_image_2d
-    core_kernel_test_short_image_2d
-    core_kernel_test_char_image_2d
-    core_kernel_test_uint_image_2d
-    core_kernel_test_ushort_image_2d
-    core_kernel_test_uchar_image_2d
+
+    # core_kernel_test_int_image_2d
+    # core_kernel_test_short_image_2d
+    # core_kernel_test_char_image_2d
+    # core_kernel_test_uint_image_2d
+    # core_kernel_test_ushort_image_2d
+    # core_kernel_test_uchar_image_2d
     core_kernel_test_float_image_3d
-    core_kernel_test_int_image_3d
-    core_kernel_test_char_image_3d
-    core_kernel_test_short_image_3d
-    core_kernel_test_uint_image_3d
-    core_kernel_test_ushort_image_3d
-    core_kernel_test_uchar_image_3d PROPERTIES LABELS "OPERATION" WILL_FAIL FALSE
+
+    # core_kernel_test_int_image_3d
+    # core_kernel_test_char_image_3d
+    # core_kernel_test_short_image_3d
+    # core_kernel_test_uint_image_3d
+    # core_kernel_test_ushort_image_3d
+    # core_kernel_test_uchar_image_3d
+    PROPERTIES LABELS "OPERATION" WILL_FAIL FALSE
 )
