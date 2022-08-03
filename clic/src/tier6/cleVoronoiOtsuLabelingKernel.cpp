@@ -13,7 +13,7 @@
 namespace cle
 {
 
-VoronoiOtsuLabelingKernel::VoronoiOtsuLabelingKernel (const ProcessorPointer &device) : Operation (device, 4)
+VoronoiOtsuLabelingKernel::VoronoiOtsuLabelingKernel (const ProcessorPointer &device) : Operation (device, 2)
 {
 }
 
@@ -44,10 +44,11 @@ VoronoiOtsuLabelingKernel::SetOutlineSigma (const float &sigma)
 void
 VoronoiOtsuLabelingKernel::Execute ()
 {
+    auto temp_data_type = CL_FLOAT;
     auto src = this->GetImage ("src");
     auto dst = this->GetImage ("dst");
 
-    auto temp = Memory::AllocateObject (this->Device (), src->Shape (), src->BitType ().Get (), src->MemType ().Get ());
+    auto temp = Memory::AllocateObject (this->Device (), src->Shape (), temp_data_type, src->MemType ().Get ());
     GaussianBlurKernel gaussianSpot (this->Device ());
     gaussianSpot.SetInput (*src);
     gaussianSpot.SetOutput (temp);
