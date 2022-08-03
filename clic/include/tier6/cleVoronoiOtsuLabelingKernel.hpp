@@ -17,8 +17,8 @@ class VoronoiOtsuLabelingKernel : public Operation
     auto Execute () -> void override;
 
   private:
-    float spot_sigma_;
-    float output_sigma_;
+    float spot_sigma_ = 0;
+    float output_sigma_ = 0;
 };
 
 } // namespace cle
