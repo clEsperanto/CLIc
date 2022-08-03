@@ -1,5 +1,7 @@
 #include "cleGaussianBlurKernel.hpp"
+#include "cleCopyKernel.hpp"
 #include "cleExecuteSeparableKernel.hpp"
+#include "cleMemory.hpp"
 
 namespace cle
 {
@@ -62,10 +64,25 @@ GaussianBlurKernel::Execute () -> void
     ExecuteSeparableKernel kernel (this->Device ());
     kernel.SetSource (this->GetName (), this->GetSource ());
     kernel.SetInput (*src);
-    kernel.SetOutput (*dst);
     kernel.SetSigma (this->sigma_[0], this->sigma_[1], this->sigma_[2]);
     kernel.SetKernelSize (kernel_size[0], kernel_size[1], kernel_size[2]);
-    kernel.Execute ();
+
+    if (dst->DataInfo () != "float")
+        {
+            auto temp = Memory::AllocateObject (this->Device (), dst->Shape (), CL_FLOAT, dst->MemType ().Get ());
+            kernel.SetOutput (temp);
+            kernel.Execute ();
+
+            CopyKernel copy (this->Device ());
+            copy.SetInput (temp);
+            copy.SetOutput (*dst);
+            copy.Execute ();
+        }
+    else
+        {
+            kernel.SetOutput (*dst);
+            kernel.Execute ();
+        }
 }
 
 } // namespace cle
