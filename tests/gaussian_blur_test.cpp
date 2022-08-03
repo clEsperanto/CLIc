@@ -13,7 +13,7 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
     std::fill (input.begin (), input.end (), static_cast<type> (0));
     std::fill (valid.begin (), valid.end (), static_cast<type> (0));
     const int center = (shape[0] / 2) + (shape[1] / 2) * shape[0] + (shape[2] / 2) * shape[1] * shape[0];
-    input[center] = 100.0F;
+    input[center] = 100;
     if (valid.size () == 27)
         valid = {
             static_cast<type> (1.41674721F), static_cast<type> (2.33582091F), static_cast<type> (1.41674721F),
@@ -47,8 +47,23 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
     auto output = cle.Pull<type> (gpu_output);
 
     //! how can we improve float accuracy between gpu and cpu?
-    std::transform (output.begin (), output.end (), output.begin (), [] (const type &x) { return static_cast<type> (std::floor (x * 100)); });
-    std::transform (valid.begin (), valid.end (), valid.begin (), [] (const type &x) { return static_cast<type> (std::floor (x * 100)); });
+    // std::transform (output.begin (), output.end (), output.begin (), [] (const type &x) { return static_cast<type> (std::floor (static_cast<float> (x) * 1000) / 1000); });
+    // std::transform (valid.begin (), valid.end (), valid.begin (), [] (const type &x) { return static_cast<type> (std::floor (static_cast<float> (x) * 1000) / 1000); });
+
+    // std::copy (std::begin (input),
+    //            std::end (input),
+    //            std::ostream_iterator<type> (std::cout, ", "));
+    // std::cout << std::endl;
+
+    // std::copy (std::begin (valid),
+    //            std::end (valid),
+    //            std::ostream_iterator<type> (std::cout, ", "));
+    // std::cout << std::endl;
+
+    // std::copy (std::begin (output),
+    //            std::end (output),
+    //            std::ostream_iterator<type> (std::cout, ", "));
+    // std::cout << std::endl;
 
     return std::equal (output.begin (), output.end (), valid.begin ());
 }
