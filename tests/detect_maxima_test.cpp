@@ -13,26 +13,14 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
     std::fill (input.begin (), input.end (), static_cast<type> (0));
     std::fill (valid.begin (), valid.end (), static_cast<type> (0));
     int center = (shape[0] / 2) + (shape[1] / 2) * shape[0] + (shape[2] / 2) * shape[0] * shape[1];
-    const int radius = 1;
     input[center] = static_cast<type> (100);
-    if (shape[2] > 1)
-        {
-            valid[center - shape[0] - (shape[0] * shape[1]) - radius] = static_cast<type> (1);
-        }
-    else if (shape[1] > 1)
-        {
-            valid[center - shape[0] - radius] = static_cast<type> (1);
-        }
-    else
-        {
-            valid[center - radius] = static_cast<type> (1);
-        }
+    valid[center] = static_cast<type> (1);
 
     cle::Clesperanto cle;
     cle.GetDevice ()->WaitForKernelToFinish ();
     auto gpu_input = cle.Push<type> (input, shape, mem_type);
     auto gpu_output = cle.Create<type> (shape, mem_type);
-    cle.DetectMaximaBox (gpu_input, gpu_output, radius, radius, radius);
+    cle.DetectMaximaBox (gpu_input, gpu_output, 0, 0, 0);
     auto output = cle.Pull<type> (gpu_output);
 
     return std::equal (output.begin (), output.end (), valid.begin ());
