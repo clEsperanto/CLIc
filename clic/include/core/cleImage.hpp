@@ -1,6 +1,7 @@
-#ifndef CLIC_INCLUDE_CORE_CLEIMAGE_HPP
-#define CLIC_INCLUDE_CORE_CLEIMAGE_HPP
+#ifndef __CORE_CLEIMAGE_HPP
+#define __CORE_CLEIMAGE_HPP
 
+#include "cleBackend.hpp"
 #include "cleLightObject.hpp"
 #include "cleUtils.hpp"
 
@@ -21,7 +22,7 @@ class Image : public LightObject
            const ShapeArray &shape, const DataType &data_type,
            const ObjectType &object_type, const ChannelsType &channels_type);
 
-    auto Fill (float value) const -> void;
+    auto Fill (const float &value) const -> void;
     auto CopyDataTo (const Image &dst_obj) const -> void;
     [[nodiscard]] auto Get () const -> cl::Memory;
     [[nodiscard]] auto Device () const -> ProcessorPointer;
@@ -47,8 +48,40 @@ class Image : public LightObject
     DataType data_type_;
     ObjectType object_type_;
     ChannelsType channels_type_;
+
+    template <class type>
+    auto
+    CastFill (const type &value) const -> void
+    {
+        if (this->IsBuffer ())
+            {
+                Backend::EnqueueFillBuffer (this->Device ()->Queue (), this->Get (), true, 0,
+                                            this->Bytes (), value);
+            }
+        else
+            {
+                if (this->DataInfo ().find ("float"))
+                    {
+                        cl_float4 color = { static_cast<cl_float> (value), static_cast<cl_float> (value), static_cast<cl_float> (value), static_cast<cl_float> (value) };
+                        Backend::EnqueueFillImage (this->Device ()->Queue (), this->Get (), true,
+                                                   this->Origin (), this->Shape (), color);
+                    }
+                else if (this->DataInfo ().find ("unsigned"))
+                    {
+                        cl_uint4 color = { static_cast<cl_uint> (value), static_cast<cl_uint> (value), static_cast<cl_uint> (value), static_cast<cl_uint> (value) };
+                        Backend::EnqueueFillImage (this->Device ()->Queue (), this->Get (), true,
+                                                   this->Origin (), this->Shape (), color);
+                    }
+                else
+                    {
+                        cl_int4 color = { static_cast<cl_int> (value), static_cast<cl_int> (value), static_cast<cl_int> (value), static_cast<cl_int> (value) };
+                        Backend::EnqueueFillImage (this->Device ()->Queue (), this->Get (), true,
+                                                   this->Origin (), this->Shape (), color);
+                    }
+            }
+    }
 };
 
 } // namespace cle
 
-#endif // CLIC_INCLUDE_CORE_CLEIMAGE_HPP
+#endif // __CORE_CLEIMAGE_HPP

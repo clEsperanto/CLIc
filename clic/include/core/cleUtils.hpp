@@ -229,7 +229,7 @@ struct ChannelsType
         switch (nb_channels)
             {
             case 1:
-                type = CL_INTENSITY;
+                type = CL_DEPTH;
             case 3:
                 type = CL_RGB;
             case 4:
@@ -243,7 +243,7 @@ struct ChannelsType
     {
         switch (type)
             {
-            case CL_INTENSITY:
+            case CL_DEPTH:
                 return 1;
             case CL_RGB:
                 return 3;
@@ -259,7 +259,7 @@ struct ChannelsType
         return type;
     }
 
-    cl_channel_order type = CL_INTENSITY;
+    cl_channel_order type = CL_DEPTH;
 };
 
 struct DataType

@@ -29,18 +29,31 @@ Image::Image (const ProcessorPointer &device, const cl::Memory &data,
 }
 
 auto
-Image::Fill (float value) const -> void
+Image::Fill (const float &value) const -> void
 {
-    if (this->IsBuffer ())
+    switch (this->BitType ().Get ())
         {
-            Backend::EnqueueFillBuffer (this->Device ()->Queue (), this->Get (), true, 0,
-                                        this->Bytes (), value);
-        }
-    else
-        {
-            cl_float4 color = { value, value, value, value };
-            Backend::EnqueueFillImage (this->Device ()->Queue (), this->Get (), true,
-                                       this->Origin (), this->Shape (), color);
+        case CL_FLOAT:
+            this->CastFill<float> (static_cast<float> (value));
+            break;
+        case CL_SIGNED_INT32:
+            this->CastFill<int> (static_cast<int> (value));
+            break;
+        case CL_UNSIGNED_INT32:
+            this->CastFill<unsigned int> (static_cast<unsigned int> (value));
+            break;
+        case CL_SIGNED_INT16:
+            this->CastFill<short> (static_cast<short> (value));
+            break;
+        case CL_UNSIGNED_INT16:
+            this->CastFill<unsigned short> (static_cast<unsigned short> (value));
+            break;
+        case CL_SIGNED_INT8:
+            this->CastFill<char> (static_cast<char> (value));
+            break;
+        case CL_UNSIGNED_INT8:
+            this->CastFill<unsigned char> (static_cast<unsigned char> (value));
+            break;
         }
 }
 
