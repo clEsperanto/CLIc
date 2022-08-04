@@ -8,47 +8,49 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.os }}-${{ matrix.cxx }}-${{ matrix.buildtype }}-and-test
+    # name: ${{ matrix.os }}-${{ matrix.cxx }}-${{ matrix.buildtype }}
+    name: ${{ matrix.os }}-${{ matrix.buildtype }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       max-parallel: 8
       matrix:
-        name: [ubuntu-gcc, ubuntu-clang, macos-clang, windows-msvc]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        # name: [ubuntu-gcc, ubuntu-clang, macos-clang, windows-msvc]
         buildtype: [Debug, Release]
         include:
-          - name: windows-msvc
-            os: windows-latest
+          # - name: windows-msvc
+          - os: windows-latest
             vcpkgCommitId: 5568f110b509a9fd90711978a7cb76bae75bb092
-            cxx: cl.exe
-            cc: cl.exe
+            # cxx: cl.exe
+            # cc: cl.exe
             triplet: x64-windows
-            packages: >
-              opencl
-          - name: ubuntu-gcc
-            os: ubuntu-latest
+            # packages: >
+            #   opencl
+          # - name: ubuntu-gcc
+          - os: ubuntu-latest
             vcpkgCommitId: 5568f110b509a9fd90711978a7cb76bae75bb092
-            cxx: g++
-            cc: gcc
+            # cxx: g++
+            # cc: gcc
             triplet: x64-linux
-            packages: >
-              opencl
-          - name: ubuntu-clang
-            os: ubuntu-latest
+            # packages: >
+            #   opencl
+          # - name: ubuntu-clang
+          # os: ubuntu-latest
+          # vcpkgCommitId: 5568f110b509a9fd90711978a7cb76bae75bb092
+          # cxx: clang++
+          # cc: clang
+          # triplet: x64-linux
+          # packages: >
+          #   opencl
+          # - name: macos-clang
+          - os: macos-latest
             vcpkgCommitId: 5568f110b509a9fd90711978a7cb76bae75bb092
-            cxx: clang++
-            cc: clang
-            triplet: x64-linux
-            packages: >
-              opencl
-          - name: macos-clang
-            os: macos-latest
-            vcpkgCommitId: 5568f110b509a9fd90711978a7cb76bae75bb092
-            cxx: clang++
-            cc: clang
+            # cxx: clang++
+            # cc: clang
             triplet: x64-osx
-            packages: >
-              opencl
+            # packages: >
+            #   opencl
 
     steps:
       - name: Checkout
@@ -60,19 +62,54 @@ jobs:
         uses: lukka/get-cmake@main
 
       - name: Install packages [vcpkg]
-        uses: lukka/run-vcpkg@v10 #7
+        uses: lukka/run-vcpkg@v10.1 #7
         with:
-          vcpkgArguments: ${{ matrix.packages }}
-          vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
-          vcpkgTriplet: ${{ matrix.triplet }}
+          vcpkgDirectory: "${{ runner.workspace }}/vcpkg"
           vcpkgGitCommitId: ${{ matrix.vcpkgCommitId}} #cdd51899f6ae3736bfbe936f9e387f86d4a63a58 #ec6fe06e8da05a8157dc8581fa96b36b571c1bd5 vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
+          vcpkgJsonGlob: "${{ github.workspace }}/vcpkg.json"
+          # vcpkgArguments: ${{ matrix.packages }}
+          # vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
+          # vcpkgTriplet: ${{ matrix.triplet }}
+
+      - name: Prints output of run-vcpkg's action.
+        run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}' "
 
       - name: Cmake [vcpkg]
         uses: lukka/run-cmake@v10 #3.4
         with:
-          buildDirectory: ${{ runner.workspace }}/build
-          cmakeBuildType: ${{ matrix.buildtype }}
-          cmakeGenerator: "Ninja"
-          cmakeListsOrSettingsJson: "CMakeListsTxtBasic"
           cmakeListsTxtPath: "${{ github.workspace }}/CMakeLists.txt"
-          useVcpkgToolchainFile: true
+          configurePreset: ninja-multi-vcpkg
+          buildPreset: ninja-multi-vcpkg
+
+          # buildDirectory: ${{ runner.workspace }}/build
+          # cmakeBuildType: ${{ matrix.buildtype }}
+          # cmakeGenerator: "Ninja"
+          # cmakeListsOrSettingsJson: "CMakeListsTxtBasic"
+          # useVcpkgToolchainFile: true
+
+    # steps:
+    #   - name: Checkout
+    #     uses: actions/checkout@v2
+    #     with:
+    #       submodules: true
+
+    #   - name: Install CMake v3.21
+    #     uses: lukka/get-cmake@main
+
+    #   - name: Install packages [vcpkg]
+    #     uses: lukka/run-vcpkg@v10 #7
+    #     with:
+    #       vcpkgArguments: ${{ matrix.packages }}
+    #       vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
+    #       vcpkgTriplet: ${{ matrix.triplet }}
+    #       vcpkgGitCommitId: ${{ matrix.vcpkgCommitId}} #cdd51899f6ae3736bfbe936f9e387f86d4a63a58 #ec6fe06e8da05a8157dc8581fa96b36b571c1bd5 vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
+
+    #   - name: Cmake [vcpkg]
+    #     uses: lukka/run-cmake@v10 #3.4
+    #     with:
+    #       buildDirectory: ${{ runner.workspace }}/build
+    #       cmakeBuildType: ${{ matrix.buildtype }}
+    #       cmakeGenerator: "Ninja"
+    #       cmakeListsOrSettingsJson: "CMakeListsTxtBasic"
+    #       cmakeListsTxtPath: "${{ github.workspace }}/CMakeLists.txt"
+    #       useVcpkgToolchainFile: true
