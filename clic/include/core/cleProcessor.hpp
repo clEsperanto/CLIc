@@ -30,7 +30,7 @@ class Processor
     static auto ListAvailableDevices () -> std::vector<std::string>;
     auto SelectDevice (std::string name = "") -> void;
     [[nodiscard]] auto DeviceName () const -> std::string;
-    [[nodiscard]] auto MemoryAvailable () -> int;
+    // [[nodiscard]] auto MemoryAvailable () -> int;
 
   private:
     cl::Platform platform_;
