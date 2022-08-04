@@ -22,29 +22,29 @@ jobs:
             cxx: cl.exe
             cc: cl.exe
             triplet: x64-windows
-            packages: >
-              opencl
+            # packages: >
+            #   opencl
           - name: ubuntu-gcc
             os: ubuntu-latest
             cxx: g++
             cc: gcc
             triplet: x64-linux
-            packages: >
-              opencl
+            # packages: >
+            #   opencl
           - name: ubuntu-clang
             os: ubuntu-latest
             cxx: clang++
             cc: clang
             triplet: x64-linux
-            packages: >
-              opencl
+            # packages: >
+            #   opencl
           - name: macos-clang
             os: macos-latest
             cxx: clang++
             cc: clang
             triplet: x64-osx
-            packages: >
-              opencl
+            # packages: >
+            #   opencl
 
     steps:
       - name: Checkout
@@ -60,7 +60,7 @@ jobs:
         with:
           # vcpkgArguments: ${{ matrix.packages }}
           vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
-          vcpkgTriplet: ${{ matrix.triplet }}
+          # vcpkgTriplet: ${{ matrix.triplet }}
           vcpkgGitCommitId: cdd51899f6ae3736bfbe936f9e387f86d4a63a58 #ec6fe06e8da05a8157dc8581fa96b36b571c1bd5 vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
           vcpkgJsonGlob: "**/vcpkg.json"
 
