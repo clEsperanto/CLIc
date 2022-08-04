@@ -22,6 +22,9 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
     cle.MaximumOfAllPixels (gpu_input, gpu_output);
     auto output = cle.Pull<type> (gpu_output).front ();
 
+    std::cout << "max expected = " << std::numeric_limits<type>::max () << std::endl;
+    std::cout << "max detect = " << output << std::endl;
+
     return output == std::numeric_limits<type>::max ();
 }
 
