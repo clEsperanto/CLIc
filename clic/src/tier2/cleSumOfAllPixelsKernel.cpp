@@ -13,20 +13,20 @@ SumOfAllPixelsKernel::SumOfAllPixelsKernel (const ProcessorPointer &device) : Op
 {
 }
 
-void
-SumOfAllPixelsKernel::SetInput (const Image &object)
+auto
+SumOfAllPixelsKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-SumOfAllPixelsKernel::SetOutput (const Image &object)
+auto
+SumOfAllPixelsKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-SumOfAllPixelsKernel::Execute ()
+auto
+SumOfAllPixelsKernel::Execute () -> void
 {
     auto src = this->GetImage ("src");
     auto dst = this->GetImage ("dst");

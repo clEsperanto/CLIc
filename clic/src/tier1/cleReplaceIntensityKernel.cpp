@@ -13,26 +13,26 @@ ReplaceIntensityKernel::ReplaceIntensityKernel (const ProcessorPointer &device) 
     this->SetSource ("replace_intensity", cl_header);
 }
 
-void
-ReplaceIntensityKernel::SetInput (const Image &object)
+auto
+ReplaceIntensityKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-ReplaceIntensityKernel::SetOutput (const Image &object)
+auto
+ReplaceIntensityKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-ReplaceIntensityKernel::SetInValue (const float &value)
+auto
+ReplaceIntensityKernel::SetInValue (const float &value) -> void
 {
     this->AddParameter ("scalar0", value);
 }
 
-void
-ReplaceIntensityKernel::SetOutValue (const float &value)
+auto
+ReplaceIntensityKernel::SetOutValue (const float &value) -> void
 {
     this->AddParameter ("scalar1", value);
 }

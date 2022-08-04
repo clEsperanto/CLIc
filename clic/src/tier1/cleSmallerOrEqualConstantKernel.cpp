@@ -13,20 +13,20 @@ SmallerOrEqualConstantKernel::SmallerOrEqualConstantKernel (const ProcessorPoint
     this->SetSource ("smaller_or_equal_constant", cl_header);
 }
 
-void
-SmallerOrEqualConstantKernel::SetInput (const Image &object)
+auto
+SmallerOrEqualConstantKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-SmallerOrEqualConstantKernel::SetOutput (const Image &object)
+auto
+SmallerOrEqualConstantKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-SmallerOrEqualConstantKernel::SetConstant (const float &value)
+auto
+SmallerOrEqualConstantKernel::SetConstant (const float &value) -> void
 {
     this->AddParameter ("scalar", value);
 }

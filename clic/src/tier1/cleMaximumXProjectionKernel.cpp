@@ -23,10 +23,4 @@ MaximumXProjectionKernel::SetOutput (const Image &object) -> void
     this->AddParameter ("dst", object);
 }
 
-auto
-MaximumXProjectionKernel::GetOutput () -> Image
-{
-    return *this->GetImage ("dst");
-}
-
 } // namespace cle

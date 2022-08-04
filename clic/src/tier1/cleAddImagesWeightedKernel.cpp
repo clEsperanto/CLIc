@@ -11,32 +11,32 @@ AddImagesWeightedKernel::AddImagesWeightedKernel (const ProcessorPointer &device
     this->SetSource ("add_images_weighted", cl_header);
 }
 
-void
-AddImagesWeightedKernel::SetInput1 (const Image &object)
+auto
+AddImagesWeightedKernel::SetInput1 (const Image &object) -> void
 {
     this->AddParameter ("src0", object);
 }
 
-void
-AddImagesWeightedKernel::SetInput2 (const Image &object)
+auto
+AddImagesWeightedKernel::SetInput2 (const Image &object) -> void
 {
     this->AddParameter ("src1", object);
 }
 
-void
-AddImagesWeightedKernel::SetOutput (const Image &object)
+auto
+AddImagesWeightedKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-AddImagesWeightedKernel::SetFactor1 (const float &value)
+auto
+AddImagesWeightedKernel::SetFactor1 (const float &value) -> void
 {
     this->AddParameter ("scalar0", value);
 }
 
-void
-AddImagesWeightedKernel::SetFactor2 (const float &value)
+auto
+AddImagesWeightedKernel::SetFactor2 (const float &value) -> void
 {
     this->AddParameter ("scalar1", value);
 }

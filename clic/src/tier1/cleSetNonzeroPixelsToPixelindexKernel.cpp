@@ -13,20 +13,20 @@ SetNonzeroPixelsToPixelindexKernel::SetNonzeroPixelsToPixelindexKernel (const Pr
     this->SetSource ("set_nonzero_pixels_to_pixelindex", cl_header);
 }
 
-void
-SetNonzeroPixelsToPixelindexKernel::SetInput (const Image &object)
+auto
+SetNonzeroPixelsToPixelindexKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-SetNonzeroPixelsToPixelindexKernel::SetOutput (const Image &object)
+auto
+SetNonzeroPixelsToPixelindexKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-SetNonzeroPixelsToPixelindexKernel::SetOffset (const int &value)
+auto
+SetNonzeroPixelsToPixelindexKernel::SetOffset (const int &value) -> void
 {
     this->AddParameter ("offset", value);
 }

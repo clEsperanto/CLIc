@@ -12,20 +12,20 @@ AddImageAndScalarKernel::AddImageAndScalarKernel (const ProcessorPointer &device
     this->SetSource ("add_image_and_scalar", cl_header);
 }
 
-void
-AddImageAndScalarKernel::SetInput (const Image &object)
+auto
+AddImageAndScalarKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-AddImageAndScalarKernel::SetOutput (const Image &object)
+auto
+AddImageAndScalarKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-AddImageAndScalarKernel::SetScalar (const float &value)
+auto
+AddImageAndScalarKernel::SetScalar (const float &value) -> void
 {
     this->AddParameter ("scalar", value);
 }

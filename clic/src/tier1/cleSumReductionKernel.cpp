@@ -13,20 +13,20 @@ SumReductionXKernel::SumReductionXKernel (const ProcessorPointer &device) : Oper
     this->SetSource ("sum_reduction_x", cl_header);
 }
 
-void
-SumReductionXKernel::SetInput (const Image &object)
+auto
+SumReductionXKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-SumReductionXKernel::SetOutput (const Image &object)
+auto
+SumReductionXKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-SumReductionXKernel::SetBlocksize (const int &size)
+auto
+SumReductionXKernel::SetBlocksize (const int &size) -> void
 {
     this->AddParameter ("index", size);
 }

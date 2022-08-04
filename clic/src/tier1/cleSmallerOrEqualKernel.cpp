@@ -13,20 +13,20 @@ SmallerOrEqualKernel::SmallerOrEqualKernel (const ProcessorPointer &device) : Op
     this->SetSource ("smaller_or_equal", cl_header);
 }
 
-void
-SmallerOrEqualKernel::SetInput1 (const Image &object)
+auto
+SmallerOrEqualKernel::SetInput1 (const Image &object) -> void
 {
     this->AddParameter ("src0", object);
 }
 
-void
-SmallerOrEqualKernel::SetInput2 (const Image &object)
+auto
+SmallerOrEqualKernel::SetInput2 (const Image &object) -> void
 {
     this->AddParameter ("src1", object);
 }
 
-void
-SmallerOrEqualKernel::SetOutput (const Image &object)
+auto
+SmallerOrEqualKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

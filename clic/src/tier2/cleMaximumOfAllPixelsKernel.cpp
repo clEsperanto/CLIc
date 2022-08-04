@@ -12,20 +12,20 @@ MaximumOfAllPixelsKernel::MaximumOfAllPixelsKernel (const ProcessorPointer &devi
 {
 }
 
-void
-MaximumOfAllPixelsKernel::SetInput (const Image &object)
+auto
+MaximumOfAllPixelsKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-MaximumOfAllPixelsKernel::SetOutput (const Image &object)
+auto
+MaximumOfAllPixelsKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-MaximumOfAllPixelsKernel::Execute ()
+auto
+MaximumOfAllPixelsKernel::Execute () -> void
 {
     auto src = this->GetImage ("src");
     auto dst = this->GetImage ("dst");

@@ -13,14 +13,14 @@ MinimumXProjectionKernel::MinimumXProjectionKernel (const ProcessorPointer &devi
     this->SetSource ("minimum_x_projection", cl_header);
 }
 
-void
-MinimumXProjectionKernel::SetInput (const Image &object)
+auto
+MinimumXProjectionKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-MinimumXProjectionKernel::SetOutput (const Image &object)
+auto
+MinimumXProjectionKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

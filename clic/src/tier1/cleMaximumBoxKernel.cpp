@@ -23,26 +23,26 @@ MaximumBoxKernel::Radius2KernelSize () const
     return kernel_size;
 }
 
-void
-MaximumBoxKernel::SetInput (const Image &object)
+auto
+MaximumBoxKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-MaximumBoxKernel::SetOutput (const Image &object)
+auto
+MaximumBoxKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-MaximumBoxKernel::SetRadius (const int &radius_x, const int &radius_y, const int &radius_z)
+auto
+MaximumBoxKernel::SetRadius (const int &radius_x, const int &radius_y, const int &radius_z) -> void
 {
     this->radius_ = { radius_x, radius_y, radius_z };
 }
 
-void
-MaximumBoxKernel::Execute ()
+auto
+MaximumBoxKernel::Execute () -> void
 {
     auto src = this->GetImage ("src");
     auto dst = this->GetImage ("dst");

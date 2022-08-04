@@ -13,14 +13,14 @@ SobelKernel::SobelKernel (const ProcessorPointer &device) : Operation (device, 2
     this->SetSource ("sobel", cl_header);
 }
 
-void
-SobelKernel::SetInput (const Image &object)
+auto
+SobelKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-SobelKernel::SetOutput (const Image &object)
+auto
+SobelKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

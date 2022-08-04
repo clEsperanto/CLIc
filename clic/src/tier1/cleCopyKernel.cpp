@@ -12,14 +12,14 @@ CopyKernel::CopyKernel (const ProcessorPointer &device) : Operation (device, 2)
     this->SetSource ("copy", cl_header);
 }
 
-void
-CopyKernel::SetInput (const Image &object)
+auto
+CopyKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-CopyKernel::SetOutput (const Image &object)
+auto
+CopyKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

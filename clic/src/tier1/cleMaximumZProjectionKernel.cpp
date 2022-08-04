@@ -23,10 +23,4 @@ MaximumZProjectionKernel::SetOutput (const Image &object) -> void
     this->AddParameter ("dst", object);
 }
 
-auto
-MaximumZProjectionKernel::GetOutput () -> Image
-{
-    return *this->GetImage ("dst");
-}
-
 } // namespace cle

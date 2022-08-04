@@ -13,20 +13,20 @@ ReplaceIntensitiesKernel::ReplaceIntensitiesKernel (const ProcessorPointer &devi
     this->SetSource ("replace_intensities", cl_header);
 }
 
-void
-ReplaceIntensitiesKernel::SetInput (const Image &object)
+auto
+ReplaceIntensitiesKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src0", object);
 }
 
-void
-ReplaceIntensitiesKernel::SetOutput (const Image &object)
+auto
+ReplaceIntensitiesKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-ReplaceIntensitiesKernel::SetMap (const Image &object)
+auto
+ReplaceIntensitiesKernel::SetMap (const Image &object) -> void
 {
     this->AddParameter ("src1", object);
 }

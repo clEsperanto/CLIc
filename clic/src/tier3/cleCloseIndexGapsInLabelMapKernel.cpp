@@ -20,26 +20,26 @@ CloseIndexGapsInLabelMapKernel::CloseIndexGapsInLabelMapKernel (const ProcessorP
 {
 }
 
-void
-CloseIndexGapsInLabelMapKernel::SetInput (const Image &object)
+auto
+CloseIndexGapsInLabelMapKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-CloseIndexGapsInLabelMapKernel::SetOutput (const Image &object)
+auto
+CloseIndexGapsInLabelMapKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-CloseIndexGapsInLabelMapKernel::SetBlockSize (const int &size)
+auto
+CloseIndexGapsInLabelMapKernel::SetBlockSize (const int &size) -> void
 {
     this->block_size_ = size;
 }
 
-void
-CloseIndexGapsInLabelMapKernel::Execute ()
+auto
+CloseIndexGapsInLabelMapKernel::Execute () -> void
 {
     auto src = this->GetImage ("src");
     auto dst = this->GetImage ("dst");

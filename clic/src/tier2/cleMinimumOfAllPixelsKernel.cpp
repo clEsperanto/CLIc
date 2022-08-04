@@ -13,20 +13,20 @@ MinimumOfAllPixelsKernel::MinimumOfAllPixelsKernel (const ProcessorPointer &devi
 {
 }
 
-void
-MinimumOfAllPixelsKernel::SetInput (const Image &object)
+auto
+MinimumOfAllPixelsKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-MinimumOfAllPixelsKernel::SetOutput (const Image &object)
+auto
+MinimumOfAllPixelsKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-MinimumOfAllPixelsKernel::Execute ()
+auto
+MinimumOfAllPixelsKernel::Execute () -> void
 {
     auto src = this->GetImage ("src");
     auto dst = this->GetImage ("dst");

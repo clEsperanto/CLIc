@@ -24,26 +24,26 @@ MeanBoxKernel::Radius2KernelSize () const -> std::array<int, 3>
     return kernel_size;
 }
 
-void
-MeanBoxKernel::SetInput (const Image &object)
+auto
+MeanBoxKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-MeanBoxKernel::SetOutput (const Image &object)
+auto
+MeanBoxKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-MeanBoxKernel::SetRadius (const int &radius_x, const int &radius_y, const int &radius_z)
+auto
+MeanBoxKernel::SetRadius (const int &radius_x, const int &radius_y, const int &radius_z) -> void
 {
     this->radius_ = { radius_x, radius_y, radius_z };
 }
 
-void
-MeanBoxKernel::Execute ()
+auto
+MeanBoxKernel::Execute () -> void
 {
     auto src = this->GetImage ("src");
     auto dst = this->GetImage ("dst");

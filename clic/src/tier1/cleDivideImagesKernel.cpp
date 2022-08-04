@@ -13,20 +13,20 @@ DivideImagesKernel::DivideImagesKernel (const ProcessorPointer &device) : Operat
     this->SetSource ("divide_images", cl_header);
 }
 
-void
-DivideImagesKernel::SetInput1 (const Image &object)
+auto
+DivideImagesKernel::SetInput1 (const Image &object) -> void
 {
     this->AddParameter ("src0", object);
 }
 
-void
-DivideImagesKernel::SetInput2 (const Image &object)
+auto
+DivideImagesKernel::SetInput2 (const Image &object) -> void
 {
     this->AddParameter ("src1", object);
 }
 
-void
-DivideImagesKernel::SetOutput (const Image &object)
+auto
+DivideImagesKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

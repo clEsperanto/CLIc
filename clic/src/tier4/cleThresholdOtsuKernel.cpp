@@ -16,20 +16,20 @@ ThresholdOtsuKernel::ThresholdOtsuKernel (const ProcessorPointer &device) : Oper
 {
 }
 
-void
-ThresholdOtsuKernel::SetInput (const Image &object)
+auto
+ThresholdOtsuKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-ThresholdOtsuKernel::SetOutput (const Image &object)
+auto
+ThresholdOtsuKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-ThresholdOtsuKernel::Execute ()
+auto
+ThresholdOtsuKernel::Execute () -> void
 {
     auto src = this->GetImage ("src");
     auto dst = this->GetImage ("dst");

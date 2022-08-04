@@ -15,20 +15,20 @@ ConnectedComponentLabelingBoxKernel::ConnectedComponentLabelingBoxKernel (const 
 {
 }
 
-void
-ConnectedComponentLabelingBoxKernel::SetInput (const Image &object)
+auto
+ConnectedComponentLabelingBoxKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-ConnectedComponentLabelingBoxKernel::SetOutput (const Image &object)
+auto
+ConnectedComponentLabelingBoxKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-ConnectedComponentLabelingBoxKernel::Execute ()
+auto
+ConnectedComponentLabelingBoxKernel::Execute () -> void
 {
     auto src = this->GetImage ("src");
     auto dst = this->GetImage ("dst");

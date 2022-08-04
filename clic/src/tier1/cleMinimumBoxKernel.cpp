@@ -23,26 +23,26 @@ MinimumBoxKernel::Radius2KernelSize () const
     return kernel_size;
 }
 
-void
-MinimumBoxKernel::SetInput (const Image &object)
+auto
+MinimumBoxKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-MinimumBoxKernel::SetOutput (const Image &object)
+auto
+MinimumBoxKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-MinimumBoxKernel::SetRadius (const int &radius_x, const int &radius_y, const int &radius_z)
+auto
+MinimumBoxKernel::SetRadius (const int &radius_x, const int &radius_y, const int &radius_z) -> void
 {
     this->radius_ = { radius_x, radius_y, radius_z };
 }
 
-void
-MinimumBoxKernel::Execute ()
+auto
+MinimumBoxKernel::Execute () -> void
 {
     auto src = this->GetImage ("src");
     auto dst = this->GetImage ("dst");

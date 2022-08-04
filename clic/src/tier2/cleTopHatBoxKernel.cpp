@@ -13,26 +13,26 @@ TopHatBoxKernel::TopHatBoxKernel (const ProcessorPointer &device) : Operation (d
 {
 }
 
-void
-TopHatBoxKernel::SetInput (const Image &object)
+auto
+TopHatBoxKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-TopHatBoxKernel::SetOutput (const Image &object)
+auto
+TopHatBoxKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-TopHatBoxKernel::SetRadius (const int &radius_x, const int &radius_y, const int &radius_z)
+auto
+TopHatBoxKernel::SetRadius (const int &radius_x, const int &radius_y, const int &radius_z) -> void
 {
     this->radius_ = { radius_x, radius_y, radius_z };
 }
 
-void
-TopHatBoxKernel::Execute ()
+auto
+TopHatBoxKernel::Execute () -> void
 {
     auto src = this->GetImage ("src");
     auto dst = this->GetImage ("dst");

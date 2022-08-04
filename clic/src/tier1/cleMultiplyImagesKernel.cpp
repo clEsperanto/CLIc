@@ -13,20 +13,20 @@ MultiplyImagesKernel::MultiplyImagesKernel (const ProcessorPointer &device) : Op
     this->SetSource ("multiply_images", cl_header);
 }
 
-void
-MultiplyImagesKernel::SetInput1 (const Image &object)
+auto
+MultiplyImagesKernel::SetInput1 (const Image &object) -> void
 {
     this->AddParameter ("src0", object);
 }
 
-void
-MultiplyImagesKernel::SetInput2 (const Image &object)
+auto
+MultiplyImagesKernel::SetInput2 (const Image &object) -> void
 {
     this->AddParameter ("src1", object);
 }
 
-void
-MultiplyImagesKernel::SetOutput (const Image &object)
+auto
+MultiplyImagesKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

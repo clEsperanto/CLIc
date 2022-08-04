@@ -13,27 +13,27 @@ BlockEnumerateKernel::BlockEnumerateKernel (const ProcessorPointer &device) : Op
     this->SetSource ("block_enumerate", cl_header);
 }
 
-void
-BlockEnumerateKernel::SetInput (const Image &object)
+auto
+BlockEnumerateKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src0", object);
 }
 
-void
-BlockEnumerateKernel::SetInputSums (const Image &object)
+auto
+BlockEnumerateKernel::SetInputSums (const Image &object) -> void
 {
     this->AddParameter ("src1", object);
     this->SetRange ("src1");
 }
 
-void
-BlockEnumerateKernel::SetOutput (const Image &object)
+auto
+BlockEnumerateKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-BlockEnumerateKernel::SetBlocksize (const int &value)
+auto
+BlockEnumerateKernel::SetBlocksize (const int &value) -> void
 {
     this->AddParameter ("index", value);
 }

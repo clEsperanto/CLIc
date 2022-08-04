@@ -13,20 +13,20 @@ EqualKernel::EqualKernel (const ProcessorPointer &device) : Operation (device, 3
     this->SetSource ("equal", cl_header);
 }
 
-void
-EqualKernel::SetInput1 (const Image &object)
+auto
+EqualKernel::SetInput1 (const Image &object) -> void
 {
     this->AddParameter ("src0", object);
 }
 
-void
-EqualKernel::SetInput2 (const Image &object)
+auto
+EqualKernel::SetInput2 (const Image &object) -> void
 {
     this->AddParameter ("src1", object);
 }
 
-void
-EqualKernel::SetOutput (const Image &object)
+auto
+EqualKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

@@ -13,14 +13,14 @@ SumZProjectionKernel::SumZProjectionKernel (const ProcessorPointer &device) : Op
     this->SetSource ("sum_z_projection", cl_header);
 }
 
-void
-SumZProjectionKernel::SetInput (const Image &object)
+auto
+SumZProjectionKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-SumZProjectionKernel::SetOutput (const Image &object)
+auto
+SumZProjectionKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

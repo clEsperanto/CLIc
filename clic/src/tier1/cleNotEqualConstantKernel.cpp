@@ -13,20 +13,20 @@ NotEqualConstantKernel::NotEqualConstantKernel (const ProcessorPointer &device) 
     this->SetSource ("not_equal_constant", cl_header);
 }
 
-void
-NotEqualConstantKernel::SetInput (const Image &object)
+auto
+NotEqualConstantKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-NotEqualConstantKernel::SetOutput (const Image &object)
+auto
+NotEqualConstantKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-NotEqualConstantKernel::SetScalar (const float &value)
+auto
+NotEqualConstantKernel::SetScalar (const float &value) -> void
 {
     this->AddParameter ("scalar", value);
 }

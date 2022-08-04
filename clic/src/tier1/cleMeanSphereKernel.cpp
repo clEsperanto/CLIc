@@ -18,22 +18,22 @@ MeanSphereKernel::Radius2KernelSize (const float &radius) const
     return static_cast<int> (radius) * 2 + 1;
 }
 
-void
-MeanSphereKernel::SetRadius (const float &radius_x, const float &radius_y, const float &radius_z)
+auto
+MeanSphereKernel::SetRadius (const float &radius_x, const float &radius_y, const float &radius_z) -> void
 {
     this->AddParameter ("scalar0", Radius2KernelSize (radius_x));
     this->AddParameter ("scalar1", Radius2KernelSize (radius_y));
     this->AddParameter ("scalar2", Radius2KernelSize (radius_z));
 }
 
-void
-MeanSphereKernel::SetInput (const Image &object)
+auto
+MeanSphereKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-MeanSphereKernel::SetOutput (const Image &object)
+auto
+MeanSphereKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

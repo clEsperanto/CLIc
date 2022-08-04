@@ -17,32 +17,32 @@ VoronoiOtsuLabelingKernel::VoronoiOtsuLabelingKernel (const ProcessorPointer &de
 {
 }
 
-void
-VoronoiOtsuLabelingKernel::SetInput (const Image &object)
+auto
+VoronoiOtsuLabelingKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-VoronoiOtsuLabelingKernel::SetOutput (const Image &object)
+auto
+VoronoiOtsuLabelingKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-VoronoiOtsuLabelingKernel::SetSpotSigma (const float &sigma)
+auto
+VoronoiOtsuLabelingKernel::SetSpotSigma (const float &sigma) -> void
 {
     this->spot_sigma_ = sigma;
 }
 
-void
-VoronoiOtsuLabelingKernel::SetOutlineSigma (const float &sigma)
+auto
+VoronoiOtsuLabelingKernel::SetOutlineSigma (const float &sigma) -> void
 {
     this->output_sigma_ = sigma;
 }
 
-void
-VoronoiOtsuLabelingKernel::Execute ()
+auto
+VoronoiOtsuLabelingKernel::Execute () -> void
 {
     auto temp_data_type = CL_FLOAT;
     auto src = this->GetImage ("src");

@@ -12,7 +12,6 @@ class MaximumZProjectionKernel : public Operation
     explicit MaximumZProjectionKernel (const ProcessorPointer &device);
     auto SetInput (const Image &object) -> void;
     auto SetOutput (const Image &object) -> void;
-    auto GetOutput () -> Image;
 };
 
 } // namespace cle

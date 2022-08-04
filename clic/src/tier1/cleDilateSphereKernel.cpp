@@ -13,14 +13,14 @@ DilateSphereKernel::DilateSphereKernel (const ProcessorPointer &device) : Operat
     this->SetSource ("dilate_sphere", cl_header);
 }
 
-void
-DilateSphereKernel::SetInput (const Image &object)
+auto
+DilateSphereKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-DilateSphereKernel::SetOutput (const Image &object)
+auto
+DilateSphereKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

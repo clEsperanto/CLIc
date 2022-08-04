@@ -13,20 +13,20 @@ MaskKernel::MaskKernel (const ProcessorPointer &device) : Operation (device, 3)
     this->SetSource ("mask", cl_header);
 }
 
-void
-MaskKernel::SetInput (const Image &object)
+auto
+MaskKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src0", object);
 }
 
-void
-MaskKernel::SetMask (const Image &object)
+auto
+MaskKernel::SetMask (const Image &object) -> void
 {
     this->AddParameter ("src1", object);
 }
 
-void
-MaskKernel::SetOutput (const Image &object)
+auto
+MaskKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

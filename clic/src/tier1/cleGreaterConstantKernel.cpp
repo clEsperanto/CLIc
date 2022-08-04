@@ -13,20 +13,20 @@ GreaterConstantKernel::GreaterConstantKernel (const ProcessorPointer &device) : 
     this->SetSource ("greater_constant", cl_header);
 }
 
-void
-GreaterConstantKernel::SetInput (const Image &object)
+auto
+GreaterConstantKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-GreaterConstantKernel::SetOutput (const Image &object)
+auto
+GreaterConstantKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-GreaterConstantKernel::SetScalar (const float &value)
+auto
+GreaterConstantKernel::SetScalar (const float &value) -> void
 {
     this->AddParameter ("scalar", value);
 }

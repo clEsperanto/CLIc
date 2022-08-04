@@ -14,20 +14,20 @@ ExtendLabelingViaVoronoiKernel::ExtendLabelingViaVoronoiKernel (const ProcessorP
 {
 }
 
-void
-ExtendLabelingViaVoronoiKernel::SetInput (const Image &object)
+auto
+ExtendLabelingViaVoronoiKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-ExtendLabelingViaVoronoiKernel::SetOutput (const Image &object)
+auto
+ExtendLabelingViaVoronoiKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-ExtendLabelingViaVoronoiKernel::Execute ()
+auto
+ExtendLabelingViaVoronoiKernel::Execute () -> void
 {
     // // get I/O pointers
     auto src = this->GetImage ("src");

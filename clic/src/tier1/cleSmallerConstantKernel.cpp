@@ -13,20 +13,20 @@ SmallerConstantKernel::SmallerConstantKernel (const ProcessorPointer &device) : 
     this->SetSource ("smaller_constant", cl_header);
 }
 
-void
-SmallerConstantKernel::SetInput (const Image &object)
+auto
+SmallerConstantKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-SmallerConstantKernel::SetOutput (const Image &object)
+auto
+SmallerConstantKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-SmallerConstantKernel::SetConstant (const float &value)
+auto
+SmallerConstantKernel::SetConstant (const float &value) -> void
 {
     this->AddParameter ("scalar", value);
 }

@@ -23,10 +23,4 @@ MaximumYProjectionKernel::SetOutput (const Image &object) -> void
     this->AddParameter ("dst", object);
 }
 
-auto
-MaximumYProjectionKernel::GetOutput () -> Image
-{
-    return *this->GetImage ("dst");
-}
-
 } // namespace cle

@@ -14,21 +14,21 @@ FlagExistingLabelsKernel::FlagExistingLabelsKernel (const ProcessorPointer &devi
     this->SetSource ("flag_existing_labels", cl_header);
 }
 
-void
-FlagExistingLabelsKernel::SetInput (const Image &object)
+auto
+FlagExistingLabelsKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
     this->SetRange ("src");
 }
 
-void
-FlagExistingLabelsKernel::SetOutput (const Image &object)
+auto
+FlagExistingLabelsKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-FlagExistingLabelsKernel::Execute ()
+auto
+FlagExistingLabelsKernel::Execute () -> void
 {
     this->GetImage ("dst")->Fill (0);
     this->Operation::Execute ();

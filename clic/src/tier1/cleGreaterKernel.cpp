@@ -13,20 +13,20 @@ GreaterKernel::GreaterKernel (const ProcessorPointer &device) : Operation (devic
     this->SetSource ("greater", cl_header);
 }
 
-void
-GreaterKernel::SetInput1 (const Image &object)
+auto
+GreaterKernel::SetInput1 (const Image &object) -> void
 {
     this->AddParameter ("src0", object);
 }
 
-void
-GreaterKernel::SetInput2 (const Image &object)
+auto
+GreaterKernel::SetInput2 (const Image &object) -> void
 {
     this->AddParameter ("src1", object);
 }
 
-void
-GreaterKernel::SetOutput (const Image &object)
+auto
+GreaterKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

@@ -13,14 +13,14 @@ MinimumZProjectionKernel::MinimumZProjectionKernel (const ProcessorPointer &devi
     this->SetSource ("minimum_z_projection", cl_header);
 }
 
-void
-MinimumZProjectionKernel::SetInput (const Image &object)
+auto
+MinimumZProjectionKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-MinimumZProjectionKernel::SetOutput (const Image &object)
+auto
+MinimumZProjectionKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

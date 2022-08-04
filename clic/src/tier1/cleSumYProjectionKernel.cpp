@@ -13,14 +13,14 @@ SumYProjectionKernel::SumYProjectionKernel (const ProcessorPointer &device) : Op
     this->SetSource ("sum_y_projection", cl_header);
 }
 
-void
-SumYProjectionKernel::SetInput (const Image &object)
+auto
+SumYProjectionKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-SumYProjectionKernel::SetOutput (const Image &object)
+auto
+SumYProjectionKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

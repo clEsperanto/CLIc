@@ -14,26 +14,26 @@ DilateLabelsKernel::DilateLabelsKernel (const ProcessorPointer &device) : Operat
 {
 }
 
-void
-DilateLabelsKernel::SetInput (const Image &object)
+auto
+DilateLabelsKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-DilateLabelsKernel::SetOutput (const Image &object)
+auto
+DilateLabelsKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-DilateLabelsKernel::SetRadius (const int &radius)
+auto
+DilateLabelsKernel::SetRadius (const int &radius) -> void
 {
     this->radius_ = radius;
 }
 
-void
-DilateLabelsKernel::Execute ()
+auto
+DilateLabelsKernel::Execute () -> void
 {
     // // get I/O pointers
     auto src = this->GetImage ("src");

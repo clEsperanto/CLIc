@@ -13,20 +13,20 @@ GreaterOrEqualKernel::GreaterOrEqualKernel (const ProcessorPointer &device) : Op
     this->SetSource ("greater_or_equal", cl_header);
 }
 
-void
-GreaterOrEqualKernel::SetInput1 (const Image &object)
+auto
+GreaterOrEqualKernel::SetInput1 (const Image &object) -> void
 {
     this->AddParameter ("src0", object);
 }
 
-void
-GreaterOrEqualKernel::SetInput2 (const Image &object)
+auto
+GreaterOrEqualKernel::SetInput2 (const Image &object) -> void
 {
     this->AddParameter ("src1", object);
 }
 
-void
-GreaterOrEqualKernel::SetOutput (const Image &object)
+auto
+GreaterOrEqualKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

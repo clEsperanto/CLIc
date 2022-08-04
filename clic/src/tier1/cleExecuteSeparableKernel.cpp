@@ -22,20 +22,20 @@ ExecuteSeparableKernel::SetOutput (const Image &object) -> void
     this->AddParameter ("dst", object);
 }
 
-void
-ExecuteSeparableKernel::SetKernelSize (const int &radius_x, const int &radius_y, const int &radius_z)
+auto
+ExecuteSeparableKernel::SetKernelSize (const int &radius_x, const int &radius_y, const int &radius_z) -> void
 {
     this->kernel_size_ = { radius_x, radius_y, radius_z };
 }
 
-void
-ExecuteSeparableKernel::SetSigma (const float &sigma_x, const float &sigma_y, const float &sigma_z)
+auto
+ExecuteSeparableKernel::SetSigma (const float &sigma_x, const float &sigma_y, const float &sigma_z) -> void
 {
     this->sigma_ = { sigma_x, sigma_y, sigma_z };
 }
 
-void
-ExecuteSeparableKernel::Execute ()
+auto
+ExecuteSeparableKernel::Execute () -> void
 {
     auto src = this->GetImage ("src");
     auto dst = this->GetImage ("dst");

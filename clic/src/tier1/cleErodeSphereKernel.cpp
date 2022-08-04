@@ -13,14 +13,14 @@ ErodeSphereKernel::ErodeSphereKernel (const ProcessorPointer &device) : Operatio
     this->SetSource ("erode_sphere", cl_header);
 }
 
-void
-ErodeSphereKernel::SetInput (const Image &object)
+auto
+ErodeSphereKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-ErodeSphereKernel::SetOutput (const Image &object)
+auto
+ErodeSphereKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

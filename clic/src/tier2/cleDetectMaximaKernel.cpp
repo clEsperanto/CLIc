@@ -16,26 +16,26 @@ DetectMaximaKernel::DetectMaximaKernel (const ProcessorPointer &device) : Operat
     this->SetSource ("detect_maxima", cl_header_);
 }
 
-void
-DetectMaximaKernel::SetInput (const Image &object)
+auto
+DetectMaximaKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-DetectMaximaKernel::SetOutput (const Image &object)
+auto
+DetectMaximaKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-DetectMaximaKernel::SetRadius (const int &radius_x, const int &radius_y, const int &radius_z)
+auto
+DetectMaximaKernel::SetRadius (const int &radius_x, const int &radius_y, const int &radius_z) -> void
 {
     this->radius_ = { radius_x, radius_y, radius_z };
 }
 
-void
-DetectMaximaKernel::Execute ()
+auto
+DetectMaximaKernel::Execute () -> void
 {
     if (std::any_of (radius_.begin (), radius_.end (), [] (int i) { return i > 0; }))
         {

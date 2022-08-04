@@ -13,14 +13,14 @@ SumXProjectionKernel::SumXProjectionKernel (const ProcessorPointer &device) : Op
     this->SetSource ("sum_x_projection", cl_header);
 }
 
-void
-SumXProjectionKernel::SetInput (const Image &object)
+auto
+SumXProjectionKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-SumXProjectionKernel::SetOutput (const Image &object)
+auto
+SumXProjectionKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

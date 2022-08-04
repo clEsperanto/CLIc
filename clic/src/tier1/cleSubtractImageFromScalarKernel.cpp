@@ -12,20 +12,20 @@ SubtractImageFromScalarKernel::SubtractImageFromScalarKernel (const ProcessorPoi
     this->SetSource ("subtract_image_from_scalar", cl_header);
 }
 
-void
-SubtractImageFromScalarKernel::SetInput (const Image &object)
+auto
+SubtractImageFromScalarKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-SubtractImageFromScalarKernel::SetOutput (const Image &object)
+auto
+SubtractImageFromScalarKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-SubtractImageFromScalarKernel::SetScalar (const float &value)
+auto
+SubtractImageFromScalarKernel::SetScalar (const float &value) -> void
 {
     this->AddParameter ("scalar", value);
 }

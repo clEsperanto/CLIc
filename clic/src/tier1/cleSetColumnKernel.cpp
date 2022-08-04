@@ -13,20 +13,20 @@ SetColumnKernel::SetColumnKernel (const ProcessorPointer &device) : Operation (d
     this->SetSource ("set_column", cl_header);
 }
 
-void
-SetColumnKernel::SetInput (const Image &object)
+auto
+SetColumnKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-SetColumnKernel::SetColumn (const int &index)
+auto
+SetColumnKernel::SetColumn (const int &index) -> void
 {
     this->AddParameter ("index", index);
 }
 
-void
-SetColumnKernel::SetValue (const float &value)
+auto
+SetColumnKernel::SetValue (const float &value) -> void
 {
     this->AddParameter ("scalar", value);
 }

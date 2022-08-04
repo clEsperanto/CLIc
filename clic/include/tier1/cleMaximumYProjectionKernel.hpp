@@ -12,7 +12,6 @@ class MaximumYProjectionKernel : public Operation
     explicit MaximumYProjectionKernel (const ProcessorPointer &device);
     auto SetInput (const Image &object) -> void;
     auto SetOutput (const Image &object) -> void;
-    auto GetOutput () -> Image;
 };
 
 } // namespace cle

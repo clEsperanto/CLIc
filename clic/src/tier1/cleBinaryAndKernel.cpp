@@ -13,20 +13,20 @@ BinaryAndKernel::BinaryAndKernel (const ProcessorPointer &device) : Operation (d
     this->SetSource ("binary_and", cl_header);
 }
 
-void
-BinaryAndKernel::SetInput1 (const Image &object)
+auto
+BinaryAndKernel::SetInput1 (const Image &object) -> void
 {
     this->AddParameter ("src0", object);
 }
 
-void
-BinaryAndKernel::SetInput2 (const Image &object)
+auto
+BinaryAndKernel::SetInput2 (const Image &object) -> void
 {
     this->AddParameter ("src1", object);
 }
 
-void
-BinaryAndKernel::SetOutput (const Image &object)
+auto
+BinaryAndKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

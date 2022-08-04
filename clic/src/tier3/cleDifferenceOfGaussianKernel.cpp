@@ -12,32 +12,32 @@ DifferenceOfGaussianKernel::DifferenceOfGaussianKernel (const ProcessorPointer &
 {
 }
 
-void
-DifferenceOfGaussianKernel::SetInput (const Image &object)
+auto
+DifferenceOfGaussianKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-DifferenceOfGaussianKernel::SetOutput (const Image &object)
+auto
+DifferenceOfGaussianKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-DifferenceOfGaussianKernel::SetSigma1 (const float &sigma_x, const float &sigma_y, const float &sigma_z)
+auto
+DifferenceOfGaussianKernel::SetSigma1 (const float &sigma_x, const float &sigma_y, const float &sigma_z) -> void
 {
     this->sigma1_ = { sigma_x, sigma_y, sigma_z };
 }
 
-void
-DifferenceOfGaussianKernel::SetSigma2 (const float &sigma_x, const float &sigma_y, const float &sigma_z)
+auto
+DifferenceOfGaussianKernel::SetSigma2 (const float &sigma_x, const float &sigma_y, const float &sigma_z) -> void
 {
     this->sigma2_ = { sigma_x, sigma_y, sigma_z };
 }
 
-void
-DifferenceOfGaussianKernel::Execute ()
+auto
+DifferenceOfGaussianKernel::Execute () -> void
 {
     auto src = this->GetImage ("src");
     auto dst = this->GetImage ("dst");

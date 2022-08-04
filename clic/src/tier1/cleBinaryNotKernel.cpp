@@ -13,14 +13,14 @@ BinaryNotKernel::BinaryNotKernel (const ProcessorPointer &device) : Operation (d
     this->SetSource ("binary_not", cl_header);
 }
 
-void
-BinaryNotKernel::SetInput (const Image &object)
+auto
+BinaryNotKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-BinaryNotKernel::SetOutput (const Image &object)
+auto
+BinaryNotKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

@@ -13,14 +13,14 @@ MinimumYProjectionKernel::MinimumYProjectionKernel (const ProcessorPointer &devi
     this->SetSource ("minimum_y_projection", cl_header);
 }
 
-void
-MinimumYProjectionKernel::SetInput (const Image &object)
+auto
+MinimumYProjectionKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-MinimumYProjectionKernel::SetOutput (const Image &object)
+auto
+MinimumYProjectionKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

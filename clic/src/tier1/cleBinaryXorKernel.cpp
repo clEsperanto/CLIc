@@ -13,20 +13,20 @@ BinaryXorKernel::BinaryXorKernel (const ProcessorPointer &device) : Operation (d
     this->SetSource ("binary_xor", cl_header);
 }
 
-void
-BinaryXorKernel::SetInput1 (const Image &object)
+auto
+BinaryXorKernel::SetInput1 (const Image &object) -> void
 {
     this->AddParameter ("src0", object);
 }
 
-void
-BinaryXorKernel::SetInput2 (const Image &object)
+auto
+BinaryXorKernel::SetInput2 (const Image &object) -> void
 {
     this->AddParameter ("src1", object);
 }
 
-void
-BinaryXorKernel::SetOutput (const Image &object)
+auto
+BinaryXorKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

@@ -13,20 +13,20 @@ NotEqualKernel::NotEqualKernel (const ProcessorPointer &device) : Operation (dev
     this->SetSource ("not_equal", cl_header);
 }
 
-void
-NotEqualKernel::SetInput1 (const Image &object)
+auto
+NotEqualKernel::SetInput1 (const Image &object) -> void
 {
     this->AddParameter ("src0", object);
 }
 
-void
-NotEqualKernel::SetInput2 (const Image &object)
+auto
+NotEqualKernel::SetInput2 (const Image &object) -> void
 {
     this->AddParameter ("src1", object);
 }
 
-void
-NotEqualKernel::SetOutput (const Image &object)
+auto
+NotEqualKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

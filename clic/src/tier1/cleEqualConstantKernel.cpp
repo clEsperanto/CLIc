@@ -13,20 +13,20 @@ EqualConstantKernel::EqualConstantKernel (const ProcessorPointer &device) : Oper
     this->SetSource ("equal_constant", cl_header);
 }
 
-void
-EqualConstantKernel::SetInput (const Image &object)
+auto
+EqualConstantKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src", object);
 }
 
-void
-EqualConstantKernel::SetOutput (const Image &object)
+auto
+EqualConstantKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-EqualConstantKernel::SetScalar (const float &value)
+auto
+EqualConstantKernel::SetScalar (const float &value) -> void
 {
     this->AddParameter ("scalar", value);
 }

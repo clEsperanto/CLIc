@@ -13,20 +13,20 @@ BinaryOrKernel::BinaryOrKernel (const ProcessorPointer &device) : Operation (dev
     this->SetSource ("binary_or", cl_header);
 }
 
-void
-BinaryOrKernel::SetInput1 (const Image &object)
+auto
+BinaryOrKernel::SetInput1 (const Image &object) -> void
 {
     this->AddParameter ("src0", object);
 }
 
-void
-BinaryOrKernel::SetInput2 (const Image &object)
+auto
+BinaryOrKernel::SetInput2 (const Image &object) -> void
 {
     this->AddParameter ("src1", object);
 }
 
-void
-BinaryOrKernel::SetOutput (const Image &object)
+auto
+BinaryOrKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

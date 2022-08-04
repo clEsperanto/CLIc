@@ -13,20 +13,20 @@ SmallerKernel::SmallerKernel (const ProcessorPointer &device) : Operation (devic
     this->SetSource ("smaller", cl_header);
 }
 
-void
-SmallerKernel::SetInput1 (const Image &object)
+auto
+SmallerKernel::SetInput1 (const Image &object) -> void
 {
     this->AddParameter ("src0", object);
 }
 
-void
-SmallerKernel::SetInput2 (const Image &object)
+auto
+SmallerKernel::SetInput2 (const Image &object) -> void
 {
     this->AddParameter ("src1", object);
 }
 
-void
-SmallerKernel::SetOutput (const Image &object)
+auto
+SmallerKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }

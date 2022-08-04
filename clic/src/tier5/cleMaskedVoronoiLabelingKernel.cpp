@@ -18,26 +18,26 @@ MaskedVoronoiLabelingKernel::MaskedVoronoiLabelingKernel (const ProcessorPointer
 {
 }
 
-void
-MaskedVoronoiLabelingKernel::SetInput (const Image &object)
+auto
+MaskedVoronoiLabelingKernel::SetInput (const Image &object) -> void
 {
     this->AddParameter ("src0", object);
 }
 
-void
-MaskedVoronoiLabelingKernel::SetMask (const Image &object)
+auto
+MaskedVoronoiLabelingKernel::SetMask (const Image &object) -> void
 {
     this->AddParameter ("src1", object);
 }
 
-void
-MaskedVoronoiLabelingKernel::SetOutput (const Image &object)
+auto
+MaskedVoronoiLabelingKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
 
-void
-MaskedVoronoiLabelingKernel::Execute ()
+auto
+MaskedVoronoiLabelingKernel::Execute () -> void
 {
     auto src = this->GetImage ("src0");
     auto msk = this->GetImage ("src1");

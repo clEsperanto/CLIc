@@ -13,20 +13,20 @@ BinarySubtractKernel::BinarySubtractKernel (const ProcessorPointer &device) : Op
     this->SetSource ("binary_subtract", cl_header);
 }
 
-void
-BinarySubtractKernel::SetInput1 (const Image &object)
+auto
+BinarySubtractKernel::SetInput1 (const Image &object) -> void
 {
     this->AddParameter ("src0", object);
 }
 
-void
-BinarySubtractKernel::SetInput2 (const Image &object)
+auto
+BinarySubtractKernel::SetInput2 (const Image &object) -> void
 {
     this->AddParameter ("src1", object);
 }
 
-void
-BinarySubtractKernel::SetOutput (const Image &object)
+auto
+BinarySubtractKernel::SetOutput (const Image &object) -> void
 {
     this->AddParameter ("dst", object);
 }
