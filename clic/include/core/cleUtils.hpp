@@ -415,29 +415,29 @@ struct BuildStatus
     cl_build_status type;
 };
 
-inline auto
-exec (const char *cmd) -> std::string
-{
-    const int buf_size = 128;
-    std::array<char, buf_size> buffer{};
-    std::string result;
-#ifdef WIN32
-    std::unique_ptr<FILE, decltype (&_pclose)> pipe (_popen (cmd, "r"), _pclose);
-#elif __APPLE__
-    std::unique_ptr<FILE, decltype (&pclose)> pipe (popen (cmd, "r"), pclose);
-#elif __linux__
-    std::unique_ptr<FILE, decltype (&pclose)> pipe (popen (cmd, "r"), pclose);
-#endif
-    if (!pipe)
-        {
-            throw std::runtime_error ("popen() failed!");
-        }
-    while (fgets (buffer.data (), buffer.size (), pipe.get ()) != nullptr)
-        {
-            result += buffer.data ();
-        }
-    return result;
-}
+// inline auto
+// exec (const char *cmd) -> std::string
+// {
+//     const int buf_size = 128;
+//     std::array<char, buf_size> buffer{};
+//     std::string result;
+// #ifdef WIN32
+//     std::unique_ptr<FILE, decltype (&_pclose)> pipe (_popen (cmd, "r"), _pclose);
+// #elif __APPLE__
+//     std::unique_ptr<FILE, decltype (&pclose)> pipe (popen (cmd, "r"), pclose);
+// #elif __linux__
+//     std::unique_ptr<FILE, decltype (&pclose)> pipe (popen (cmd, "r"), pclose);
+// #endif
+//     if (!pipe)
+//         {
+//             throw std::runtime_error ("popen() failed!");
+//         }
+//     while (fgets (buffer.data (), buffer.size (), pipe.get ()) != nullptr)
+//         {
+//             result += buffer.data ();
+//         }
+//     return result;
+// }
 
 } // namespace cle
 

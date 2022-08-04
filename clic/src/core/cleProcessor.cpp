@@ -94,38 +94,38 @@ Processor::DeviceName () const -> std::string
     return Backend::GetDeviceName (this->device_);
 }
 
-auto
-Processor::MemoryAvailable () -> int
-{
-    constexpr int factor = 1000000;
-    const char *cmd = "nvidia-smi --query-gpu=gpu_name,memory.free --format=csv,noheader,nounits";
-    // std::string cmd = "nvidia-smi --query-gpu=gpu_name,memory.free --format=csv,noheader,nounits";
-    // std::string cmd = "nvidia-smi --query-gpu=gpu_name,memory.free --format=csv,noheader,nounits";
+// auto
+// Processor::MemoryAvailable () -> int
+// {
+//     constexpr int factor = 1000000;
+//     const char *cmd = "nvidia-smi --query-gpu=gpu_name,memory.free --format=csv,noheader,nounits";
+//     // std::string cmd = "nvidia-smi --query-gpu=gpu_name,memory.free --format=csv,noheader,nounits";
+//     // std::string cmd = "nvidia-smi --query-gpu=gpu_name,memory.free --format=csv,noheader,nounits";
 
-    std::string cmd_out;
-    try
-        {
-            cmd_out = cle::exec (cmd);
-        }
-    catch (const std::exception &e)
-        {
-            std::cerr << e.what () << '\n';
-        }
-    std::stringstream read_out (cmd_out);
-    std::vector<std::string> info;
-    while (read_out.good ())
-        {
-            info.emplace_back ("");
-            std::getline (read_out, info.back (), ',');
-        }
-    auto it = std::find (info.begin (), info.end (), this->DeviceName ());
-    if (it != info.end ())
-        {
-            size_t idx = (it - info.begin ()) + 1;
-            return std::stoi (info[idx]) * factor;
-        }
-    return 0;
-}
+//     std::string cmd_out;
+//     try
+//         {
+//             cmd_out = cle::exec (cmd);
+//         }
+//     catch (const std::exception &e)
+//         {
+//             std::cerr << e.what () << '\n';
+//         }
+//     std::stringstream read_out (cmd_out);
+//     std::vector<std::string> info;
+//     while (read_out.good ())
+//         {
+//             info.emplace_back ("");
+//             std::getline (read_out, info.back (), ',');
+//         }
+//     auto it = std::find (info.begin (), info.end (), this->DeviceName ());
+//     if (it != info.end ())
+//         {
+//             size_t idx = (it - info.begin ()) + 1;
+//             return std::stoi (info[idx]) * factor;
+//         }
+//     return 0;
+// }
 
 auto
 Processor::WaitForKernelToFinish (bool flag) -> void
