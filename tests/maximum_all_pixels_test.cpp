@@ -13,7 +13,7 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
     static std::default_random_engine generator;
     std::generate (input.begin (), input.end (), [] () { return static_cast<type> (distribution (generator)); });
     const int center = (shape[0] / 2) + (shape[1] / 2) * shape[0] + (shape[2] / 2) * shape[0] * shape[1];
-    input[center] = std::numeric_limits<type>::max ();
+    input[center] = static_cast<type> (42);
 
     cle::Clesperanto cle;
     cle.GetDevice ()->WaitForKernelToFinish ();
@@ -22,10 +22,7 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
     cle.MaximumOfAllPixels (gpu_input, gpu_output);
     auto output = cle.Pull<type> (gpu_output).front ();
 
-    std::cout << "max expected = " << std::numeric_limits<type>::max () << std::endl;
-    std::cout << "max detect = " << output << std::endl;
-
-    return output == std::numeric_limits<type>::max ();
+    return output == static_cast<type> (42);
 }
 
 auto
