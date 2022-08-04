@@ -11,5 +11,4 @@ if(OpenCL_FOUND)
 
     # set(OpenCL_VERSION "${OpenCL_VERSION_MAJOR}${OpenCL_VERSION_MINOR}0" CACHE STRING "OpenCL version" FORCE)
     set(OpenCL_VERSION "120" CACHE STRING "OpenCL version" FORCE)
-    message(STATUS ${OpenCL_INCLUDE_DIR})
 endif()
