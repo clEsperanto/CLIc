@@ -375,11 +375,7 @@ Operation::GetArgumentsInfo () -> void
 auto
 Operation::EnqueueOperation () -> void
 {
-    // if (!std::any_of (this->range_.begin (), this->range_.end (), [] (size_t i) { return i > 0; }))
-    //     {
-    //         this->SetRange ("dst");
-    //     }
-    if (this->range_[0] == 0 || this->range_[1] == 0 || this->range_[2] == 0)
+    if (!std::any_of (this->range_.begin (), this->range_.end (), [] (size_t i) { return i > 0; }))
         {
             this->SetRange ("dst");
         }
