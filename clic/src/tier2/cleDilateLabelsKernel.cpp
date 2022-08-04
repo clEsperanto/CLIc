@@ -42,7 +42,7 @@ DilateLabelsKernel::Execute ()
     auto flip = Memory::AllocateObject (this->Device (), dst->Shape (), dst->BitType ().Get (), dst->MemType ().Get ());
     auto flop = Memory::AllocateObject (this->Device (), dst->Shape (), dst->BitType ().Get (), dst->MemType ().Get ());
     auto flag = Memory::AllocateObject (this->Device (), { 1, 1, 1 }, CL_FLOAT, CL_MEM_OBJECT_BUFFER);
-    flag.Fill (1.0F);
+    flag.Fill (1);
 
     CopyKernel copy (this->Device ());
     copy.SetInput (*src);
@@ -70,10 +70,7 @@ DilateLabelsKernel::Execute ()
                     diamondMaximum.Execute ();
                 }
             flag_value = Memory::ReadObject<float> (flag).front ();
-            SetKernel set (this->Device ());
-            set.SetInput (flag);
-            set.SetValue (0);
-            set.Execute ();
+            flag.Fill (0);
             iteration_count++;
         }
     if ((iteration_count % 2) == 0)

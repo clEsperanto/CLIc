@@ -47,7 +47,7 @@ MaskedVoronoiLabelingKernel::Execute ()
     auto flip = Memory::AllocateObject (this->Device (), src->Shape (), CL_FLOAT, src->MemType ().Get ());
     auto flop = Memory::AllocateObject (this->Device (), src->Shape (), CL_FLOAT, src->MemType ().Get ());
     auto flag = Memory::AllocateObject (this->Device (), { 1, 1, 1 });
-    flag.Fill (1.0F);
+    flag.Fill (1);
 
     AddImageAndScalarKernel subtractOne (this->Device ());
     subtractOne.SetInput (*msk);
