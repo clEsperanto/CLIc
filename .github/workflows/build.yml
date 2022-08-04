@@ -2,14 +2,12 @@ name: CI-Build
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
-
   build:
-    
     name: ${{ matrix.os }}-${{ matrix.cxx }}-${{ matrix.buildtype }}-and-test
     runs-on: ${{ matrix.os }}
     strategy:
@@ -21,13 +19,15 @@ jobs:
         include:
           - name: windows-msvc
             os: windows-latest
+            vcpkgCommitId: 5568f110b509a9fd90711978a7cb76bae75bb092
             cxx: cl.exe
             cc: cl.exe
             triplet: x64-windows
             packages: >
-              opencl 
+              opencl
           - name: ubuntu-gcc
             os: ubuntu-latest
+            vcpkgCommitId: 5568f110b509a9fd90711978a7cb76bae75bb092
             cxx: g++
             cc: gcc
             triplet: x64-linux
@@ -35,6 +35,7 @@ jobs:
               opencl
           - name: ubuntu-clang
             os: ubuntu-latest
+            vcpkgCommitId: 5568f110b509a9fd90711978a7cb76bae75bb092
             cxx: clang++
             cc: clang
             triplet: x64-linux
@@ -42,40 +43,36 @@ jobs:
               opencl
           - name: macos-clang
             os: macos-latest
+            vcpkgCommitId: 5568f110b509a9fd90711978a7cb76bae75bb092
             cxx: clang++
             cc: clang
             triplet: x64-osx
             packages: >
               opencl
 
-
     steps:
-
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          submodules: true 
+          submodules: true
 
       - name: Install CMake v3.21
         uses: lukka/get-cmake@main
-      
+
       - name: Install packages [vcpkg]
-        uses: lukka/run-vcpkg@v7
+        uses: lukka/run-vcpkg@v10 #7
         with:
           vcpkgArguments: ${{ matrix.packages }}
           vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
           vcpkgTriplet: ${{ matrix.triplet }}
-          vcpkgGitCommitId: cdd51899f6ae3736bfbe936f9e387f86d4a63a58 #ec6fe06e8da05a8157dc8581fa96b36b571c1bd5 vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
+          vcpkgGitCommitId: ${{ matrix.vcpkgCommitId}} #cdd51899f6ae3736bfbe936f9e387f86d4a63a58 #ec6fe06e8da05a8157dc8581fa96b36b571c1bd5 vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
 
       - name: Cmake [vcpkg]
-        uses: lukka/run-cmake@v3.4
+        uses: lukka/run-cmake@v10 #3.4
         with:
           buildDirectory: ${{ runner.workspace }}/build
           cmakeBuildType: ${{ matrix.buildtype }}
-          cmakeGenerator: 'Ninja'  
-          cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
-          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          cmakeGenerator: "Ninja"
+          cmakeListsOrSettingsJson: "CMakeListsTxtBasic"
+          cmakeListsTxtPath: "${{ github.workspace }}/CMakeLists.txt"
           useVcpkgToolchainFile: true
-          
-
-
