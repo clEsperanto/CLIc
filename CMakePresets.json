@@ -1,0 +1,66 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 20,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "base",
+            "description": "Sets build and install directory",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/builds/${presetName}",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}"
+            },
+            "warnings": {
+                "dev": false
+            }
+        },
+        {
+            "name": "ninja-multi",
+            "description": "Sets ninja multi-configuration",
+            "inherits": [
+                "base"
+            ],
+            "generator": "Ninja Multi-Config"
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "core-build",
+            "configurePreset": "base",
+            "description": "inherit environment from base configuration",
+            "hidden": true,
+            "jobs": 6
+        },
+        {
+            "name": "ninja-release-build",
+            "configurePreset": "ninja-multi",
+            "description": "release build",
+            "inherits": "core-build",
+            "configuration": "Release"
+        },
+        {
+            "name": "ninja-debug-build",
+            "configurePreset": "ninja-multi",
+            "description": "release build",
+            "inherits": "core-build",
+            "configuration": "Debug"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "ninja-multi-release",
+            "configurePreset": "ninja-multi",
+            "configuration": "Release"
+        },
+        {
+            "name": "ninja-multi-debug",
+            "configurePreset": "ninja-multi",
+            "configuration": "debug"
+        }
+    ]
+}
