@@ -192,9 +192,9 @@ Operation::Kernel () const -> cl::Kernel
 auto
 Operation::MakePreamble () -> std::string
 {
-    std::string preamble =
+    std::string preamble = {
 #include "cle_preamble.h"
-        ;
+    };
     return preamble;
 }
 
