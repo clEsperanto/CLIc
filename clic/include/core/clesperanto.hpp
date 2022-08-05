@@ -46,22 +46,22 @@ class Clesperanto
     auto BinaryNot (const Image &, const Image &) -> void;
     auto BinarySubtract (const Image &, const Image &, const Image &) -> void;
     auto BinaryXor (const Image &, const Image &, const Image &) -> void;
-    auto BlockEnumerate (const Image &, const Image &, const Image &, const int & = 0) -> void; //! only 1d ?
+    auto BlockEnumerate (const Image &, const Image &, const Image &, const int & = 0) -> void; //! only 1d ? //! do not support IMAGE
 
     auto Copy (const Image &, const Image &) -> void;
-    auto ConnectedComponentLabelingBox (const Image &, const Image &) -> void; //! test in 3d behaviour?
+    auto ConnectedComponentLabelingBox (const Image &, const Image &) -> void;
     auto CloseIndexGapsInLabelMap (const Image &, const Image &, const int & = 4096) -> void;
 
     auto DilateSphere (const Image &, const Image &) -> void;
     auto DifferenceOfGaussian (const Image &, const Image &, const float & = 0, const float & = 0, const float & = 0, const float & = 1, const float & = 1, const float & = 0) -> void;
-    auto DetectMaximaBox (const Image &, const Image &, const int & = 0, const int & = 0, const int & = 0) -> void; //! unsigned not supported? //! image not supported
+    auto DetectMaximaBox (const Image &, const Image &) -> void;
     auto DivideImages (const Image &, const Image &, const Image &) -> void;
     auto DilateLabels (const Image &, const Image &, const int & = 1) -> void;
 
     auto ErodeSphere (const Image &, const Image &) -> void;
     auto Equal (const Image &, const Image &, const Image &) -> void;
     auto EqualConstant (const Image &, const Image &, const float & = 0) -> void;
-    auto ExtendLabelingViaVoronoi (const Image &, const Image &) -> void; //! test in 3d behaviour?
+    auto ExtendLabelingViaVoronoi (const Image &, const Image &) -> void;
 
     auto FlagExistingLabels (const Image &, const Image &) -> void;
 
@@ -77,7 +77,7 @@ class Clesperanto
     auto MaximumBox (const Image &, const Image &, const int & = 1, const int & = 1, const int & = 1) -> void;
     auto MinimumBox (const Image &, const Image &, const int & = 1, const int & = 1, const int & = 1) -> void;
     auto Mask (const Image &, const Image &, const Image &) -> void;
-    auto MaskedVoronoiLabeling (const Image &, const Image &, const Image &) -> void; //! test in 3d behaviour?
+    auto MaskedVoronoiLabeling (const Image &, const Image &, const Image &) -> void;
     auto MaximumZProjection (const Image &, const Image &) -> void;
     auto MaximumYProjection (const Image &, const Image &) -> void;
     auto MaximumXProjection (const Image &, const Image &) -> void;
@@ -93,8 +93,8 @@ class Clesperanto
     auto NotEqual (const Image &, const Image &, const Image &) -> void;
     auto NotEqualConstant (const Image &, const Image &, const float & = 0) -> void;
 
-    auto OnlyzeroOverwriteMaximumBox (const Image &, const Image &, const Image &) -> void;     //! test in 3d behaviour?
-    auto OnlyzeroOverwriteMaximumDiamond (const Image &, const Image &, const Image &) -> void; //! test in 3d behaviour?
+    auto OnlyzeroOverwriteMaximumBox (const Image &, const Image &, const Image &) -> void;
+    auto OnlyzeroOverwriteMaximumDiamond (const Image &, const Image &, const Image &) -> void;
 
     auto ReplaceIntensity (const Image &, const Image &, const float & = 0, const float & = 0) -> void;
     auto ReplaceIntensities (const Image &, const Image &, const Image &) -> void;

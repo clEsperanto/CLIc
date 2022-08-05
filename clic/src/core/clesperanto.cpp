@@ -437,12 +437,12 @@ Clesperanto::SetNonzeroPixelsToPixelindex (const Image &t_src, const Image &t_ds
 }
 
 auto
-Clesperanto::DetectMaximaBox (const Image &t_src, const Image &t_dst, const int &t_radius_x, const int &t_radius_y, const int &t_radius_z) -> void
+Clesperanto::DetectMaximaBox (const Image &t_src, const Image &t_dst) -> void
 {
     DetectMaximaKernel kernel (this->GetDevice ());
     kernel.SetInput (t_src);
     kernel.SetOutput (t_dst);
-    kernel.SetRadius (t_radius_x, t_radius_y, t_radius_z);
+    // kernel.SetRadius (t_radius_x, t_radius_y, t_radius_z);
     kernel.Execute ();
 }
 

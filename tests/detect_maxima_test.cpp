@@ -20,7 +20,7 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
     cle.GetDevice ()->WaitForKernelToFinish ();
     auto gpu_input = cle.Push<type> (input, shape, mem_type);
     auto gpu_output = cle.Create<type> (shape, mem_type);
-    cle.DetectMaximaBox (gpu_input, gpu_output, 0, 0, 0);
+    cle.DetectMaximaBox (gpu_input, gpu_output);
     auto output = cle.Pull<type> (gpu_output);
 
     return std::equal (output.begin (), output.end (), valid.begin ());
