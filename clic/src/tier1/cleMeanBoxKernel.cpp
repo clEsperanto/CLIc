@@ -3,6 +3,8 @@
 #include "cleMeanBoxKernel.hpp"
 #include "cleExecuteSeparableKernel.hpp"
 
+#include <algorithm>
+
 namespace cle
 {
 

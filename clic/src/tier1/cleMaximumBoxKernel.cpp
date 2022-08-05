@@ -3,6 +3,8 @@
 #include "cleMaximumBoxKernel.hpp"
 #include "cleExecuteSeparableKernel.hpp"
 
+#include <algorithm>
+
 namespace cle
 {
 

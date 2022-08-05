@@ -3,6 +3,8 @@
 #include "cleMinimumBoxKernel.hpp"
 #include "cleExecuteSeparableKernel.hpp"
 
+#include <algorithm>
+
 namespace cle
 {
 

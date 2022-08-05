@@ -1,25 +1,6 @@
 
 #include <random>
 
-#include "cleUtils.hpp"
-#include "clesperanto.hpp"
-
-template <class type>
-std::array<size_t, 3>
-generate_data (std::vector<type> &arr_1,
-               std::vector<type> &valid, size_t width, size_t height, size_t depth)
-{
-    arr_1.resize (width * height * depth);
-    valid.resize (width * height * depth);
-
-    arr_1 = { static_cast<type> (1.0), static_cast<type> (2.0), static_cast<type> (3.0), static_cast<type> (4.0), static_cast<type> (5.0), static_cast<type> (6.0), static_cast<type> (7.0), static_cast<type> (8.0), static_cast<type> (9.0), static_cast<type> (10.0), static_cast<type> (11.0), 12.0f }; // 6.0058594 skimage
-    valid = { static_cast<type> (0.0), static_cast<type> (0.0), static_cast<type> (0.0), static_cast<type> (0.0), static_cast<type> (0.0), static_cast<type> (0.0), static_cast<type> (1.0), static_cast<type> (1.0), static_cast<type> (1.0), static_cast<type> (1.0), static_cast<type> (1.0), 1.0f };    // 6.00392 clic
-
-    return std::array<size_t, 3>{ width, height, depth };
-}
-
-#include <random>
-
 #include "clesperanto.hpp"
 
 template <class type>

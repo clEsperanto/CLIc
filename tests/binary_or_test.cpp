@@ -1,8 +1,8 @@
 
 
-#include <random>
-
 #include "clesperanto.hpp"
+#include <algorithm>
+#include <random>
 
 template <class type>
 auto

@@ -1,48 +1,4 @@
 
-// #include <random>
-
-// #include "cleUtils.hpp"
-// #include "clesperanto.hpp"
-
-// template <class type>
-// std::array<size_t, 3>
-// generate_data (std::vector<type> &arr_1,
-//                std::vector<type> &valid, size_t width, size_t height, size_t depth)
-// {
-//     arr_1.resize (width * height * depth);
-//     valid.resize (width * height * depth);
-//     if (depth == 2)
-//         {
-//             arr_1 = { 0, 0, 0, 0, 0,
-//                       0, 0, 0, 1, 0,
-//                       0, 0, 0, 0, 0,
-//                       1, 1, 0, 1, 0,
-//                       0, 1, 0, 1, 1,
-//                       0, 1, 0, 0, 0 };
-//             valid = { 0, 0, 0, 0, 0,
-//                       0, 0, 0, 1, 0,
-//                       0, 0, 0, 0, 0,
-//                       2, 2, 0, 1, 0,
-//                       0, 2, 0, 1, 1,
-//                       0, 2, 0, 0, 0 };
-//         }
-//     else if (height == 3)
-//         {
-//             arr_1 = { 0, 1, 0, 0, 1,
-//                       0, 0, 1, 0, 1,
-//                       0, 0, 0, 0, 1 };
-//             valid = { 0, 1, 0, 0, 2,
-//                       0, 0, 1, 0, 2,
-//                       0, 0, 0, 0, 2 };
-//         }
-//     else
-//         {
-//             arr_1 = { 0, 1, 1, 0, 1 };
-//             valid = { 0, 1, 1, 0, 2 };
-//         }
-//     return std::array<size_t, 3>{ width, height, depth };
-// }
-
 #include <random>
 
 #include "clesperanto.hpp"

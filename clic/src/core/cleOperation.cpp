@@ -2,6 +2,7 @@
 #include "cleBackend.hpp"
 #include "cleMemory.hpp"
 
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <utility>
