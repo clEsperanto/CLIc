@@ -5,30 +5,31 @@
 namespace cle
 {
 
-GreaterConstantKernel::GreaterConstantKernel (const ProcessorPointer &device) : Operation (device, 3)
+GreaterConstantKernel::GreaterConstantKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
 {
-    std::string cl_header = {
+  std::string cl_header = {
 #include "cle_greater_constant.h"
-    };
-    this->SetSource ("greater_constant", cl_header);
+  };
+  this->SetSource("greater_constant", cl_header);
 }
 
 auto
-GreaterConstantKernel::SetInput (const Image &object) -> void
+GreaterConstantKernel::SetInput(const Image & object) -> void
 {
-    this->AddParameter ("src", object);
+  this->AddParameter("src", object);
 }
 
 auto
-GreaterConstantKernel::SetOutput (const Image &object) -> void
+GreaterConstantKernel::SetOutput(const Image & object) -> void
 {
-    this->AddParameter ("dst", object);
+  this->AddParameter("dst", object);
 }
 
 auto
-GreaterConstantKernel::SetScalar (const float &value) -> void
+GreaterConstantKernel::SetScalar(const float & value) -> void
 {
-    this->AddParameter ("scalar", value);
+  this->AddParameter("scalar", value);
 }
 
 } // namespace cle

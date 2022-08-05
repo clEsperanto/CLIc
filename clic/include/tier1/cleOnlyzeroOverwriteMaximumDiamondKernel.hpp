@@ -9,11 +9,14 @@ namespace cle
 
 class OnlyzeroOverwriteMaximumDiamondKernel : public Operation
 {
-  public:
-    explicit OnlyzeroOverwriteMaximumDiamondKernel (const ProcessorPointer &device);
-    auto SetInput (const Image &object) -> void;
-    auto SetOutput1 (const Image &object) -> void;
-    auto SetOutput2 (const Image &object) -> void;
+public:
+  explicit OnlyzeroOverwriteMaximumDiamondKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput1(const Image & object) -> void;
+  auto
+  SetOutput2(const Image & object) -> void;
 };
 
 } // namespace cle

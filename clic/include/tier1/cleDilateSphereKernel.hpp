@@ -9,10 +9,12 @@ namespace cle
 
 class DilateSphereKernel : public Operation
 {
-  public:
-    explicit DilateSphereKernel (const ProcessorPointer &device);
-    auto SetInput (const Image &object) -> void;
-    auto SetOutput (const Image &object) -> void;
+public:
+  explicit DilateSphereKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
 };
 
 } // namespace cle

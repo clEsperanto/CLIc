@@ -9,11 +9,14 @@ namespace cle
 
 class SmallerOrEqualConstantKernel : public Operation
 {
-  public:
-    explicit SmallerOrEqualConstantKernel (const ProcessorPointer &device);
-    auto SetInput (const Image &object) -> void;
-    auto SetOutput (const Image &object) -> void;
-    auto SetConstant (const float &value) -> void;
+public:
+  explicit SmallerOrEqualConstantKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
+  auto
+  SetConstant(const float & value) -> void;
 };
 
 } // namespace cle

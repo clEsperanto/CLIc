@@ -9,24 +9,25 @@
 namespace cle
 {
 
-DetectMaximaKernel::DetectMaximaKernel (const ProcessorPointer &device) : Operation (device, 2)
+DetectMaximaKernel::DetectMaximaKernel(const ProcessorPointer & device)
+  : Operation(device, 2)
 {
-    std::string cl_header_ = {
+  std::string cl_header_ = {
 #include "cle_detect_maxima.h"
-    };
-    this->SetSource ("detect_maxima", cl_header_);
+  };
+  this->SetSource("detect_maxima", cl_header_);
 }
 
 auto
-DetectMaximaKernel::SetInput (const Image &object) -> void
+DetectMaximaKernel::SetInput(const Image & object) -> void
 {
-    this->AddParameter ("src", object);
+  this->AddParameter("src", object);
 }
 
 auto
-DetectMaximaKernel::SetOutput (const Image &object) -> void
+DetectMaximaKernel::SetOutput(const Image & object) -> void
 {
-    this->AddParameter ("dst", object);
+  this->AddParameter("dst", object);
 }
 
 // remove radius

@@ -9,11 +9,14 @@ namespace cle
 
 class BinaryOrKernel : public Operation
 {
-  public:
-    explicit BinaryOrKernel (const ProcessorPointer &device);
-    auto SetInput1 (const Image &object) -> void;
-    auto SetInput2 (const Image &object) -> void;
-    auto SetOutput (const Image &object) -> void;
+public:
+  explicit BinaryOrKernel(const ProcessorPointer & device);
+  auto
+  SetInput1(const Image & object) -> void;
+  auto
+  SetInput2(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
 };
 
 } // namespace cle

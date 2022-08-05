@@ -5,30 +5,31 @@
 namespace cle
 {
 
-SmallerKernel::SmallerKernel (const ProcessorPointer &device) : Operation (device, 3)
+SmallerKernel::SmallerKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
 {
-    std::string cl_header = {
+  std::string cl_header = {
 #include "cle_smaller.h"
-    };
-    this->SetSource ("smaller", cl_header);
+  };
+  this->SetSource("smaller", cl_header);
 }
 
 auto
-SmallerKernel::SetInput1 (const Image &object) -> void
+SmallerKernel::SetInput1(const Image & object) -> void
 {
-    this->AddParameter ("src0", object);
+  this->AddParameter("src0", object);
 }
 
 auto
-SmallerKernel::SetInput2 (const Image &object) -> void
+SmallerKernel::SetInput2(const Image & object) -> void
 {
-    this->AddParameter ("src1", object);
+  this->AddParameter("src1", object);
 }
 
 auto
-SmallerKernel::SetOutput (const Image &object) -> void
+SmallerKernel::SetOutput(const Image & object) -> void
 {
-    this->AddParameter ("dst", object);
+  this->AddParameter("dst", object);
 }
 
 } // namespace cle

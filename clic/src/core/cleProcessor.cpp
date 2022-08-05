@@ -7,91 +7,86 @@
 namespace cle
 {
 
-Processor::Processor (const std::string &name)
+Processor::Processor(const std::string & name)
 {
-    this->SelectDevice (name);
+  this->SelectDevice(name);
 }
 
 auto
-Processor::Platform () const -> cl::Platform
+Processor::Platform() const -> cl::Platform
 {
-    return this->platform_;
+  return this->platform_;
 }
 
 auto
-Processor::Device () const -> cl::Device
+Processor::Device() const -> cl::Device
 {
-    return this->device_;
+  return this->device_;
 }
 
 auto
-Processor::Context () const -> cl::Context
+Processor::Context() const -> cl::Context
 {
-    return this->context_;
+  return this->context_;
 }
 
 auto
-Processor::Queue () const -> cl::CommandQueue
+Processor::Queue() const -> cl::CommandQueue
 {
-    return this->command_queue_;
+  return this->command_queue_;
 }
 
 auto
-Processor::ListAvailableDevices () -> std::vector<std::string>
+Processor::ListAvailableDevices() -> std::vector<std::string>
 {
-    std::vector<std::string> list_available_device;
-    const std::vector<cl::Platform> platforms_list
-        = Backend::GetPlatformPointerList ();
-    for (const auto &platform_ite : platforms_list)
+  std::vector<std::string>        list_available_device;
+  const std::vector<cl::Platform> platforms_list = Backend::GetPlatformPointerList();
+  for (const auto & platform_ite : platforms_list)
+  {
+    const std::vector<cl::Device> devices_list = Backend::GetDevicesListFromPlatform(platform_ite);
+    for (const auto & device_ite : devices_list)
+    {
+      if (Backend::DeviceIsAvailable(device_ite))
+      {
+        std::string device_name = Backend::GetDeviceName(device_ite);
+        list_available_device.push_back(device_name);
+      }
+    }
+  }
+  return list_available_device;
+}
+
+auto
+Processor::SelectDevice(const std::string name) -> void
+{
+  bool                            found_flag = false;
+  const std::vector<cl::Platform> platforms_list = Backend::GetPlatformPointerList();
+  for (const auto & platform_ite : platforms_list)
+  {
+    const std::vector<cl::Device> devices_list = Backend::GetDevicesListFromPlatform(platform_ite);
+    for (const auto & device_ite : devices_list)
+    {
+      if (Backend::DeviceIsAvailable(device_ite))
+      {
+        std::string device_name = Backend::GetDeviceName(device_ite);
+        if (device_name.find(name) != std::string::npos)
         {
-            const std::vector<cl::Device> devices_list
-                = Backend::GetDevicesListFromPlatform (platform_ite);
-            for (const auto &device_ite : devices_list)
-                {
-                    if (Backend::DeviceIsAvailable (device_ite))
-                        {
-                            std::string device_name = Backend::GetDeviceName (device_ite);
-                            list_available_device.push_back (device_name);
-                        }
-                }
+          this->device_ = device_ite;
+          this->platform_ = platform_ite;
+          this->context_ = Backend::GetContextPointer(this->device_);
+          this->command_queue_ = Backend::GetQueuePointer(this->device_, this->context_, true);
+          return;
         }
-    return list_available_device;
+      }
+    }
+  }
+  std::cerr << "Error: Fail to find/allocate requested device\n";
 }
 
 auto
-Processor::SelectDevice (const std::string name) -> void
+Processor::DeviceName() const -> std::string
 {
-    bool found_flag = false;
-    const std::vector<cl::Platform> platforms_list
-        = Backend::GetPlatformPointerList ();
-    for (const auto &platform_ite : platforms_list)
-        {
-            const std::vector<cl::Device> devices_list
-                = Backend::GetDevicesListFromPlatform (platform_ite);
-            for (const auto &device_ite : devices_list)
-                {
-                    if (Backend::DeviceIsAvailable (device_ite))
-                        {
-                            std::string device_name = Backend::GetDeviceName (device_ite);
-                            if (device_name.find (name) != std::string::npos)
-                                {
-                                    this->device_ = device_ite;
-                                    this->platform_ = platform_ite;
-                                    this->context_ = Backend::GetContextPointer (this->device_);
-                                    this->command_queue_
-                                        = Backend::GetQueuePointer (this->device_, this->context_, true);
-                                    return;
-                                }
-                        }
-                }
-        }
-    std::cerr << "Error: Fail to find/allocate requested device\n";
-}
-
-auto
-Processor::DeviceName () const -> std::string
-{
-    return Backend::GetDeviceName (this->device_);
+  return Backend::GetDeviceName(this->device_);
 }
 
 // auto
@@ -128,18 +123,18 @@ Processor::DeviceName () const -> std::string
 // }
 
 auto
-Processor::WaitForKernelToFinish (bool flag) -> void
+Processor::WaitForKernelToFinish(bool flag) -> void
 {
-    this->wait_to_finish_ = flag;
+  this->wait_to_finish_ = flag;
 }
 
 auto
-Processor::Finish () -> void
+Processor::Finish() -> void
 {
-    if (this->wait_to_finish_)
-        {
-            Backend::WaitQueueToFinish (this->Queue ());
-        }
+  if (this->wait_to_finish_)
+  {
+    Backend::WaitQueueToFinish(this->Queue());
+  }
 }
 
 }; // namespace cle

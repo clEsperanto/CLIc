@@ -8,11 +8,13 @@ namespace cle
 
 class AbsoluteKernel : public Operation
 {
-  public:
-    explicit AbsoluteKernel (const ProcessorPointer &device);
-    ~AbsoluteKernel () = default;
-    auto SetInput (const Image &object) -> void;
-    auto SetOutput (const Image &object) -> void;
+public:
+  explicit AbsoluteKernel(const ProcessorPointer & device);
+  ~AbsoluteKernel() = default;
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
 };
 
 } // namespace cle

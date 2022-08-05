@@ -8,10 +8,12 @@ namespace cle
 
 class MaximumZProjectionKernel : public Operation
 {
-  public:
-    explicit MaximumZProjectionKernel (const ProcessorPointer &device);
-    auto SetInput (const Image &object) -> void;
-    auto SetOutput (const Image &object) -> void;
+public:
+  explicit MaximumZProjectionKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
 };
 
 } // namespace cle

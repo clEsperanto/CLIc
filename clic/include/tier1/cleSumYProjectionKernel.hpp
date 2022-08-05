@@ -10,10 +10,12 @@ namespace cle
 
 class SumYProjectionKernel : public Operation
 {
-  public:
-    explicit SumYProjectionKernel (const ProcessorPointer &device);
-    auto SetInput (const Image &object) -> void;
-    auto SetOutput (const Image &object) -> void;
+public:
+  explicit SumYProjectionKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
 };
 
 } // namespace cle

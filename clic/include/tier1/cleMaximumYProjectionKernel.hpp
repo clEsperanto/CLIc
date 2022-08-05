@@ -8,10 +8,12 @@ namespace cle
 
 class MaximumYProjectionKernel : public Operation
 {
-  public:
-    explicit MaximumYProjectionKernel (const ProcessorPointer &device);
-    auto SetInput (const Image &object) -> void;
-    auto SetOutput (const Image &object) -> void;
+public:
+  explicit MaximumYProjectionKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
 };
 
 } // namespace cle

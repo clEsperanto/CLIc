@@ -8,11 +8,14 @@ namespace cle
 
 class MaskKernel : public Operation
 {
-  public:
-    explicit MaskKernel (const ProcessorPointer &device);
-    auto SetInput (const Image &object) -> void;
-    auto SetMask (const Image &object) -> void;
-    auto SetOutput (const Image &object) -> void;
+public:
+  explicit MaskKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetMask(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
 };
 
 } // namespace cle

@@ -16,83 +16,83 @@
 namespace cle
 {
 
-CloseIndexGapsInLabelMapKernel::CloseIndexGapsInLabelMapKernel (const ProcessorPointer &device) : Operation (device, 3)
+CloseIndexGapsInLabelMapKernel::CloseIndexGapsInLabelMapKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
+{}
+
+auto
+CloseIndexGapsInLabelMapKernel::SetInput(const Image & object) -> void
 {
+  this->AddParameter("src", object);
 }
 
 auto
-CloseIndexGapsInLabelMapKernel::SetInput (const Image &object) -> void
+CloseIndexGapsInLabelMapKernel::SetOutput(const Image & object) -> void
 {
-    this->AddParameter ("src", object);
+  this->AddParameter("dst", object);
 }
 
 auto
-CloseIndexGapsInLabelMapKernel::SetOutput (const Image &object) -> void
+CloseIndexGapsInLabelMapKernel::SetBlockSize(const int & size) -> void
 {
-    this->AddParameter ("dst", object);
+  this->block_size_ = size;
 }
 
 auto
-CloseIndexGapsInLabelMapKernel::SetBlockSize (const int &size) -> void
+CloseIndexGapsInLabelMapKernel::Execute() -> void
 {
-    this->block_size_ = size;
-}
+  auto src = this->GetImage("src");
+  auto dst = this->GetImage("dst");
 
-auto
-CloseIndexGapsInLabelMapKernel::Execute () -> void
-{
-    auto src = this->GetImage ("src");
-    auto dst = this->GetImage ("dst");
+  auto max_value_buffer = Memory::AllocateObject(this->Device());
 
-    auto max_value_buffer = Memory::AllocateObject (this->Device ());
+  MaximumOfAllPixelsKernel max_of_pixel_kernel(this->Device());
+  max_of_pixel_kernel.SetInput(*src);
+  max_of_pixel_kernel.SetOutput(max_value_buffer);
+  max_of_pixel_kernel.Execute();
 
-    MaximumOfAllPixelsKernel max_of_pixel_kernel (this->Device ());
-    max_of_pixel_kernel.SetInput (*src);
-    max_of_pixel_kernel.SetOutput (max_value_buffer);
-    max_of_pixel_kernel.Execute ();
+  float  max_value = Memory::ReadObject<float>(max_value_buffer).front();
+  size_t nb_indices = static_cast<size_t>(max_value) + 1;
 
-    float max_value = Memory::ReadObject<float> (max_value_buffer).front ();
-    size_t nb_indices = static_cast<size_t> (max_value) + 1;
+  std::array<size_t, 3> indices_dim = { nb_indices, 1, 1 };
+  auto                  flagged_indices = Memory::AllocateObject(this->Device(), indices_dim);
 
-    std::array<size_t, 3> indices_dim = { nb_indices, 1, 1 };
-    auto flagged_indices = Memory::AllocateObject (this->Device (), indices_dim);
+  FlagExistingLabelsKernel flag_labels_kernel(this->Device());
+  flag_labels_kernel.SetInput(*src);
+  flag_labels_kernel.SetOutput(flagged_indices);
+  flag_labels_kernel.Execute();
 
-    FlagExistingLabelsKernel flag_labels_kernel (this->Device ());
-    flag_labels_kernel.SetInput (*src);
-    flag_labels_kernel.SetOutput (flagged_indices);
-    flag_labels_kernel.Execute ();
+  SetColumnKernel set_column_kernel(this->Device());
+  set_column_kernel.SetInput(flagged_indices);
+  set_column_kernel.SetColumn(0);
+  set_column_kernel.SetValue(0);
+  set_column_kernel.Execute();
 
-    SetColumnKernel set_column_kernel (this->Device ());
-    set_column_kernel.SetInput (flagged_indices);
-    set_column_kernel.SetColumn (0);
-    set_column_kernel.SetValue (0);
-    set_column_kernel.Execute ();
+  size_t                nb_sums = static_cast<size_t>(nb_indices / this->block_size_) + 1;
+  std::array<size_t, 3> sums_dim = { nb_sums, 1, 1 };
+  auto                  block_sums = Memory::AllocateObject(this->Device(), sums_dim);
 
-    size_t nb_sums = static_cast<size_t> (nb_indices / this->block_size_) + 1;
-    std::array<size_t, 3> sums_dim = { nb_sums, 1, 1 };
-    auto block_sums = Memory::AllocateObject (this->Device (), sums_dim);
+  SumReductionXKernel sum_reduction_x_kernel(this->Device());
+  sum_reduction_x_kernel.SetInput(flagged_indices);
+  sum_reduction_x_kernel.SetOutput(block_sums);
+  sum_reduction_x_kernel.SetBlocksize(this->block_size_);
+  sum_reduction_x_kernel.Execute();
 
-    SumReductionXKernel sum_reduction_x_kernel (this->Device ());
-    sum_reduction_x_kernel.SetInput (flagged_indices);
-    sum_reduction_x_kernel.SetOutput (block_sums);
-    sum_reduction_x_kernel.SetBlocksize (this->block_size_);
-    sum_reduction_x_kernel.Execute ();
+  std::array<size_t, 3> new_indices_dim = { nb_indices, 1, 1 };
+  auto                  new_indices = Memory::AllocateObject(this->Device(), new_indices_dim);
 
-    std::array<size_t, 3> new_indices_dim = { nb_indices, 1, 1 };
-    auto new_indices = Memory::AllocateObject (this->Device (), new_indices_dim);
+  BlockEnumerateKernel block_enumerate_kernel(this->Device());
+  block_enumerate_kernel.SetInput(flagged_indices);
+  block_enumerate_kernel.SetInputSums(block_sums);
+  block_enumerate_kernel.SetOutput(new_indices);
+  block_enumerate_kernel.SetBlocksize(this->block_size_);
+  block_enumerate_kernel.Execute();
 
-    BlockEnumerateKernel block_enumerate_kernel (this->Device ());
-    block_enumerate_kernel.SetInput (flagged_indices);
-    block_enumerate_kernel.SetInputSums (block_sums);
-    block_enumerate_kernel.SetOutput (new_indices);
-    block_enumerate_kernel.SetBlocksize (this->block_size_);
-    block_enumerate_kernel.Execute ();
-
-    ReplaceIntensitiesKernel replace_intensities_kernel (this->Device ());
-    replace_intensities_kernel.SetInput (*src);
-    replace_intensities_kernel.SetOutput (*dst);
-    replace_intensities_kernel.SetMap (new_indices);
-    replace_intensities_kernel.Execute ();
+  ReplaceIntensitiesKernel replace_intensities_kernel(this->Device());
+  replace_intensities_kernel.SetInput(*src);
+  replace_intensities_kernel.SetOutput(*dst);
+  replace_intensities_kernel.SetMap(new_indices);
+  replace_intensities_kernel.Execute();
 }
 
 } // namespace cle

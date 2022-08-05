@@ -5,30 +5,31 @@
 namespace cle
 {
 
-SmallerOrEqualConstantKernel::SmallerOrEqualConstantKernel (const ProcessorPointer &device) : Operation (device, 3)
+SmallerOrEqualConstantKernel::SmallerOrEqualConstantKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
 {
-    std::string cl_header = {
+  std::string cl_header = {
 #include "cle_smaller_or_equal_constant.h"
-    };
-    this->SetSource ("smaller_or_equal_constant", cl_header);
+  };
+  this->SetSource("smaller_or_equal_constant", cl_header);
 }
 
 auto
-SmallerOrEqualConstantKernel::SetInput (const Image &object) -> void
+SmallerOrEqualConstantKernel::SetInput(const Image & object) -> void
 {
-    this->AddParameter ("src", object);
+  this->AddParameter("src", object);
 }
 
 auto
-SmallerOrEqualConstantKernel::SetOutput (const Image &object) -> void
+SmallerOrEqualConstantKernel::SetOutput(const Image & object) -> void
 {
-    this->AddParameter ("dst", object);
+  this->AddParameter("dst", object);
 }
 
 auto
-SmallerOrEqualConstantKernel::SetConstant (const float &value) -> void
+SmallerOrEqualConstantKernel::SetConstant(const float & value) -> void
 {
-    this->AddParameter ("scalar", value);
+  this->AddParameter("scalar", value);
 }
 
 } // namespace cle

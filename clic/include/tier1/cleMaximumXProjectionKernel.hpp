@@ -8,11 +8,13 @@ namespace cle
 
 class MaximumXProjectionKernel : public Operation
 {
-  public:
-    explicit MaximumXProjectionKernel (const ProcessorPointer &device);
-    ~MaximumXProjectionKernel () = default;
-    auto SetInput (const Image &object) -> void;
-    auto SetOutput (const Image &object) -> void;
+public:
+  explicit MaximumXProjectionKernel(const ProcessorPointer & device);
+  ~MaximumXProjectionKernel() = default;
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
 };
 
 } // namespace cle

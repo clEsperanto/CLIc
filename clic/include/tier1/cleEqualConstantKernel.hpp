@@ -9,11 +9,14 @@ namespace cle
 
 class EqualConstantKernel : public Operation
 {
-  public:
-    explicit EqualConstantKernel (const ProcessorPointer &device);
-    auto SetInput (const Image &object) -> void;
-    auto SetOutput (const Image &object) -> void;
-    auto SetScalar (const float &value) -> void;
+public:
+  explicit EqualConstantKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
+  auto
+  SetScalar(const float & value) -> void;
 };
 
 } // namespace cle

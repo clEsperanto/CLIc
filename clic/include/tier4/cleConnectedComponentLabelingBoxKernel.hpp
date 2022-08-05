@@ -9,11 +9,14 @@ namespace cle
 
 class ConnectedComponentLabelingBoxKernel : public Operation
 {
-  public:
-    explicit ConnectedComponentLabelingBoxKernel (const ProcessorPointer &device);
-    auto SetInput (const Image &object) -> void;
-    auto SetOutput (const Image &object) -> void;
-    auto Execute () -> void override;
+public:
+  explicit ConnectedComponentLabelingBoxKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
+  auto
+  Execute() -> void override;
 };
 
 } // namespace cle

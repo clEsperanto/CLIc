@@ -10,10 +10,12 @@ namespace cle
 
 class MinimumYProjectionKernel : public Operation
 {
-  public:
-    explicit MinimumYProjectionKernel (const ProcessorPointer &device);
-    auto SetInput (const Image &object) -> void;
-    auto SetOutput (const Image &object) -> void;
+public:
+  explicit MinimumYProjectionKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
 };
 
 } // namespace cle

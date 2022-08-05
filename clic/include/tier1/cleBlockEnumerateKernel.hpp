@@ -12,12 +12,16 @@ namespace cle
 class BlockEnumerateKernel : public Operation
 {
 
-  public:
-    explicit BlockEnumerateKernel (const ProcessorPointer &device);
-    auto SetInput (const Image &object) -> void;
-    auto SetInputSums (const Image &object) -> void;
-    auto SetOutput (const Image &object) -> void;
-    auto SetBlocksize (const int &value) -> void;
+public:
+  explicit BlockEnumerateKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetInputSums(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
+  auto
+  SetBlocksize(const int & value) -> void;
 };
 
 } // namespace cle

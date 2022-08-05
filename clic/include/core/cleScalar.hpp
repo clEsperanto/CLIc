@@ -1,5 +1,5 @@
-#ifndef CLIC_INCLUDE_CORE_CLESCALAR_HPP
-#define CLIC_INCLUDE_CORE_CLESCALAR_HPP
+#ifndef __CORE_CLESCALAR_HPP
+#define __CORE_CLESCALAR_HPP
 
 #include "cleLightObject.hpp"
 
@@ -9,95 +9,104 @@ namespace cle
 template <class Type>
 class Scalar : public LightObject
 {
-  public:
-    Scalar () = delete;
-    ~Scalar () = default;
-    Scalar (const Scalar &obj) = default;
-    Scalar (Scalar &&obj) = default;
-    auto operator= (const Scalar &obj) -> Scalar & = default;
-    auto operator= (Scalar &&obj) -> Scalar & = default;
-    explicit Scalar (const Type &data);
+public:
+  Scalar() = delete;
+  ~Scalar() = default;
+  Scalar(const Scalar & obj) = default;
+  Scalar(Scalar && obj) = default;
+  auto
+  operator=(const Scalar & obj) -> Scalar & = default;
+  auto
+  operator=(Scalar && obj) -> Scalar & = default;
+  explicit Scalar(const Type & data);
 
-    [[nodiscard]] auto Get () const -> Type;
-    [[nodiscard]] auto Ndim () const -> unsigned int override;
-    [[nodiscard]] auto Shape () const -> ShapeArray override;
-    [[nodiscard]] auto ObjectInfo () const -> std::string override;
-    [[nodiscard]] auto DataInfo () const -> std::string override;
-    [[nodiscard]] auto DataInfoShort () const -> std::string override;
-    [[nodiscard]] auto Bytes () const -> size_t override;
-    [[nodiscard]] auto ToString () const -> std::string override;
+  [[nodiscard]] auto
+  Get() const -> Type;
+  [[nodiscard]] auto
+  Ndim() const -> unsigned int override;
+  [[nodiscard]] auto
+  Shape() const -> ShapeArray override;
+  [[nodiscard]] auto
+  ObjectInfo() const -> std::string override;
+  [[nodiscard]] auto
+  DataInfo() const -> std::string override;
+  [[nodiscard]] auto
+  DataInfoShort() const -> std::string override;
+  [[nodiscard]] auto
+  Bytes() const -> size_t override;
+  [[nodiscard]] auto
+  ToString() const -> std::string override;
 
-  private:
-    Type data_;
+private:
+  Type data_;
 };
 
 template <class Type>
-Scalar<Type>::Scalar (const Type &data) : data_ (data)
+Scalar<Type>::Scalar(const Type & data)
+  : data_(data)
 {
-    static_assert (std::is_fundamental<Type>::value, "Scalar can only be of native type");
+  static_assert(std::is_fundamental<Type>::value, "Scalar can only be of native type");
 }
 
 template <class Type>
 auto
-Scalar<Type>::Get () const -> Type
+Scalar<Type>::Get() const -> Type
 {
-    return this->data_;
+  return this->data_;
 }
 
 template <class Type>
 auto
-Scalar<Type>::Ndim () const -> unsigned int
+Scalar<Type>::Ndim() const -> unsigned int
 {
-    return 1;
+  return 1;
 }
 
 template <class Type>
 auto
-Scalar<Type>::Shape () const -> ShapeArray
+Scalar<Type>::Shape() const -> ShapeArray
 {
-    return { 1, 1, 1 };
+  return { 1, 1, 1 };
 }
 
 template <class Type>
 auto
-Scalar<Type>::ObjectInfo () const -> std::string
+Scalar<Type>::ObjectInfo() const -> std::string
 {
-    return "scalar";
+  return "scalar";
 }
 
 template <class Type>
 auto
-Scalar<Type>::DataInfo () const -> std::string
+Scalar<Type>::DataInfo() const -> std::string
 {
-    return typeid (this->Get ()).name ();
+  return typeid(this->Get()).name();
 }
 
 template <class Type>
 auto
-Scalar<Type>::DataInfoShort () const -> std::string
+Scalar<Type>::DataInfoShort() const -> std::string
 {
-    return typeid (this->Get ()).name ();
+  return typeid(this->Get()).name();
 }
 
 template <class Type>
 auto
-Scalar<Type>::Bytes () const -> size_t
+Scalar<Type>::Bytes() const -> size_t
 {
-    return sizeof (this->Get ());
+  return sizeof(this->Get());
 }
 
 template <class Type>
 auto
-Scalar<Type>::ToString () const -> std::string
+Scalar<Type>::ToString() const -> std::string
 {
-    std::string str = this->ObjectInfo () + "(" + this->DataInfo () + ")";
-    str += " of shape=["
-           + std::to_string (this->Shape ()[0]) + ","
-           + std::to_string (this->Shape ()[1]) + ","
-           + std::to_string (this->Shape ()[2]) + "]";
-    return str;
+  std::string str = this->ObjectInfo() + "(" + this->DataInfo() + ")";
+  str += " of shape=[" + std::to_string(this->Shape()[0]) + "," + std::to_string(this->Shape()[1]) + "," +
+         std::to_string(this->Shape()[2]) + "]";
+  return str;
 }
 
 } // namespace cle
 
-#endif // CLIC_INCLUDE_CORE_CLESCALAR_HPP
+#endif // __CORE_CLESCALAR_HPP

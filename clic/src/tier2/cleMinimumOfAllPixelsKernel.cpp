@@ -9,57 +9,57 @@
 namespace cle
 {
 
-MinimumOfAllPixelsKernel::MinimumOfAllPixelsKernel (const ProcessorPointer &device) : Operation (device, 2)
+MinimumOfAllPixelsKernel::MinimumOfAllPixelsKernel(const ProcessorPointer & device)
+  : Operation(device, 2)
+{}
+
+auto
+MinimumOfAllPixelsKernel::SetInput(const Image & object) -> void
 {
+  this->AddParameter("src", object);
 }
 
 auto
-MinimumOfAllPixelsKernel::SetInput (const Image &object) -> void
+MinimumOfAllPixelsKernel::SetOutput(const Image & object) -> void
 {
-    this->AddParameter ("src", object);
+  this->AddParameter("dst", object);
 }
 
 auto
-MinimumOfAllPixelsKernel::SetOutput (const Image &object) -> void
+MinimumOfAllPixelsKernel::Execute() -> void
 {
-    this->AddParameter ("dst", object);
-}
+  auto                  src = this->GetImage("src");
+  auto                  dst = this->GetImage("dst");
+  std::array<size_t, 3> dim = src->Shape();
 
-auto
-MinimumOfAllPixelsKernel::Execute () -> void
-{
-    auto src = this->GetImage ("src");
-    auto dst = this->GetImage ("dst");
-    std::array<size_t, 3> dim = src->Shape ();
+  if (dim[2] > 1)
+  {
+    dim[2] = 1;
+    auto temp = Memory::AllocateObject(this->Device(), dim, dst->BitType().Get(), dst->MemType().Get());
 
-    if (dim[2] > 1)
-        {
-            dim[2] = 1;
-            auto temp = Memory::AllocateObject (this->Device (), dim, dst->BitType ().Get (), dst->MemType ().Get ());
+    MinimumZProjectionKernel kernel(this->Device());
+    kernel.SetInput(*src);
+    kernel.SetOutput(temp);
+    kernel.Execute();
+    src = std::make_shared<Image>(temp);
+  }
 
-            MinimumZProjectionKernel kernel (this->Device ());
-            kernel.SetInput (*src);
-            kernel.SetOutput (temp);
-            kernel.Execute ();
-            src = std::make_shared<Image> (temp);
-        }
+  if (dim[1] > 1)
+  {
+    dim[1] = 1;
+    auto temp = Memory::AllocateObject(this->Device(), dim, dst->BitType().Get(), dst->MemType().Get());
 
-    if (dim[1] > 1)
-        {
-            dim[1] = 1;
-            auto temp = Memory::AllocateObject (this->Device (), dim, dst->BitType ().Get (), dst->MemType ().Get ());
+    MinimumYProjectionKernel kernel(this->Device());
+    kernel.SetInput(*src);
+    kernel.SetOutput(temp);
+    kernel.Execute();
+    src = std::make_shared<Image>(temp);
+  }
 
-            MinimumYProjectionKernel kernel (this->Device ());
-            kernel.SetInput (*src);
-            kernel.SetOutput (temp);
-            kernel.Execute ();
-            src = std::make_shared<Image> (temp);
-        }
-
-    MinimumXProjectionKernel kernel (this->Device ());
-    kernel.SetInput (*src);
-    kernel.SetOutput (*dst);
-    kernel.Execute ();
+  MinimumXProjectionKernel kernel(this->Device());
+  kernel.SetInput(*src);
+  kernel.SetOutput(*dst);
+  kernel.Execute();
 }
 
 } // namespace cle

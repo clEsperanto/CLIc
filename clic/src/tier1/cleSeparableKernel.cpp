@@ -3,38 +3,38 @@
 namespace cle
 {
 
-SeparableKernel::SeparableKernel (const ProcessorPointer &device) : Operation (device, 5)
+SeparableKernel::SeparableKernel(const ProcessorPointer & device)
+  : Operation(device, 5)
+{}
+
+auto
+SeparableKernel::SetInput(const Image & object) -> void
 {
+  this->AddParameter("src", object);
 }
 
 auto
-SeparableKernel::SetInput (const Image &object) -> void
+SeparableKernel::SetOutput(const Image & object) -> void
 {
-    this->AddParameter ("src", object);
+  this->AddParameter("dst", object);
 }
 
 auto
-SeparableKernel::SetOutput (const Image &object) -> void
+SeparableKernel::SetSigma(const float & sigma) -> void
 {
-    this->AddParameter ("dst", object);
+  this->AddParameter("s", sigma);
 }
 
 auto
-SeparableKernel::SetSigma (const float &sigma) -> void
+SeparableKernel::SetSize(const int & radius) -> void
 {
-    this->AddParameter ("s", sigma);
+  this->AddParameter("N", radius);
 }
 
 auto
-SeparableKernel::SetSize (const int &radius) -> void
+SeparableKernel::SetDimension(const int & dimension) -> void
 {
-    this->AddParameter ("N", radius);
-}
-
-auto
-SeparableKernel::SetDimension (const int &dimension) -> void
-{
-    this->AddParameter ("dim", dimension);
+  this->AddParameter("dim", dimension);
 }
 
 } // namespace cle

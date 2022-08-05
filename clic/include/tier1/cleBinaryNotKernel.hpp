@@ -9,10 +9,12 @@ namespace cle
 
 class BinaryNotKernel : public Operation
 {
-  public:
-    explicit BinaryNotKernel (const ProcessorPointer &device);
-    auto SetInput (const Image &object) -> void;
-    auto SetOutput (const Image &object) -> void;
+public:
+  explicit BinaryNotKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
 };
 
 } // namespace cle

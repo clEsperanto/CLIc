@@ -9,15 +9,19 @@ namespace cle
 
 class DilateLabelsKernel : public Operation
 {
-  public:
-    explicit DilateLabelsKernel (const ProcessorPointer &device);
-    auto SetInput (const Image &object) -> void;
-    auto SetOutput (const Image &object) -> void;
-    auto SetRadius (const int &radius) -> void;
-    auto Execute () -> void override;
+public:
+  explicit DilateLabelsKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
+  auto
+  SetRadius(const int & radius) -> void;
+  auto
+  Execute() -> void override;
 
-  private:
-    int radius_ = 1;
+private:
+  int radius_ = 1;
 };
 
 } // namespace cle

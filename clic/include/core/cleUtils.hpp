@@ -36,383 +36,383 @@ namespace cle
 
 struct DeviceType
 {
-    [[nodiscard]] auto
-    IsCPU () const -> bool
-    {
-        return type == CL_DEVICE_TYPE_CPU;
-    }
-    [[nodiscard]] auto
-    IsGPU () const -> bool
-    {
-        return type == CL_DEVICE_TYPE_GPU;
-    }
-    void
-    UseAny ()
-    {
-        type = CL_DEVICE_TYPE_ALL;
-    }
-    void
-    UseCPU ()
-    {
-        type = CL_DEVICE_TYPE_CPU;
-    }
-    void
-    UseGPU ()
-    {
-        type = CL_DEVICE_TYPE_GPU;
-    }
-    void
-    Set (cl_device_type t)
-    {
-        type = t;
-    }
-    [[nodiscard]] auto
-    Get () const -> cl_device_type
-    {
-        return type;
-    }
+  [[nodiscard]] auto
+  IsCPU() const -> bool
+  {
+    return type == CL_DEVICE_TYPE_CPU;
+  }
+  [[nodiscard]] auto
+  IsGPU() const -> bool
+  {
+    return type == CL_DEVICE_TYPE_GPU;
+  }
+  void
+  UseAny()
+  {
+    type = CL_DEVICE_TYPE_ALL;
+  }
+  void
+  UseCPU()
+  {
+    type = CL_DEVICE_TYPE_CPU;
+  }
+  void
+  UseGPU()
+  {
+    type = CL_DEVICE_TYPE_GPU;
+  }
+  void
+  Set(cl_device_type t)
+  {
+    type = t;
+  }
+  [[nodiscard]] auto
+  Get() const -> cl_device_type
+  {
+    return type;
+  }
 
-    cl_device_type type = CL_DEVICE_TYPE_ALL;
+  cl_device_type type = CL_DEVICE_TYPE_ALL;
 };
 
 struct MemAllocType
 {
-    void
-    UseNone ()
-    {
-        type = 0;
-    }
-    void
-    UseHostPointer ()
-    {
-        type = CL_MEM_USE_HOST_PTR;
-    }
-    void
-    AllocateHostPointer ()
-    {
-        type = CL_MEM_ALLOC_HOST_PTR;
-    }
-    void
-    UseBest ()
-    {
-        type = CL_MEM_USE_HOST_PTR;
-    }
-    [[nodiscard]] auto
-    Get () const -> cl_mem_flags
-    {
-        return type;
-    }
-    void
-    Set (cl_mem_flags t)
-    {
-        type = t;
-    }
+  void
+  UseNone()
+  {
+    type = 0;
+  }
+  void
+  UseHostPointer()
+  {
+    type = CL_MEM_USE_HOST_PTR;
+  }
+  void
+  AllocateHostPointer()
+  {
+    type = CL_MEM_ALLOC_HOST_PTR;
+  }
+  void
+  UseBest()
+  {
+    type = CL_MEM_USE_HOST_PTR;
+  }
+  [[nodiscard]] auto
+  Get() const -> cl_mem_flags
+  {
+    return type;
+  }
+  void
+  Set(cl_mem_flags t)
+  {
+    type = t;
+  }
 
-    cl_mem_flags type = 0;
+  cl_mem_flags type = 0;
 };
 
 struct HostAccessType
 {
-    void
-    ReadOnly ()
-    {
-        type = CL_MEM_HOST_READ_ONLY;
-    }
-    void
-    WriteOnly ()
-    {
-        type = CL_MEM_HOST_WRITE_ONLY;
-    }
-    void
-    ReadWrite ()
-    {
-        type = 0;
-    }
-    void
-    NoAccess ()
-    {
-        type = CL_MEM_HOST_NO_ACCESS;
-    }
-    [[nodiscard]] auto
-    Get () const -> cl_mem_flags
-    {
-        return type;
-    }
-    void
-    Set (cl_mem_flags t)
-    {
-        type = t;
-    }
+  void
+  ReadOnly()
+  {
+    type = CL_MEM_HOST_READ_ONLY;
+  }
+  void
+  WriteOnly()
+  {
+    type = CL_MEM_HOST_WRITE_ONLY;
+  }
+  void
+  ReadWrite()
+  {
+    type = 0;
+  }
+  void
+  NoAccess()
+  {
+    type = CL_MEM_HOST_NO_ACCESS;
+  }
+  [[nodiscard]] auto
+  Get() const -> cl_mem_flags
+  {
+    return type;
+  }
+  void
+  Set(cl_mem_flags t)
+  {
+    type = t;
+  }
 
-    cl_mem_flags type = 0;
+  cl_mem_flags type = 0;
 };
 
 struct KernelAccessType
 {
-    void
-    ReadOnly ()
-    {
-        type = CL_MEM_READ_ONLY;
-    }
-    void
-    WriteOnly ()
-    {
-        type = CL_MEM_WRITE_ONLY;
-    }
-    void
-    ReadWrite ()
-    {
-        type = CL_MEM_READ_WRITE;
-    }
-    [[nodiscard]] auto
-    Get () const -> cl_mem_flags
-    {
-        return type;
-    }
-    void
-    Set (cl_mem_flags t)
-    {
-        type = t;
-    }
+  void
+  ReadOnly()
+  {
+    type = CL_MEM_READ_ONLY;
+  }
+  void
+  WriteOnly()
+  {
+    type = CL_MEM_WRITE_ONLY;
+  }
+  void
+  ReadWrite()
+  {
+    type = CL_MEM_READ_WRITE;
+  }
+  [[nodiscard]] auto
+  Get() const -> cl_mem_flags
+  {
+    return type;
+  }
+  void
+  Set(cl_mem_flags t)
+  {
+    type = t;
+  }
 
-    cl_mem_flags type = CL_MEM_READ_WRITE;
+  cl_mem_flags type = CL_MEM_READ_WRITE;
 };
 
 struct ObjectType
 {
-    [[nodiscard]] auto
-    IsImage () const -> bool
+  [[nodiscard]] auto
+  IsImage() const -> bool
+  {
+    return type != CL_MEM_OBJECT_BUFFER;
+  }
+  [[nodiscard]] auto
+  IsBuffer() const -> bool
+  {
+    return type == CL_MEM_OBJECT_BUFFER;
+  }
+  void
+  Set(cl_mem_object_type t)
+  {
+    type = t;
+  }
+  [[nodiscard]] auto
+  Str() const -> std::string
+  {
+    switch (type)
     {
-        return type != CL_MEM_OBJECT_BUFFER;
+      case CL_MEM_OBJECT_BUFFER:
+        return "buffer";
+      case CL_MEM_OBJECT_IMAGE1D:
+        return "image1d";
+      case CL_MEM_OBJECT_IMAGE2D:
+        return "image2d";
+      case CL_MEM_OBJECT_IMAGE3D:
+        return "image3d";
+      default:
+        return "unknown";
     }
-    [[nodiscard]] auto
-    IsBuffer () const -> bool
-    {
-        return type == CL_MEM_OBJECT_BUFFER;
-    }
-    void
-    Set (cl_mem_object_type t)
-    {
-        type = t;
-    }
-    [[nodiscard]] auto
-    Str () const -> std::string
-    {
-        switch (type)
-            {
-            case CL_MEM_OBJECT_BUFFER:
-                return "buffer";
-            case CL_MEM_OBJECT_IMAGE1D:
-                return "image1d";
-            case CL_MEM_OBJECT_IMAGE2D:
-                return "image2d";
-            case CL_MEM_OBJECT_IMAGE3D:
-                return "image3d";
-            default:
-                return "unknown";
-            }
-    }
-    [[nodiscard]] auto
-    Get () const -> cl_mem_object_type
-    {
-        return type;
-    };
+  }
+  [[nodiscard]] auto
+  Get() const -> cl_mem_object_type
+  {
+    return type;
+  };
 
-    cl_mem_object_type type = CL_MEM_OBJECT_BUFFER;
+  cl_mem_object_type type = CL_MEM_OBJECT_BUFFER;
 };
 
 struct ChannelsType
 {
-    void
-    Set (int nb_channels)
+  void
+  Set(int nb_channels)
+  {
+    switch (nb_channels)
     {
-        switch (nb_channels)
-            {
-            case 1:
-                type = CL_DEPTH;
-            case 3:
-                type = CL_RGB;
-            case 4:
-                type = CL_RGBA;
-            default:
-                type = CL_INTENSITY;
-            }
+      case 1:
+        type = CL_DEPTH;
+      case 3:
+        type = CL_RGB;
+      case 4:
+        type = CL_RGBA;
+      default:
+        type = CL_INTENSITY;
     }
-    [[nodiscard]] auto
-    GetNbChannels () const -> int
+  }
+  [[nodiscard]] auto
+  GetNbChannels() const -> int
+  {
+    switch (type)
     {
-        switch (type)
-            {
-            case CL_DEPTH:
-                return 1;
-            case CL_RGB:
-                return 3;
-            case CL_RGBA:
-                return 4;
-            default:
-                return 0;
-            }
+      case CL_DEPTH:
+        return 1;
+      case CL_RGB:
+        return 3;
+      case CL_RGBA:
+        return 4;
+      default:
+        return 0;
     }
-    [[nodiscard]] auto
-    Get () const -> cl_channel_order
-    {
-        return type;
-    }
+  }
+  [[nodiscard]] auto
+  Get() const -> cl_channel_order
+  {
+    return type;
+  }
 
-    cl_channel_order type = CL_DEPTH;
+  cl_channel_order type = CL_DEPTH;
 };
 
 struct DataType
 {
-    template <class T>
-    void
-    Set ()
+  template <class T>
+  void
+  Set()
+  {
+    static_assert(std::is_fundamental<T>::value, "Object can only be of native type");
+    if (std::is_same<T, float>::value)
     {
-        static_assert (std::is_fundamental<T>::value, "Object can only be of native type");
-        if (std::is_same<T, float>::value)
-            {
-                type = CL_FLOAT;
-                return;
-            }
-        if (std::is_same<T, int>::value)
-            {
-                type = CL_SIGNED_INT32;
-                return;
-            }
-        if (std::is_same<T, unsigned int>::value)
-            {
-                type = CL_UNSIGNED_INT32;
-                return;
-            }
-        if (std::is_same<T, char>::value)
-            {
-                type = CL_SIGNED_INT8;
-                return;
-            }
-        if (std::is_same<T, unsigned char>::value)
-            {
-                type = CL_UNSIGNED_INT8;
-                return;
-            }
-        if (std::is_same<T, short>::value)
-            {
-                type = CL_SIGNED_INT16;
-                return;
-            }
-        if (std::is_same<T, unsigned short>::value)
-            {
-                type = CL_UNSIGNED_INT16;
-                return;
-            }
-        type = CL_FLOAT;
+      type = CL_FLOAT;
+      return;
     }
-    void
-    Set (cl_channel_type t)
+    if (std::is_same<T, int>::value)
     {
-        type = t;
+      type = CL_SIGNED_INT32;
+      return;
     }
-    [[nodiscard]] auto
-    Str () const -> std::string
+    if (std::is_same<T, unsigned int>::value)
     {
-        switch (type)
-            {
-            case CL_SIGNED_INT8:
-                return "char";
-            case CL_SIGNED_INT16:
-                return "short";
-            case CL_SIGNED_INT32:
-                return "int";
-            case CL_UNSIGNED_INT8:
-                return "uchar";
-            case CL_UNSIGNED_INT16:
-                return "ushort";
-            case CL_UNSIGNED_INT32:
-                return "uint";
-            case CL_FLOAT:
-                return "float";
-            default:
-                return "unknown";
-            }
+      type = CL_UNSIGNED_INT32;
+      return;
     }
-    [[nodiscard]] auto
-    Str_s () const -> std::string
+    if (std::is_same<T, char>::value)
     {
-        switch (type)
-            {
-            case CL_SIGNED_INT8:
-                return "c";
-            case CL_SIGNED_INT16:
-                return "s";
-            case CL_SIGNED_INT32:
-                return "i";
-            case CL_UNSIGNED_INT8:
-                return "uc";
-            case CL_UNSIGNED_INT16:
-                return "us";
-            case CL_UNSIGNED_INT32:
-                return "ui";
-            case CL_FLOAT:
-                return "f";
-            default:
-                return "unknown";
-            }
+      type = CL_SIGNED_INT8;
+      return;
     }
-    [[nodiscard]] auto
-    Bytes () const -> size_t
+    if (std::is_same<T, unsigned char>::value)
     {
-        switch (type)
-            {
-            case CL_SIGNED_INT8:
-                return sizeof (int8_t);
-            case CL_SIGNED_INT16:
-                return sizeof (int16_t);
-            case CL_SIGNED_INT32:
-                return sizeof (int32_t);
-            case CL_UNSIGNED_INT8:
-                return sizeof (uint8_t);
-            case CL_UNSIGNED_INT16:
-                return sizeof (uint16_t);
-            case CL_UNSIGNED_INT32:
-                return sizeof (uint32_t);
-            case CL_FLOAT:
-                return sizeof (float);
-            default:
-                return sizeof (float);
-            }
+      type = CL_UNSIGNED_INT8;
+      return;
     }
-    [[nodiscard]] auto
-    Get () const -> cl_channel_type
+    if (std::is_same<T, short>::value)
     {
-        return type;
+      type = CL_SIGNED_INT16;
+      return;
     }
+    if (std::is_same<T, unsigned short>::value)
+    {
+      type = CL_UNSIGNED_INT16;
+      return;
+    }
+    type = CL_FLOAT;
+  }
+  void
+  Set(cl_channel_type t)
+  {
+    type = t;
+  }
+  [[nodiscard]] auto
+  Str() const -> std::string
+  {
+    switch (type)
+    {
+      case CL_SIGNED_INT8:
+        return "char";
+      case CL_SIGNED_INT16:
+        return "short";
+      case CL_SIGNED_INT32:
+        return "int";
+      case CL_UNSIGNED_INT8:
+        return "uchar";
+      case CL_UNSIGNED_INT16:
+        return "ushort";
+      case CL_UNSIGNED_INT32:
+        return "uint";
+      case CL_FLOAT:
+        return "float";
+      default:
+        return "unknown";
+    }
+  }
+  [[nodiscard]] auto
+  Str_s() const -> std::string
+  {
+    switch (type)
+    {
+      case CL_SIGNED_INT8:
+        return "c";
+      case CL_SIGNED_INT16:
+        return "s";
+      case CL_SIGNED_INT32:
+        return "i";
+      case CL_UNSIGNED_INT8:
+        return "uc";
+      case CL_UNSIGNED_INT16:
+        return "us";
+      case CL_UNSIGNED_INT32:
+        return "ui";
+      case CL_FLOAT:
+        return "f";
+      default:
+        return "unknown";
+    }
+  }
+  [[nodiscard]] auto
+  Bytes() const -> size_t
+  {
+    switch (type)
+    {
+      case CL_SIGNED_INT8:
+        return sizeof(int8_t);
+      case CL_SIGNED_INT16:
+        return sizeof(int16_t);
+      case CL_SIGNED_INT32:
+        return sizeof(int32_t);
+      case CL_UNSIGNED_INT8:
+        return sizeof(uint8_t);
+      case CL_UNSIGNED_INT16:
+        return sizeof(uint16_t);
+      case CL_UNSIGNED_INT32:
+        return sizeof(uint32_t);
+      case CL_FLOAT:
+        return sizeof(float);
+      default:
+        return sizeof(float);
+    }
+  }
+  [[nodiscard]] auto
+  Get() const -> cl_channel_type
+  {
+    return type;
+  }
 
-    cl_channel_type type = CL_FLOAT;
+  cl_channel_type type = CL_FLOAT;
 };
 
 struct BuildStatus
 {
-    [[nodiscard]] auto
-    IsSuccess () const -> bool
-    {
-        return type == CL_BUILD_SUCCESS;
-    }
-    [[nodiscard]] auto
-    IsFail () const -> bool
-    {
-        return type == CL_BUILD_ERROR;
-    }
-    void
-    Set (const cl_build_status status)
-    {
-        type = status;
-    }
-    [[nodiscard]] auto
-    Get () const -> cl_build_status
-    {
-        return type;
-    }
+  [[nodiscard]] auto
+  IsSuccess() const -> bool
+  {
+    return type == CL_BUILD_SUCCESS;
+  }
+  [[nodiscard]] auto
+  IsFail() const -> bool
+  {
+    return type == CL_BUILD_ERROR;
+  }
+  void
+  Set(const cl_build_status status)
+  {
+    type = status;
+  }
+  [[nodiscard]] auto
+  Get() const -> cl_build_status
+  {
+    return type;
+  }
 
-    cl_build_status type;
+  cl_build_status type;
 };
 
 // inline auto

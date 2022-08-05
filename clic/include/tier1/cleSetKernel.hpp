@@ -9,10 +9,12 @@ namespace cle
 
 class SetKernel : public Operation
 {
-  public:
-    explicit SetKernel (const ProcessorPointer &device);
-    auto SetInput (const Image &object) -> void;
-    auto SetValue (const float &value) -> void;
+public:
+  explicit SetKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetValue(const float & value) -> void;
 };
 
 } // namespace cle
