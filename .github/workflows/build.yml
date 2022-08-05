@@ -55,7 +55,7 @@ jobs:
         with:
           cmakeListsTxtPath: ${{ github.workspace }}/CMakeLists.txt
           configurePreset: ninja-multi
-          buildPreset: "${{ matrix.buildtype }}-ninja-multi"
+          buildPreset: "${{ matrix.buildtype }}-ninja-build-vcpkg"
           # buildDirectory: ${{ runner.workspace }}/build
           # cmakeBuildType: ${{ matrix.buildtype }}
           # cmakeGenerator: "Ninja"
