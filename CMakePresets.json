@@ -89,7 +89,7 @@
             "name": "ninja-multi-debug",
             "configurePreset": "ninja-multi",
             "configuration": "debug"
-        }
+        },
         {
             "name": "release-ninja-multi-vcpkg",
             "configurePreset": "ninja-multi-vcpkg",
