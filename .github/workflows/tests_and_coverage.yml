@@ -51,7 +51,7 @@ jobs:
           lcov --list coverage.info
 
       - name: Upload coverage report
-        uses: codecov/codecov-action@latest
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           files: ${{ runner.workspace }}/build/coverage.info
