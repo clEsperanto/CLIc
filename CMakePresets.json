@@ -66,15 +66,15 @@
         },
         {
             "name": "release-ninja-multi-vcpkg",
-            "configurePreset": "ninja-multi",
-            "description": "release build",
+            "configurePreset": "ninja-multi-vcpkg",
+            "description": "ninja release build",
             "inherits": "core-build",
             "configuration": "Release"
         },
         {
             "name": "debug-ninja-multi-vcpkg",
-            "configurePreset": "ninja-multi",
-            "description": "release build",
+            "configurePreset": "ninja-multi-vcpkg",
+            "description": "ninja debug build",
             "inherits": "core-build",
             "configuration": "Debug"
         }
