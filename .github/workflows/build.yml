@@ -54,8 +54,8 @@ jobs:
         uses: lukka/run-cmake@v10
         with:
           cmakeListsTxtPath: ${{ github.workspace }}/CMakeLists.txt
-          configurePreset: ninja-build-vcpkg
-          buildPreset: "${{ matrix.buildtype }}-ninja-build-vcpkg"
+          configurePreset: ninja-multi-vcpkg
+          buildPreset: "${{ matrix.buildtype }}-ninja-multi-vcpkg"
           # buildDirectory: ${{ runner.workspace }}/build
           # cmakeBuildType: ${{ matrix.buildtype }}
           # cmakeGenerator: "Ninja"
