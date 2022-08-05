@@ -21,18 +21,22 @@ jobs:
             os: windows-latest
             cxx: cl.exe
             cc: cl.exe
+            triplet: x64-windows
           - name: ubuntu-gcc
             os: ubuntu-latest
             cxx: g++
             cc: gcc
+            triplet: x64-linux
           - name: ubuntu-clang
             os: ubuntu-latest
             cxx: clang++
             cc: clang
+            triplet: x64-linux
           - name: macos-clang
             os: macos-latest
             cxx: clang++
             cc: clang
+            triplet: x64-osx
 
     steps:
       - name: Checkout
