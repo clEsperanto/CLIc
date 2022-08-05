@@ -7,7 +7,7 @@ install
 # Specific files/folders
 cle_preamble.h
 clic.hpp
-cleKernelList.h
+cleKernelList.hpp
 clic/kernels
 
 #CMake
