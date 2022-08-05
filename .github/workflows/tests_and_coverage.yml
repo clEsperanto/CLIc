@@ -2,14 +2,12 @@ name: CI-Tests
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
-
   build:
-      
     name: ${{ matrix.os }}-${{ matrix.buildtype }}-Test-and-Coverage
     runs-on: ${{ matrix.os }}
     strategy:
@@ -23,12 +21,11 @@ jobs:
         triplet: [x64-osx]
         packages: [lcov gcovr]
 
-    steps:  
-
+    steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          submodules: true 
+          submodules: true
 
       - name: Install packages
         shell: bash
@@ -42,7 +39,7 @@ jobs:
 
       - name: Generate coverage
         shell: bash
-        run: |    
+        run: |
           cd ${{ runner.workspace }}/build && make -j 2 && ctest --verbose
 
       - name: Format coverage
@@ -54,7 +51,7 @@ jobs:
           lcov --list coverage.info
 
       - name: Upload coverage report
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@latest
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           files: ${{ runner.workspace }}/build/coverage.info
