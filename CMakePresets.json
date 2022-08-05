@@ -26,6 +26,20 @@
                 "base"
             ],
             "generator": "Ninja Multi-Config"
+        },
+        {
+            "name": "ninja-multi-vcpkg",
+            "description": "Sets ninja multi-configuration",
+            "inherits": [
+                "base"
+            ],
+            "generator": "Ninja Multi-Config",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+                }
+            }
         }
     ],
     "buildPresets": [
@@ -37,14 +51,28 @@
             "jobs": 6
         },
         {
-            "name": "ninja-release-build",
+            "name": "release-ninja-build",
             "configurePreset": "ninja-multi",
             "description": "release build",
             "inherits": "core-build",
             "configuration": "Release"
         },
         {
-            "name": "ninja-debug-build",
+            "name": "debug-ninja-build",
+            "configurePreset": "ninja-multi",
+            "description": "release build",
+            "inherits": "core-build",
+            "configuration": "Debug"
+        },
+        {
+            "name": "release-ninja-build-vcpkg",
+            "configurePreset": "ninja-multi",
+            "description": "release build",
+            "inherits": "core-build",
+            "configuration": "Release"
+        },
+        {
+            "name": "debug-ninja-build-vcpkg",
             "configurePreset": "ninja-multi",
             "description": "release build",
             "inherits": "core-build",
@@ -60,6 +88,16 @@
         {
             "name": "ninja-multi-debug",
             "configurePreset": "ninja-multi",
+            "configuration": "debug"
+        }
+        {
+            "name": "release-ninja-multi-vcpkg",
+            "configurePreset": "ninja-multi-vcpkg",
+            "configuration": "Release"
+        },
+        {
+            "name": "debug-ninja-multi-vcpkg",
+            "configurePreset": "ninja-multi-vcpkg",
             "configuration": "debug"
         }
     ]
