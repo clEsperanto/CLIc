@@ -1,5 +1,5 @@
 
-#include <cassert>
+
 #include <random>
 
 #include "clesperanto.hpp"
@@ -33,47 +33,71 @@ run_test (const std::array<size_t, 3> &shape, const cl_mem_object_type &mem_type
 auto
 main (int argc, char **argv) -> int
 {
-    assert (run_test<float> ({ 5, 1, 1 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<int> ({ 5, 1, 1 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<unsigned int> ({ 5, 1, 1 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<short> ({ 5, 1, 1 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<unsigned short> ({ 5, 1, 1 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<char> ({ 5, 1, 1 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<unsigned char> ({ 5, 1, 1 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<float> ({ 5, 3, 1 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<int> ({ 5, 3, 1 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<unsigned int> ({ 5, 3, 1 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<short> ({ 5, 3, 1 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<unsigned short> ({ 5, 3, 1 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<char> ({ 5, 3, 1 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<unsigned char> ({ 5, 3, 1 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<float> ({ 5, 3, 2 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<int> ({ 5, 3, 2 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<unsigned int> ({ 5, 3, 2 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<short> ({ 5, 3, 2 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<unsigned short> ({ 5, 3, 2 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<char> ({ 5, 3, 2 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<unsigned char> ({ 5, 3, 2 }, CL_MEM_OBJECT_BUFFER));
-    assert (run_test<float> ({ 5, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<int>({ 5, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<unsigned int>({ 5, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<short>({ 5, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<unsigned short>({ 5, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<char>({ 5, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<unsigned char>({ 5, 1, 1 }, CL_MEM_OBJECT_IMAGE1D));
-    assert (run_test<float> ({ 5, 3, 1 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<int>({ 5, 3, 1 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<unsigned int>({ 5, 3, 1 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<short>({ 5, 3, 1 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<unsigned short>({ 5, 3, 1 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<char>({ 5, 3, 1 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<unsigned char>({ 5, 3, 1 }, CL_MEM_OBJECT_IMAGE1D));
-    assert (run_test<float> ({ 5, 3, 2 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<int>({ 5, 3, 2 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<unsigned int>({ 5, 3, 2 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<short>({ 5, 3, 2 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<unsigned short>({ 5, 3, 2 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<char>({ 5, 3, 2 }, CL_MEM_OBJECT_IMAGE1D));
-    //    assert (run_test<unsigned char>({ 5, 3, 2 }, CL_MEM_OBJECT_IMAGE1D));
+    if (!run_test<float> ({ 5, 1, 1 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<int> ({ 5, 1, 1 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<unsigned int> ({ 5, 1, 1 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<short> ({ 5, 1, 1 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<unsigned short> ({ 5, 1, 1 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<char> ({ 5, 1, 1 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<unsigned char> ({ 5, 1, 1 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<float> ({ 5, 3, 1 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<int> ({ 5, 3, 1 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<unsigned int> ({ 5, 3, 1 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<short> ({ 5, 3, 1 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<unsigned short> ({ 5, 3, 1 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<char> ({ 5, 3, 1 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<unsigned char> ({ 5, 3, 1 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<float> ({ 5, 3, 2 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<int> ({ 5, 3, 2 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<unsigned int> ({ 5, 3, 2 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<short> ({ 5, 3, 2 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<unsigned short> ({ 5, 3, 2 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<char> ({ 5, 3, 2 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<unsigned char> ({ 5, 3, 2 }, CL_MEM_OBJECT_BUFFER))
+        return EXIT_FAILURE;
+    if (!run_test<float> ({ 5, 1, 1 }, CL_MEM_OBJECT_IMAGE1D))
+        return EXIT_FAILURE;
+    //    if (!run_test<int>({ 5, 1, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+    //    if (!run_test<unsigned int>({ 5, 1, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+    //    if (!run_test<short>({ 5, 1, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+    //    if (!run_test<unsigned short>({ 5, 1, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+    //    if (!run_test<char>({ 5, 1, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+    //    if (!run_test<unsigned char>({ 5, 1, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+    if (!run_test<float> ({ 5, 3, 1 }, CL_MEM_OBJECT_IMAGE1D))
+        return EXIT_FAILURE;
+    //    if (!run_test<int>({ 5, 3, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+    //    if (!run_test<unsigned int>({ 5, 3, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+    //    if (!run_test<short>({ 5, 3, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+    //    if (!run_test<unsigned short>({ 5, 3, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+    //    if (!run_test<char>({ 5, 3, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+    //    if (!run_test<unsigned char>({ 5, 3, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+    if (!run_test<float> ({ 5, 3, 2 }, CL_MEM_OBJECT_IMAGE1D))
+        return EXIT_FAILURE;
+    //    if (!run_test<int>({ 5, 3, 2 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+    //    if (!run_test<unsigned int>({ 5, 3, 2 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+    //    if (!run_test<short>({ 5, 3, 2 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+    //    if (!run_test<unsigned short>({ 5, 3, 2 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+    //    if (!run_test<char>({ 5, 3, 2 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+    //    if (!run_test<unsigned char>({ 5, 3, 2 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
     return EXIT_SUCCESS;
 }

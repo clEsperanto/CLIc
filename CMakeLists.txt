@@ -23,7 +23,6 @@ add_subdirectory(${LIBRARY_DIR})
 # Build and run tests
 if(BUILD_TESTING)
     include(CTest)
-    add_subdirectory(${LIBRARY_DIR}/tests)
     add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
 endif(BUILD_TESTING)
 

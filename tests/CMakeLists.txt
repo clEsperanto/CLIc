@@ -1,3 +1,28 @@
+add_executable(core_gpu_test core_gpu_test.cpp)
+add_dependencies(core_gpu_test CLIc)
+target_link_libraries(core_gpu_test PRIVATE CLIc::CLIc)
+set_target_properties(core_gpu_test PROPERTIES FOLDER "Tests")
+
+add_executable(core_scalar_test core_scalar_test.cpp)
+add_dependencies(core_scalar_test CLIc)
+target_link_libraries(core_scalar_test PRIVATE CLIc::CLIc)
+set_target_properties(core_scalar_test PROPERTIES FOLDER "Tests")
+
+add_executable(core_buffer_test core_buffer_test.cpp)
+add_dependencies(core_buffer_test CLIc)
+target_link_libraries(core_buffer_test PRIVATE CLIc::CLIc)
+set_target_properties(core_buffer_test PROPERTIES FOLDER "Tests")
+
+add_executable(core_image_test core_image_test.cpp)
+add_dependencies(core_image_test CLIc)
+target_link_libraries(core_image_test PRIVATE CLIc::CLIc)
+set_target_properties(core_image_test PROPERTIES FOLDER "Tests")
+
+add_executable(core_kernel_test core_kernel_test.cpp)
+add_dependencies(core_kernel_test CLIc)
+target_link_libraries(core_kernel_test PRIVATE CLIc::CLIc)
+set_target_properties(core_kernel_test PROPERTIES FOLDER "Tests")
+
 add_executable(absolute_test absolute_test.cpp)
 add_dependencies(absolute_test CLIc)
 target_link_libraries(absolute_test PRIVATE CLIc::CLIc)
@@ -308,6 +333,12 @@ add_dependencies(voronoi_otsu_labeling_test CLIc)
 target_link_libraries(voronoi_otsu_labeling_test PRIVATE CLIc::CLIc)
 set_target_properties(voronoi_otsu_labeling_test PROPERTIES FOLDER "Tests")
 
+add_test(NAME core_gpu_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/core_gpu_test)
+add_test(NAME core_scalar_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/core_scalar_test)
+add_test(NAME core_buffer_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/core_buffer_test)
+add_test(NAME core_image_test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/core_image_test)
+add_test(NAME core_kernel_test_buffer COMMAND ${CMAKE_CURRENT_BINARY_DIR}/core_kernel_test buffer)
+add_test(NAME core_kernel_test_image COMMAND ${CMAKE_CURRENT_BINARY_DIR}/core_kernel_test image)
 add_test(NAME absolute_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND absolute_test)
 add_test(NAME add_image_and_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_and_scalar_test)
 add_test(NAME add_image_weighted_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_weighted_test)
@@ -370,6 +401,16 @@ add_test(NAME sum_y_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR
 add_test(NAME sum_z_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_z_projection_test)
 add_test(NAME threshold_otsu_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND threshold_otsu_test)
 add_test(NAME voronoi_otsu_labeling_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND voronoi_otsu_labeling_test)
+
+set_tests_properties(
+    core_gpu_test
+    core_scalar_test
+    core_buffer_test
+    core_image_test
+    core_kernel_test_buffer
+    core_kernel_test_image
+    PROPERTIES LABELS "CORE" WILL_FAIL FALSE
+)
 
 set_tests_properties(absolute_test
     add_image_and_scalar_test

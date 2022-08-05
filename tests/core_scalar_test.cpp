@@ -1,7 +1,6 @@
 
 #include "cleScalar.hpp"
 
-#include <cassert>
 #include <iostream>
 
 template <class type>
@@ -16,16 +15,15 @@ run_test (const type &x) -> bool
 auto
 main (int argc, char **argv) -> int
 {
-    int idx = 0;
-    std::string data_t = argv[++idx];
-    double input = std::atof (argv[++idx]);
-    if (data_t == "float")
+
+    if (!run_test<float> (static_cast<float> (1.5F)))
         {
-            assert (run_test<float> (static_cast<float> (input)));
+            return EXIT_FAILURE;
         }
-    if (data_t == "int")
+
+    if (!run_test<int> (static_cast<int> (2)))
         {
-            assert (run_test<int> (static_cast<int> (input)));
+            return EXIT_FAILURE;
         }
     return EXIT_SUCCESS;
 }
