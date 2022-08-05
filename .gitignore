@@ -1,6 +1,8 @@
 # Folders
 .vscode
 build
+builds
+install
 
 # Specific files/folders
 cle_preamble.h
