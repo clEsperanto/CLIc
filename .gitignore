@@ -8,6 +8,9 @@ clic.hpp
 cleKernelList.h
 clic/kernels
 
+#CMake
+CMakeUserPresets.json
+
 
 # System files
 .DS_Store
