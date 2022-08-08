@@ -5,17 +5,17 @@ get_target_property(CLIc_INCLUDES CLIc INCLUDE_DIRECTORIES)
 
 add_library(benchmark_kernel STATIC
     benchmark_base.cpp
-    )
+)
 set_target_properties(benchmark_kernel PROPERTIES FOLDER "Benchmark")
 
-add_dependencies(benchmark_kernel CLIc) 
+add_dependencies(benchmark_kernel CLIc)
 
 target_link_libraries(benchmark_kernel PRIVATE CLIc::CLIc)
 
 target_include_directories(benchmark_kernel PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>"
     "$<BUILD_INTERFACE:${CLIc_INCLUDES}>"
-    )
+)
 
 add_executable(benchmark_dummy benchmark_dummy.cpp)
 target_compile_features(benchmark_dummy PUBLIC cxx_std_14)
