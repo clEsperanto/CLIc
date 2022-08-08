@@ -4,12 +4,7 @@ jobs:
   formatting-check:
     name: Formatting Check
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        path:
-          - "clic/src"
-          - "clic/include"
-          - "tests"
+
     steps:
       - name: git checkout repository
         uses: actions/checkout@v2
@@ -18,4 +13,3 @@ jobs:
         uses: jidicula/clang-format-action@v4.8.0
         with:
           clang-format-version: "13"
-          check-path: ${{ matrix.path }}
