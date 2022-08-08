@@ -31,8 +31,7 @@ main(int argc, char ** argv)
 
   // test information methods
   {
-    auto gpu = std::make_shared<cle::Processor>();
-    auto device_list = gpu->ListAvailableDevices();
+    auto device_list = cle::Processor::ListAvailableDevices();
     std::cout << "[";
     for (auto it = device_list.begin(); it != device_list.end(); it++)
     {
@@ -43,6 +42,7 @@ main(int argc, char ** argv)
       }
     }
     std::cout << "]" << std::endl;
+    auto gpu = std::make_shared<cle::Processor>();
     gpu->SelectDevice(device_list.front());
   }
 

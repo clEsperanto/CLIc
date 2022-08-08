@@ -21,8 +21,6 @@ public:
   using ProcessorPointer = std::shared_ptr<Processor>;
   using FloatLimits = std::numeric_limits<float>;
   using ShapeArray = std::array<size_t, 3>;
-  // using MemType = cl_mem_object_type;
-
 
 private:
   ProcessorPointer device_;
