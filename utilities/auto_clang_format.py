@@ -1,12 +1,11 @@
 #!/usr/bin/python
 
-import os, sys, glob
+import sys, os
 
 def run_clang_format(folder):
-    cpp_file = glob.glob("{0}/src/**/*.cpp".format(folder), recursive=True)
-    hpp_file = glob.glob("{0}/include/**/*.hpp".format(folder), recursive=True)
-    for [h, c] in zip(hpp_file, cpp_file):
-        os.system('clang-format-{0} -i style=file {1}'.format(9, c))
-        os.system('clang-format-{0} -i style=file {1}'.format(9, h))
-     
+    for tier in os.listdir("{0}/clic/src".format(folder)):
+        os.system('clang-format-{0} -i -style=file {1}/clic/src/{2}/*.cpp'.format(9, folder, tier))
+        os.system('clang-format-{0} -i -style=file {1}/clic/include/{2}/*.hpp'.format(9, folder, tier))
+    os.system('clang-format-{0} -i -style=file {1}/tests/*.cpp'.format(9, folder))
+        
 run_clang_format(sys.argv[1])
