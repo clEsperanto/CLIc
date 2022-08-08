@@ -37,8 +37,8 @@ TopHatBoxKernel::Execute() -> void
   auto src = this->GetImage("src");
   auto dst = this->GetImage("dst");
 
-  auto temp1 = Memory::AllocateObject(this->Device(), src->Shape(), dst->BitType().Get(), dst->MemType().Get());
-  auto temp2 = Memory::AllocateObject(this->Device(), src->Shape(), dst->BitType().Get(), dst->MemType().Get());
+  auto temp1 = Memory::AllocateObject(this->Device(), src->Shape(), dst->BitType().Get(), dst->Memory());
+  auto temp2 = Memory::AllocateObject(this->Device(), src->Shape(), dst->BitType().Get(), dst->Memory());
 
   MinimumBoxKernel minimum(this->Device());
   minimum.SetInput(*src);

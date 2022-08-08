@@ -6,6 +6,7 @@
 #include "cleBackend.hpp"
 #include "cleImage.hpp"
 #include "cleProcessor.hpp"
+#include "cleTypes.hpp"
 #include "cleUtils.hpp"
 
 #include <cassert>
@@ -17,7 +18,7 @@ namespace cle::Memory
 using ProcessorPointer = std::shared_ptr<Processor>;
 using ShapeArray = std::array<size_t, 3>;
 using BitType = cl_channel_type;
-using MemType = cl_mem_object_type;
+// using MemType = cl_mem_object_type;
 
 auto
 AllocateBufferObject(const ProcessorPointer & device, const ShapeArray & shape, const BitType & type = CL_FLOAT)
@@ -77,7 +78,7 @@ auto
 AllocateObject(const ProcessorPointer & device,
                const ShapeArray &       shape = { 1, 1, 1 },
                const BitType &          type = CL_FLOAT,
-               const MemType &          object = CL_MEM_OBJECT_BUFFER) -> Image;
+               const MemoryType &       object = BUFFER) -> Image;
 
 auto
 AllocateObject(const Image & object) -> Image;

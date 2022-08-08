@@ -42,8 +42,8 @@ DifferenceOfGaussianKernel::Execute() -> void
   auto src = this->GetImage("src");
   auto dst = this->GetImage("dst");
 
-  auto temp1 = Memory::AllocateObject(this->Device(), src->Shape(), src->BitType().Get(), src->MemType().Get());
-  auto temp2 = Memory::AllocateObject(this->Device(), src->Shape(), src->BitType().Get(), src->MemType().Get());
+  auto temp1 = Memory::AllocateObject(this->Device(), src->Shape(), src->BitType().Get(), src->Memory());
+  auto temp2 = Memory::AllocateObject(this->Device(), src->Shape(), src->BitType().Get(), src->Memory());
 
   GaussianBlurKernel gaussian_1_kernel(this->Device());
   gaussian_1_kernel.SetInput(*src);

@@ -7,7 +7,7 @@
 
 template <class type>
 auto
-run_test(const std::array<size_t, 3> & shape, const cl_mem_object_type & mem_type) -> bool
+run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) -> bool
 {
   std::vector<type>                         input(shape[0] * shape[1] * shape[2]);
   std::vector<type>                         valid(shape[0] * shape[1] * shape[2]);
@@ -38,71 +38,71 @@ run_test(const std::array<size_t, 3> & shape, const cl_mem_object_type & mem_typ
 auto
 main(int argc, char ** argv) -> int
 {
-  if (!run_test<float>({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<float>({ 10, 1, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<int>({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<int>({ 10, 1, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<unsigned int>({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<unsigned int>({ 10, 1, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<short>({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<short>({ 10, 1, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<unsigned short>({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<unsigned short>({ 10, 1, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<char>({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<char>({ 10, 1, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<unsigned char>({ 10, 1, 1 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<unsigned char>({ 10, 1, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<float>({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<float>({ 10, 7, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<int>({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<int>({ 10, 7, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<unsigned int>({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<unsigned int>({ 10, 7, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<short>({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<short>({ 10, 7, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<unsigned short>({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<unsigned short>({ 10, 7, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<char>({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<char>({ 10, 7, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<unsigned char>({ 10, 7, 1 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<unsigned char>({ 10, 7, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<float>({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<float>({ 10, 7, 5 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<int>({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<int>({ 10, 7, 5 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<unsigned int>({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<unsigned int>({ 10, 7, 5 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<short>({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<short>({ 10, 7, 5 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<unsigned short>({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<unsigned short>({ 10, 7, 5 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<char>({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<char>({ 10, 7, 5 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<unsigned char>({ 10, 7, 5 }, CL_MEM_OBJECT_BUFFER))
+  if (!run_test<unsigned char>({ 10, 7, 5 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<float>({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D))
+  if (!run_test<float>({ 10, 1, 1 }, cle::IMAGE))
     return EXIT_FAILURE;
-  //    if (!run_test<int>({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
-  //    if (!run_test<unsigned int>({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
-  //    if (!run_test<short>({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
-  //    if (!run_test<unsigned short>({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
-  //    if (!run_test<char>({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
-  //    if (!run_test<unsigned char>({ 10, 1, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
-  if (!run_test<float>({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D))
+  //    if (!run_test<int>({ 10, 1, 1 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<unsigned int>({ 10, 1, 1 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<short>({ 10, 1, 1 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<unsigned short>({ 10, 1, 1 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<char>({ 10, 1, 1 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<unsigned char>({ 10, 1, 1 }, cle::IMAGE)) return EXIT_FAILURE;
+  if (!run_test<float>({ 10, 7, 1 }, cle::IMAGE))
     return EXIT_FAILURE;
-  //    if (!run_test<int>({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
-  //    if (!run_test<unsigned int>({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
-  //    if (!run_test<short>({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
-  //    if (!run_test<unsigned short>({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
-  //    if (!run_test<char>({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
-  //    if (!run_test<unsigned char>({ 10, 7, 1 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
-  if (!run_test<float>({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D))
+  //    if (!run_test<int>({ 10, 7, 1 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<unsigned int>({ 10, 7, 1 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<short>({ 10, 7, 1 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<unsigned short>({ 10, 7, 1 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<char>({ 10, 7, 1 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<unsigned char>({ 10, 7, 1 }, cle::IMAGE)) return EXIT_FAILURE;
+  if (!run_test<float>({ 10, 7, 5 }, cle::IMAGE))
     return EXIT_FAILURE;
-  //    if (!run_test<int>({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
-  //    if (!run_test<unsigned int>({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
-  //    if (!run_test<short>({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
-  //    if (!run_test<unsigned short>({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
-  //    if (!run_test<char>({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
-  //    if (!run_test<unsigned char>({ 10, 7, 5 }, CL_MEM_OBJECT_IMAGE1D)) return EXIT_FAILURE;
+  //    if (!run_test<int>({ 10, 7, 5 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<unsigned int>({ 10, 7, 5 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<short>({ 10, 7, 5 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<unsigned short>({ 10, 7, 5 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<char>({ 10, 7, 5 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<unsigned char>({ 10, 7, 5 }, cle::IMAGE)) return EXIT_FAILURE;
   return EXIT_SUCCESS;
 }

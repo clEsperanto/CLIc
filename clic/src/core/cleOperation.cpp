@@ -79,7 +79,7 @@ Operation::GetImage(const std::string & tag) -> ImagePointer
   {
     return nullptr;
   }
-  if (strcmp(obj_ptr->ObjectInfo().c_str(), "scalar") == 0)
+  if (strcmp(obj_ptr->MemoryInfo().c_str(), "scalar") == 0)
   {
     return nullptr;
   }
@@ -200,7 +200,7 @@ Operation::MakeDefines() const -> std::string
   defines += "\n";
   for (auto && ite : parameter_map_)
   {
-    if (strcmp(ite.second->ObjectInfo().c_str(), "scalar") != 0)
+    if (strcmp(ite.second->MemoryInfo().c_str(), "scalar") != 0)
     {
       // define position (x,y,z) information
       std::string pos_type;
@@ -238,7 +238,7 @@ Operation::MakeDefines() const -> std::string
       defines += "\n";
 
       // define specific information
-      if (strcmp(ite.second->ObjectInfo().c_str(), "buffer") == 0)
+      if (strcmp(ite.second->MemoryInfo().c_str(), "buffer") == 0)
       {
         defines += "\n#define IMAGE_" + ite.first + "_TYPE __global " + ite.second->DataInfo() + "*";
         defines += "\n#define READ_" + ite.first + "_IMAGE(a,b,c) read_buffer" + ndim + "d" +
@@ -323,7 +323,7 @@ Operation::SetKernelArguments() -> bool
       std::cerr << "Error: missing parameter\n";
       return EXIT_FAILURE;
     }
-    if (strcmp(parameter_ptr->second->ObjectInfo().c_str(), "scalar") == 0)
+    if (strcmp(parameter_ptr->second->MemoryInfo().c_str(), "scalar") == 0)
     {
       if (strcmp(parameter_ptr->second->DataInfo().c_str(), "f") == 0)
       {
@@ -414,7 +414,7 @@ Operation::GenerateOutput(const std::string & input_tag, const std::string & out
 auto
 Operation::GenerateOutput(const Image & object, const ShapeArray & shape) -> Image
 {
-  return cle::Memory::AllocateObject(object.Device(), shape, object.BitType().Get(), object.MemType().Get());
+  return cle::Memory::AllocateObject(object.Device(), shape, object.BitType().Get(), object.Memory());
 }
 
 } // namespace cle

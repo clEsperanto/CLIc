@@ -1,5 +1,7 @@
 #include "cleImage.hpp"
 #include "cleBackend.hpp"
+#include "cleTypes.hpp"
+
 
 namespace cle
 {
@@ -8,14 +10,14 @@ Image::Image(const ProcessorPointer & device,
              const cl::Memory &       data,
              const ShapeArray &       shape,
              const DataType &         data_type,
-             const ObjectType &       object_type,
+             const MemoryType &       object_type,
              const ChannelsType &     channels_type)
 {
   this->data_ = data;
   this->device_ = device;
   this->shape_ = shape;
   this->data_type_ = data_type;
-  this->object_type_ = object_type;
+  this->mem_type_ = object_type;
   this->channels_type_ = channels_type;
   if (this->shape_[2] > 1)
   {
@@ -70,28 +72,28 @@ Image::CopyDataTo(const Image & dst_obj) const -> void
   }
   if (this->Bytes() != dst_obj.Bytes())
   {
-    std::cerr << "Error in CopyDataTo : Memory Objects does not the same bytes size. \n";
+    std::cerr << "Error in CopyDataTo : Memory Objects does not share the same bytes size. \n";
     return;
   }
-  if (this->IsBuffer())
+  if (this->IsBuffer() && dst_obj.IsBuffer())
   {
-    if (dst_obj.IsBuffer())
-    {
-      Backend::EnqueueCopyBuffer(this->Device()->Queue(), this->Get(), dst_obj.Get(), true, 0, 0, this->Bytes());
-      return;
-    }
+    Backend::EnqueueCopyBuffer(this->Device()->Queue(), this->Get(), dst_obj.Get(), true, 0, 0, this->Bytes());
+    return;
+  }
+  if (this->IsBuffer() && dst_obj.IsImage())
+  {
     Backend::EnqueueCopyBufferToImage(
       this->Device()->Queue(), this->Get(), dst_obj.Get(), true, 0, this->Origin(), dst_obj.Shape());
     return;
   }
-  if (this->IsImage())
+  if (this->IsImage() && dst_obj.IsBuffer())
   {
-    if (dst_obj.IsBuffer())
-    {
-      Backend::EnqueueCopyImageToBuffer(
-        this->Device()->Queue(), this->Get(), dst_obj.Get(), true, this->Origin(), this->Shape(), 0);
-      return;
-    }
+    Backend::EnqueueCopyImageToBuffer(
+      this->Device()->Queue(), this->Get(), dst_obj.Get(), true, this->Origin(), this->Shape(), 0);
+    return;
+  }
+  if (this->IsImage() && dst_obj.IsImage())
+  {
     Backend::EnqueueCopyImage(
       this->Device()->Queue(), this->Get(), dst_obj.Get(), true, this->Origin(), this->Origin(), this->Shape());
     return;
@@ -135,9 +137,13 @@ Image::Origin() const -> ShapeArray
 }
 
 auto
-Image::ObjectInfo() const -> std::string
+Image::MemoryInfo() const -> std::string
 {
-  return this->object_type_.Str();
+  if (this->IsBuffer())
+  {
+    return "buffer";
+  }
+  return "image";
 }
 
 auto
@@ -155,13 +161,13 @@ Image::DataInfoShort() const -> std::string
 auto
 Image::IsBuffer() const -> bool
 {
-  return this->object_type_.IsBuffer();
+  return this->mem_type_ == BUFFER;
 }
 
 auto
 Image::IsImage() const -> bool
 {
-  return this->object_type_.IsImage();
+  return this->mem_type_ == IMAGE;
 }
 
 auto
@@ -171,15 +177,15 @@ Image::BitType() const -> DataType
 }
 
 auto
-Image::MemType() const -> ObjectType
+Image::Memory() const -> MemoryType
 {
-  return this->object_type_;
+  return this->mem_type_;
 }
 
 auto
 Image::ToString() const -> std::string
 {
-  std::string str = this->ObjectInfo() + "(" + this->DataInfo() + ")";
+  std::string str = this->MemoryInfo() + "(" + this->DataInfo() + ")";
   str += " of shape=[" + std::to_string(this->Shape()[0]) + "," + std::to_string(this->Shape()[1]) + "," +
          std::to_string(this->Shape()[2]) + "]";
   return str;

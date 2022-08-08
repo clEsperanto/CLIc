@@ -30,7 +30,7 @@ public:
   [[nodiscard]] virtual auto
   Shape() const -> ShapeArray = 0;
   [[nodiscard]] virtual auto
-  ObjectInfo() const -> std::string = 0;
+  MemoryInfo() const -> std::string = 0;
   [[nodiscard]] virtual auto
   DataInfo() const -> std::string = 0;
   [[nodiscard]] virtual auto

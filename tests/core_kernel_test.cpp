@@ -2,25 +2,27 @@
 #include "cleAddImageAndScalarKernel.hpp"
 #include "cleMemory.hpp"
 #include "cleProcessor.hpp"
+#include "cleTypes.hpp"
 #include "cleUtils.hpp"
 
+
 auto
-MemType(const std::string & type) -> cl_mem_object_type
+MemType(const std::string & type) -> cle::MemoryType
 {
   if (type.find("buffer") != std::string::npos)
   {
-    return CL_MEM_OBJECT_BUFFER;
+    return cle::BUFFER;
   }
   if (type.find("image") != std::string::npos)
   {
-    return CL_MEM_OBJECT_IMAGE1D;
+    return cle::IMAGE;
   }
   throw std::runtime_error("");
 };
 
 template <class type>
 auto
-run_test(const std::shared_ptr<cle::Processor> & gpu, std::array<size_t, 3> shape, const cl_mem_object_type & mem_type)
+run_test(const std::shared_ptr<cle::Processor> & gpu, std::array<size_t, 3> shape, const cle::MemoryType & mem_type)
   -> bool
 {
   const type base = 10;

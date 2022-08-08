@@ -5,13 +5,15 @@
 
 #include "cleMemory.hpp"
 #include "cleProcessor.hpp"
+#include "cleTypes.hpp"
 #include "cleUtils.hpp"
+
 
 template <class type>
 auto
 run_test(const std::shared_ptr<cle::Processor> & gpu, const std::array<size_t, 3> & shape) -> bool
 {
-  const auto    object_type = CL_MEM_OBJECT_IMAGE1D;
+  const auto    object_type = cle::IMAGE;
   cle::DataType data_type{};
   data_type.Set<type>();
 

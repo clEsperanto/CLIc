@@ -70,7 +70,7 @@ GaussianBlurKernel::Execute() -> void
 
   if (dst->DataInfo() != "float")
   {
-    auto temp = Memory::AllocateObject(this->Device(), dst->Shape(), CL_FLOAT, dst->MemType().Get());
+    auto temp = Memory::AllocateObject(this->Device(), dst->Shape(), CL_FLOAT, dst->Memory());
     kernel.SetOutput(temp);
     kernel.Execute();
 

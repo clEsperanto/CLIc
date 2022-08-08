@@ -27,7 +27,7 @@ public:
   [[nodiscard]] auto
   Shape() const -> ShapeArray override;
   [[nodiscard]] auto
-  ObjectInfo() const -> std::string override;
+  MemoryInfo() const -> std::string override;
   [[nodiscard]] auto
   DataInfo() const -> std::string override;
   [[nodiscard]] auto
@@ -71,7 +71,7 @@ Scalar<Type>::Shape() const -> ShapeArray
 
 template <class Type>
 auto
-Scalar<Type>::ObjectInfo() const -> std::string
+Scalar<Type>::MemoryInfo() const -> std::string
 {
   return "scalar";
 }
@@ -101,7 +101,7 @@ template <class Type>
 auto
 Scalar<Type>::ToString() const -> std::string
 {
-  std::string str = this->ObjectInfo() + "(" + this->DataInfo() + ")";
+  std::string str = this->MemoryInfo() + "(" + this->DataInfo() + ")";
   str += " of shape=[" + std::to_string(this->Shape()[0]) + "," + std::to_string(this->Shape()[1]) + "," +
          std::to_string(this->Shape()[2]) + "]";
   return str;

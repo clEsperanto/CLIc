@@ -5,6 +5,8 @@
 #include "cleImage.hpp"
 #include "cleMemory.hpp"
 #include "cleProcessor.hpp"
+#include "cleTypes.hpp"
+
 
 #include <iostream>
 #include <limits>
@@ -19,7 +21,8 @@ public:
   using ProcessorPointer = std::shared_ptr<Processor>;
   using FloatLimits = std::numeric_limits<float>;
   using ShapeArray = std::array<size_t, 3>;
-  using MemType = cl_mem_object_type;
+  // using MemType = cl_mem_object_type;
+
 
 private:
   ProcessorPointer device_;
@@ -29,12 +32,12 @@ public:
 
   template <class T = float>
   [[nodiscard]] auto
-  Create(const ShapeArray & shape = { 1, 1, 1 }, const MemType & type = CL_MEM_OBJECT_BUFFER) const -> Image;
+  Create(const ShapeArray & shape = { 1, 1, 1 }, const MemoryType & type = BUFFER) const -> Image;
   template <class T = float>
   auto
   Push(const std::vector<T> & array = { 0 },
        const ShapeArray &     shape = { 1, 1, 1 },
-       const MemType &        type = CL_MEM_OBJECT_BUFFER) const -> Image;
+       const MemoryType &     type = BUFFER) const -> Image;
   template <class T = float>
   auto
   Pull(const Image & object) const -> std::vector<T>;
@@ -210,7 +213,7 @@ public:
 
 template <class T>
 auto
-Clesperanto::Create(const ShapeArray & shape, const MemType & type) const -> Image
+Clesperanto::Create(const ShapeArray & shape, const MemoryType & type) const -> Image
 {
   DataType data_type{};
   data_type.Set<T>();
@@ -219,7 +222,7 @@ Clesperanto::Create(const ShapeArray & shape, const MemType & type) const -> Ima
 
 template <class T>
 auto
-Clesperanto::Push(const std::vector<T> & array, const ShapeArray & shape, const MemType & type) const -> Image
+Clesperanto::Push(const std::vector<T> & array, const ShapeArray & shape, const MemoryType & type) const -> Image
 {
   DataType data_type{};
   data_type.Set<T>();

@@ -48,7 +48,7 @@ VoronoiOtsuLabelingKernel::Execute() -> void
   auto src = this->GetImage("src");
   auto dst = this->GetImage("dst");
 
-  auto               temp = Memory::AllocateObject(this->Device(), src->Shape(), temp_data_type, src->MemType().Get());
+  auto               temp = Memory::AllocateObject(this->Device(), src->Shape(), temp_data_type, src->Memory());
   GaussianBlurKernel gaussianSpot(this->Device());
   gaussianSpot.SetInput(*src);
   gaussianSpot.SetOutput(temp);

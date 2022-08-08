@@ -33,9 +33,9 @@ ConnectedComponentLabelingBoxKernel::Execute() -> void
   auto src = this->GetImage("src");
   auto dst = this->GetImage("dst");
 
-  auto temp1 = Memory::AllocateObject(this->Device(), dst->Shape(), dst->BitType().Get(), dst->MemType().Get());
-  auto temp2 = Memory::AllocateObject(this->Device(), dst->Shape(), dst->BitType().Get(), dst->MemType().Get());
-  auto temp3 = Memory::AllocateObject(this->Device(), dst->Shape(), dst->BitType().Get(), dst->MemType().Get());
+  auto temp1 = Memory::AllocateObject(this->Device(), dst->Shape(), dst->BitType().Get(), dst->Memory());
+  auto temp2 = Memory::AllocateObject(this->Device(), dst->Shape(), dst->BitType().Get(), dst->Memory());
+  auto temp3 = Memory::AllocateObject(this->Device(), dst->Shape(), dst->BitType().Get(), dst->Memory());
 
   SetNonzeroPixelsToPixelindexKernel set_nonzero_to_index_kernel(this->Device());
   set_nonzero_to_index_kernel.SetInput(*src);

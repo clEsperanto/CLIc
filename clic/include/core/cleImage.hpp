@@ -3,6 +3,7 @@
 
 #include "cleBackend.hpp"
 #include "cleLightObject.hpp"
+#include "cleTypes.hpp"
 #include "cleUtils.hpp"
 
 namespace cle
@@ -24,7 +25,7 @@ public:
         const cl::Memory &       data,
         const ShapeArray &       shape,
         const DataType &         data_type,
-        const ObjectType &       object_type,
+        const MemoryType &       object_type,
         const ChannelsType &     channels_type);
 
   auto
@@ -44,7 +45,7 @@ public:
   [[nodiscard]] auto
   Origin() const -> ShapeArray;
   [[nodiscard]] auto
-  ObjectInfo() const -> std::string override;
+  MemoryInfo() const -> std::string override;
   [[nodiscard]] auto
   DataInfo() const -> std::string override;
   [[nodiscard]] auto
@@ -58,7 +59,7 @@ public:
   [[nodiscard]] auto
   BitType() const -> DataType;
   [[nodiscard]] auto
-  MemType() const -> ObjectType;
+  Memory() const -> MemoryType;
 
 private:
   cl::Memory       data_;
@@ -67,8 +68,8 @@ private:
   ShapeArray       shape_{ 1, 1, 1 };
   ShapeArray       origin_{ 0, 0, 0 };
   DataType         data_type_;
-  ObjectType       object_type_;
   ChannelsType     channels_type_;
+  MemoryType       mem_type_;
 
   template <class type>
   auto
