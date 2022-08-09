@@ -230,13 +230,13 @@ struct ChannelsType
     switch (nb_channels)
     {
       case 1:
-        type = CL_DEPTH;
+        type = CL_R;
       case 3:
         type = CL_RGB;
       case 4:
         type = CL_RGBA;
       default:
-        type = CL_INTENSITY;
+        type = CL_R;
     }
   }
   [[nodiscard]] auto
@@ -244,7 +244,7 @@ struct ChannelsType
   {
     switch (type)
     {
-      case CL_DEPTH:
+      case CL_R:
         return 1;
       case CL_RGB:
         return 3;
@@ -260,7 +260,7 @@ struct ChannelsType
     return type;
   }
 
-  cl_channel_order type = CL_DEPTH;
+  cl_channel_order type = CL_R;
 };
 
 struct DataType
