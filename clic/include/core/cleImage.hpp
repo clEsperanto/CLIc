@@ -43,6 +43,8 @@ public:
   [[nodiscard]] auto
   Shape() const -> ShapeArray override;
   [[nodiscard]] auto
+  ShapeZYX() const -> ShapeArray;
+  [[nodiscard]] auto
   Origin() const -> ShapeArray;
   [[nodiscard]] auto
   MemoryInfo() const -> std::string override;
@@ -60,6 +62,7 @@ public:
   BitType() const -> DataType;
   [[nodiscard]] auto
   Memory() const -> MemoryType;
+
 
 private:
   cl::Memory       data_;

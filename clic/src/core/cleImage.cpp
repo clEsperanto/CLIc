@@ -131,6 +131,12 @@ Image::Shape() const -> ShapeArray
 }
 
 auto
+Image::ShapeZYX() const -> ShapeArray
+{
+  return { this->Shape()[2], this->Shape()[1], this->Shape()[0] };
+}
+
+auto
 Image::Origin() const -> ShapeArray
 {
   return this->origin_;
