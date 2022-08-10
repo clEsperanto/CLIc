@@ -41,6 +41,8 @@ public:
   SelectDevice(std::string name = "") -> void;
   [[nodiscard]] auto
   DeviceName() const -> std::string;
+  [[nodiscard]] auto
+  DeviceInfo() const -> std::string;
   // [[nodiscard]] auto MemoryAvailable () -> int;
 
 private:

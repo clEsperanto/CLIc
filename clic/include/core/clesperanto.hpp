@@ -28,6 +28,16 @@ private:
 public:
   Clesperanto();
 
+  auto
+  WaitForKernelToFinish(const bool & flag = true) -> void;
+
+  auto
+  SelectDevice(const std::string & name = "") -> void;
+
+  auto
+  Info() -> std::string;
+
+
   template <class T = float>
   [[nodiscard]] auto
   Create(const ShapeArray & shape = { 1, 1, 1 }, const MemoryType & type = BUFFER) const -> Image;

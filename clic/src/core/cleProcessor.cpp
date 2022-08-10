@@ -89,6 +89,12 @@ Processor::DeviceName() const -> std::string
   return Backend::GetDeviceName(this->device_);
 }
 
+auto
+Processor::DeviceInfo() const -> std::string
+{
+  return this->DeviceName();
+}
+
 // auto
 // Processor::MemoryAvailable () -> int
 // {

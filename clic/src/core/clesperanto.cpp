@@ -17,6 +17,24 @@ Clesperanto::GetDevice() const -> ProcessorPointer
 }
 
 auto
+Clesperanto::WaitForKernelToFinish(const bool & flag = true) -> void
+{
+  this->GetDevice()->WaitForKernelToFinish(flag);
+}
+
+auto
+Clesperanto::SelectDevice(const std::string & name = "") -> void
+{
+  this->GetDevice()->SelectDevice(name);
+}
+
+auto
+Clesperanto::Info() -> std::string
+{
+  return this->GetDevice()->DeviceInfo();
+}
+
+auto
 Clesperanto::AddImageAndScalar(const Image & source, const Image & destination, const float & scalar) -> void
 {
   AddImageAndScalarKernel kernel(this->GetDevice());
