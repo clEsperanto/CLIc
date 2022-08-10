@@ -78,7 +78,8 @@ public:
 
   auto
   BlockEnumerate(const Image & source, const Image & sum, const Image & destination, const int & block_size = 1)
-    -> void; //! only 1d and does not support image
+    -> void;
+  //! only 1d and does not support image
 
   auto
   CloseIndexGapsInLabelMap(const Image & source, const Image & destination, const int & block_size = 4096) -> void;
@@ -103,7 +104,7 @@ public:
                        const float & sigma2_z = 0) -> void;
 
   auto
-  DilateLabels(const Image & source, const Image & destination, const int & radius) -> void;
+  DilateLabels(const Image & source, const Image & destination, const int & radius = 1) -> void;
 
   auto
   DilateSphere(const Image & source, const Image & destination) -> void;
