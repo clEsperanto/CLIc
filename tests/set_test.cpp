@@ -13,7 +13,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
   static std::uniform_int_distribution<int> distribution(0, 100);
   static std::default_random_engine         generator;
   std::generate(input.begin(), input.end(), []() { return static_cast<type>(distribution(generator)); });
-  std::fill(valid.begin(), valid.end(), 10);
+  std::fill(valid.begin(), valid.end(), static_cast<type>(10.0F));
 
   cle::Clesperanto cle;
   cle.GetDevice()->WaitForKernelToFinish();

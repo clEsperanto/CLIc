@@ -14,10 +14,10 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
   static std::uniform_int_distribution<int> distribution(0, shape[0] - 1);
   static std::default_random_engine         generator;
   std::generate(input.begin(), input.end(), []() { return static_cast<type>(distribution(generator)); });
-  std::fill(valid.begin(), valid.end(), 0);
+  std::fill(valid.begin(), valid.end(), static_cast<type>(0.0F));
   for (auto && i : input)
   {
-    valid[i] += 1;
+    valid[i] += static_cast<type>(1.0F);
   }
 
   cle::Clesperanto cle;
