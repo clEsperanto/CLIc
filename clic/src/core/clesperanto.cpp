@@ -17,13 +17,13 @@ Clesperanto::GetDevice() const -> ProcessorPointer
 }
 
 auto
-Clesperanto::WaitForKernelToFinish(const bool & flag = true) -> void
+Clesperanto::WaitForKernelToFinish(const bool & flag) -> void
 {
   this->GetDevice()->WaitForKernelToFinish(flag);
 }
 
 auto
-Clesperanto::SelectDevice(const std::string & name = "") -> void
+Clesperanto::SelectDevice(const std::string & name) -> void
 {
   this->GetDevice()->SelectDevice(name);
 }

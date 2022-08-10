@@ -37,7 +37,6 @@ public:
   auto
   Info() -> std::string;
 
-
   template <class T = float>
   [[nodiscard]] auto
   Create(const ShapeArray & shape = { 1, 1, 1 }, const MemoryType & type = BUFFER) const -> Image;
