@@ -12,9 +12,8 @@ if(NOT OpenCL_FOUND)
     find_package(OpenCL REQUIRED)
 endif()
 
-if(NOT Python_FOUND)
-    find_package(Python COMPONENTS Interpreter Development REQUIRED)
-endif()
+find_package(Python3 COMPONENTS Interpreter REQUIRED)
+message(NOTICE "Python3 Interpreter: ${Python3_EXECUTABLE}")
 
 # Library sources
 add_subdirectory(${THIRDPARTY_DIR})
