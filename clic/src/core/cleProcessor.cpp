@@ -102,7 +102,6 @@ Processor::DeviceInfo() const -> std::string
 //     const char *cmd = "nvidia-smi --query-gpu=gpu_name,memory.free --format=csv,noheader,nounits";
 //     // std::string cmd = "nvidia-smi --query-gpu=gpu_name,memory.free --format=csv,noheader,nounits";
 //     // std::string cmd = "nvidia-smi --query-gpu=gpu_name,memory.free --format=csv,noheader,nounits";
-
 //     std::string cmd_out;
 //     try
 //         {
