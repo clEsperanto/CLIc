@@ -2,6 +2,8 @@ add_executable(core_gpu_test core_gpu_test.cpp)
 add_dependencies(core_gpu_test CLIc)
 target_link_libraries(core_gpu_test PRIVATE CLIc::CLIc)
 set_target_properties(core_gpu_test PROPERTIES FOLDER "Tests")
+target_compile_features(core_gpu_test PRIVATE cxx_std_17)
+
 
 add_executable(core_scalar_test core_scalar_test.cpp)
 add_dependencies(core_scalar_test CLIc)
