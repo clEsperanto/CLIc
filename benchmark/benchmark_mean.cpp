@@ -6,22 +6,18 @@
 
 #include <benchmark_base.cpp>
 
-using std::array;
-using std::cout;
-using std::string;
-using std::vector;
-
 class MeanBenchmark : public BenchmarkBase
 {
 protected:
   cle::Clesperanto cle;
-  cle::Image       gpuInput, gpuOutput;
+  cle::Image       gpuInput;
+  cle::Image       gpuOutput;
 
-  virtual void
-  Setup()
+  auto
+  Setup() -> void override
   {
-    vector<float>    inputData(dataWidth * dataWidth);
-    array<size_t, 3> dim{ { dataWidth, dataWidth, 1 } };
+    std::vector<float>    inputData(dataWidth * dataWidth);
+    std::array<size_t, 3> dim{ { dataWidth, dataWidth, 1 } };
 
     cle.GetDevice()->WaitForKernelToFinish();
 
@@ -30,26 +26,28 @@ protected:
     gpuOutput = cle.Create<float>(dim);
   }
 
-  virtual void
-  Iteration()
+  auto
+  Iteration() -> void override
   {
     cle.MeanBox(gpuInput, gpuOutput, 4, 4);
   }
 
-  virtual void
-  Teardown()
+  auto
+  Teardown() -> void override
   {}
 
 public:
-  size_t dataWidth;
+  size_t dataWidth = 0;
+
   MeanBenchmark()
     : cle(cle::Clesperanto())
   {}
-  virtual ~MeanBenchmark() {}
+
+  ~MeanBenchmark() = default;
 };
 
-int
-main(int argc, char ** argv)
+auto
+main(int argc, char ** argv) -> int
 {
   MeanBenchmark d;
   d.dataWidth = 1 << 10;
@@ -59,7 +57,7 @@ main(int argc, char ** argv)
   if (argc >= 2)
   {
     d.dataWidth = std::stoi(argv[1]);
-    cout << "using " << d.dataWidth * d.dataWidth * sizeof(float) << " bytes memory" << endl;
+    std::cout << "using " << d.dataWidth * d.dataWidth * sizeof(float) << " bytes memory" << std::endl;
   }
 
   d.Run();

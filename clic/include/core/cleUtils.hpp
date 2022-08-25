@@ -104,9 +104,9 @@ struct MemAllocType
     return type;
   }
   void
-  Set(cl_mem_flags t)
+  Set(cl_mem_flags _type)
   {
-    type = t;
+    type = _type;
   }
 
   cl_mem_flags type = 0;
@@ -140,9 +140,9 @@ struct HostAccessType
     return type;
   }
   void
-  Set(cl_mem_flags t)
+  Set(cl_mem_flags _type)
   {
-    type = t;
+    type = _type;
   }
 
   cl_mem_flags type = 0;
@@ -171,9 +171,9 @@ struct KernelAccessType
     return type;
   }
   void
-  Set(cl_mem_flags t)
+  Set(cl_mem_flags _type)
   {
-    type = t;
+    type = _type;
   }
 
   cl_mem_flags type = CL_MEM_READ_WRITE;
@@ -192,9 +192,9 @@ struct ObjectType
     return type == CL_MEM_OBJECT_BUFFER;
   }
   void
-  Set(cl_mem_object_type t)
+  Set(cl_mem_object_type _type)
   {
-    type = t;
+    type = _type;
   }
   [[nodiscard]] auto
   Str() const -> std::string
@@ -308,9 +308,9 @@ struct DataType
     type = CL_FLOAT;
   }
   void
-  Set(cl_channel_type t)
+  Set(cl_channel_type _type)
   {
-    type = t;
+    type = _type;
   }
   [[nodiscard]] auto
   Str() const -> std::string

@@ -1,3 +1,4 @@
+
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -9,109 +10,102 @@
 
 #include <benchmark_base.cpp>
 
-using std::array;
-using std::cout;
-using std::map;
-using std::string;
-using std::vector;
-
 class MeanBoxBenchmark : public BenchmarkBase
 {
 protected:
   cle::Clesperanto cle;
-  cle::Image       gpuInput, gpuOutput;
+  cle::Image       gpuInput;
+  cle::Image       gpuOutput;
 
-  virtual void
-  Setup()
+  auto
+  Setup() -> void override
   {
-    vector<float> inputData(dataWidth * dataWidth);
+    std::vector<float> inputData(dataWidth * dataWidth);
 
-    array<size_t, 3> dim{ { dataWidth, dataWidth, 1 } };
+    std::array<size_t, 3> dim{ { dataWidth, dataWidth, 1 } };
     gpuInput = cle.Push<float>(inputData, dim);
     gpuOutput = cle.Create<float>(dim);
   }
-  virtual void
-  Teardown()
+
+  auto
+  Teardown() -> void override
   {}
 
 public:
-  size_t dataWidth;
+  size_t dataWidth = 0;
   int    radius = 3;
-  MeanBoxBenchmark(const cle::Clesperanto & _cle)
+
+  explicit MeanBoxBenchmark(const cle::Clesperanto & _cle)
     : cle(_cle)
   {}
-  MeanBoxBenchmark()
-    : cle(cle::Clesperanto())
-  {}
-  virtual ~MeanBoxBenchmark() {}
+
+  MeanBoxBenchmark() = default;
+  ~MeanBoxBenchmark() = default;
 };
 
 class MeanBoxNonSeperableBenchmark : public MeanBoxBenchmark
 {
 protected:
-  virtual void
-  Iteration()
+  auto
+  Iteration() -> void override
   {
     cle.MeanSphere(gpuInput, gpuOutput, radius, radius);
   }
 
-  virtual void
-  Compile(cle::Clesperanto & cle)
+  auto
+  Compile(cle::Clesperanto & cle) -> void override
   {
-    array<size_t, 3> dim{ { 1, 1, 1 } };
-    cle::Image       in = cle.Create<float>(dim);
-    cle::Image       out = cle.Create<float>(dim);
+    std::array<size_t, 3> dim{ { 1, 1, 1 } };
+    cle::Image            in = cle.Create<float>(dim);
+    cle::Image            out = cle.Create<float>(dim);
     cle.MeanSphere(in, out, 1, 1);
   }
 
 public:
-  MeanBoxNonSeperableBenchmark(const cle::Clesperanto & _cle)
+  explicit MeanBoxNonSeperableBenchmark(const cle::Clesperanto & _cle)
     : MeanBoxBenchmark(_cle)
   {}
-  MeanBoxNonSeperableBenchmark()
-    : MeanBoxBenchmark()
-  {}
-  virtual ~MeanBoxNonSeperableBenchmark() {}
+
+  MeanBoxNonSeperableBenchmark() = default;
+  ~MeanBoxNonSeperableBenchmark() = default;
 };
 
 class MeanBoxSeperableBenchmark : public MeanBoxBenchmark
 {
 protected:
-  virtual void
-  Iteration()
+  auto
+  Iteration() -> void override
   {
     cle.MeanBox(gpuInput, gpuOutput, static_cast<float>(radius), static_cast<float>(radius));
   }
 
-  virtual void
-  Compile(cle::Clesperanto & cle)
+  auto
+  Compile(cle::Clesperanto & cle) -> void override
   {
-    array<size_t, 3> dim{ { 1, 1, 1 } };
-    cle::Image       in = cle.Create<float>(dim);
-    cle::Image       out = cle.Create<float>(dim);
+    std::array<size_t, 3> dim{ { 1, 1, 1 } };
+    cle::Image            in = cle.Create<float>(dim);
+    cle::Image            out = cle.Create<float>(dim);
     cle.MeanBox(in, out, 1, 1);
   }
 
 public:
-  MeanBoxSeperableBenchmark(const cle::Clesperanto & _cle)
+  explicit MeanBoxSeperableBenchmark(const cle::Clesperanto & _cle)
     : MeanBoxBenchmark(_cle)
   {}
-  MeanBoxSeperableBenchmark()
-    : MeanBoxBenchmark()
-  {}
-  virtual ~MeanBoxSeperableBenchmark() {}
+  MeanBoxSeperableBenchmark() = default;
+  ~MeanBoxSeperableBenchmark() = default;
 };
 
 template <class T>
-map<size_t, unsigned long>
+std::map<size_t, unsigned long>
 getTimingsBySizes(const size_t maxSize)
 {
   static cle::Clesperanto cle;
 
-  map<size_t, unsigned long> timings;
+  std::map<size_t, unsigned long> timings;
   for (size_t elemCnt = 1; elemCnt <= maxSize; elemCnt <<= 1)
   {
-    cout << "\n\n# Bytes: " << elemCnt * elemCnt * sizeof(float) << "\n###" << endl;
+    std::cout << "\n\n# Bytes: " << elemCnt * elemCnt * sizeof(float) << "\n###" << std::endl;
     T d(cle);
     d.dataWidth = static_cast<int>(elemCnt);
     d.Run();
@@ -123,16 +117,16 @@ getTimingsBySizes(const size_t maxSize)
 }
 
 template <class T>
-map<size_t, unsigned long>
+std::map<size_t, unsigned long>
 getTimingsByRadius(const size_t elemCnt)
 {
   static cle::Clesperanto cle;
 
-  map<size_t, unsigned long> timings;
+  std::map<size_t, unsigned long> timings;
 
   for (size_t radius = 1; radius <= 32; radius++)
   {
-    cout << "\n\n# Radius " << radius << "\n###" << endl;
+    std::cout << "\n\n# Radius " << radius << "\n###" << std::endl;
     T d(cle);
     d.dataWidth = static_cast<int>(elemCnt);
     d.radius = static_cast<int>(radius);
@@ -152,26 +146,26 @@ writeTimings(std::basic_ostream<char> & s, const unsigned long compileMs, const 
   s << compileMs + runMs;
 }
 
-int
-main(int argc, char ** argv)
+auto
+main(int argc, char ** argv) -> int
 {
   if (argc < 3)
   {
-    cout << "usage: " << argv[0] << " FILE FILE [SIZE]" << endl;
+    std::cout << "usage: " << argv[0] << " FILE FILE [SIZE]" << std::endl;
     return 1;
   }
 
   std::ofstream timingsSize(argv[1], std::ios_base::trunc | std::ios_base::out);
   if (!timingsSize.is_open())
   {
-    cout << "could not open for writing: " << argv[1] << endl;
+    std::cout << "could not open for writing: " << argv[1] << std::endl;
     return 1;
   }
 
   std::ofstream timingsRadius(argv[2], std::ios_base::trunc | std::ios_base::out);
   if (!timingsRadius.is_open())
   {
-    cout << "could not open for writing: " << argv[2] << endl;
+    std::cout << "could not open for writing: " << argv[2] << std::endl;
     return 1;
   }
 
@@ -179,27 +173,27 @@ main(int argc, char ** argv)
   if (argc >= 4)
   {
     maxSize = 1ULL << atoi(argv[3]);
-    cout << "max square width: " << maxSize << endl;
+    std::cout << "max square width: " << maxSize << std::endl;
   }
 
-  cout << "Seperable (former: 2D Box)" << endl;
+  std::cout << "Seperable (former: 2D Box)" << std::endl;
   auto timingsSeperableMsBySize = getTimingsBySizes<MeanBoxSeperableBenchmark>(maxSize);
-  cout << "Non-Seperable (former: 2D Sphere)" << endl;
+  std::cout << "Non-Seperable (former: 2D Sphere)" << std::endl;
   auto timingsNonSeperableMsBySize = getTimingsBySizes<MeanBoxNonSeperableBenchmark>(maxSize);
-  cout << endl << endl;
+  std::cout << std::endl << std::endl;
 
-  cout << "Measuring Kernel compile Times...";
-  cout.flush();
+  std::cout << "Measuring Kernel compile Times...";
+  std::cout.flush();
   MeanBoxSeperableBenchmark benchSep;
   benchSep.iterationCompilationCount = 32;
   unsigned int                 compileSeperableMs = benchSep.GetCompilationMs();
   MeanBoxNonSeperableBenchmark benchNonSep;
   benchNonSep.iterationCompilationCount = 32;
   unsigned int compileNonSeperableMs = benchNonSep.GetCompilationMs();
-  cout << "OK" << endl;
+  std::cout << "OK" << std::endl;
 
-  cout << "saving results...";
-  cout.flush();
+  std::cout << "saving results...";
+  std::cout.flush();
 
   timingsSize << "width\telem_cnt\tradius\tsep_compile_ms\tsep_run_ms\tsep_total_ms\tnonsep_compile_ms\tnonsep_run_"
                  "ms\tnonsep_total_ms\n";
@@ -216,21 +210,21 @@ main(int argc, char ** argv)
     writeTimings(timingsSize, compileNonSeperableMs, timingsNonSeperableMsBySize[elemCnt]);
     timingsSize << "\n";
   }
-  cout << "OK" << endl;
+  std::cout << "OK" << std::endl;
 
   const size_t defaultDataWidth = maxSize;
-  cout << endl << endl;
-  cout << "Measurements for different radiuses" << endl;
-  cout << "Bytes: " << defaultDataWidth * defaultDataWidth * sizeof(float) << endl;
-  cout << endl;
+  std::cout << std::endl << std::endl;
+  std::cout << "Measurements for different radiuses" << std::endl;
+  std::cout << "Bytes: " << defaultDataWidth * defaultDataWidth * sizeof(float) << std::endl;
+  std::cout << std::endl;
 
-  cout << "Seperable (former: 2D Box)" << endl;
+  std::cout << "Seperable (former: 2D Box)" << std::endl;
   auto timingsSeperableMsByRadius = getTimingsByRadius<MeanBoxSeperableBenchmark>(defaultDataWidth);
-  cout << "Non-Seperable (former: 2D Sphere)" << endl;
+  std::cout << "Non-Seperable (former: 2D Sphere)" << std::endl;
   auto timingsNonSeperableMsByRadius = getTimingsByRadius<MeanBoxNonSeperableBenchmark>(defaultDataWidth);
 
-  cout << "saving results...";
-  cout.flush();
+  std::cout << "saving results...";
+  std::cout.flush();
 
   timingsRadius << "width\telem_cnt\tradius\tsep_compile_ms\tsep_run_ms\tsep_total_ms\tnonsep_compile_ms\tnonsep_run_"
                    "ms\tnonsep_total_ms\n";
@@ -247,7 +241,7 @@ main(int argc, char ** argv)
     writeTimings(timingsRadius, compileNonSeperableMs, timingsNonSeperableMsByRadius[radius]);
     timingsRadius << "\n";
   }
-  cout << "OK" << endl;
+  std::cout << "OK" << std::endl;
 
   return 0;
 }

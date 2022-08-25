@@ -42,13 +42,13 @@ public:
   Create(const ShapeArray & shape = { 1, 1, 1 }, const MemoryType & type = BUFFER) const -> Image;
 
   template <class T = float>
-  auto
+  [[nodiscard]] auto
   Push(const std::vector<T> & array = { 0 },
        const ShapeArray &     shape = { 1, 1, 1 },
        const MemoryType &     type = BUFFER) const -> Image;
 
   template <class T = float>
-  auto
+  [[nodiscard]] auto
   Pull(const Image & object) const -> std::vector<T>;
 
   [[nodiscard]] auto

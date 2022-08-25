@@ -16,7 +16,7 @@ public:
   using ProcessorPointer = std::shared_ptr<Processor>;
 
   LightObject() = default;
-  ~LightObject() = default;
+  virtual ~LightObject() = default;
   LightObject(const LightObject & obj) = default;
   LightObject(LightObject && obj) = default;
   auto

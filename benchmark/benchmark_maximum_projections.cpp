@@ -5,22 +5,18 @@
 #include <string>
 #include <thread>
 
-#include <benchmark_base.cpp>
-
 #include "clesperanto.hpp"
-
-using std::cout;
-using std::ofstream;
-using std::string;
+#include <benchmark_base.cpp>
 
 class MaximumProjectionBenchmarkBase : public BenchmarkBase
 {
 protected:
   cle::Clesperanto cle;
-  cle::Image       gpuInput, gpuOutput;
+  cle::Image       gpuInput;
+  cle::Image       gpuOutput;
 
-  virtual void
-  Setup()
+  auto
+  Setup() -> void override
   {
     std::vector<float> inputData(dataWidth * dataWidth * dataWidth);
 
@@ -31,68 +27,70 @@ protected:
     gpuOutput = cle.Create<float>(dimensionsOutput);
   }
 
-  virtual void
-  Iteration(){};
+  auto
+  Iteration() -> void override{};
 
-  virtual void
-  Teardown(){};
+  auto
+  Teardown() -> void override{};
 
 public:
-  size_t dataWidth;
+  size_t dataWidth = 0;
+
   MaximumProjectionBenchmarkBase()
     : cle(cle::Clesperanto())
   {}
-  virtual ~MaximumProjectionBenchmarkBase() {}
+
+  ~MaximumProjectionBenchmarkBase() = default;
 };
 
 class MaximumXProjectionBenchmark : public MaximumProjectionBenchmarkBase
 {
 protected:
-  virtual void
-  Iteration()
+  auto
+  Iteration() -> void override
   {
     cle.MaximumXProjection(gpuInput, gpuOutput);
   }
 
 public:
-  MaximumXProjectionBenchmark() {}
-  virtual ~MaximumXProjectionBenchmark() {}
+  MaximumXProjectionBenchmark() = default;
+  ~MaximumXProjectionBenchmark() = default;
 };
 
 class MaximumYProjectionBenchmark : public MaximumProjectionBenchmarkBase
 {
 protected:
-  virtual void
-  Iteration()
+  auto
+  Iteration() -> void override
   {
     cle.MaximumYProjection(gpuInput, gpuOutput);
   }
 
 public:
-  MaximumYProjectionBenchmark() {}
-  virtual ~MaximumYProjectionBenchmark() {}
+  MaximumYProjectionBenchmark() = default;
+  ~MaximumYProjectionBenchmark() = default;
 };
 
 class MaximumZProjectionBenchmark : public MaximumProjectionBenchmarkBase
 {
 protected:
-  virtual void
-  Iteration()
+  auto
+  Iteration() -> void override
   {
     cle.MaximumZProjection(gpuInput, gpuOutput);
   }
 
 public:
-  MaximumZProjectionBenchmark() {}
-  virtual ~MaximumZProjectionBenchmark() {}
+  MaximumZProjectionBenchmark() = default;
+  ~MaximumZProjectionBenchmark() = default;
 };
 
-int
-main(int argc, char ** argv)
+auto
+main(int argc, char ** argv) -> int
 {
   if (argc < 2)
   {
-    cout << "usage: " << argv[0] << " FILE" << endl;
+    std::cout << "usage: " << argv[0] << " FILE" << std::endl;
     return 1;
   }
 
@@ -100,7 +98,7 @@ main(int argc, char ** argv)
   MaximumYProjectionBenchmark y;
   MaximumZProjectionBenchmark z;
 
-  ofstream csv;
+  std::ofstream csv;
   csv.open(argv[1], std::ios_base::trunc);
   if (!csv.is_open())
   {

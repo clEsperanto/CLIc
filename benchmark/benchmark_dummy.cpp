@@ -5,40 +5,38 @@
 
 #include <benchmark_base.cpp>
 
-using std::string;
-using std::cout;
-
 class DummyBenchmark : public BenchmarkBase
 {
 protected:
-  virtual void
-  Setup()
+  auto
+  Setup() -> void override
   {}
-  virtual void
-  Iteration()
+
+  auto
+  Iteration() -> void override
   {
     std::this_thread::sleep_for(std::chrono::microseconds(700));
   };
 
-  virtual void
-  Teardown()
+  auto
+  Teardown() -> void override
   {}
 
-  virtual void
-  InterpretTiming(const string & title, const unsigned long ms)
+  auto
+  InterpretTiming(const std::string & title, const unsigned long time) -> void override
   {
-    cout << title << ": " << ((float)(ms - 700) / (float)700 * 100) << "% wait inaccuracy" << endl;
+    std::cout << title << ": " << static_cast<float>(time - 700) / static_cast<float>(700 * 100) << "% wait inaccuracy"
+              << std::endl;
   }
 
-
 public:
-  virtual ~DummyBenchmark() {}
+  ~DummyBenchmark() override = default;
 };
 
-int
-main()
+auto
+main() -> auto
 {
-  DummyBenchmark d;
-  d.Run();
+  DummyBenchmark dummy;
+  dummy.Run();
   return 0;
 }

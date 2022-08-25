@@ -6,8 +6,10 @@ namespace cle
 
 enum MemoryType
 {
+  UNKOWN = -1,
   BUFFER = 0,
-  IMAGE = 1
+  IMAGE = 1,
+  SCALAR = 2
 };
 
 // enum DataType

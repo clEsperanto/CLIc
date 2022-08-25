@@ -39,7 +39,7 @@ inline auto
 GetPlatformPointerList() -> std::vector<cl::Platform>
 {
   cl_int                    err = CL_SUCCESS;
-  std::vector<cl::Platform> platform_list;
+  std::vector<cl::Platform> platform_list = {};
   err = cl::Platform::get(&platform_list);
   if (err != CL_SUCCESS)
   {

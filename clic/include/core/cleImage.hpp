@@ -13,7 +13,7 @@ class Image : public LightObject
 {
 public:
   Image() = default;
-  ~Image() = default;
+  ~Image() override = default;
   Image(const Image & obj) = default;
   Image(Image && obj) = default;
   auto
@@ -72,7 +72,7 @@ private:
   ShapeArray       origin_{ 0, 0, 0 };
   DataType         data_type_;
   ChannelsType     channels_type_;
-  MemoryType       mem_type_;
+  MemoryType       mem_type_ = BUFFER;
 
   template <class type>
   auto
