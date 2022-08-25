@@ -30,11 +30,11 @@ protected:
   }
 
 public:
-  ~DummyBenchmark() override = default;
+  ~DummyBenchmark() = default;
 };
 
 auto
-main() -> auto
+main() -> int
 {
   DummyBenchmark dummy;
   dummy.Run();
