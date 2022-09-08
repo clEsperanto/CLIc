@@ -37,20 +37,20 @@ add_dependencies(${LIBRARY_NAME} generate_preamble generate_kernels generate_ker
 ### File auto-generation target
 add_custom_target(
     generate_preamble ALL
-    COMMAND ${Python_EXECUTABLE} ${UTILITIES_DIR}/convert_clij_to_header.py ${OCL_PREAMBLE_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/kernels/
+    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/convert_clij_to_header.py ${OCL_PREAMBLE_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/kernels/
     BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/kernels/cle_preamble.h
     COMMENT "Generating cle_preamble header."
 )
 add_custom_target(
     generate_kernels ALL
-    COMMAND ${Python_EXECUTABLE} ${UTILITIES_DIR}/convert_clij_to_header.py ${OCL_KERNELS_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/kernels/
+    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/convert_clij_to_header.py ${OCL_KERNELS_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/kernels/
     BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/kernels 
     COMMENT "Generating kernels header from clij opencl files."
 )
 add_dependencies(generate_kernels generate_preamble)
 add_custom_target(
     generate_kernels_list ALL
-    COMMAND ${Python_EXECUTABLE} ${UTILITIES_DIR}/generate_kernellist_header.py ${CMAKE_CURRENT_SOURCE_DIR}/include
+    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/generate_kernellist_header.py ${CMAKE_CURRENT_SOURCE_DIR}/include
     BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/include/core/cleKernelList.h 
     COMMENT "Generating cleKernelList header."
 )

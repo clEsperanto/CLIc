@@ -12,8 +12,8 @@ if(NOT OpenCL_FOUND)
     find_package(OpenCL REQUIRED)
 endif()
 
-if(NOT Python_FOUND)
-    find_package(Python COMPONENTS Interpreter Development REQUIRED)
+if(NOT Python3_Interpreter_FOUND)
+    find_package(Python3 COMPONENTS Interpreter REQUIRED)
 endif()
 
 # Library sources
