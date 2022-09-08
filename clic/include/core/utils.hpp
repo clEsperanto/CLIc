@@ -7,7 +7,7 @@
 #include <iostream>
 #include <limits>
 
-#include <math.h>
+#include <cmath>
 
 template<class type>
 bool IsDifferent(std::vector<type>& output, std::vector<type>& valid)
