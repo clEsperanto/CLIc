@@ -45,7 +45,7 @@ main(int argc, char ** argv) -> int
   {
     return EXIT_FAILURE;
   }
-  if (!run_test<short>(gpu, { 10, 1, 1 }))
+  if (!run_test<signed short>(gpu, { 10, 1, 1 }))
   {
     return EXIT_FAILURE;
   }
@@ -73,7 +73,7 @@ main(int argc, char ** argv) -> int
   {
     return EXIT_FAILURE;
   }
-  if (!run_test<short>(gpu, { 10, 5, 1 }))
+  if (!run_test<signed short>(gpu, { 10, 5, 1 }))
   {
     return EXIT_FAILURE;
   }
@@ -101,7 +101,7 @@ main(int argc, char ** argv) -> int
   {
     return EXIT_FAILURE;
   }
-  if (!run_test<short>(gpu, { 10, 5, 3 }))
+  if (!run_test<signed short>(gpu, { 10, 5, 3 }))
   {
     return EXIT_FAILURE;
   }
