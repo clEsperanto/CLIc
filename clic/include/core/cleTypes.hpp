@@ -138,27 +138,27 @@ TypeToDataType() -> DataType
   {
     return FLOAT;
   }
-  if (std::is_same<T, int>::value)
+  if (std::is_same<T, int32_t>::value)
   {
     return INT32;
   }
-  if (std::is_same<T, unsigned int>::value)
+  if (std::is_same<T, uint32_t>::value)
   {
     return UINT32;
   }
-  if (std::is_same<T, char>::value)
+  if (std::is_same<T, int8_t>::value)
   {
     return INT8;
   }
-  if (std::is_same<T, unsigned char>::value)
+  if (std::is_same<T, uint8_t>::value)
   {
     return UINT8;
   }
-  if (std::is_same<T, short>::value)
+  if (std::is_same<T, int16_t>::value)
   {
     return INT16;
   }
-  if (std::is_same<T, unsigned short>::value)
+  if (std::is_same<T, uint16_t>::value)
   {
     return UINT16;
   }
