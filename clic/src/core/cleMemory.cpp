@@ -1,79 +1,78 @@
 #include "cleMemory.hpp"
 
-#include <iostream>
-
 #include "cleBackend.hpp"
 #include "cleImage.hpp"
 #include "cleProcessor.hpp"
 #include "cleTypes.hpp"
-#include "cleUtils.hpp"
+
+#include <iostream>
 
 namespace cle::Memory
 {
 
 auto
-AllocateBufferObject(const ProcessorPointer & device, const ShapeArray & shape, const BitType & type) -> Image
+AllocateBufferMemory(const ProcessorPointer & device, const ShapeArray & shape, const DataType & type) -> Image
 {
-  DataType         data_type = { type };
-  ChannelsType     channels_type = { CL_INTENSITY };
-  MemAllocType     mem_alloc = { 0 };
-  HostAccessType   host_access = { 0 };
-  KernelAccessType kernel_access = { CL_MEM_READ_WRITE };
+  ChannelType       channels_type = INTENSITY;
+  MemAllocationType mem_alloc = DEFAULT;
+  HostAccessType    host_access = HOST_READ_WRITE;
+  KernelAccessType  kernel_access = KERNEL_READ_WRITE;
 
-  size_t byte_length = shape[0] * shape[1] * shape[2] * data_type.Bytes();
-  auto   object = Backend::GetBufferPointer(device->Context(), mem_alloc, host_access, kernel_access, byte_length);
+  size_t byte_length = shape[0] * shape[1] * shape[2] * DataTypeToSizeOf(type);
+  auto   mem_ptr = Backend::GetBufferPointer(device->Context(), mem_alloc, host_access, kernel_access, byte_length);
 
-  // ObjectType object_type = { Backend::GetMemoryType(object) };
+  ObjectType object_type = static_cast<ObjectType>(Backend::GetObjectType(mem_ptr));
 
-  return Image(device, object, shape, data_type, BUFFER, channels_type);
+  return Image(device, mem_ptr, shape, type, object_type, channels_type);
 }
 
 auto
-AllocateImageObject(const ProcessorPointer & device, const ShapeArray & shape, const BitType & type) -> Image
+AllocateImageMemory(const ProcessorPointer & device, const ShapeArray & shape, const DataType & type) -> Image
 {
-  DataType         data_type = { type };
-  ChannelsType     channels_type = { CL_INTENSITY };
-  MemAllocType     mem_alloc = { 0 };
-  HostAccessType   host_access = { 0 };
-  KernelAccessType kernel_access = { CL_MEM_READ_WRITE };
+  ChannelType       channels_type = INTENSITY;
+  MemAllocationType mem_alloc = DEFAULT;
+  HostAccessType    host_access = HOST_READ_WRITE;
+  KernelAccessType  kernel_access = KERNEL_READ_WRITE;
 
-  auto object =
-    Backend::GetImagePointer(device->Context(), mem_alloc, host_access, kernel_access, channels_type, data_type, shape);
+  auto mem_ptr =
+    Backend::GetImagePointer(device->Context(), mem_alloc, host_access, kernel_access, channels_type, type, shape);
 
-  // ObjectType object_type = { Backend::GetMemoryType(object) };
+  ObjectType object_type = static_cast<ObjectType>(Backend::GetObjectType(mem_ptr));
 
-  return Image(device, object, shape, data_type, IMAGE, channels_type);
+  return Image(device, mem_ptr, shape, type, object_type, channels_type);
 }
 
 auto
-AllocateBufferObject(const Image & object) -> Image
+AllocateBufferMemory(const Image & image) -> Image
 {
-  return AllocateBufferObject(object.Device(), object.Shape(), object.BitType().Get());
+  return AllocateBufferMemory(image.Device(), image.Shape(), image.Data());
 }
 
 auto
-AllocateImageObject(const Image & object) -> Image
+AllocateImageMemory(const Image & image) -> Image
 {
-  return AllocateImageObject(object.Device(), object.Shape(), object.BitType().Get());
+  return AllocateImageMemory(image.Device(), image.Shape(), image.Data());
 }
 
 auto
-AllocateObject(const ProcessorPointer & device,
+AllocateMemory(const ProcessorPointer & device,
                const ShapeArray &       shape,
-               const BitType &          type,
-               const MemoryType &       object) -> Image
+               const DataType &         bit_type,
+               const ObjectType &       object_type) -> Image
 {
-  if (object == BUFFER)
+  if (object_type == BUFFER)
   {
-    return AllocateBufferObject(device, shape, type);
+    std::cout << "we allocate buffer" << std::endl;
+    return AllocateBufferMemory(device, shape, bit_type);
   }
-  return AllocateImageObject(device, shape, type);
+  std::cout << "we allocate image" << std::endl;
+  return AllocateImageMemory(device, shape, bit_type);
 }
 
 auto
-AllocateObject(const Image & object) -> Image
+AllocateMemory(const Image & image) -> Image
 {
-  return AllocateObject(object.Device(), object.Shape(), object.BitType().Get(), object.Memory());
+  return AllocateMemory(image.Device(), image.Shape(), image.Data(), image.Object());
 }
 
 } // namespace cle::Memory

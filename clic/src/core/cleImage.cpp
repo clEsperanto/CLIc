@@ -2,7 +2,6 @@
 #include "cleBackend.hpp"
 #include "cleTypes.hpp"
 
-
 namespace cle
 {
 
@@ -10,8 +9,8 @@ Image::Image(const ProcessorPointer & device,
              const cl::Memory &       data,
              const ShapeArray &       shape,
              const DataType &         data_type,
-             const MemoryType &       object_type,
-             const ChannelsType &     channels_type)
+             const ObjectType &       object_type,
+             const ChannelType &      channels_type)
 {
   this->data_ = data;
   this->device_ = device;
@@ -36,66 +35,66 @@ Image::Image(const ProcessorPointer & device,
 auto
 Image::Fill(const float & value) const -> void
 {
-  switch (this->BitType().Get())
+  switch (this->Data())
   {
-    case CL_FLOAT:
+    case FLOAT:
       this->CastFill<float>(static_cast<float>(value));
       break;
-    case CL_SIGNED_INT32:
-      this->CastFill<int>(static_cast<int>(value));
+    case INT32:
+      this->CastFill<int32_t>(static_cast<int32_t>(value));
       break;
-    case CL_UNSIGNED_INT32:
-      this->CastFill<unsigned int>(static_cast<unsigned int>(value));
+    case UINT32:
+      this->CastFill<uint32_t>(static_cast<uint32_t>(value));
       break;
-    case CL_SIGNED_INT16:
-      this->CastFill<short>(static_cast<short>(value));
+    case INT16:
+      this->CastFill<int16_t>(static_cast<int16_t>(value));
       break;
-    case CL_UNSIGNED_INT16:
-      this->CastFill<unsigned short>(static_cast<unsigned short>(value));
+    case UINT16:
+      this->CastFill<uint16_t>(static_cast<uint16_t>(value));
       break;
-    case CL_SIGNED_INT8:
-      this->CastFill<char>(static_cast<char>(value));
+    case INT8:
+      this->CastFill<int8_t>(static_cast<int8_t>(value));
       break;
-    case CL_UNSIGNED_INT8:
-      this->CastFill<unsigned char>(static_cast<unsigned char>(value));
+    case UINT8:
+      this->CastFill<uint8_t>(static_cast<uint8_t>(value));
       break;
   }
 }
 
 auto
-Image::CopyDataTo(const Image & dst_obj) const -> void
+Image::CopyDataTo(const Image & dst_img) const -> void
 {
-  if (this->Device()->Context() != dst_obj.Device()->Context())
+  if (this->Device()->Context() != dst_img.Device()->Context())
   {
     std::cerr << "Error in CopyDataTo : Memory Objects does not share the same Context. \n";
     return;
   }
-  if (this->Bytes() != dst_obj.Bytes())
+  if (this->Data() != dst_img.Data())
   {
     std::cerr << "Error in CopyDataTo : Memory Objects does not share the same bytes size. \n";
     return;
   }
-  if (this->IsBuffer() && dst_obj.IsBuffer())
+  if (this->IsBuffer() && dst_img.IsBuffer())
   {
-    Backend::EnqueueCopyBuffer(this->Device()->Queue(), this->Get(), dst_obj.Get(), true, 0, 0, this->Bytes());
+    Backend::EnqueueCopyBuffer(this->Device()->Queue(), this->Get(), dst_img.Get(), true, 0, 0, this->Bytes());
     return;
   }
-  if (this->IsBuffer() && dst_obj.IsImage())
+  if (this->IsBuffer() && dst_img.IsImage())
   {
     Backend::EnqueueCopyBufferToImage(
-      this->Device()->Queue(), this->Get(), dst_obj.Get(), true, 0, this->Origin(), dst_obj.Shape());
+      this->Device()->Queue(), this->Get(), dst_img.Get(), true, 0, this->Origin(), dst_img.Shape());
     return;
   }
-  if (this->IsImage() && dst_obj.IsBuffer())
+  if (this->IsImage() && dst_img.IsBuffer())
   {
     Backend::EnqueueCopyImageToBuffer(
-      this->Device()->Queue(), this->Get(), dst_obj.Get(), true, this->Origin(), this->Shape(), 0);
+      this->Device()->Queue(), this->Get(), dst_img.Get(), true, this->Origin(), this->Shape(), 0);
     return;
   }
-  if (this->IsImage() && dst_obj.IsImage())
+  if (this->IsImage() && dst_img.IsImage())
   {
     Backend::EnqueueCopyImage(
-      this->Device()->Queue(), this->Get(), dst_obj.Get(), true, this->Origin(), this->Origin(), this->Shape());
+      this->Device()->Queue(), this->Get(), dst_img.Get(), true, this->Origin(), this->Origin(), this->Shape());
     return;
   }
 }
@@ -143,47 +142,43 @@ Image::Origin() const -> ShapeArray
 }
 
 auto
-Image::MemoryInfo() const -> std::string
+Image::ObjectInfo() const -> std::string
 {
-  if (this->IsBuffer())
-  {
-    return "buffer";
-  }
-  return "image";
+  return ObjectTypeToString(this->Object());
 }
 
 auto
 Image::DataInfo() const -> std::string
 {
-  return this->data_type_.Str();
+  return DataTypeToString(this->Data());
 }
 
 auto
 Image::DataInfoShort() const -> std::string
 {
-  return this->data_type_.Str_s();
+  return DataTypeToString(this->Data(), true);
 }
 
 auto
 Image::IsBuffer() const -> bool
 {
-  return this->mem_type_ == BUFFER;
+  return this->Object() == BUFFER;
 }
 
 auto
 Image::IsImage() const -> bool
 {
-  return this->mem_type_ == IMAGE;
+  return (this->Object() == IMAGE1D) || (this->Object() == IMAGE2D) || (this->Object() == IMAGE3D);
 }
 
 auto
-Image::BitType() const -> DataType
+Image::Data() const -> DataType
 {
   return this->data_type_;
 }
 
 auto
-Image::Memory() const -> MemoryType
+Image::Object() const -> ObjectType
 {
   return this->mem_type_;
 }
@@ -191,7 +186,7 @@ Image::Memory() const -> MemoryType
 auto
 Image::ToString() const -> std::string
 {
-  std::string str = this->MemoryInfo() + "(" + this->DataInfo() + ")";
+  std::string str = this->ObjectInfo() + "(" + this->DataInfo() + ")";
   str += " of shape=[" + std::to_string(this->Shape()[0]) + "," + std::to_string(this->Shape()[1]) + "," +
          std::to_string(this->Shape()[2]) + "]";
   return str;

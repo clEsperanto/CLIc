@@ -5,7 +5,7 @@
 #include "cleMemory.hpp"
 #include "cleMinimumOfAllPixelsKernel.hpp"
 #include "cleSumZProjectionKernel.hpp"
-#include "cleUtils.hpp"
+
 
 namespace cle
 {
@@ -68,7 +68,7 @@ HistogramKernel::Execute() -> void
 
   if (this->min_intensity_ == infinity || this->max_intensity_ == infinity)
   {
-    auto temp_scalar_buffer = Memory::AllocateObject(this->Device(), { 1, 1, 1 });
+    auto temp_scalar_buffer = Memory::AllocateMemory(this->Device(), { 1, 1, 1 });
 
     MinimumOfAllPixelsKernel minimum_intensity_kernel(this->Device());
     minimum_intensity_kernel.SetInput(*src);
@@ -85,7 +85,7 @@ HistogramKernel::Execute() -> void
   this->AddParameter("minimum", this->min_intensity_);
   this->AddParameter("maximum", this->max_intensity_);
 
-  auto partial_hist = Memory::AllocateObject(this->Device(), { this->nb_bins_, 1, nb_partial_hist });
+  auto partial_hist = Memory::AllocateMemory(this->Device(), { this->nb_bins_, 1, nb_partial_hist });
   this->AddParameter("dst", partial_hist);
   this->SetRange(std::array<size_t, 3>{ nb_partial_hist, 1, 1 });
   this->Operation::Execute();

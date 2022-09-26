@@ -27,18 +27,23 @@ public:
   [[nodiscard]] auto
   Shape() const -> ShapeArray override;
   [[nodiscard]] auto
-  MemoryInfo() const -> std::string override;
+  ObjectInfo() const -> std::string override;
+  [[nodiscard]] auto
+  Object() const -> ObjectType override;
   [[nodiscard]] auto
   DataInfo() const -> std::string override;
   [[nodiscard]] auto
   DataInfoShort() const -> std::string override;
+  [[nodiscard]] auto
+  Data() const -> DataType override;
   [[nodiscard]] auto
   Bytes() const -> size_t override;
   [[nodiscard]] auto
   ToString() const -> std::string override;
 
 private:
-  Type data_;
+  Type     data_;
+  DataType data_type_;
 };
 
 template <class Type>
@@ -46,6 +51,7 @@ Scalar<Type>::Scalar(const Type & data)
   : data_(data)
 {
   static_assert(std::is_fundamental<Type>::value, "Scalar can only be of native type");
+  this->data_type_ = TypeToDataType<Type>();
 }
 
 template <class Type>
@@ -71,16 +77,23 @@ Scalar<Type>::Shape() const -> ShapeArray
 
 template <class Type>
 auto
-Scalar<Type>::MemoryInfo() const -> std::string
+Scalar<Type>::ObjectInfo() const -> std::string
 {
   return "scalar";
 }
 
 template <class Type>
 auto
+Scalar<Type>::Object() const -> ObjectType
+{
+  return SCALAR;
+}
+
+template <class Type>
+auto
 Scalar<Type>::DataInfo() const -> std::string
 {
-  return typeid(this->Get()).name();
+  return DataTypeToString(this->Data());
 }
 
 template <class Type>
@@ -88,6 +101,13 @@ auto
 Scalar<Type>::DataInfoShort() const -> std::string
 {
   return typeid(this->Get()).name();
+}
+
+template <class Type>
+auto
+Scalar<Type>::Data() const -> DataType
+{
+  return this->data_type_;
 }
 
 template <class Type>
@@ -101,7 +121,7 @@ template <class Type>
 auto
 Scalar<Type>::ToString() const -> std::string
 {
-  std::string str = this->MemoryInfo() + "(" + this->DataInfo() + ")";
+  std::string str = this->ObjectInfo() + "(" + this->DataInfo() + ")";
   str += " of shape=[" + std::to_string(this->Shape()[0]) + "," + std::to_string(this->Shape()[1]) + "," +
          std::to_string(this->Shape()[2]) + "]";
   return str;

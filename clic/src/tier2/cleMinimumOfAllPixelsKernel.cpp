@@ -35,7 +35,7 @@ MinimumOfAllPixelsKernel::Execute() -> void
   if (dim[2] > 1)
   {
     dim[2] = 1;
-    auto temp = Memory::AllocateObject(this->Device(), dim, dst->BitType().Get(), dst->Memory());
+    auto temp = Memory::AllocateMemory(this->Device(), dim, dst->Data(), dst->Object());
 
     MinimumZProjectionKernel kernel(this->Device());
     kernel.SetInput(*src);
@@ -47,7 +47,7 @@ MinimumOfAllPixelsKernel::Execute() -> void
   if (dim[1] > 1)
   {
     dim[1] = 1;
-    auto temp = Memory::AllocateObject(this->Device(), dim, dst->BitType().Get(), dst->Memory());
+    auto temp = Memory::AllocateMemory(this->Device(), dim, dst->Data(), dst->Object());
 
     MinimumYProjectionKernel kernel(this->Device());
     kernel.SetInput(*src);

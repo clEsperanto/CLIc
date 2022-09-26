@@ -6,7 +6,7 @@
 #include "cleMaximumOfAllPixelsKernel.hpp"
 #include "cleMemory.hpp"
 #include "cleMinimumOfAllPixelsKernel.hpp"
-#include "cleUtils.hpp"
+
 #include <math.h>
 
 namespace cle
@@ -38,7 +38,7 @@ ThresholdOtsuKernel::Execute() -> void
   // compute inputs min / max intensity
   // * should be removed because already defined in histogram class ?
   //
-  auto                     temp_scalar_buffer = Memory::AllocateObject(this->Device(), { 1, 1, 1 });
+  auto                     temp_scalar_buffer = Memory::AllocateMemory(this->Device(), { 1, 1, 1 });
   MinimumOfAllPixelsKernel minimum_intensity_kernel(this->Device());
   minimum_intensity_kernel.SetInput(*src);
   minimum_intensity_kernel.SetOutput(temp_scalar_buffer);
@@ -51,7 +51,7 @@ ThresholdOtsuKernel::Execute() -> void
   float max_intensity = Memory::ReadObject<float>(temp_scalar_buffer).front();
 
   // compute src histogram
-  auto            hist = Memory::AllocateObject(this->Device(), { bin, 1, 1 });
+  auto            hist = Memory::AllocateMemory(this->Device(), { bin, 1, 1 });
   HistogramKernel histogram(this->Device());
   histogram.SetInput(*src);
   histogram.SetOutput(hist);
@@ -97,7 +97,7 @@ ThresholdOtsuKernel::Execute() -> void
       max_variance = variance;
     }
   }
-  if (src->BitType().Str_s() != "f")
+  if (src->Data() != FLOAT)
   {
     threshold = round(threshold);
   }

@@ -74,16 +74,16 @@ Operation::GetParameter(const std::string & tag) -> ObjectPointer
 auto
 Operation::GetImage(const std::string & tag) -> ImagePointer
 {
-  auto obj_ptr = this->GetParameter(tag);
-  if (obj_ptr == nullptr)
+  auto memory_ptr = this->GetParameter(tag);
+  if (memory_ptr == nullptr)
   {
     return nullptr;
   }
-  if (strcmp(obj_ptr->MemoryInfo().c_str(), "scalar") == 0)
+  if (memory_ptr->Object() == SCALAR)
   {
     return nullptr;
   }
-  return std::dynamic_pointer_cast<Image>(obj_ptr);
+  return std::dynamic_pointer_cast<Image>(memory_ptr);
 }
 
 auto
@@ -200,7 +200,7 @@ Operation::MakeDefines() const -> std::string
   defines += "\n";
   for (auto && ite : parameter_map_)
   {
-    if (strcmp(ite.second->MemoryInfo().c_str(), "scalar") != 0)
+    if (ite.second->Object() != SCALAR)
     {
       // define position (x,y,z) information
       std::string pos_type;
@@ -238,7 +238,7 @@ Operation::MakeDefines() const -> std::string
       defines += "\n";
 
       // define specific information
-      if (strcmp(ite.second->MemoryInfo().c_str(), "buffer") == 0)
+      if (strcmp(ite.second->ObjectInfo().c_str(), "buffer") == 0)
       {
         defines += "\n#define IMAGE_" + ite.first + "_TYPE __global " + ite.second->DataInfo() + "*";
         defines += "\n#define READ_" + ite.first + "_IMAGE(a,b,c) read_buffer" + ndim + "d" +
@@ -323,9 +323,9 @@ Operation::SetKernelArguments() -> bool
       std::cerr << "Error: missing parameter\n";
       return EXIT_FAILURE;
     }
-    if (strcmp(parameter_ptr->second->MemoryInfo().c_str(), "scalar") == 0)
+    if (parameter_ptr->second->Object() == SCALAR)
     {
-      if (strcmp(parameter_ptr->second->DataInfo().c_str(), "f") == 0)
+      if (parameter_ptr->second->Data() == FLOAT)
       {
         auto scalar = std::dynamic_pointer_cast<Float>(parameter_ptr->second);
         Backend::SetKernelArgument(&this->kernel_, idx, scalar->Get());
@@ -369,7 +369,7 @@ Operation::GetArgumentsInfo() -> void
 auto
 Operation::EnqueueOperation() -> void
 {
-  if (!std::any_of(this->range_.begin(), this->range_.end(), [](size_t i) { return i > 0; }))
+  if (!std::any_of(this->range_.begin(), this->range_.end(), [](size_t dim_range) { return dim_range > 0; }))
   {
     this->SetRange("dst");
   }
@@ -397,14 +397,14 @@ Operation::GenerateOutput(const std::string & input_tag, const std::string & out
     auto input_ptr = this->GetImage(input_tag);
     if (input_ptr != nullptr)
     {
-      if (input_ptr->IsBuffer())
+      if (input_ptr->Object() == BUFFER)
       {
-        auto output = cle::Memory::AllocateBufferObject(*input_ptr);
+        auto output = cle::Memory::AllocateBufferMemory(*input_ptr);
         this->AddParameter(output_tag, output);
       }
-      if (input_ptr->IsImage())
+      if (input_ptr->Object() == (IMAGE1D | IMAGE2D | IMAGE3D))
       {
-        auto output = cle::Memory::AllocateImageObject(*input_ptr);
+        auto output = cle::Memory::AllocateImageMemory(*input_ptr);
         this->AddParameter(output_tag, output);
       }
     }
@@ -414,7 +414,7 @@ Operation::GenerateOutput(const std::string & input_tag, const std::string & out
 auto
 Operation::GenerateOutput(const Image & object, const ShapeArray & shape) -> Image
 {
-  return cle::Memory::AllocateObject(object.Device(), shape, object.BitType().Get(), object.Memory());
+  return cle::Memory::AllocateMemory(object.Device(), shape, object.Data(), object.Object());
 }
 
 } // namespace cle

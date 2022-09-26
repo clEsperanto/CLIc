@@ -33,9 +33,9 @@ ConnectedComponentLabelingBoxKernel::Execute() -> void
   auto src = this->GetImage("src");
   auto dst = this->GetImage("dst");
 
-  auto temp1 = Memory::AllocateObject(this->Device(), dst->Shape(), dst->BitType().Get(), dst->Memory());
-  auto temp2 = Memory::AllocateObject(this->Device(), dst->Shape(), dst->BitType().Get(), dst->Memory());
-  auto temp3 = Memory::AllocateObject(this->Device(), dst->Shape(), dst->BitType().Get(), dst->Memory());
+  auto temp1 = Memory::AllocateMemory(this->Device(), dst->Shape(), dst->Data(), dst->Object());
+  auto temp2 = Memory::AllocateMemory(this->Device(), dst->Shape(), dst->Data(), dst->Object());
+  auto temp3 = Memory::AllocateMemory(this->Device(), dst->Shape(), dst->Data(), dst->Object());
 
   SetNonzeroPixelsToPixelindexKernel set_nonzero_to_index_kernel(this->Device());
   set_nonzero_to_index_kernel.SetInput(*src);
@@ -50,7 +50,7 @@ ConnectedComponentLabelingBoxKernel::Execute() -> void
 
   std::array<size_t, 3> flag_dim = { 1, 1, 2 };
   std::vector<float>    arr = { 0, 0 };
-  auto                  flag = Memory::AllocateObject(this->Device(), flag_dim);
+  auto                  flag = Memory::AllocateMemory(this->Device(), flag_dim);
   Memory::WriteObject(flag, arr);
 
   std::vector<float>      flag_value = { 1, 1 };

@@ -11,7 +11,6 @@
 #include "cleSetKernel.hpp"
 #include "cleSumReductionXKernel.hpp"
 
-#include "cleUtils.hpp"
 
 namespace cle
 {
@@ -44,7 +43,7 @@ CloseIndexGapsInLabelMapKernel::Execute() -> void
   auto src = this->GetImage("src");
   auto dst = this->GetImage("dst");
 
-  auto max_value_buffer = Memory::AllocateObject(this->Device());
+  auto max_value_buffer = Memory::AllocateMemory(this->Device());
 
   MaximumOfAllPixelsKernel max_of_pixel_kernel(this->Device());
   max_of_pixel_kernel.SetInput(*src);
@@ -55,7 +54,7 @@ CloseIndexGapsInLabelMapKernel::Execute() -> void
   size_t nb_indices = static_cast<size_t>(max_value) + 1;
 
   std::array<size_t, 3> indices_dim = { nb_indices, 1, 1 };
-  auto                  flagged_indices = Memory::AllocateObject(this->Device(), indices_dim);
+  auto                  flagged_indices = Memory::AllocateMemory(this->Device(), indices_dim);
 
   FlagExistingLabelsKernel flag_labels_kernel(this->Device());
   flag_labels_kernel.SetInput(*src);
@@ -70,7 +69,7 @@ CloseIndexGapsInLabelMapKernel::Execute() -> void
 
   size_t                nb_sums = static_cast<size_t>(nb_indices / this->block_size_) + 1;
   std::array<size_t, 3> sums_dim = { nb_sums, 1, 1 };
-  auto                  block_sums = Memory::AllocateObject(this->Device(), sums_dim);
+  auto                  block_sums = Memory::AllocateMemory(this->Device(), sums_dim);
 
   SumReductionXKernel sum_reduction_x_kernel(this->Device());
   sum_reduction_x_kernel.SetInput(flagged_indices);
@@ -79,7 +78,7 @@ CloseIndexGapsInLabelMapKernel::Execute() -> void
   sum_reduction_x_kernel.Execute();
 
   std::array<size_t, 3> new_indices_dim = { nb_indices, 1, 1 };
-  auto                  new_indices = Memory::AllocateObject(this->Device(), new_indices_dim);
+  auto                  new_indices = Memory::AllocateMemory(this->Device(), new_indices_dim);
 
   BlockEnumerateKernel block_enumerate_kernel(this->Device());
   block_enumerate_kernel.SetInput(flagged_indices);

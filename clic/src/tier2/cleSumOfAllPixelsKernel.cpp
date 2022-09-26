@@ -35,7 +35,7 @@ SumOfAllPixelsKernel::Execute() -> void
   if (dim[2] > 1)
   {
     dim[2] = 1;
-    auto temp = Memory::AllocateObject(this->Device(), dim, dst->BitType().Get(), dst->Memory());
+    auto temp = Memory::AllocateMemory(this->Device(), dim, dst->Data(), dst->Object());
 
     SumZProjectionKernel kernel(this->Device());
     kernel.SetInput(*src);
@@ -47,7 +47,7 @@ SumOfAllPixelsKernel::Execute() -> void
   if (dim[1] > 1)
   {
     dim[1] = 1;
-    auto temp = Memory::AllocateObject(this->Device(), dim, dst->BitType().Get(), dst->Memory());
+    auto temp = Memory::AllocateMemory(this->Device(), dim, dst->Data(), dst->Object());
 
     SumYProjectionKernel kernel(this->Device());
     kernel.SetInput(*src);

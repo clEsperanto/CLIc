@@ -42,8 +42,8 @@ ExecuteSeparableKernel::Execute() -> void
 
   // * check src/dst is float type ?
 
-  auto temp1 = Memory::AllocateObject(*dst);
-  auto temp2 = Memory::AllocateObject(*dst);
+  auto temp1 = Memory::AllocateMemory(*dst);
+  auto temp2 = Memory::AllocateMemory(*dst);
 
   CopyKernel      copy(this->Device());
   SeparableKernel kernel(this->Device());

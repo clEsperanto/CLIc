@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "cleProcessor.hpp"
+#include "cleTypes.hpp"
 
 namespace cle
 {
@@ -30,7 +31,7 @@ public:
   [[nodiscard]] virtual auto
   Shape() const -> ShapeArray = 0;
   [[nodiscard]] virtual auto
-  MemoryInfo() const -> std::string = 0;
+  ObjectInfo() const -> std::string = 0;
   [[nodiscard]] virtual auto
   DataInfo() const -> std::string = 0;
   [[nodiscard]] virtual auto
@@ -39,6 +40,10 @@ public:
   Bytes() const -> size_t = 0;
   [[nodiscard]] virtual auto
   ToString() const -> std::string = 0;
+  [[nodiscard]] virtual auto
+  Data() const -> DataType = 0;
+  [[nodiscard]] virtual auto
+  Object() const -> ObjectType = 0;
 };
 
 } // namespace cle

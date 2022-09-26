@@ -4,7 +4,7 @@
 #include "cleBackend.hpp"
 #include "cleLightObject.hpp"
 #include "cleTypes.hpp"
-#include "cleUtils.hpp"
+
 
 namespace cle
 {
@@ -25,8 +25,8 @@ public:
         const cl::Memory &       data,
         const ShapeArray &       shape,
         const DataType &         data_type,
-        const MemoryType &       object_type,
-        const ChannelsType &     channels_type);
+        const ObjectType &       object_type,
+        const ChannelType &      channels_type);
 
   auto
   Fill(const float & value) const -> void;
@@ -47,7 +47,7 @@ public:
   [[nodiscard]] auto
   Origin() const -> ShapeArray;
   [[nodiscard]] auto
-  MemoryInfo() const -> std::string override;
+  ObjectInfo() const -> std::string override;
   [[nodiscard]] auto
   DataInfo() const -> std::string override;
   [[nodiscard]] auto
@@ -59,9 +59,9 @@ public:
   [[nodiscard]] auto
   ToString() const -> std::string override;
   [[nodiscard]] auto
-  BitType() const -> DataType;
+  Data() const -> DataType override;
   [[nodiscard]] auto
-  Memory() const -> MemoryType;
+  Object() const -> ObjectType override;
 
 
 private:
@@ -70,9 +70,9 @@ private:
   unsigned int     dim_{};
   ShapeArray       shape_{ 1, 1, 1 };
   ShapeArray       origin_{ 0, 0, 0 };
-  DataType         data_type_;
-  ChannelsType     channels_type_;
-  MemoryType       mem_type_ = BUFFER;
+  DataType         data_type_ = FLOAT;
+  ChannelType      channels_type_ = INTENSITY;
+  ObjectType       mem_type_ = BUFFER;
 
   template <class type>
   auto
@@ -84,7 +84,7 @@ private:
     }
     else
     {
-      if (this->DataInfo().find("float"))
+      if (this->Data() == FLOAT)
       {
         cl_float4 color = { static_cast<cl_float>(value),
                             static_cast<cl_float>(value),
@@ -92,14 +92,14 @@ private:
                             static_cast<cl_float>(value) };
         Backend::EnqueueFillImage(this->Device()->Queue(), this->Get(), true, this->Origin(), this->Shape(), color);
       }
-      else if (this->DataInfo().find("unsigned"))
-      {
-        cl_uint4 color = { static_cast<cl_uint>(value),
-                           static_cast<cl_uint>(value),
-                           static_cast<cl_uint>(value),
-                           static_cast<cl_uint>(value) };
-        Backend::EnqueueFillImage(this->Device()->Queue(), this->Get(), true, this->Origin(), this->Shape(), color);
-      }
+      else if ((this->Data() == UINT8) || (this->Data() == UINT16) || (this->Data() == UINT32)))
+        {
+          cl_uint4 color = { static_cast<cl_uint>(value),
+                             static_cast<cl_uint>(value),
+                             static_cast<cl_uint>(value),
+                             static_cast<cl_uint>(value) };
+          Backend::EnqueueFillImage(this->Device()->Queue(), this->Get(), true, this->Origin(), this->Shape(), color);
+        }
       else
       {
         cl_int4 color = {

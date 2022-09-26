@@ -1,7 +1,7 @@
 #ifndef __CORE_CLEBACKEND_HPP
 #define __CORE_CLEBACKEND_HPP
 
-#include "cleUtils.hpp"
+#include "cleTypes.hpp"
 #include "clic.hpp"
 
 #include <iostream>
@@ -60,7 +60,7 @@ GetDevicesListFromPlatform(const cl::Platform & platform_pointer, const DeviceTy
 {
   cl_int                  err = CL_SUCCESS;
   std::vector<cl::Device> device_list;
-  err = platform_pointer.getDevices(device_type.Get(), &device_list);
+  err = platform_pointer.getDevices(device_type, &device_list);
   if (err != CL_SUCCESS)
   {
     std::cerr << "Backend error in GetDevicesListFromPlatform : " << GetOpenCLErrorInfo(err) << std::endl;
@@ -91,9 +91,7 @@ inline auto
 GetDeviceType(const cl::Device & device_pointer) -> DeviceType
 {
   cl_device_type type = device_pointer.getInfo<CL_DEVICE_TYPE>();
-  DeviceType     device_type;
-  device_type.Set(type);
-  return device_type;
+  return static_cast<DeviceType>(type);
 }
 
 inline auto
@@ -163,14 +161,14 @@ GetQueuePointer(const cl::Device & device_pointer, const cl::Context & context_p
 }
 
 inline auto
-GetBufferPointer(const cl::Context &      context_pointer,
-                 const MemAllocType &     memory_alloc_mode,
-                 const HostAccessType &   host_access_type,
-                 const KernelAccessType & kernel_access_type,
-                 const size_t             size_in_bytes) -> cl::Memory
+GetBufferPointer(const cl::Context &       context_pointer,
+                 const MemAllocationType & memory_alloc_mode,
+                 const HostAccessType &    host_access_type,
+                 const KernelAccessType &  kernel_access_type,
+                 const size_t              size_in_bytes) -> cl::Memory
 {
   cl_int           err = CL_SUCCESS;
-  cl_mem_flags     flags = memory_alloc_mode.Get() | host_access_type.Get() | kernel_access_type.Get();
+  cl_mem_flags     flags = memory_alloc_mode | host_access_type | kernel_access_type;
   const cl::Buffer memory(context_pointer, flags, size_in_bytes, nullptr, &err);
   if (err != CL_SUCCESS)
   {
@@ -181,18 +179,18 @@ GetBufferPointer(const cl::Context &      context_pointer,
 
 inline auto
 GetImagePointer(const cl::Context &           context_pointer,
-                const MemAllocType &          memory_alloc_mode,
+                const MemAllocationType &     memory_alloc_mode,
                 const HostAccessType &        host_access_type,
                 const KernelAccessType &      kernel_access_type,
-                const ChannelsType &          image_channel_order,
+                const ChannelType &           image_channel_order,
                 const DataType &              image_channel_datatype,
                 const std::array<size_t, 3> & shape) -> cl::Memory
 {
   cl_int          err = CL_SUCCESS;
-  cl_mem_flags    flags = memory_alloc_mode.Get() | host_access_type.Get() | kernel_access_type.Get();
+  cl_mem_flags    flags = memory_alloc_mode | host_access_type | kernel_access_type;
   cl::ImageFormat image_format;
-  image_format.image_channel_order = image_channel_order.Get();
-  image_format.image_channel_data_type = image_channel_datatype.Get();
+  image_format.image_channel_order = image_channel_order;
+  image_format.image_channel_data_type = image_channel_datatype;
   if (shape[2] > 1)
   {
     const cl::Image3D memory(context_pointer, flags, image_format, shape[0], shape[1], shape[2], 0, 0, nullptr, &err);
@@ -221,7 +219,7 @@ GetImagePointer(const cl::Context &           context_pointer,
 }
 
 inline auto
-GetMemoryType(const cl::Memory & obj) -> cl_mem_object_type
+GetObjectType(const cl::Memory & obj) -> cl_mem_object_type
 {
   return obj.getInfo<CL_MEM_TYPE>();
 }
@@ -269,9 +267,7 @@ inline auto
 GetBuildStatus(const cl::Device & device_pointer, const cl::Program & program_pointer) -> BuildStatus
 {
   cl_build_status status = program_pointer.getBuildInfo<CL_PROGRAM_BUILD_STATUS>(device_pointer);
-  BuildStatus     build_status{};
-  build_status.Set(status);
-  return build_status;
+  return static_cast<BuildStatus>(status);
 }
 
 inline auto

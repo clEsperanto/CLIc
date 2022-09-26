@@ -8,7 +8,7 @@
 #include "cleMaskedVoronoiLabelingKernel.hpp"
 #include "cleMemory.hpp"
 #include "cleThresholdOtsuKernel.hpp"
-#include "cleUtils.hpp"
+ 
 
 namespace cle
 {
@@ -44,18 +44,18 @@ VoronoiOtsuLabelingKernel::SetOutlineSigma(const float & sigma) -> void
 auto
 VoronoiOtsuLabelingKernel::Execute() -> void
 {
-  auto temp_data_type = CL_FLOAT;
+  auto temp_data_type = FLOAT;
   auto src = this->GetImage("src");
   auto dst = this->GetImage("dst");
 
-  auto               temp = Memory::AllocateObject(this->Device(), src->Shape(), temp_data_type, src->Memory());
+  auto               temp = Memory::AllocateMemory(this->Device(), src->Shape(), temp_data_type, src->Object());
   GaussianBlurKernel gaussianSpot(this->Device());
   gaussianSpot.SetInput(*src);
   gaussianSpot.SetOutput(temp);
   gaussianSpot.SetSigma(spot_sigma_, spot_sigma_, spot_sigma_);
   gaussianSpot.Execute();
 
-  auto               spot = Memory::AllocateObject(temp);
+  auto               spot = Memory::AllocateMemory(temp);
   DetectMaximaKernel maxima(this->Device());
   maxima.SetInput(temp);
   maxima.SetOutput(spot);
@@ -67,13 +67,13 @@ VoronoiOtsuLabelingKernel::Execute() -> void
   gaussianOutline.SetSigma(output_sigma_, output_sigma_, output_sigma_);
   gaussianOutline.Execute();
 
-  auto                segmentation = Memory::AllocateObject(temp);
+  auto                segmentation = Memory::AllocateMemory(temp);
   ThresholdOtsuKernel threshold(this->Device());
   threshold.SetInput(temp);
   threshold.SetOutput(segmentation);
   threshold.Execute();
 
-  auto            binary = Memory::AllocateObject(temp);
+  auto            binary = Memory::AllocateMemory(temp);
   BinaryAndKernel bin(this->Device());
   bin.SetInput1(segmentation);
   bin.SetInput2(spot);

@@ -3,11 +3,10 @@
 #include "cleMemory.hpp"
 #include "cleProcessor.hpp"
 #include "cleTypes.hpp"
-#include "cleUtils.hpp"
 
 
 auto
-MemType(const std::string & type) -> cle::MemoryType
+MemType(const std::string & type) -> cle::ObjectType
 {
   if (type.find("buffer") != std::string::npos)
   {
@@ -15,14 +14,14 @@ MemType(const std::string & type) -> cle::MemoryType
   }
   if (type.find("image") != std::string::npos)
   {
-    return cle::IMAGE;
+    return cle::IMAGE1D;
   }
   throw std::runtime_error("");
 };
 
 template <class type>
 auto
-run_test(const std::shared_ptr<cle::Processor> & gpu, std::array<size_t, 3> shape, const cle::MemoryType & mem_type)
+run_test(const std::shared_ptr<cle::Processor> & gpu, std::array<size_t, 3> shape, const cle::ObjectType & mem_type)
   -> bool
 {
   const type base = 10;
@@ -33,10 +32,10 @@ run_test(const std::shared_ptr<cle::Processor> & gpu, std::array<size_t, 3> shap
   std::fill(input.begin(), input.end(), base);
   std::fill(valid.begin(), valid.end(), base + add);
 
-  cle::DataType data_type{};
-  data_type.Set<type>();
-  auto gpu_output = cle::Memory::AllocateObject(gpu, shape, data_type.Get(), mem_type);
-  auto gpu_intput = cle::Memory::AllocateObject(gpu_output);
+  cle::DataType data_type = cle::TypeToDataType<type>();
+  auto          gpu_output = cle::Memory::AllocateMemory(gpu, shape, data_type, mem_type);
+  auto          gpu_intput = cle::Memory::AllocateMemory(gpu_output);
+
   cle::Memory::WriteObject(gpu_intput, input);
 
   cle::AddImageAndScalarKernel kernel(gpu);

@@ -40,9 +40,9 @@ DilateLabelsKernel::Execute() -> void
   auto src = this->GetImage("src");
   auto dst = this->GetImage("dst");
 
-  auto flip = Memory::AllocateObject(this->Device(), dst->Shape(), dst->BitType().Get(), dst->Memory());
-  auto flop = Memory::AllocateObject(this->Device(), dst->Shape(), dst->BitType().Get(), dst->Memory());
-  auto flag = Memory::AllocateObject(this->Device(), { 1, 1, 1 }, CL_FLOAT, BUFFER);
+  auto flip = Memory::AllocateMemory(this->Device(), dst->Shape(), dst->Data(), dst->Object());
+  auto flop = Memory::AllocateMemory(this->Device(), dst->Shape(), dst->Data(), dst->Object());
+  auto flag = Memory::AllocateMemory(this->Device(), { 1, 1, 1 }, FLOAT, BUFFER);
   flag.Fill(1);
 
   CopyKernel copy(this->Device());

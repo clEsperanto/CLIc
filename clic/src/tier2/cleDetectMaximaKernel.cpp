@@ -2,7 +2,7 @@
 #include "cleDetectMaximaKernel.hpp"
 #include "cleCopyKernel.hpp"
 #include "cleMeanBoxKernel.hpp"
-#include "cleUtils.hpp"
+
 
 #include <algorithm>
 
