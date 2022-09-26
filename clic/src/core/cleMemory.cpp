@@ -62,10 +62,8 @@ AllocateMemory(const ProcessorPointer & device,
 {
   if (object_type == BUFFER)
   {
-    std::cout << "we allocate buffer" << std::endl;
     return AllocateBufferMemory(device, shape, bit_type);
   }
-  std::cout << "we allocate image" << std::endl;
   return AllocateImageMemory(device, shape, bit_type);
 }
 
