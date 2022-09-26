@@ -84,28 +84,36 @@ private:
     }
     else
     {
-      if (this->Data() == FLOAT)
+      switch (this->Data())
       {
-        cl_float4 color = { static_cast<cl_float>(value),
-                            static_cast<cl_float>(value),
-                            static_cast<cl_float>(value),
-                            static_cast<cl_float>(value) };
-        Backend::EnqueueFillImage(this->Device()->Queue(), this->Get(), true, this->Origin(), this->Shape(), color);
-      }
-      else if ((this->Data() == UINT8) || (this->Data() == UINT16) || (this->Data() == UINT32)))
-        {
+        case FLOAT: {
+          cl_float4 color = { static_cast<cl_float>(value),
+                              static_cast<cl_float>(value),
+                              static_cast<cl_float>(value),
+                              static_cast<cl_float>(value) };
+          Backend::EnqueueFillImage(this->Device()->Queue(), this->Get(), true, this->Origin(), this->Shape(), color);
+          break;
+        }
+        case INT8:
+        case INT16:
+        case INT32: {
+          cl_int4 color = { static_cast<cl_int>(value),
+                            static_cast<cl_int>(value),
+                            static_cast<cl_int>(value),
+                            static_cast<cl_int>(value) };
+          Backend::EnqueueFillImage(this->Device()->Queue(), this->Get(), true, this->Origin(), this->Shape(), color);
+          break;
+        }
+        case UINT8:
+        case UINT16:
+        case UINT32: {
           cl_uint4 color = { static_cast<cl_uint>(value),
                              static_cast<cl_uint>(value),
                              static_cast<cl_uint>(value),
                              static_cast<cl_uint>(value) };
           Backend::EnqueueFillImage(this->Device()->Queue(), this->Get(), true, this->Origin(), this->Shape(), color);
+          break;
         }
-      else
-      {
-        cl_int4 color = {
-          static_cast<cl_int>(value), static_cast<cl_int>(value), static_cast<cl_int>(value), static_cast<cl_int>(value)
-        };
-        Backend::EnqueueFillImage(this->Device()->Queue(), this->Get(), true, this->Origin(), this->Shape(), color);
       }
     }
   }
