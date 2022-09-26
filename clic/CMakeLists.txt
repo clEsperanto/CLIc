@@ -46,14 +46,14 @@ add_custom_target(
 add_custom_target(
     generate_kernels ALL
     COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/convert_clij_to_header.py ${OCL_KERNELS_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/kernels/
-    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/kernels
+    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/kernels 
     COMMENT "Generating kernels header from clij opencl files."
 )
 add_dependencies(generate_kernels generate_preamble)
 add_custom_target(
     generate_kernels_list ALL
     COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/generate_kernellist_header.py ${CMAKE_CURRENT_SOURCE_DIR}/include
-    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/include/core/cleKernelList.h
+    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/include/core/cleKernelList.h 
     COMMENT "Generating cleKernelList header."
 )
 add_dependencies(generate_kernels_list generate_kernels)
