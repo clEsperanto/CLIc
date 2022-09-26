@@ -44,7 +44,7 @@ main(int argc, char ** argv) -> int
 {
   if (!run_test<float>({ 5, 1, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<int>({ 5, 1, 1 }, cle::BUFFER))
+  if (!run_test<signed int>({ 5, 1, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
   if (!run_test<unsigned int>({ 5, 1, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
@@ -52,13 +52,13 @@ main(int argc, char ** argv) -> int
     return EXIT_FAILURE;
   if (!run_test<unsigned short>({ 5, 1, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<char>({ 5, 1, 1 }, cle::BUFFER))
+  if (!run_test<signed char>({ 5, 1, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
   if (!run_test<unsigned char>({ 5, 1, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
   if (!run_test<float>({ 5, 5, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<int>({ 5, 5, 1 }, cle::BUFFER))
+  if (!run_test<signed int>({ 5, 5, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
   if (!run_test<unsigned int>({ 5, 5, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
@@ -66,13 +66,13 @@ main(int argc, char ** argv) -> int
     return EXIT_FAILURE;
   if (!run_test<unsigned short>({ 5, 5, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<char>({ 5, 5, 1 }, cle::BUFFER))
+  if (!run_test<signed char>({ 5, 5, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
   if (!run_test<unsigned char>({ 5, 5, 1 }, cle::BUFFER))
     return EXIT_FAILURE;
   if (!run_test<float>({ 5, 5, 2 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<int>({ 5, 5, 2 }, cle::BUFFER))
+  if (!run_test<signed int>({ 5, 5, 2 }, cle::BUFFER))
     return EXIT_FAILURE;
   if (!run_test<unsigned int>({ 5, 5, 2 }, cle::BUFFER))
     return EXIT_FAILURE;
@@ -80,33 +80,33 @@ main(int argc, char ** argv) -> int
     return EXIT_FAILURE;
   if (!run_test<unsigned short>({ 5, 5, 2 }, cle::BUFFER))
     return EXIT_FAILURE;
-  if (!run_test<char>({ 5, 5, 2 }, cle::BUFFER))
+  if (!run_test<signed char>({ 5, 5, 2 }, cle::BUFFER))
     return EXIT_FAILURE;
   if (!run_test<unsigned char>({ 5, 5, 2 }, cle::BUFFER))
     return EXIT_FAILURE;
   if (!run_test<float>({ 5, 1, 1 }, cle::IMAGE))
     return EXIT_FAILURE;
-  //    if (!run_test<int>({ 5, 1, 1 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<signed int>({ 5, 1, 1 }, cle::IMAGE)) return EXIT_FAILURE;
   //    if (!run_test<unsigned int>({ 5, 1, 1 }, cle::IMAGE)) return EXIT_FAILURE;
   //    if (!run_test<short>({ 5, 1, 1 }, cle::IMAGE)) return EXIT_FAILURE;
   //    if (!run_test<unsigned short>({ 5, 1, 1 }, cle::IMAGE)) return EXIT_FAILURE;
-  //    if (!run_test<char>({ 5, 1, 1 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<signed char>({ 5, 1, 1 }, cle::IMAGE)) return EXIT_FAILURE;
   //    if (!run_test<unsigned char>({ 5, 1, 1 }, cle::IMAGE)) return EXIT_FAILURE;
   if (!run_test<float>({ 5, 5, 1 }, cle::IMAGE))
     return EXIT_FAILURE;
-  //    if (!run_test<int>({ 5, 5, 1 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<signed int>({ 5, 5, 1 }, cle::IMAGE)) return EXIT_FAILURE;
   //    if (!run_test<unsigned int>({ 5, 5, 1 }, cle::IMAGE)) return EXIT_FAILURE;
   //    if (!run_test<short>({ 5, 5, 1 }, cle::IMAGE)) return EXIT_FAILURE;
   //    if (!run_test<unsigned short>({ 5, 5, 1 }, cle::IMAGE)) return EXIT_FAILURE;
-  //    if (!run_test<char>({ 5, 5, 1 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<signed char>({ 5, 5, 1 }, cle::IMAGE)) return EXIT_FAILURE;
   //    if (!run_test<unsigned char>({ 5, 5, 1 }, cle::IMAGE)) return EXIT_FAILURE;
   if (!run_test<float>({ 5, 5, 2 }, cle::IMAGE))
     return EXIT_FAILURE;
-  //    if (!run_test<int>({ 5, 5, 2 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<signed int>({ 5, 5, 2 }, cle::IMAGE)) return EXIT_FAILURE;
   //    if (!run_test<unsigned int>({ 5, 5, 2 }, cle::IMAGE)) return EXIT_FAILURE;
   //    if (!run_test<short>({ 5, 5, 2 }, cle::IMAGE)) return EXIT_FAILURE;
   //    if (!run_test<unsigned short>({ 5, 5, 2 }, cle::IMAGE)) return EXIT_FAILURE;
-  //    if (!run_test<char>({ 5, 5, 2 }, cle::IMAGE)) return EXIT_FAILURE;
+  //    if (!run_test<signed char>({ 5, 5, 2 }, cle::IMAGE)) return EXIT_FAILURE;
   //    if (!run_test<unsigned char>({ 5, 5, 2 }, cle::IMAGE)) return EXIT_FAILURE;
   return EXIT_SUCCESS;
 }

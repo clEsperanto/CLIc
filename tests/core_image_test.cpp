@@ -41,7 +41,7 @@ main(int argc, char ** argv) -> int
   {
     return EXIT_FAILURE;
   }
-  if (!run_test<int>(gpu, { 10, 1, 1 }))
+  if (!run_test<signed int>(gpu, { 10, 1, 1 }))
   {
     return EXIT_FAILURE;
   }
@@ -49,7 +49,7 @@ main(int argc, char ** argv) -> int
   {
     return EXIT_FAILURE;
   }
-  if (!run_test<char>(gpu, { 10, 1, 1 }))
+  if (!run_test<signed char>(gpu, { 10, 1, 1 }))
   {
     return EXIT_FAILURE;
   }
@@ -69,7 +69,7 @@ main(int argc, char ** argv) -> int
   {
     return EXIT_FAILURE;
   }
-  if (!run_test<int>(gpu, { 10, 5, 1 }))
+  if (!run_test<signed int>(gpu, { 10, 5, 1 }))
   {
     return EXIT_FAILURE;
   }
@@ -77,7 +77,7 @@ main(int argc, char ** argv) -> int
   {
     return EXIT_FAILURE;
   }
-  if (!run_test<char>(gpu, { 10, 5, 1 }))
+  if (!run_test<signed char>(gpu, { 10, 5, 1 }))
   {
     return EXIT_FAILURE;
   }
@@ -97,7 +97,7 @@ main(int argc, char ** argv) -> int
   {
     return EXIT_FAILURE;
   }
-  if (!run_test<int>(gpu, { 10, 5, 3 }))
+  if (!run_test<signed int>(gpu, { 10, 5, 3 }))
   {
     return EXIT_FAILURE;
   }
@@ -105,7 +105,7 @@ main(int argc, char ** argv) -> int
   {
     return EXIT_FAILURE;
   }
-  if (!run_test<char>(gpu, { 10, 5, 3 }))
+  if (!run_test<signed char>(gpu, { 10, 5, 3 }))
   {
     return EXIT_FAILURE;
   }
