@@ -17,7 +17,7 @@ enum ObjectType
 
 enum ChannelType
 {
-  INTENSITY = CL_R,
+  INTENSITY = CL_INTENSITY,
   RGBA = CL_RGBA
 };
 
