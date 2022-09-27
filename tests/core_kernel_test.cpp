@@ -44,6 +44,9 @@ run_test(const std::shared_ptr<cle::Processor> & gpu, std::array<size_t, 3> shap
   kernel.SetScalar(add);
   kernel.Execute();
 
+  std::cout << kernel << std::endl;
+
+
   auto output = cle::Memory::ReadObject<type>(gpu_output);
   return std::equal(output.begin(), output.end(), valid.begin());
 }

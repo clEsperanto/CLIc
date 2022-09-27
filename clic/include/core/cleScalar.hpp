@@ -3,6 +3,8 @@
 
 #include "cleLightObject.hpp"
 
+#include <sstream>
+
 namespace cle
 {
 
@@ -12,12 +14,12 @@ class Scalar : public LightObject
 public:
   Scalar() = delete;
   ~Scalar() = default;
-  Scalar(const Scalar & obj) = default;
+  Scalar(const Scalar & obj) noexcept = default;
   Scalar(Scalar && obj) = default;
   auto
   operator=(const Scalar & obj) -> Scalar & = default;
   auto
-  operator=(Scalar && obj) -> Scalar & = default;
+  operator=(Scalar && obj) noexcept -> Scalar & = default;
   explicit Scalar(const Type & data);
 
   [[nodiscard]] auto
@@ -41,6 +43,10 @@ public:
   [[nodiscard]] auto
   ToString() const -> std::string override;
 
+  template <class T>
+  friend auto
+  operator<<(std::ostream & out, const Scalar<T> & scalar) -> std::ostream &;
+
 private:
   Type     data_;
   DataType data_type_;
@@ -49,9 +55,9 @@ private:
 template <class Type>
 Scalar<Type>::Scalar(const Type & data)
   : data_(data)
+  , data_type_(TypeToDataType<Type>())
 {
   static_assert(std::is_fundamental<Type>::value, "Scalar can only be of native type");
-  this->data_type_ = TypeToDataType<Type>();
 }
 
 template <class Type>
@@ -121,10 +127,17 @@ template <class Type>
 auto
 Scalar<Type>::ToString() const -> std::string
 {
-  std::string str = this->ObjectInfo() + "(" + this->DataInfo() + ")";
-  str += " of shape=[" + std::to_string(this->Shape()[0]) + "," + std::to_string(this->Shape()[1]) + "," +
-         std::to_string(this->Shape()[2]) + "]";
-  return str;
+  std::stringstream out_string;
+  out_string << this->Get() << "(" << this->DataInfoShort() << ")";
+  return out_string.str();
+}
+
+template <class Type>
+auto
+operator<<(std::ostream & out, const Scalar<Type> & scalar) -> std::ostream &
+{
+  out << scalar.ToString();
+  return out;
 }
 
 } // namespace cle

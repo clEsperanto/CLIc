@@ -107,13 +107,13 @@ Operation::SetSource(const std::string & name, const std::string & src) -> void
 }
 
 auto
-Operation::GetSource() -> std::string
+Operation::GetSource() const -> std::string
 {
   return this->source_;
 }
 
 auto
-Operation::GetName() -> std::string
+Operation::GetName() const -> std::string
 {
   return this->name_;
 }
@@ -140,21 +140,28 @@ Operation::Execute() -> void
 auto
 Operation::ToString() const -> std::string
 {
-  std::string res = "kernel " + this->Name() + "[";
-  auto        nb_arguments = Backend::GetNumberOfKernelArguments(this->kernel_);
-  for (int idx = 0; idx < nb_arguments; idx++)
+  std::stringstream out_string;
+
+  out_string << "kernel: " << this->Name();
+  if (!parameter_map_.empty())
   {
-    auto arg_tag = Backend::GetKernelArgumentName(this->kernel_, idx);
-    auto arg_type = Backend::GetKernelArgumentType(this->kernel_, idx);
-    res += arg_tag + "(" + arg_type + ")";
-    if ((idx + 1) < nb_arguments)
+    out_string << "(";
+    for (auto && param : parameter_map_)
     {
-      res += ", ";
+      out_string << param.first << "=" << param.second->ToString() << ",";
     }
+    out_string << ")";
   }
-  res += "]";
-  return res;
+  return out_string.str();
 }
+
+auto
+operator<<(std::ostream & out, const Operation & operation) -> std::ostream &
+{
+  out << operation.ToString();
+  return out;
+}
+
 
 auto
 Operation::Device() const -> ProcessorPointer

@@ -51,15 +51,18 @@ public:
   auto
   SetSource(const std::string & name, const std::string & src) -> void;
   auto
-  GetSource() -> std::string;
+  GetSource() const -> std::string;
   auto
-  GetName() -> std::string;
+  GetName() const -> std::string;
   auto
   LoadSource(const std::string & name, const std::string & file) -> void;
   virtual auto
   Execute() -> void;
   [[nodiscard]] auto
   ToString() const -> std::string;
+  friend auto
+  operator<<(std::ostream & out, const Operation & operation) -> std::ostream &;
+
 
 protected:
   [[nodiscard]] auto

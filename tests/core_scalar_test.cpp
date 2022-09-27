@@ -8,7 +8,7 @@ auto
 run_test(const type & x) -> bool
 {
   cle::Scalar<type> scalar(x);
-  std::cout << scalar.ToString() << std::endl;
+  std::cout << scalar << std::endl;
   return (x == scalar.Get());
 }
 

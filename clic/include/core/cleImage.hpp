@@ -63,6 +63,8 @@ public:
   [[nodiscard]] auto
   Object() const -> ObjectType override;
 
+  friend auto
+  operator<<(std::ostream & out, const Image & image) -> std::ostream &;
 
 private:
   cl::Memory       data_;

@@ -2,6 +2,8 @@
 #include "cleBackend.hpp"
 #include "cleTypes.hpp"
 
+#include <sstream>
+
 namespace cle
 {
 
@@ -183,13 +185,23 @@ Image::Object() const -> ObjectType
   return this->mem_type_;
 }
 
+
 auto
 Image::ToString() const -> std::string
 {
-  std::string str = this->ObjectInfo() + "(" + this->DataInfo() + ")";
-  str += " of shape=[" + std::to_string(this->Shape()[0]) + "," + std::to_string(this->Shape()[1]) + "," +
-         std::to_string(this->Shape()[2]) + "]";
-  return str;
+  std::stringstream out_string;
+  out_string << this->ObjectInfo();
+  out_string << "[" << std::to_string(this->Shape()[0]) << "," << std::to_string(this->Shape()[1]) << ","
+             << std::to_string(this->Shape()[2]) << "]";
+  out_string << "(dtype=" << this->DataInfo() << ")";
+  return out_string.str();
+}
+
+auto
+operator<<(std::ostream & out, const Image & image) -> std::ostream &
+{
+  out << image.ToString();
+  return out;
 }
 
 } // namespace cle
