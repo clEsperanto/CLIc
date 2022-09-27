@@ -48,7 +48,7 @@
             "configurePreset": "base",
             "description": "inherit environment from base configuration",
             "hidden": true,
-            "jobs": 6
+            "jobs": 8
         },
         {
             "name": "release-ninja-build",
