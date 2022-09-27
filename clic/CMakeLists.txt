@@ -3,7 +3,7 @@
 # - define CLIC version
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME_LOWERCASE}.hpp.in"
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/core/${PROJECT_NAME_LOWERCASE}.hpp"
+    "${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME_LOWERCASE}.hpp"
     NO_SOURCE_PERMISSIONS @ONLY
 )
 
@@ -38,25 +38,25 @@ add_dependencies(${LIBRARY_NAME} generate_preamble generate_kernels generate_ker
 
 # ## File auto-generation target
 add_custom_target(
-    generate_preamble ALL
-    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/convert_clij_to_header.py ${OCL_PREAMBLE_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/kernels/
-    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/kernels/cle_preamble.h
+    generate_preamble 
+    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/convert_clij_to_header.py ${OCL_PREAMBLE_FILE} ${CMAKE_CURRENT_BINARY_DIR}/kernels/
+    BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/kernels/cle_preamble.h
     COMMENT "Generating cle_preamble header."
 )
 add_custom_target(
-    generate_kernels ALL
-    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/convert_clij_to_header.py ${OCL_KERNELS_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/kernels/
-    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/kernels 
+    generate_kernels 
+    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/convert_clij_to_header.py ${OCL_KERNELS_DIR} ${CMAKE_CURRENT_BINARY_DIR}/kernels/
+    BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/kernels 
     COMMENT "Generating kernels header from clij opencl files."
 )
 add_dependencies(generate_kernels generate_preamble)
+
 add_custom_target(
-    generate_kernels_list ALL
-    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/generate_kernellist_header.py ${CMAKE_CURRENT_SOURCE_DIR}/include
-    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/include/core/cleKernelList.h 
+    generate_kernels_list 
+    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/generate_kernellist_header.py ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/include
+    BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/include/cleKernelList.hpp
     COMMENT "Generating cleKernelList header."
 )
-add_dependencies(generate_kernels_list generate_kernels)
 
 # fetch all include folders
 file(GLOB child_dir RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/include/*)
@@ -68,7 +68,8 @@ foreach(child ${child_dir})
     endif()
 endforeach()
 
-list(APPEND INCLUDE_DIR_LIST ${CMAKE_CURRENT_SOURCE_DIR}/kernels)
+list(APPEND INCLUDE_DIR_LIST ${CMAKE_CURRENT_BINARY_DIR}/kernels)
+list(APPEND INCLUDE_DIR_LIST ${CMAKE_CURRENT_BINARY_DIR}/include)
 
 # Global includes. Used by all targets
 # Note:
