@@ -60,13 +60,16 @@ main(int argc, char ** argv)
   {
     return EXIT_FAILURE;
   }
+
   if (!run_test<float>(gpu, { 10, 5, 1 }, MemType(type_t)))
   {
     return EXIT_FAILURE;
   }
+
   if (!run_test<float>(gpu, { 10, 5, 3 }, MemType(type_t)))
   {
     return EXIT_FAILURE;
   }
+
   return EXIT_SUCCESS;
 }
