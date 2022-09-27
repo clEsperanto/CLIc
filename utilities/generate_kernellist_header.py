@@ -2,16 +2,6 @@
 
 import sys, os, glob
 
-# def get_includes_list(folder):
-#     file_list = glob.glob(os.path.join(folder,'**/*.hpp'))
-#     includes_list = []
-#     for root, _, files in os.walk(folder):
-#         if root.split(os.sep)[-1] != "core": 
-#             for file in files:
-#                     includes_list.append(file)
-#     return sorted(includes_list)
-
-
 def generate_kernel_list_header(folder, output_folder):
     kernel_list_header_file = os.path.join(output_folder,"cleKernelList.hpp")
     if not os.path.exists(kernel_list_header_file):
