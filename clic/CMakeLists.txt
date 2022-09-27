@@ -34,22 +34,14 @@ target_compile_definitions(${LIBRARY_NAME} PUBLIC "${PROJECT_NAME_UPPERCASE}_DEB
 target_compile_features(${LIBRARY_NAME} PRIVATE cxx_std_17)
 
 # Target dependencies
-add_dependencies(${LIBRARY_NAME} generate_preamble generate_kernels generate_kernels_list)
+add_dependencies(${LIBRARY_NAME} generate_kernels_list generate_kernels)
 
-# ## File auto-generation target
-add_custom_target(
-    generate_preamble 
-    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/convert_clij_to_header.py ${OCL_PREAMBLE_FILE} ${CMAKE_CURRENT_BINARY_DIR}/kernels/
-    BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/kernels/cle_preamble.h
-    COMMENT "Generating cle_preamble header."
-)
 add_custom_target(
     generate_kernels 
-    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/convert_clij_to_header.py ${OCL_KERNELS_DIR} ${CMAKE_CURRENT_BINARY_DIR}/kernels/
+    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/convert_ocl_to_header.py ${OCL_KERNELS_DIR} ${CMAKE_CURRENT_BINARY_DIR}/kernels/
     BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/kernels 
     COMMENT "Generating kernels header from clij opencl files."
 )
-add_dependencies(generate_kernels generate_preamble)
 
 add_custom_target(
     generate_kernels_list 
