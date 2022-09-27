@@ -11,8 +11,8 @@ def get_includes_list(folder):
     return sorted(includes_list)
 
 
-def generate_kernel_list_header(folder):
-    kernel_list_header_file = os.path.join(folder,os.path.join("core","cleKernelList.hpp"))
+def generate_kernel_list_header(folder, output_folder):
+    kernel_list_header_file = os.path.join(output_folder,"cleKernelList.hpp")
     include_list = get_includes_list(folder)
     with open(kernel_list_header_file, 'w') as output_file:
         output_file.write("#ifndef __CORE_CLEKERNELLIST_HPP\n")
@@ -23,4 +23,4 @@ def generate_kernel_list_header(folder):
         output_file.write("\n")
         output_file.write("#endif //__CORE_CLEKERNELLIST_HPP\n")
 
-generate_kernel_list_header(sys.argv[1])
+generate_kernel_list_header(sys.argv[1], sys.argv[2])
