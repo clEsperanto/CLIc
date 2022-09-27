@@ -14,7 +14,7 @@ auto
 AllocateBufferMemory(const ProcessorPointer & device, const ShapeArray & shape, const DataType & type) -> Image
 {
   ChannelType       channels_type = INTENSITY;
-  MemAllocationType mem_alloc = DEFAULT;
+  MemAllocationType mem_alloc = BEST;
   HostAccessType    host_access = HOST_READ_WRITE;
   KernelAccessType  kernel_access = KERNEL_READ_WRITE;
 
@@ -30,7 +30,7 @@ auto
 AllocateImageMemory(const ProcessorPointer & device, const ShapeArray & shape, const DataType & type) -> Image
 {
   ChannelType       channels_type = INTENSITY;
-  MemAllocationType mem_alloc = DEFAULT;
+  MemAllocationType mem_alloc = BEST;
   HostAccessType    host_access = HOST_READ_WRITE;
   KernelAccessType  kernel_access = KERNEL_READ_WRITE;
 

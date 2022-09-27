@@ -44,7 +44,8 @@ enum MemAllocationType
   USE_HOST = CL_MEM_USE_HOST_PTR,
   ALLOC_HOST = CL_MEM_ALLOC_HOST_PTR,
   COPY_HOST = CL_MEM_COPY_HOST_PTR,
-  DEFAULT = 0
+  BEST = CL_MEM_ALLOC_HOST_PTR,
+  NONE = 0
 };
 
 enum HostAccessType

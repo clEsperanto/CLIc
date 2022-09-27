@@ -41,7 +41,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::ObjectType & mem_type) 
   cle.GaussianBlur(gpu_input, gpu_output, 1, 1, 1);
   auto output = cle.Pull<type>(gpu_output);
 
-  // ! how can we improve float accuracy between gpu and cpu?
+  //! how can we improve float accuracy between gpu and cpu ?
   std::transform(output.begin(), output.end(), output.begin(), [](const type & x) {
     return static_cast<type>(std::round(static_cast<float>(x) * 10) / 10);
   });
@@ -143,85 +143,85 @@ main(int argc, char ** argv) -> int
   {
     return EXIT_FAILURE;
   }
-  // if (!run_test<signed int>({ 3, 1, 1 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
-  // if (!run_test<unsigned int>({ 3, 1, 1 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
-  // if (!run_test<signed short>({ 3, 1, 1 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
-  // if (!run_test<unsigned short>({ 3, 1, 1 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
-  // if (!run_test<signed char>({ 3, 1, 1 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
-  // if (!run_test<unsigned char>({ 3, 1, 1 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
+  if (!run_test<signed int>({ 3, 1, 1 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
+  if (!run_test<unsigned int>({ 3, 1, 1 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
+  if (!run_test<signed short>({ 3, 1, 1 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
+  if (!run_test<unsigned short>({ 3, 1, 1 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
+  if (!run_test<signed char>({ 3, 1, 1 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
+  if (!run_test<unsigned char>({ 3, 1, 1 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
   if (!run_test<float>({ 3, 3, 1 }, cle::IMAGE))
   {
     return EXIT_FAILURE;
   }
-  // if (!run_test<signed int>({ 3, 3, 1 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
-  // if (!run_test<unsigned int>({ 3, 3, 1 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
-  // if (!run_test<signed short>({ 3, 3, 1 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
-  // if (!run_test<unsigned short>({ 3, 3, 1 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
-  // if (!run_test<signed char>({ 3, 3, 1 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
-  // if (!run_test<unsigned char>({ 3, 3, 1 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
+  if (!run_test<signed int>({ 3, 3, 1 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
+  if (!run_test<unsigned int>({ 3, 3, 1 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
+  if (!run_test<signed short>({ 3, 3, 1 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
+  if (!run_test<unsigned short>({ 3, 3, 1 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
+  if (!run_test<signed char>({ 3, 3, 1 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
+  if (!run_test<unsigned char>({ 3, 3, 1 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
   if (!run_test<float>({ 3, 3, 3 }, cle::IMAGE))
   {
     return EXIT_FAILURE;
   }
-  // if (!run_test<signed int>({ 3, 3, 3 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
-  // if (!run_test<unsigned int>({ 3, 3, 3 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
-  // if (!run_test<signed short>({ 3, 3, 3 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
-  // if (!run_test<unsigned short>({ 3, 3, 3 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
-  // if (!run_test<signed char>({ 3, 3, 3 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
-  // if (!run_test<unsigned char>({ 3, 3, 3 }, cle::IMAGE))
-  //{
-  //   return EXIT_FAILURE;
-  // }
+  if (!run_test<signed int>({ 3, 3, 3 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
+  if (!run_test<unsigned int>({ 3, 3, 3 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
+  if (!run_test<signed short>({ 3, 3, 3 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
+  if (!run_test<unsigned short>({ 3, 3, 3 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
+  if (!run_test<signed char>({ 3, 3, 3 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
+  if (!run_test<unsigned char>({ 3, 3, 3 }, cle::IMAGE))
+  {
+    return EXIT_FAILURE;
+  }
   return EXIT_SUCCESS;
 }
