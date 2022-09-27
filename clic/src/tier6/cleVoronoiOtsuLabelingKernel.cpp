@@ -8,7 +8,7 @@
 #include "cleMaskedVoronoiLabelingKernel.hpp"
 #include "cleMemory.hpp"
 #include "cleThresholdOtsuKernel.hpp"
- 
+
 
 namespace cle
 {
