@@ -11,13 +11,13 @@ run_test(const std::array<size_t, 3> & shape, const cle::ObjectType & mem_type) 
   std::vector<type> input(shape[0] * shape[1] * shape[2]);
   std::vector<type> valid(shape[0] * 1 * shape[2]);
   std::fill(input.begin(), input.end(), static_cast<type>(10));
-  std::fill(valid.begin(), valid.end(), static_cast<type>(0));
+  std::fill(valid.begin(), valid.end(), static_cast<type>(1));
   for (auto it = input.begin(); it != input.end(); std::advance(it, shape[0] * shape[1]))
   {
     for (auto j = 0; j < shape[0]; ++j)
     {
       int idx = (it - input.begin() + j) + (rand() % shape[1]) * shape[0];
-      input[idx] = static_cast<type>(0);
+      input[idx] = static_cast<type>(1);
     }
   }
 

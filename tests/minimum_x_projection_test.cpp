@@ -11,11 +11,11 @@ run_test(const std::array<size_t, 3> & shape, const cle::ObjectType & mem_type) 
   std::vector<type> input(shape[0] * shape[1] * shape[2]);
   std::vector<type> valid(1 * shape[1] * shape[2]);
   std::fill(input.begin(), input.end(), static_cast<type>(10));
-  std::fill(valid.begin(), valid.end(), static_cast<type>(0));
+  std::fill(valid.begin(), valid.end(), static_cast<type>(1));
   for (auto it = input.begin(); it != input.end(); std::advance(it, shape[0]))
   {
     int idx = (it - input.begin()) + (rand() % shape[0]);
-    input[idx] = static_cast<type>(0);
+    input[idx] = static_cast<type>(1);
   }
 
   cle::Clesperanto cle;
