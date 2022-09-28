@@ -31,7 +31,7 @@ public:
   auto
   Fill(const float & value) const -> void;
   auto
-  CopyDataTo(const Image & dst_obj) const -> void;
+  CopyDataTo(const Image & dst_img) const -> void;
   [[nodiscard]] auto
   Get() const -> cl::Memory;
   [[nodiscard]] auto
