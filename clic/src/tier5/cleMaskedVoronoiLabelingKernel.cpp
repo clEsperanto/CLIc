@@ -68,13 +68,15 @@ MaskedVoronoiLabelingKernel::Execute() -> void
   add.SetFactor2(1);
   add.Execute();
 
-  float flag_value = 1;
   int   iteration_count = 0;
+  float flag_value = 1;
+
+  OnlyzeroOverwriteMaximumBoxKernel boxMaximum(this->Device());
+  OnlyzeroOverwriteMaximumBoxKernel diamondMaximum(this->Device());
   while (flag_value > 0)
   {
     if ((iteration_count % 2) == 0)
     {
-      OnlyzeroOverwriteMaximumBoxKernel boxMaximum(this->Device());
       boxMaximum.SetInput(flip);
       boxMaximum.SetOutput1(flag);
       boxMaximum.SetOutput2(flop);
@@ -82,7 +84,6 @@ MaskedVoronoiLabelingKernel::Execute() -> void
     }
     else
     {
-      OnlyzeroOverwriteMaximumBoxKernel diamondMaximum(this->Device());
       diamondMaximum.SetInput(flop);
       diamondMaximum.SetOutput1(flag);
       diamondMaximum.SetOutput2(flip);
