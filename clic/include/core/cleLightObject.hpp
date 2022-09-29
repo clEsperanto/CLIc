@@ -55,8 +55,8 @@ public:
   }
 
 private:
-  ObjectType mem_type_;
-  DataType   data_type_;
+  ObjectType mem_type_ = BUFFER;
+  DataType   data_type_ = FLOAT;
 };
 
 } // namespace cle
