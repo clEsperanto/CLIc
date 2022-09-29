@@ -373,9 +373,9 @@ Clesperanto::DifferenceOfGaussian(const Image & source,
 auto
 Clesperanto::MeanSphere(const Image & source,
                         const Image & destination,
-                        const int &   radius_x,
-                        const int &   radius_y,
-                        const int &   radius_z) -> void
+                        const float & radius_x,
+                        const float & radius_y,
+                        const float & radius_z) -> void
 {
   MeanSphereKernel kernel(this->GetDevice());
   kernel.SetInput(source);
@@ -458,9 +458,7 @@ auto
 Clesperanto::Absolute(const Image & source, const Image & destination) -> void
 {
   AbsoluteKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  Absolute_call(&kernel, source, destination);
 }
 
 auto

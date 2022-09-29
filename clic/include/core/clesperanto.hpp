@@ -196,9 +196,9 @@ public:
   auto
   MeanSphere(const Image & source,
              const Image & destination,
-             const int &   radius_x = 0,
-             const int &   radius_y = 0,
-             const int &   radius_z = 0) -> void;
+             const float & radius_x = 0,
+             const float & radius_y = 0,
+             const float & radius_z = 0) -> void;
 
   auto
   MinimumBox(const Image & source,

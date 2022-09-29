@@ -24,4 +24,13 @@ AbsoluteKernel::SetOutput(const Image & object) -> void
   this->AddParameter("dst", object);
 }
 
+auto
+Absolute_call(AbsoluteKernel * kernel, const Image & src, const Image & dst) -> void
+{
+  kernel->SetInput(src);
+  kernel->SetOutput(dst);
+  kernel->Execute();
+}
+
+
 } // namespace cle
