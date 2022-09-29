@@ -75,7 +75,7 @@ auto
 AllocateMemory(const ProcessorPointer & device,
                const ShapeArray &       shape = { 1, 1, 1 },
                const DataType &         bit_type = FLOAT,
-               const ObjectType &       object_type = BUFFER) -> Image;
+               const MemoryType &       object_type = BUFFER) -> Image;
 
 auto
 AllocateMemory(const Image & image) -> Image;

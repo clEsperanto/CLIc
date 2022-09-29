@@ -5,7 +5,7 @@
 namespace cle
 {
 
-enum ObjectType
+enum MemoryType
 {
   IMAGE = CL_MEM_OBJECT_IMAGE1D,
   BUFFER = CL_MEM_OBJECT_BUFFER,

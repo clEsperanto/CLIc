@@ -29,7 +29,7 @@ public:
   [[nodiscard]] auto
   Shape() const -> ShapeArray override;
   [[nodiscard]] auto
-  GetObjectType_Str() const -> std::string override;
+  GetMemoryType_Str() const -> std::string override;
   [[nodiscard]] auto
   GetDataType_Str(const bool & short_version) const -> std::string override;
   [[nodiscard]] auto
@@ -76,7 +76,7 @@ Scalar<Type>::Shape() const -> ShapeArray
 
 template <class Type>
 auto
-Scalar<Type>::GetObjectType_Str() const -> std::string
+Scalar<Type>::GetMemoryType_Str() const -> std::string
 {
   return "scalar";
 }

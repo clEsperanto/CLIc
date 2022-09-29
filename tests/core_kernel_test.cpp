@@ -6,7 +6,7 @@
 
 
 auto
-MemType(const std::string & type) -> cle::ObjectType
+MemType(const std::string & type) -> cle::MemoryType
 {
   if (type.find("buffer") != std::string::npos)
   {
@@ -21,7 +21,7 @@ MemType(const std::string & type) -> cle::ObjectType
 
 template <class type>
 auto
-run_test(const std::shared_ptr<cle::Processor> & gpu, std::array<size_t, 3> shape, const cle::ObjectType & mem_type)
+run_test(const std::shared_ptr<cle::Processor> & gpu, std::array<size_t, 3> shape, const cle::MemoryType & mem_type)
   -> bool
 {
   const type base = 10;

@@ -38,13 +38,13 @@ public:
 
   template <class T = float>
   [[nodiscard]] auto
-  Create(const ShapeArray & shape = { 1, 1, 1 }, const ObjectType & type = BUFFER) const -> Image;
+  Create(const ShapeArray & shape = { 1, 1, 1 }, const MemoryType & type = BUFFER) const -> Image;
 
   template <class T = float>
   [[nodiscard]] auto
   Push(const std::vector<T> & array = { 0 },
        const ShapeArray &     shape = { 1, 1, 1 },
-       const ObjectType &     type = BUFFER) const -> Image;
+       const MemoryType &     type = BUFFER) const -> Image;
 
   template <class T = float>
   [[nodiscard]] auto
@@ -310,7 +310,7 @@ public:
 
 template <class T>
 auto
-Clesperanto::Create(const ShapeArray & shape, const ObjectType & type) const -> Image
+Clesperanto::Create(const ShapeArray & shape, const MemoryType & type) const -> Image
 {
   DataType bit_type = TypeToDataType<T>();
   return Memory::AllocateMemory(this->GetDevice(), shape, bit_type, type);
@@ -318,7 +318,7 @@ Clesperanto::Create(const ShapeArray & shape, const ObjectType & type) const -> 
 
 template <class T>
 auto
-Clesperanto::Push(const std::vector<T> & array, const ShapeArray & shape, const ObjectType & type) const -> Image
+Clesperanto::Push(const std::vector<T> & array, const ShapeArray & shape, const MemoryType & type) const -> Image
 {
   DataType bit_type = TypeToDataType<T>();
   auto     image = Memory::AllocateMemory(this->GetDevice(), shape, bit_type, type);

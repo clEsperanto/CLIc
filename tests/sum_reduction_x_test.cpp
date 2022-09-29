@@ -6,7 +6,7 @@
 
 template <class type>
 auto
-run_test(const std::array<size_t, 3> & shape, const cle::ObjectType & mem_type) -> bool
+run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) -> bool
 {
   std::vector<type> input(shape[0] * shape[1] * shape[2]);
   std::vector<type> valid((shape[0] / 4) * shape[1] * shape[2]);

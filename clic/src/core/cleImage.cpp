@@ -11,7 +11,7 @@ Image::Image(const ProcessorPointer & device,
              const cl::Memory &       data,
              const ShapeArray &       shape,
              const DataType &         data_type,
-             const ObjectType &       object_type)
+             const MemoryType &       object_type)
   : data_(data)
   , device_(device)
   , shape_(shape)
@@ -154,7 +154,7 @@ Image::Origin() const -> ShapeArray
 }
 
 auto
-Image::GetObjectType_Str() const -> std::string
+Image::GetMemoryType_Str() const -> std::string
 {
   std::string res;
   switch (this->GetMemoryType())
@@ -217,7 +217,7 @@ auto
 Image::ToString() const -> std::string
 {
   std::stringstream out_string;
-  out_string << this->GetObjectType_Str();
+  out_string << this->GetMemoryType_Str();
   out_string << "[" << std::to_string(this->Shape()[0]) << "," << std::to_string(this->Shape()[1]) << ","
              << std::to_string(this->Shape()[2]) << "]";
   out_string << "(dtype=" << this->GetDataType_Str(false) << ")";

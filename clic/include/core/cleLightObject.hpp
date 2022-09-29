@@ -17,7 +17,7 @@ public:
   using ProcessorPointer = std::shared_ptr<Processor>;
 
   LightObject() = default;
-  LightObject(const DataType & data_t, const ObjectType & mem_t)
+  LightObject(const DataType & data_t, const MemoryType & mem_t)
     : data_type_(data_t)
     , mem_type_(mem_t){};
   virtual ~LightObject() = default;
@@ -34,7 +34,7 @@ public:
   [[nodiscard]] virtual auto
   Shape() const -> ShapeArray = 0;
   [[nodiscard]] virtual auto
-  GetObjectType_Str() const -> std::string = 0;
+  GetMemoryType_Str() const -> std::string = 0;
   [[nodiscard]] virtual auto
   GetDataType_Str(const bool & short_version) const -> std::string = 0;
   [[nodiscard]] virtual auto
@@ -49,13 +49,13 @@ public:
   }
 
   [[nodiscard]] virtual auto
-  GetMemoryType() const -> ObjectType
+  GetMemoryType() const -> MemoryType
   {
     return mem_type_;
   }
 
 private:
-  ObjectType mem_type_ = BUFFER;
+  MemoryType mem_type_ = BUFFER;
   DataType   data_type_ = FLOAT;
 };
 

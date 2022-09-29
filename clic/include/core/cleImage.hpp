@@ -25,7 +25,7 @@ public:
         const cl::Memory &       data,
         const ShapeArray &       shape,
         const DataType &         data_type,
-        const ObjectType &       object_type);
+        const MemoryType &       object_type);
 
   auto
   Fill(const float & value) const -> void;
@@ -46,7 +46,7 @@ public:
   [[nodiscard]] auto
   Origin() const -> ShapeArray;
   [[nodiscard]] auto
-  GetObjectType_Str() const -> std::string override;
+  GetMemoryType_Str() const -> std::string override;
   [[nodiscard]] auto
   GetDataType_Str(const bool & short_version) const -> std::string override;
   [[nodiscard]] auto
