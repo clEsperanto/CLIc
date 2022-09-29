@@ -23,7 +23,7 @@ public:
   using ShapeArray = std::array<size_t, 3>;
 
   Operation() = delete;
-  ~Operation() = default;
+  virtual ~Operation() = default;
   Operation(const Operation & operation) = default;
   Operation(Operation && operation) = default;
   auto
@@ -50,9 +50,9 @@ public:
   SetRange(const std::string & tag) -> void;
   auto
   SetSource(const std::string & name, const std::string & src) -> void;
-  auto
+  [[nodiscard]] auto
   GetSource() const -> std::string;
-  auto
+  [[nodiscard]] auto
   GetName() const -> std::string;
   auto
   LoadSource(const std::string & name, const std::string & file) -> void;
@@ -84,9 +84,9 @@ protected:
   auto
   EnqueueOperation() -> void;
   auto
-  SetNumberOfParameters(const size_t & x) -> void;
+  SetNumberOfParameters(const size_t & nb_parameter) -> void;
   auto
-  SetNumberOfConstants(const size_t & x) -> void;
+  SetNumberOfConstants(const size_t & nb_constant) -> void;
   auto
   GenerateOutput(const std::string & input_tag = "src", const std::string & output_tag = "dst") -> void;
   static auto
@@ -98,8 +98,8 @@ private:
   std::string      source_;
   ShapeArray       range_ = { 0, 0, 0 };
   ProcessorPointer device_;
-  ParameterList    parameter_map_;
-  ConstantList     constant_map_;
+  ParameterList    parameter_map_{};
+  ConstantList     constant_map_{};
 };
 
 } // namespace cle

@@ -10,7 +10,7 @@ namespace cle
 class ErodeSphereKernel : public Operation
 {
 public:
-  ErodeSphereKernel(const ProcessorPointer & device);
+  explicit ErodeSphereKernel(const ProcessorPointer & device);
   auto
   SetInput(const Image & object) -> void;
   auto

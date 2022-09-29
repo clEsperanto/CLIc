@@ -12,6 +12,8 @@ namespace cle
 
 Operation::Operation(const ProcessorPointer & device, const size_t & nb_parameter, const size_t & nb_constant)
   : device_(std::move(device))
+  , name_("")
+  , source_("")
 {
   this->SetNumberOfConstants(nb_constant);
   this->SetNumberOfParameters(nb_parameter);
@@ -65,8 +67,10 @@ Operation::GetParameter(const std::string & tag) -> ObjectPointer
   auto ite = this->parameter_map_.find(tag);
   if (ite == this->parameter_map_.end())
   {
-    throw std::runtime_error("Error: could not get parameter \"" + tag + "\" from \"" + this->GetName() +
-                             "\", parameter is not found.\n");
+    std::stringstream err_msg;
+    err_msg << "Error: could not get parameter \"" << tag;
+    err_msg << "\" from \"" << this->GetName() << "\", parameter is not found.\n";
+    throw std::runtime_error(err_msg.str());
   }
   return ite->second;
 }
@@ -376,15 +380,15 @@ Operation::EnqueueOperation() -> void
 }
 
 auto
-Operation::SetNumberOfParameters(const size_t & x) -> void
+Operation::SetNumberOfParameters(const size_t & nb_parameter) -> void
 {
-  this->parameter_map_.reserve(x);
+  this->parameter_map_.reserve(nb_parameter);
 }
 
 auto
-Operation::SetNumberOfConstants(const size_t & x) -> void
+Operation::SetNumberOfConstants(const size_t & nb_constant) -> void
 {
-  this->constant_map_.reserve(x);
+  this->constant_map_.reserve(nb_constant);
 }
 
 auto

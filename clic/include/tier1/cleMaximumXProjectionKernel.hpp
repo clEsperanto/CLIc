@@ -10,7 +10,6 @@ class MaximumXProjectionKernel : public Operation
 {
 public:
   explicit MaximumXProjectionKernel(const ProcessorPointer & device);
-  ~MaximumXProjectionKernel() = default;
   auto
   SetInput(const Image & object) -> void;
   auto

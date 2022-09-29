@@ -13,7 +13,7 @@ class Scalar : public LightObject
 {
 public:
   Scalar() = delete;
-  ~Scalar() = default;
+  ~Scalar() override = default;
   Scalar(const Scalar & obj) noexcept = default;
   Scalar(Scalar && obj) noexcept = default;
   auto

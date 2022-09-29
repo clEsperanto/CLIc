@@ -19,7 +19,7 @@ public:
   SetRadius(const float & radius_x, const float & radius_y, const float & radius_z) -> void;
 
 private:
-  auto
+  [[nodiscard]] auto
   Radius2KernelSize(const float &) const -> int;
 };
 

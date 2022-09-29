@@ -22,7 +22,7 @@ public:
 
 private:
   std::array<int, 3> radius_{ 0, 0, 0 };
-  auto
+  [[nodiscard]] auto
   Radius2KernelSize() const -> std::array<int, 3>;
 };
 

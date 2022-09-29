@@ -11,7 +11,7 @@ namespace cle
 class SetColumnKernel : public Operation
 {
 public:
-  SetColumnKernel(const ProcessorPointer & device);
+  explicit SetColumnKernel(const ProcessorPointer & device);
   auto
   SetInput(const Image & object) -> void;
   auto

@@ -9,7 +9,7 @@ namespace cle
 class EqualKernel : public Operation
 {
 public:
-  EqualKernel(const ProcessorPointer & device);
+  explicit EqualKernel(const ProcessorPointer & device);
   auto
   SetInput1(const Image & object) -> void;
   auto
