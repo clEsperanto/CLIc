@@ -79,7 +79,7 @@ Operation::GetImage(const std::string & tag) -> ImagePointer
   {
     return nullptr;
   }
-  if (memory_ptr->Object() == SCALAR)
+  if (memory_ptr->GetMemoryType() == SCALAR)
   {
     return nullptr;
   }
@@ -142,7 +142,7 @@ Operation::ToString() const -> std::string
 {
   std::stringstream out_string;
 
-  out_string << "kernel: " << this->Name();
+  out_string << "kernel: " << this->GetName();
   if (!parameter_map_.empty())
   {
     out_string << "(";
@@ -164,25 +164,13 @@ operator<<(std::ostream & out, const Operation & operation) -> std::ostream &
 
 
 auto
-Operation::Device() const -> ProcessorPointer
+Operation::GetDevice() const -> ProcessorPointer
 {
   return this->device_;
 }
 
 auto
-Operation::Source() const -> std::string
-{
-  return this->source_;
-}
-
-auto
-Operation::Name() const -> std::string
-{
-  return this->name_;
-}
-
-auto
-Operation::Kernel() const -> cl::Kernel
+Operation::GetKernel() const -> cl::Kernel
 {
   return this->kernel_;
 }
@@ -207,7 +195,7 @@ Operation::MakeDefines() const -> std::string
   defines += "\n";
   for (auto && ite : parameter_map_)
   {
-    if (ite.second->Object() != SCALAR)
+    if (ite.second->GetMemoryType() != SCALAR)
     {
       // define position (x,y,z) information
       std::string pos_type;
@@ -238,20 +226,23 @@ Operation::MakeDefines() const -> std::string
       }
       // define common information
       defines += "\n";
-      defines += "\n#define CONVERT_" + ite.first + "_PIXEL_TYPE clij_convert_" + ite.second->DataInfo() + "_sat";
-      defines += "\n#define IMAGE_" + ite.first + "_PIXEL_TYPE " + ite.second->DataInfo() + "";
+      defines +=
+        "\n#define CONVERT_" + ite.first + "_PIXEL_TYPE clij_convert_" + ite.second->GetDataType_Str(false) + "_sat";
+      defines += "\n#define IMAGE_" + ite.first + "_PIXEL_TYPE " + ite.second->GetDataType_Str(false) + "";
       defines += "\n#define POS_" + ite.first + "_TYPE " + pos_type;
       defines += "\n#define POS_" + ite.first + "_INSTANCE(pos0,pos1,pos2,pos3) (" + pos_type + ")" + pos;
       defines += "\n";
 
       // define specific information
-      if (strcmp(ite.second->ObjectInfo().c_str(), "buffer") == 0)
+      if (ite.second->GetMemoryType() == BUFFER)
       {
-        defines += "\n#define IMAGE_" + ite.first + "_TYPE __global " + ite.second->DataInfo() + "*";
+        defines += "\n#define IMAGE_" + ite.first + "_TYPE __global " + ite.second->GetDataType_Str(false) + "*";
         defines += "\n#define READ_" + ite.first + "_IMAGE(a,b,c) read_buffer" + ndim + "d" +
-                   ite.second->DataInfoShort() + "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
+                   ite.second->GetDataType_Str(true) +
+                   "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
         defines += "\n#define WRITE_" + ite.first + "_IMAGE(a,b,c) write_buffer" + ndim + "d" +
-                   ite.second->DataInfoShort() + "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
+                   ite.second->GetDataType_Str(true) +
+                   "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
       }
       else
       {
@@ -266,7 +257,7 @@ Operation::MakeDefines() const -> std::string
           img_type_name = "__read_only image" + ndim + "d_t";
         }
         std::string prefix;
-        switch (ite.second->DataInfoShort().front())
+        switch (ite.second->GetDataType_Str(true).front())
         {
           case 'u':
             prefix = "ui";
@@ -306,15 +297,15 @@ Operation::MakeDefines() const -> std::string
 auto
 Operation::MakeKernel() -> void
 {
-  std::string program_source = this->MakeDefines() + cle::Operation::MakePreamble() + this->Source();
-  auto        program = Backend::GetProgramPointer(this->Device()->Context(), program_source);
-  Backend::BuildProgram(program, this->Device()->Device(), "-cl-kernel-arg-info");
-  if (program.getBuildInfo<CL_PROGRAM_BUILD_STATUS>(this->Device()->Device()) != CL_BUILD_SUCCESS)
+  std::string program_source = this->MakeDefines() + cle::Operation::MakePreamble() + this->GetSource();
+  auto        program = Backend::GetProgramPointer(this->GetDevice()->ContextPtr(), program_source);
+  Backend::BuildProgram(program, this->GetDevice()->DevicePtr(), "-cl-kernel-arg-info");
+  if (program.getBuildInfo<CL_PROGRAM_BUILD_STATUS>(this->GetDevice()->DevicePtr()) != CL_BUILD_SUCCESS)
   {
-    auto log = Backend::GetBuildLog(this->Device()->Device(), program);
+    auto log = Backend::GetBuildLog(this->GetDevice()->DevicePtr(), program);
     std::cout << log << std::endl;
   };
-  this->kernel_ = Backend::GetKernelPointer(program, this->Name());
+  this->kernel_ = Backend::GetKernelPointer(program, this->GetName());
 }
 
 auto
@@ -330,9 +321,9 @@ Operation::SetKernelArguments() -> bool
       std::cerr << "Error: missing parameter\n";
       return EXIT_FAILURE;
     }
-    if (parameter_ptr->second->Object() == SCALAR)
+    if (parameter_ptr->second->GetMemoryType() == SCALAR)
     {
-      if (parameter_ptr->second->Data() == FLOAT)
+      if (parameter_ptr->second->GetDataType() == FLOAT)
       {
         auto scalar = std::dynamic_pointer_cast<Float>(parameter_ptr->second);
         Backend::SetKernelArgument(&this->kernel_, idx, scalar->Get());
@@ -380,8 +371,8 @@ Operation::EnqueueOperation() -> void
   {
     this->SetRange("dst");
   }
-  Backend::EnqueueKernelExecution(this->Device()->Queue(), this->kernel_, this->range_);
-  this->Device()->Finish();
+  Backend::EnqueueKernelExecution(this->GetDevice()->QueuePtr(), this->kernel_, this->range_);
+  this->GetDevice()->Finish();
 }
 
 auto
@@ -404,12 +395,12 @@ Operation::GenerateOutput(const std::string & input_tag, const std::string & out
     auto input_ptr = this->GetImage(input_tag);
     if (input_ptr != nullptr)
     {
-      if (input_ptr->Object() == BUFFER)
+      if (input_ptr->GetMemoryType() == BUFFER)
       {
         auto output = cle::Memory::AllocateBufferMemory(*input_ptr);
         this->AddParameter(output_tag, output);
       }
-      if (input_ptr->Object() == (IMAGE1D | IMAGE2D | IMAGE3D))
+      if (input_ptr->GetMemoryType() == (IMAGE1D | IMAGE2D | IMAGE3D))
       {
         auto output = cle::Memory::AllocateImageMemory(*input_ptr);
         this->AddParameter(output_tag, output);
@@ -421,7 +412,7 @@ Operation::GenerateOutput(const std::string & input_tag, const std::string & out
 auto
 Operation::GenerateOutput(const Image & object, const ShapeArray & shape) -> Image
 {
-  return cle::Memory::AllocateMemory(object.Device(), shape, object.Data(), object.Object());
+  return cle::Memory::AllocateMemory(object.GetDevice(), shape, object.GetDataType(), object.GetMemoryType());
 }
 
 } // namespace cle

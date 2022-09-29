@@ -19,11 +19,11 @@ AllocateBufferMemory(const ProcessorPointer & device, const ShapeArray & shape, 
   KernelAccessType  kernel_access = KERNEL_READ_WRITE;
 
   size_t byte_length = shape[0] * shape[1] * shape[2] * DataTypeToSizeOf(type);
-  auto   mem_ptr = Backend::GetBufferPointer(device->Context(), mem_alloc, host_access, kernel_access, byte_length);
+  auto   mem_ptr = Backend::GetBufferPointer(device->ContextPtr(), mem_alloc, host_access, kernel_access, byte_length);
 
   ObjectType object_type = static_cast<ObjectType>(Backend::GetObjectType(mem_ptr));
 
-  return Image(device, mem_ptr, shape, type, object_type, channels_type);
+  return Image(device, mem_ptr, shape, type, object_type);
 }
 
 auto
@@ -35,23 +35,23 @@ AllocateImageMemory(const ProcessorPointer & device, const ShapeArray & shape, c
   KernelAccessType  kernel_access = KERNEL_READ_WRITE;
 
   auto mem_ptr =
-    Backend::GetImagePointer(device->Context(), mem_alloc, host_access, kernel_access, channels_type, type, shape);
+    Backend::GetImagePointer(device->ContextPtr(), mem_alloc, host_access, kernel_access, channels_type, type, shape);
 
   ObjectType object_type = static_cast<ObjectType>(Backend::GetObjectType(mem_ptr));
 
-  return Image(device, mem_ptr, shape, type, object_type, channels_type);
+  return Image(device, mem_ptr, shape, type, object_type);
 }
 
 auto
 AllocateBufferMemory(const Image & image) -> Image
 {
-  return AllocateBufferMemory(image.Device(), image.Shape(), image.Data());
+  return AllocateBufferMemory(image.GetDevice(), image.Shape(), image.GetDataType());
 }
 
 auto
 AllocateImageMemory(const Image & image) -> Image
 {
-  return AllocateImageMemory(image.Device(), image.Shape(), image.Data());
+  return AllocateImageMemory(image.GetDevice(), image.Shape(), image.GetDataType());
 }
 
 auto
@@ -70,7 +70,7 @@ AllocateMemory(const ProcessorPointer & device,
 auto
 AllocateMemory(const Image & image) -> Image
 {
-  return AllocateMemory(image.Device(), image.Shape(), image.Data(), image.Object());
+  return AllocateMemory(image.GetDevice(), image.Shape(), image.GetDataType(), image.GetMemoryType());
 }
 
 } // namespace cle::Memory

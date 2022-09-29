@@ -25,8 +25,7 @@ public:
         const cl::Memory &       data,
         const ShapeArray &       shape,
         const DataType &         data_type,
-        const ObjectType &       object_type,
-        const ChannelType &      channels_type);
+        const ObjectType &       object_type);
 
   auto
   Fill(const float & value) const -> void;
@@ -35,33 +34,23 @@ public:
   [[nodiscard]] auto
   Get() const -> cl::Memory;
   [[nodiscard]] auto
-  Device() const -> ProcessorPointer;
+  GetDevice() const -> ProcessorPointer;
   [[nodiscard]] auto
-  Bytes() const -> size_t override;
+  GetSizeOfElements() const -> size_t override;
+  [[nodiscard]] auto
+  GetSize() const -> size_t;
   [[nodiscard]] auto
   Ndim() const -> unsigned int override;
   [[nodiscard]] auto
   Shape() const -> ShapeArray override;
   [[nodiscard]] auto
-  ShapeZYX() const -> ShapeArray;
-  [[nodiscard]] auto
   Origin() const -> ShapeArray;
   [[nodiscard]] auto
-  ObjectInfo() const -> std::string override;
+  GetObjectType_Str() const -> std::string override;
   [[nodiscard]] auto
-  DataInfo() const -> std::string override;
-  [[nodiscard]] auto
-  DataInfoShort() const -> std::string override;
-  [[nodiscard]] auto
-  IsBuffer() const -> bool;
-  [[nodiscard]] auto
-  IsImage() const -> bool;
+  GetDataType_Str(const bool & short_version) const -> std::string override;
   [[nodiscard]] auto
   ToString() const -> std::string override;
-  [[nodiscard]] auto
-  Data() const -> DataType override;
-  [[nodiscard]] auto
-  Object() const -> ObjectType override;
 
   friend auto
   operator<<(std::ostream & out, const Image & image) -> std::ostream &;
@@ -72,28 +61,27 @@ private:
   unsigned int     dim_{};
   ShapeArray       shape_{ 1, 1, 1 };
   ShapeArray       origin_{ 0, 0, 0 };
-  DataType         data_type_ = FLOAT;
   ChannelType      channels_type_ = INTENSITY;
-  ObjectType       mem_type_ = BUFFER;
 
   template <class type>
   auto
   CastFill(const type & value) const -> void
   {
-    if (this->IsBuffer())
+    if (this->GetMemoryType() == BUFFER)
     {
-      Backend::EnqueueFillBuffer(this->Device()->Queue(), this->Get(), true, 0, this->Bytes(), value);
+      Backend::EnqueueFillBuffer(this->GetDevice()->QueuePtr(), this->Get(), true, 0, this->GetSize(), value);
     }
     else
     {
-      switch (this->Data())
+      switch (this->GetDataType())
       {
         case FLOAT: {
           cl_float4 color = { static_cast<cl_float>(value),
                               static_cast<cl_float>(value),
                               static_cast<cl_float>(value),
                               static_cast<cl_float>(value) };
-          Backend::EnqueueFillImage(this->Device()->Queue(), this->Get(), true, this->Origin(), this->Shape(), color);
+          Backend::EnqueueFillImage(
+            this->GetDevice()->QueuePtr(), this->Get(), true, this->Origin(), this->Shape(), color);
           break;
         }
         case INT8:
@@ -103,7 +91,8 @@ private:
                             static_cast<cl_int>(value),
                             static_cast<cl_int>(value),
                             static_cast<cl_int>(value) };
-          Backend::EnqueueFillImage(this->Device()->Queue(), this->Get(), true, this->Origin(), this->Shape(), color);
+          Backend::EnqueueFillImage(
+            this->GetDevice()->QueuePtr(), this->Get(), true, this->Origin(), this->Shape(), color);
           break;
         }
         case UINT8:
@@ -113,7 +102,8 @@ private:
                              static_cast<cl_uint>(value),
                              static_cast<cl_uint>(value),
                              static_cast<cl_uint>(value) };
-          Backend::EnqueueFillImage(this->Device()->Queue(), this->Get(), true, this->Origin(), this->Shape(), color);
+          Backend::EnqueueFillImage(
+            this->GetDevice()->QueuePtr(), this->Get(), true, this->Origin(), this->Shape(), color);
           break;
         }
       }

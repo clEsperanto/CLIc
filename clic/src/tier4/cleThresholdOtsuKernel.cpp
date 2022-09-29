@@ -38,21 +38,21 @@ ThresholdOtsuKernel::Execute() -> void
   // compute inputs min / max intensity
   // * should be removed because already defined in histogram class ?
   //
-  auto                     temp_scalar_buffer = Memory::AllocateMemory(this->Device(), { 1, 1, 1 });
-  MinimumOfAllPixelsKernel minimum_intensity_kernel(this->Device());
+  auto                     temp_scalar_buffer = Memory::AllocateMemory(this->GetDevice(), { 1, 1, 1 });
+  MinimumOfAllPixelsKernel minimum_intensity_kernel(this->GetDevice());
   minimum_intensity_kernel.SetInput(*src);
   minimum_intensity_kernel.SetOutput(temp_scalar_buffer);
   minimum_intensity_kernel.Execute();
   float                    min_intensity = Memory::ReadObject<float>(temp_scalar_buffer).front();
-  MaximumOfAllPixelsKernel maximum_intensity_kernel(this->Device());
+  MaximumOfAllPixelsKernel maximum_intensity_kernel(this->GetDevice());
   maximum_intensity_kernel.SetInput(*src);
   maximum_intensity_kernel.SetOutput(temp_scalar_buffer);
   maximum_intensity_kernel.Execute();
   float max_intensity = Memory::ReadObject<float>(temp_scalar_buffer).front();
 
   // compute src histogram
-  auto            hist = Memory::AllocateMemory(this->Device(), { bin, 1, 1 });
-  HistogramKernel histogram(this->Device());
+  auto            hist = Memory::AllocateMemory(this->GetDevice(), { bin, 1, 1 });
+  HistogramKernel histogram(this->GetDevice());
   histogram.SetInput(*src);
   histogram.SetOutput(hist);
   histogram.SetSteps(1, 1, 1);
@@ -97,13 +97,13 @@ ThresholdOtsuKernel::Execute() -> void
       max_variance = variance;
     }
   }
-  if (src->Data() != FLOAT)
+  if (src->GetDataType() != FLOAT)
   {
     threshold = round(threshold);
   }
 
   // Apply threshold
-  GreaterConstantKernel greater(this->Device());
+  GreaterConstantKernel greater(this->GetDevice());
   greater.SetInput(*src);
   greater.SetOutput(*dst);
   greater.SetScalar(threshold);

@@ -68,15 +68,15 @@ HistogramKernel::Execute() -> void
 
   if (this->min_intensity_ == infinity || this->max_intensity_ == infinity)
   {
-    auto temp_scalar_buffer = Memory::AllocateMemory(this->Device(), { 1, 1, 1 });
+    auto temp_scalar_buffer = Memory::AllocateMemory(this->GetDevice(), { 1, 1, 1 });
 
-    MinimumOfAllPixelsKernel minimum_intensity_kernel(this->Device());
+    MinimumOfAllPixelsKernel minimum_intensity_kernel(this->GetDevice());
     minimum_intensity_kernel.SetInput(*src);
     minimum_intensity_kernel.SetOutput(temp_scalar_buffer);
     minimum_intensity_kernel.Execute();
     this->min_intensity_ = Memory::ReadObject<float>(temp_scalar_buffer).front();
 
-    MaximumOfAllPixelsKernel maximum_intensity_kernel(this->Device());
+    MaximumOfAllPixelsKernel maximum_intensity_kernel(this->GetDevice());
     maximum_intensity_kernel.SetInput(*src);
     maximum_intensity_kernel.SetOutput(temp_scalar_buffer);
     maximum_intensity_kernel.Execute();
@@ -85,12 +85,12 @@ HistogramKernel::Execute() -> void
   this->AddParameter("minimum", this->min_intensity_);
   this->AddParameter("maximum", this->max_intensity_);
 
-  auto partial_hist = Memory::AllocateMemory(this->Device(), { this->nb_bins_, 1, nb_partial_hist });
+  auto partial_hist = Memory::AllocateMemory(this->GetDevice(), { this->nb_bins_, 1, nb_partial_hist });
   this->AddParameter("dst", partial_hist);
   this->SetRange(std::array<size_t, 3>{ nb_partial_hist, 1, 1 });
   this->Operation::Execute();
 
-  SumZProjectionKernel sum(this->Device());
+  SumZProjectionKernel sum(this->GetDevice());
   sum.SetInput(partial_hist);
   sum.SetOutput(*dst);
   sum.Execute();

@@ -35,9 +35,9 @@ MinimumOfAllPixelsKernel::Execute() -> void
   if (dim[2] > 1)
   {
     dim[2] = 1;
-    auto temp = Memory::AllocateMemory(this->Device(), dim, dst->Data(), dst->Object());
+    auto temp = Memory::AllocateMemory(this->GetDevice(), dim, dst->GetDataType(), dst->GetMemoryType());
 
-    MinimumZProjectionKernel kernel(this->Device());
+    MinimumZProjectionKernel kernel(this->GetDevice());
     kernel.SetInput(*src);
     kernel.SetOutput(temp);
     kernel.Execute();
@@ -47,16 +47,16 @@ MinimumOfAllPixelsKernel::Execute() -> void
   if (dim[1] > 1)
   {
     dim[1] = 1;
-    auto temp = Memory::AllocateMemory(this->Device(), dim, dst->Data(), dst->Object());
+    auto temp = Memory::AllocateMemory(this->GetDevice(), dim, dst->GetDataType(), dst->GetMemoryType());
 
-    MinimumYProjectionKernel kernel(this->Device());
+    MinimumYProjectionKernel kernel(this->GetDevice());
     kernel.SetInput(*src);
     kernel.SetOutput(temp);
     kernel.Execute();
     src = std::make_shared<Image>(temp);
   }
 
-  MinimumXProjectionKernel kernel(this->Device());
+  MinimumXProjectionKernel kernel(this->GetDevice());
   kernel.SetInput(*src);
   kernel.SetOutput(*dst);
   kernel.Execute();

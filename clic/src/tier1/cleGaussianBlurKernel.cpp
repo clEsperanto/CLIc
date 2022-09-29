@@ -62,19 +62,19 @@ GaussianBlurKernel::Execute() -> void
 
   auto kernel_size = Sigma2KernelSize(this->sigma_);
 
-  ExecuteSeparableKernel kernel(this->Device());
+  ExecuteSeparableKernel kernel(this->GetDevice());
   kernel.SetSource(this->GetName(), this->GetSource());
   kernel.SetInput(*src);
   kernel.SetSigma(this->sigma_[0], this->sigma_[1], this->sigma_[2]);
   kernel.SetKernelSize(kernel_size[0], kernel_size[1], kernel_size[2]);
 
-  if (dst->DataInfo() != "float")
+  if (dst->GetDataType() != FLOAT)
   {
-    auto temp = Memory::AllocateMemory(this->Device(), dst->Shape(), FLOAT, dst->Object());
+    auto temp = Memory::AllocateMemory(this->GetDevice(), dst->Shape(), FLOAT, dst->GetMemoryType());
     kernel.SetOutput(temp);
     kernel.Execute();
 
-    CopyKernel copy(this->Device());
+    CopyKernel copy(this->GetDevice());
     copy.SetInput(temp);
     copy.SetOutput(*dst);
     copy.Execute();

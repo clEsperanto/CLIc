@@ -35,7 +35,7 @@ auto
 WriteBufferObject(const Image & image, const std::vector<type> & array) -> void
 {
   size_t byte_length = array.size() * sizeof(type);
-  Backend::EnqueueWriteToBuffer(image.Device()->Queue(), image.Get(), true, 0, byte_length, array.data());
+  Backend::EnqueueWriteToBuffer(image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length, array.data());
 }
 
 template <class type>
@@ -43,31 +43,32 @@ auto
 WriteImageObject(const Image & image, const std::vector<type> & array) -> void
 {
   Backend::EnqueueWriteToImage(
-    image.Device()->Queue(), image.Get(), CL_TRUE, image.Origin(), image.Shape(), array.data());
+    image.GetDevice()->QueuePtr(), image.Get(), CL_TRUE, image.Origin(), image.Shape(), array.data());
 }
 
 template <class type>
 auto
 ReadBufferObject(const Image & image, const std::vector<type> & array) -> void
 {
-  if (sizeof(type) != DataTypeToSizeOf(image.Data()))
+  if (sizeof(type) != image.GetSizeOfElements())
   {
     throw(std::runtime_error("Error: Buffer and host array are not of the same type."));
   }
-  size_t byte_length = array.size() * DataTypeToSizeOf(image.Data());
-  Backend::EnqueueReadFromBuffer(image.Device()->Queue(), image.Get(), true, 0, byte_length, (void *)(array.data()));
+  size_t byte_length = array.size() * DataTypeToSizeOf(image.GetDataType());
+  Backend::EnqueueReadFromBuffer(
+    image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length, (void *)(array.data()));
 }
 
 template <class type>
 auto
 ReadImageObject(const Image & image, const std::vector<type> & array) -> void
 {
-  if (sizeof(type) != DataTypeToSizeOf(image.Data()))
+  if (sizeof(type) != image.GetSizeOfElements())
   {
     throw(std::runtime_error("Error: Image and host array are not of the same type."));
   }
   Backend::EnqueueReadFromImage(
-    image.Device()->Queue(), image.Get(), true, image.Origin(), image.Shape(), (void *)(array.data()));
+    image.GetDevice()->QueuePtr(), image.Get(), true, image.Origin(), image.Shape(), (void *)(array.data()));
 }
 
 auto
@@ -83,7 +84,7 @@ template <class type>
 auto
 WriteObject(const Image & image, const std::vector<type> & array) -> void
 {
-  if (image.Object() == BUFFER)
+  if (image.GetMemoryType() == BUFFER)
   {
     WriteBufferObject(image, array);
   }
@@ -98,7 +99,7 @@ auto
 ReadObject(const Image & image) -> std::vector<type>
 {
   std::vector<type> array(image.Shape()[0] * image.Shape()[1] * image.Shape()[2]);
-  if (image.Object() == BUFFER)
+  if (image.GetMemoryType() == BUFFER)
   {
     ReadBufferObject(image, array);
   }

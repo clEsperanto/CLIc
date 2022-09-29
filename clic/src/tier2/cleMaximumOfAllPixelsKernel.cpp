@@ -34,9 +34,9 @@ MaximumOfAllPixelsKernel::Execute() -> void
   if (dim[2] > 1)
   {
     dim[2] = 1;
-    auto temp = Memory::AllocateMemory(this->Device(), dim, dst->Data(), dst->Object());
+    auto temp = Memory::AllocateMemory(this->GetDevice(), dim, dst->GetDataType(), dst->GetMemoryType());
 
-    MaximumZProjectionKernel kernel(this->Device());
+    MaximumZProjectionKernel kernel(this->GetDevice());
     kernel.SetInput(*src);
     kernel.SetOutput(temp);
     kernel.Execute();
@@ -46,16 +46,16 @@ MaximumOfAllPixelsKernel::Execute() -> void
   if (dim[1] > 1)
   {
     dim[1] = 1;
-    auto temp = Memory::AllocateMemory(this->Device(), dim, dst->Data(), dst->Object());
+    auto temp = Memory::AllocateMemory(this->GetDevice(), dim, dst->GetDataType(), dst->GetMemoryType());
 
-    MaximumYProjectionKernel kernel(this->Device());
+    MaximumYProjectionKernel kernel(this->GetDevice());
     kernel.SetInput(*src);
     kernel.SetOutput(temp);
     kernel.Execute();
     src = std::make_shared<Image>(temp);
   }
 
-  MaximumXProjectionKernel kernel(this->Device());
+  MaximumXProjectionKernel kernel(this->GetDevice());
   kernel.SetInput(*src);
   kernel.SetOutput(*dst);
   kernel.Execute();

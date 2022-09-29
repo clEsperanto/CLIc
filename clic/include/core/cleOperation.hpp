@@ -66,13 +66,9 @@ public:
 
 protected:
   [[nodiscard]] auto
-  Device() const -> ProcessorPointer;
+  GetDevice() const -> ProcessorPointer;
   [[nodiscard]] auto
-  Source() const -> std::string;
-  [[nodiscard]] auto
-  Name() const -> std::string;
-  [[nodiscard]] auto
-  Kernel() const -> cl::Kernel;
+  GetKernel() const -> cl::Kernel;
   [[nodiscard]] auto
   MakeDefines() const -> std::string;
   static auto

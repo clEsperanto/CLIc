@@ -48,45 +48,45 @@ VoronoiOtsuLabelingKernel::Execute() -> void
   auto src = this->GetImage("src");
   auto dst = this->GetImage("dst");
 
-  auto               temp = Memory::AllocateMemory(this->Device(), src->Shape(), temp_data_type, src->Object());
-  GaussianBlurKernel gaussianSpot(this->Device());
+  auto temp = Memory::AllocateMemory(this->GetDevice(), src->Shape(), temp_data_type, src->GetMemoryType());
+  GaussianBlurKernel gaussianSpot(this->GetDevice());
   gaussianSpot.SetInput(*src);
   gaussianSpot.SetOutput(temp);
   gaussianSpot.SetSigma(spot_sigma_, spot_sigma_, spot_sigma_);
   gaussianSpot.Execute();
 
   auto               spot = Memory::AllocateMemory(temp);
-  DetectMaximaKernel maxima(this->Device());
+  DetectMaximaKernel maxima(this->GetDevice());
   maxima.SetInput(temp);
   maxima.SetOutput(spot);
   maxima.Execute();
 
-  GaussianBlurKernel gaussianOutline(this->Device());
+  GaussianBlurKernel gaussianOutline(this->GetDevice());
   gaussianOutline.SetInput(*src);
   gaussianOutline.SetOutput(temp);
   gaussianOutline.SetSigma(output_sigma_, output_sigma_, output_sigma_);
   gaussianOutline.Execute();
 
   auto                segmentation = Memory::AllocateMemory(temp);
-  ThresholdOtsuKernel threshold(this->Device());
+  ThresholdOtsuKernel threshold(this->GetDevice());
   threshold.SetInput(temp);
   threshold.SetOutput(segmentation);
   threshold.Execute();
 
   auto            binary = Memory::AllocateMemory(temp);
-  BinaryAndKernel bin(this->Device());
+  BinaryAndKernel bin(this->GetDevice());
   bin.SetInput1(segmentation);
   bin.SetInput2(spot);
   bin.SetOutput(binary);
   bin.Execute();
 
-  MaskedVoronoiLabelingKernel labeling(this->Device());
+  MaskedVoronoiLabelingKernel labeling(this->GetDevice());
   labeling.SetInput(binary);
   labeling.SetMask(segmentation);
   labeling.SetOutput(temp);
   labeling.Execute();
 
-  MaskKernel mask(this->Device());
+  MaskKernel mask(this->GetDevice());
   mask.SetInput(temp);
   mask.SetMask(segmentation);
   mask.SetOutput(*dst);

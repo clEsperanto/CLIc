@@ -36,7 +36,7 @@ Clesperanto::SelectDevice(const std::string & name) -> void
 auto
 Clesperanto::Info() -> std::string
 {
-  return this->GetDevice()->DeviceInfo();
+  return this->GetDevice()->GetDeviceInfo();
 }
 
 auto

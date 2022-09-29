@@ -45,8 +45,8 @@ ExecuteSeparableKernel::Execute() -> void
   auto temp1 = Memory::AllocateMemory(*dst);
   auto temp2 = Memory::AllocateMemory(*dst);
 
-  CopyKernel      copy(this->Device());
-  SeparableKernel kernel(this->Device());
+  CopyKernel      copy(this->GetDevice());
+  SeparableKernel kernel(this->GetDevice());
   kernel.SetSource(this->GetName(), this->GetSource());
   if (dst->Shape()[0] > 1 && this->sigma_[0] > 0)
   {

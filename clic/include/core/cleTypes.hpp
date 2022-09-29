@@ -69,67 +69,6 @@ enum BuildStatus
   FAIL = CL_BUILD_ERROR
 };
 
-inline auto
-ObjectTypeToString(const ObjectType & type) -> std::string
-{
-  std::string res;
-  switch (type)
-  {
-    case BUFFER:
-      res = "buffer";
-      break;
-    case SCALAR:
-      res = "scalar";
-      break;
-    case IMAGE1D:
-      res = "image1d";
-      break;
-    case IMAGE2D:
-      res = "image2d";
-      break;
-    case IMAGE3D:
-      res = "image3d";
-      break;
-    default:
-      res = "unknown";
-  }
-  return res;
-}
-
-
-inline auto
-DataTypeToString(const DataType & type, const bool & short_version = false) -> std::string
-{
-  std::string res;
-  switch (type)
-  {
-    case CL_SIGNED_INT8:
-      res = (short_version) ? "c" : "char";
-      break;
-    case CL_SIGNED_INT16:
-      res = (short_version) ? "s" : "short";
-      break;
-    case CL_SIGNED_INT32:
-      res = (short_version) ? "i" : "int";
-      break;
-    case CL_UNSIGNED_INT8:
-      res = (short_version) ? "uc" : "uchar";
-      break;
-    case CL_UNSIGNED_INT16:
-      res = (short_version) ? "us" : "ushort";
-      break;
-    case CL_UNSIGNED_INT32:
-      res = (short_version) ? "ui" : "uint";
-      break;
-    case CL_FLOAT:
-      res = (short_version) ? "f" : "float";
-      break;
-    default:
-      res = "unknown";
-  }
-  return res;
-}
-
 template <class T>
 inline auto
 TypeToDataType() -> DataType

@@ -23,27 +23,26 @@ public:
   operator=(Processor && obj) -> Processor & = default;
 
   [[nodiscard]] auto
-  Platform() const -> cl::Platform;
+  PlatformPtr() const -> cl::Platform;
   [[nodiscard]] auto
-  Device() const -> cl::Device;
+  DevicePtr() const -> cl::Device;
   [[nodiscard]] auto
-  Context() const -> cl::Context;
+  ContextPtr() const -> cl::Context;
   [[nodiscard]] auto
-  Queue() const -> cl::CommandQueue;
+  QueuePtr() const -> cl::CommandQueue;
 
   auto
-  Finish() -> void;
+  Finish() const -> void;
   auto
-  WaitForKernelToFinish(bool flag = true) -> void;
+  WaitForKernelToFinish(const bool & flag = true) -> void;
   static auto
   ListAvailableDevices() -> std::vector<std::string>;
   auto
-  SelectDevice(std::string name = "") -> void;
+  SelectDevice(const std::string & name = "") -> void;
   [[nodiscard]] auto
-  DeviceName() const -> std::string;
+  GetDeviceName() const -> std::string;
   [[nodiscard]] auto
-  DeviceInfo() const -> std::string;
-  // [[nodiscard]] auto MemoryAvailable () -> int;
+  GetDeviceInfo() const -> std::string;
 
 private:
   cl::Platform     platform_;

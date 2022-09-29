@@ -43,24 +43,24 @@ MaskedVoronoiLabelingKernel::Execute() -> void
   auto msk = this->GetImage("src1");
   auto dst = this->GetImage("dst");
 
-  auto flup = Memory::AllocateMemory(this->Device(), src->Shape(), FLOAT, src->Object());
-  auto flip = Memory::AllocateMemory(this->Device(), src->Shape(), FLOAT, src->Object());
-  auto flop = Memory::AllocateMemory(this->Device(), src->Shape(), FLOAT, src->Object());
-  auto flag = Memory::AllocateMemory(this->Device(), { 1, 1, 1 });
+  auto flup = Memory::AllocateMemory(this->GetDevice(), src->Shape(), FLOAT, src->GetMemoryType());
+  auto flip = Memory::AllocateMemory(this->GetDevice(), src->Shape(), FLOAT, src->GetMemoryType());
+  auto flop = Memory::AllocateMemory(this->GetDevice(), src->Shape(), FLOAT, src->GetMemoryType());
+  auto flag = Memory::AllocateMemory(this->GetDevice(), { 1, 1, 1 });
   flag.Fill(1);
 
-  AddImageAndScalarKernel subtractOne(this->Device());
+  AddImageAndScalarKernel subtractOne(this->GetDevice());
   subtractOne.SetInput(*msk);
   subtractOne.SetOutput(flup);
   subtractOne.SetScalar(-1);
   subtractOne.Execute();
 
-  ConnectedComponentLabelingBoxKernel labeling(this->Device());
+  ConnectedComponentLabelingBoxKernel labeling(this->GetDevice());
   labeling.SetInput(*src);
   labeling.SetOutput(flop);
   labeling.Execute();
 
-  AddImagesWeightedKernel add(this->Device());
+  AddImagesWeightedKernel add(this->GetDevice());
   add.SetInput1(flup);
   add.SetInput2(flop);
   add.SetOutput(flip);
@@ -71,8 +71,8 @@ MaskedVoronoiLabelingKernel::Execute() -> void
   int   iteration_count = 0;
   float flag_value = 1;
 
-  OnlyzeroOverwriteMaximumBoxKernel boxMaximum(this->Device());
-  OnlyzeroOverwriteMaximumBoxKernel diamondMaximum(this->Device());
+  OnlyzeroOverwriteMaximumBoxKernel boxMaximum(this->GetDevice());
+  OnlyzeroOverwriteMaximumBoxKernel diamondMaximum(this->GetDevice());
   while (flag_value > 0)
   {
     if ((iteration_count % 2) == 0)
@@ -94,7 +94,7 @@ MaskedVoronoiLabelingKernel::Execute() -> void
     iteration_count++;
   }
 
-  MaskKernel mask(this->Device());
+  MaskKernel mask(this->GetDevice());
   if ((iteration_count % 2) == 0)
   {
     mask.SetInput(flip);

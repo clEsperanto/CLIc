@@ -11,15 +11,12 @@ Image::Image(const ProcessorPointer & device,
              const cl::Memory &       data,
              const ShapeArray &       shape,
              const DataType &         data_type,
-             const ObjectType &       object_type,
-             const ChannelType &      channels_type)
+             const ObjectType &       object_type)
+  : data_(data)
+  , device_(device)
+  , shape_(shape)
+  , LightObject(data_type, object_type)
 {
-  this->data_ = data;
-  this->device_ = device;
-  this->shape_ = shape;
-  this->data_type_ = data_type;
-  this->mem_type_ = object_type;
-  this->channels_type_ = channels_type;
   if (this->shape_[2] > 1)
   {
     this->dim_ = 3;
@@ -37,7 +34,7 @@ Image::Image(const ProcessorPointer & device,
 auto
 Image::Fill(const float & value) const -> void
 {
-  switch (this->Data())
+  switch (this->GetDataType())
   {
     case FLOAT:
       this->CastFill<float>(static_cast<float>(value));
@@ -66,37 +63,49 @@ Image::Fill(const float & value) const -> void
 auto
 Image::CopyDataTo(const Image & dst_img) const -> void
 {
-  if (this->Device()->Context() != dst_img.Device()->Context())
+  if (this->GetDevice()->ContextPtr() != dst_img.GetDevice()->ContextPtr())
   {
     std::cerr << "Error in CopyDataTo : Memory Objects does not share the same Context. \n";
     return;
   }
-  if (this->Data() != dst_img.Data())
+  if (this->GetDataType() != dst_img.GetDataType())
   {
     std::cerr << "Error in CopyDataTo : Memory Objects does not share the same bytes size. \n";
     return;
   }
-  if (this->IsBuffer() && dst_img.IsBuffer())
+  if (this->GetMemoryType() == BUFFER && dst_img.GetMemoryType() == BUFFER)
   {
-    Backend::EnqueueCopyBuffer(this->Device()->Queue(), this->Get(), dst_img.Get(), true, 0, 0, this->Bytes());
+    Backend::EnqueueCopyBuffer(this->GetDevice()->QueuePtr(), this->Get(), dst_img.Get(), true, 0, 0, this->GetSize());
     return;
   }
-  if (this->IsBuffer() && dst_img.IsImage())
+
+  bool src_is_buffer = false;
+  if (this->GetMemoryType() == BUFFER)
+  {
+    src_is_buffer = true;
+  }
+  bool dst_is_buffer = false;
+  if (dst_img.GetMemoryType() == BUFFER)
+  {
+    dst_is_buffer = true;
+  }
+
+  if (src_is_buffer && !dst_is_buffer)
   {
     Backend::EnqueueCopyBufferToImage(
-      this->Device()->Queue(), this->Get(), dst_img.Get(), true, 0, this->Origin(), dst_img.Shape());
+      this->GetDevice()->QueuePtr(), this->Get(), dst_img.Get(), true, 0, this->Origin(), dst_img.Shape());
     return;
   }
-  if (this->IsImage() && dst_img.IsBuffer())
+  if (!src_is_buffer && dst_is_buffer)
   {
     Backend::EnqueueCopyImageToBuffer(
-      this->Device()->Queue(), this->Get(), dst_img.Get(), true, this->Origin(), this->Shape(), 0);
+      this->GetDevice()->QueuePtr(), this->Get(), dst_img.Get(), true, this->Origin(), this->Shape(), 0);
     return;
   }
-  if (this->IsImage() && dst_img.IsImage())
+  if (!src_is_buffer && !dst_is_buffer)
   {
     Backend::EnqueueCopyImage(
-      this->Device()->Queue(), this->Get(), dst_img.Get(), true, this->Origin(), this->Origin(), this->Shape());
+      this->GetDevice()->QueuePtr(), this->Get(), dst_img.Get(), true, this->Origin(), this->Origin(), this->Shape());
     return;
   }
 }
@@ -108,16 +117,23 @@ Image::Get() const -> cl::Memory
 }
 
 auto
-Image::Device() const -> ProcessorPointer
+Image::GetDevice() const -> ProcessorPointer
 {
   return this->device_;
 }
 
 auto
-Image::Bytes() const -> size_t
+Image::GetSize() const -> size_t
 {
   return this->Get().getInfo<CL_MEM_SIZE>();
 }
+
+auto
+Image::GetSizeOfElements() const -> size_t
+{
+  return DataTypeToSizeOf(this->GetDataType());
+}
+
 
 auto
 Image::Ndim() const -> unsigned int
@@ -132,68 +148,79 @@ Image::Shape() const -> ShapeArray
 }
 
 auto
-Image::ShapeZYX() const -> ShapeArray
-{
-  return { this->Shape()[2], this->Shape()[1], this->Shape()[0] };
-}
-
-auto
 Image::Origin() const -> ShapeArray
 {
   return this->origin_;
 }
 
 auto
-Image::ObjectInfo() const -> std::string
+Image::GetObjectType_Str() const -> std::string
 {
-  return ObjectTypeToString(this->Object());
+  std::string res;
+  switch (this->GetMemoryType())
+  {
+    case BUFFER:
+      res = "buffer";
+      break;
+    case SCALAR:
+      res = "scalar";
+      break;
+    case IMAGE1D:
+      res = "image1d";
+      break;
+    case IMAGE2D:
+      res = "image2d";
+      break;
+    case IMAGE3D:
+      res = "image3d";
+      break;
+    default:
+      res = "unknown";
+  }
+  return res;
 }
 
 auto
-Image::DataInfo() const -> std::string
+Image::GetDataType_Str(const bool & short_version) const -> std::string
 {
-  return DataTypeToString(this->Data());
+  std::string res;
+  switch (this->GetDataType())
+  {
+    case CL_SIGNED_INT8:
+      res = (short_version) ? "c" : "char";
+      break;
+    case CL_SIGNED_INT16:
+      res = (short_version) ? "s" : "short";
+      break;
+    case CL_SIGNED_INT32:
+      res = (short_version) ? "i" : "int";
+      break;
+    case CL_UNSIGNED_INT8:
+      res = (short_version) ? "uc" : "uchar";
+      break;
+    case CL_UNSIGNED_INT16:
+      res = (short_version) ? "us" : "ushort";
+      break;
+    case CL_UNSIGNED_INT32:
+      res = (short_version) ? "ui" : "uint";
+      break;
+    case CL_FLOAT:
+      res = (short_version) ? "f" : "float";
+      break;
+    default:
+      res = "unknown";
+  }
+  return res;
 }
-
-auto
-Image::DataInfoShort() const -> std::string
-{
-  return DataTypeToString(this->Data(), true);
-}
-
-auto
-Image::IsBuffer() const -> bool
-{
-  return this->Object() == BUFFER;
-}
-
-auto
-Image::IsImage() const -> bool
-{
-  return (this->Object() == IMAGE1D) || (this->Object() == IMAGE2D) || (this->Object() == IMAGE3D);
-}
-
-auto
-Image::Data() const -> DataType
-{
-  return this->data_type_;
-}
-
-auto
-Image::Object() const -> ObjectType
-{
-  return this->mem_type_;
-}
-
 
 auto
 Image::ToString() const -> std::string
 {
   std::stringstream out_string;
-  out_string << this->ObjectInfo();
+  out_string << this->GetObjectType_Str();
   out_string << "[" << std::to_string(this->Shape()[0]) << "," << std::to_string(this->Shape()[1]) << ","
              << std::to_string(this->Shape()[2]) << "]";
-  out_string << "(dtype=" << this->DataInfo() << ")";
+  out_string << "(dtype=" << this->GetDataType_Str(false) << ")";
   return out_string.str();
 }
 

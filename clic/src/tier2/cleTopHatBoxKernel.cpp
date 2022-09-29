@@ -37,22 +37,22 @@ TopHatBoxKernel::Execute() -> void
   auto src = this->GetImage("src");
   auto dst = this->GetImage("dst");
 
-  auto temp1 = Memory::AllocateMemory(this->Device(), src->Shape(), dst->Data(), dst->Object());
-  auto temp2 = Memory::AllocateMemory(this->Device(), src->Shape(), dst->Data(), dst->Object());
+  auto temp1 = Memory::AllocateMemory(this->GetDevice(), src->Shape(), dst->GetDataType(), dst->GetMemoryType());
+  auto temp2 = Memory::AllocateMemory(this->GetDevice(), src->Shape(), dst->GetDataType(), dst->GetMemoryType());
 
-  MinimumBoxKernel minimum(this->Device());
+  MinimumBoxKernel minimum(this->GetDevice());
   minimum.SetInput(*src);
   minimum.SetOutput(temp1);
   minimum.SetRadius(this->radius_[0], this->radius_[1], this->radius_[2]);
   minimum.Execute();
 
-  MaximumBoxKernel maximum(this->Device());
+  MaximumBoxKernel maximum(this->GetDevice());
   maximum.SetInput(temp1);
   maximum.SetOutput(temp2);
   maximum.SetRadius(this->radius_[0], this->radius_[1], this->radius_[2]);
   maximum.Execute();
 
-  AddImagesWeightedKernel add(this->Device());
+  AddImagesWeightedKernel add(this->GetDevice());
   add.SetInput1(*src);
   add.SetInput2(temp2);
   add.SetOutput(*dst);

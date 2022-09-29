@@ -15,7 +15,7 @@ public:
   Scalar() = delete;
   ~Scalar() = default;
   Scalar(const Scalar & obj) noexcept = default;
-  Scalar(Scalar && obj) = default;
+  Scalar(Scalar && obj) noexcept = default;
   auto
   operator=(const Scalar & obj) -> Scalar & = default;
   auto
@@ -29,17 +29,11 @@ public:
   [[nodiscard]] auto
   Shape() const -> ShapeArray override;
   [[nodiscard]] auto
-  ObjectInfo() const -> std::string override;
+  GetObjectType_Str() const -> std::string override;
   [[nodiscard]] auto
-  Object() const -> ObjectType override;
+  GetDataType_Str(const bool & short_version) const -> std::string override;
   [[nodiscard]] auto
-  DataInfo() const -> std::string override;
-  [[nodiscard]] auto
-  DataInfoShort() const -> std::string override;
-  [[nodiscard]] auto
-  Data() const -> DataType override;
-  [[nodiscard]] auto
-  Bytes() const -> size_t override;
+  GetSizeOfElements() const -> size_t override;
   [[nodiscard]] auto
   ToString() const -> std::string override;
 
@@ -48,14 +42,13 @@ public:
   operator<<(std::ostream & out, const Scalar<T> & scalar) -> std::ostream &;
 
 private:
-  Type     data_;
-  DataType data_type_;
+  Type data_;
 };
 
 template <class Type>
 Scalar<Type>::Scalar(const Type & data)
   : data_(data)
-  , data_type_(TypeToDataType<Type>())
+  , LightObject(TypeToDataType<Type>(), SCALAR)
 {
   static_assert(std::is_fundamental<Type>::value, "Scalar can only be of native type");
 }
@@ -83,42 +76,48 @@ Scalar<Type>::Shape() const -> ShapeArray
 
 template <class Type>
 auto
-Scalar<Type>::ObjectInfo() const -> std::string
+Scalar<Type>::GetObjectType_Str() const -> std::string
 {
   return "scalar";
 }
 
 template <class Type>
 auto
-Scalar<Type>::Object() const -> ObjectType
+Scalar<Type>::GetDataType_Str(const bool & short_version) const -> std::string
 {
-  return SCALAR;
+  std::string res;
+  switch (this->GetDataType())
+  {
+    case CL_SIGNED_INT8:
+      res = (short_version) ? "c" : "char";
+      break;
+    case CL_SIGNED_INT16:
+      res = (short_version) ? "s" : "short";
+      break;
+    case CL_SIGNED_INT32:
+      res = (short_version) ? "i" : "int";
+      break;
+    case CL_UNSIGNED_INT8:
+      res = (short_version) ? "uc" : "uchar";
+      break;
+    case CL_UNSIGNED_INT16:
+      res = (short_version) ? "us" : "ushort";
+      break;
+    case CL_UNSIGNED_INT32:
+      res = (short_version) ? "ui" : "uint";
+      break;
+    case CL_FLOAT:
+      res = (short_version) ? "f" : "float";
+      break;
+    default:
+      res = "unknown";
+  }
+  return res;
 }
 
 template <class Type>
 auto
-Scalar<Type>::DataInfo() const -> std::string
-{
-  return DataTypeToString(this->Data());
-}
-
-template <class Type>
-auto
-Scalar<Type>::DataInfoShort() const -> std::string
-{
-  return typeid(this->Get()).name();
-}
-
-template <class Type>
-auto
-Scalar<Type>::Data() const -> DataType
-{
-  return this->data_type_;
-}
-
-template <class Type>
-auto
-Scalar<Type>::Bytes() const -> size_t
+Scalar<Type>::GetSizeOfElements() const -> size_t
 {
   return sizeof(this->Get());
 }
@@ -128,7 +127,7 @@ auto
 Scalar<Type>::ToString() const -> std::string
 {
   std::stringstream out_string;
-  out_string << this->Get() << "(" << this->DataInfoShort() << ")";
+  out_string << this->Get() << "(" << this->GetDataType_Str(false) << ")";
   return out_string.str();
 }
 

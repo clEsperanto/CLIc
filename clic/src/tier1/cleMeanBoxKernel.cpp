@@ -53,7 +53,7 @@ MeanBoxKernel::Execute() -> void
 
   auto kernel_size = Radius2KernelSize();
 
-  ExecuteSeparableKernel kernel(this->Device());
+  ExecuteSeparableKernel kernel(this->GetDevice());
   kernel.SetSource(this->GetName(), this->GetSource());
   kernel.SetInput(*src);
   kernel.SetOutput(*dst);

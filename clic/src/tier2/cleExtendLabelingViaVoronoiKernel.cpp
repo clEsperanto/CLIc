@@ -34,12 +34,12 @@ ExtendLabelingViaVoronoiKernel::Execute() -> void
   auto src = this->GetImage("src");
   auto dst = this->GetImage("dst");
 
-  auto flip = Memory::AllocateMemory(this->Device(), dst->Shape(), dst->Data(), dst->Object());
-  auto flop = Memory::AllocateMemory(this->Device(), dst->Shape(), dst->Data(), dst->Object());
-  auto flag = Memory::AllocateMemory(this->Device(), { 1, 1, 1 }, FLOAT, BUFFER);
+  auto flip = Memory::AllocateMemory(this->GetDevice(), dst->Shape(), dst->GetDataType(), dst->GetMemoryType());
+  auto flop = Memory::AllocateMemory(this->GetDevice(), dst->Shape(), dst->GetDataType(), dst->GetMemoryType());
+  auto flag = Memory::AllocateMemory(this->GetDevice(), { 1, 1, 1 }, FLOAT, BUFFER);
   flag.Fill(1);
 
-  CopyKernel copy(this->Device());
+  CopyKernel copy(this->GetDevice());
   copy.SetInput(*src);
   copy.SetOutput(flip);
   copy.Execute();
@@ -50,7 +50,7 @@ ExtendLabelingViaVoronoiKernel::Execute() -> void
   {
     if ((iteration_count % 2) == 0)
     {
-      OnlyzeroOverwriteMaximumBoxKernel boxMaximum(this->Device());
+      OnlyzeroOverwriteMaximumBoxKernel boxMaximum(this->GetDevice());
       boxMaximum.SetInput(flip);
       boxMaximum.SetOutput1(flag);
       boxMaximum.SetOutput2(flop);
@@ -58,7 +58,7 @@ ExtendLabelingViaVoronoiKernel::Execute() -> void
     }
     else
     {
-      OnlyzeroOverwriteMaximumBoxKernel diamondMaximum(this->Device());
+      OnlyzeroOverwriteMaximumBoxKernel diamondMaximum(this->GetDevice());
       diamondMaximum.SetInput(flop);
       diamondMaximum.SetOutput1(flag);
       diamondMaximum.SetOutput2(flip);

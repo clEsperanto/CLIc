@@ -42,22 +42,22 @@ DifferenceOfGaussianKernel::Execute() -> void
   auto src = this->GetImage("src");
   auto dst = this->GetImage("dst");
 
-  auto temp1 = Memory::AllocateMemory(this->Device(), src->Shape(), src->Data(), src->Object());
-  auto temp2 = Memory::AllocateMemory(this->Device(), src->Shape(), src->Data(), src->Object());
+  auto temp1 = Memory::AllocateMemory(this->GetDevice(), src->Shape(), src->GetDataType(), src->GetMemoryType());
+  auto temp2 = Memory::AllocateMemory(this->GetDevice(), src->Shape(), src->GetDataType(), src->GetMemoryType());
 
-  GaussianBlurKernel gaussian_1_kernel(this->Device());
+  GaussianBlurKernel gaussian_1_kernel(this->GetDevice());
   gaussian_1_kernel.SetInput(*src);
   gaussian_1_kernel.SetOutput(temp1);
   gaussian_1_kernel.SetSigma(this->sigma1_[0], this->sigma1_[1], this->sigma1_[2]);
   gaussian_1_kernel.Execute();
 
-  GaussianBlurKernel gaussian_2_kernel(this->Device());
+  GaussianBlurKernel gaussian_2_kernel(this->GetDevice());
   gaussian_2_kernel.SetInput(*src);
   gaussian_2_kernel.SetOutput(temp2);
   gaussian_2_kernel.SetSigma(this->sigma2_[0], this->sigma2_[1], this->sigma2_[2]);
   gaussian_2_kernel.Execute();
 
-  AddImagesWeightedKernel difference(this->Device());
+  AddImagesWeightedKernel difference(this->GetDevice());
   difference.SetInput1(temp1);
   difference.SetInput2(temp2);
   difference.SetOutput(*dst);

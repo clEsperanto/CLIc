@@ -13,25 +13,25 @@ Processor::Processor(const std::string & name)
 }
 
 auto
-Processor::Platform() const -> cl::Platform
+Processor::PlatformPtr() const -> cl::Platform
 {
   return this->platform_;
 }
 
 auto
-Processor::Device() const -> cl::Device
+Processor::DevicePtr() const -> cl::Device
 {
   return this->device_;
 }
 
 auto
-Processor::Context() const -> cl::Context
+Processor::ContextPtr() const -> cl::Context
 {
   return this->context_;
 }
 
 auto
-Processor::Queue() const -> cl::CommandQueue
+Processor::QueuePtr() const -> cl::CommandQueue
 {
   return this->command_queue_;
 }
@@ -57,7 +57,7 @@ Processor::ListAvailableDevices() -> std::vector<std::string>
 }
 
 auto
-Processor::SelectDevice(const std::string name) -> void
+Processor::SelectDevice(const std::string & name) -> void
 {
   bool                            found_flag = false;
   const std::vector<cl::Platform> platforms_list = Backend::GetPlatformPointerList();
@@ -84,61 +84,29 @@ Processor::SelectDevice(const std::string name) -> void
 }
 
 auto
-Processor::DeviceName() const -> std::string
+Processor::GetDeviceName() const -> std::string
 {
-  return Backend::GetDeviceName(this->device_);
+  return Backend::GetDeviceName(this->DevicePtr());
 }
 
 auto
-Processor::DeviceInfo() const -> std::string
+Processor::GetDeviceInfo() const -> std::string
 {
-  return this->DeviceName();
+  return this->GetDeviceName();
 }
 
-// auto
-// Processor::MemoryAvailable () -> int
-// {
-//     constexpr int factor = 1000000;
-//     const char *cmd = "nvidia-smi --query-gpu=gpu_name,memory.free --format=csv,noheader,nounits";
-//     // std::string cmd = "nvidia-smi --query-gpu=gpu_name,memory.free --format=csv,noheader,nounits";
-//     // std::string cmd = "nvidia-smi --query-gpu=gpu_name,memory.free --format=csv,noheader,nounits";
-//     std::string cmd_out;
-//     try
-//         {
-//             cmd_out = cle::exec (cmd);
-//         }
-//     catch (const std::exception &e)
-//         {
-//             std::cerr << e.what () << '\n';
-//         }
-//     std::stringstream read_out (cmd_out);
-//     std::vector<std::string> info;
-//     while (read_out.good ())
-//         {
-//             info.emplace_back ("");
-//             std::getline (read_out, info.back (), ',');
-//         }
-//     auto it = std::find (info.begin (), info.end (), this->DeviceName ());
-//     if (it != info.end ())
-//         {
-//             size_t idx = (it - info.begin ()) + 1;
-//             return std::stoi (info[idx]) * factor;
-//         }
-//     return 0;
-// }
-
 auto
-Processor::WaitForKernelToFinish(bool flag) -> void
+Processor::WaitForKernelToFinish(const bool & flag) -> void
 {
   this->wait_to_finish_ = flag;
 }
 
 auto
-Processor::Finish() -> void
+Processor::Finish() const -> void
 {
   if (this->wait_to_finish_)
   {
-    Backend::WaitQueueToFinish(this->Queue());
+    Backend::WaitQueueToFinish(this->QueuePtr());
   }
 }
 

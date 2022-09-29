@@ -17,6 +17,9 @@ public:
   using ProcessorPointer = std::shared_ptr<Processor>;
 
   LightObject() = default;
+  LightObject(const DataType & data_t, const ObjectType & mem_t)
+    : data_type_(data_t)
+    , mem_type_(mem_t){};
   virtual ~LightObject() = default;
   LightObject(const LightObject & obj) = default;
   LightObject(LightObject && obj) = default;
@@ -31,19 +34,29 @@ public:
   [[nodiscard]] virtual auto
   Shape() const -> ShapeArray = 0;
   [[nodiscard]] virtual auto
-  ObjectInfo() const -> std::string = 0;
+  GetObjectType_Str() const -> std::string = 0;
   [[nodiscard]] virtual auto
-  DataInfo() const -> std::string = 0;
+  GetDataType_Str(const bool & short_version) const -> std::string = 0;
   [[nodiscard]] virtual auto
-  DataInfoShort() const -> std::string = 0;
-  [[nodiscard]] virtual auto
-  Bytes() const -> size_t = 0;
+  GetSizeOfElements() const -> size_t = 0;
   [[nodiscard]] virtual auto
   ToString() const -> std::string = 0;
+
   [[nodiscard]] virtual auto
-  Data() const -> DataType = 0;
+  GetDataType() const -> DataType
+  {
+    return data_type_;
+  }
+
   [[nodiscard]] virtual auto
-  Object() const -> ObjectType = 0;
+  GetMemoryType() const -> ObjectType
+  {
+    return mem_type_;
+  }
+
+private:
+  ObjectType mem_type_;
+  DataType   data_type_;
 };
 
 } // namespace cle
