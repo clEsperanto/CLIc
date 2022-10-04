@@ -171,11 +171,7 @@ Clesperanto::GaussianBlur(const Image & source,
                           const float & sigma_y,
                           const float & sigma_z) -> void
 {
-  GaussianBlurKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetSigma(sigma_x, sigma_y, sigma_z);
-  kernel.Execute();
+  GaussianBlurKernel_Call(this->GetDevice(), source, destination, sigma_x, sigma_y, sigma_z);
 }
 
 auto
@@ -457,8 +453,7 @@ Clesperanto::SmallerOrEqualConstant(const Image & source, const Image & destinat
 auto
 Clesperanto::Absolute(const Image & source, const Image & destination) -> void
 {
-  AbsoluteKernel kernel(this->GetDevice());
-  Absolute_call(&kernel, source, destination);
+  AbsoluteKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto

@@ -10,14 +10,22 @@ class AbsoluteKernel : public Operation
 {
 public:
   explicit AbsoluteKernel(const ProcessorPointer & device);
+
   auto
   SetInput(const Image & object) -> void;
+
   auto
   SetOutput(const Image & object) -> void;
-
-  friend auto
-  Absolute_call(AbsoluteKernel * kernel, const Image & src, const Image & dst) -> void;
 };
+
+inline auto
+AbsoluteKernel_Call(const std::shared_ptr<cle::Processor> & device, const Image & src, const Image & dst) -> void
+{
+  AbsoluteKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.Execute();
+}
 
 } // namespace cle
 
