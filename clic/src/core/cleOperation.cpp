@@ -302,7 +302,21 @@ auto
 Operation::MakeKernel() -> void
 {
   std::string program_source = this->MakeDefines() + cle::Operation::MakePreamble() + this->GetSource();
-  auto        program = Backend::GetProgramPointer(this->GetDevice()->ContextPtr(), program_source);
+
+  std::hash<std::string> hasher;
+  size_t source_hash = hasher(program_source);
+  auto source_ite = this->GetDevice()->GetProgramMemory()->find(source_hash);
+  cl::Program program;
+  if (source_ite == this->GetDevice()->GetProgramMemory()->end())
+  {
+    program = Backend::GetProgramPointer(this->GetDevice()->ContextPtr(), program_source);
+    this->GetDevice()->GetProgramMemory()->insert({source_hash, program});
+  }
+  else
+  {
+    program = source_ite->second;
+  }
+  
   Backend::BuildProgram(program, this->GetDevice()->DevicePtr(), "-cl-kernel-arg-info");
   if (program.getBuildInfo<CL_PROGRAM_BUILD_STATUS>(this->GetDevice()->DevicePtr()) != CL_BUILD_SUCCESS)
   {

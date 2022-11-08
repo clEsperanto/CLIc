@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include "clic.hpp"
 
@@ -43,6 +44,8 @@ public:
   GetDeviceName() const -> std::string;
   [[nodiscard]] auto
   GetDeviceInfo() const -> std::string;
+  [[nodiscard]] auto
+  GetProgramMemory() const -> std::map<size_t, cl::Program> *;
 
 private:
   cl::Platform     platform_;
@@ -50,6 +53,7 @@ private:
   cl::Context      context_;
   cl::CommandQueue command_queue_;
   bool             wait_to_finish_ = false;
+  std::map<size_t, cl::Program> program_memory_;
 };
 
 } // namespace cle

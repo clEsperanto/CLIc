@@ -96,6 +96,12 @@ Processor::GetDeviceInfo() const -> std::string
 }
 
 auto
+Processor::GetProgramMemory() const -> std::map<size_t, cl::Program> *
+{
+  return &(this->program_memory_);
+}
+
+auto
 Processor::WaitForKernelToFinish(const bool & flag) -> void
 {
   this->wait_to_finish_ = flag;
