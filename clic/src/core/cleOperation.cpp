@@ -305,12 +305,12 @@ Operation::MakeKernel() -> void
 
   std::hash<std::string> hasher;
   size_t source_hash = hasher(program_source);
-  auto source_ite = this->GetDevice()->GetProgramMemory()->find(source_hash);
+  auto source_ite = this->GetDevice()->GetProgramMemory().find(source_hash);
   cl::Program program;
-  if (source_ite == this->GetDevice()->GetProgramMemory()->end())
+  if (source_ite == this->GetDevice()->GetProgramMemory().end())
   {
     program = Backend::GetProgramPointer(this->GetDevice()->ContextPtr(), program_source);
-    this->GetDevice()->GetProgramMemory()->insert({source_hash, program});
+    this->GetDevice()->GetProgramMemory().insert({source_hash, program});
   }
   else
   {

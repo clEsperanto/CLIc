@@ -45,7 +45,7 @@ public:
   [[nodiscard]] auto
   GetDeviceInfo() const -> std::string;
   [[nodiscard]] auto
-  GetProgramMemory() const -> std::map<size_t, cl::Program> *;
+  GetProgramMemory() -> std::map<size_t, cl::Program> &;
 
 private:
   cl::Platform     platform_;

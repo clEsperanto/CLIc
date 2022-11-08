@@ -96,9 +96,9 @@ Processor::GetDeviceInfo() const -> std::string
 }
 
 auto
-Processor::GetProgramMemory() const -> std::map<size_t, cl::Program> *
+Processor::GetProgramMemory() -> std::map<size_t, cl::Program> &
 {
-  return &(this->program_memory_);
+  return this->program_memory_;
 }
 
 auto
