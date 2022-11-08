@@ -111,13 +111,13 @@ Operation::SetSource(const std::string & name, const std::string & src) -> void
 }
 
 auto
-Operation::GetSource() const -> std::string
+Operation::GetSource() const -> const std::string &
 {
   return this->source_;
 }
 
 auto
-Operation::GetName() const -> std::string
+Operation::GetName() const -> const std::string &
 {
   return this->name_;
 }
@@ -174,7 +174,7 @@ Operation::GetDevice() const -> ProcessorPointer
 }
 
 auto
-Operation::GetKernel() const -> cl::Kernel
+Operation::GetKernel() const -> const cl::Kernel &
 {
   return this->kernel_;
 }
@@ -304,19 +304,19 @@ Operation::MakeKernel() -> void
   std::string program_source = this->MakeDefines() + cle::Operation::MakePreamble() + this->GetSource();
 
   std::hash<std::string> hasher;
-  size_t source_hash = hasher(program_source);
-  auto source_ite = this->GetDevice()->GetProgramMemory().find(source_hash);
-  cl::Program program;
+  size_t                 source_hash = hasher(program_source);
+  auto                   source_ite = this->GetDevice()->GetProgramMemory().find(source_hash);
+  cl::Program            program;
   if (source_ite == this->GetDevice()->GetProgramMemory().end())
   {
     program = Backend::GetProgramPointer(this->GetDevice()->ContextPtr(), program_source);
-    this->GetDevice()->GetProgramMemory().insert({source_hash, program});
+    this->GetDevice()->GetProgramMemory().insert({ source_hash, program });
   }
   else
   {
     program = source_ite->second;
   }
-  
+
   Backend::BuildProgram(program, this->GetDevice()->DevicePtr(), "-cl-kernel-arg-info");
   if (program.getBuildInfo<CL_PROGRAM_BUILD_STATUS>(this->GetDevice()->DevicePtr()) != CL_BUILD_SUCCESS)
   {

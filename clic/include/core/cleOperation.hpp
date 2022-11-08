@@ -51,9 +51,9 @@ public:
   auto
   SetSource(const std::string & name, const std::string & src) -> void;
   [[nodiscard]] auto
-  GetSource() const -> std::string;
+  GetSource() const -> const std::string &;
   [[nodiscard]] auto
-  GetName() const -> std::string;
+  GetName() const -> const std::string &;
   auto
   LoadSource(const std::string & name, const std::string & file) -> void;
   virtual auto
@@ -68,7 +68,7 @@ protected:
   [[nodiscard]] auto
   GetDevice() const -> ProcessorPointer;
   [[nodiscard]] auto
-  GetKernel() const -> cl::Kernel;
+  GetKernel() const -> const cl::Kernel &;
   [[nodiscard]] auto
   MakeDefines() const -> std::string;
   static auto

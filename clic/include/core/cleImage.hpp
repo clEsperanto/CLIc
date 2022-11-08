@@ -32,7 +32,7 @@ public:
   auto
   CopyDataTo(const Image & dst_img) const -> void;
   [[nodiscard]] auto
-  Get() const -> cl::Memory;
+  Get() const -> const cl::Memory &;
   [[nodiscard]] auto
   GetDevice() const -> ProcessorPointer;
   [[nodiscard]] auto
@@ -42,9 +42,9 @@ public:
   [[nodiscard]] auto
   Ndim() const -> unsigned int override;
   [[nodiscard]] auto
-  Shape() const -> ShapeArray override;
+  Shape() const -> const ShapeArray & override;
   [[nodiscard]] auto
-  Origin() const -> ShapeArray;
+  Origin() const -> const ShapeArray &;
   [[nodiscard]] auto
   GetMemoryType_Str() const -> std::string override;
   [[nodiscard]] auto

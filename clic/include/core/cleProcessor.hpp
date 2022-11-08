@@ -1,9 +1,9 @@
 #ifndef __CORE_CLEPROCESSOR_HPP
 #define __CORE_CLEPROCESSOR_HPP
 
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
 
 #include "clic.hpp"
 
@@ -48,11 +48,11 @@ public:
   GetProgramMemory() -> std::map<size_t, cl::Program> &;
 
 private:
-  cl::Platform     platform_;
-  cl::Device       device_;
-  cl::Context      context_;
-  cl::CommandQueue command_queue_;
-  bool             wait_to_finish_ = false;
+  cl::Platform                  platform_;
+  cl::Device                    device_;
+  cl::Context                   context_;
+  cl::CommandQueue              command_queue_;
+  bool                          wait_to_finish_ = false;
   std::map<size_t, cl::Program> program_memory_;
 };
 

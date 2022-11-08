@@ -111,7 +111,7 @@ Image::CopyDataTo(const Image & dst_img) const -> void
 }
 
 auto
-Image::Get() const -> cl::Memory
+Image::Get() const -> const cl::Memory &
 {
   return this->data_;
 }
@@ -142,13 +142,13 @@ Image::Ndim() const -> unsigned int
 }
 
 auto
-Image::Shape() const -> ShapeArray
+Image::Shape() const -> const ShapeArray &
 {
   return this->shape_;
 }
 
 auto
-Image::Origin() const -> ShapeArray
+Image::Origin() const -> const ShapeArray &
 {
   return this->origin_;
 }

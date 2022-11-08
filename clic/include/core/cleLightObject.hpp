@@ -32,7 +32,7 @@ public:
   [[nodiscard]] virtual auto
   Ndim() const -> unsigned int = 0;
   [[nodiscard]] virtual auto
-  Shape() const -> ShapeArray = 0;
+  Shape() const -> const ShapeArray & = 0;
   [[nodiscard]] virtual auto
   GetMemoryType_Str() const -> std::string = 0;
   [[nodiscard]] virtual auto

@@ -27,7 +27,7 @@ public:
   [[nodiscard]] auto
   Ndim() const -> unsigned int override;
   [[nodiscard]] auto
-  Shape() const -> ShapeArray override;
+  Shape() const -> const ShapeArray & override;
   [[nodiscard]] auto
   GetMemoryType_Str() const -> std::string override;
   [[nodiscard]] auto
@@ -42,7 +42,8 @@ public:
   operator<<(std::ostream & out, const Scalar<T> & scalar) -> std::ostream &;
 
 private:
-  Type data_;
+  Type       data_;
+  ShapeArray shape_{ 1, 1, 1 };
 };
 
 template <class Type>
@@ -69,9 +70,9 @@ Scalar<Type>::Ndim() const -> unsigned int
 
 template <class Type>
 auto
-Scalar<Type>::Shape() const -> ShapeArray
+Scalar<Type>::Shape() const -> const ShapeArray &
 {
-  return { 1, 1, 1 };
+  return this->shape_;
 }
 
 template <class Type>
