@@ -72,7 +72,7 @@ jobs:
         run: |
           sudo conda config --add channels conda-forge
           sudo conda config --set channel_priority strict
-          sudo conda install -c conda-forge pocl
+          sudo conda install -c conda-forge pocl ocl-icd-system
         shell: bash
 
       - name: Build OpenCL-ICD-Loader
@@ -82,11 +82,6 @@ jobs:
           cd OpenCL-ICD-Loader-build
           cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../OpenCL-ICD-Loader
           sudo cmake --build . --target install
-          
-      - name: where am I?
-        run: |
-          cd ..
-          pwd
       
       - uses: actions/checkout@v2
         with:
