@@ -29,7 +29,7 @@ public:
 private:
   float  min_intensity_ = std::numeric_limits<float>::infinity();
   float  max_intensity_ = std::numeric_limits<float>::infinity();
-  size_t nb_bins_;
+  size_t nb_bins_ = 256;
 };
 
 } // namespace cle

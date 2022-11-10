@@ -17,7 +17,7 @@ public:
   auto
   SetOutput(const Image & object) -> void;
   auto
-  SetBlocksize(const int & value) -> void;
+  SetBlocksize(const int & size) -> void;
 };
 
 } // namespace cle

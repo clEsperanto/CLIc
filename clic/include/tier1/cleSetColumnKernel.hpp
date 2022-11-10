@@ -15,7 +15,7 @@ public:
   auto
   SetInput(const Image & object) -> void;
   auto
-  SetColumn(const int & value) -> void;
+  SetColumn(const int & index) -> void;
   auto
   SetValue(const float & value) -> void;
 };

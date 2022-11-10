@@ -17,8 +17,8 @@ MaximumBoxKernel::MaximumBoxKernel(const ProcessorPointer & device)
   this->SetSource("maximum_separable", cl_header);
 }
 
-std::array<int, 3>
-MaximumBoxKernel::Radius2KernelSize() const
+auto
+MaximumBoxKernel::Radius2KernelSize() const -> std::array<int, 3>
 {
   std::array<int, 3> kernel_size;
   std::transform(

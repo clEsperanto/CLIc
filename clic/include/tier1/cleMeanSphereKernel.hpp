@@ -20,7 +20,7 @@ public:
 
 private:
   [[nodiscard]] auto
-  Radius2KernelSize(const float &) const -> int;
+  Radius2KernelSize(const float & radius) const -> int;
 };
 
 } // namespace cle

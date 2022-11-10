@@ -17,8 +17,8 @@ MinimumBoxKernel::MinimumBoxKernel(const ProcessorPointer & device)
   this->SetSource("minimum_separable", cl_header);
 }
 
-std::array<int, 3>
-MinimumBoxKernel::Radius2KernelSize() const
+auto
+MinimumBoxKernel::Radius2KernelSize() const -> std::array<int, 3>
 {
   std::array<int, 3> kernel_size;
   std::transform(

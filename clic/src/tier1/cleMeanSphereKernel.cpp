@@ -13,8 +13,8 @@ MeanSphereKernel::MeanSphereKernel(const ProcessorPointer & device)
   this->SetSource("mean_sphere", cl_header);
 }
 
-int
-MeanSphereKernel::Radius2KernelSize(const float & radius) const
+auto
+MeanSphereKernel::Radius2KernelSize(const float & radius) const -> int
 {
   return static_cast<int>(radius) * 2 + 1;
 }
