@@ -30,58 +30,58 @@ jobs:
           #   cxx-compiler: "clang++"
           #   cmake-build-type: "Release"
 
-  steps:
-    - uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
+          with:
+            submodules: recursive
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
         with:
-          submodules: recursive
+          python-version: 3.8
 
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ninja
 
-    - name: Install build dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install ninja
+      - name: Get specific version of CMake, Ninja
+        uses: lukka/get-cmake@v3.21.2
 
-    - name: Get specific version of CMake, Ninja
-      uses: lukka/get-cmake@v3.21.2
+      - name: Download OpenCL-ICD-Loader
+        run: |
+          cd ..
+          git clone https://github.com/KhronosGroup/OpenCL-ICD-Loader
+          pushd OpenCL-ICD-Loader
+          git checkout ${{ env.opencl-icd-loader-git-tag }}
+          popd
+          pushd OpenCL-ICD-Loader/inc
+          git clone https://github.com/KhronosGroup/OpenCL-Headers
+          pushd OpenCL-Headers
+          git checkout ${{ env.opencl-headers-git-tag }}
+          popd
+          cp -r OpenCL-Headers/CL ./
+          popd
+        shell: bash
 
-    - name: Download OpenCL-ICD-Loader
-      run: |
-        cd ..
-        git clone https://github.com/KhronosGroup/OpenCL-ICD-Loader
-        pushd OpenCL-ICD-Loader
-        git checkout ${{ env.opencl-icd-loader-git-tag }}
-        popd
-        pushd OpenCL-ICD-Loader/inc
-        git clone https://github.com/KhronosGroup/OpenCL-Headers
-        pushd OpenCL-Headers
-        git checkout ${{ env.opencl-headers-git-tag }}
-        popd
-        cp -r OpenCL-Headers/CL ./
-        popd
-      shell: bash
+      - name: Install pocl
+        run: |
+          sudo conda config --add channels conda-forge
+          sudo conda config --set channel_priority strict
+          sudo conda install -c conda-forge pocl
+        shell: bash
 
-    - name: Install pocl
-      run: |
-        sudo conda config --add channels conda-forge
-        sudo conda config --set channel_priority strict
-        sudo conda install -c conda-forge pocl
-      shell: bash
-
-    - name: Build OpenCL-ICD-Loader
-      run: |
-        cd ..
-        mkdir OpenCL-ICD-Loader-build
-        cd OpenCL-ICD-Loader-build
-        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../OpenCL-ICD-Loader
-        sudo cmake --build . --target install
-        
-    - name: where am I?
-      run: |
-        echo pwd
+      - name: Build OpenCL-ICD-Loader
+        run: |
+          cd ..
+          mkdir OpenCL-ICD-Loader-build
+          cd OpenCL-ICD-Loader-build
+          cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../OpenCL-ICD-Loader
+          sudo cmake --build . --target install
+          
+      - name: where am I?
+        run: |
+          echo pwd
       
 
 
