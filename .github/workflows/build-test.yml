@@ -15,9 +15,10 @@ jobs:
     strategy:
       max-parallel: 3
       matrix:
-        os: [ubuntu] #, windows, macos]
+        name: [ubuntu] #, windows, macos]
         include:
-          - os: ubuntu-latest
+          - name: ubuntu
+            os: ubuntu-latest
             c-compiler: "gcc"
             cxx-compiler: "g++"
             cmake-build-type: "Release"
@@ -31,9 +32,7 @@ jobs:
           #   cmake-build-type: "Release"
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
+      
 
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
@@ -62,6 +61,13 @@ jobs:
           popd
           cp -r OpenCL-Headers/CL ./
           popd
+          pushd OpenCL-ICD-Loader/inc
+          git clone https://github.com/KhronosGroup/OpenCL-CLHPP
+          pushd OpenCL-CLHPP
+          git checkout ${{ env.opencl-clhpp-git-tag }}
+          popd
+          cp -r OpenCL-CLHPP/include/CL ./
+          popd
         shell: bash
 
       - name: Install pocl
@@ -81,7 +87,19 @@ jobs:
           
       - name: where am I?
         run: |
-          echo pwd
+          cd ..
+          pwd
+      
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: compile CLIc
+        run : |
+          cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF
+          cmake --build ${{ runner.workspace }}/build --parallel 10
+
+      
       
 
 
