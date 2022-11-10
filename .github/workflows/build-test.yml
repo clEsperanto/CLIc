@@ -1,0 +1,88 @@
+name: Build & test
+
+on: [push,pull_request]
+
+env:
+  clespernato-kernels-git-tag: "d2348d964b1eaff60c60d7b3e18a59c2c8e3a84e"
+  opencl-sdk-git-tag: "v2022.09.30"
+  opencl-icd-loader-git-tag: "v2022.09.30"
+  opencl-headers-git-tag: "v2022.09.30"
+  opencl-clhpp-git-tag: "v2.0.19"
+
+jobs:
+  build-cxx:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 3
+      matrix:
+        os: [ubuntu] #, windows, macos]
+        include:
+          - os: ubuntu-latest
+            c-compiler: "gcc"
+            cxx-compiler: "g++"
+            cmake-build-type: "Release"
+          # - os: windows-latest
+          #   c-compiler: "cl.exe"
+          #   cxx-compiler: "cl.exe"
+          #   cmake-build-type: "Release"
+          # - os: macos-latest
+          #   c-compiler: "clang"
+          #   cxx-compiler: "clang++"
+          #   cmake-build-type: "Release"
+
+  steps:
+    - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install ninja
+
+    - name: Get specific version of CMake, Ninja
+      uses: lukka/get-cmake@v3.21.2
+
+    - name: Download OpenCL-ICD-Loader
+      run: |
+        cd ..
+        git clone https://github.com/KhronosGroup/OpenCL-ICD-Loader
+        pushd OpenCL-ICD-Loader
+        git checkout ${{ env.opencl-icd-loader-git-tag }}
+        popd
+        pushd OpenCL-ICD-Loader/inc
+        git clone https://github.com/KhronosGroup/OpenCL-Headers
+        pushd OpenCL-Headers
+        git checkout ${{ env.opencl-headers-git-tag }}
+        popd
+        cp -r OpenCL-Headers/CL ./
+        popd
+      shell: bash
+
+    - name: Install pocl
+      run: |
+        sudo conda config --add channels conda-forge
+        sudo conda config --set channel_priority strict
+        sudo conda install -c conda-forge pocl
+      shell: bash
+
+    - name: Build OpenCL-ICD-Loader
+      run: |
+        cd ..
+        mkdir OpenCL-ICD-Loader-build
+        cd OpenCL-ICD-Loader-build
+        cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../OpenCL-ICD-Loader
+        sudo cmake --build . --target install
+        
+    - name: where am I?
+      run: |
+        echo pwd
+      
+
+
+
