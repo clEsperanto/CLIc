@@ -73,7 +73,7 @@ jobs:
           # sudo conda config --add channels conda-forge
           # sudo conda config --set channel_priority strict
           # sudo conda install -c conda-forge pocl ocl-icd-system
-          sudo apt install beignet beignet-dev
+          sudo apt install beignet-dev
         shell: bash
 
       - name: Build OpenCL-ICD-Loader
