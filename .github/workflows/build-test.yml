@@ -7,7 +7,7 @@ env:
   opencl-sdk-git-tag: "v2022.09.30"
   opencl-icd-loader-git-tag: "v2022.09.30"
   opencl-headers-git-tag: "v2022.09.30"
-  opencl-clhpp-git-tag: "v2.0.19"
+  opencl-clhpp-git-tag: "v2022.09.30 "
 
 jobs:
   build-cxx:
