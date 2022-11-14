@@ -23,7 +23,7 @@
 #  endif
 
 // #include <CL/opencl.h>
-#  include <opencl.hpp>
+#  include <CL/opencl.hpp>
 #  include <string>
 
 static const std::string
