@@ -93,7 +93,7 @@ jobs:
 
       - name: compile CLIc
         run : |
-          cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF -DOpenCL_FOUND:BOOL=ON -DOpenCL_LIBRARY:FILEPATH=/usr/local/lib/libOpenCL.so
+          cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF -DOPENCL_SEARCH_DIR:PATH=/usr/local/
           cmake --build ${{ runner.workspace }}/build --parallel 10
 
       

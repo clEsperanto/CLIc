@@ -30,6 +30,10 @@ if(NOT UTILITIES_DIR)
   set(UTILITIES_DIR "${PROJECT_SOURCE_DIR}/utilities" CACHE PATH "Utilities folder")
 endif()
 
+if(NOT OPENCL_SEARCH_DIR)
+  set(OPENCL_SEARCH_DIR ".")
+endif()
+
 # # Configuration and Build options
 # Set Code coverage options (default: OFF)
 option(BUILD_COVERAGE "Enable coverage reporting" OFF)
