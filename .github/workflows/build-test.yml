@@ -59,11 +59,11 @@ jobs:
           git checkout ${{ env.opencl-headers-git-tag }}
           popd
           cp -r OpenCL-Headers/CL ./
-          git clone https://github.com/KhronosGroup/OpenCL-CLHPP
-          pushd OpenCL-CLHPP
-          git checkout ${{ env.opencl-clhpp-git-tag }}
-          popd
-          cp -r OpenCL-CLHPP/include/CL ./
+# git clone https://github.com/KhronosGroup/OpenCL-CLHPP
+# pushd OpenCL-CLHPP
+# git checkout ${{ env.opencl-clhpp-git-tag }}
+# popd
+# cp -r OpenCL-CLHPP/include/CL ./
           popd
         shell: bash
 
