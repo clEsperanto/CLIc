@@ -80,6 +80,9 @@ jobs:
       - name: test OCL-ICD-Loader
         run: |
           pwd
+          cd ..
+          cd OpenCL-ICD-Loader-build
+          pwd
           echo $CONDA
           export OCL_ICD_VENDORS=$CONDA/etc/OpenCL/vendors/
           ctest
