@@ -125,7 +125,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run : |
           pwd
-          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF
+          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARY:FILEPATH="/usr/local/lib/libOpenCL.so.1.2"
           cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
         shell: bash -l {0}    
 
