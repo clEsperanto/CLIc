@@ -111,14 +111,14 @@ jobs:
         if: matrix.os == 'windows-latest'
         run : |
           cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARY:FILEPATH="C:/Program Files/OpenCL-ICD-Loader/lib/OpenCL.lib"
-          cmake --build "${{ runner.workspace }}/build" --parallel 10
+          cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
         shell: bash -l {0}
 
       - name: compile CLIc
         if: matrix.os == 'macos-latest'
         run : |
           cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF
-          cmake --build "${{ runner.workspace }}/build" --parallel 10
+          cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
         shell: bash -l {0}
 
       - name: compile CLIc
@@ -126,7 +126,7 @@ jobs:
         run : |
           pwd
           cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARY:FILEPATH=$CONDA/lib/libOpenCL.so
-          cmake --build "${{ runner.workspace }}/build" --parallel 10
+          cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
         shell: bash -l {0}
 
       - name: run CLIc core test
