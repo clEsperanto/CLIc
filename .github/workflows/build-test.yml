@@ -74,7 +74,7 @@ jobs:
           cd ..
           mkdir OpenCL-ICD-Loader-build
           cd OpenCL-ICD-Loader-build
-          cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=OFF -GNinja ../OpenCL-ICD-Loader
+          cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=ON -DBUILD_TESTING:BOOL=OFF -GNinja ../OpenCL-ICD-Loader
           cmake --build .
           ctest
 
