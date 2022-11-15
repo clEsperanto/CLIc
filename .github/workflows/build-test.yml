@@ -79,9 +79,9 @@ jobs:
         run: conda info
 
       - name: Install pocl
+        shell: bash -l {0}
         run: |
           conda install -c conda-forge pocl
-        shell: bash
 
       # - name: Build OpenCL-ICD-Loader
       #   run: |
