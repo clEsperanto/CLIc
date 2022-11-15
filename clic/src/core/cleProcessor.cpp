@@ -102,6 +102,12 @@ Processor::GetProgramMemory() -> std::map<size_t, cl::Program> &
 }
 
 auto
+Processor::ImageSupport() const -> bool
+{
+  return Backend::ImageSupport(this->DevicePtr());
+}
+
+auto
 Processor::WaitForKernelToFinish(const bool & flag) -> void
 {
   this->wait_to_finish_ = flag;

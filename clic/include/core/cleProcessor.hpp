@@ -46,6 +46,8 @@ public:
   GetDeviceInfo() const -> std::string;
   [[nodiscard]] auto
   GetProgramMemory() -> std::map<size_t, cl::Program> &;
+  [[nodiscard]] auto
+  ImageSupport() const -> bool;
 
 private:
   cl::Platform                  platform_;
