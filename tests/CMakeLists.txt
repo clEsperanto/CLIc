@@ -473,7 +473,7 @@ set_tests_properties(
     core_gpu_test
     core_scalar_test
     core_buffer_test
-    core_image_test
+    # core_image_test
     core_kernel_test_buffer
     # core_kernel_test_image
     PROPERTIES LABELS "CORE" WILL_FAIL FALSE
