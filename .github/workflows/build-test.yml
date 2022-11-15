@@ -132,7 +132,7 @@ jobs:
       - name: run CLIc core test
         run: |
           cd "${{ runner.workspace }}/build"
-          ctest -L CORE
+          ctest -L CORE -C Release
         shell: bash -l {0}
 
       
