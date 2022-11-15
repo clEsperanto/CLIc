@@ -108,7 +108,14 @@ jobs:
           submodules: recursive
 
       - name: compile CLIc
-        if: matrix.os != 'ubuntu-latest'
+        if: matrix.os == 'windows-latest'
+        run : |
+          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARY:FILEPATH="C:/Program Files/OpenCL-ICD-Loader/lib/OpenCL.lib"
+          cmake --build "${{ runner.workspace }}/build" --parallel 10
+        shell: bash -l {0}
+
+      - name: compile CLIc
+        if: matrix.os == 'macos-latest'
         run : |
           cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF
           cmake --build "${{ runner.workspace }}/build" --parallel 10
@@ -118,7 +125,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run : |
           pwd
-          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARY=$CONDA/lib/libOpenCL.so
+          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARY:FILEPATH=$CONDA/lib/libOpenCL.so
           cmake --build "${{ runner.workspace }}/build" --parallel 10
         shell: bash -l {0}
 
