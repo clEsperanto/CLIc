@@ -74,6 +74,10 @@ jobs:
           channel-priority: strict
           auto-activate-base: true
 
+      - name: Conda info
+        shell: bash -l {0}
+        run: conda info
+
       - name: Install pocl
         run: |
           conda install -c conda-forge pocl
