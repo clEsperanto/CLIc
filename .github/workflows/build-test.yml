@@ -14,6 +14,7 @@ jobs:
     name: ${{ matrix.os }}-${{ matrix.cxx-compiler }}-${{ matrix.cmake-build-type }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       max-parallel: 3
       matrix:
         name: [ubuntu, windows, macos]
@@ -49,21 +50,21 @@ jobs:
       - name: Get specific version of CMake, Ninja
         uses: lukka/get-cmake@v3.21.2
 
-      # - name: Download OpenCL-ICD-Loader
-      #   run: |
-      #     cd ..
-      #     git clone https://github.com/KhronosGroup/OpenCL-ICD-Loader
-      #     pushd OpenCL-ICD-Loader
-      #     git checkout ${{ env.opencl-icd-loader-git-tag }}
-      #     popd
-      #     pushd OpenCL-ICD-Loader/inc
-      #     git clone https://github.com/KhronosGroup/OpenCL-Headers
-      #     pushd OpenCL-Headers
-      #     git checkout ${{ env.opencl-headers-git-tag }}
-      #     popd
-      #     cp -r OpenCL-Headers/CL ./
-      #     popd
-      #   shell: bash
+      - name: Download OpenCL-ICD-Loader
+        run: |
+          cd ..
+          git clone https://github.com/KhronosGroup/OpenCL-ICD-Loader
+          pushd OpenCL-ICD-Loader
+          git checkout ${{ env.opencl-icd-loader-git-tag }}
+          popd
+          pushd OpenCL-ICD-Loader/inc
+          git clone https://github.com/KhronosGroup/OpenCL-Headers
+          pushd OpenCL-Headers
+          git checkout ${{ env.opencl-headers-git-tag }}
+          popd
+          cp -r OpenCL-Headers/CL ./
+          popd
+        shell: bash
 
       - name: Install pocl
         run: |
