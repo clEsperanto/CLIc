@@ -79,10 +79,12 @@ jobs:
 
       - name: test OCL-ICD-Loader
         run: |
-          export OCL_ICD_VENDORS=$CONDA/etc/OpenCL/vendors/
+          export OCL_ICD_VENDORS="$CONDA/etc/OpenCL/vendors/:$OCL_ICD_VENDORS"
           cd ..
           cd OpenCL-ICD-Loader-build
           ctest --verbose
+          echo OCL_ICD_FILENAMES=$OCL_ICD_FILENAMES
+          echo OCL_ICD_VENDORS=$OCL_ICD_VENDORS
       
       # - uses: actions/checkout@v2
       #   with:
