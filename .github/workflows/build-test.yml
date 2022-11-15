@@ -79,21 +79,19 @@ jobs:
 
       - name: test OCL-ICD-Loader
         run: |
-          export OCL_ICD_VENDORS="$CONDA/etc/OpenCL/vendors/:$OCL_ICD_VENDORS"
+          export OCL_ICD_VENDORS="$CONDA/etc/OpenCL/vendors/"
           cd ..
           cd OpenCL-ICD-Loader-build
           ctest --verbose
-          echo OCL_ICD_FILENAMES=$OCL_ICD_FILENAMES
-          echo OCL_ICD_VENDORS=$OCL_ICD_VENDORS
       
-      # - uses: actions/checkout@v2
-      #   with:
-      #     submodules: recursive
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
-      # - name: compile CLIc
-      #   run : |
-      #     cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF -DOpenCL_FOUND:BOOL=ON -DOpenCL_LIBRARY=$CONDA/lib/libOpenCL.so
-      #     cmake --build ${{ runner.workspace }}/build --parallel 10
+      - name: compile CLIc
+        run : |
+          cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF -DOpenCL_FOUND:BOOL=ON -DOpenCL_LIBRARY=$CONDA/lib/libOpenCL.so
+          cmake --build ${{ runner.workspace }}/build --parallel 10
 
       
       
