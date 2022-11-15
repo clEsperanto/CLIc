@@ -9,7 +9,7 @@ env:
   opencl-headers-git-tag: "v2022.09.30"
   opencl-clhpp-git-tag: "v2022.09.30 "
 
-jjobs:
+jobs:
   build:
     name: ${{ matrix.os }}-${{ matrix.cxx-compiler }}-${{ matrix.cmake-build-type }}
     runs-on: ${{ matrix.os }}
