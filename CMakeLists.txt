@@ -10,7 +10,7 @@ include(${PROJECT_SOURCE_DIR}/cmake/SetEnv.cmake)
 # find required package
 if(NOT OpenCL_FOUND)
     # find_package(OpenCL)
-    # find_package(OpenCLHeaders REQUIRED)
+    find_package(OpenCLHeaders REQUIRED)
     find_package(OpenCLICDLoader REQUIRED)
 endif()
 
