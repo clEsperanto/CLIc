@@ -15,7 +15,7 @@ jobs:
     strategy:
       max-parallel: 3
       matrix:
-        name: [ubuntu] #, windows, macos]
+        name: [ubuntu, windows, macos]
         include:
           - name: ubuntu
             os: ubuntu-latest
