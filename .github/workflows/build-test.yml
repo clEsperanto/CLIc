@@ -73,7 +73,7 @@ jobs:
           sudo conda config --add channels conda-forge
           sudo conda config --set channel_priority strict
           sudo conda install -c conda-forge pocl
-        shell: bash
+        shell: bash -l {0}
 
       # - name: Build OpenCL-ICD-Loader
       #   run: |
@@ -99,20 +99,20 @@ jobs:
         run : |
           cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF
           cmake --build ${{ runner.workspace }}/build --parallel 10
-        shell: bash
+        shell: bash -l {0}
 
       - name: compile CLIc
         if: matrix.os == 'ubuntu-latest'
         run : |
           cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARY=$CONDA/lib/libOpenCL.so
           cmake --build ${{ runner.workspace }}/build --parallel 10
-        shell: bash
+        shell: bash -l {0}
 
       - name: run CLIc core test
         run: |
           cd ${{ runner.workspace }}/build
           ctest -L CORE
-        shell: bash
+        shell: bash -l {0}
 
       
       
