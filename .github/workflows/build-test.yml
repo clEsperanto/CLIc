@@ -72,16 +72,11 @@ jobs:
         with:
           channels: conda-forge
           channel-priority: strict
+          auto-activate-base: true
 
       - name: Install pocl
         run: |
           conda install -c conda-forge pocl
-        shell: bash
-
-      - name: Install asx-icd-wrapper
-        if: matrix.os == 'macos-latest'
-        run: |
-          conda install -c conda-forge ocl_icd_wrapper_apple
         shell: bash
 
       # - name: Build OpenCL-ICD-Loader
@@ -103,15 +98,15 @@ jobs:
         with:
           submodules: recursive
 
-      # - name: compile CLIc
-      #   if: matrix.os == 'macos-latest'
-      #   run : |
-      #     cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF
-      #     cmake --build ${{ runner.workspace }}/build --parallel 10
-      #   shell: bash
+      - name: compile CLIc
+        if: matrix.os == 'macos-latest'
+        run : |
+          cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF
+          cmake --build ${{ runner.workspace }}/build --parallel 10
+        shell: bash
 
       - name: compile CLIc
-        # if: matrix.os != 'macos-latest'
+        if: matrix.os != 'macos-latest'
         run : |
           cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARY=$CONDA/lib/libOpenCL.so
           cmake --build ${{ runner.workspace }}/build --parallel 10
