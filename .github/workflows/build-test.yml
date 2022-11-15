@@ -66,6 +66,9 @@ jobs:
       #     popd
       #   shell: bash
 
+      - name: Install conda
+        uses: conda-incubator/setup-miniconda@v2
+
       - name: Install pocl
         run: |
           conda config --add channels conda-forge
@@ -93,6 +96,13 @@ jobs:
           submodules: recursive
 
       - name: compile CLIc
+        if: matrix.os == 'macos-latest'
+        run : |
+          cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF
+          cmake --build ${{ runner.workspace }}/build --parallel 10
+
+      - name: compile CLIc
+        if: matrix.os != 'macos-latest'
         run : |
           cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARY=$CONDA/lib/libOpenCL.so
           cmake --build ${{ runner.workspace }}/build --parallel 10
