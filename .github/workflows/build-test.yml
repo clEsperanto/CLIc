@@ -62,12 +62,12 @@ jobs:
           popd
         shell: bash
 
-      # - name: Install pocl
-      #   run: |
-      #     sudo conda config --add channels conda-forge
-      #     sudo conda config --set channel_priority strict
-      #     sudo conda install -c conda-forge pocl
-      #   shell: bash
+      - name: Install pocl
+        run: |
+          sudo conda config --add channels conda-forge
+          sudo conda config --set channel_priority strict
+          sudo conda install -c conda-forge pocl
+        shell: bash
 
       - name: Build OpenCL-ICD-Loader
         run: |
@@ -75,18 +75,14 @@ jobs:
           mkdir OpenCL-ICD-Loader-build
           cd OpenCL-ICD-Loader-build
           cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=ON -DBUILD_TESTING:BOOL=ON -GNinja ../OpenCL-ICD-Loader
-          cmake --build .
-          ctest
+          sudo cmake --build . --target install
 
-      # - name: test OCL-ICD-Loader
-      #   run: |
-      #     pwd
-      #     cd ..
-      #     cd OpenCL-ICD-Loader-build
-      #     pwd
-      #     echo $CONDA
-      #     export OCL_ICD_VENDORS=$CONDA/etc/OpenCL/vendors/
-      #     ctest
+      - name: test OCL-ICD-Loader
+        run: |
+          export OCL_ICD_VENDORS=$CONDA/etc/OpenCL/vendors/
+          cd ..
+          cd OpenCL-ICD-Loader-build
+          ctest --verbose
       
       # - uses: actions/checkout@v2
       #   with:
