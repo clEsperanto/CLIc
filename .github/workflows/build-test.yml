@@ -46,21 +46,21 @@ jobs:
       - name: Get specific version of CMake, Ninja
         uses: lukka/get-cmake@v3.21.2
 
-      - name: Download OpenCL-ICD-Loader
-        run: |
-          cd ..
-          git clone https://github.com/KhronosGroup/OpenCL-ICD-Loader
-          pushd OpenCL-ICD-Loader
-          git checkout ${{ env.opencl-icd-loader-git-tag }}
-          popd
-          pushd OpenCL-ICD-Loader/inc
-          git clone https://github.com/KhronosGroup/OpenCL-Headers
-          pushd OpenCL-Headers
-          git checkout ${{ env.opencl-headers-git-tag }}
-          popd
-          cp -r OpenCL-Headers/CL ./
-          popd
-        shell: bash
+      # - name: Download OpenCL-ICD-Loader
+      #   run: |
+      #     cd ..
+      #     git clone https://github.com/KhronosGroup/OpenCL-ICD-Loader
+      #     pushd OpenCL-ICD-Loader
+      #     git checkout ${{ env.opencl-icd-loader-git-tag }}
+      #     popd
+      #     pushd OpenCL-ICD-Loader/inc
+      #     git clone https://github.com/KhronosGroup/OpenCL-Headers
+      #     pushd OpenCL-Headers
+      #     git checkout ${{ env.opencl-headers-git-tag }}
+      #     popd
+      #     cp -r OpenCL-Headers/CL ./
+      #     popd
+      #   shell: bash
 
       - name: Install pocl
         run: |
@@ -69,20 +69,20 @@ jobs:
           sudo conda install -c conda-forge pocl
         shell: bash
 
-      - name: Build OpenCL-ICD-Loader
-        run: |
-          cd ..
-          mkdir OpenCL-ICD-Loader-build
-          cd OpenCL-ICD-Loader-build
-          cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=ON -DBUILD_TESTING:BOOL=ON -GNinja ../OpenCL-ICD-Loader
-          sudo cmake --build . --target install
+      # - name: Build OpenCL-ICD-Loader
+      #   run: |
+      #     cd ..
+      #     mkdir OpenCL-ICD-Loader-build
+      #     cd OpenCL-ICD-Loader-build
+      #     cmake -DCMAKE_C_COMPILER:FILEPATH="${{ matrix.c-compiler }}" -DBUILD_SHARED_LIBS:BOOL=ON -DCMAKE_CXX_COMPILER="${{ matrix.cxx-compiler }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.cmake-build-type }} -DBUILD_TESTING:BOOL=ON -DBUILD_TESTING:BOOL=ON -GNinja ../OpenCL-ICD-Loader
+      #     sudo cmake --build . --target install
 
-      - name: test OCL-ICD-Loader
-        run: |
-          export OCL_ICD_VENDORS="$CONDA/etc/OpenCL/vendors/"
-          cd ..
-          cd OpenCL-ICD-Loader-build
-          ctest --verbose
+      # - name: test OCL-ICD-Loader
+      #   run: |
+      #     export OCL_ICD_VENDORS="$CONDA/etc/OpenCL/vendors/"
+      #     cd ..
+      #     cd OpenCL-ICD-Loader-build
+      #     ctest --verbose
       
       - uses: actions/checkout@v2
         with:
@@ -96,7 +96,7 @@ jobs:
       - name: run CLIc test
         run: |
           cd ${{ runner.workspace }}/build
-          ctest -R core_gpu_test --verbose
+          ctest --verbose
 
       
       
