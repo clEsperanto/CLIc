@@ -10,7 +10,8 @@ env:
   opencl-clhpp-git-tag: "v2022.09.30 "
 
 jobs:
-  build-cxx:
+  build:
+    name: ${{ matrix.os }}-${{ matrix.cxx }}-${{ matrix.buildtype }}
     runs-on: ${{ matrix.os }}
     strategy:
       max-parallel: 3
