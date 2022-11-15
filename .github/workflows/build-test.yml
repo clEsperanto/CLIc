@@ -68,9 +68,9 @@ jobs:
 
       - name: Install pocl
         run: |
-          sudo conda config --add channels conda-forge
-          sudo conda config --set channel_priority strict
-          sudo conda install -c conda-forge pocl
+          conda config --add channels conda-forge
+          conda config --set channel_priority strict
+          conda install -c conda-forge pocl
         shell: bash
 
       # - name: Build OpenCL-ICD-Loader
