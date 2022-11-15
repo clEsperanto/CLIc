@@ -67,18 +67,13 @@ jobs:
       #     popd
       #   shell: bash
 
-      - name: Install conda
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          channels: conda-forge
-          channel-priority: strict
-          auto-activate-base: true
-
       - name: Install pocl
-        if: matrix.os != 'windows-latest'
-        shell: bash -l {0}
+        if: matrix.os == 'ubuntu-latest'
         run: |
-          conda install -y pocl
+          sudo conda config --add channels conda-forge
+          sudo conda config --set channel_priority strict
+          sudo conda install -c conda-forge pocl
+        shell: bash
 
       # - name: Build OpenCL-ICD-Loader
       #   run: |
