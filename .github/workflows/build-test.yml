@@ -71,17 +71,13 @@ jobs:
         uses: conda-incubator/setup-miniconda@v2
         with:
           channels: conda-forge
-          channel-priority: strict
-          auto-activate-base: true
-
-      - name: Conda info
-        shell: bash -l {0}
-        run: conda info
+          # channel-priority: strict
+          # auto-activate-base: true
 
       - name: Install pocl
         shell: bash -l {0}
         run: |
-          conda install -c conda-forge pocl
+          conda install -y pocl
 
       # - name: Build OpenCL-ICD-Loader
       #   run: |
