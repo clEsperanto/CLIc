@@ -95,8 +95,8 @@ jobs:
       
       -name: run CLIc test
        run: |
-        cd ${{ runner.workspace }}/build
-        ctest -R core_gpu_test --verbose
+          cd ${{ runner.workspace }}/build
+          ctest -R core_gpu_test --verbose
 
       
       
