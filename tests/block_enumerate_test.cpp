@@ -25,6 +25,21 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
     }
   }
 
+  std::cout << "input: ";
+  for (auto && i : input)
+  {
+    std::cout << i << " ";
+  }
+  std::cout << std::endl;
+
+  std::cout << "valid: ";
+  for (auto && i : valid)
+  {
+    std::cout << i << " ";
+  }
+  std::cout << std::endl;
+
+
   cle::Clesperanto cle;
   cle.GetDevice()->WaitForKernelToFinish();
   int    blocksize = 4;
@@ -35,6 +50,14 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
   cle.SumReductionX(gpu_input1, gpu_input2, blocksize);
   cle.BlockEnumerate(gpu_input1, gpu_input2, gpu_output, blocksize);
   auto output = cle.Pull<type>(gpu_output);
+
+  std::cout << "output: ";
+  for (auto && i : output)
+  {
+    std::cout << i << " ";
+  }
+  std::cout << std::endl;
+  std::cout << std::endl;
 
   return std::equal(output.begin(), output.end(), valid.begin());
 }
@@ -78,75 +101,75 @@ main(int argc, char ** argv) -> int
   }
 
 
-  if (!run_test<float>({ 5, 3, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  // if (!run_test<float>({ 5, 3, 1 }, cle::BUFFER))
+  // {
+  //   return EXIT_FAILURE;
+  // }
 
-  if (!run_test<signed int>({ 5, 3, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  // if (!run_test<signed int>({ 5, 3, 1 }, cle::BUFFER))
+  // {
+  //   return EXIT_FAILURE;
+  // }
 
-  if (!run_test<unsigned int>({ 5, 3, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  // if (!run_test<unsigned int>({ 5, 3, 1 }, cle::BUFFER))
+  // {
+  //   return EXIT_FAILURE;
+  // }
 
-  if (!run_test<signed short>({ 5, 3, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  // if (!run_test<signed short>({ 5, 3, 1 }, cle::BUFFER))
+  // {
+  //   return EXIT_FAILURE;
+  // }
 
-  if (!run_test<unsigned short>({ 5, 3, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  // if (!run_test<unsigned short>({ 5, 3, 1 }, cle::BUFFER))
+  // {
+  //   return EXIT_FAILURE;
+  // }
 
-  if (!run_test<signed char>({ 5, 3, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  // if (!run_test<signed char>({ 5, 3, 1 }, cle::BUFFER))
+  // {
+  //   return EXIT_FAILURE;
+  // }
 
-  if (!run_test<unsigned char>({ 5, 3, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  // if (!run_test<unsigned char>({ 5, 3, 1 }, cle::BUFFER))
+  // {
+  //   return EXIT_FAILURE;
+  // }
 
-  if (!run_test<float>({ 5, 3, 2 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  // if (!run_test<float>({ 5, 3, 2 }, cle::BUFFER))
+  // {
+  //   return EXIT_FAILURE;
+  // }
 
-  if (!run_test<signed int>({ 5, 3, 2 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  // if (!run_test<signed int>({ 5, 3, 2 }, cle::BUFFER))
+  // {
+  //   return EXIT_FAILURE;
+  // }
 
-  if (!run_test<unsigned int>({ 5, 3, 2 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  // if (!run_test<unsigned int>({ 5, 3, 2 }, cle::BUFFER))
+  // {
+  //   return EXIT_FAILURE;
+  // }
 
-  if (!run_test<signed short>({ 5, 3, 2 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  // if (!run_test<signed short>({ 5, 3, 2 }, cle::BUFFER))
+  // {
+  //   return EXIT_FAILURE;
+  // }
 
-  if (!run_test<unsigned short>({ 5, 3, 2 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  // if (!run_test<unsigned short>({ 5, 3, 2 }, cle::BUFFER))
+  // {
+  //   return EXIT_FAILURE;
+  // }
 
-  if (!run_test<signed char>({ 5, 3, 2 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  // if (!run_test<signed char>({ 5, 3, 2 }, cle::BUFFER))
+  // {
+  //   return EXIT_FAILURE;
+  // }
 
-  if (!run_test<unsigned char>({ 5, 3, 2 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  // if (!run_test<unsigned char>({ 5, 3, 2 }, cle::BUFFER))
+  // {
+  //   return EXIT_FAILURE;
+  // }
 
   // if (!run_test<float>({ 5, 1, 1 }, cle::IMAGE))
   // {
