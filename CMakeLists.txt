@@ -8,9 +8,12 @@ project(CLIc VERSION 0.6.0)
 include(${PROJECT_SOURCE_DIR}/cmake/SetEnv.cmake)
 
 # find required package
-if(NOT OpenCL_FOUND)
+if(NOT OpenCL_FOUND AND NOT DEFINED OpenCL_LIBRARY)
     find_package(OpenCL REQUIRED)
+    # find_package(OpenCLHeaders REQUIRED)
+    # find_package(OpenCLICDLoader REQUIRED)
 endif()
+message(STATUS "OpenCL_LIBRARY : ${OpenCL_LIBRARY}")
 
 if(NOT Python3_Interpreter_FOUND)
     find_package(Python3 COMPONENTS Interpreter REQUIRED)

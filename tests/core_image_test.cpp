@@ -39,35 +39,38 @@ main(int argc, char ** argv) -> int
   gpu->SelectDevice();
   gpu->WaitForKernelToFinish();
 
-  if (!run_test<float>(gpu, { 10, 1, 1 }))
+  if (gpu->ImageSupport())
   {
-    return EXIT_FAILURE;
+    if (!run_test<float>(gpu, { 10, 1, 1 }))
+    {
+      return EXIT_FAILURE;
+    }
+    // if (!run_test<signed int>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<signed short>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<signed char>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<unsigned int>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<unsigned short>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<unsigned char>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
+    if (!run_test<float>(gpu, { 10, 5, 1 }))
+    {
+      return EXIT_FAILURE;
+    }
+    // if (!run_test<signed int>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<signed short>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<signed char>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<unsigned int>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<unsigned short>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<unsigned char>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
+    if (!run_test<float>(gpu, { 10, 5, 3 }))
+    {
+      return EXIT_FAILURE;
+    }
+    // if (!run_test<signed int>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
+    // if (!run_test<signed short>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
+    // if (!run_test<signed char>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
+    // if (!run_test<unsigned int>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
+    // if (!run_test<unsigned short>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
+    // if (!run_test<unsigned char>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
   }
-  // if (!run_test<signed int>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
-  // if (!run_test<signed short>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
-  // if (!run_test<signed char>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
-  // if (!run_test<unsigned int>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
-  // if (!run_test<unsigned short>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
-  // if (!run_test<unsigned char>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
-  if (!run_test<float>(gpu, { 10, 5, 1 }))
-  {
-    return EXIT_FAILURE;
-  }
-  // if (!run_test<signed int>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
-  // if (!run_test<signed short>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
-  // if (!run_test<signed char>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
-  // if (!run_test<unsigned int>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
-  // if (!run_test<unsigned short>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
-  // if (!run_test<unsigned char>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
-  if (!run_test<float>(gpu, { 10, 5, 3 }))
-  {
-    return EXIT_FAILURE;
-  }
-  // if (!run_test<signed int>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
-  // if (!run_test<signed short>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
-  // if (!run_test<signed char>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
-  // if (!run_test<unsigned int>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
-  // if (!run_test<unsigned short>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
-  // if (!run_test<unsigned char>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
   return EXIT_SUCCESS;
 }
