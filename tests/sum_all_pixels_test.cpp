@@ -9,7 +9,7 @@ auto
 run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) -> bool
 {
   std::vector<type> input(shape[0] * shape[1] * shape[2]);
-  std::fill(input.begin(), input.end(), 1);
+  std::fill(input.begin(), input.end(), static_cast<type>(1));
 
   cle::Clesperanto cle;
   cle.GetDevice()->WaitForKernelToFinish();
