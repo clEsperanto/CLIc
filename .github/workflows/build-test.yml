@@ -1,6 +1,10 @@
 name: Build & test
 
-on: [push,pull_request]
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
 
 env:
   clespernato-kernels-git-tag: "d2348d964b1eaff60c60d7b3e18a59c2c8e3a84e"
