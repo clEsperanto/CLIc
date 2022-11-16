@@ -18,6 +18,15 @@ public:
   Execute() -> void override;
 };
 
+inline auto
+ThresholdOtsuKernel_Call(const std::shared_ptr<cle::Processor> & device, const Image & src, const Image & dst) -> void
+{
+  ThresholdOtsuKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.Execute();
+}
+
 } // namespace cle
 
 #endif // __TIER4_CLETHRESHOLDOTSUKERNEL_HPP

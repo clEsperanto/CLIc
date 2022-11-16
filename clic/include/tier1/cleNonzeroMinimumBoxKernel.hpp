@@ -20,6 +20,19 @@ public:
   SetOutputFlag(const Image & object) -> void;
 };
 
+inline auto
+NonzeroMinimumBoxKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                             const Image &                           src,
+                             const Image &                           dst,
+                             const Image &                           flag) -> void
+{
+  NonzeroMinimumBoxKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.SetOutputFlag(flag);
+  kernel.Execute();
+}
+
 } // namespace cle
 
 #endif // __TIER1_CLENONZEROMINIMUMBOXKERNEL_HPP

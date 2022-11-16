@@ -27,7 +27,7 @@ NotEqualConstantKernel::SetOutput(const Image & object) -> void
 }
 
 auto
-NotEqualConstantKernel::SetScalar(const float & value) -> void
+NotEqualConstantKernel::SetConstant(const float & value) -> void
 {
   this->AddParameter("scalar", value);
 }

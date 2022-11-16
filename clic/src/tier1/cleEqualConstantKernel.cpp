@@ -27,7 +27,7 @@ EqualConstantKernel::SetOutput(const Image & object) -> void
 }
 
 auto
-EqualConstantKernel::SetScalar(const float & value) -> void
+EqualConstantKernel::SetConstant(const float & value) -> void
 {
   this->AddParameter("scalar", value);
 }

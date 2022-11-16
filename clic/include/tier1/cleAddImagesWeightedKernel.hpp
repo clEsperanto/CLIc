@@ -23,6 +23,23 @@ public:
   SetFactor2(const float & value) -> void;
 };
 
+inline auto
+AddImagesWeighted_Call(const std::shared_ptr<cle::Processor> & device,
+                       const Image &                           src1,
+                       const Image &                           src2,
+                       const Image &                           dst,
+                       const float &                           w1,
+                       const float &                           w2) -> void
+{
+  AddImagesWeightedKernel kernel(device);
+  kernel.SetInput1(src1);
+  kernel.SetInput2(src2);
+  kernel.SetOutput(dst);
+  kernel.SetFactor1(w1);
+  kernel.SetFactor2(w2);
+  kernel.Execute();
+}
+
 } // namespace cle
 
 #endif // __TIER1_CLEADDIMAGESWEIGHTEDKERNEL_HPP

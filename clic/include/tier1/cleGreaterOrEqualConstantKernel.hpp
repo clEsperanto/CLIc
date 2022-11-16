@@ -16,8 +16,21 @@ public:
   auto
   SetOutput(const Image & object) -> void;
   auto
-  SetScalar(const float & value) -> void;
+  SetConstant(const float & value) -> void;
 };
+
+inline auto
+GreaterOrEqualConstantKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                                  const Image &                           src,
+                                  const Image &                           dst,
+                                  const float &                           value) -> void
+{
+  GreaterOrEqualConstantKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.SetConstant(value);
+  kernel.Execute();
+}
 
 } // namespace cle
 

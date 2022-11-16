@@ -160,7 +160,7 @@ Clesperanto::EqualConstant(const Image & source, const Image & destination, cons
   EqualConstantKernel kernel(this->GetDevice());
   kernel.SetInput(source);
   kernel.SetOutput(destination);
-  kernel.SetScalar(scalar);
+  kernel.SetConstant(scalar);
   kernel.Execute();
 }
 
@@ -242,7 +242,7 @@ Clesperanto::GreaterConstant(const Image & source, const Image & destination, co
   GreaterConstantKernel kernel(this->GetDevice());
   kernel.SetInput(source);
   kernel.SetOutput(destination);
-  kernel.SetScalar(scalar);
+  kernel.SetConstant(scalar);
   kernel.Execute();
 }
 
@@ -252,7 +252,7 @@ Clesperanto::GreaterOrEqualConstant(const Image & source, const Image & destinat
   GreaterOrEqualConstantKernel kernel(this->GetDevice());
   kernel.SetInput(source);
   kernel.SetOutput(destination);
-  kernel.SetScalar(scalar);
+  kernel.SetConstant(scalar);
   kernel.Execute();
 }
 
@@ -406,7 +406,7 @@ Clesperanto::NotEqualConstant(const Image & source, const Image & destination, c
   NotEqualConstantKernel kernel(this->GetDevice());
   kernel.SetInput(source);
   kernel.SetOutput(destination);
-  kernel.SetScalar(scalar);
+  kernel.SetConstant(scalar);
   kernel.Execute();
 }
 

@@ -26,6 +26,21 @@ private:
   Radius2KernelSize() const -> std::array<int, 3>;
 };
 
+inline auto
+MeanBoxKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                   const Image &                           src,
+                   const Image &                           dst,
+                   const float &                           radius_x,
+                   const float &                           radius_y,
+                   const float &                           radius_z) -> void
+{
+  MeanBoxKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.SetRadius(radius_x, radius_y, radius_z);
+  kernel.Execute();
+}
+
 } // namespace cle
 
 #endif // __TIER1_CLEMEANBOXKERNEL_HPP

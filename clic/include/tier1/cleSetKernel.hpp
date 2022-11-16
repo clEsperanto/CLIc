@@ -17,6 +17,15 @@ public:
   SetValue(const float & value) -> void;
 };
 
+inline auto
+SetKernel_Call(const std::shared_ptr<cle::Processor> & device, const Image & src, const float & value) -> void
+{
+  SetKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetValue(value);
+  kernel.Execute();
+}
+
 } // namespace cle
 
 #endif // __TIER1_CLESETKERNEL_HPP

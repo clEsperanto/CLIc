@@ -21,6 +21,15 @@ public:
   //   std::array<int, 3> radius_{ 0, 0, 0 };
 };
 
+inline auto
+DetectMaximaKernel_Call(const std::shared_ptr<cle::Processor> & device, const Image & src, const Image & dst) -> void
+{
+  DetectMaximaKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.Execute();
+}
+
 } // namespace cle
 
 #endif // __TIER2_CLEDETECTMAXIMAKERNEL_HPP

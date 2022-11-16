@@ -106,7 +106,7 @@ ThresholdOtsuKernel::Execute() -> void
   GreaterConstantKernel greater(this->GetDevice());
   greater.SetInput(*src);
   greater.SetOutput(*dst);
-  greater.SetScalar(threshold);
+  greater.SetConstant(threshold);
   greater.Execute();
 }
 

@@ -27,7 +27,7 @@ GreaterConstantKernel::SetOutput(const Image & object) -> void
 }
 
 auto
-GreaterConstantKernel::SetScalar(const float & value) -> void
+GreaterConstantKernel::SetConstant(const float & value) -> void
 {
   this->AddParameter("scalar", value);
 }

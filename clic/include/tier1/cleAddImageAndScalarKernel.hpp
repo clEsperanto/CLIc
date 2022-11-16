@@ -19,6 +19,19 @@ public:
   SetScalar(const float & value) -> void;
 };
 
+inline auto
+AddImageAndScalarKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                             const Image &                           src,
+                             const Image &                           dst,
+                             const float &                           value) -> void
+{
+  AddImageAndScalarKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.SetScalar(value);
+  kernel.Execute();
+}
+
 } // namespace cle
 
 #endif // __TIER1_CLEADDIMAGEANDSCALARKERNEL_HPP

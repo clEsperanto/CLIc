@@ -24,6 +24,19 @@ public:
   Execute() -> void override;
 };
 
+inline auto
+CloseIndexGapsInLabelMapKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                                    const Image &                           src,
+                                    const Image &                           dst,
+                                    const int &                             value) -> void
+{
+  CloseIndexGapsInLabelMapKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.SetBlockSize(value);
+  kernel.Execute();
+}
+
 } // namespace cle
 
 #endif // __TIER3_CLECLOSEINDEXGAPSINLABELMAPKERNEL_HPP

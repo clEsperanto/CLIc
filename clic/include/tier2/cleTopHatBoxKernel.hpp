@@ -24,6 +24,21 @@ private:
   std::array<int, 3> radius_{ 0, 0, 0 };
 };
 
+inline auto
+TopHatBoxKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                     const Image &                           src,
+                     const Image &                           dst,
+                     const int &                             radius_x,
+                     const int &                             radius_y,
+                     const int &                             radius_z) -> void
+{
+  TopHatBoxKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.SetRadius(radius_x, radius_y, radius_z);
+  kernel.Execute();
+}
+
 } // namespace cle
 
 #endif // __TIER2_CLETOPHATBOXKERNEL_HPP

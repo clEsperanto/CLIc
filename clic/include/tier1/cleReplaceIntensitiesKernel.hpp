@@ -20,6 +20,19 @@ public:
   SetMap(const Image & object) -> void;
 };
 
+inline auto
+ReplaceIntensitiesKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                              const Image &                           src,
+                              const Image &                           dst,
+                              const Image &                           map) -> void
+{
+  ReplaceIntensitiesKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetMap(map);
+  kernel.SetOutput(dst);
+  kernel.Execute();
+}
+
 } // namespace cle
 
 #endif // __TIER1_CLEREPLACEINTENSITIESKERNEL_HPP

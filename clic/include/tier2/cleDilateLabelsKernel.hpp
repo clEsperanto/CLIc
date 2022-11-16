@@ -24,6 +24,19 @@ private:
   int radius_ = 1;
 };
 
+inline auto
+DilateLabelsKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                        const Image &                           src,
+                        const Image &                           dst,
+                        const float &                           radius) -> void
+{
+  DilateLabelsKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.SetRadius(radius);
+  kernel.Execute();
+}
+
 } // namespace cle
 
 #endif // __TIER2_CLEDILATELABELSKERNEL_HPP
