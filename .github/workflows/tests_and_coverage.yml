@@ -11,8 +11,7 @@ jobs:
     name: ${{ matrix.os }}-${{ matrix.buildtype }}-Test-and-Coverage
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
-      max-parallel: 8
+      max-parallel: 1
       matrix:
         buildtype: [Debug]
         os: [macos-latest]
@@ -40,12 +39,12 @@ jobs:
       - name: Cmake build
         shell: bash
         run: |
-          cd ${{ runner.workspace }}/build && make -j 2
+          cmake --build "${{ runner.workspace }}/build" --parallel 10 --config ${{ matrix.buildtype }}
 
       - name: Generate coverage
         shell: bash
         run: |
-          cd ${{ runner.workspace }}/build && ctest --verbose
+          cd ${{ runner.workspace }}/build && ctest
 
       - name: Format coverage
         shell: bash
