@@ -37,10 +37,15 @@ jobs:
         run: |
           cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF
 
+      - name: Cmake build
+        shell: bash
+        run: |
+          cd ${{ runner.workspace }}/build && make -j 2
+
       - name: Generate coverage
         shell: bash
         run: |
-          cd ${{ runner.workspace }}/build && make -j 2 && ctest --verbose
+          cd ${{ runner.workspace }}/build && ctest --verbose
 
       - name: Format coverage
         shell: bash
