@@ -24,12 +24,12 @@ public:
 };
 
 inline auto
-AddImagesWeighted_Call(const std::shared_ptr<cle::Processor> & device,
-                       const Image &                           src1,
-                       const Image &                           src2,
-                       const Image &                           dst,
-                       const float &                           w1,
-                       const float &                           w2) -> void
+AddImagesWeightedKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                             const Image &                           src1,
+                             const Image &                           src2,
+                             const Image &                           dst,
+                             const float &                           w1,
+                             const float &                           w2) -> void
 {
   AddImagesWeightedKernel kernel(device);
   kernel.SetInput1(src1);

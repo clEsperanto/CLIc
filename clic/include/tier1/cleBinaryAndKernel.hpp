@@ -20,10 +20,10 @@ public:
 };
 
 inline auto
-BinaryAnd_Call(const std::shared_ptr<cle::Processor> & device,
-               const Image &                           src1,
-               const Image &                           src2,
-               const Image &                           dst) -> void
+BinaryAndKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                     const Image &                           src1,
+                     const Image &                           src2,
+                     const Image &                           dst) -> void
 {
   BinaryAndKernel kernel(device);
   kernel.SetInput1(src1);
