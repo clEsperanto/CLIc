@@ -301,28 +301,27 @@ Operation::MakeDefines() const -> std::string
 auto
 Operation::MakeKernel() -> void
 {
-  std::string program_source = this->MakeDefines() + cle::Operation::MakePreamble() + this->GetSource();
-
-  std::hash<std::string> hasher;
-  size_t                 source_hash = hasher(program_source);
-  auto                   source_ite = this->GetDevice()->GetProgramMemory().find(source_hash);
   cl::Program            program;
+  std::hash<std::string> hasher;
+
+  std::string program_source = this->MakeDefines() + cle::Operation::MakePreamble() + this->GetSource();
+  size_t      source_hash = hasher(program_source);
+  auto        source_ite = this->GetDevice()->GetProgramMemory().find(source_hash);
   if (source_ite == this->GetDevice()->GetProgramMemory().end())
   {
     program = Backend::GetProgramPointer(this->GetDevice()->ContextPtr(), program_source);
     this->GetDevice()->GetProgramMemory().insert({ source_hash, program });
+    Backend::BuildProgram(program, this->GetDevice()->DevicePtr(), "-cl-kernel-arg-info");
+    if (program.getBuildInfo<CL_PROGRAM_BUILD_STATUS>(this->GetDevice()->DevicePtr()) != CL_BUILD_SUCCESS)
+    {
+      auto log = Backend::GetBuildLog(this->GetDevice()->DevicePtr(), program);
+      std::cout << log << std::endl;
+    };
   }
   else
   {
     program = source_ite->second;
   }
-
-  Backend::BuildProgram(program, this->GetDevice()->DevicePtr(), "-cl-kernel-arg-info");
-  if (program.getBuildInfo<CL_PROGRAM_BUILD_STATUS>(this->GetDevice()->DevicePtr()) != CL_BUILD_SUCCESS)
-  {
-    auto log = Backend::GetBuildLog(this->GetDevice()->DevicePtr(), program);
-    std::cout << log << std::endl;
-  };
   this->kernel_ = Backend::GetKernelPointer(program, this->GetName());
 }
 
