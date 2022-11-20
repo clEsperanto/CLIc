@@ -1,28 +1,41 @@
 
-#ifndef __cleReplaceIntensityKernel_hpp
-#define __cleReplaceIntensityKernel_hpp
+#ifndef __TIER1_CLEREPLACEINTENSITYKERNEL_HPP
+#define __TIER1_CLEREPLACEINTENSITYKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class ReplaceIntensityKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_replace_intensity.h" 
-        };
 
+class ReplaceIntensityKernel : public Operation
+{
 public:
-    ReplaceIntensityKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetInValue(float);
-    void SetOutValue(float);
-    void Execute();
+  explicit ReplaceIntensityKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
+  auto
+  SetInValue(const float & value) -> void;
+  auto
+  SetOutValue(const float & value) -> void;
 };
+
+inline auto
+ReplaceIntensityKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                            const Image &                           src,
+                            const Image &                           dst,
+                            const float &                           in_value,
+                            const float &                           out_value) -> void
+{
+  ReplaceIntensityKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.SetInValue(in_value);
+  kernel.SetInValue(out_value);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleReplaceIntensityKernel_hpp
+#endif // __TIER1_CLEREPLACEINTENSITYKERNEL_HPP

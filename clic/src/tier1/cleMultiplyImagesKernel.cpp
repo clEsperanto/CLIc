@@ -5,34 +5,31 @@
 namespace cle
 {
 
-MultiplyImagesKernel::MultiplyImagesKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,  
-            "multiply_images",
-            {"src0", "src1", "dst"}
-        )
+MultiplyImagesKernel::MultiplyImagesKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+  std::string cl_header = {
+#include "cle_multiply_images.h"
+  };
+  this->SetSource("multiply_images", cl_header);
 }
 
-void MultiplyImagesKernel::SetInput1(Object& t_x)
+auto
+MultiplyImagesKernel::SetInput1(const Image & object) -> void
 {
-    this->AddObject(t_x, "src0");
+  this->AddParameter("src0", object);
 }
 
-void MultiplyImagesKernel::SetInput2(Object& t_x)
+auto
+MultiplyImagesKernel::SetInput2(const Image & object) -> void
 {
-    this->AddObject(t_x, "src1");
+  this->AddParameter("src1", object);
 }
 
-void MultiplyImagesKernel::SetOutput(Object& t_x)
+auto
+MultiplyImagesKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("dst", object);
 }
 
-void MultiplyImagesKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-}
 } // namespace cle

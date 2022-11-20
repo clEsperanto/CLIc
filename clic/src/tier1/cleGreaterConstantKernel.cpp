@@ -5,34 +5,31 @@
 namespace cle
 {
 
-GreaterConstantKernel::GreaterConstantKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "greater_constant",
-            {"src", "dst", "scalar"}
-    )
+GreaterConstantKernel::GreaterConstantKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
-}    
-
-void GreaterConstantKernel::SetInput(Object& t_x)
-{
-    this->AddObject(t_x, "src");
+  std::string cl_header = {
+#include "cle_greater_constant.h"
+  };
+  this->SetSource("greater_constant", cl_header);
 }
 
-void GreaterConstantKernel::SetOutput(Object& t_x)
+auto
+GreaterConstantKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("src", object);
 }
 
-void GreaterConstantKernel::SetScalar(float t_x)
+auto
+GreaterConstantKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "scalar");
+  this->AddParameter("dst", object);
 }
 
-void GreaterConstantKernel::Execute()
+auto
+GreaterConstantKernel::SetConstant(const float & value) -> void
 {
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+  this->AddParameter("scalar", value);
 }
+
 } // namespace cle

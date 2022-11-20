@@ -1,0 +1,127 @@
+name: Build & test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  clespernato-kernels-git-tag: "d2348d964b1eaff60c60d7b3e18a59c2c8e3a84e"
+  opencl-sdk-git-tag: "v2022.09.30"
+  opencl-icd-loader-git-tag: "v2022.09.30"
+  opencl-headers-git-tag: "v2022.09.30"
+  opencl-clhpp-git-tag: "v2022.09.30"
+
+jobs:
+  build:
+    name: ${{ matrix.os }}-${{ matrix.cxx-compiler }}-${{ matrix.cmake-build-type }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 3
+      matrix:
+        name: [ubuntu, windows, macos]
+        include:
+          - name: ubuntu
+            os: ubuntu-latest
+            c-compiler: "gcc"
+            cxx-compiler: "g++"
+            cmake-build-type: "Release"
+            cmake-build-flag: ""
+          - name: windows
+            os: windows-latest
+            c-compiler: "cl.exe"
+            cxx-compiler: "cl.exe"
+            cmake-build-type: "Release"
+            cmake-build-flag: "-A x64"
+          - name: macos
+            os: macos-latest
+            c-compiler: "clang"
+            cxx-compiler: "clang++"
+            cmake-build-type: "Release"
+            cmake-build-flag: ""
+
+    steps:
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4.3.0
+        with:
+          python-version: 3.8
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ninja
+        shell: bash
+
+      - name: Get specific version of CMake, Ninja
+        uses: lukka/get-cmake@v3.21.2
+
+      - name: Install ocl-icd-loader - windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          cd ..
+          git clone --branch ${{ env.opencl-icd-loader-git-tag }} https://github.com/KhronosGroup/OpenCL-ICD-Loader
+          git clone --branch ${{ env.opencl-headers-git-tag }} https://github.com/KhronosGroup/OpenCL-Headers
+          cmake -D CMAKE_INSTALL_PREFIX="./OpenCL-Headers/install" -S "./OpenCL-Headers" -B "./OpenCL-Headers/build" 
+          cmake --build "./OpenCL-Headers/build" --parallel 6 --target install
+          cmake -D CMAKE_PREFIX_PATH="./OpenCL-Headers/install" -D OPENCL_ICD_LOADER_HEADERS_DIR="./OpenCL-Headers/install/include" -S "./OpenCL-ICD-Loader" -B "./OpenCL-ICD-Loader/build" -A x64
+          cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
+        shell: bash -l {0}
+
+      - name: Install ocl-icd-loader - linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cd ..
+          git clone --branch ${{ env.opencl-icd-loader-git-tag }} https://github.com/KhronosGroup/OpenCL-ICD-Loader
+          git clone --branch ${{ env.opencl-headers-git-tag }} https://github.com/KhronosGroup/OpenCL-Headers
+          cmake -D CMAKE_INSTALL_PREFIX="./OpenCL-Headers/install" -S "./OpenCL-Headers" -B "./OpenCL-Headers/build" 
+          cmake --build "./OpenCL-Headers/build" --parallel 6 --target install
+          cmake -D CMAKE_PREFIX_PATH="./OpenCL-Headers/install" -D OPENCL_ICD_LOADER_HEADERS_DIR="./OpenCL-Headers/install/include" -S "./OpenCL-ICD-Loader" -B "./OpenCL-ICD-Loader/build"
+          sudo cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
+        shell: bash -l {0}
+
+      # - name: test OCL-ICD-Loader
+      #   run: |
+      #     export OCL_ICD_VENDORS="$CONDA/etc/OpenCL/vendors/"
+      #     cd ..
+      #     cd OpenCL-ICD-Loader-build
+      #     ctest --verbose
+      
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: compile CLIc - linux
+        if: matrix.os == 'ubuntu-latest'
+        run : |
+          pwd
+          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARY:FILEPATH="/usr/local/lib/libOpenCL.so.1.2"
+          cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
+        shell: bash -l {0}    
+
+      - name: compile CLIc - windows
+        if: matrix.os == 'windows-latest'
+        run : |
+          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARY:FILEPATH="C:/Program Files/OpenCL-ICD-Loader/lib/OpenCL.lib"
+          cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
+        shell: bash -l {0}
+
+      - name: compile CLIc - macos
+        if: matrix.os == 'macos-latest'
+        run : |
+          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF
+          cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
+        shell: bash -l {0}
+
+      - name: run CLIc core test
+        run: |
+          cd "${{ runner.workspace }}/build"
+          ctest -R core_gpu_test -C Release
+        shell: bash -l {0}
+
+      
+      
+
+
+

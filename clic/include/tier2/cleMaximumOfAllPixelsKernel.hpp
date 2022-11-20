@@ -1,21 +1,34 @@
 
-#ifndef __cleMaximumOfAllPixelsKernel_hpp
-#define __cleMaximumOfAllPixelsKernel_hpp
+#ifndef __TIER2_CLEMAXIMUMOFALLPIXELSKERNEL_HPP
+#define __TIER2_CLEMAXIMUMOFALLPIXELSKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class MaximumOfAllPixelsKernel : public Kernel
+
+class MaximumOfAllPixelsKernel : public Operation
 {
 public:
-    MaximumOfAllPixelsKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void Execute();
+  explicit MaximumOfAllPixelsKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
+  auto
+  Execute() -> void override;
 };
+
+inline auto
+MaximumOfAllPixelsKernel_Call(const std::shared_ptr<cle::Processor> & device, const Image & src, const Image & dst)
+  -> void
+{
+  MaximumOfAllPixelsKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleMaximumOfAllPixelsKernel_hpp
+#endif // __TIER2_CLEMAXIMUMOFALLPIXELSKERNEL_HPP

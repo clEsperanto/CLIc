@@ -3,57 +3,63 @@
 #include "cleMeanBoxKernel.hpp"
 #include "cleExecuteSeparableKernel.hpp"
 
+#include <algorithm>
+
 namespace cle
 {
 
-MeanBoxKernel::MeanBoxKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu, 
-            "mean_separable",
-            {"src", "dst"}
-    )
+MeanBoxKernel::MeanBoxKernel(const ProcessorPointer & device)
+  : Operation(device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});  
-}    
-
-int MeanBoxKernel::Radius2KernelSize(int t_r) const
-{
-    return static_cast<int>(t_r) * 2 + 1;
+  std::string cl_header = {
+#include "cle_mean_separable.h"
+  };
+  this->SetSource("mean_separable", cl_header);
 }
 
-void MeanBoxKernel::SetInput(Object& t_x)
+auto
+MeanBoxKernel::Radius2KernelSize() const -> std::array<int, 3>
+
 {
-    this->AddObject(t_x, "src");
+  std::array<int, 3> kernel_size;
+  std::transform(
+    this->radius_.begin(), this->radius_.end(), kernel_size.begin(), [](const int & r) { return r * 2 + 1; });
+  return kernel_size;
 }
 
-void MeanBoxKernel::SetOutput(Object& t_x)
+auto
+MeanBoxKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("src", object);
 }
 
-void MeanBoxKernel::SetRadius(int t_x, int t_y, int t_z)
+auto
+MeanBoxKernel::SetOutput(const Image & object) -> void
 {
-    this->m_x = t_x;
-    this->m_y = t_y;
-    this->m_z = t_z;
+  this->AddParameter("dst", object);
 }
 
-void MeanBoxKernel::Execute()
+auto
+MeanBoxKernel::SetRadius(const int & radius_x, const int & radius_y, const int & radius_z) -> void
 {
-    auto src = this->GetParameter<Object>("src");
-    auto dst = this->GetParameter<Object>("dst");
+  this->radius_ = { radius_x, radius_y, radius_z };
+}
 
-    int nx = Radius2KernelSize(this->m_x);
-    int ny = Radius2KernelSize(this->m_y);
-    int nz = Radius2KernelSize(this->m_z);
+auto
+MeanBoxKernel::Execute() -> void
+{
+  auto src = this->GetImage("src");
+  auto dst = this->GetImage("dst");
 
-    ExecuteSeparableKernel kernel(this->m_gpu);
-    kernel.SetKernelName(this->m_KernelName);
-    kernel.SetSources(this->m_Sources);
-    kernel.SetInput( *src );
-    kernel.SetOutput( *dst );
-    kernel.SetSigma(this->m_x, this->m_y, this->m_z);
-    kernel.SetKernelSize(nx, ny, nz);
-    kernel.Execute();
+  auto kernel_size = Radius2KernelSize();
+
+  ExecuteSeparableKernel kernel(this->GetDevice());
+  kernel.SetSource(this->GetName(), this->GetSource());
+  kernel.SetInput(*src);
+  kernel.SetOutput(*dst);
+  kernel.SetSigma(this->radius_[0], this->radius_[1], this->radius_[2]);
+  kernel.SetKernelSize(kernel_size[0], kernel_size[1], kernel_size[2]);
+  kernel.Execute();
 }
 
 } // namespace cle

@@ -3,57 +3,62 @@
 #include "cleMinimumBoxKernel.hpp"
 #include "cleExecuteSeparableKernel.hpp"
 
+#include <algorithm>
+
 namespace cle
 {
 
-MinimumBoxKernel::MinimumBoxKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "minimum_separable",
-            {"src", "dst"}
-    )
+MinimumBoxKernel::MinimumBoxKernel(const ProcessorPointer & device)
+  : Operation(device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
-}    
-
-int MinimumBoxKernel::Radius2KernelSize(int t_r) const
-{
-    return static_cast<int>(t_r) * 2 + 1;
+  std::string cl_header = {
+#include "cle_minimum_separable.h"
+  };
+  this->SetSource("minimum_separable", cl_header);
 }
 
-void MinimumBoxKernel::SetInput(Object& t_x)
+auto
+MinimumBoxKernel::Radius2KernelSize() const -> std::array<int, 3>
 {
-    this->AddObject(t_x, "src");
+  std::array<int, 3> kernel_size;
+  std::transform(
+    this->radius_.begin(), this->radius_.end(), kernel_size.begin(), [](const int & r) { return r * 2 + 1; });
+  return kernel_size;
 }
 
-void MinimumBoxKernel::SetOutput(Object& t_x)
+auto
+MinimumBoxKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("src", object);
 }
 
-void MinimumBoxKernel::SetRadius(int t_x, int t_y, int t_z)
+auto
+MinimumBoxKernel::SetOutput(const Image & object) -> void
 {
-    this->m_x = t_x;
-    this->m_y = t_y;
-    this->m_z = t_z;
+  this->AddParameter("dst", object);
 }
 
-void MinimumBoxKernel::Execute()
+auto
+MinimumBoxKernel::SetRadius(const int & radius_x, const int & radius_y, const int & radius_z) -> void
 {
-    auto src = this->GetParameter<Object>("src");
-    auto dst = this->GetParameter<Object>("dst");
-    
-    int nx = Radius2KernelSize(this->m_x);
-    int ny = Radius2KernelSize(this->m_y);
-    int nz = Radius2KernelSize(this->m_z);
+  this->radius_ = { radius_x, radius_y, radius_z };
+}
 
-    ExecuteSeparableKernel kernel(this->m_gpu);
-    kernel.SetKernelName(this->m_KernelName);
-    kernel.SetSources(this->m_Sources);
-    kernel.SetInput(*src);
-    kernel.SetOutput(*dst);
-    kernel.SetSigma(this->m_x, this->m_y, this->m_z);
-    kernel.SetKernelSize(nx, ny, nz);
-    kernel.Execute();
+auto
+MinimumBoxKernel::Execute() -> void
+{
+  auto src = this->GetImage("src");
+  auto dst = this->GetImage("dst");
+
+  auto kernel_size = Radius2KernelSize();
+
+  ExecuteSeparableKernel kernel(this->GetDevice());
+  kernel.SetSource(this->GetName(), this->GetSource());
+  kernel.SetInput(*src);
+  kernel.SetOutput(*dst);
+  kernel.SetSigma(this->radius_[0], this->radius_[1], this->radius_[2]);
+  kernel.SetKernelSize(kernel_size[0], kernel_size[1], kernel_size[2]);
+  kernel.Execute();
 }
 
 } // namespace cle

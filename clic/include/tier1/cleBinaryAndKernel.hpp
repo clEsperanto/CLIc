@@ -1,27 +1,37 @@
 
-#ifndef __cleBinaryAndKernel_hpp
-#define __cleBinaryAndKernel_hpp
+#ifndef __TIER1_CLEBINARYANDKERNEL_HPP
+#define __TIER1_CLEBINARYANDKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class BinaryAndKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_binary_and.h" 
-        };
 
+class BinaryAndKernel : public Operation
+{
 public:
-    BinaryAndKernel(std::shared_ptr<GPU>);
-    void SetInput1(Object&);
-    void SetInput2(Object&);
-    void SetOutput(Object&);
-    void Execute();
+  explicit BinaryAndKernel(const ProcessorPointer & device);
+  auto
+  SetInput1(const Image & object) -> void;
+  auto
+  SetInput2(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
 };
+
+inline auto
+BinaryAndKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                     const Image &                           src1,
+                     const Image &                           src2,
+                     const Image &                           dst) -> void
+{
+  BinaryAndKernel kernel(device);
+  kernel.SetInput1(src1);
+  kernel.SetInput2(src2);
+  kernel.SetOutput(dst);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleBinaryAndKernel_hpp
+#endif // __TIER1_CLEBINARYANDKERNEL_HPP

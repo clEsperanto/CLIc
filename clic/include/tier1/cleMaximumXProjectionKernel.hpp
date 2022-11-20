@@ -1,26 +1,31 @@
-    
-#ifndef __cleMaximumXProjectionKernel_hpp
-#define __cleMaximumXProjectionKernel_hpp
+#ifndef __TIER1_CLEMAXIMUMXPROJECTIONKERNEL_HPP
+#define __TIER1_CLEMAXIMUMXPROJECTIONKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class MaximumXProjectionKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_maximum_x_projection.h" 
-        };
 
+class MaximumXProjectionKernel : public Operation
+{
 public:
-    MaximumXProjectionKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void Execute();
+  explicit MaximumXProjectionKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
 };
+
+inline auto
+MaximumXProjectionKernel_Call(const std::shared_ptr<cle::Processor> & device, const Image & src, const Image & dst)
+  -> void
+{
+  MaximumXProjectionKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleMaximumXProjectionKernel_hpp
+#endif // __TIER1_CLEMAXIMUMXPROJECTIONKERNEL_HPP

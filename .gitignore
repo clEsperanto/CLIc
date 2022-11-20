@@ -1,12 +1,17 @@
 # Folders
 .vscode
 build
+builds
+install
 
 # Specific files/folders
 cle_preamble.h
 clic.hpp
-cleKernelList.h
+cleKernelList.hpp
 clic/kernels
+
+#CMake
+CMakeUserPresets.json
 
 
 # System files

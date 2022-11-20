@@ -1,26 +1,46 @@
-#ifndef __cleVoronoiOtsuLabelingKernel_hpp
-#define __cleVoronoiOtsuLabelingKernel_hpp
+#ifndef __TIER6_CLEVORONOIOTSULABELINGKERNEL_HPP
+#define __TIER6_CLEVORONOIOTSULABELINGKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class VoronoiOtsuLabelingKernel : public Kernel
+
+class VoronoiOtsuLabelingKernel : public Operation
 {
 public:
-    VoronoiOtsuLabelingKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetSpotSigma(float=2);
-    void SetOutlineSigma(float=2);
-    void Execute();
+  explicit VoronoiOtsuLabelingKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
+  auto
+  SetSpotSigma(const float & sigma) -> void;
+  auto
+  SetOutlineSigma(const float & sigma) -> void;
+  auto
+  Execute() -> void override;
 
 private:
-    float m_SpotSigma;
-    float m_OutlineSigma;
+  float spot_sigma_ = 0;
+  float output_sigma_ = 0;
 };
+
+inline auto
+VoronoiOtsuLabelingKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                               const Image &                           src,
+                               const Image &                           dst,
+                               const float &                           sigma1,
+                               const float &                           sigma2) -> void
+{
+  VoronoiOtsuLabelingKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.SetSpotSigma(sigma1);
+  kernel.SetOutlineSigma(sigma2);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleVoronoiOtsuLabelingKernel_hpp
+#endif // __TIER6_CLEVORONOIOTSULABELINGKERNEL_HPP

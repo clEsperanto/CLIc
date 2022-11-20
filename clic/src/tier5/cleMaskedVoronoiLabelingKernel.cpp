@@ -1,113 +1,111 @@
 
 #include "cleMaskedVoronoiLabelingKernel.hpp"
 
-#include "cleSetKernel.hpp"
-#include "cleOnlyzeroOverwriteMaximumBoxKernel.hpp"
-#include "cleOnlyzeroOverwriteMaximumDiamondKernel.hpp"
 #include "cleAddImageAndScalarKernel.hpp"
 #include "cleAddImagesWeightedKernel.hpp"
-#include "cleMaskKernel.hpp"
-#include "cleConnectedComponentsLabelingBoxKernel.hpp" 
+#include "cleConnectedComponentLabelingBoxKernel.hpp"
 #include "cleHistogramKernel.hpp"
+#include "cleMaskKernel.hpp"
+#include "cleMemory.hpp"
+#include "cleOnlyzeroOverwriteMaximumBoxKernel.hpp"
+#include "cleOnlyzeroOverwriteMaximumDiamondKernel.hpp"
+#include "cleSetKernel.hpp"
 
 namespace cle
 {
 
-MaskedVoronoiLabelingKernel::MaskedVoronoiLabelingKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "masked_voronoi_labeling",
-            {"src0" , "src1",  "dst"}
-    )
-{}    
+MaskedVoronoiLabelingKernel::MaskedVoronoiLabelingKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
+{}
 
-void MaskedVoronoiLabelingKernel::SetInput(Object& t_x)
+auto
+MaskedVoronoiLabelingKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "src0");
+  this->AddParameter("src0", object);
 }
 
-void MaskedVoronoiLabelingKernel::SetMask(Object& t_x)
+auto
+MaskedVoronoiLabelingKernel::SetMask(const Image & object) -> void
 {
-    this->AddObject(t_x, "src1");
+  this->AddParameter("src1", object);
 }
 
-void MaskedVoronoiLabelingKernel::SetOutput(Object& t_x)
+auto
+MaskedVoronoiLabelingKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("dst", object);
 }
 
-void MaskedVoronoiLabelingKernel::Execute()
+auto
+MaskedVoronoiLabelingKernel::Execute() -> void
 {
-    // get I/O pointers
-    auto src = this->GetParameter<Object>("src0");
-    auto msk = this->GetParameter<Object>("src1");
-    auto dst = this->GetParameter<Object>("dst");
+  auto src = this->GetImage("src0");
+  auto msk = this->GetImage("src1");
+  auto dst = this->GetImage("dst");
 
-    std::vector<float> oneValue = {1.0f};
+  auto flup = Memory::AllocateMemory(this->GetDevice(), src->Shape(), FLOAT, src->GetMemoryType());
+  auto flip = Memory::AllocateMemory(this->GetDevice(), src->Shape(), FLOAT, src->GetMemoryType());
+  auto flop = Memory::AllocateMemory(this->GetDevice(), src->Shape(), FLOAT, src->GetMemoryType());
+  auto flag = Memory::AllocateMemory(this->GetDevice(), { 1, 1, 1 });
+  flag.Fill(1);
 
-    auto flup = this->m_gpu->Create<float>(dst->Shape());
-    auto flip = this->m_gpu->Create<float>(dst->Shape());
-    auto flop = this->m_gpu->Create<float>(dst->Shape());
-    auto flag = this->m_gpu->Push<float>(oneValue, {1,1,1});
+  AddImageAndScalarKernel subtractOne(this->GetDevice());
+  subtractOne.SetInput(*msk);
+  subtractOne.SetOutput(flup);
+  subtractOne.SetScalar(-1);
+  subtractOne.Execute();
 
-    AddImageAndScalarKernel subtractOne(this->m_gpu);
-    subtractOne.SetInput(*msk);
-    subtractOne.SetOutput(flup);
-    subtractOne.SetScalar(-1);
-    subtractOne.Execute();
+  ConnectedComponentLabelingBoxKernel labeling(this->GetDevice());
+  labeling.SetInput(*src);
+  labeling.SetOutput(flop);
+  labeling.Execute();
 
-    ConnectedComponentsLabelingBoxKernel labeling(this->m_gpu);
-    labeling.SetInput(*src);
-    labeling.SetOutput(flop);
-    labeling.Execute();
+  AddImagesWeightedKernel add(this->GetDevice());
+  add.SetInput1(flup);
+  add.SetInput2(flop);
+  add.SetOutput(flip);
+  add.SetFactor1(1);
+  add.SetFactor2(1);
+  add.Execute();
 
-    AddImagesWeightedKernel add(this->m_gpu);
-    add.SetInput1(flup);
-    add.SetInput2(flop);
-    add.SetOutput(flip);
-    add.SetFactor1(1);
-    add.SetFactor2(1);
-    add.Execute();
+  int   iteration_count = 0;
+  float flag_value = 1;
 
-    float flag_value = 1;
-    int iteration_count = 0;
-    while (flag_value > 0)
+  OnlyzeroOverwriteMaximumBoxKernel boxMaximum(this->GetDevice());
+  OnlyzeroOverwriteMaximumBoxKernel diamondMaximum(this->GetDevice());
+  while (flag_value > 0)
+  {
+    if ((iteration_count % 2) == 0)
     {
-        if ((iteration_count%2) == 0)
-        {
-            OnlyzeroOverwriteMaximumBoxKernel boxMaximum(this->m_gpu);
-            boxMaximum.SetInput(flip);
-            boxMaximum.SetOutput1(flag);
-            boxMaximum.SetOutput2(flop);
-            boxMaximum.Execute();
-        }
-        else
-        {
-            OnlyzeroOverwriteMaximumBoxKernel diamondMaximum(this->m_gpu);
-            diamondMaximum.SetInput(flop);
-            diamondMaximum.SetOutput1(flag);
-            diamondMaximum.SetOutput2(flip);
-            diamondMaximum.Execute();
-        }
-        flag_value = this->m_gpu->Pull<float>(flag).front();
-        SetKernel set(this->m_gpu);
-        set.SetInput(flag);
-        set.SetValue(0);
-        set.Execute();
-        iteration_count++;
-    }
-
-    MaskKernel mask(this->m_gpu);
-    if ((iteration_count%2) == 0)
-    {
-        mask.SetInput(flip);
+      boxMaximum.SetInput(flip);
+      boxMaximum.SetOutput1(flag);
+      boxMaximum.SetOutput2(flop);
+      boxMaximum.Execute();
     }
     else
     {
-        mask.SetInput(flop);
+      diamondMaximum.SetInput(flop);
+      diamondMaximum.SetOutput1(flag);
+      diamondMaximum.SetOutput2(flip);
+      diamondMaximum.Execute();
     }
-    mask.SetMask(*msk);
-    mask.SetOutput(*dst);
-    mask.Execute();
+    flag_value = Memory::ReadObject<float>(flag).front();
+    flag.Fill(0);
+    iteration_count++;
+  }
+
+  MaskKernel mask(this->GetDevice());
+  if ((iteration_count % 2) == 0)
+  {
+    mask.SetInput(flip);
+  }
+  else
+  {
+    mask.SetInput(flop);
+  }
+  mask.SetMask(*msk);
+  mask.SetOutput(*dst);
+  mask.Execute();
 }
 
 } // namespace cle

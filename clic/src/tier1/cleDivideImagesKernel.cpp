@@ -5,34 +5,31 @@
 namespace cle
 {
 
-DivideImagesKernel::DivideImagesKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,  
-            "divide_images",
-            {"src0", "src1", "dst"}
-        )
+DivideImagesKernel::DivideImagesKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+  std::string cl_header = {
+#include "cle_divide_images.h"
+  };
+  this->SetSource("divide_images", cl_header);
 }
 
-void DivideImagesKernel::SetInput1(Object& t_x)
+auto
+DivideImagesKernel::SetInput1(const Image & object) -> void
 {
-    this->AddObject(t_x, "src0");
+  this->AddParameter("src0", object);
 }
 
-void DivideImagesKernel::SetInput2(Object& t_x)
+auto
+DivideImagesKernel::SetInput2(const Image & object) -> void
 {
-    this->AddObject(t_x, "src1");
+  this->AddParameter("src1", object);
 }
 
-void DivideImagesKernel::SetOutput(Object& t_x)
+auto
+DivideImagesKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("dst", object);
 }
 
-void DivideImagesKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-}
 } // namespace cle

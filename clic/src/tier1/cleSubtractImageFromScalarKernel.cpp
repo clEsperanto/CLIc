@@ -4,36 +4,31 @@
 namespace cle
 {
 
-SubtractImageFromScalarKernel::SubtractImageFromScalarKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu, 
-            "subtract_image_from_scalar", 
-            {"src", "dst", "scalar"}
-        ) 
+SubtractImageFromScalarKernel::SubtractImageFromScalarKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+  std::string cl_header = {
+#include "cle_subtract_image_from_scalar.h"
+  };
+  this->SetSource("subtract_image_from_scalar", cl_header);
 }
 
-void SubtractImageFromScalarKernel::SetInput(Object& t_x)
+auto
+SubtractImageFromScalarKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "src");
+  this->AddParameter("src", object);
 }
 
-void SubtractImageFromScalarKernel::SetOutput(Object& t_x)
+auto
+SubtractImageFromScalarKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("dst", object);
 }
 
-void SubtractImageFromScalarKernel::SetScalar(float t_x)
+auto
+SubtractImageFromScalarKernel::SetScalar(const float & value) -> void
 {
-    this->AddObject(t_x, "scalar");
-}
-
-void SubtractImageFromScalarKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+  this->AddParameter("scalar", value);
 }
 
 } // namespace cle
-

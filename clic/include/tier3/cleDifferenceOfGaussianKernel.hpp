@@ -1,27 +1,51 @@
 
-#ifndef __cleDifferenceOfGaussianKernel_hpp
-#define __cleDifferenceOfGaussianKernel_hpp
+#ifndef __TIER3_CLEDIFFERENCEOFGAUSSIANKERNEL_HPP
+#define __TIER3_CLEDIFFERENCEOFGAUSSIANKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class DifferenceOfGaussianKernel : public Kernel
+
+class DifferenceOfGaussianKernel : public Operation
 {
 public:
-    DifferenceOfGaussianKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetSigma1(float=1, float=1, float=1);
-    void SetSigma2(float=2, float=2, float=2);
-    void Execute();
+  explicit DifferenceOfGaussianKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
+  auto
+  SetSigma1(const float & sigma_x, const float & sigma_y, const float & sigma_z) -> void;
+  auto
+  SetSigma2(const float & sigma_x, const float & sigma_y, const float & sigma_z) -> void;
+  auto
+  Execute() -> void override;
 
 private:
-    float m_Sigma1[3] = {1, 1, 1};
-    float m_Sigma2[3] = {2, 2, 2};
+  std::array<float, 3> sigma1_ = { 1, 1, 1 };
+  std::array<float, 3> sigma2_ = { 2, 2, 2 };
 };
+
+inline auto
+DifferenceOfGaussianKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                                const Image &                           src,
+                                const Image &                           dst,
+                                const float &                           sigma1_x,
+                                const float &                           sigma1_y,
+                                const float &                           sigma1_z,
+                                const float &                           sigma2_x,
+                                const float &                           sigma2_y,
+                                const float &                           sigma2_z) -> void
+{
+  DifferenceOfGaussianKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.SetSigma1(sigma1_x, sigma1_y, sigma1_z);
+  kernel.SetSigma2(sigma2_x, sigma2_y, sigma2_z);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleDifferenceOfGaussianKernel_hpp
+#endif // __TIER3_CLEDIFFERENCEOFGAUSSIANKERNEL_HPP

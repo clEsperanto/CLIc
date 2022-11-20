@@ -1,27 +1,37 @@
 
-#ifndef __cleSmallerConstantKernel_hpp
-#define __cleSmallerConstantKernel_hpp
+#ifndef __TIER1_CLESMALLERCONSTANTKERNEL_HPP
+#define __TIER1_CLESMALLERCONSTANTKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class SmallerConstantKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_smaller_constant.h" 
-        };
 
+class SmallerConstantKernel : public Operation
+{
 public:
-    SmallerConstantKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetConstant(float);
-    void Execute();
+  explicit SmallerConstantKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
+  auto
+  SetConstant(const float & value) -> void;
 };
+
+inline auto
+SmallerConstantKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                           const Image &                           src,
+                           const Image &                           dst,
+                           const float &                           value) -> void
+{
+  SmallerConstantKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.SetConstant(value);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleSmallerConstantKernel_hpp
+#endif // __TIER1_CLESMALLERCONSTANTKERNEL_HPP

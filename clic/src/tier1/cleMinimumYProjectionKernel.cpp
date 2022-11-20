@@ -4,31 +4,26 @@
 
 namespace cle
 {
-    
-MinimumYProjectionKernel::MinimumYProjectionKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "minimum_y_projection",
-            {"src", "dst"}
-    )
+
+MinimumYProjectionKernel::MinimumYProjectionKernel(const ProcessorPointer & device)
+  : Operation(device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+  std::string cl_header = {
+#include "cle_minimum_y_projection.h"
+  };
+  this->SetSource("minimum_y_projection", cl_header);
 }
 
-void MinimumYProjectionKernel::SetInput(Object& t_x)
+auto
+MinimumYProjectionKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "src");
+  this->AddParameter("src", object);
 }
 
-void MinimumYProjectionKernel::SetOutput(Object& t_x)
+auto
+MinimumYProjectionKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
-}
-
-void MinimumYProjectionKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+  this->AddParameter("dst", object);
 }
 
 } // namespace cle

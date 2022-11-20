@@ -5,35 +5,31 @@
 namespace cle
 {
 
-BinaryOrKernel::BinaryOrKernel(std::shared_ptr<GPU> t_gpu) :    
-    Kernel( t_gpu, 
-            "binary_or", 
-            {"src0", "src1" , "dst"}
-    )
+BinaryOrKernel::BinaryOrKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+  std::string cl_header = {
+#include "cle_binary_or.h"
+  };
+  this->SetSource("binary_or", cl_header);
 }
 
-void BinaryOrKernel::SetInput1(Object& t_x)
+auto
+BinaryOrKernel::SetInput1(const Image & object) -> void
 {
-    this->AddObject(t_x, "src0");
+  this->AddParameter("src0", object);
 }
 
-void BinaryOrKernel::SetInput2(Object& t_x)
+auto
+BinaryOrKernel::SetInput2(const Image & object) -> void
 {
-    this->AddObject(t_x, "src1");
+  this->AddParameter("src1", object);
 }
 
-void BinaryOrKernel::SetOutput(Object& t_x)
+auto
+BinaryOrKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
-}
-
-void BinaryOrKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+  this->AddParameter("dst", object);
 }
 
 } // namespace cle

@@ -1,29 +1,45 @@
 
-#ifndef __cleAddImagesWeightedKernel_hpp
-#define __cleAddImagesWeightedKernel_hpp
+#ifndef __TIER1_CLEADDIMAGESWEIGHTEDKERNEL_HPP
+#define __TIER1_CLEADDIMAGESWEIGHTEDKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class AddImagesWeightedKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_add_images_weighted.h" 
-        };
 
+class AddImagesWeightedKernel : public Operation
+{
 public:
-    AddImagesWeightedKernel(std::shared_ptr<GPU>);
-    void SetInput1(Object&);
-    void SetInput2(Object&);
-    void SetOutput(Object&);
-    void SetFactor1(float);
-    void SetFactor2(float);
-    void Execute();
+  explicit AddImagesWeightedKernel(const ProcessorPointer & device);
+  auto
+  SetInput1(const Image & object) -> void;
+  auto
+  SetInput2(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
+  auto
+  SetFactor1(const float & value) -> void;
+  auto
+  SetFactor2(const float & value) -> void;
 };
+
+inline auto
+AddImagesWeightedKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                             const Image &                           src1,
+                             const Image &                           src2,
+                             const Image &                           dst,
+                             const float &                           w1,
+                             const float &                           w2) -> void
+{
+  AddImagesWeightedKernel kernel(device);
+  kernel.SetInput1(src1);
+  kernel.SetInput2(src2);
+  kernel.SetOutput(dst);
+  kernel.SetFactor1(w1);
+  kernel.SetFactor2(w2);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleAddImagesWeightedKernel_hpp
+#endif // __TIER1_CLEADDIMAGESWEIGHTEDKERNEL_HPP

@@ -1,81 +1,64 @@
 
 #include "cleMaximumOfAllPixelsKernel.hpp"
-#include "cleMaximumZProjectionKernel.hpp"
-#include "cleMaximumYProjectionKernel.hpp"
 #include "cleMaximumXProjectionKernel.hpp"
-#include "cleCopyKernel.hpp"
-
+#include "cleMaximumYProjectionKernel.hpp"
+#include "cleMaximumZProjectionKernel.hpp"
+#include "cleMemory.hpp"
 
 namespace cle
 {
-    
-MaximumOfAllPixelsKernel::MaximumOfAllPixelsKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu, 
-            "maximum_of_all_pixels",
-            {"src", "dst"}
-    )
+
+MaximumOfAllPixelsKernel::MaximumOfAllPixelsKernel(const ProcessorPointer & device)
+  : Operation(device, 2)
 {}
 
-void MaximumOfAllPixelsKernel::SetInput(Object& t_x)
+auto
+MaximumOfAllPixelsKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "src");
+  this->AddParameter("src", object);
 }
 
-void MaximumOfAllPixelsKernel::SetOutput(Object& t_x)
+auto
+MaximumOfAllPixelsKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("dst", object);
 }
 
-void MaximumOfAllPixelsKernel::Execute()
+auto
+MaximumOfAllPixelsKernel::Execute() -> void
 {
-    auto src = this->GetParameter<Object>("src");
-    auto dst = this->GetParameter<Object>("dst");
-    std::array<size_t,3> dim = src->Shape();
+  auto                  src = this->GetImage("src");
+  auto                  dst = this->GetImage("dst");
+  std::array<size_t, 3> dim = src->Shape();
 
-    if (dim[2] > 1)
-    {
-        dim[2] = 1;
-        MaximumZProjectionKernel kernel(this->m_gpu);
-        kernel.SetInput(*src);
-        if (src->IsMemoryType(CL_MEM_OBJECT_BUFFER))
-        {
-            auto tmp = std::make_shared<Object>(this->m_gpu->Create<float>(dim));
-            kernel.SetOutput(*tmp);
-            kernel.Execute();
-            src = tmp;
-        }
-        else
-        {
-            auto tmp = std::make_shared<Object>(this->m_gpu->Create<float>(dim, "image"));
-            kernel.SetOutput(*tmp);
-            kernel.Execute();
-            src = tmp;
-        }
-    }
-    if (dim[1] > 1)
-    {
-        dim[1] = 1;
-        MaximumYProjectionKernel kernel(this->m_gpu);
-        kernel.SetInput(*src);
-        if (src->IsMemoryType(CL_MEM_OBJECT_BUFFER))
-        {
-            auto tmp = std::make_shared<Object>(this->m_gpu->Create<float>(dim));
-            kernel.SetOutput(*tmp);
-            kernel.Execute();
-            src = tmp;
-        }
-        else
-        { 
-            auto tmp = std::make_shared<Object>(this->m_gpu->Create<float>(dim, "image"));
-            kernel.SetOutput(*tmp);
-            kernel.Execute();
-            src = tmp;
-        }
-    }
-    MaximumXProjectionKernel kernel(this->m_gpu);
+  if (dim[2] > 1)
+  {
+    dim[2] = 1;
+    auto temp = Memory::AllocateMemory(this->GetDevice(), dim, dst->GetDataType(), dst->GetMemoryType());
+
+    MaximumZProjectionKernel kernel(this->GetDevice());
     kernel.SetInput(*src);
-    kernel.SetOutput(*dst);
+    kernel.SetOutput(temp);
     kernel.Execute();
+    src = std::make_shared<Image>(temp);
+  }
+
+  if (dim[1] > 1)
+  {
+    dim[1] = 1;
+    auto temp = Memory::AllocateMemory(this->GetDevice(), dim, dst->GetDataType(), dst->GetMemoryType());
+
+    MaximumYProjectionKernel kernel(this->GetDevice());
+    kernel.SetInput(*src);
+    kernel.SetOutput(temp);
+    kernel.Execute();
+    src = std::make_shared<Image>(temp);
+  }
+
+  MaximumXProjectionKernel kernel(this->GetDevice());
+  kernel.SetInput(*src);
+  kernel.SetOutput(*dst);
+  kernel.Execute();
 }
 
 } // namespace cle

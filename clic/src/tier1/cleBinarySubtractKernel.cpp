@@ -5,35 +5,31 @@
 namespace cle
 {
 
-BinarySubtractKernel::BinarySubtractKernel(std::shared_ptr<GPU> t_gpu) :    
-    Kernel( t_gpu, 
-            "binary_subtract", 
-            {"src0", "src1" , "dst"}
-    )
+BinarySubtractKernel::BinarySubtractKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+  std::string cl_header = {
+#include "cle_binary_subtract.h"
+  };
+  this->SetSource("binary_subtract", cl_header);
 }
 
-void BinarySubtractKernel::SetInput1(Object& t_x)
+auto
+BinarySubtractKernel::SetInput1(const Image & object) -> void
 {
-    this->AddObject(t_x, "src0");
+  this->AddParameter("src0", object);
 }
 
-void BinarySubtractKernel::SetInput2(Object& t_x)
+auto
+BinarySubtractKernel::SetInput2(const Image & object) -> void
 {
-    this->AddObject(t_x, "src1");
+  this->AddParameter("src1", object);
 }
 
-void BinarySubtractKernel::SetOutput(Object& t_x)
+auto
+BinarySubtractKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
-}
-
-void BinarySubtractKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+  this->AddParameter("dst", object);
 }
 
 } // namespace cle

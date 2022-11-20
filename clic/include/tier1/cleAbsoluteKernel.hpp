@@ -1,26 +1,32 @@
+#ifndef __TIER1_CLEABSOLUTEKERNEL_HPP
+#define __TIER1_CLEABSOLUTEKERNEL_HPP
 
-#ifndef __cleAbsoluteKernel_hpp
-#define __cleAbsoluteKernel_hpp
-
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class AbsoluteKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_absolute.h" 
-        };
 
+class AbsoluteKernel : public Operation
+{
 public:
-    AbsoluteKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&); 
-    void SetOutput(Object&);
-    void Execute();         
+  explicit AbsoluteKernel(const ProcessorPointer & device);
+
+  auto
+  SetInput(const Image & object) -> void;
+
+  auto
+  SetOutput(const Image & object) -> void;
 };
+
+inline auto
+AbsoluteKernel_Call(const std::shared_ptr<cle::Processor> & device, const Image & src, const Image & dst) -> void
+{
+  AbsoluteKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleAbsoluteKernel_hpp
+#endif // __TIER1_CLEABSOLUTEKERNEL_HPP

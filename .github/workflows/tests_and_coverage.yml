@@ -2,19 +2,16 @@ name: CI-Tests
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
-
   build:
-      
     name: ${{ matrix.os }}-${{ matrix.buildtype }}-Test-and-Coverage
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
-      max-parallel: 8
+      max-parallel: 1
       matrix:
         buildtype: [Debug]
         os: [macos-latest]
@@ -23,12 +20,11 @@ jobs:
         triplet: [x64-osx]
         packages: [lcov gcovr]
 
-    steps:  
-
+    steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          submodules: true 
+          submodules: true
 
       - name: Install packages
         shell: bash
@@ -40,10 +36,15 @@ jobs:
         run: |
           cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF
 
+      - name: Cmake build
+        shell: bash
+        run: |
+          cmake --build "${{ runner.workspace }}/build" --parallel 10 --config ${{ matrix.buildtype }}
+
       - name: Generate coverage
         shell: bash
-        run: |    
-          cd ${{ runner.workspace }}/build && make -j 2 && ctest --verbose
+        run: |
+          cd ${{ runner.workspace }}/build && ctest
 
       - name: Format coverage
         shell: bash
@@ -54,7 +55,7 @@ jobs:
           lcov --list coverage.info
 
       - name: Upload coverage report
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           files: ${{ runner.workspace }}/build/coverage.info

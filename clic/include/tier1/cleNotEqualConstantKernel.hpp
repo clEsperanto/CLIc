@@ -1,28 +1,38 @@
 
 
-#ifndef __cleNotEqualConstantKernel_hpp
-#define __cleNotEqualConstantKernel_hpp
+#ifndef __TIER1_CLENOTEQUALCONSTANTKERNEL_HPP
+#define __TIER1_CLENOTEQUALCONSTANTKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class NotEqualConstantKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_not_equal_constant.h" 
-        };
 
+class NotEqualConstantKernel : public Operation
+{
 public:
-    NotEqualConstantKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetScalar(float);
-    void Execute();
+  explicit NotEqualConstantKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
+  auto
+  SetConstant(const float & value) -> void;
 };
+
+inline auto
+NotEqualConstantKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                            const Image &                           src,
+                            const Image &                           dst,
+                            const float &                           value) -> void
+{
+  NotEqualConstantKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.SetConstant(value);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleNotEqualConstantKernel_hpp
+#endif // __TIER1_CLENOTEQUALCONSTANTKERNEL_HPP

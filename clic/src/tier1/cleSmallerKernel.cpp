@@ -5,34 +5,31 @@
 namespace cle
 {
 
-SmallerKernel::SmallerKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu, 
-            "smaller",
-            {"src0" , "src1", "dst"}
-    )
+SmallerKernel::SmallerKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+  std::string cl_header = {
+#include "cle_smaller.h"
+  };
+  this->SetSource("smaller", cl_header);
 }
 
-void SmallerKernel::SetInput1(Object& t_x)
+auto
+SmallerKernel::SetInput1(const Image & object) -> void
 {
-    this->AddObject(t_x, "src0");
+  this->AddParameter("src0", object);
 }
 
-void SmallerKernel::SetInput2(Object& t_x)
+auto
+SmallerKernel::SetInput2(const Image & object) -> void
 {
-    this->AddObject(t_x, "src1");
+  this->AddParameter("src1", object);
 }
 
-void SmallerKernel::SetOutput(Object& t_x)
+auto
+SmallerKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("dst", object);
 }
 
-void SmallerKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-}
 } // namespace cle

@@ -5,36 +5,31 @@
 namespace cle
 {
 
-SumReductionXKernel::SumReductionXKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "sum_reduction_x",
-            {"src", "dst", "index"}
-    )
+SumReductionXKernel::SumReductionXKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+  std::string cl_header = {
+#include "cle_sum_reduction_x.h"
+  };
+  this->SetSource("sum_reduction_x", cl_header);
 }
 
-void SumReductionXKernel::SetInput(Object& t_x)
+auto
+SumReductionXKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "src");
+  this->AddParameter("src", object);
 }
 
-void SumReductionXKernel::SetOutput(Object& t_x)
+auto
+SumReductionXKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("dst", object);
 }
 
-void SumReductionXKernel::SetBlocksize(int t_x)
+auto
+SumReductionXKernel::SetBlocksize(const int & size) -> void
 {
-    this->AddObject(t_x, "index");
-}
-
-void SumReductionXKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-
+  this->AddParameter("index", size);
 }
 
 } // namespace cle

@@ -5,34 +5,31 @@
 namespace cle
 {
 
-MaskKernel::MaskKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "mask",
-            {"src0", "src1", "dst"}
-    )
+MaskKernel::MaskKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+  std::string cl_header = {
+#include "cle_mask.h"
+  };
+  this->SetSource("mask", cl_header);
 }
 
-void MaskKernel::SetInput(Object& t_x)
+auto
+MaskKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "src0");
+  this->AddParameter("src0", object);
 }
 
-void MaskKernel::SetMask(Object& t_x)
+auto
+MaskKernel::SetMask(const Image & object) -> void
 {
-    this->AddObject(t_x, "src1");
+  this->AddParameter("src1", object);
 }
 
-void MaskKernel::SetOutput(Object& t_x)
+auto
+MaskKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("dst", object);
 }
 
-void MaskKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-}
 } // namespace cle

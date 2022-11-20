@@ -5,40 +5,37 @@
 namespace cle
 {
 
-ReplaceIntensityKernel::ReplaceIntensityKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel(t_gpu,
-        "replace_intensity",
-        {"src", "dst", "scalar0", "scalar1"}
-    )
+ReplaceIntensityKernel::ReplaceIntensityKernel(const ProcessorPointer & device)
+  : Operation(device, 4)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+  std::string cl_header = {
+#include "cle_replace_intensity.h"
+  };
+  this->SetSource("replace_intensity", cl_header);
 }
 
-void ReplaceIntensityKernel::SetInput(Object& t_x)
+auto
+ReplaceIntensityKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "src");
+  this->AddParameter("src", object);
 }
 
-void ReplaceIntensityKernel::SetOutput(Object& t_x)
+auto
+ReplaceIntensityKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("dst", object);
 }
 
-void ReplaceIntensityKernel::SetInValue(float t_x)
+auto
+ReplaceIntensityKernel::SetInValue(const float & value) -> void
 {
-    this->AddObject(t_x, "scalar0");
+  this->AddParameter("scalar0", value);
 }
 
-void ReplaceIntensityKernel::SetOutValue(float t_x)
+auto
+ReplaceIntensityKernel::SetOutValue(const float & value) -> void
 {
-    this->AddObject(t_x, "scalar1");
-}
-
-void ReplaceIntensityKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+  this->AddParameter("scalar1", value);
 }
 
 } // namespace cle

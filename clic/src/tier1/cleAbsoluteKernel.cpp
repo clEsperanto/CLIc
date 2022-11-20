@@ -1,34 +1,27 @@
-
-
 #include "cleAbsoluteKernel.hpp"
 
 namespace cle
 {
 
-AbsoluteKernel::AbsoluteKernel(std::shared_ptr<GPU> t_gpu) :    
-    Kernel( t_gpu, 
-            "absolute", 
-            {"src" , "dst"}
-    )
+AbsoluteKernel::AbsoluteKernel(const ProcessorPointer & device)
+  : Operation(device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+  std::string cl_header_ = {
+#include "cle_absolute.h"
+  };
+  this->SetSource("absolute", cl_header_);
 }
 
-void AbsoluteKernel::SetInput(Object& t_x)
+auto
+AbsoluteKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "src");
+  this->AddParameter("src", object);
 }
 
-void AbsoluteKernel::SetOutput(Object& t_x)
+auto
+AbsoluteKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
-}
-
-void AbsoluteKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+  this->AddParameter("dst", object);
 }
 
 } // namespace cle

@@ -1,139 +1,338 @@
+#ifndef __CORE_CLESPERANTO_HPP
+#define __CORE_CLESPERANTO_HPP
 
-#ifndef __clesperanto_hpp
-#define __clesperanto_hpp
+#include "cleBackend.hpp"
+#include "cleImage.hpp"
+#include "cleMemory.hpp"
+#include "cleProcessor.hpp"
+#include "cleTypes.hpp"
 
-#include "cleGPU.hpp"
-#include "cleObject.hpp"
-
-#include <type_traits>
 #include <iostream>
 #include <limits>
+#include <type_traits>
 
 namespace cle
 {
 
 class Clesperanto
 {
+public:
+  using ProcessorPointer = std::shared_ptr<Processor>;
+  using FloatLimits = std::numeric_limits<float>;
+  using ShapeArray = std::array<size_t, 3>;
+
 private:
-    std::shared_ptr<cle::GPU> m_gpu;
+  ProcessorPointer device_;
 
 public:
-    Clesperanto();
-    ~Clesperanto() = default;
+  Clesperanto();
 
-    template<class T =float>
-    const cle::Object Create(const std::array<size_t,3>& ={1,1,1}, const std::string& ="buffer") const;
-    template<class T =float>
-    const cle::Object Push(const std::vector<T>& ={0}, const std::array<size_t,3>& ={1,1,1}, const std::string& ="buffer") const;
-    template<class T =float>
-    const std::vector<T> Pull(const cle::Object&) const;
+  auto
+  WaitForKernelToFinish(const bool & flag = true) -> void;
 
-    std::shared_ptr<GPU> Ressources();
+  auto
+  SelectDevice(const std::string & name = "") -> void;
 
-    void Absolute(Object&, Object&);
-    void AddImageAndScalar(Object&, Object&, float=0);
-    void AddImagesWeighted(Object&, Object&, Object&, float=1, float=1);
-    void AddImages(Object&, Object&, Object&);
+  auto
+  Info() -> std::string;
 
-    void BinaryAnd(Object&, Object&, Object&);
-    void BinaryOr(Object&, Object&, Object&);
-    void BinaryNot(Object&, Object&);
-    void BinarySubtract(Object&, Object&, Object&);
-    void BinaryXor(Object&, Object&, Object&);
-    void BlockEnumerate(Object&, Object&, Object&, int=0);  //! block enumarate fail when running with Image
+  template <class T = float>
+  [[nodiscard]] auto
+  Create(const ShapeArray & shape = { 1, 1, 1 }, const MemoryType & type = BUFFER) const -> Image;
 
-    void Copy(Object&, Object&);
-    void ConnectedComponentsLabelingBox(Object&, Object&);
-    void CloseIndexGapsInLabelMap(Object&, Object&, int=4096);
+  template <class T = float>
+  [[nodiscard]] auto
+  Push(const std::vector<T> & array = { 0 },
+       const ShapeArray &     shape = { 1, 1, 1 },
+       const MemoryType &     type = BUFFER) const -> Image;
 
-    void DilateSphere(Object&, Object&);
-    void DifferenceOfGaussian(Object&, Object&, float=0, float=0, float=0, float=1, float=1, float=0);
-    void DetectMaximaBox(Object&, Object&, int=0, int=0, int=0);
-    void DivideImages(Object&, Object&, Object&);
-    void DilateLabels(Object&, Object&, int =1);
+  template <class T = float>
+  [[nodiscard]] auto
+  Pull(const Image & object) const -> std::vector<T>;
 
+  [[nodiscard]] auto
+  GetDevice() const -> ProcessorPointer;
 
-    void ErodeSphere(Object&, Object&);
-    void Equal(Object&, Object&, Object&);
-    void EqualConstant(Object&, Object&, float=0);
-    void ExtendLabelingViaVoronoi(Object&, Object&);
-    
-    void FlagExistingLabels(Object&, Object&);
+  auto
+  Absolute(const Image & source, const Image & destination) -> void;
 
-    void GaussianBlur(Object&, Object&, float=1, float=1, float=0);
-    void Greater(Object&, Object&, Object&);
-    void GreaterOrEqual(Object&, Object&, Object&);
-    void GreaterConstant(Object&, Object&, float=0);
-    void GreaterOrEqualConstant(Object&, Object&, float=0);
-    
-    void Histogram(Object&, Object&, int =256, float =std::numeric_limits<float>::infinity(), float =std::numeric_limits<float>::infinity());
+  auto
+  AddImageAndScalar(const Image & source, const Image & destination, const float & scalar = 0) -> void;
 
-    void MeanBox(Object&, Object&, int=1, int=1, int=1);
-    void MaximumBox(Object&, Object&, int=1, int=1, int=1);
-    void MinimumBox(Object&, Object&, int=1, int=1, int=1);
-    void Mask(Object&, Object&, Object&);
-    void MaskedVoronoiLabeling(Object&, Object&, Object&);
-    void MaximumZProjection(Object&, Object&);
-    void MaximumYProjection(Object&, Object&);
-    void MaximumXProjection(Object&, Object&);
-    void MaximumOfAllPixels(Object&, Object&);
-    void MinimumZProjection(Object&, Object&);
-    void MinimumYProjection(Object&, Object&);
-    void MinimumXProjection(Object&, Object&);
-    void MinimumOfAllPixels(Object&, Object&);
-    void MeanSphere(Object&, Object&, int=1, int=1, int=0);
-    void MultiplyImages(Object&, Object&, Object&);
+  auto
+  AddImages(const Image & source1, const Image & source2, const Image & destination) -> void;
 
-    void NonzeroMinimumBox(Object&, Object&, Object&);
-    void NotEqual(Object&, Object&, Object&);
-    void NotEqualConstant(Object&, Object&, float=0);
+  auto
+  AddImagesWeighted(const Image & source1,
+                    const Image & source2,
+                    const Image & destination,
+                    const float & weight1 = 1,
+                    const float & weight2 = 1) -> void;
 
-    void OnlyzeroOverwriteMaximumBox(Object&, Object&, Object&);    
-    void OnlyzeroOverwriteMaximumDiamond(Object&, Object&, Object&);
+  auto
+  BinaryAnd(const Image & source1, const Image & source2, const Image & destination) -> void;
 
-    void ReplaceIntensity(Object&, Object&, float=0, float=0);
-    void ReplaceIntensities(Object&, Object&, Object&);
+  auto
+  BinaryNot(const Image & source, const Image & destination) -> void;
 
-    void Sobel(Object&, Object&);
-    void SubtractImages(Object&, Object&, Object&);
-    void Set(Object&, float=0);
-    void SetNonzeroPixelsToPixelindex(Object&, Object&);
-    void Smaller(Object&, Object&, Object&);
-    void SmallerOrEqual(Object&, Object&, Object&);
-    void SmallerConstant(Object&, Object&, float=0);
-    void SmallerOrEqualConstant(Object&, Object&, float=0);
-    void SumZProjection(Object&, Object&);
-    void SumYProjection(Object&, Object&);
-    void SumXProjection(Object&, Object&);
-    void SumOfAllPixels(Object&, Object&);
-    void SetColumn(Object&, int=0, float=0);
-    void SumReductionX(Object&, Object&, int=0);
-    void SubtractImageFromScalar(Object&, Object&, float =0);
+  auto
+  BinaryOr(const Image & source1, const Image & source2, const Image & destination) -> void;
 
-    void ThresholdOtsu(Object&, Object&);
-    void TopHatBox(Object&, Object&, int=1, int=1, int=1);
+  auto
+  BinarySubtract(const Image & source1, const Image & source2, const Image & destination) -> void;
 
-    void VoronoiOtsuLabeling(Object&, Object&, float=1, float=1);
+  auto
+  BinaryXor(const Image & source1, const Image & source2, const Image & destination) -> void;
+
+  auto
+  BlockEnumerate(const Image & source, const Image & sum, const Image & destination, const int & block_size = 1)
+    -> void;
+  //! only 1d and does not support image
+
+  auto
+  CloseIndexGapsInLabelMap(const Image & source, const Image & destination, const int & block_size = 4096) -> void;
+
+  auto
+  ConnectedComponentLabelingBox(const Image & source, const Image & destination) -> void;
+
+  auto
+  Copy(const Image & source, const Image & destination) -> void;
+
+  auto
+  DetectMaximaBox(const Image & source, const Image & destination) -> void;
+
+  auto
+  DifferenceOfGaussian(const Image & source,
+                       const Image & destination,
+                       const float & sigma1_x = 0,
+                       const float & sigma1_y = 0,
+                       const float & sigma1_z = 0,
+                       const float & sigma2_x = 0,
+                       const float & sigma2_y = 0,
+                       const float & sigma2_z = 0) -> void;
+
+  auto
+  DilateLabels(const Image & source, const Image & destination, const int & radius = 1) -> void;
+
+  auto
+  DilateSphere(const Image & source, const Image & destination) -> void;
+
+  auto
+  DivideImages(const Image & source1, const Image & source2, const Image & destination) -> void;
+
+  auto
+  Equal(const Image & source1, const Image & source2, const Image & destination) -> void;
+
+  auto
+  EqualConstant(const Image & source, const Image & destination, const float & scalar = 0) -> void;
+
+  auto
+  ErodeSphere(const Image & source, const Image & destination) -> void;
+
+  auto
+  ExtendLabelingViaVoronoi(const Image & source, const Image & destination) -> void;
+
+  auto
+  FlagExistingLabels(const Image & source, const Image & destination) -> void;
+
+  auto
+  GaussianBlur(const Image & source,
+               const Image & destination,
+               const float & sigma_x = 0,
+               const float & sigma_y = 0,
+               const float & sigma_z = 0) -> void;
+
+  auto
+  Greater(const Image & source1, const Image & source2, const Image & destination) -> void;
+
+  auto
+  GreaterConstant(const Image & source, const Image & destination, const float & scalar = 0) -> void;
+
+  auto
+  GreaterOrEqual(const Image & source1, const Image & source2, const Image & destination) -> void;
+
+  auto
+  GreaterOrEqualConstant(const Image & source, const Image & destination, const float & scalar = 0) -> void;
+
+  auto
+  Histogram(const Image & source,
+            const Image & destination,
+            const int &   bins = 255,
+            const float & min_intensity = FloatLimits::infinity(),
+            const float & max_intensity = FloatLimits::infinity()) -> void;
+
+  auto
+  Mask(const Image & source, const Image & t_mask, const Image & destination) -> void;
+
+  auto
+  MaskedVoronoiLabeling(const Image & source, const Image & t_mask, const Image & destination) -> void;
+
+  auto
+  MaximumBox(const Image & source,
+             const Image & destination,
+             const int &   radius_x = 0,
+             const int &   radius_y = 0,
+             const int &   radius_z = 0) -> void;
+
+  auto
+  MaximumOfAllPixels(const Image & source, const Image & destination) -> void;
+
+  auto
+  MaximumXProjection(const Image & source, const Image & destination) -> void;
+
+  auto
+  MaximumYProjection(const Image & source, const Image & destination) -> void;
+
+  auto
+  MaximumZProjection(const Image & source, const Image & destination) -> void;
+
+  auto
+  MeanBox(const Image & source,
+          const Image & destination,
+          const int &   radius_x = 0,
+          const int &   radius_y = 0,
+          const int &   radius_z = 0) -> void;
+
+  auto
+  MeanSphere(const Image & source,
+             const Image & destination,
+             const float & radius_x = 0,
+             const float & radius_y = 0,
+             const float & radius_z = 0) -> void;
+
+  auto
+  MinimumBox(const Image & source,
+             const Image & destination,
+             const int &   radius_x = 0,
+             const int &   radius_y = 0,
+             const int &   radius_z = 0) -> void;
+
+  auto
+  MinimumOfAllPixels(const Image & source, const Image & destination) -> void;
+
+  auto
+  MinimumXProjection(const Image & source, const Image & destination) -> void;
+
+  auto
+  MinimumYProjection(const Image & source, const Image & destination) -> void;
+
+  auto
+  MinimumZProjection(const Image & source, const Image & destination) -> void;
+
+  auto
+  MultiplyImages(const Image & source1, const Image & source2, const Image & destination) -> void;
+
+  auto
+  NonzeroMinimumBox(const Image & source, const Image & t_flag, const Image & destination) -> void;
+
+  auto
+  NotEqual(const Image & source1, const Image & source2, const Image & destination) -> void;
+
+  auto
+  NotEqualConstant(const Image & source, const Image & destination, const float & scalar = 0) -> void;
+
+  auto
+  OnlyzeroOverwriteMaximumBox(const Image & source, const Image & flag, const Image & destination) -> void;
+
+  auto
+  OnlyzeroOverwriteMaximumDiamond(const Image & source, const Image & flag, const Image & destination) -> void;
+
+  auto
+  ReplaceIntensities(const Image & source, const Image & intensity_map, const Image & destination) -> void;
+
+  auto
+  ReplaceIntensity(const Image & source,
+                   const Image & destination,
+                   const float & input_intensity,
+                   const float & output_intensity) -> void;
+
+  auto
+  Set(const Image & source, const float & scalar = 0) -> void;
+
+  auto
+  SetColumn(const Image & source, const int & column_index, const float & scalar = 0) -> void;
+
+  auto
+  SetNonzeroPixelsToPixelindex(const Image & source, const Image & destination) -> void;
+
+  auto
+  Smaller(const Image & source1, const Image & source2, const Image & destination) -> void;
+
+  auto
+  SmallerConstant(const Image & source, const Image & destination, const float & scalar = 0) -> void;
+
+  auto
+  SmallerOrEqual(const Image & source1, const Image & source2, const Image & destination) -> void;
+
+  auto
+  SmallerOrEqualConstant(const Image & source, const Image & destination, const float & scalar = 0) -> void;
+
+  auto
+  Sobel(const Image & source, const Image & destination) -> void;
+
+  auto
+  SubtractImageFromScalar(const Image & source, const Image & destination, const float & scalar = 0) -> void;
+
+  auto
+  SubtractImages(const Image & source1, const Image & source2, const Image & destination) -> void;
+
+  auto
+  SumOfAllPixels(const Image & source, const Image & destination) -> void;
+
+  auto
+  SumReductionX(const Image & source, const Image & destination, const int & block_size) -> void;
+
+  auto
+  SumXProjection(const Image & source, const Image & destination) -> void;
+
+  auto
+  SumYProjection(const Image & source, const Image & destination) -> void;
+
+  auto
+  SumZProjection(const Image & source, const Image & destination) -> void;
+
+  auto
+  ThresholdOtsu(const Image & source, const Image & destination) -> void;
+
+  auto
+  TopHatBox(const Image & source,
+            const Image & destination,
+            const int &   radius_x = 0,
+            const int &   radius_y = 0,
+            const int &   radius_z = 0) -> void;
+
+  auto
+  VoronoiOtsuLabeling(const Image & source,
+                      const Image & destination,
+                      const float & sigma_spot = 0,
+                      const float & sigma_outline = 0) -> void;
 };
 
-    template<class T>
-    const cle::Object Clesperanto::Create(const std::array<size_t,3>& t_shape, const std::string& t_type) const
-    {
-        return this->m_gpu->Create<T>(t_shape, t_type);
-    }
+template <class T>
+auto
+Clesperanto::Create(const ShapeArray & shape, const MemoryType & type) const -> Image
+{
+  DataType bit_type = TypeToDataType<T>();
+  return Memory::AllocateMemory(this->GetDevice(), shape, bit_type, type);
+}
 
-    template<class T>
-    const cle::Object Clesperanto::Push(const std::vector<T>& t_array, const std::array<size_t,3>& t_shape, const std::string& t_type) const
-    {
-        return this->m_gpu->Push<T>(t_array, t_shape, t_type);
-    }
+template <class T>
+auto
+Clesperanto::Push(const std::vector<T> & array, const ShapeArray & shape, const MemoryType & type) const -> Image
+{
+  DataType bit_type = TypeToDataType<T>();
+  auto     image = Memory::AllocateMemory(this->GetDevice(), shape, bit_type, type);
+  Memory::WriteObject(image, array);
+  return image;
+}
 
-    template<class T>
-    const std::vector<T> Clesperanto::Pull(const cle::Object& t_object) const
-    {
-        return this->m_gpu->Pull<T>(t_object);
-    }
+template <class T>
+auto
+Clesperanto::Pull(const Image & image) const -> std::vector<T>
+{
+  return Memory::ReadObject<T>(image);
+}
 
 } // namespace cle
 
-#endif //__clesperanto_hpp
+#endif // __CORE_CLESPERANTO_HPP

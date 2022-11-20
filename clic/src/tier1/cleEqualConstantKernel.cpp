@@ -5,34 +5,31 @@
 namespace cle
 {
 
-EqualConstantKernel::EqualConstantKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu, 
-            "equal_constant",
-            {"src", "dst", "scalar"}
-    )
+EqualConstantKernel::EqualConstantKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+  std::string cl_header = {
+#include "cle_equal_constant.h"
+  };
+  this->SetSource("equal_constant", cl_header);
 }
 
-void EqualConstantKernel::SetInput(Object& t_x)
+auto
+EqualConstantKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "src");
+  this->AddParameter("src", object);
 }
 
-void EqualConstantKernel::SetOutput(Object& t_x)
+auto
+EqualConstantKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("dst", object);
 }
 
-void EqualConstantKernel::SetScalar(float t_x)
+auto
+EqualConstantKernel::SetConstant(const float & value) -> void
 {
-    this->AddObject(t_x, "scalar");
+  this->AddParameter("scalar", value);
 }
 
-void EqualConstantKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-}
 } // namespace cle

@@ -1,210 +1,145 @@
-#ifndef __cleScalar_hpp
-#define __cleScalar_hpp
-
-#include "clic.hpp"
-#include <string>
-#include <memory>
-#include <algorithm>
-#include <iterator>
-#include <array>
+#ifndef __CORE_CLESCALAR_HPP
+#define __CORE_CLESCALAR_HPP
 
 #include "cleLightObject.hpp"
+
+#include <sstream>
 
 namespace cle
 {
 
-/**
- * template Scalar class 
- *
- * Inherit from LighObject, the class define a holder for float and int type.
- * This enable to process scalar arguments along buffer and image arguments.
- * The template define the scalar type.
- */
-template<class T =float>
+template <class Type>
 class Scalar : public LightObject
 {
+public:
+  Scalar() = delete;
+  ~Scalar() override = default;
+  Scalar(const Scalar & obj) noexcept = default;
+  Scalar(Scalar && obj) noexcept = default;
+  auto
+  operator=(const Scalar & obj) -> Scalar & = default;
+  auto
+  operator=(Scalar && obj) noexcept -> Scalar & = default;
+  explicit Scalar(const Type & data);
+
+  [[nodiscard]] auto
+  Get() const -> Type;
+  [[nodiscard]] auto
+  Ndim() const -> unsigned int override;
+  [[nodiscard]] auto
+  Shape() const -> const ShapeArray & override;
+  [[nodiscard]] auto
+  GetMemoryType_Str() const -> std::string override;
+  [[nodiscard]] auto
+  GetDataType_Str(const bool & short_version) const -> std::string override;
+  [[nodiscard]] auto
+  GetSizeOfElements() const -> size_t override;
+  [[nodiscard]] auto
+  ToString() const -> std::string override;
+
+  template <class T>
+  friend auto
+  operator<<(std::ostream & out, const Scalar<T> & scalar) -> std::ostream &;
+
 private:
-    /// scalar value
-    T m_obj = 0;
-
-protected:
-
-    /**     
-     * @brief Convert template to string.
-     * @return template type as string
-     */
-    const char* TemplateToString() const;
-
-public: 
-
-    /**     
-     * @brief Default constructor.
-     */
-    Scalar() =default;
-
-    /**     
-     * @brief Constructor.
-     * 
-     * @param t_value value to allocate.
-     */
-    Scalar(const T t_value);
-
-    /**     
-     * @brief Default destructor.
-     */
-    ~Scalar() =default;
-
-    /**     
-     * @brief Get value.
-     * 
-     * @return value of templated type.
-     */
-    const T Data() const;
-
-    /**     
-     * @brief Get scalar dimension.
-     * 
-     * @return dimension equal to 1.
-     */
-    const int nDim() const;
-
-    /**     
-     * @brief Get scalar size.
-     * 
-     * @return size equal to 1.
-     */
-    const int Size() const;
-
-    /**     
-     * @brief Get scalar shape.
-     * 
-     * @return shape array equal to {1,1,1}.
-     */
-    const std::array<size_t,3> Shape() const;
-
-    /**     
-     * @brief Get scalar origin.
-     * 
-     * @return origin array equal to {0,0,0}.
-     */
-    const std::array<size_t,3> Origin() const;
-
-    /**     
-     * @brief Get scalar region.
-     * 
-     * @return region array equal to {1,1,1}.
-     */
-    const std::array<size_t,3> Region() const;
-
-    /**
-     * @brief Get object data type (float or int).
-     * 
-     * @return data type as string.
-     */
-    virtual const char* GetDataType() const;
-
-    /**
-     * @brief Compare object data type with template (float or int).
-     * 
-     * @param t_dtype data type to compare with
-     * @return true if same data type, false otherwise.
-     */
-    virtual const bool IsDataType(const char* t_dtype) const; 
-
-    /**
-     * @brief Get object type (Buffer, Image, etc.).
-     * 
-     * @return Scalar as string.
-     */   
-    virtual const char* GetObjectType() const;
-
-    /**
-     * @brief Compare object type (Scalar).
-     * 
-     * @param t_otype object type to compare with
-     * @return true if same object type, false otherwise.
-     */
-    virtual const bool IsObjectType(const char* t_otype) const;
+  Type       data_;
+  ShapeArray shape_{ 1, 1, 1 };
 };
 
-template<class T>
-Scalar<T>::Scalar(const T t_value) : LightObject(), m_obj(t_value)
-{}
-
-template<class T>
-const T Scalar<T>::Data() const 
-{ 
-    return this->m_obj; 
-}
-
-template<class T>
-const int Scalar<T>::nDim() const 
-{ 
-    return 1; 
-}
-
-template<class T>
-const int Scalar<T>::Size() const 
-{ 
-    return 1; 
-}
-
-template<class T>
-const std::array<size_t,3> Scalar<T>::Shape() const 
-{ 
-    return std::array<size_t,3>({1,1,1}); 
-}
-
-template<class T>
-const std::array<size_t,3> Scalar<T>::Origin() const 
-{ 
-    return std::array<size_t,3>({0,0,0}); 
-}
-
-template<class T>
-const std::array<size_t,3> Scalar<T>::Region() const 
-{ 
-    return std::array<size_t,3>({1,1,1}); 
-}
-
-template<class T>
-const char* Scalar<T>::GetDataType() const 
-{ 
-    return TemplateToString(); 
-}
-
-template<class T>
-const bool Scalar<T>::IsDataType(const char* t_str) const
+template <class Type>
+Scalar<Type>::Scalar(const Type & data)
+  : data_(data)
+  , LightObject(TypeToDataType<Type>(), SCALAR)
 {
-    return strncmp(this->TemplateToString(), t_str, strlen(t_str)) == 0;
+  static_assert(std::is_fundamental<Type>::value, "Scalar can only be of native type");
 }
 
-template<class T>
-const char* Scalar<T>::GetObjectType() const 
-{ 
-    return "scalar"; 
-}   
-
-template<class T>
-const bool Scalar<T>::IsObjectType(const char* t_str) const
+template <class Type>
+auto
+Scalar<Type>::Get() const -> Type
 {
-    return strncmp("scalar", t_str, strlen(t_str)) == 0;
+  return this->data_;
 }
 
-template<class T>
-const char* Scalar<T>::TemplateToString() const
+template <class Type>
+auto
+Scalar<Type>::Ndim() const -> unsigned int
 {
-    if(std::is_same<T, float>::value)  return "float";
-    if(std::is_same<T, int>::value) return "int";
-    if(std::is_same<T, unsigned int>::value) return "uint";
-    if(std::is_same<T, char>::value) return "char";
-    if(std::is_same<T, unsigned char>::value) return "uchar";
-    if(std::is_same<T, double>::value) return "double";
-    if(std::is_same<T, short>::value) return "short";
-    if(std::is_same<T, unsigned short>::value) return "ushort";
-    return "unknown";
-} 
+  return 1;
+}
+
+template <class Type>
+auto
+Scalar<Type>::Shape() const -> const ShapeArray &
+{
+  return this->shape_;
+}
+
+template <class Type>
+auto
+Scalar<Type>::GetMemoryType_Str() const -> std::string
+{
+  return "scalar";
+}
+
+template <class Type>
+auto
+Scalar<Type>::GetDataType_Str(const bool & short_version) const -> std::string
+{
+  std::string res;
+  switch (this->GetDataType())
+  {
+    case CL_SIGNED_INT8:
+      res = (short_version) ? "c" : "char";
+      break;
+    case CL_SIGNED_INT16:
+      res = (short_version) ? "s" : "short";
+      break;
+    case CL_SIGNED_INT32:
+      res = (short_version) ? "i" : "int";
+      break;
+    case CL_UNSIGNED_INT8:
+      res = (short_version) ? "uc" : "uchar";
+      break;
+    case CL_UNSIGNED_INT16:
+      res = (short_version) ? "us" : "ushort";
+      break;
+    case CL_UNSIGNED_INT32:
+      res = (short_version) ? "ui" : "uint";
+      break;
+    case CL_FLOAT:
+      res = (short_version) ? "f" : "float";
+      break;
+    default:
+      res = "unknown";
+  }
+  return res;
+}
+
+template <class Type>
+auto
+Scalar<Type>::GetSizeOfElements() const -> size_t
+{
+  return sizeof(this->Get());
+}
+
+template <class Type>
+auto
+Scalar<Type>::ToString() const -> std::string
+{
+  std::stringstream out_string;
+  out_string << this->Get() << "(" << this->GetDataType_Str(false) << ")";
+  return out_string.str();
+}
+
+template <class Type>
+auto
+operator<<(std::ostream & out, const Scalar<Type> & scalar) -> std::ostream &
+{
+  out << scalar.ToString();
+  return out;
+}
 
 } // namespace cle
 
-#endif //__cleScalar_hpp
+#endif // __CORE_CLESCALAR_HPP

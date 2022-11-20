@@ -3,17 +3,12 @@
 clEsperanto is relying on [OpenCL](https://www.khronos.org/opencl/) for computation. This means that if you do not have OpenCL available on your system, it will not run (nor compile).
 
 OpenCL is not hardware specific, it is an open standard for parallel programming. Hence, it can run on GPUs and CPUs. However, in order to access a specific hardware to run on, you need to provide its corresponding Installable Client Driver (ICD). Those ICD are usually proprietary implementation and they are provided by vendors with their drivers package. 
-They come as runtime library with various naming, for example `amdocl.dll`, `nvcuda.dll`, `libamdocl.so`, `libcuda.so`, *etc*.
 
-To avoid building OpenCL project against a specific vendor ICD, we are building it against an *ICD-loader*. It is a generic ICD interface library. It does not contain any OpenCL implementation like ICDs, but work as a dispatcher and redirect OpenCL operation towards selected ICDs associated to the hardware you are trying run on. These comes with more generic names, for example `libOpenCL.so` or `OpenCL.dll`.
-
-Finally, OpenCL project requires header files. These usually come with the installation of vendors ICDs but are then usually adapted to their ICD. To avoid complication over versions and installation, all headers are provided in our project through the Khronos official repository.
+To avoid building OpenCL project against a specific vendor ICD, we are building it against an *ICD-loader*. It is a generic ICD interface library. It does not contain any OpenCL implementation like ICDs, but work as a dispatcher and redirect OpenCL operation towards selected ICDs associated to the hardware you are trying run on. These comes with more generic names, for example `libOpenCL.so` or `OpenCL.dll`, respectively for Linux and Windows.
 
 ## Installation
 
-For now, we would suggest you to install your hardware specific drivers and Software Development Kit (SDK). The most common one are Intel, AMD, and Nvidia. 
-
-
+You first need to install your hardware specific drivers or Software Development Kit (SDK). The most common vendors are Intel, AMD, and Nvidia. 
 
 <center>
 <table>

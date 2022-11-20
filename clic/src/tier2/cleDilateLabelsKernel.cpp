@@ -1,90 +1,87 @@
 
 #include "cleDilateLabelsKernel.hpp"
 
-#include "cleSetKernel.hpp"
 #include "cleCopyKernel.hpp"
+#include "cleMemory.hpp"
 #include "cleOnlyzeroOverwriteMaximumBoxKernel.hpp"
 #include "cleOnlyzeroOverwriteMaximumDiamondKernel.hpp"
+#include "cleSetKernel.hpp"
+#include "cleTypes.hpp"
 
 namespace cle
 {
 
-DilateLabelsKernel::DilateLabelsKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "dilate_labels",
-            {"src" , "dst", "radius"}
-    )
-{}    
+DilateLabelsKernel::DilateLabelsKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
+{}
 
-void DilateLabelsKernel::SetInput(Object& t_x)
+auto
+DilateLabelsKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "src");
+  this->AddParameter("src", object);
 }
 
-void DilateLabelsKernel::SetOutput(Object& t_x)
+auto
+DilateLabelsKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("dst", object);
 }
 
-void DilateLabelsKernel::SetRadius(int t_x)
+auto
+DilateLabelsKernel::SetRadius(const int & radius) -> void
 {
-    this->m_Radius = t_x;
+  this->radius_ = radius;
 }
 
-void DilateLabelsKernel::Execute()
+auto
+DilateLabelsKernel::Execute() -> void
 {
-    // get I/O pointers
-    auto src = this->GetParameter<Object>("src");
-    auto dst = this->GetParameter<Object>("dst");
+  // // get I/O pointers
+  auto src = this->GetImage("src");
+  auto dst = this->GetImage("dst");
 
-    std::vector<float> oneValue = {1.0f};
-    auto flip = this->m_gpu->Create<float>(dst->Shape());
-    auto flop = this->m_gpu->Create<float>(dst->Shape());
-    auto flag = this->m_gpu->Push<float>(oneValue, {1,1,1});
+  auto flip = Memory::AllocateMemory(this->GetDevice(), dst->Shape(), dst->GetDataType(), dst->GetMemoryType());
+  auto flop = Memory::AllocateMemory(this->GetDevice(), dst->Shape(), dst->GetDataType(), dst->GetMemoryType());
+  auto flag = Memory::AllocateMemory(this->GetDevice(), { 1, 1, 1 }, FLOAT, BUFFER);
+  flag.Fill(1);
 
-    CopyKernel copy(this->m_gpu);
-    copy.SetInput(*src);
-    copy.SetOutput(flip);
-    copy.Execute();
+  CopyKernel copy(this->GetDevice());
+  copy.SetInput(*src);
+  copy.SetOutput(flip);
+  copy.Execute();
 
-    float flag_value = 1;
-    int iteration_count = 0;
-    while (flag_value > 0 && iteration_count < this->m_Radius)
+  float flag_value = 1;
+  int   iteration_count = 0;
+  while (flag_value > 0 && iteration_count < this->radius_)
+  {
+    if ((iteration_count % 2) == 0)
     {
-        if ((iteration_count%2) == 0)
-        {
-            OnlyzeroOverwriteMaximumBoxKernel boxMaximum(this->m_gpu);
-            boxMaximum.SetInput(flip);
-            boxMaximum.SetOutput1(flag);
-            boxMaximum.SetOutput2(flop);
-            boxMaximum.Execute();
-        }
-        else
-        {
-            OnlyzeroOverwriteMaximumBoxKernel diamondMaximum(this->m_gpu);
-            diamondMaximum.SetInput(flop);
-            diamondMaximum.SetOutput1(flag);
-            diamondMaximum.SetOutput2(flip);
-            diamondMaximum.Execute();
-        }
-        flag_value = this->m_gpu->Pull<float>(flag).front();
-        SetKernel set(this->m_gpu);
-        set.SetInput(flag);
-        set.SetValue(0);
-        set.Execute();
-        iteration_count++;
-    }
-
-    if ((iteration_count%2) == 0)
-    {
-        copy.SetInput(flip);
+      OnlyzeroOverwriteMaximumBoxKernel boxMaximum(this->GetDevice());
+      boxMaximum.SetInput(flip);
+      boxMaximum.SetOutput1(flag);
+      boxMaximum.SetOutput2(flop);
+      boxMaximum.Execute();
     }
     else
     {
-        copy.SetInput(flop);
+      OnlyzeroOverwriteMaximumBoxKernel diamondMaximum(this->GetDevice());
+      diamondMaximum.SetInput(flop);
+      diamondMaximum.SetOutput1(flag);
+      diamondMaximum.SetOutput2(flip);
+      diamondMaximum.Execute();
     }
-    copy.SetOutput(*dst);
-    copy.Execute();
+    flag_value = Memory::ReadObject<float>(flag).front();
+    flag.Fill(0);
+    iteration_count++;
+  }
+  if ((iteration_count % 2) == 0)
+  {
+    flip.CopyDataTo(*dst);
+  }
+  else
+  {
+    flop.CopyDataTo(*dst);
+  }
 }
 
 } // namespace cle

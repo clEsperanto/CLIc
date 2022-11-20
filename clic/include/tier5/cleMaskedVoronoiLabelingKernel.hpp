@@ -1,21 +1,38 @@
-#ifndef __cleMaskedVoronoiLabelingKernel_hpp
-#define __cleMaskedVoronoiLabelingKernel_hpp
+#ifndef __TIER5_CLEMASKEDVORONOILABELINGKERNEL_HPP
+#define __TIER5_CLEMASKEDVORONOILABELINGKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class MaskedVoronoiLabelingKernel : public Kernel
+
+class MaskedVoronoiLabelingKernel : public Operation
 {
 public:
-    MaskedVoronoiLabelingKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetMask(Object&);
-    void Execute();
+  explicit MaskedVoronoiLabelingKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
+  auto
+  SetMask(const Image & object) -> void;
+  auto
+  Execute() -> void override;
 };
+
+inline auto
+MaskedVoronoiLabelingKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                                 const Image &                           src,
+                                 const Image &                           dst,
+                                 const Image &                           mask) -> void
+{
+  MaskedVoronoiLabelingKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.SetMask(dst);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleMaskedVoronoiLabelingKernel_hpp
+#endif // __TIER5_CLEMASKEDVORONOILABELINGKERNEL_HPP

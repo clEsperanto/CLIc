@@ -5,34 +5,31 @@
 namespace cle
 {
 
-SmallerConstantKernel::SmallerConstantKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "smaller_constant",
-            {"src" , "dst", "scalar"}
-    )
+SmallerConstantKernel::SmallerConstantKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+  std::string cl_header = {
+#include "cle_smaller_constant.h"
+  };
+  this->SetSource("smaller_constant", cl_header);
 }
 
-void SmallerConstantKernel::SetInput(Object& t_x)
+auto
+SmallerConstantKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "src");
+  this->AddParameter("src", object);
 }
 
-void SmallerConstantKernel::SetOutput(Object& t_x)
+auto
+SmallerConstantKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("dst", object);
 }
 
-void SmallerConstantKernel::SetConstant(float t_x)
+auto
+SmallerConstantKernel::SetConstant(const float & value) -> void
 {
-    this->AddObject(t_x, "scalar");
+  this->AddParameter("scalar", value);
 }
 
-void SmallerConstantKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-}
 } // namespace cle

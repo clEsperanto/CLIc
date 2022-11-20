@@ -5,35 +5,32 @@
 namespace cle
 {
 
-NonzeroMinimumBoxKernel::NonzeroMinimumBoxKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel(t_gpu,
-        "nonzero_minimum_box",
-        {"src", "dst0", "dst1"}
-    )
+NonzeroMinimumBoxKernel::NonzeroMinimumBoxKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+  std::string cl_header = {
+#include "cle_nonzero_minimum_box.h"
+  };
+  this->SetSource("nonzero_minimum_box", cl_header);
 }
 
-void NonzeroMinimumBoxKernel::SetInput(Object& t_x)
+auto
+NonzeroMinimumBoxKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "src");
+  this->AddParameter("src", object);
 }
 
-void NonzeroMinimumBoxKernel::SetOutput(Object& t_x)
+auto
+NonzeroMinimumBoxKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst1");
+  this->AddParameter("dst1", object);
+  this->SetRange("dst1");
 }
 
-void NonzeroMinimumBoxKernel::SetOutputFlag(Object& t_x)
+auto
+NonzeroMinimumBoxKernel::SetOutputFlag(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst0");
+  this->AddParameter("dst0", object);
 }
 
-void NonzeroMinimumBoxKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->SetGlobalNDRange("dst1");
-    this->EnqueueKernel();
-}
 } // namespace cle

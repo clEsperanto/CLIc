@@ -1,31 +1,45 @@
+#ifndef __TIER1_CLEGAUSSIANBLURKERNEL_HPP
+#define __TIER1_CLEGAUSSIANBLURKERNEL_HPP
 
-#ifndef __cleGaussianBlurKernel_hpp
-#define __cleGaussianBlurKernel_hpp
-
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class GaussianBlurKernel : public Kernel
+
+class GaussianBlurKernel : public Operation
 {
-private:
-    std::string m_OclHeader = {
-        #include "cle_gaussian_blur_separable.h" 
-        };
-
 public:
-    GaussianBlurKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetSigma(float=0, float=0, float=0);
-    void Execute();
+  explicit GaussianBlurKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
+  auto
+  SetSigma(const float & sigma_x, const float & sigma_y, const float & sigma_z) -> void;
+  auto
+  Execute() -> void override;
 
 private:
-    std::array<float,3> m_Sigma = {0, 0, 0};
-    std::array<int,3> Sigma2KernelSize(std::array<float,3>) const;
+  std::array<float, 3> sigma_{ 0, 0, 0 };
+  static auto
+  Sigma2KernelSize(const std::array<float, 3> & sigmas) -> std::array<size_t, 3>;
 };
+
+inline auto
+GaussianBlurKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                        const Image &                           src,
+                        const Image &                           dst,
+                        const float &                           sigma_x,
+                        const float &                           sigma_y,
+                        const float &                           sigma_z) -> void
+{
+  GaussianBlurKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.SetSigma(sigma_x, sigma_y, sigma_z);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleGaussianBlurKernel_hpp
+#endif // __TIER1_CLEGAUSSIANBLURKERNEL_HPP

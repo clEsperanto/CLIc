@@ -1,27 +1,32 @@
 
 
-#ifndef __cleSumZProjectionKernel_hpp
-#define __cleSumZProjectionKernel_hpp
+#ifndef __TIER1_CLESUMZPROJECTIONKERNEL_HPP
+#define __TIER1_CLESUMZPROJECTIONKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class SumZProjectionKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_sum_z_projection.h" 
-        };
 
+class SumZProjectionKernel : public Operation
+{
 public:
-    SumZProjectionKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void Execute();
+  explicit SumZProjectionKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
 };
+
+inline auto
+SumZProjectionKernel_Call(const std::shared_ptr<cle::Processor> & device, const Image & src, const Image & dst) -> void
+{
+  SumZProjectionKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleSumZProjectionKernel_hpp
+#endif // __TIER1_CLESUMZPROJECTIONKERNEL_HPP

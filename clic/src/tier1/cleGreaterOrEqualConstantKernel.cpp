@@ -5,34 +5,31 @@
 namespace cle
 {
 
-GreaterOrEqualConstantKernel::GreaterOrEqualConstantKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "greater_or_equal_constant",
-            {"src", "dst", "scalar"}
-    )
+GreaterOrEqualConstantKernel::GreaterOrEqualConstantKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+  std::string cl_header = {
+#include "cle_greater_or_equal_constant.h"
+  };
+  this->SetSource("greater_or_equal_constant", cl_header);
 }
 
-void GreaterOrEqualConstantKernel::SetInput(Object& t_x)
+auto
+GreaterOrEqualConstantKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "src");
+  this->AddParameter("src", object);
 }
 
-void GreaterOrEqualConstantKernel::SetOutput(Object& t_x)
+auto
+GreaterOrEqualConstantKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("dst", object);
 }
 
-void GreaterOrEqualConstantKernel::SetScalar(float t_x)
+auto
+GreaterOrEqualConstantKernel::SetConstant(const float & value) -> void
 {
-    this->AddObject(t_x, "scalar");
+  this->AddParameter("scalar", value);
 }
 
-void GreaterOrEqualConstantKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-}
 } // namespace cle

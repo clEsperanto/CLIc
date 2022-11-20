@@ -5,30 +5,25 @@
 namespace cle
 {
 
-SumZProjectionKernel::SumZProjectionKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "sum_z_projection",
-            {"src", "dst"}
-    )
+SumZProjectionKernel::SumZProjectionKernel(const ProcessorPointer & device)
+  : Operation(device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
-}    
-    
-void SumZProjectionKernel::SetInput(Object& t_x)
-{
-    this->AddObject(t_x, "src");
+  std::string cl_header = {
+#include "cle_sum_z_projection.h"
+  };
+  this->SetSource("sum_z_projection", cl_header);
 }
 
-void SumZProjectionKernel::SetOutput(Object& t_x)
+auto
+SumZProjectionKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("src", object);
 }
 
-void SumZProjectionKernel::Execute()
+auto
+SumZProjectionKernel::SetOutput(const Image & object) -> void
 {
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+  this->AddParameter("dst", object);
 }
 
 } // namespace cle

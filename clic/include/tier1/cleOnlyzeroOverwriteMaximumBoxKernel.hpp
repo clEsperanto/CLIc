@@ -1,27 +1,37 @@
 
-#ifndef __cleOnlyzeroOverwriteMaximumBoxKernel_hpp
-#define __cleOnlyzeroOverwriteMaximumBoxKernel_hpp
+#ifndef __TIER1_CLEONLYZEROOVERWRITEMAXIMUMBOXKERNEL_HPP
+#define __TIER1_CLEONLYZEROOVERWRITEMAXIMUMBOXKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class OnlyzeroOverwriteMaximumBoxKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_onlyzero_overwrite_maximum_box.h" 
-        };
 
+class OnlyzeroOverwriteMaximumBoxKernel : public Operation
+{
 public:
-    OnlyzeroOverwriteMaximumBoxKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput1(Object&);
-    void SetOutput2(Object&);
-    void Execute();
+  explicit OnlyzeroOverwriteMaximumBoxKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput1(const Image & object) -> void;
+  auto
+  SetOutput2(const Image & object) -> void;
 };
+
+inline auto
+OnlyzeroOverwriteMaximumBoxKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                                       const Image &                           src,
+                                       const Image &                           dst1,
+                                       const Image &                           dst2) -> void
+{
+  OnlyzeroOverwriteMaximumBoxKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput1(dst1);
+  kernel.SetOutput2(dst2);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleOnlyzeroOverwriteMaximumBoxKernel_hpp
+#endif // __TIER1_CLEONLYZEROOVERWRITEMAXIMUMBOXKERNEL_HPP

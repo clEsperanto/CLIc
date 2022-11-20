@@ -1,82 +1,241 @@
 
-#include <random>
 #include "clesperanto.hpp"
-#include "utils.hpp"
 
-template<class type>
-std::array<size_t,3> generate_data(std::vector<type>& arr_1, 
-                                   std::vector<type>& valid, size_t width, size_t height, size_t depth, type scalar)
+#include <algorithm>
+#include <random>
+
+template <class type>
+auto
+run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) -> bool
 {
-    arr_1.resize(width*height*depth);
-    valid.resize(width*height*depth);
-    std::fill(valid.begin(), valid.end(), scalar);
-    for (auto it1 = arr_1.begin(); it1 != arr_1.end(); ++it1)
-    {
-        *it1 = static_cast<type>((int) rand() % 10);
-    }
-    return std::array<size_t,3> {width, height, depth};
+  std::vector<type>                         input(shape[0] * shape[1] * shape[2]);
+  std::vector<type>                         valid(shape[0] * shape[1] * shape[2]);
+  static std::uniform_int_distribution<int> distribution(0, 100);
+  static std::default_random_engine         generator;
+  std::generate(input.begin(), input.end(), []() { return static_cast<type>(distribution(generator)); });
+  std::fill(valid.begin(), valid.end(), static_cast<type>(10.0F));
+
+  cle::Clesperanto cle;
+  cle.GetDevice()->WaitForKernelToFinish();
+  auto gpu_input = cle.Push<type>(input, shape, mem_type);
+  cle.Set(gpu_input, 10);
+  auto output = cle.Pull<type>(gpu_input);
+
+  return std::equal(output.begin(), output.end(), valid.begin());
 }
 
-template<class type>
-std::vector<type> run_kernel_with_buffer(std::vector<type>& arr_1, std::array<size_t,3>& shape, type scalar)
+auto
+main(int argc, char ** argv) -> int
 {
-    cle::Clesperanto cle;
-    cle.Ressources()->SetWaitForKernelToFinish(true);
-    auto ocl_output = cle.Push<type>(arr_1, shape);
-    cle.Set(ocl_output, scalar);  
-    auto output = cle.Pull<type>(ocl_output);  
-    return output; 
-}
+  if (!run_test<float>({ 5, 1, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
 
-template<class type>
-std::vector<type> run_kernel_with_image(std::vector<type>& arr_1, std::array<size_t,3>& shape, type scalar)
-{
-    cle::Clesperanto cle;
-    cle.Ressources()->SetWaitForKernelToFinish(true);
-    auto ocl_output = cle.Push<type>(arr_1, shape, "image");
-    cle.Set(ocl_output, scalar);  
-    auto output = cle.Pull<type>(ocl_output);  
-    return output; 
-}
+  if (!run_test<signed int>({ 5, 1, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
 
-template<class type>
-bool test(size_t width, size_t height, size_t depth)
-{
-    type scalar = static_cast<type>(rand() % 100);
-    std::vector<type> arr_1, valid;
-    std::array<size_t,3> shape = generate_data<type>(arr_1, valid, width, height, depth, scalar);
-    auto output_buffer = run_kernel_with_buffer<type>(arr_1, shape, scalar);
-    if (IsDifferent(output_buffer, valid))
-    {
-        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using buffer ... FAILED! " << std::endl;
-        return true;
-    }
-    auto output_image  = run_kernel_with_image<type>(arr_1, shape, scalar);
-    if (IsDifferent(output_image, valid))
-    {
-        std::cerr << "kernel ("<<width<<","<<height<<","<<depth<<") using image ... FAILED! " << std::endl;
-        return true;
-    }
-    return false;
-}
+  if (!run_test<unsigned int>({ 5, 1, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
 
-int main(int argc, char **argv)
-{
-    if (test<float>(10, 5, 2))
-    {
-        std::cerr << "Set kernel 3d ... FAILED! " << std::endl;
-        return EXIT_FAILURE;
-    }
-    if (test<float>(10, 5, 1))
-    {
-        std::cerr << "Set kernel 2d ... FAILED! " << std::endl;
-        return EXIT_FAILURE;
-    }
-    if (test<float>(10, 1, 1))
-    {        
-        std::cerr << "Set kernel 1d ... FAILED! " << std::endl;
-        return EXIT_FAILURE;
-    }
-    std::cout << "Set kernel test ... PASSED! " << std::endl;
-    return EXIT_SUCCESS;
+  if (!run_test<signed short>({ 5, 1, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<unsigned short>({ 5, 1, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<signed char>({ 5, 1, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<unsigned char>({ 5, 1, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<float>({ 5, 3, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<signed int>({ 5, 3, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<unsigned int>({ 5, 3, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<signed short>({ 5, 3, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<unsigned short>({ 5, 3, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<signed char>({ 5, 3, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<unsigned char>({ 5, 3, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<float>({ 5, 3, 2 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<signed int>({ 5, 3, 2 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<unsigned int>({ 5, 3, 2 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<signed short>({ 5, 3, 2 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<unsigned short>({ 5, 3, 2 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<signed char>({ 5, 3, 2 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<unsigned char>({ 5, 3, 2 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  // if (!run_test<float>({ 5, 1, 1 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<signed int>({ 5, 1, 1 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<unsigned int>({ 5, 1, 1 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<signed short>({ 5, 1, 1 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<unsigned short>({ 5, 1, 1 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<signed char>({ 5, 1, 1 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<unsigned char>({ 5, 1, 1 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<float>({ 5, 3, 1 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<signed int>({ 5, 3, 1 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<unsigned int>({ 5, 3, 1 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<signed short>({ 5, 3, 1 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<unsigned short>({ 5, 3, 1 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<signed char>({ 5, 3, 1 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<unsigned char>({ 5, 3, 1 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<float>({ 5, 3, 2 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<signed int>({ 5, 3, 2 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<unsigned int>({ 5, 3, 2 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<signed short>({ 5, 3, 2 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<unsigned short>({ 5, 3, 2 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<signed char>({ 5, 3, 2 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  // if (!run_test<unsigned char>({ 5, 3, 2 }, cle::IMAGE))
+  // {
+  // return EXIT_FAILURE;
+  // }
+
+  return EXIT_SUCCESS;
 }

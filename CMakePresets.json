@@ -1,0 +1,104 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 20,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "base",
+            "description": "Sets build and install directory",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/builds/${presetName}",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}"
+            },
+            "warnings": {
+                "dev": false
+            }
+        },
+        {
+            "name": "ninja-multi",
+            "description": "Sets ninja multi-configuration",
+            "inherits": [
+                "base"
+            ],
+            "generator": "Ninja Multi-Config"
+        },
+        {
+            "name": "ninja-multi-vcpkg",
+            "description": "Sets ninja multi-configuration",
+            "inherits": [
+                "base"
+            ],
+            "generator": "Ninja Multi-Config",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+                }
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "core-build",
+            "configurePreset": "base",
+            "description": "inherit environment from base configuration",
+            "hidden": true,
+            "jobs": 8
+        },
+        {
+            "name": "release-ninja-build",
+            "configurePreset": "ninja-multi",
+            "description": "release build",
+            "inherits": "core-build",
+            "configuration": "Release"
+        },
+        {
+            "name": "debug-ninja-build",
+            "configurePreset": "ninja-multi",
+            "description": "release build",
+            "inherits": "core-build",
+            "configuration": "Debug"
+        },
+        {
+            "name": "release-ninja-multi-vcpkg",
+            "configurePreset": "ninja-multi-vcpkg",
+            "description": "ninja release build",
+            "inherits": "core-build",
+            "configuration": "Release"
+        },
+        {
+            "name": "debug-ninja-multi-vcpkg",
+            "configurePreset": "ninja-multi-vcpkg",
+            "description": "ninja debug build",
+            "inherits": "core-build",
+            "configuration": "Debug"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "ninja-multi-release",
+            "configurePreset": "ninja-multi",
+            "configuration": "Release"
+        },
+        {
+            "name": "ninja-multi-debug",
+            "configurePreset": "ninja-multi",
+            "configuration": "debug"
+        },
+        {
+            "name": "release-ninja-multi-vcpkg",
+            "configurePreset": "ninja-multi-vcpkg",
+            "configuration": "Release"
+        },
+        {
+            "name": "debug-ninja-multi-vcpkg",
+            "configurePreset": "ninja-multi-vcpkg",
+            "configuration": "debug"
+        }
+    ]
+}

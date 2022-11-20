@@ -5,35 +5,31 @@
 namespace cle
 {
 
-ReplaceIntensitiesKernel::ReplaceIntensitiesKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "replace_intensities",
-            {"src0", "src1", "dst"}
-    )
+ReplaceIntensitiesKernel::ReplaceIntensitiesKernel(const ProcessorPointer & device)
+  : Operation(device, 3)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
-} 
-
-void ReplaceIntensitiesKernel::SetInput(Object& t_x)
-{
-    this->AddObject(t_x, "src0");
+  std::string cl_header = {
+#include "cle_replace_intensities.h"
+  };
+  this->SetSource("replace_intensities", cl_header);
 }
 
-void ReplaceIntensitiesKernel::SetOutput(Object& t_x)
+auto
+ReplaceIntensitiesKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("src0", object);
 }
 
-void ReplaceIntensitiesKernel::SetMap(Object& t_x)
+auto
+ReplaceIntensitiesKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "src1");
+  this->AddParameter("dst", object);
 }
 
-void ReplaceIntensitiesKernel::Execute()
+auto
+ReplaceIntensitiesKernel::SetMap(const Image & object) -> void
 {
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+  this->AddParameter("src1", object);
 }
 
 } // namespace cle

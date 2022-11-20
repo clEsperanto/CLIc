@@ -1,0 +1,10 @@
+{
+    "name": "clic",
+    "version-string": "0.6.0",
+    "homepage": "https://github.com/clEsperanto",
+    "description": "GPU-accelerated image processing library",
+    "license": "BSD-3-Clause",
+    "dependencies": [
+        "opencl"
+    ]
+}

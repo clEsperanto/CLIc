@@ -1,27 +1,37 @@
 
-#ifndef __cleBinaryXorKernel_hpp
-#define __cleBinaryXorKernel_hpp
+#ifndef __TIER1_CLEBINARYXORKERNEL_HPP
+#define __TIER1_CLEBINARYXORKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class BinaryXorKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_binary_xor.h" 
-        };
 
+class BinaryXorKernel : public Operation
+{
 public:
-    BinaryXorKernel(std::shared_ptr<GPU>);
-    void SetInput1(Object&);
-    void SetInput2(Object&);
-    void SetOutput(Object&);
-    void Execute();
+  explicit BinaryXorKernel(const ProcessorPointer & device);
+  auto
+  SetInput1(const Image & object) -> void;
+  auto
+  SetInput2(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
 };
+
+inline auto
+BinaryXorKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                     const Image &                           src1,
+                     const Image &                           src2,
+                     const Image &                           dst) -> void
+{
+  BinaryXorKernel kernel(device);
+  kernel.SetInput1(src1);
+  kernel.SetInput2(src2);
+  kernel.SetOutput(dst);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleBinaryXorKernel_hpp
+#endif // __TIER1_CLEBINARYXORKERNEL_HPP

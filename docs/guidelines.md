@@ -2,7 +2,7 @@
 
 ## Requierements
 
-1. A C++ compiler, with c++11 enable
+1. A C++ compiler
 2. [CMake](https://cmake.org/download/), version 3.20 or higher.
 3. [OpenCL](https://www.khronos.org/opencl/)
 

@@ -1,26 +1,31 @@
 
-#ifndef __cleBinaryNotKernel_hpp
-#define __cleBinaryNotKernel_hpp
+#ifndef __TIER1_CLEBINARYNOTKERNEL_HPP
+#define __TIER1_CLEBINARYNOTKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class BinaryNotKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_binary_not.h" 
-        };
 
+class BinaryNotKernel : public Operation
+{
 public:
-    BinaryNotKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void Execute();
+  explicit BinaryNotKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
 };
+
+inline auto
+BinaryNotKernel_Call(const std::shared_ptr<cle::Processor> & device, const Image & src, const Image & dst) -> void
+{
+  BinaryNotKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleBinaryNotKernel_hpp
+#endif // __TIER1_CLEBINARYNOTKERNEL_HPP

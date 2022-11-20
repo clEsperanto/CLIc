@@ -1,27 +1,37 @@
 
-#ifndef __cleEqualConstantKernel_hpp
-#define __cleEqualConstantKernel_hpp
+#ifndef __TIER1_CLEEQUALCONSTANTKERNEL_HPP
+#define __TIER1_CLEEQUALCONSTANTKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class EqualConstantKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_equal_constant.h" 
-        };
 
+class EqualConstantKernel : public Operation
+{
 public:
-    EqualConstantKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetScalar(float);
-    void Execute();
+  explicit EqualConstantKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
+  auto
+  SetConstant(const float & value) -> void;
 };
+
+inline auto
+EqualConstantKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                         const Image &                           src,
+                         const Image &                           dst,
+                         const float &                           value) -> void
+{
+  EqualConstantKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.SetConstant(value);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleEqualConstantKernel_hpp
+#endif // __TIER1_CLEEQUALCONSTANTKERNEL_HPP

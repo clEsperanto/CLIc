@@ -1,65 +1,64 @@
 
 #include "cleTopHatBoxKernel.hpp"
 
-#include "cleMinimumBoxKernel.hpp"
-#include "cleMaximumBoxKernel.hpp"
 #include "cleAddImagesWeightedKernel.hpp"
+#include "cleMaximumBoxKernel.hpp"
+#include "cleMemory.hpp"
+#include "cleMinimumBoxKernel.hpp"
 
 namespace cle
 {
 
-TopHatBoxKernel::TopHatBoxKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "top_hat_box",
-            {"src" , "dst"}
-    )
-{}    
+TopHatBoxKernel::TopHatBoxKernel(const ProcessorPointer & device)
+  : Operation(device, 2)
+{}
 
-void TopHatBoxKernel::SetInput(Object& t_x)
+auto
+TopHatBoxKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "src");
+  this->AddParameter("src", object);
 }
 
-void TopHatBoxKernel::SetOutput(Object& t_x)
+auto
+TopHatBoxKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("dst", object);
 }
 
-void TopHatBoxKernel::SetRadius(int t_x, int t_y, int t_z)
+auto
+TopHatBoxKernel::SetRadius(const int & radius_x, const int & radius_y, const int & radius_z) -> void
 {
-    this->m_x = t_x;
-    this->m_y = t_y;
-    this->m_z = t_z;
+  this->radius_ = { radius_x, radius_y, radius_z };
 }
 
-void TopHatBoxKernel::Execute()
+auto
+TopHatBoxKernel::Execute() -> void
 {
-    // get I/O pointers
-    auto src = this->GetParameter<Object>("src");
-    auto dst = this->GetParameter<Object>("dst");
+  auto src = this->GetImage("src");
+  auto dst = this->GetImage("dst");
 
-    auto temp1 = this->m_gpu->Create<float>(src->Shape());
-    auto temp2 = this->m_gpu->Create<float>(src->Shape());
+  auto temp1 = Memory::AllocateMemory(this->GetDevice(), src->Shape(), dst->GetDataType(), dst->GetMemoryType());
+  auto temp2 = Memory::AllocateMemory(this->GetDevice(), src->Shape(), dst->GetDataType(), dst->GetMemoryType());
 
-    MinimumBoxKernel minimum(this->m_gpu);
-    minimum.SetInput(*src);
-    minimum.SetOutput(temp1);
-    minimum.SetRadius(m_x, m_y, m_z);
-    minimum.Execute();
+  MinimumBoxKernel minimum(this->GetDevice());
+  minimum.SetInput(*src);
+  minimum.SetOutput(temp1);
+  minimum.SetRadius(this->radius_[0], this->radius_[1], this->radius_[2]);
+  minimum.Execute();
 
-    MaximumBoxKernel maximum(this->m_gpu);
-    maximum.SetInput(temp1);
-    maximum.SetOutput(temp2);
-    maximum.SetRadius(m_x, m_y, m_z);
-    maximum.Execute();
+  MaximumBoxKernel maximum(this->GetDevice());
+  maximum.SetInput(temp1);
+  maximum.SetOutput(temp2);
+  maximum.SetRadius(this->radius_[0], this->radius_[1], this->radius_[2]);
+  maximum.Execute();
 
-    AddImagesWeightedKernel add(this->m_gpu);
-    add.SetInput1(*src);
-    add.SetInput2(temp2);
-    add.SetOutput(*dst);
-    add.SetFactor1(1);
-    add.SetFactor2(-1);
-    add.Execute();
+  AddImagesWeightedKernel add(this->GetDevice());
+  add.SetInput1(*src);
+  add.SetInput2(temp2);
+  add.SetOutput(*dst);
+  add.SetFactor1(1);
+  add.SetFactor2(-1);
+  add.Execute();
 }
 
 } // namespace cle

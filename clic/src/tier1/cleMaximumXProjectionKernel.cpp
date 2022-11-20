@@ -1,33 +1,27 @@
-
 #include "cleMaximumXProjectionKernel.hpp"
 
 namespace cle
 {
 
-MaximumXProjectionKernel::MaximumXProjectionKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu,
-            "maximum_x_projection",
-            {"src", "dst"}
-    )
+MaximumXProjectionKernel::MaximumXProjectionKernel(const ProcessorPointer & device)
+  : Operation(device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+  std::string cl_header = {
+#include "cle_maximum_x_projection.h"
+  };
+  this->SetSource("maximum_x_projection", cl_header);
 }
 
-void MaximumXProjectionKernel::SetInput(Object& t_x)
+auto
+MaximumXProjectionKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "src");
+  this->AddParameter("src", object);
 }
 
-void MaximumXProjectionKernel::SetOutput(Object& t_x)
+auto
+MaximumXProjectionKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
-}
-
-void MaximumXProjectionKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
+  this->AddParameter("dst", object);
 }
 
 } // namespace cle

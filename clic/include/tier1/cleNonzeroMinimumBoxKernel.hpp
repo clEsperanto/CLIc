@@ -1,28 +1,38 @@
 
 
-#ifndef __cleNonzeroMinimumBoxKernel_hpp
-#define __cleNonzeroMinimumBoxKernel_hpp
+#ifndef __TIER1_CLENONZEROMINIMUMBOXKERNEL_HPP
+#define __TIER1_CLENONZEROMINIMUMBOXKERNEL_HPP
 
-#include "cleKernel.hpp"
+#include "cleOperation.hpp"
 
 namespace cle
 {
-    
-class NonzeroMinimumBoxKernel : public Kernel
-{
-private:
-    std::string m_OclHeader = {
-        #include "cle_nonzero_minimum_box.h" 
-        };
 
+class NonzeroMinimumBoxKernel : public Operation
+{
 public:
-    NonzeroMinimumBoxKernel(std::shared_ptr<GPU>);
-    void SetInput(Object&);
-    void SetOutput(Object&);
-    void SetOutputFlag(Object&);
-    void Execute();
+  explicit NonzeroMinimumBoxKernel(const ProcessorPointer & device);
+  auto
+  SetInput(const Image & object) -> void;
+  auto
+  SetOutput(const Image & object) -> void;
+  auto
+  SetOutputFlag(const Image & object) -> void;
 };
+
+inline auto
+NonzeroMinimumBoxKernel_Call(const std::shared_ptr<cle::Processor> & device,
+                             const Image &                           src,
+                             const Image &                           dst,
+                             const Image &                           flag) -> void
+{
+  NonzeroMinimumBoxKernel kernel(device);
+  kernel.SetInput(src);
+  kernel.SetOutput(dst);
+  kernel.SetOutputFlag(flag);
+  kernel.Execute();
+}
 
 } // namespace cle
 
-#endif // __cleNonzeroMinimumBoxKernel_hpp
+#endif // __TIER1_CLENONZEROMINIMUMBOXKERNEL_HPP

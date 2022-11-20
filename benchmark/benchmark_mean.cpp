@@ -1,60 +1,66 @@
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
 
 #include "clesperanto.hpp"
 
 #include <benchmark_base.cpp>
 
-using std::string;
-using std::vector;
-using std::array;
-using std::cout;
-
 class MeanBenchmark : public BenchmarkBase
 {
 protected:
-    cle::Clesperanto cle;
-    cle::Object gpuInput, gpuOutput;
+  cle::Clesperanto cle;
+  cle::Image       gpuInput;
+  cle::Image       gpuOutput;
 
-    virtual void Setup()
-    {
-        vector<float> inputData(dataWidth * dataWidth);
-        array<size_t,3> dim{{dataWidth, dataWidth, 1}};
+  auto
+  Setup() -> void override
+  {
+    std::vector<float>    inputData(dataWidth * dataWidth);
+    std::array<size_t, 3> dim{ { dataWidth, dataWidth, 1 } };
 
-        cle.Ressources()->SetWaitForKernelToFinish(true);
+    cle.GetDevice()->WaitForKernelToFinish();
 
-        
-        // Initialise device memory and push from host
-        gpuInput = cle.Push<float>(inputData, dim);
-        gpuOutput = cle.Create<float>(dim);
-    }
+    // Initialise device memory and push from host
+    gpuInput = cle.Push<float>(inputData, dim);
+    gpuOutput = cle.Create<float>(dim);
+  }
 
-    virtual void Iteration()
-    {
-        cle.MeanBox(gpuInput, gpuOutput, 4, 4);
-    }
+  auto
+  Iteration() -> void override
+  {
+    cle.MeanBox(gpuInput, gpuOutput, 4, 4);
+  }
 
-    virtual void Teardown() {}
+  auto
+  Teardown() -> void override
+  {}
 
 public:
-    size_t dataWidth;
-    MeanBenchmark() : cle(cle::Clesperanto()){}
-    virtual ~MeanBenchmark(){}
+  size_t dataWidth = 0;
+
+  MeanBenchmark()
+    : cle(cle::Clesperanto())
+  {}
+
+  ~MeanBenchmark() = default;
 };
 
-int main(int argc, char** argv) {
-    MeanBenchmark d;
-    d.dataWidth = 1 << 10;
+auto
+main(int argc, char ** argv) -> int
+{
+  MeanBenchmark d;
+  d.dataWidth = 1 << 10;
 
-    d.iterationWarmupCount = 18;
+  d.iterationWarmupCount = 18;
 
-    if (argc >= 2) {
-        d.dataWidth = std::stoi(argv[1]);
-        cout << "using " << d.dataWidth * d.dataWidth * sizeof(float) << " bytes memory" << endl;
-    }
+  if (argc >= 2)
+  {
+    d.dataWidth = std::stoi(argv[1]);
+    std::cout << "using " << d.dataWidth * d.dataWidth * sizeof(float) << " bytes memory" << std::endl;
+  }
 
-    d.Run();
+  d.Run();
 
-    return 0;
+  return 0;
 }

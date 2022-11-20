@@ -4,29 +4,25 @@
 namespace cle
 {
 
-CopyKernel::CopyKernel(std::shared_ptr<GPU> t_gpu) : 
-    Kernel( t_gpu, 
-            "copy",
-            {"src" , "dst"}
-    )
+CopyKernel::CopyKernel(const ProcessorPointer & device)
+  : Operation(device, 2)
 {
-    this->m_Sources.insert({this->m_KernelName, this->m_OclHeader});
+  std::string cl_header = {
+#include "cle_copy.h"
+  };
+  this->SetSource("copy", cl_header);
 }
 
-void CopyKernel::SetInput(Object& t_x)
+auto
+CopyKernel::SetInput(const Image & object) -> void
 {
-    this->AddObject(t_x, "src");
+  this->AddParameter("src", object);
 }
 
-void CopyKernel::SetOutput(Object& t_x)
+auto
+CopyKernel::SetOutput(const Image & object) -> void
 {
-    this->AddObject(t_x, "dst");
+  this->AddParameter("dst", object);
 }
 
-void CopyKernel::Execute()
-{
-    this->BuildProgramKernel();
-    this->SetArguments();
-    this->EnqueueKernel();
-}
 } // namespace cle
