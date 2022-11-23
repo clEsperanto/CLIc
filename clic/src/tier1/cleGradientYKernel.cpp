@@ -9,7 +9,7 @@ GradientYKernel::GradientYKernel(const ProcessorPointer & device)
   std::string cl_header_ = {
 #include "cle_gradient_y.h"
   };
-  this->SetSource("cle_gradient_y", cl_header_);
+  this->SetSource("gradient_y", cl_header_);
 }
 
 auto
