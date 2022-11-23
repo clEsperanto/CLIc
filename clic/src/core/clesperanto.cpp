@@ -217,6 +217,12 @@ Clesperanto::MeanBox(const Image & source,
 }
 
 auto
+Clesperanto::GradientX(const Image & source, const Image & destination) -> void
+{
+  GradientXKernel_Call(this->GetDevice(), source, destination);
+}
+
+auto
 Clesperanto::Greater(const Image & source1, const Image & source2, const Image & destination) -> void
 {
   GreaterKernel kernel(this->GetDevice());
