@@ -154,6 +154,12 @@ target_link_libraries(gaussian_blur_test PRIVATE CLIc::CLIc)
 set_target_properties(gaussian_blur_test PROPERTIES FOLDER "Tests")
 target_compile_features(gaussian_blur_test PRIVATE cxx_std_17)
 
+add_executable(gradient_z_test gradient_z_test.cpp)
+add_dependencies(gradient_z_test CLIc)
+target_link_libraries(gradient_z_test PRIVATE CLIc::CLIc)
+set_target_properties(gradient_z_test PROPERTIES FOLDER "Tests")
+target_compile_features(gradient_z_test PRIVATE cxx_std_17)
+
 add_executable(greater_constant_test greater_constant_test.cpp)
 add_dependencies(greater_constant_test CLIc)
 target_link_libraries(greater_constant_test PRIVATE CLIc::CLIc)
