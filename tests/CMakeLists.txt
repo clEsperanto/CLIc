@@ -190,6 +190,12 @@ target_link_libraries(mask_test PRIVATE CLIc::CLIc)
 set_target_properties(mask_test PROPERTIES FOLDER "Tests")
 target_compile_features(mask_test PRIVATE cxx_std_17)
 
+add_executable(gradient_x_test gradient_x_test.cpp)
+add_dependencies(gradient_x_test CLIc)
+target_link_libraries(gradient_x_test PRIVATE CLIc::CLIc)
+set_target_properties(gradient_x_test PROPERTIES FOLDER "Tests")
+target_compile_features(gradient_x_test PRIVATE cxx_std_17)
+
 add_executable(masked_voronoi_labeling_test masked_voronoi_labeling_test.cpp)
 add_dependencies(masked_voronoi_labeling_test CLIc)
 target_link_libraries(masked_voronoi_labeling_test PRIVATE CLIc::CLIc)
@@ -421,6 +427,7 @@ add_test(NAME copy_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND co
 add_test(NAME detect_maxima_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND detect_maxima_test)
 add_test(NAME difference_of_gaussian_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND difference_of_gaussian_test)
 add_test(NAME dilate_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND dilate_sphere_test)
+add_test(NAME gradient_x_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gradient_x_test)
 add_test(NAME equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND equal_constant_test)
 add_test(NAME equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND equal_test)
 add_test(NAME erode_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND erode_sphere_test)
@@ -540,4 +547,5 @@ set_tests_properties(absolute_test
     sum_y_projection_test
     sum_z_projection_test
     threshold_otsu_test
+    gradient_x_test
     voronoi_otsu_labeling_test PROPERTIES LABELS "KERNELS" WILL_FAIL FALSE)
