@@ -154,6 +154,12 @@ target_link_libraries(gaussian_blur_test PRIVATE CLIc::CLIc)
 set_target_properties(gaussian_blur_test PROPERTIES FOLDER "Tests")
 target_compile_features(gaussian_blur_test PRIVATE cxx_std_17)
 
+add_executable(gradient_y_test gradient_y_test.cpp)
+add_dependencies(gradient_y_test CLIc)
+target_link_libraries(gradient_y_test PRIVATE CLIc::CLIc)
+set_target_properties(gradient_y_test PROPERTIES FOLDER "Tests")
+target_compile_features(gradient_y_test PRIVATE cxx_std_17)
+
 add_executable(greater_constant_test greater_constant_test.cpp)
 add_dependencies(greater_constant_test CLIc)
 target_link_libraries(greater_constant_test PRIVATE CLIc::CLIc)
@@ -427,6 +433,7 @@ add_test(NAME erode_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} CO
 add_test(NAME extend_labeling_via_voronoi_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND extend_labeling_via_voronoi_test)
 add_test(NAME flag_existing_labels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND flag_existing_labels_test)
 add_test(NAME gaussian_blur_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gaussian_blur_test)
+add_test(NAME gradient_y_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gradient_y_test)
 add_test(NAME greater_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_constant_test)
 add_test(NAME greater_or_equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_or_equal_constant_test)
 add_test(NAME greater_or_equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_or_equal_test)
@@ -500,6 +507,7 @@ set_tests_properties(absolute_test
     extend_labeling_via_voronoi_test
     flag_existing_labels_test
     gaussian_blur_test
+    gradient_y_test
     greater_constant_test
     greater_or_equal_constant_test
     greater_or_equal_test
