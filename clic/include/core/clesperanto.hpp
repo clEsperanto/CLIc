@@ -146,6 +146,9 @@ public:
   GradientX(const Image & source, const Image & destination) -> void;
 
   auto
+  GradientY(const Image & source, const Image & destination) -> void;
+
+  auto
   Greater(const Image & source1, const Image & source2, const Image & destination) -> void;
 
   auto
