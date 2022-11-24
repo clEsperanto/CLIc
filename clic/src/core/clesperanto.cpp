@@ -169,7 +169,6 @@ auto
 Clesperanto::GradientZ(const Image & source, const Image & destination) -> void
 {
   GradientZKernel_Call(this->GetDevice(), source, destination);
-
 }
 
 auto
