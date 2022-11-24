@@ -164,6 +164,13 @@ Clesperanto::EqualConstant(const Image & source, const Image & destination, cons
   kernel.Execute();
 }
 
+
+auto
+Clesperanto::GradientZ(const Image & source, const Image & destination) -> void
+{
+  GradientZKernel_Call(this->GetDevice(), source, destination);
+}
+
 auto
 Clesperanto::GaussianBlur(const Image & source,
                           const Image & destination,
