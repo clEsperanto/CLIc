@@ -30,7 +30,7 @@ CustomKernel_Call(const std::shared_ptr<cle::Processor> & device,
 {
   CustomKernel kernel(device, filename, name, images.size() + scalars.size());
   kernel.AddImages(images);
-  kernel.AddScalars(images);
+  kernel.AddScalars(scalars);
   kernel.Execute();
 }
 

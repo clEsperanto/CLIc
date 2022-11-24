@@ -22,7 +22,7 @@ CustomKernel::AddImages(const std::map<std::string, Image> & images) -> void
 {
   for (auto ite = images.begin(); ite != images.end(); ite++)
   {
-    kernel.AddParameter(ite->first, ite->second);
+    this->AddParameter(ite->first, ite->second);
   }
 }
 
@@ -31,7 +31,7 @@ CustomKernel::AddScalars(const std::map<std::string, float> & scalars) -> void
 {
   for (auto ite = scalars.begin(); ite != scalars.end(); ite++)
   {
-    kernel.AddParameter(ite->first, ite->second);
+    this->AddParameter(ite->first, ite->second);
   }
 }
 
