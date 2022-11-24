@@ -143,6 +143,9 @@ public:
                const float & sigma_z = 0) -> void;
 
   auto
+  GradientX(const Image & source, const Image & destination) -> void;
+
+  auto
   GradientY(const Image & source, const Image & destination) -> void;
 
   auto
