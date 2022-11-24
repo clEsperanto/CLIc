@@ -9,7 +9,7 @@ auto
 run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) -> bool
 {
   std::vector<type> input = { 0, 0, 0, 0, 1, 0, 0, 0, 0 };
-  std::vector<type> valid = { 0, 0, 0, -1, 0, 1, 0, 0, 0 };
+  std::vector<type> valid = { 0, 0, 0, 1, 0, -1, 0, 0, 0 };
 
   cle::Clesperanto cle;
   cle.GetDevice()->WaitForKernelToFinish();
@@ -17,6 +17,13 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
   auto gpu_output = cle.Create<type>(shape, mem_type);
   cle.GradientX(gpu_input, gpu_output);
   auto output = cle.Pull<type>(gpu_output);
+
+  for (auto && i : output)
+  {
+    std::cout << i << " ";
+  }
+
+
   return std::equal(output.begin(), output.end(), valid.begin());
 }
 
