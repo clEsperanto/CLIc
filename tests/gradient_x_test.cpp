@@ -18,12 +18,6 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
   cle.GradientX(gpu_input, gpu_output);
   auto output = cle.Pull<type>(gpu_output);
 
-  for (auto && i : output)
-  {
-    std::cout << i << " ";
-  }
-
-
   return std::equal(output.begin(), output.end(), valid.begin());
 }
 
