@@ -229,6 +229,12 @@ Clesperanto::GradientY(const Image & source, const Image & destination) -> void
 }
 
 auto
+Clesperanto::GradientZ(const Image & source, const Image & destination) -> void
+{
+  GradientZKernel_Call(this->GetDevice(), source, destination);
+}
+
+auto
 Clesperanto::Greater(const Image & source1, const Image & source2, const Image & destination) -> void
 {
   GreaterKernel kernel(this->GetDevice());
