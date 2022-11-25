@@ -7,7 +7,7 @@
 
 template <class type>
 auto
-run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) -> bool
+run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type, const std::string & path) -> bool
 {
   type              value = static_cast<type>(rand() % 10);
   std::vector<type> input(shape[0] * shape[1] * shape[2]);
@@ -21,11 +21,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
   auto gpu_input = cle.Push<type>(input, shape, mem_type);
   auto gpu_output = cle.Create<type>(shape, mem_type);
 
-  cle::CustomKernel_Call(cle.GetDevice(),
-                         "./thirdparty/clesperanot-kernels/kernels/absolute.cl",
-                         "absolute",
-                         { { "src", gpu_input }, { "dst", gpu_output } },
-                         {});
+  cle::CustomKernel_Call(cle.GetDevice(), path, "absolute", { { "src", gpu_input }, { "dst", gpu_output } }, {});
 
   auto output = cle.Pull<type>(gpu_output);
 
@@ -35,7 +31,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
 auto
 main(int argc, char ** argv) -> int
 {
-  if (!run_test<float>({ 10, 1, 1 }, cle::BUFFER))
+  if (!run_test<float>({ 10, 1, 1 }, cle::BUFFER, argv[1]))
   {
     return EXIT_FAILURE;
   }
