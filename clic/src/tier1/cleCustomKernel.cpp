@@ -13,7 +13,11 @@ CustomKernel::CustomKernel(const ProcessorPointer & device,
   : Operation(device, nb_parameters)
 {
   std::ifstream ifs(filename);
-  std::string   ocl_source((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
+  if (ifs.fail())
+  {
+    std::cout << "Error in loading custom kernel, could not find file " << filename << std::endl;
+  }
+  std::string ocl_source((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
   this->SetSource(name, ocl_source);
 }
 
