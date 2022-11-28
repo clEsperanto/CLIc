@@ -411,7 +411,7 @@ add_test(NAME core_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COM
 add_test(NAME core_buffer_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/core_buffer_test)
 add_test(NAME core_image_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/core_image_test)
 add_test(NAME core_kernel_test_buffer WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/core_kernel_test buffer)
-add_test(NAME custom_kernel_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/custom_kernel_test "../../thirdparty/clesperanto-kernels/kernels/absolute.cl")
+add_test(NAME custom_kernel_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/custom_kernel_test ${PROJECT_SOURCE_DIR}/thirdparty/clesperanto-kernels/kernels/absolute.cl)
 # add_test(NAME core_kernel_test_image WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/core_kernel_test image)
 add_test(NAME absolute_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND absolute_test)
 add_test(NAME add_image_and_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_and_scalar_test)
