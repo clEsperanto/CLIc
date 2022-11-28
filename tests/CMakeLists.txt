@@ -64,6 +64,12 @@ target_link_libraries(binary_or_test PRIVATE CLIc::CLIc)
 set_target_properties(binary_or_test PROPERTIES FOLDER "Tests")
 target_compile_features(binary_or_test PRIVATE cxx_std_17)
 
+add_executable(custom_kernel_test custom_kernel_test.cpp)
+add_dependencies(custom_kernel_test CLIc)
+target_link_libraries(custom_kernel_test PRIVATE CLIc::CLIc)
+set_target_properties(custom_kernel_test PROPERTIES FOLDER "Tests")
+target_compile_features(custom_kernel_test PRIVATE cxx_std_17)
+
 add_executable(binary_subtract_test binary_subtract_test.cpp)
 add_dependencies(binary_subtract_test CLIc)
 target_link_libraries(binary_subtract_test PRIVATE CLIc::CLIc)
@@ -423,6 +429,7 @@ add_test(NAME core_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COM
 add_test(NAME core_buffer_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/core_buffer_test)
 add_test(NAME core_image_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/core_image_test)
 add_test(NAME core_kernel_test_buffer WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/core_kernel_test buffer)
+add_test(NAME custom_kernel_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/custom_kernel_test ${PROJECT_SOURCE_DIR}/thirdparty/clesperanto-kernels/kernels/absolute.cl)
 # add_test(NAME core_kernel_test_image WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/core_kernel_test image)
 add_test(NAME absolute_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND absolute_test)
 add_test(NAME add_image_and_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_and_scalar_test)
@@ -556,6 +563,7 @@ set_tests_properties(absolute_test
     smaller_or_equal_test
     smaller_test
     sobel_test
+    custom_kernel_test
     sum_all_pixels_test
     sum_reduction_x_test
     sum_x_projection_test
