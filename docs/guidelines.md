@@ -6,7 +6,7 @@
 2. [CMake](https://cmake.org/download/), version 3.20 or higher.
 3. [OpenCL](https://www.khronos.org/opencl/)
 
-## OpenCL
+## OpenCL installation
 
 CLIc rely on both the `FindOpenCL` package provided by CMake to determine the OpenCL library location on the system and the [Khronos OpenCL headers](https://github.com/KhronosGroup/OpenCL-Headers) for compilation.
 Please follow the [instruction to install OpenCL](./opencl_installation.md) before considering using CLIc.
