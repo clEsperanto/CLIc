@@ -10,7 +10,10 @@ updates:
     schedule:
       interval: "weekly"
   
-  # - package-ecosystem: "gitsubmodule" # See documentation for possible values
-  #   directory: "/" # Location of package manifests
-  #   schedule:
-  #     interval: "weekly"
+  - package-ecosystem: "gitsubmodule" # See documentation for possible values
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "weekly"
+    allow:
+      - dependency-name: "ocl-headers"
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
