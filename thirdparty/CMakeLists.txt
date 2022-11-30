@@ -26,17 +26,17 @@ ExternalProject_Add(OpenCL_CLHPP
     CONFIGURE_COMMAND ""
 )
 
-ExternalProject_Get_Property(OpenCL_HEADERS SOURCE_DIR)
-message(STATUS "git opencl header dir: ${SOURCE_DIR}")
-set(OpenCL_HEADERS_DIR "${CMAKE_CURRENT_BINARY_DIR}/OpenCL_headers/" CACHE PATH "Path to opencl headers" FORCE)
+# ExternalProject_Get_Property(OpenCL_HEADERS SOURCE_DIR)
+# message(STATUS "git opencl header dir: ${SOURCE_DIR}")
+# set(OpenCL_HEADERS_DIR "${CMAKE_CURRENT_BINARY_DIR}/OpenCL_headers/" CACHE PATH "Path to opencl headers" FORCE)
 
-ExternalProject_Get_Property(OpenCL_CLHPP SOURCE_DIR)
-message(STATUS "git opencl header dir: ${SOURCE_DIR}")
-set(OpenCL_CLHPP_DIR "${CMAKE_CURRENT_BINARY_DIR}/OpenCL_clhpp/include/" CACHE PATH "Path to opencl clhpp" FORCE)
+# ExternalProject_Get_Property(OpenCL_CLHPP SOURCE_DIR)
+# message(STATUS "git opencl header dir: ${SOURCE_DIR}")
+# set(OpenCL_CLHPP_DIR "${CMAKE_CURRENT_BINARY_DIR}/OpenCL_clhpp/include/" CACHE PATH "Path to opencl clhpp" FORCE)
 
-set(OpenCL_INCLUDE_DIR ${OpenCL_HEADERS_DIR} ${OpenCL_CLHPP_DIR} CACHE PATH "Path to opencl (header and clhpp)" FORCE)
+# set(OpenCL_INCLUDE_DIR ${OpenCL_HEADERS_DIR} ${OpenCL_CLHPP_DIR} CACHE PATH "Path to opencl (header and clhpp)" FORCE)
 
-message(STATUS "git opencl includes: ${OpenCL_INCLUDE_DIR}")
+# message(STATUS "git opencl includes: ${OpenCL_INCLUDE_DIR}")
 
 # set(OpenCL_VERSION "${OpenCL_VERSION_MAJOR}${OpenCL_VERSION_MINOR}0" CACHE STRING "OpenCL version" FORCE)
 set(OpenCL_VERSION "120" CACHE STRING "OpenCL version" FORCE)
