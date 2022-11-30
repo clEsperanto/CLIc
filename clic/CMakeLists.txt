@@ -50,7 +50,7 @@ target_compile_definitions(${LIBRARY_NAME} PUBLIC "${PROJECT_NAME_UPPERCASE}_DEB
 target_compile_features(${LIBRARY_NAME} PUBLIC cxx_std_17)
 
 # Target dependencies
-add_dependencies(${LIBRARY_NAME} generate_kernels_list generate_kernels)
+add_dependencies(${LIBRARY_NAME} generate_kernels_list generate_kernels OpenCL_HEADERS OpenCL_CLHPP)
 
 add_custom_target(
     generate_kernels 
