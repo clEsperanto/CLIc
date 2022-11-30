@@ -14,6 +14,9 @@ file(GLOB_RECURSE OPENCL_FILE_H ${OpenCL_HEADERS_DIR}/*.h)
 file(GLOB_RECURSE OPENCL_FILE_HPP ${OpenCL_CLHPP_DIR}/*.hpp)
 list(APPEND OPENCL_FILE ${OPENCL_FILE_H} ${OPENCL_FILE_HPP})
 
+# message(STATUS ${OPENCL_FILE_H}) 
+# message(STATUS ${OPENCL_FILE_HPP})
+
 # define library target
 add_library(${LIBRARY_NAME} ${SOURCES_FILES})
 
