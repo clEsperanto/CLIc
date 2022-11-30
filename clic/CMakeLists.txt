@@ -72,7 +72,8 @@ list(APPEND INCLUDE_DIR_LIST ${CMAKE_CURRENT_BINARY_DIR}/include)
 # - header location in project: ${CMAKE_CURRENT_BINARY_DIR}/generated_headers
 target_include_directories(${LIBRARY_NAME} PUBLIC
     "$<BUILD_INTERFACE:${INCLUDE_DIR_LIST}>"
-    "$<BUILD_INTERFACE:${OpenCL_INCLUDE_DIR}>"
+    "$<BUILD_INTERFACE:${OpenCL_HEADERS_DIR}>"
+    "$<BUILD_INTERFACE:${OpenCL_CLHPP_DIR}>"
     "$<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}>"
 )
 
