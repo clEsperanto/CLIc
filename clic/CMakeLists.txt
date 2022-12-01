@@ -1,18 +1,17 @@
-ExternalProject_Get_Property(OpenCL_HEADERS SOURCE_DIR)
-message(STATUS "git opencl header dir: ${SOURCE_DIR}")
-set(OpenCL_HEADERS_DIR "${CMAKE_CURRENT_BINARY_DIR}/OpenCL_headers/" CACHE PATH "Path to opencl headers" FORCE)
+# ExternalProject_Get_Property(OpenCL_HEADERS SOURCE_DIR)
+# message(STATUS "git opencl header dir: ${SOURCE_DIR}")
+# set(OpenCL_HEADERS_DIR "${CMAKE_CURRENT_BINARY_DIR}/OpenCL_headers/" CACHE PATH "Path to opencl headers" FORCE)
 
-ExternalProject_Get_Property(OpenCL_CLHPP SOURCE_DIR)
-message(STATUS "git opencl header dir: ${SOURCE_DIR}")
-set(OpenCL_CLHPP_DIR "${CMAKE_CURRENT_BINARY_DIR}/OpenCL_clhpp/include/" CACHE PATH "Path to opencl clhpp" FORCE)
+# ExternalProject_Get_Property(OpenCL_CLHPP SOURCE_DIR)
+# message(STATUS "git opencl header dir: ${SOURCE_DIR}")
+# set(OpenCL_CLHPP_DIR "${CMAKE_CURRENT_BINARY_DIR}/OpenCL_clhpp/include/" CACHE PATH "Path to opencl clhpp" FORCE)
 
-set(OpenCL_INCLUDE_DIR ${OpenCL_HEADERS_DIR} ${OpenCL_CLHPP_DIR} CACHE PATH "Path to opencl (header and clhpp)" FORCE)
+# # set(OpenCL_INCLUDE_DIR ${OpenCL_HEADERS_DIR} ${OpenCL_CLHPP_DIR} CACHE PATH "Path to opencl (header and clhpp)" FORCE)
 
-message(STATUS "git opencl includes: ${OpenCL_INCLUDE_DIR}")
+# # message(STATUS "git opencl includes: ${OpenCL_INCLUDE_DIR}")
 
 
 # Create and configure 'clic.h'
-# - define OpenCL version and includes
 # - define CLIC version
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME_LOWERCASE}.hpp.in"
@@ -20,11 +19,11 @@ configure_file(
     NO_SOURCE_PERMISSIONS @ONLY
 )
 
-# fetch sources (.cpp) and public headers (.hpp)
+# # fetch sources (.cpp) and public headers (.hpp)
 file(GLOB_RECURSE SOURCES_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 file(GLOB_RECURSE HEADERS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/include/core/*.hpp)
-file(GLOB_RECURSE OPENCL_FILE_H ${OpenCL_HEADERS_DIR}/*.h)
-file(GLOB_RECURSE OPENCL_FILE_HPP ${OpenCL_CLHPP_DIR}/*.hpp)
+file(GLOB_RECURSE OPENCL_FILE_H ${OpenCL_HEADERS_SRC_DIR}/*.h)
+file(GLOB_RECURSE OPENCL_FILE_HPP ${OpenCL_CLHPP_SRC_DIR}/*.hpp)
 list(APPEND OPENCL_FILE ${OPENCL_FILE_H} ${OPENCL_FILE_HPP})
 
 # message(STATUS ${OPENCL_FILE_H}) 
@@ -50,7 +49,7 @@ target_compile_definitions(${LIBRARY_NAME} PUBLIC "${PROJECT_NAME_UPPERCASE}_DEB
 target_compile_features(${LIBRARY_NAME} PUBLIC cxx_std_17)
 
 # Target dependencies
-add_dependencies(${LIBRARY_NAME} generate_kernels_list generate_kernels OpenCL_HEADERS OpenCL_CLHPP)
+add_dependencies(${LIBRARY_NAME} generate_kernels_list generate_kernels)
 
 add_custom_target(
     generate_kernels 
@@ -85,8 +84,8 @@ list(APPEND INCLUDE_DIR_LIST ${CMAKE_CURRENT_BINARY_DIR}/include)
 # - header location in project: ${CMAKE_CURRENT_BINARY_DIR}/generated_headers
 target_include_directories(${LIBRARY_NAME} PUBLIC
     "$<BUILD_INTERFACE:${INCLUDE_DIR_LIST}>"
-    "$<BUILD_INTERFACE:${OpenCL_HEADERS_DIR}>"
-    "$<BUILD_INTERFACE:${OpenCL_CLHPP_DIR}>"
+    "$<BUILD_INTERFACE:${OpenCL_HEADERS_SRC_DIR}>"
+    "$<BUILD_INTERFACE:${OpenCL_CLHPP_SRC_DIR}>"
     "$<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}>"
 )
 
