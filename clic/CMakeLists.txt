@@ -1,5 +1,4 @@
 # Create and configure 'clic.h'
-# - define OpenCL version and includes
 # - define CLIC version
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME_LOWERCASE}.hpp.in"
@@ -7,11 +6,11 @@ configure_file(
     NO_SOURCE_PERMISSIONS @ONLY
 )
 
-# fetch sources (.cpp) and public headers (.hpp)
+# # fetch sources (.cpp) and public headers (.hpp)
 file(GLOB_RECURSE SOURCES_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 file(GLOB_RECURSE HEADERS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/include/core/*.hpp)
-file(GLOB_RECURSE OPENCL_FILE_H ${OpenCL_HEADERS_DIR}/*.h)
-file(GLOB_RECURSE OPENCL_FILE_HPP ${OpenCL_CLHPP_DIR}/*.hpp)
+file(GLOB_RECURSE OPENCL_FILE_H ${OpenCL_HEADERS_SRC_DIR}/*.h)
+file(GLOB_RECURSE OPENCL_FILE_HPP ${OpenCL_CLHPP_SRC_DIR}/*.hpp)
 list(APPEND OPENCL_FILE ${OPENCL_FILE_H} ${OPENCL_FILE_HPP})
 
 # define library target
