@@ -1,14 +1,24 @@
 
-## Manage OpenCL Kernels source code
-# define path dir to kernel and preamble from clesperanto kernel git repo.
-set(OCL_KERNELS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/clesperanto-kernels CACHE PATH "Path to opencl kernel files (.cl)" FORCE)
+include(FetchContent)
+set(FETCHCONTENT_BASE_DIR ${CMAKE_CURRENT_BINARY_DIR})
+
+## Manage OpenCL Kernel Sources
+FetchContent_Declare(OpenCL_Kernels
+    GIT_REPOSITORY https://github.com/clEsperanto/clij-opencl-kernels.git
+    GIT_TAG        clesperanto_kernels
+    BUILD_ALWAYS OFF
+    CONFIGURE_COMMAND ""
+)
+
+if(NOT OpenCL_Kernels_POPULATED)
+    FetchContent_Populate(OpenCL_Kernels)
+endif()
+
+set(OCL_KERNELS_DIR ${CMAKE_CURRENT_BINARY_DIR}/opencl_kernels-src CACHE PATH "Path to opencl kernel files (.cl)" FORCE)
 mark_as_advanced(OCL_KERNELS_DIR)
 
 
 ## Manage OpenCL headers source code
-include(FetchContent)
-set(FETCHCONTENT_BASE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-
 FetchContent_Declare(OpenCL_HEADERS
     GIT_REPOSITORY https://github.com/KhronosGroup/OpenCL-Headers.git
     GIT_TAG v2022.09.30

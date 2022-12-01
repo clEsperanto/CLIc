@@ -1,4 +1,0 @@
-
-[submodule "thirdparty/clesperanto-kernels"]
-	path = thirdparty/clesperanto-kernels
-	url = https://github.com/clEsperanto/clij-opencl-kernels.git
