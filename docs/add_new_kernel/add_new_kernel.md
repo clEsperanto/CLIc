@@ -1,6 +1,6 @@
 # Add new kernel to CLIc
 
-All kernel operation in CLIc must inherite from the `Operation` class which define all the major functions needed for running an OpenCL kernel, and must have a valid kernel file `.cl` associated to it. The `Operation` class is defined in [`clic/include/core/cleOperation.hpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/include/core/cleOperation.hpp) and the source code is in [`clic/src/core/cleOperation.cpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/src/core/cleOperation.cpp). The kernel files are located in [clij-opencl-kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/clesperanto_kernels) repository.
+All kernel operations in CLIc must inherite from the `Operation` class which define all the major functions needed for running an OpenCL kernel, and must have a valid kernel file `.cl` associated to it. The `Operation` class is defined in [`clic/include/core/cleOperation.hpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/include/core/cleOperation.hpp) and the source code is in [`clic/src/core/cleOperation.cpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/src/core/cleOperation.cpp). The kernel files are located in [clij-opencl-kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/clesperanto_kernels) repository.
 
 ## Define a new kernel class
 
