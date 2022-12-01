@@ -5,7 +5,7 @@
 [![Codecov](https://codecov.io/gh/clEsperanto/CLIc_prototype/branch/master/graph/badge.svg?token=QRSZHYDFIF)](https://codecov.io/gh/clEsperanto/CLIc_prototype)
 [![License](https://img.shields.io/badge/license-BSD-informational)](https://github.com/clEsperanto/CLIc_prototype/blob/master/LICENSE)
 [![CppStd](https://img.shields.io/badge/cpp--std-c%2B%2B17-blue)](https://en.cppreference.com/w/cpp/17)
-[![OpenCL](https://img.shields.io/badge/OpenCL-1.2%20%7C%202.%202%20%7C3.0-green)](https://www.khronos.org/opencl/)
+[![OpenCL](https://img.shields.io/badge/OpenCL-1.2%20%7C%202.%202%20%7C%203.0-green)](https://www.khronos.org/opencl/)
 [![Website](https://img.shields.io/website?url=http%3A%2F%2Fclesperanto.net)](http://clesperanto.net)
 [![GitHub issues](https://img.shields.io/github/issues-raw/clEsperanto/CLIc_prototype)](https://github.com/clEsperanto/CLIc_prototype/issues)
 [![GitHub stars](https://img.shields.io/github/stars/clEsperanto/CLIc_prototype?style=social)](https://github.com/clEsperanto/CLIc_prototype)
