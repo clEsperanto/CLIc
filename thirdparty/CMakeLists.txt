@@ -33,7 +33,6 @@ endif()
 
 set(OpenCL_HEADERS_SRC_DIR ${CMAKE_CURRENT_BINARY_DIR}/opencl_headers-src CACHE PATH "Path to opencl headers" FORCE)
 set(OpenCL_CLHPP_SRC_DIR ${CMAKE_CURRENT_BINARY_DIR}/opencl_clhpp-src CACHE PATH "Path to opencl clhpp" FORCE)
-# set(OpenCL_INCLUDE_DIR ${OpenCL_HEADERS_SRC_DIR} ${OpenCL_CLHPP_SRC_DIR} CACHE PATH "Path to opencl (header and clhpp)" FORCE)
 set(OpenCL_INCLUDE_DIR ${OpenCL_HEADERS_SRC_DIR} ${OpenCL_CLHPP_SRC_DIR}/include/ CACHE PATH "Path to opencl (header and clhpp)" FORCE)
 
 ## Set OpenCL version to 1.2
