@@ -80,17 +80,10 @@ jobs:
           cmake -D CMAKE_PREFIX_PATH="./OpenCL-Headers/install" -D OPENCL_ICD_LOADER_HEADERS_DIR="./OpenCL-Headers/install/include" -S "./OpenCL-ICD-Loader" -B "./OpenCL-ICD-Loader/build"
           sudo cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
         shell: bash -l {0}
-
-      # - name: test OCL-ICD-Loader
-      #   run: |
-      #     export OCL_ICD_VENDORS="$CONDA/etc/OpenCL/vendors/"
-      #     cd ..
-      #     cd OpenCL-ICD-Loader-build
-      #     ctest --verbose
       
       - uses: actions/checkout@v3
         with:
-          submodules: recursive
+          submodules: true
 
       - name: compile CLIc - linux
         if: matrix.os == 'ubuntu-latest'
