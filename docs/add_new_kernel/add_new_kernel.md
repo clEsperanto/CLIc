@@ -1,12 +1,12 @@
 # Add new kernel to CLIc
 
-All kernel speranto in CLIc must inherite from the `speranto` class which define all the major functions needed for running an OpenCL kernel, and must have a valid kernel file `.cl` associated to it. The `speranto` class is defined in [`clic/include/core/clesperanto.hpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/include/core/clesperanto.hpp) and the source code is in [`clic/src/core/clesperanto.cpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/src/core/clesperanto.cpp). The kernel files are located in [clij-opencl-kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/clesperanto_kernels) repository.
+All kernel operation in CLIc must inherite from the `Operation` class which define all the major functions needed for running an OpenCL kernel, and must have a valid kernel file `.cl` associated to it. The `Operation` class is defined in [`clic/include/core/cleOperation.hpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/include/core/cleOperation.hpp) and the source code is in [`clic/src/core/cleOperation.cpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/src/core/cleOperation.cpp). The kernel files are located in [clij-opencl-kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/clesperanto_kernels) repository.
 
 ## Define a new kernel class
 
-The first step is to define a new class inheriting from `speranto` class, by creating a header file (`.hpp`) and a source file (`.cpp`). The class name must correspond to the kernel name. For example, the `AddImageAndScalarKernel` kernel is defined in [`clic/include/tier1/cleAddImageAndScalarKernel.hpp`]() and the source code is in [`clic/src/tier1/cleAddImageAndScalarKernel.cpp`]().
+The first step is to define a new class inheriting from `Operation` class, by creating a header file (`.hpp`) and a source file (`.cpp`). The class name must correspond to the kernel name. For example, the `AddImageAndScalarKernel` kernel is defined in [`clic/include/tier1/cleAddImageAndScalarKernel.hpp`]() and the source code is in [`clic/src/tier1/cleAddImageAndScalarKernel.cpp`]().
 
-The sperantos are grouped in different tiers, defining their complexity. The `tier1` sperantos are the most basic sperantos, the `tier2` sperantos are more complex sperantos which rely on some `tier1` sperantos. The `tier3` sperantos rely a minima on a `tier2` speranto. The `tier4` on `tier3` and so on.
+The operations are grouped in different tiers, defining their complexity. The `tier1` operations are the most basic operations, the `tier2` operations are more complex operations which rely on some `tier1` operations. The `tier3` operations rely a minima on a `tier2` operation. The `tier4` on `tier3` and so on.
 
 ### __Header file__
 
@@ -18,13 +18,13 @@ First we declare the `AddImageAndScalarKernel` class in a header (`.hpp`) file a
 #ifndef __TIER1_CLEADDIMAGEANDSCALARKERNEL_HPP        // <-- include guard
 #define __TIER1_CLEADDIMAGEANDSCALARKERNEL_HPP        //
 
-#include "clesperanto.hpp"                           // <-- include the speranto class
+#include "cleOperation.hpp"                           // <-- include the Operation class
 
 namespace cle                                         // <-- namespace cle
 {
 
-class AddImageAndScalarKernel : public speranto      // <-- kernel class which inherit 
-{                                                     //     from speranto class
+class AddImageAndScalarKernel : public Operation      // <-- kernel class which inherit 
+{                                                     //     from Operation class
     public:
     /* my class methods */
 }
@@ -87,7 +87,7 @@ From the header file previously created we can see that the `AddImageAndScalarKe
 The constructor is defined as follow:
 ```cpp
 AddImageAndScalarKernel::AddImageAndScalarKernel(const ProcessorPointer & device) : 
-    speranto(device, 3)
+    Operation(device, 3)
 {
   std::string cl_header = {
 #include "cle_add_image_and_scalar.h"
@@ -95,7 +95,7 @@ AddImageAndScalarKernel::AddImageAndScalarKernel(const ProcessorPointer & device
   this->SetSource("add_image_and_scalar", cl_header);
 }
 ```
-This is the most complex methods we will declare for now. The constructor is called when we instanciate the kernel class. To do so we first rely on the mother class `speranto` constructor whic takes two arguments: the `device` on which the kernel will run and the number of arguments of the kernel. In this case we have three arguments: the input image, the output image and the scalar value. Then, to finish the constructor, we need to provide the kernel source code. This is done by calling the `SetSource` method which takes two arguments: the kernel name as it is name in the OpenCL code and the kernel source file. The kernel source file is stored in a string variable `cl_header` which is defined by including a stringify version of the kernel file `.cl`. This assume that the kernel to be compiled is located in the `clij-opencl-kernels` repository.
+This is the most complex methods we will declare for now. The constructor is called when we instanciate the kernel class. To do so we first rely on the mother class `Operation` constructor whic takes two arguments: the `device` on which the kernel will run and the number of arguments of the kernel. In this case we have three arguments: the input image, the output image and the scalar value. Then, to finish the constructor, we need to provide the kernel source code. This is done by calling the `SetSource` method which takes two arguments: the kernel name as it is name in the OpenCL code and the kernel source file. The kernel source file is stored in a string variable `cl_header` which is defined by including a stringify version of the kernel file `.cl`. This assume that the kernel to be compiled is located in the `clij-opencl-kernels` repository.
 
 Once the constructor is done, we can declare the `SetInput` and `SetOutput` functions as follow:
 ```cpp
