@@ -6,14 +6,16 @@ mark_as_advanced(OCL_KERNELS_DIR)
 
 
 ## Manage OpenCL headers source code
-
 include(FetchContent)
+set(FETCHCONTENT_BASE_DIR ${CMAKE_CURRENT_BINARY_DIR})
+
 FetchContent_Declare(OpenCL_HEADERS
     GIT_REPOSITORY https://github.com/KhronosGroup/OpenCL-Headers.git
     GIT_TAG v2022.09.30
     CONFIGURE_COMMAND ""
     BUILD_ALWAYS OFF
     ) 
+
 FetchContent_Declare(OpenCL_CLHPP
     GIT_REPOSITORY https://github.com/KhronosGroup/OpenCL-CLHPP.git
     GIT_TAG v2022.09.30
@@ -24,6 +26,7 @@ FetchContent_Declare(OpenCL_CLHPP
 if(NOT OpenCL_HEADERS_POPULATED)
     FetchContent_Populate(OpenCL_HEADERS)
 endif()
+
 if(NOT OpenCL_CLHPP_POPULATED)
     FetchContent_Populate(OpenCL_CLHPP)
 endif()
