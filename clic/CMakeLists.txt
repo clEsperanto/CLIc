@@ -1,16 +1,3 @@
-# ExternalProject_Get_Property(OpenCL_HEADERS SOURCE_DIR)
-# message(STATUS "git opencl header dir: ${SOURCE_DIR}")
-# set(OpenCL_HEADERS_DIR "${CMAKE_CURRENT_BINARY_DIR}/OpenCL_headers/" CACHE PATH "Path to opencl headers" FORCE)
-
-# ExternalProject_Get_Property(OpenCL_CLHPP SOURCE_DIR)
-# message(STATUS "git opencl header dir: ${SOURCE_DIR}")
-# set(OpenCL_CLHPP_DIR "${CMAKE_CURRENT_BINARY_DIR}/OpenCL_clhpp/include/" CACHE PATH "Path to opencl clhpp" FORCE)
-
-# # set(OpenCL_INCLUDE_DIR ${OpenCL_HEADERS_DIR} ${OpenCL_CLHPP_DIR} CACHE PATH "Path to opencl (header and clhpp)" FORCE)
-
-# # message(STATUS "git opencl includes: ${OpenCL_INCLUDE_DIR}")
-
-
 # Create and configure 'clic.h'
 # - define CLIC version
 configure_file(
@@ -25,8 +12,6 @@ file(GLOB_RECURSE HEADERS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/include/core/*.hpp)
 file(GLOB_RECURSE OPENCL_FILE_H ${OpenCL_HEADERS_SRC_DIR}/*.h)
 file(GLOB_RECURSE OPENCL_FILE_HPP ${OpenCL_CLHPP_SRC_DIR}/*.hpp)
 list(APPEND OPENCL_FILE ${OPENCL_FILE_H} ${OPENCL_FILE_HPP})
-
-message(STATUS ${OPENCL_FILE}) 
 
 # define library target
 add_library(${LIBRARY_NAME} ${SOURCES_FILES})
