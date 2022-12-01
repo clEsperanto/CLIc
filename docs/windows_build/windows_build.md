@@ -2,11 +2,13 @@
 
 ## Requirements
 
-1. [Visual Studio](https://visualstudio.microsoft.com/), e.g. Community edition.
+1. A C/C++ compiler, [Visual Studio](https://visualstudio.microsoft.com/), e.g. Community edition.
 2. [CMake](https://cmake.org/download/), e.g. version 3.20 or higher.
 3. [OpenCL](../opencl_installation.md).
 
-## Source compilation
+## Setting up the environment
+
+First, install the C/C++ compiler. On Windows, this can be done with the following steps:
 
 Download [Visual Studio, e.g. Community edition](https://visualstudio.microsoft.com/)
 
@@ -16,7 +18,11 @@ While installing: Activate Desktop Development C++ build tools
 
 ![img.png](visual_studio_installation.png)
 
-Download and install [CMake, e.g. version 3.20](https://cmake.org/download/)
+Then we need to install CMake. Download the latest version from [here](https://cmake.org/download/) and run the installer.
+
+**IMPORTANT** Make sure to add CMake to the PATH variable during installation.
+
+## Source compilation
 
 Start CMake and configure the **source directory (1)**. Create a "build" directory as sub-folder and select it as **build directory (2)**:
 
@@ -29,7 +35,3 @@ Click on **Generate (4)** and afterwards on Open Project. Visual studio should o
 ![img.png](release_build.png)
 
 Use the menu Build > Build solution to compile the whole project.
-
-## Installation
-
-**WIP**

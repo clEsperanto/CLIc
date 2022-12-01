@@ -66,7 +66,7 @@ cmake -S . -B ./build -D CMAKE_INSTALL_PREFIX=/path/to/installation/folder
 cmake --build ./build --parallel 10 --target install
 ```
 
-You can modify installation location using `-D CMAKE_INSTALL_PREFIX=/path/to/installation/folder`.
+You can modify installation location using `-D CMAKE_INSTALL_PREFIX=/path/to/installation/folder`. If not specify, the default location is `/usr/local`.
 
 CLIc can be uninstall by running the following command
 ```
@@ -76,6 +76,11 @@ cmake --build ./build --target uninstall
 ### Kernels
 CLIc filters rely on the clEsperanto branch of [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels).
 
+# Contributing
+Contributions are very welcome. Before spending effort on coding and filing a pull-request, please get in touch, [file an issue](https://github.com/clEsperanto/CLIc_prototype/issues), and let's discuss your potential contribution. 
+More information on how to add new kernels to the library can be found in the [documentation](./docs/add_new_kernel/add_new_kernel.md).
+
 # Feedback welcome!
 clEsperanto is developed in the open because we believe in the [open source community](https://clij.github.io/clij2-docs/community_guidelines). 
-Feel free to drop feedback as [github issue](https://github.com/clEsperanto/CLIc_prototype/issues) or via [image.sc](https://image.sc).
+Feel free to drop feedback as [github issue](https://github.com/clEsperanto/CLIc_prototype/issues) or via [image.sc](https://image.sc).  
+And if you liked our work, star the repository, share it with your friends, and use it to make cool stuff!
