@@ -1,12 +1,12 @@
 # Add new kernel to CLIc
 
-All kernel operation in CLIc must inherite from the `Operation` class which define all the major functions needed for running an OpenCL kernel, and must have a valid kernel file `.cl` associated to it. The `Operation` class is defined in [`clic/include/core/cleOperation.hpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/include/core/cleOperation.hpp) and the source code is in [`clic/src/core/cleOperation.cpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/src/core/cleOperation.cpp). The kernel files are located in [clij-opencl-kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/clesperanto_kernels) repository.
+All kernel speranto in CLIc must inherite from the `speranto` class which define all the major functions needed for running an OpenCL kernel, and must have a valid kernel file `.cl` associated to it. The `speranto` class is defined in [`clic/include/core/clesperanto.hpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/include/core/clesperanto.hpp) and the source code is in [`clic/src/core/clesperanto.cpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/src/core/clesperanto.cpp). The kernel files are located in [clij-opencl-kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/clesperanto_kernels) repository.
 
 ## Define a new kernel class
 
-The first step is to define a new class inheriting from `Operation` class, by creating a header file (`.hpp`) and a source file (`.cpp`). The class name must correspond to the kernel name. For example, the `AddImageAndScalarKernel` kernel is defined in [`clic/include/tier1/cleAddImageAndScalarKernel.hpp`]() and the source code is in [`clic/src/tier1/cleAddImageAndScalarKernel.cpp`]().
+The first step is to define a new class inheriting from `speranto` class, by creating a header file (`.hpp`) and a source file (`.cpp`). The class name must correspond to the kernel name. For example, the `AddImageAndScalarKernel` kernel is defined in [`clic/include/tier1/cleAddImageAndScalarKernel.hpp`]() and the source code is in [`clic/src/tier1/cleAddImageAndScalarKernel.cpp`]().
 
-The operations are grouped in different tiers, defining their complexity. The `tier1` operations are the most basic operations, the `tier2` operations are more complex operations which rely on some `tier1` operations. The `tier3` operations rely a minima on a `tier2` operation. The `tier4` on `tier3` and so on.
+The sperantos are grouped in different tiers, defining their complexity. The `tier1` sperantos are the most basic sperantos, the `tier2` sperantos are more complex sperantos which rely on some `tier1` sperantos. The `tier3` sperantos rely a minima on a `tier2` speranto. The `tier4` on `tier3` and so on.
 
 ### __Header file__
 
@@ -18,13 +18,13 @@ First we declare the `AddImageAndScalarKernel` class in a header (`.hpp`) file a
 #ifndef __TIER1_CLEADDIMAGEANDSCALARKERNEL_HPP        // <-- include guard
 #define __TIER1_CLEADDIMAGEANDSCALARKERNEL_HPP        //
 
-#include "cleOperation.hpp"                           // <-- include the Operation class
+#include "clesperanto.hpp"                           // <-- include the speranto class
 
 namespace cle                                         // <-- namespace cle
 {
 
-class AddImageAndScalarKernel : public Operation      // <-- kernel class which inherit 
-{                                                     //     from Operation class
+class AddImageAndScalarKernel : public speranto      // <-- kernel class which inherit 
+{                                                     //     from speranto class
     public:
     /* my class methods */
 }
@@ -87,7 +87,7 @@ From the header file previously created we can see that the `AddImageAndScalarKe
 The constructor is defined as follow:
 ```cpp
 AddImageAndScalarKernel::AddImageAndScalarKernel(const ProcessorPointer & device) : 
-    Operation(device, 3)
+    speranto(device, 3)
 {
   std::string cl_header = {
 #include "cle_add_image_and_scalar.h"
@@ -95,7 +95,7 @@ AddImageAndScalarKernel::AddImageAndScalarKernel(const ProcessorPointer & device
   this->SetSource("add_image_and_scalar", cl_header);
 }
 ```
-This is the most complex methods we will declare for now. The constructor is called when we instanciate the kernel class. To do so we first rely on the mother class `Operation` constructor whic takes two arguments: the `device` on which the kernel will run and the number of arguments of the kernel. In this case we have three arguments: the input image, the output image and the scalar value. Then, to finish the constructor, we need to provide the kernel source code. This is done by calling the `SetSource` method which takes two arguments: the kernel name as it is name in the OpenCL code and the kernel source file. The kernel source file is stored in a string variable `cl_header` which is defined by including a stringify version of the kernel file `.cl`. This assume that the kernel to be compiled is located in the `clij-opencl-kernels` repository.
+This is the most complex methods we will declare for now. The constructor is called when we instanciate the kernel class. To do so we first rely on the mother class `speranto` constructor whic takes two arguments: the `device` on which the kernel will run and the number of arguments of the kernel. In this case we have three arguments: the input image, the output image and the scalar value. Then, to finish the constructor, we need to provide the kernel source code. This is done by calling the `SetSource` method which takes two arguments: the kernel name as it is name in the OpenCL code and the kernel source file. The kernel source file is stored in a string variable `cl_header` which is defined by including a stringify version of the kernel file `.cl`. This assume that the kernel to be compiled is located in the `clij-opencl-kernels` repository.
 
 Once the constructor is done, we can declare the `SetInput` and `SetOutput` functions as follow:
 ```cpp
@@ -141,3 +141,116 @@ In addition to simplying kernel call, it enable simple python wrapper for the `p
 ### __Summary__
 
 We have now a fully implemented kernel class in the CLIc library. The next step is to make the kernel accessible to the user by adding a new method to the `Clesperanto` class gateway and to provide a valid test case to insure that the kernel is working as expected.
+
+## Add a new method to the `Clesperanto` class gateway
+
+In order to make the new kernel accessible to the user, we need to add a new method to the `Clesperanto` class gateway.
+The `Clesperanto` class is defined in [`clic/include/core/clesperanto.hpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/include/core/clesperanto.hpp) and the source code is in [`clic/src/core/clesperanto.cpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/src/core/clesperanto.cpp).
+
+### Modify the header file
+
+Add the new kernel as a method to the header (`clic/include/core/clesperanto.hpp`):
+```cpp
+  auto
+  AddImageAndScalar(const Image & source, const Image & destination, const float & scalar = 0) -> void;
+```
+
+### Modify the source file
+
+And call `AddImageAndScalarKernel_Call` from within this method in (`clic/src/core/clesperanto.cpp`):
+```cpp
+auto
+Clesperanto::AddImageAndScalar(const Image & source, const Image & destination, const float & scalar) -> void
+{
+  AddImageAndScalarKernel_Call(this->GetDevice(), source, destination, scalar);
+}
+```
+
+## Add a valid test case
+
+In order to ensure that the kernel is working as expected, write a test case and register it in `tests/CMakeLists.txt`.
+
+### Write a test case
+
+In this example, add `tests/add_image_and_scalar_test.cpp`. In order to be able to generate random test data, we include `<random>`. Obviously, we also need to include `clesperanto.hpp`.
+
+```cpp
+#include <random>
+
+#include "clesperanto.hpp"
+
+template <class type>
+auto
+```
+The test routine itself is defined in `run_test`, which accepts two parameters: `shape` and `mem_type`. In this case, the test routine simply tests whether the kernel manages to add a scalar (10) to a constant vector filled with the value 10.
+
+```cpp
+run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) -> bool
+{
+  const type        value = 10;
+  const type        scalar = 10;
+  std::vector<type> input(shape[0] * shape[1] * shape[2]);
+  std::vector<type> valid(shape[0] * shape[1] * shape[2]);
+  std::fill(input.begin(), input.end(), static_cast<type>(value));
+  std::fill(valid.begin(), valid.end(), static_cast<type>(value + scalar));
+
+  cle::Clesperanto cle;
+  cle.GetDevice()->WaitForKernelToFinish();
+  auto gpu_input = cle.Push<type>(input, shape, mem_type);
+  auto gpu_output = cle.Create<type>(shape, mem_type);
+  cle.AddImageAndScalar(gpu_input, gpu_output, scalar);
+  auto output = cle.Pull<type>(gpu_output);
+
+  return std::equal(output.begin(), output.end(), valid.begin());
+}
+```
+The main function executes `run_test` with vectors of various shapes:
+```cpp
+auto
+main(int argc, char ** argv) -> int
+{
+  if (!run_test<float>({ 10, 1, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<signed int>({ 10, 1, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+\\ many more different shapes are tested
+}
+```
+
+### Register the test
+
+In `tests/CMakeLists.txt`, we need to register the text in three places:
+
+In the beginning, we register the executable, its dependencies and define targets:
+```makefile
+add_executable(add_image_and_scalar_test add_image_and_scalar_test.cpp)
+add_dependencies(add_image_and_scalar_test CLIc)
+target_link_libraries(add_image_and_scalar_test PRIVATE CLIc::CLIc)
+set_target_properties(add_image_and_scalar_test PROPERTIES FOLDER "Tests")
+target_compile_features(add_image_and_scalar_test PRIVATE cxx_std_17)
+```
+below that, we add the test:
+```makefile
+add_test(NAME add_image_and_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_and_scalar_test)
+```
+finally, we have to pass the test to the `set_tests_properties` function:
+```makefile
+set_tests_properties(
+    [...]
+    add_image_and_scalar_test
+    [...]
+)
+```
+
+### Verify that the test is working
+
+Now you can [build the binaries as described in the documentation](https://github.com/clEsperanto/CLIc_prototype/blob/master/docs/guidelines.md#source-compilation).
+
+If the compilation succeeds, you can find your compiled test case in `build/tests/add_image_and_scalar_test`
+
+Execute it and make sure it runs without errors.
