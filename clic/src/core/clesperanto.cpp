@@ -121,6 +121,12 @@ Clesperanto::BinaryXor(const Image & source1, const Image & source2, const Image
 }
 
 auto
+Clesperanto::Convolve(const Image & source, const Image & convolve_kernel, const Image & destination) -> void
+{
+  ConvolveKernel_Call(this->GetDevice(), source, convolve_kernel, destination);
+}
+
+auto
 Clesperanto::SubtractImages(const Image & source1, const Image & source2, const Image & destination) -> void
 {
   this->AddImagesWeighted(source1, source2, destination, 1, -1);

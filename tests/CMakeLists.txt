@@ -100,6 +100,12 @@ target_link_libraries(connected_component_labeling_box_test PRIVATE CLIc::CLIc)
 set_target_properties(connected_component_labeling_box_test PROPERTIES FOLDER "Tests")
 target_compile_features(connected_component_labeling_box_test PRIVATE cxx_std_17)
 
+add_executable(convolve_test convolve_test.cpp)
+add_dependencies(convolve_test CLIc)
+target_link_libraries(convolve_test PRIVATE CLIc::CLIc)
+set_target_properties(convolve_test PROPERTIES FOLDER "Tests")
+target_compile_features(convolve_test PRIVATE cxx_std_17)
+
 add_executable(copy_test copy_test.cpp)
 add_dependencies(copy_test CLIc)
 target_link_libraries(copy_test PRIVATE CLIc::CLIc)
@@ -442,6 +448,7 @@ add_test(NAME binary_xor_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMM
 add_test(NAME block_enumerate_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND block_enumerate_test)
 add_test(NAME close_indexgaps_in_labelmap_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND close_indexgaps_in_labelmap_test)
 add_test(NAME connected_component_labeling_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND connected_component_labeling_box_test)
+add_test(NAME convolve_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND convolve_test)
 add_test(NAME copy_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND copy_test)
 add_test(NAME detect_maxima_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND detect_maxima_test)
 add_test(NAME difference_of_gaussian_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND difference_of_gaussian_test)
@@ -518,6 +525,7 @@ set_tests_properties(absolute_test
     block_enumerate_test
     close_indexgaps_in_labelmap_test
     connected_component_labeling_box_test
+    convolve_test
     copy_test
     detect_maxima_test
     difference_of_gaussian_test
