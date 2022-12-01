@@ -42,6 +42,7 @@ endif()
 
 set(OpenCL_HEADERS_SRC_DIR ${CMAKE_BINARY_DIR}/_deps/opencl_headers-src CACHE PATH "Path to opencl headers" FORCE)
 set(OpenCL_CLHPP_SRC_DIR ${CMAKE_BINARY_DIR}/_deps/opencl_clhpp-src CACHE PATH "Path to opencl clhpp" FORCE)
+set(OpenCL_INCLUDE_DIR ${OpenCL_HEADERS_SRC_DIR} ${OpenCL_CLHPP_SRC_DIR} CACHE PATH "Path to opencl (header and clhpp)" FORCE)
 
 message(STATUS "git opencl header src dir: ${OpenCL_HEADERS_SRC_DIR}")
 message(STATUS "git opencl clhpp src dir: ${OpenCL_CLHPP_SRC_DIR}")

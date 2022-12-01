@@ -26,8 +26,7 @@ file(GLOB_RECURSE OPENCL_FILE_H ${OpenCL_HEADERS_SRC_DIR}/*.h)
 file(GLOB_RECURSE OPENCL_FILE_HPP ${OpenCL_CLHPP_SRC_DIR}/*.hpp)
 list(APPEND OPENCL_FILE ${OPENCL_FILE_H} ${OPENCL_FILE_HPP})
 
-# message(STATUS ${OPENCL_FILE_H}) 
-# message(STATUS ${OPENCL_FILE_HPP})
+message(STATUS ${OPENCL_FILE}) 
 
 # define library target
 add_library(${LIBRARY_NAME} ${SOURCES_FILES})
@@ -84,8 +83,7 @@ list(APPEND INCLUDE_DIR_LIST ${CMAKE_CURRENT_BINARY_DIR}/include)
 # - header location in project: ${CMAKE_CURRENT_BINARY_DIR}/generated_headers
 target_include_directories(${LIBRARY_NAME} PUBLIC
     "$<BUILD_INTERFACE:${INCLUDE_DIR_LIST}>"
-    "$<BUILD_INTERFACE:${OpenCL_HEADERS_SRC_DIR}>"
-    "$<BUILD_INTERFACE:${OpenCL_CLHPP_SRC_DIR}>"
+    "$<BUILD_INTERFACE:${OpenCL_INCLUDE_DIR}>"
     "$<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}>"
 )
 
