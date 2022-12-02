@@ -96,6 +96,9 @@ public:
   ConnectedComponentLabelingBox(const Image & source, const Image & destination) -> void;
 
   auto
+  Convolve(const Image & source, const Image & convolve_kernel, const Image & destination) -> void;
+
+  auto
   Copy(const Image & source, const Image & destination) -> void;
 
   auto
