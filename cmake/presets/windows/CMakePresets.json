@@ -31,8 +31,8 @@
         },
         {
             "name": "win-vs2022-release",
-            "displayName": "Win Makefile Release",
-            "description": "Win Makefile Release configuration",
+            "displayName": "Win vs2022 Release",
+            "description": "Win vs2022 Release configuration",
             "inherits": [
                 "release-config",
                 "win-config",
@@ -41,8 +41,8 @@
         },
         {
             "name": "win-vs2022-debug",
-            "displayName": "Win Makefile Debug",
-            "description": "Win Makefile Debug configuration",
+            "displayName": "Win vs2022 Debug",
+            "description": "Win vs2022 Debug configuration",
             "inherits": [
                 "debug-config",
                 "win-config",
@@ -71,8 +71,8 @@
         },
         {
             "name": "win-vs2022-release",
-            "displayName": "Win Makefile Release",
-            "description": "Win Makefile Release build",
+            "displayName": "Win vs2022 Release",
+            "description": "Win vs2022 Release build",
             "configurePreset": "win-vs2022-release",
             "inherits": [
                 "release-build"
@@ -80,8 +80,8 @@
         },
         {
             "name": "win-vs2022-debug",
-            "displayName": "Win Makefile Debug",
-            "description": "Win Makefile Debug build",
+            "displayName": "Win vs2022 Debug",
+            "description": "Win vs2022 Debug build",
             "configurePreset": "win-vs2022-debug",
             "inherits": [
                 "debug-build"
@@ -109,8 +109,8 @@
         },
         {
             "name": "win-vs2022-release",
-            "displayName": "Win Makefile Release",
-            "description": "Win Makefile Release test",
+            "displayName": "Win vs2022 Release",
+            "description": "Win vs2022 Release test",
             "configurePreset": "win-vs2022-release",
             "inherits": [
                 "release-test"
@@ -118,8 +118,8 @@
         },
         {
             "name": "win-vs2022-debug",
-            "displayName": "Win Makefile Debug",
-            "description": "Win Makefile Debug test",
+            "displayName": "Win vs2022 Debug",
+            "description": "Win vs2022 Debug test",
             "configurePreset": "win-vs2022-debug",
             "inherits": [
                 "debug-test"
