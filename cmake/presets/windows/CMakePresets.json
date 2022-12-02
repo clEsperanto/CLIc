@@ -1,0 +1,129 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 20,
+        "patch": 0
+    },
+    "include": [
+        "../CMakePresets.json"
+    ],
+    "configurePresets": [
+        {
+            "name": "win-ninja-release",
+            "displayName": "Win Ninja Release",
+            "description": "Win Ninja Release configuration",
+            "inherits": [
+                "release-config",
+                "ninja-config",
+                "win-config"
+            ]
+        },
+        {
+            "name": "win-ninja-debug",
+            "displayName": "Win Ninja Debug",
+            "description": "Win Ninja Debug configuration",
+            "inherits": [
+                "debug-config",
+                "ninja-config",
+                "win-config"
+            ]
+        },
+        {
+            "name": "win-vs2022-release",
+            "displayName": "Win Makefile Release",
+            "description": "Win Makefile Release configuration",
+            "inherits": [
+                "release-config",
+                "win-config",
+                "vs2022-config"
+            ]
+        },
+        {
+            "name": "win-vs2022-debug",
+            "displayName": "Win Makefile Debug",
+            "description": "Win Makefile Debug configuration",
+            "inherits": [
+                "debug-config",
+                "win-config",
+                "vs2022-config"
+            ]
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "win-ninja-release",
+            "displayName": "Win Ninja Release",
+            "description": "Win Ninja Release build",
+            "configurePreset": "win-ninja-release",
+            "inherits": [
+                "release-build"
+            ]
+        },
+        {
+            "name": "win-ninja-debug",
+            "displayName": "Win Ninja Debug",
+            "description": "Win Ninja Debug build",
+            "configurePreset": "win-ninja-debug",
+            "inherits": [
+                "debug-build"
+            ]
+        },
+        {
+            "name": "win-vs2022-release",
+            "displayName": "Win Makefile Release",
+            "description": "Win Makefile Release build",
+            "configurePreset": "win-vs2022-release",
+            "inherits": [
+                "release-build"
+            ]
+        },
+        {
+            "name": "win-vs2022-debug",
+            "displayName": "Win Makefile Debug",
+            "description": "Win Makefile Debug build",
+            "configurePreset": "win-vs2022-debug",
+            "inherits": [
+                "debug-build"
+            ]
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "win-ninja-release",
+            "displayName": "Win Ninja Release",
+            "description": "Win Ninja Release test",
+            "configurePreset": "win-ninja-release",
+            "inherits": [
+                "release-test"
+            ]
+        },
+        {
+            "name": "win-ninja-debug",
+            "displayName": "Win Ninja Debug",
+            "description": "Win Ninja Debug test",
+            "configurePreset": "win-ninja-debug",
+            "inherits": [
+                "debug-test"
+            ]
+        },
+        {
+            "name": "win-vs2022-release",
+            "displayName": "Win Makefile Release",
+            "description": "Win Makefile Release test",
+            "configurePreset": "win-vs2022-release",
+            "inherits": [
+                "release-test"
+            ]
+        },
+        {
+            "name": "win-vs2022-debug",
+            "displayName": "Win Makefile Debug",
+            "description": "Win Makefile Debug test",
+            "configurePreset": "win-vs2022-debug",
+            "inherits": [
+                "debug-test"
+            ]
+        }
+    ]
+}

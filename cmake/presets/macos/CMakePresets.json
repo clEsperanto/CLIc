@@ -1,0 +1,129 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 20,
+        "patch": 0
+    },
+    "include": [
+        "../CMakePresets.json"
+    ],
+    "configurePresets": [
+        {
+            "name": "macos-ninja-release",
+            "displayName": "Macos Ninja Release",
+            "description": "Macos Ninja Release configuration",
+            "inherits": [
+                "release-config",
+                "ninja-config",
+                "macos-config"
+            ]
+        },
+        {
+            "name": "macos-ninja-debug",
+            "displayName": "Macos Ninja Debug",
+            "description": "Macos Ninja Debug configuration",
+            "inherits": [
+                "debug-config",
+                "ninja-config",
+                "macos-config"
+            ]
+        },
+        {
+            "name": "macos-make-release",
+            "displayName": "Macos Makefile Release",
+            "description": "Macos Makefile Release configuration",
+            "inherits": [
+                "release-config",
+                "make-config",
+                "macos-config"
+            ]
+        },
+        {
+            "name": "macos-make-debug",
+            "displayName": "Macos Makefile Debug",
+            "description": "Macos Makefile Debug configuration",
+            "inherits": [
+                "debug-config",
+                "make-config",
+                "macos-config"
+            ]
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "macos-ninja-release",
+            "displayName": "Macos Ninja Release",
+            "description": "Macos Ninja Release build",
+            "configurePreset": "macos-ninja-release",
+            "inherits": [
+                "release-build"
+            ]
+        },
+        {
+            "name": "macos-ninja-debug",
+            "displayName": "Macos Ninja Debug",
+            "description": "Macos Ninja Debug build",
+            "configurePreset": "macos-ninja-debug",
+            "inherits": [
+                "debug-build"
+            ]
+        },
+        {
+            "name": "macos-make-release",
+            "displayName": "Macos Makefile Release",
+            "description": "Macos Makefile Release build",
+            "configurePreset": "macos-make-release",
+            "inherits": [
+                "release-build"
+            ]
+        },
+        {
+            "name": "macos-make-debug",
+            "displayName": "Macos Makefile Debug",
+            "description": "Macos Makefile Debug build",
+            "configurePreset": "macos-make-debug",
+            "inherits": [
+                "debug-build"
+            ]
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "macos-ninja-release",
+            "displayName": "Macos Ninja Release",
+            "description": "Macos Ninja Release test",
+            "configurePreset": "macos-ninja-release",
+            "inherits": [
+                "release-test"
+            ]
+        },
+        {
+            "name": "macos-ninja-debug",
+            "displayName": "Macos Ninja Debug",
+            "description": "Macos Ninja Debug test",
+            "configurePreset": "macos-ninja-debug",
+            "inherits": [
+                "debug-test"
+            ]
+        },
+        {
+            "name": "macos-make-release",
+            "displayName": "Macos Makefile Release",
+            "description": "Macos Makefile Release test",
+            "configurePreset": "macos-make-release",
+            "inherits": [
+                "release-test"
+            ]
+        },
+        {
+            "name": "macos-make-debug",
+            "displayName": "Macos Makefile Debug",
+            "description": "Macos Makefile Debug test",
+            "configurePreset": "macos-make-debug",
+            "inherits": [
+                "debug-test"
+            ]
+        }
+    ]
+}

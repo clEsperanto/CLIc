@@ -1,0 +1,129 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 20,
+        "patch": 0
+    },
+    "include": [
+        "../CMakePresets.json"
+    ],
+    "configurePresets": [
+        {
+            "name": "linux-ninja-release",
+            "displayName": "Linux Ninja Release",
+            "description": "Linux Ninja Release configuration",
+            "inherits": [
+                "release-config",
+                "ninja-config",
+                "linux-config"
+            ]
+        },
+        {
+            "name": "linux-ninja-debug",
+            "displayName": "Linux Ninja Debug",
+            "description": "Linux Ninja Debug configuration",
+            "inherits": [
+                "debug-config",
+                "ninja-config",
+                "linux-config"
+            ]
+        },
+        {
+            "name": "linux-make-release",
+            "displayName": "Linux Makefile Release",
+            "description": "Linux Makefile Release configuration",
+            "inherits": [
+                "release-config",
+                "make-config",
+                "linux-config"
+            ]
+        },
+        {
+            "name": "linux-make-debug",
+            "displayName": "Linux Makefile Debug",
+            "description": "Linux Makefile Debug configuration",
+            "inherits": [
+                "debug-config",
+                "make-config",
+                "linux-config"
+            ]
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "linux-ninja-release",
+            "displayName": "Linux Ninja Release",
+            "description": "Linux Ninja Release build",
+            "configurePreset": "linux-ninja-release",
+            "inherits": [
+                "release-build"
+            ]
+        },
+        {
+            "name": "linux-ninja-debug",
+            "displayName": "Linux Ninja Debug",
+            "description": "Linux Ninja Debug build",
+            "configurePreset": "linux-ninja-debug",
+            "inherits": [
+                "debug-build"
+            ]
+        },
+        {
+            "name": "linux-make-release",
+            "displayName": "Linux Makefile Release",
+            "description": "Linux Makefile Release build",
+            "configurePreset": "linux-make-release",
+            "inherits": [
+                "release-build"
+            ]
+        },
+        {
+            "name": "linux-make-debug",
+            "displayName": "Linux Makefile Debug",
+            "description": "Linux Makefile Debug build",
+            "configurePreset": "linux-make-debug",
+            "inherits": [
+                "debug-build"
+            ]
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "linux-ninja-release",
+            "displayName": "Linux Ninja Release",
+            "description": "Linux Ninja Release test",
+            "configurePreset": "linux-ninja-release",
+            "inherits": [
+                "release-test"
+            ]
+        },
+        {
+            "name": "linux-ninja-debug",
+            "displayName": "Linux Ninja Debug",
+            "description": "Linux Ninja Debug test",
+            "configurePreset": "linux-ninja-debug",
+            "inherits": [
+                "debug-test"
+            ]
+        },
+        {
+            "name": "linux-make-release",
+            "displayName": "Linux Makefile Release",
+            "description": "Linux Makefile Release test",
+            "configurePreset": "linux-make-release",
+            "inherits": [
+                "release-test"
+            ]
+        },
+        {
+            "name": "linux-make-debug",
+            "displayName": "Linux Makefile Debug",
+            "description": "Linux Makefile Debug test",
+            "configurePreset": "linux-make-debug",
+            "inherits": [
+                "debug-test"
+            ]
+        }
+    ]
+}
