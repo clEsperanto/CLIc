@@ -10,28 +10,8 @@
     ],
     "configurePresets": [
         {
-            "name": "linux-ninja-release",
-            "displayName": "Linux Ninja Release",
-            "description": "Linux Ninja Release configuration",
-            "generator": "Ninja",
-            "inherits": [
-                "release-config",
-                "linux-config"
-            ]
-        },
-        {
-            "name": "linux-ninja-debug",
-            "displayName": "Linux Ninja Debug",
-            "description": "Linux Ninja Debug configuration",
-            "generator": "Ninja",
-            "inherits": [
-                "debug-config",
-                "linux-config"
-            ]
-        },
-        {
             "name": "linux-make-release",
-            "displayName": "Linux Makefile Release",
+            "displayName": "Makefile Release",
             "description": "Linux Makefile Release configuration",
             "generator": "Unix Makefiles",
             "inherits": [
@@ -41,9 +21,19 @@
         },
         {
             "name": "linux-make-debug",
-            "displayName": "Linux Makefile Debug",
+            "displayName": "Makefile Debug",
             "description": "Linux Makefile Debug configuration",
             "generator": "Unix Makefiles",
+            "inherits": [
+                "debug-config",
+                "linux-config"
+            ]
+        },
+        {
+            "name": "linux-ninja-multi",
+            "displayName": "Ninja multi-config",
+            "description": "Linux Ninja multi-config configuration",
+            "generator": "Ninja Multi-Config",
             "inherits": [
                 "debug-config",
                 "linux-config"
@@ -52,26 +42,26 @@
     ],
     "buildPresets": [
         {
-            "name": "linux-ninja-release",
-            "displayName": "Linux Ninja Release",
-            "description": "Linux Ninja Release build",
-            "configurePreset": "linux-ninja-release",
+            "name": "linux-ninja-multi-release",
+            "displayName": "Release",
+            "description": "Linux Ninja multi Release build",
+            "configurePreset": "linux-ninja-multi",
             "inherits": [
                 "release-build"
             ]
         },
         {
-            "name": "linux-ninja-debug",
-            "displayName": "Linux Ninja Debug",
-            "description": "Linux Ninja Debug build",
-            "configurePreset": "linux-ninja-debug",
+            "name": "linux-ninja-multi-debug",
+            "displayName": "Debug",
+            "description": "Linux Ninja multi Debug build",
+            "configurePreset": "linux-ninja-multi",
             "inherits": [
                 "debug-build"
             ]
         },
         {
             "name": "linux-make-release",
-            "displayName": "Linux Makefile Release",
+            "displayName": "Release",
             "description": "Linux Makefile Release build",
             "configurePreset": "linux-make-release",
             "inherits": [
@@ -80,7 +70,7 @@
         },
         {
             "name": "linux-make-debug",
-            "displayName": "Linux Makefile Debug",
+            "displayName": "Debug",
             "description": "Linux Makefile Debug build",
             "configurePreset": "linux-make-debug",
             "inherits": [
@@ -90,26 +80,26 @@
     ],
     "testPresets": [
         {
-            "name": "linux-ninja-release",
-            "displayName": "Linux Ninja Release",
+            "name": "linux-ninja-multi-release",
+            "displayName": "Ctest Release",
             "description": "Linux Ninja Release test",
-            "configurePreset": "linux-ninja-release",
+            "configurePreset": "linux-ninja-multi",
             "inherits": [
                 "release-test"
             ]
         },
         {
-            "name": "linux-ninja-debug",
-            "displayName": "Linux Ninja Debug",
+            "name": "linux-ninja-multi-debug",
+            "displayName": "Ctest Debug",
             "description": "Linux Ninja Debug test",
-            "configurePreset": "linux-ninja-debug",
+            "configurePreset": "linux-ninja-multi",
             "inherits": [
                 "debug-test"
             ]
         },
         {
             "name": "linux-make-release",
-            "displayName": "Linux Makefile Release",
+            "displayName": "CTest Release",
             "description": "Linux Makefile Release test",
             "configurePreset": "linux-make-release",
             "inherits": [
@@ -118,7 +108,7 @@
         },
         {
             "name": "linux-make-debug",
-            "displayName": "Linux Makefile Debug",
+            "displayName": "CTest Debug",
             "description": "Linux Makefile Debug test",
             "configurePreset": "linux-make-debug",
             "inherits": [

@@ -10,42 +10,20 @@
     ],
     "configurePresets": [
         {
-            "name": "win-ninja-release",
-            "displayName": "Win Ninja Release",
-            "description": "Win Ninja Release configuration",
-            "generator": "Ninja",
+            "name": "windows-ninja-multi",
+            "displayName": "Ninja multi-config",
+            "description": "Windows Makefile multi-config configuration",
+            "generator": "Ninja Multi-Config",
             "inherits": [
-                "release-config",
-                "win-config"
+                "windows-config"
             ]
         },
         {
-            "name": "win-ninja-debug",
-            "displayName": "Win Ninja Debug",
-            "description": "Win Ninja Debug configuration",
-            "generator": "Ninja",
-            "inherits": [
-                "debug-config",
-                "win-config"
-            ]
-        },
-        {
-            "name": "win-vs2022-release",
-            "displayName": "Win vs2022 Release",
-            "description": "Win vs2022 Release configuration",
+            "name": "win-msvc17",
+            "displayName": "MSVS 17",
+            "description": "Win msvc17 configuration",
             "generator": "Visual Studio 17",
             "inherits": [
-                "release-config",
-                "win-config"
-            ]
-        },
-        {
-            "name": "win-vs2022-debug",
-            "displayName": "Win vs2022 Debug",
-            "description": "Win vs2022 Debug configuration",
-            "generator": "Visual Studio 17",
-            "inherits": [
-                "debug-config",
                 "win-config"
             ]
         }
@@ -53,36 +31,36 @@
     "buildPresets": [
         {
             "name": "win-ninja-release",
-            "displayName": "Win Ninja Release",
+            "displayName": "Release",
             "description": "Win Ninja Release build",
-            "configurePreset": "win-ninja-release",
+            "configurePreset": "windows-ninja-multi",
             "inherits": [
                 "release-build"
             ]
         },
         {
-            "name": "win-ninja-debug",
-            "displayName": "Win Ninja Debug",
+            "name": "win-ninja-release",
+            "displayName": "Debug",
             "description": "Win Ninja Debug build",
-            "configurePreset": "win-ninja-debug",
+            "configurePreset": "windows-ninja-multi",
             "inherits": [
                 "debug-build"
             ]
         },
         {
-            "name": "win-vs2022-release",
-            "displayName": "Win vs2022 Release",
-            "description": "Win vs2022 Release build",
-            "configurePreset": "win-vs2022-release",
+            "name": "win-msvc17-release",
+            "displayName": "Release",
+            "description": "Win msvc17 Release build",
+            "configurePreset": "win-msvc17",
             "inherits": [
                 "release-build"
             ]
         },
         {
-            "name": "win-vs2022-debug",
-            "displayName": "Win vs2022 Debug",
-            "description": "Win vs2022 Debug build",
-            "configurePreset": "win-vs2022-debug",
+            "name": "win-msvc17-debug",
+            "displayName": "Debug",
+            "description": "Win msvc17 Debug build",
+            "configurePreset": "win-msvc17",
             "inherits": [
                 "debug-build"
             ]
@@ -90,37 +68,37 @@
     ],
     "testPresets": [
         {
-            "name": "win-ninja-release",
-            "displayName": "Win Ninja Release",
-            "description": "Win Ninja Release test",
-            "configurePreset": "win-ninja-release",
+            "name": "win-ninja-multi-release",
+            "displayName": "Ctest Release",
+            "description": "Windows Ninja Release test",
+            "configurePreset": "win-ninja-multi",
             "inherits": [
                 "release-test"
             ]
         },
         {
-            "name": "win-ninja-debug",
-            "displayName": "Win Ninja Debug",
-            "description": "Win Ninja Debug test",
-            "configurePreset": "win-ninja-debug",
+            "name": "win-ninja-multi-debug",
+            "displayName": "Ctest Debug",
+            "description": "win Ninja Debug test",
+            "configurePreset": "win-ninja-multi",
             "inherits": [
                 "debug-test"
             ]
         },
         {
-            "name": "win-vs2022-release",
-            "displayName": "Win vs2022 Release",
-            "description": "Win vs2022 Release test",
-            "configurePreset": "win-vs2022-release",
+            "name": "win-msvc17-release",
+            "displayName": "CTest Release",
+            "description": "win msvc17 Release test",
+            "configurePreset": "win-msvc17",
             "inherits": [
                 "release-test"
             ]
         },
         {
-            "name": "win-vs2022-debug",
-            "displayName": "Win vs2022 Debug",
-            "description": "Win vs2022 Debug test",
-            "configurePreset": "win-vs2022-debug",
+            "name": "win-msvc17-debug",
+            "displayName": "CTest Debug",
+            "description": "win msvc17 Debug test",
+            "configurePreset": "win-msvc17",
             "inherits": [
                 "debug-test"
             ]
