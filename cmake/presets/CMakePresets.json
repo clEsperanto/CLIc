@@ -60,21 +60,6 @@
                 "lhs": "${hostSystemName}",
                 "rhs": "Windows"
             }
-        },
-        {
-            "name": "ninja-config",
-            "hidden": true,
-            "generator": "Ninja"
-        },
-        {
-            "name": "make-config",
-            "hidden": true,
-            "generator": "Unix Makefiles"
-        },
-        {
-            "name": "vs2022-config",
-            "hidden": true,
-            "generator": "Visual Studio 17"
         }
     ],
     "buildPresets": [
