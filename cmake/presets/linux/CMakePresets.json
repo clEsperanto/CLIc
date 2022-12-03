@@ -13,9 +13,9 @@
             "name": "linux-ninja-release",
             "displayName": "Linux Ninja Release",
             "description": "Linux Ninja Release configuration",
+            "generator": "Ninja",
             "inherits": [
                 "release-config",
-                "ninja-config",
                 "linux-config"
             ]
         },
@@ -23,9 +23,9 @@
             "name": "linux-ninja-debug",
             "displayName": "Linux Ninja Debug",
             "description": "Linux Ninja Debug configuration",
+            "generator": "Ninja",
             "inherits": [
                 "debug-config",
-                "ninja-config",
                 "linux-config"
             ]
         },
@@ -33,9 +33,9 @@
             "name": "linux-make-release",
             "displayName": "Linux Makefile Release",
             "description": "Linux Makefile Release configuration",
+            "generator": "Unix Makefiles",
             "inherits": [
                 "release-config",
-                "make-config",
                 "linux-config"
             ]
         },
@@ -43,9 +43,9 @@
             "name": "linux-make-debug",
             "displayName": "Linux Makefile Debug",
             "description": "Linux Makefile Debug configuration",
+            "generator": "Unix Makefiles",
             "inherits": [
                 "debug-config",
-                "make-config",
                 "linux-config"
             ]
         }

@@ -13,9 +13,9 @@
             "name": "win-ninja-release",
             "displayName": "Win Ninja Release",
             "description": "Win Ninja Release configuration",
+            "generator": "Ninja",
             "inherits": [
                 "release-config",
-                "ninja-config",
                 "win-config"
             ]
         },
@@ -23,9 +23,9 @@
             "name": "win-ninja-debug",
             "displayName": "Win Ninja Debug",
             "description": "Win Ninja Debug configuration",
+            "generator": "Ninja",
             "inherits": [
                 "debug-config",
-                "ninja-config",
                 "win-config"
             ]
         },
@@ -33,20 +33,20 @@
             "name": "win-vs2022-release",
             "displayName": "Win vs2022 Release",
             "description": "Win vs2022 Release configuration",
+            "generator": "Visual Studio 17",
             "inherits": [
                 "release-config",
-                "win-config",
-                "vs2022-config"
+                "win-config"
             ]
         },
         {
             "name": "win-vs2022-debug",
             "displayName": "Win vs2022 Debug",
             "description": "Win vs2022 Debug configuration",
+            "generator": "Visual Studio 17",
             "inherits": [
                 "debug-config",
-                "win-config",
-                "vs2022-config"
+                "win-config"
             ]
         }
     ],

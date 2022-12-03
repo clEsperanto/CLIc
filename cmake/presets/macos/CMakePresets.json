@@ -13,9 +13,9 @@
             "name": "macos-ninja-release",
             "displayName": "Macos Ninja Release",
             "description": "Macos Ninja Release configuration",
+            "generator": "Ninja",
             "inherits": [
                 "release-config",
-                "ninja-config",
                 "macos-config"
             ]
         },
@@ -23,9 +23,9 @@
             "name": "macos-ninja-debug",
             "displayName": "Macos Ninja Debug",
             "description": "Macos Ninja Debug configuration",
+            "generator": "Ninja",
             "inherits": [
                 "debug-config",
-                "ninja-config",
                 "macos-config"
             ]
         },
@@ -33,9 +33,9 @@
             "name": "macos-make-release",
             "displayName": "Macos Makefile Release",
             "description": "Macos Makefile Release configuration",
+            "generator": "Unix Makefiles",
             "inherits": [
                 "release-config",
-                "make-config",
                 "macos-config"
             ]
         },
@@ -43,9 +43,9 @@
             "name": "macos-make-debug",
             "displayName": "Macos Makefile Debug",
             "description": "Macos Makefile Debug configuration",
+            "generator": "Unix Makefiles",
             "inherits": [
                 "debug-config",
-                "make-config",
                 "macos-config"
             ]
         }
