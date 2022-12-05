@@ -1,0 +1,107 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 20,
+        "patch": 0
+    },
+    "include": [
+        "../CMakePresets.json"
+    ],
+    "configurePresets": [
+        {
+            "name": "windows-ninja-multi",
+            "displayName": "Ninja multi-config",
+            "description": "Windows Makefile multi-config configuration",
+            "generator": "Ninja Multi-Config",
+            "inherits": [
+                "windows-config"
+            ]
+        },
+        {
+            "name": "win-msvc17",
+            "displayName": "MSVS 17",
+            "description": "Win msvc17 configuration",
+            "generator": "Visual Studio 17",
+            "inherits": [
+                "win-config"
+            ]
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "win-ninja-release",
+            "displayName": "Release",
+            "description": "Win Ninja Release build",
+            "configurePreset": "windows-ninja-multi",
+            "inherits": [
+                "release-build"
+            ]
+        },
+        {
+            "name": "win-ninja-release",
+            "displayName": "Debug",
+            "description": "Win Ninja Debug build",
+            "configurePreset": "windows-ninja-multi",
+            "inherits": [
+                "debug-build"
+            ]
+        },
+        {
+            "name": "win-msvc17-release",
+            "displayName": "Release",
+            "description": "Win msvc17 Release build",
+            "configurePreset": "win-msvc17",
+            "inherits": [
+                "release-build"
+            ]
+        },
+        {
+            "name": "win-msvc17-debug",
+            "displayName": "Debug",
+            "description": "Win msvc17 Debug build",
+            "configurePreset": "win-msvc17",
+            "inherits": [
+                "debug-build"
+            ]
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "win-ninja-multi-release",
+            "displayName": "Ctest Release",
+            "description": "Windows Ninja Release test",
+            "configurePreset": "win-ninja-multi",
+            "inherits": [
+                "release-test"
+            ]
+        },
+        {
+            "name": "win-ninja-multi-debug",
+            "displayName": "Ctest Debug",
+            "description": "win Ninja Debug test",
+            "configurePreset": "win-ninja-multi",
+            "inherits": [
+                "debug-test"
+            ]
+        },
+        {
+            "name": "win-msvc17-release",
+            "displayName": "CTest Release",
+            "description": "win msvc17 Release test",
+            "configurePreset": "win-msvc17",
+            "inherits": [
+                "release-test"
+            ]
+        },
+        {
+            "name": "win-msvc17-debug",
+            "displayName": "CTest Debug",
+            "description": "win msvc17 Debug test",
+            "configurePreset": "win-msvc17",
+            "inherits": [
+                "debug-test"
+            ]
+        }
+    ]
+}

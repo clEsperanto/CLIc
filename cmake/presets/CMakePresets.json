@@ -1,0 +1,129 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 20,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "default-config",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}"
+            }
+        },
+        {
+            "name": "debug-config",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            },
+            "inherits": [
+                "default-config"
+            ]
+        },
+        {
+            "name": "release-config",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            },
+            "inherits": [
+                "default-config"
+            ]
+        },
+        {
+            "name": "linux-config",
+            "hidden": true,
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            }
+        },
+        {
+            "name": "macos-config",
+            "hidden": true,
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            }
+        },
+        {
+            "name": "win-config",
+            "hidden": true,
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "default-build",
+            "hidden": true,
+            "configurePreset": "default-config",
+            "jobs": 4
+        },
+        {
+            "name": "release-build",
+            "hidden": true,
+            "configurePreset": "release-config",
+            "inherits": [
+                "default-build"
+            ],
+            "configuration": "Release"
+        },
+        {
+            "name": "debug-build",
+            "hidden": true,
+            "configurePreset": "debug-config",
+            "inherits": [
+                "default-build"
+            ],
+            "configuration": "Debug"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "default-test",
+            "hidden": true,
+            "configurePreset": "default-config",
+            "output": {
+                "outputOnFailure": true,
+                "outputLogFile": "Ctest-${presetName}.log"
+            },
+            "execution": {
+                "noTestsAction": "error"
+            }
+        },
+        {
+            "name": "release-test",
+            "hidden": true,
+            "configurePreset": "release-config",
+            "inherits": [
+                "default-test"
+            ],
+            "configuration": "Release",
+            "output": {
+                "outputLogFile": "Ctest-${presetName}-debug.log"
+            }
+        },
+        {
+            "name": "debug-test",
+            "hidden": true,
+            "configurePreset": "debug-config",
+            "inherits": [
+                "default-test"
+            ],
+            "configuration": "debug",
+            "output": {
+                "outputLogFile": "Ctest-${presetName}-debug.log"
+            }
+        }
+    ]
+}
