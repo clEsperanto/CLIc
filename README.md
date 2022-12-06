@@ -58,8 +58,8 @@ Follow the [installation guide](./docs/guidelines.md) for helps on compilation a
 
 Clone the repository and update the submodules
 ```
-git clone git@github.com:clEsperanto/CLIc_prototype.git CLIc
-cd CLIc && git submodule update --init
+git clone git@github.com:clEsperanto/CLIc_prototype.git
+cd CLIc_prototype
 ```
 
 Create a build folder and configure cmake to generate the adapted makefile.

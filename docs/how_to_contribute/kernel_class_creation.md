@@ -1,6 +1,6 @@
-# Add new kernel to CLIc
+# Kernel class creation
 
-All kernel operation in CLIc must inherite from the `Operation` class which define all the major functions needed for running an OpenCL kernel, and must have a valid kernel file `.cl` associated to it. The `Operation` class is defined in [`clic/include/core/cleOperation.hpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/include/core/cleOperation.hpp) and the source code is in [`clic/src/core/cleOperation.cpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/src/core/cleOperation.cpp). The kernel files are located in [clij-opencl-kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/clesperanto_kernels) repository.
+All kernel operations in CLIc must inherite from the `Operation` class which define all the major functions needed for running an OpenCL kernel, and must have a valid kernel file `.cl` associated to it. The `Operation` class is defined in [`clic/include/core/cleOperation.hpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/include/core/cleOperation.hpp) and the source code is in [`clic/src/core/cleOperation.cpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/src/core/cleOperation.cpp). The kernel files are located in [clij-opencl-kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/clesperanto_kernels) repository.
 
 ## Define a new kernel class
 
@@ -8,7 +8,7 @@ The first step is to define a new class inheriting from `Operation` class, by cr
 
 The operations are grouped in different tiers, defining their complexity. The `tier1` operations are the most basic operations, the `tier2` operations are more complex operations which rely on some `tier1` operations. The `tier3` operations rely a minima on a `tier2` operation. The `tier4` on `tier3` and so on.
 
-### __Header file__
+### <a id="header">__Header file__</a>
 
 First we declare the `AddImageAndScalarKernel` class in a header (`.hpp`) file as follow:
 
@@ -62,7 +62,7 @@ auto SetScalar(const float & scalar) -> void;
 
 As you can see the header file only hold declaration of class and methods, no actual code is written here. This is the role of the source file.
 
-### __Source file__
+### <a id="source">__Source file__</a>
 
 For each header file we need to create a corresponding source file (`.cpp`) with the same name. The source file is where the class methods code are defined. 
 ```cpp
@@ -120,7 +120,9 @@ auto AddImageAndScalarKernel::SetScalar(const float & scalar) -> void
 ```
 Same as for the `SetInput` and `SetOutput` functions, the `AddParameter` method is called to add the scalar value to the kernel arguments. The `AddParameter` method can be used as well to add also integers.
 
-### __The Kernel Call function__
+### <a id="call-and-gateway-access">__Call function and Gateway methaod__</a>
+
+## __The Kernel Call function__
 
 The last step to finalise the class if to declare the `Call` function. This function is the one that will be called to run the kernel. It is named identically as the class with the prefix `_Call` and is defined in the header file as an `inline` function. The `inline` keyword is used to tell the compiler to copy the function code at the place where the function is called. This is done to avoid the overhead of calling a function. The `inline` keyword is not mandatory but it is recommended to use it for the `Call` function.
 
@@ -138,6 +140,30 @@ inline auto AddImageAndScalarKernel_Call(const ProcessorPointer & device, const 
 It allows a quick and simple way to call and run the kernel without having to instanciate the kernel class. The `Call` function takes the same arguments as the kernel class constructor and the `SetInput`, `SetOutput` and `SetScalar` functions. The `Call` function is then responsible to instanciate the kernel class, to set the input and output images and the scalar value and to run the kernel.  
 In addition to simplying kernel call, it enable simple python wrapper for the `pyclesperanto` package. The drowback is that each call of the `Call` function will instanciate a new kernel class. This is not a problem for small kernels but for large kernels it is better to instanciate the kernel class only once and to call the `Execute` method multiple times.
 
+## Add a new method to the `Clesperanto` class gateway
+
+In order to make the new kernel accessible to the user, we need to add a new method to the `Clesperanto` class gateway.
+The `Clesperanto` class is defined in [`clic/include/core/clesperanto.hpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/include/core/clesperanto.hpp) and the source code is in [`clic/src/core/clesperanto.cpp`](https://github.com/clEsperanto/CLIc_prototype/blob/master/clic/src/core/clesperanto.cpp).
+
+### Modify the header file
+
+Add the new kernel as a method to the header (`clic/include/core/clesperanto.hpp`):
+```cpp
+  auto
+  AddImageAndScalar(const Image & source, const Image & destination, const float & scalar = 0) -> void;
+```
+
+### Modify the source file
+
+And call `AddImageAndScalarKernel_Call` from within this method in (`clic/src/core/clesperanto.cpp`):
+```cpp
+auto
+Clesperanto::AddImageAndScalar(const Image & source, const Image & destination, const float & scalar) -> void
+{
+  AddImageAndScalarKernel_Call(this->GetDevice(), source, destination, scalar);
+}
+```
+
 ### __Summary__
 
-We have now a fully implemented kernel class in the CLIc library. The next step is to make the kernel accessible to the user by adding a new method to the `Clesperanto` class gateway and to provide a valid test case to insure that the kernel is working as expected.
+Now that the kernel is accessible to the user, it is very important to [**provide a valid test case**](https://github.com/clEsperanto/CLIc_prototype/blob/extend_doc_add_new_kernel/docs/add_new_kernel/add_test_case.md) to insure that the kernel is working as expected.
