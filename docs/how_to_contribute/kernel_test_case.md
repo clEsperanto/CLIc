@@ -2,7 +2,7 @@
 
 In order to ensure that the kernel is working as expected, write a test case and register it in `tests/CMakeLists.txt`.
 
-## Write a test case
+## <a id="test_source">Write a test case</a>
 
 In this example, add `tests/add_image_and_scalar_test.cpp`. In order to be able to generate random test data, we include `<random>`. Obviously, we also need to include `clesperanto.hpp`.
 
@@ -54,7 +54,7 @@ main(int argc, char ** argv) -> int
 }
 ```
 
-## Register the test
+## <a id="test_cmakelist">Register the test</a>
 
 In `tests/CMakeLists.txt`, we need to register the text in three places:
 
