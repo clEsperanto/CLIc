@@ -73,11 +73,6 @@ Image::CopyDataTo(const Image & dst_img) const -> void
     std::cerr << "Error in CopyDataTo : Memory Objects does not share the same bytes size. \n";
     return;
   }
-  if (this->GetMemoryType() == BUFFER && dst_img.GetMemoryType() == BUFFER)
-  {
-    Backend::EnqueueCopyBuffer(this->GetDevice()->QueuePtr(), this->Get(), dst_img.Get(), true, 0, 0, this->GetSize());
-    return;
-  }
 
   bool src_is_buffer = false;
   if (this->GetMemoryType() == BUFFER)
@@ -90,6 +85,22 @@ Image::CopyDataTo(const Image & dst_img) const -> void
     dst_is_buffer = true;
   }
 
+  if (src_is_buffer && dst_is_buffer)
+  {
+    if (this->Ndim() > 1 && dst_img.Ndim() > 1)
+    {
+      Backend::EnqueueCopyBufferRect(this->GetDevice()->QueuePtr(),
+                                     this->Get(),
+                                     dst_img.Get(),
+                                     true,
+                                     this->Origin(),
+                                     dst_img.Origin(),
+                                     this->Shape());
+      return;
+    }
+    Backend::EnqueueCopyBuffer(this->GetDevice()->QueuePtr(), this->Get(), dst_img.Get(), true, 0, 0, this->GetSize());
+    return;
+  }
   if (src_is_buffer && !dst_is_buffer)
   {
     Backend::EnqueueCopyBufferToImage(
