@@ -35,7 +35,15 @@ auto
 WriteBufferObject(const Image & image, const std::vector<type> & array) -> void
 {
   size_t byte_length = array.size() * sizeof(type);
-  Backend::EnqueueWriteToBuffer(image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length, array.data());
+  if (image.Ndim() == 1)
+  {
+    Backend::EnqueueWriteToBuffer(image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length, array.data());
+  }
+  else
+  {
+    Backend::EnqueueWriteToBufferRect(
+      image.GetDevice()->QueuePtr(), image.Get(), true, image.Origin(), image.Origin(), image.Shape(), array.data());
+  }
 }
 
 template <class type>
@@ -55,8 +63,25 @@ ReadBufferObject(const Image & image, const std::vector<type> & array) -> void
     throw(std::runtime_error("Error: Buffer and host array are not of the same type."));
   }
   size_t byte_length = array.size() * DataTypeToSizeOf(image.GetDataType());
-  Backend::EnqueueReadFromBuffer(
-    image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length, (void *)(array.data()));
+  if (image.Ndim() == 1)
+  {
+    std::cout << "\tEnqueueReadFromBuffer" << std::endl;
+
+    Backend::EnqueueReadFromBuffer(
+      image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length, (void *)(array.data()));
+  }
+  else
+  {
+    std::cout << "\tEnqueueReadFromBufferRect" << std::endl;
+
+    Backend::EnqueueReadFromBufferRect(image.GetDevice()->QueuePtr(),
+                                       image.Get(),
+                                       true,
+                                       image.Origin(),
+                                       image.Origin(),
+                                       image.Shape(),
+                                       (void *)(array.data()));
+  }
 }
 
 template <class type>
