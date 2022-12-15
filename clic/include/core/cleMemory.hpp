@@ -30,18 +30,38 @@ AllocateBufferMemory(const Image & image) -> Image;
 auto
 AllocateImageMemory(const Image & image) -> Image;
 
+// template <class type>
+// auto
+// WriteBufferObject(const Image & image, const std::vector<type> & array) -> void
+// {
+//   size_t byte_length = array.size() * sizeof(type);
+//   if (image.Ndim() == 1)
+//   {
+//     Backend::EnqueueWriteToBuffer(image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length, array.data());
+//     return;
+//   }
+//   Backend::EnqueueWriteToBufferRect(
+//     image.GetDevice()->QueuePtr(), image.Get(), true, image.Origin(), image.Origin(), image.Shape(), array.data());
+
+//   //** this may be only interesting if the buffer is very large and if both map and unmap are done
+//   //** in the same scope
+//   // auto ptr = Backend::EnqueueMapBuffer(image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length);
+//   // std::memcpy(ptr, array.data(), byte_length);
+//   // Backend::EnqueueUnmapMemObject(image.GetDevice()->QueuePtr(), image.Get(), ptr);
+//   // return;
+// }
+
 template <class type>
 auto
-WriteBufferObject(const Image & image, const std::vector<type> & array) -> void
+WriteBufferObject(const Image & image, const type * array, const size_t & array_byte_size) -> void
 {
-  size_t byte_length = array.size() * sizeof(type);
   if (image.Ndim() == 1)
   {
-    Backend::EnqueueWriteToBuffer(image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length, array.data());
+    Backend::EnqueueWriteToBuffer(image.GetDevice()->QueuePtr(), image.Get(), true, 0, array_byte_size, array);
     return;
   }
   Backend::EnqueueWriteToBufferRect(
-    image.GetDevice()->QueuePtr(), image.Get(), true, image.Origin(), image.Origin(), image.Shape(), array.data());
+    image.GetDevice()->QueuePtr(), image.Get(), true, image.Origin(), image.Origin(), image.Shape(), array);
 
   //** this may be only interesting if the buffer is very large and if both map and unmap are done
   //** in the same scope
@@ -51,12 +71,20 @@ WriteBufferObject(const Image & image, const std::vector<type> & array) -> void
   // return;
 }
 
+// template <class type>
+// auto
+// WriteImageObject(const Image & image, const std::vector<type> & array) -> void
+// {
+//   Backend::EnqueueWriteToImage(
+//     image.GetDevice()->QueuePtr(), image.Get(), CL_TRUE, image.Origin(), image.Shape(), array.data());
+// }
+
 template <class type>
 auto
-WriteImageObject(const Image & image, const std::vector<type> & array) -> void
+WriteImageObject(const Image & image, const type * array) -> void
 {
   Backend::EnqueueWriteToImage(
-    image.GetDevice()->QueuePtr(), image.Get(), CL_TRUE, image.Origin(), image.Shape(), array.data());
+    image.GetDevice()->QueuePtr(), image.Get(), CL_TRUE, image.Origin(), image.Shape(), array);
 }
 
 template <class type>
@@ -111,13 +139,27 @@ AllocateMemory(const ProcessorPointer & device,
 auto
 AllocateMemory(const Image & image) -> Image;
 
+// template <class type>
+// auto
+// WriteObject(const Image & image, const std::vector<type> & array) -> void
+// {
+//   if (image.GetMemoryType() == BUFFER)
+//   {
+//     WriteBufferObject(image, array);
+//   }
+//   else
+//   {
+//     WriteImageObject(image, array);
+//   }
+// }
+
 template <class type>
 auto
-WriteObject(const Image & image, const std::vector<type> & array) -> void
+WriteObject(const Image & image, const type * array, const size_t & array_bytes_size) -> void
 {
   if (image.GetMemoryType() == BUFFER)
   {
-    WriteBufferObject(image, array);
+    WriteBufferObject(image, array, array_bytes_size);
   }
   else
   {
