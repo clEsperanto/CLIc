@@ -343,7 +343,7 @@ Clesperanto::Push(const std::vector<T> & array, const ShapeArray & shape, const 
 {
   DataType bit_type = TypeToDataType<T>();
   auto     image = Memory::AllocateMemory(this->GetDevice(), shape, bit_type, type);
-  Memory::WriteObject(image, array);
+  Memory::WriteObject(image, array.data(), array.size() * sizeof(T));
   return image;
 }
 
@@ -351,7 +351,9 @@ template <class T>
 auto
 Clesperanto::Pull(const Image & image) const -> std::vector<T>
 {
-  return Memory::ReadObject<T>(image);
+  std::vector<T> array(image.Shape()[0] * image.Shape()[1] * image.Shape()[2]);
+  Memory::ReadObject<T>(image, array.data(), array.size() * sizeof(T));
+  return array;
 }
 
 } // namespace cle

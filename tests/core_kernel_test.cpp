@@ -27,6 +27,7 @@ run_test(const std::shared_ptr<cle::Processor> & gpu, std::array<size_t, 3> shap
   const type base = 10;
   const type add = 15;
 
+  std::vector<type> output(shape[0] * shape[1] * shape[2]);
   std::vector<type> input(shape[0] * shape[1] * shape[2]);
   std::vector<type> valid(shape[0] * shape[1] * shape[2]);
   std::fill(input.begin(), input.end(), base);
@@ -36,7 +37,7 @@ run_test(const std::shared_ptr<cle::Processor> & gpu, std::array<size_t, 3> shap
   auto          gpu_output = cle::Memory::AllocateMemory(gpu, shape, data_type, mem_type);
   auto          gpu_intput = cle::Memory::AllocateMemory(gpu_output);
 
-  cle::Memory::WriteObject(gpu_intput, input);
+  cle::Memory::WriteObject(gpu_intput, input.data(), input.size() * sizeof(type));
 
   cle::AddImageAndScalarKernel kernel(gpu);
   kernel.SetInput(gpu_intput);
@@ -44,10 +45,7 @@ run_test(const std::shared_ptr<cle::Processor> & gpu, std::array<size_t, 3> shap
   kernel.SetScalar(add);
   kernel.Execute();
 
-  std::cout << kernel << std::endl;
-
-
-  auto output = cle::Memory::ReadObject<type>(gpu_output);
+  cle::Memory::ReadObject<type>(gpu_output, output.data(), output.size() * sizeof(type));
   return std::equal(output.begin(), output.end(), valid.begin());
 }
 

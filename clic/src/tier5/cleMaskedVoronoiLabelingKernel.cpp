@@ -89,7 +89,7 @@ MaskedVoronoiLabelingKernel::Execute() -> void
       diamondMaximum.SetOutput2(flip);
       diamondMaximum.Execute();
     }
-    flag_value = Memory::ReadObject<float>(flag).front();
+    Memory::ReadObject<float>(flag, flag_value);
     flag.Fill(0);
     iteration_count++;
   }

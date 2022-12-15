@@ -31,24 +31,27 @@ ThresholdOtsuKernel::SetOutput(const Image & object) -> void
 auto
 ThresholdOtsuKernel::Execute() -> void
 {
-  auto         src = this->GetImage("src");
-  auto         dst = this->GetImage("dst");
-  const size_t bin = 256;
+  auto               src = this->GetImage("src");
+  auto               dst = this->GetImage("dst");
+  const size_t       bin = 256;
+  std::vector<float> hist_array(bin);
 
   // compute inputs min / max intensity
   // * should be removed because already defined in histogram class ?
   //
+  float                    min_intensity = 0;
+  float                    max_intensity = 0;
   auto                     temp_scalar_buffer = Memory::AllocateMemory(this->GetDevice(), { 1, 1, 1 });
   MinimumOfAllPixelsKernel minimum_intensity_kernel(this->GetDevice());
   minimum_intensity_kernel.SetInput(*src);
   minimum_intensity_kernel.SetOutput(temp_scalar_buffer);
   minimum_intensity_kernel.Execute();
-  float                    min_intensity = Memory::ReadObject<float>(temp_scalar_buffer).front();
+  Memory::ReadObject<float>(temp_scalar_buffer, min_intensity);
   MaximumOfAllPixelsKernel maximum_intensity_kernel(this->GetDevice());
   maximum_intensity_kernel.SetInput(*src);
   maximum_intensity_kernel.SetOutput(temp_scalar_buffer);
   maximum_intensity_kernel.Execute();
-  float max_intensity = Memory::ReadObject<float>(temp_scalar_buffer).front();
+  Memory::ReadObject<float>(temp_scalar_buffer, max_intensity);
 
   // compute src histogram
   auto            hist = Memory::AllocateMemory(this->GetDevice(), { bin, 1, 1 });
@@ -60,7 +63,7 @@ ThresholdOtsuKernel::Execute() -> void
   histogram.SetMinimumIntensity(min_intensity);
   histogram.SetMaximumIntensity(max_intensity);
   histogram.Execute();
-  auto hist_array = Memory::ReadObject<float>(hist);
+  Memory::ReadObject<float>(hist, hist_array.data(), hist_array.size() * sizeof(float));
 
   // compute otsu threshold value from histogram
   float              threshold = -1;

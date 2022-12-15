@@ -74,13 +74,13 @@ HistogramKernel::Execute() -> void
     minimum_intensity_kernel.SetInput(*src);
     minimum_intensity_kernel.SetOutput(temp_scalar_buffer);
     minimum_intensity_kernel.Execute();
-    this->min_intensity_ = Memory::ReadObject<float>(temp_scalar_buffer).front();
+    Memory::ReadObject<float>(temp_scalar_buffer, this->min_intensity_);
 
     MaximumOfAllPixelsKernel maximum_intensity_kernel(this->GetDevice());
     maximum_intensity_kernel.SetInput(*src);
     maximum_intensity_kernel.SetOutput(temp_scalar_buffer);
     maximum_intensity_kernel.Execute();
-    this->max_intensity_ = Memory::ReadObject<float>(temp_scalar_buffer).front();
+    Memory::ReadObject<float>(temp_scalar_buffer, this->max_intensity_);
   }
   this->AddParameter("minimum", this->min_intensity_);
   this->AddParameter("maximum", this->max_intensity_);

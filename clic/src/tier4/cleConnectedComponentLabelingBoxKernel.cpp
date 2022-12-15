@@ -51,13 +51,13 @@ ConnectedComponentLabelingBoxKernel::Execute() -> void
   std::array<size_t, 3> flag_dim = { 1, 1, 2 };
   std::vector<float>    arr = { 0, 0 };
   auto                  flag = Memory::AllocateMemory(this->GetDevice(), flag_dim);
-  Memory::WriteObject(flag, arr);
+  Memory::WriteObject(flag, arr.data(), arr.size() * sizeof(float));
 
-  std::vector<float>      flag_value = { 1, 1 };
+  float                   flag_value = 1;
   int                     iteration_count = 0;
   NonzeroMinimumBoxKernel nonzero_minimum_kernel(this->GetDevice());
   SetKernel               set_flag_kernel(this->GetDevice());
-  while (flag_value[0] > 0)
+  while (flag_value > 0)
   {
     nonzero_minimum_kernel.SetOutputFlag(flag);
     if (iteration_count % 2 == 0)
@@ -72,7 +72,7 @@ ConnectedComponentLabelingBoxKernel::Execute() -> void
     }
     nonzero_minimum_kernel.Execute();
 
-    flag_value = Memory::ReadObject<float>(flag);
+    Memory::ReadObject<float>(flag, flag_value);
     set_flag_kernel.SetInput(flag);
     set_flag_kernel.SetValue(0);
     set_flag_kernel.Execute();
