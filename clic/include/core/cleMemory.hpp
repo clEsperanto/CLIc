@@ -38,12 +38,17 @@ WriteBufferObject(const Image & image, const std::vector<type> & array) -> void
   if (image.Ndim() == 1)
   {
     Backend::EnqueueWriteToBuffer(image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length, array.data());
+    return;
   }
-  else
-  {
-    Backend::EnqueueWriteToBufferRect(
-      image.GetDevice()->QueuePtr(), image.Get(), true, image.Origin(), image.Origin(), image.Shape(), array.data());
-  }
+  Backend::EnqueueWriteToBufferRect(
+    image.GetDevice()->QueuePtr(), image.Get(), true, image.Origin(), image.Origin(), image.Shape(), array.data());
+
+  //** this may be only interesting if the buffer is very large and if both map and unmap are done
+  //** in the same scope
+  // auto ptr = Backend::EnqueueMapBuffer(image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length);
+  // std::memcpy(ptr, array.data(), byte_length);
+  // Backend::EnqueueUnmapMemObject(image.GetDevice()->QueuePtr(), image.Get(), ptr);
+  // return;
 }
 
 template <class type>
@@ -60,24 +65,29 @@ ReadBufferObject(const Image & image, const std::vector<type> & array) -> void
 {
   if (sizeof(type) != image.GetSizeOfElements())
   {
-    throw(std::runtime_error("Error: Buffer and host array are not of the same type."));
+    throw(std::runtime_error("Error: Buffer and host array are not of the same data type."));
   }
   size_t byte_length = array.size() * DataTypeToSizeOf(image.GetDataType());
   if (image.Ndim() == 1)
   {
     Backend::EnqueueReadFromBuffer(
       image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length, (void *)(array.data()));
+    return;
   }
-  else
-  {
-    Backend::EnqueueReadFromBufferRect(image.GetDevice()->QueuePtr(),
-                                       image.Get(),
-                                       true,
-                                       image.Origin(),
-                                       image.Origin(),
-                                       image.Shape(),
-                                       (void *)(array.data()));
-  }
+  Backend::EnqueueReadFromBufferRect(image.GetDevice()->QueuePtr(),
+                                     image.Get(),
+                                     true,
+                                     image.Origin(),
+                                     image.Origin(),
+                                     image.Shape(),
+                                     (void *)(array.data()));
+
+  //** this may be only interesting if the buffer is very large and if both map and unmap are done
+  //** in the same scope
+  //  auto ptr = Backend::EnqueueMapBuffer(image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length);
+  //  std::memcpy((void *)(array.data()), ptr, byte_length);
+  //  Backend::EnqueueUnmapMemObject(image.GetDevice()->QueuePtr(), image.Get(), ptr);
+  //  return;
 }
 
 template <class type>

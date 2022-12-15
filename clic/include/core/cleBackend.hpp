@@ -361,6 +361,113 @@ EnqueueKernelExecution(const cl::CommandQueue &      queue_pointer,
 }
 
 inline auto
+EnqueueUnmapMemObject(const cl::CommandQueue & queue_pointer, const cl::Memory & memory_pointer, void * ptr) -> void
+{
+  cl_int err = queue_pointer.enqueueUnmapMemObject(memory_pointer, ptr);
+  if (err != CL_SUCCESS)
+  {
+    std::cerr << "Backend error in EnqueueUnmapMemObject: " << GetOpenCLErrorInfo(err) << std::endl;
+  }
+}
+
+inline auto
+EnqueueMapImage(const cl::CommandQueue &      queue_pointer,
+                const cl::Memory &            image_pointer,
+                const bool &                  block_flag,
+                const std::array<size_t, 3> & origin,
+                const std::array<size_t, 3> & region) -> void *
+{
+  void * ptr = nullptr;
+  cl_int err = CL_SUCCESS;
+  if (image_pointer.getInfo<CL_MEM_TYPE>() == CL_MEM_OBJECT_IMAGE1D)
+  {
+    const cl::Image1D memory(image_pointer.get(), true);
+    ptr = queue_pointer.enqueueMapImage(memory,
+                                        static_cast<cl_bool>(block_flag),
+                                        CL_MAP_READ | CL_MAP_WRITE,
+                                        origin,
+                                        region,
+                                        nullptr,
+                                        nullptr,
+                                        nullptr,
+                                        nullptr,
+                                        &err);
+    if (err != CL_SUCCESS)
+    {
+      std::cerr << "Backend error in EnqueueMapImage 1D: " << GetOpenCLErrorInfo(err) << std::endl;
+    }
+    return ptr;
+  }
+  if (image_pointer.getInfo<CL_MEM_TYPE>() == CL_MEM_OBJECT_IMAGE2D)
+  {
+    const cl::Image2D memory(image_pointer.get(), true);
+    ptr = queue_pointer.enqueueMapImage(memory,
+                                        static_cast<cl_bool>(block_flag),
+                                        CL_MAP_READ | CL_MAP_WRITE,
+                                        origin,
+                                        region,
+                                        nullptr,
+                                        nullptr,
+                                        nullptr,
+                                        nullptr,
+                                        &err);
+    if (err != CL_SUCCESS)
+    {
+      std::cerr << "Backend error in EnqueueMapImage 2D: " << GetOpenCLErrorInfo(err) << std::endl;
+    }
+    return ptr;
+  }
+  if (image_pointer.getInfo<CL_MEM_TYPE>() == CL_MEM_OBJECT_IMAGE3D)
+  {
+    const cl::Image3D memory(image_pointer.get(), true);
+    ptr = queue_pointer.enqueueMapImage(memory,
+                                        static_cast<cl_bool>(block_flag),
+                                        CL_MAP_READ | CL_MAP_WRITE,
+                                        origin,
+                                        region,
+                                        nullptr,
+                                        nullptr,
+                                        nullptr,
+                                        nullptr,
+                                        &err);
+    if (err != CL_SUCCESS)
+    {
+      std::cerr << "Backend error in EnqueueMapImage 3D: " << GetOpenCLErrorInfo(err) << std::endl;
+    }
+    return ptr;
+  }
+  if (err != CL_SUCCESS)
+  {
+    std::cerr << "Backend error in EnqueueMapImage: " << GetOpenCLErrorInfo(err) << std::endl;
+  }
+  return ptr;
+}
+
+inline auto
+EnqueueMapBuffer(const cl::CommandQueue & queue_pointer,
+                 const cl::Memory &       buffer_pointer,
+                 const bool &             block_flag,
+                 const size_t &           offset,
+                 const size_t &           length_in_bytes) -> void *
+{
+  const cl::Buffer memory(buffer_pointer.get(), true);
+  cl_int           err = CL_SUCCESS;
+  void *           ptr = queue_pointer.enqueueMapBuffer(memory,
+                                              static_cast<cl_bool>(block_flag),
+                                              CL_MAP_READ | CL_MAP_WRITE,
+                                              offset,
+                                              length_in_bytes,
+                                              nullptr,
+                                              nullptr,
+                                              &err);
+  if (err != CL_SUCCESS)
+  {
+    std::cerr << "Backend error in EnqueueMapBuffer: " << GetOpenCLErrorInfo(err) << std::endl;
+  }
+  return ptr;
+}
+
+inline auto
 EnqueueReadFromBuffer(const cl::CommandQueue & queue_pointer,
                       const cl::Memory &       buffer_pointer,
                       const bool &             block_flag,
@@ -482,10 +589,10 @@ EnqueueCopyBuffer(const cl::CommandQueue & queue_pointer,
                   size_t                   dst_offset,
                   const size_t &           length_in_bytes) -> void
 {
-  const cl::Buffer src_memory(src_buffer_pointer.get(), true);
+  const cl::Buffer memory(src_buffer_pointer.get(), true);
   const cl::Buffer dst_memory(dst_buffer_pointer.get(), true);
   cl_int           err =
-    queue_pointer.enqueueCopyBuffer(src_memory, dst_memory, src_offset, dst_offset, length_in_bytes, nullptr, nullptr);
+    queue_pointer.enqueueCopyBuffer(memory, dst_memory, src_offset, dst_offset, length_in_bytes, nullptr, nullptr);
   if (err != CL_SUCCESS)
   {
     std::cerr << "Backend error in EnqueueCopyBuffer : " << GetOpenCLErrorInfo(err) << std::endl;
@@ -505,15 +612,15 @@ EnqueueCopyBufferRect(const cl::CommandQueue &      queue_pointer,
                       const std::array<size_t, 3> & dst_origin,
                       const std::array<size_t, 3> & region) -> void
 {
-  const cl::Buffer src_memory(src_buffer_pointer.get(), true);
+  const cl::Buffer memory(src_buffer_pointer.get(), true);
   const cl::Buffer dst_memory(dst_buffer_pointer.get(), true);
 
-  size_t elementByteSize = src_memory.getInfo<CL_MEM_SIZE>() / (region[0] * region[1] * region[2]);
+  size_t elementByteSize = memory.getInfo<CL_MEM_SIZE>() / (region[0] * region[1] * region[2]);
   auto   bufferRegion = const_cast<std::array<size_t, 3> &>(region);
   bufferRegion[0] *= elementByteSize;
 
   cl_int err = queue_pointer.enqueueCopyBufferRect(
-    src_memory, dst_memory, src_origin, dst_origin, bufferRegion, 0, 0, 0, 0, nullptr, nullptr);
+    memory, dst_memory, src_origin, dst_origin, bufferRegion, 0, 0, 0, 0, nullptr, nullptr);
   if (err != CL_SUCCESS)
   {
     std::cerr << "Backend error in EnqueueCopyBufferRect : " << GetOpenCLErrorInfo(err) << std::endl;
@@ -530,25 +637,25 @@ EnqueueCopyBufferToImage(const cl::CommandQueue &      queue_pointer,
                          const std::array<size_t, 3> & dst_region) -> void
 {
   cl_int           err = CL_SUCCESS;
-  const cl::Buffer src_memory(src_buffer_pointer.get(), true);
+  const cl::Buffer memory(src_buffer_pointer.get(), true);
   switch (dst_image_pointer.getInfo<CL_MEM_TYPE>())
   {
     case CL_MEM_OBJECT_IMAGE1D: {
       const cl::Image1D dst_memory(dst_image_pointer.get(), true);
       err = queue_pointer.enqueueCopyBufferToImage(
-        src_memory, dst_memory, src_offset, dst_origin, dst_region, nullptr, nullptr);
+        memory, dst_memory, src_offset, dst_origin, dst_region, nullptr, nullptr);
       break;
     }
     case CL_MEM_OBJECT_IMAGE2D: {
       const cl::Image2D dst_memory(dst_image_pointer.get(), true);
       err = queue_pointer.enqueueCopyBufferToImage(
-        src_memory, dst_memory, src_offset, dst_origin, dst_region, nullptr, nullptr);
+        memory, dst_memory, src_offset, dst_origin, dst_region, nullptr, nullptr);
       break;
     }
     case CL_MEM_OBJECT_IMAGE3D: {
       const cl::Image3D dst_memory(dst_image_pointer.get(), true);
       err = queue_pointer.enqueueCopyBufferToImage(
-        src_memory, dst_memory, src_offset, dst_origin, dst_region, nullptr, nullptr);
+        memory, dst_memory, src_offset, dst_origin, dst_region, nullptr, nullptr);
       break;
     }
   }
@@ -576,21 +683,21 @@ EnqueueCopyImageToBuffer(const cl::CommandQueue &      queue_pointer,
   switch (src_image_pointer.getInfo<CL_MEM_TYPE>())
   {
     case CL_MEM_OBJECT_IMAGE1D: {
-      const cl::Image1D src_memory(src_image_pointer.get(), true);
+      const cl::Image1D memory(src_image_pointer.get(), true);
       err = queue_pointer.enqueueCopyImageToBuffer(
-        src_memory, dst_memory, src_origin, src_region, dst_offset, nullptr, nullptr);
+        memory, dst_memory, src_origin, src_region, dst_offset, nullptr, nullptr);
       break;
     }
     case CL_MEM_OBJECT_IMAGE2D: {
-      const cl::Image2D src_memory(src_image_pointer.get(), true);
+      const cl::Image2D memory(src_image_pointer.get(), true);
       err = queue_pointer.enqueueCopyImageToBuffer(
-        src_memory, dst_memory, src_origin, src_region, dst_offset, nullptr, nullptr);
+        memory, dst_memory, src_origin, src_region, dst_offset, nullptr, nullptr);
       break;
     }
     case CL_MEM_OBJECT_IMAGE3D: {
-      const cl::Image3D src_memory(src_image_pointer.get(), true);
+      const cl::Image3D memory(src_image_pointer.get(), true);
       err = queue_pointer.enqueueCopyImageToBuffer(
-        src_memory, dst_memory, src_origin, src_region, dst_offset, nullptr, nullptr);
+        memory, dst_memory, src_origin, src_region, dst_offset, nullptr, nullptr);
       break;
     }
   }
@@ -727,21 +834,21 @@ EnqueueCopyImage(const cl::CommandQueue &      queue_pointer,
   switch (src_image_pointer.getInfo<CL_MEM_TYPE>())
   {
     case CL_MEM_OBJECT_IMAGE1D: {
-      const cl::Image1D src_memory(src_image_pointer.get(), true);
+      const cl::Image1D memory(src_image_pointer.get(), true);
       const cl::Image1D dst_memory(dst_image_pointer.get(), true);
-      err = queue_pointer.enqueueCopyImage(src_memory, dst_memory, src_origin, dst_origin, region, nullptr, nullptr);
+      err = queue_pointer.enqueueCopyImage(memory, dst_memory, src_origin, dst_origin, region, nullptr, nullptr);
       break;
     }
     case CL_MEM_OBJECT_IMAGE2D: {
-      const cl::Image2D src_memory(src_image_pointer.get(), true);
+      const cl::Image2D memory(src_image_pointer.get(), true);
       const cl::Image2D dst_memory(dst_image_pointer.get(), true);
-      err = queue_pointer.enqueueCopyImage(src_memory, dst_memory, src_origin, dst_origin, region, nullptr, nullptr);
+      err = queue_pointer.enqueueCopyImage(memory, dst_memory, src_origin, dst_origin, region, nullptr, nullptr);
       break;
     }
     case CL_MEM_OBJECT_IMAGE3D: {
-      const cl::Image3D src_memory(src_image_pointer.get(), true);
+      const cl::Image3D memory(src_image_pointer.get(), true);
       const cl::Image3D dst_memory(dst_image_pointer.get(), true);
-      err = queue_pointer.enqueueCopyImage(src_memory, dst_memory, src_origin, dst_origin, region, nullptr, nullptr);
+      err = queue_pointer.enqueueCopyImage(memory, dst_memory, src_origin, dst_origin, region, nullptr, nullptr);
       break;
     }
   }
