@@ -884,7 +884,7 @@ EnqueueCopyImage(const cl::CommandQueue &      queue_pointer,
                  const std::array<size_t, 3> & region) -> void
 {
   cl_int err = CL_SUCCESS;
-  if (image_pointer.getInfo<CL_MEM_TYPE>() == CL_MEM_OBJECT_IMAGE1D)
+  if (src_image_pointer.getInfo<CL_MEM_TYPE>() == CL_MEM_OBJECT_IMAGE1D)
   {
     const cl::Image1D memory(src_image_pointer.get(), true);
     const cl::Image1D dst_memory(dst_image_pointer.get(), true);
@@ -895,7 +895,7 @@ EnqueueCopyImage(const cl::CommandQueue &      queue_pointer,
     }
     return;
   }
-  if (image_pointer.getInfo<CL_MEM_TYPE>() == CL_MEM_OBJECT_IMAGE2D)
+  if (src_image_pointer.getInfo<CL_MEM_TYPE>() == CL_MEM_OBJECT_IMAGE2D)
   {
     const cl::Image2D memory(src_image_pointer.get(), true);
     const cl::Image2D dst_memory(dst_image_pointer.get(), true);
@@ -906,7 +906,7 @@ EnqueueCopyImage(const cl::CommandQueue &      queue_pointer,
     }
     return;
   }
-  if (image_pointer.getInfo<CL_MEM_TYPE>() == CL_MEM_OBJECT_IMAGE3D)
+  if (src_image_pointer.getInfo<CL_MEM_TYPE>() == CL_MEM_OBJECT_IMAGE3D)
   {
     const cl::Image3D memory(src_image_pointer.get(), true);
     const cl::Image3D dst_memory(dst_image_pointer.get(), true);
