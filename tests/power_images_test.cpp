@@ -8,14 +8,14 @@ template <class type>
 auto
 run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) -> bool
 {
-  const type        value1 = static_cast<type>(rand() % 4) + 1;
-  const type        value2 = static_cast<type>(rand() % 4) + 1;
+  const float       value1 = static_cast<float>(rand() % 4) + 1;
+  const int         value2 = static_cast<int>(rand() % 4) + 1;
   std::vector<type> input1(shape[0] * shape[1] * shape[2]);
   std::vector<type> input2(shape[0] * shape[1] * shape[2]);
   std::vector<type> valid(shape[0] * shape[1] * shape[2]);
-  std::fill(input1.begin(), input1.end(), value1);
-  std::fill(input2.begin(), input2.end(), value2);
-  std::fill(valid.begin(), valid.end(), std::pow((float)value1, (int)value2));
+  std::fill(input1.begin(), input1.end(), static_cast<type>(value1));
+  std::fill(input2.begin(), input2.end(), static_cast<type>(value2));
+  std::fill(valid.begin(), valid.end(), static_cast<type>(std::pow(value1, value2)));
 
   cle::Clesperanto cle;
   cle.GetDevice()->WaitForKernelToFinish();
