@@ -343,7 +343,7 @@ Clesperanto::Push(const std::vector<T> & array, const ShapeArray & shape, const 
 {
   DataType bit_type = TypeToDataType<T>();
   auto     image = Memory::AllocateMemory(this->GetDevice(), shape, bit_type, type);
-  Memory::WriteObject(image, array);
+  Memory::WriteObject(image, array.data(), array.size() * sizeof(T));
   return image;
 }
 

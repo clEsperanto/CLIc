@@ -51,7 +51,7 @@ ConnectedComponentLabelingBoxKernel::Execute() -> void
   std::array<size_t, 3> flag_dim = { 1, 1, 2 };
   std::vector<float>    arr = { 0, 0 };
   auto                  flag = Memory::AllocateMemory(this->GetDevice(), flag_dim);
-  Memory::WriteObject(flag, arr);
+  Memory::WriteObject(flag, arr.data(), arr.size() * sizeof(float));
 
   std::vector<float>      flag_value = { 1, 1 };
   int                     iteration_count = 0;

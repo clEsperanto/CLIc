@@ -36,7 +36,7 @@ run_test(const std::shared_ptr<cle::Processor> & gpu, std::array<size_t, 3> shap
   auto          gpu_output = cle::Memory::AllocateMemory(gpu, shape, data_type, mem_type);
   auto          gpu_intput = cle::Memory::AllocateMemory(gpu_output);
 
-  cle::Memory::WriteObject(gpu_intput, input);
+  cle::Memory::WriteObject(gpu_intput, input.data(), input.size() * sizeof(type));
 
   cle::AddImageAndScalarKernel kernel(gpu);
   kernel.SetInput(gpu_intput);
