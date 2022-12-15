@@ -36,3 +36,8 @@ add_executable(benchmark_maximum_projections benchmark_maximum_projections.cpp)
 target_compile_features(benchmark_maximum_projections PUBLIC cxx_std_17)
 target_link_libraries(benchmark_maximum_projections benchmark_kernel)
 set_target_properties(benchmark_maximum_projections PROPERTIES FOLDER "Benchmark")
+
+add_executable(benchmark_push_pull benchmark_push_pull.cpp)
+target_compile_features(benchmark_push_pull PUBLIC cxx_std_17)
+target_link_libraries(benchmark_push_pull benchmark_kernel)
+set_target_properties(benchmark_push_pull PROPERTIES FOLDER "Benchmark")
