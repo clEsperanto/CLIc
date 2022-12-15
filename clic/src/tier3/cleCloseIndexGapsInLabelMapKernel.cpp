@@ -50,7 +50,8 @@ CloseIndexGapsInLabelMapKernel::Execute() -> void
   max_of_pixel_kernel.SetOutput(max_value_buffer);
   max_of_pixel_kernel.Execute();
 
-  float  max_value = Memory::ReadObject<float>(max_value_buffer).front();
+  float max_value = 0;
+  Memory::ReadObject<float>(max_value_buffer, max_value);
   size_t nb_indices = static_cast<size_t>(max_value) + 1;
 
   std::array<size_t, 3> indices_dim = { nb_indices, 1, 1 };
