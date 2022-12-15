@@ -373,6 +373,24 @@ Clesperanto::MinimumOfAllPixels(const Image & source, const Image & destination)
 }
 
 auto
+Clesperanto::MultiplyImageAndScalar(const Image & source, const Image & destination, const float & scalar) -> void
+{
+  MultiplyImageAndScalarKernel_Call(this->GetDevice(), source, destination, scalar);
+}
+
+auto
+Clesperanto::Power(const Image & source, const Image & destination, const float & exponent) -> void
+{
+  PowerKernel_Call(this->GetDevice(), source, destination, exponent);
+}
+
+auto
+Clesperanto::PowerImages(const Image & source1, const Image & source2, const Image & destination) -> void
+{
+  PowerImagesKernel_Call(this->GetDevice(), source1, source2, destination);
+}
+
+auto
 Clesperanto::DifferenceOfGaussian(const Image & source,
                                   const Image & destination,
                                   const float & sigma1_x,

@@ -31,7 +31,8 @@ target_compile_features(core_kernel_test PRIVATE cxx_std_17)
 add_executable(absolute_test absolute_test.cpp)
 add_dependencies(absolute_test CLIc)
 target_link_libraries(absolute_test PRIVATE CLIc::CLIc)
-set_target_properties(absolute_test PROPERTIES FOLDER "Tests")
+set_target_properties(absolute_test PROPERTIES FOLDER "T  const type        value = 10;
+const type        scalar = 10;ests")
 target_compile_features(absolute_test PRIVATE cxx_std_17)
 
 add_executable(add_image_and_scalar_test add_image_and_scalar_test.cpp)
@@ -298,6 +299,12 @@ target_link_libraries(minimum_z_projection_test PRIVATE CLIc::CLIc)
 set_target_properties(minimum_z_projection_test PROPERTIES FOLDER "Tests")
 target_compile_features(minimum_z_projection_test PRIVATE cxx_std_17)
 
+add_executable(multiply_image_and_scalar_test multiply_image_and_scalar_test.cpp)
+add_dependencies(multiply_image_and_scalar_test CLIc)
+target_link_libraries(multiply_image_and_scalar_test PRIVATE CLIc::CLIc)
+set_target_properties(multiply_image_and_scalar_test PROPERTIES FOLDER "Tests")
+target_compile_features(multiply_image_and_scalar_test PRIVATE cxx_std_17)
+
 add_executable(nonzero_minimum_box_test nonzero_minimum_box_test.cpp)
 add_dependencies(nonzero_minimum_box_test CLIc)
 target_link_libraries(nonzero_minimum_box_test PRIVATE CLIc::CLIc)
@@ -315,6 +322,18 @@ add_dependencies(not_equal_test CLIc)
 target_link_libraries(not_equal_test PRIVATE CLIc::CLIc)
 set_target_properties(not_equal_test PROPERTIES FOLDER "Tests")
 target_compile_features(not_equal_test PRIVATE cxx_std_17)
+
+add_executable(power_test power_test.cpp)
+add_dependencies(power_test CLIc)
+target_link_libraries(power_test PRIVATE CLIc::CLIc)
+set_target_properties(power_test PROPERTIES FOLDER "Tests")
+target_compile_features(power_test PRIVATE cxx_std_17)
+
+add_executable(power_images_test power_images_test.cpp)
+add_dependencies(power_images_test CLIc)
+target_link_libraries(power_images_test PRIVATE CLIc::CLIc)
+set_target_properties(power_images_test PROPERTIES FOLDER "Tests")
+target_compile_features(power_images_test PRIVATE cxx_std_17)
 
 add_executable(onlyzero_overwrite_maximum_box_test onlyzero_overwrite_maximum_box_test.cpp)
 add_dependencies(onlyzero_overwrite_maximum_box_test CLIc)
@@ -481,9 +500,12 @@ add_test(NAME minimum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COM
 add_test(NAME minimum_x_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_x_projection_test)
 add_test(NAME minimum_y_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_y_projection_test)
 add_test(NAME minimum_z_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_z_projection_test)
+add_test(NAME multiply_image_and_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND multiply_image_and_scalar_test)
 add_test(NAME nonzero_minimum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND nonzero_minimum_box_test)
 add_test(NAME not_equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND not_equal_constant_test)
 add_test(NAME not_equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND not_equal_test)
+add_test(NAME power_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND power_test)
+add_test(NAME power_images_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND power_images_test)
 add_test(NAME onlyzero_overwrite_maximum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND onlyzero_overwrite_maximum_box_test)
 add_test(NAME onlyzero_overwrite_maximum_diamond_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND onlyzero_overwrite_maximum_diamond_test)
 add_test(NAME replace_intensities_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND replace_intensities_test)
@@ -559,6 +581,9 @@ set_tests_properties(absolute_test
     nonzero_minimum_box_test
     not_equal_constant_test
     not_equal_test
+    multiply_image_and_scalar_test
+    power_test
+    power_images_test
     onlyzero_overwrite_maximum_box_test
     onlyzero_overwrite_maximum_diamond_test
     replace_intensities_test

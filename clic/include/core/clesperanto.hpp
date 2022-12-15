@@ -235,6 +235,9 @@ public:
   MultiplyImages(const Image & source1, const Image & source2, const Image & destination) -> void;
 
   auto
+  MultiplyImageAndScalar(const Image & source, const Image & destination, const float & scalar = 0) -> void;
+
+  auto
   NonzeroMinimumBox(const Image & source, const Image & t_flag, const Image & destination) -> void;
 
   auto
@@ -248,6 +251,12 @@ public:
 
   auto
   OnlyzeroOverwriteMaximumDiamond(const Image & source, const Image & flag, const Image & destination) -> void;
+
+  auto
+  Power(const Image & source, const Image & destination, const float & exponent = 0) -> void;
+
+  auto
+  PowerImages(const Image & source1, const Image & source2, const Image & destination) -> void;
 
   auto
   ReplaceIntensities(const Image & source, const Image & intensity_map, const Image & destination) -> void;
