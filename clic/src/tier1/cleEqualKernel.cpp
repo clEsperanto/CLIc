@@ -1,5 +1,4 @@
 
-
 #include "cleEqualKernel.hpp"
 
 namespace cle

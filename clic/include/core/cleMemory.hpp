@@ -65,15 +65,11 @@ ReadBufferObject(const Image & image, const std::vector<type> & array) -> void
   size_t byte_length = array.size() * DataTypeToSizeOf(image.GetDataType());
   if (image.Ndim() == 1)
   {
-    std::cout << "\tEnqueueReadFromBuffer" << std::endl;
-
     Backend::EnqueueReadFromBuffer(
       image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length, (void *)(array.data()));
   }
   else
   {
-    std::cout << "\tEnqueueReadFromBufferRect" << std::endl;
-
     Backend::EnqueueReadFromBufferRect(image.GetDevice()->QueuePtr(),
                                        image.Get(),
                                        true,
