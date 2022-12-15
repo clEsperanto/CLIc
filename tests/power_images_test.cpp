@@ -9,7 +9,7 @@ auto
 run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) -> bool
 {
   const float       value1 = static_cast<float>(rand() % 4) + 1;
-  const int         value2 = static_cast<int>(rand() % 4) + 1;
+  const float       value2 = static_cast<float>(rand() % 2) + 1;
   std::vector<type> input1(shape[0] * shape[1] * shape[2]);
   std::vector<type> input2(shape[0] * shape[1] * shape[2]);
   std::vector<type> valid(shape[0] * shape[1] * shape[2]);
