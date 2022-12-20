@@ -28,17 +28,16 @@ public:
   auto
   operator=(LightObject && obj) -> LightObject & = default;
 
-  // virtual auto Get () const -> void = 0;
   [[nodiscard]] virtual auto
   Ndim() const -> unsigned int = 0;
   [[nodiscard]] virtual auto
   Shape() const -> const ShapeArray & = 0;
   [[nodiscard]] virtual auto
-  GetMemoryType_Str() const -> std::string = 0;
+  GetNumberOfElements() const -> size_t = 0;
   [[nodiscard]] virtual auto
-  GetDataType_Str(const bool & short_version) const -> std::string = 0;
+  GetDataSizeOf() const -> size_t = 0;
   [[nodiscard]] virtual auto
-  GetSizeOfElements() const -> size_t = 0;
+  GetMemorySize() const -> size_t = 0;
   [[nodiscard]] virtual auto
   ToString() const -> std::string = 0;
 
@@ -55,8 +54,8 @@ public:
   }
 
 private:
-  MemoryType mem_type_ = BUFFER;
-  DataType   data_type_ = FLOAT;
+  MemoryType mem_type_ = MemoryType::BUFFER;
+  DataType   data_type_ = DataType::FLOAT32;
 };
 
 } // namespace cle

@@ -63,7 +63,7 @@ ThresholdOtsuKernel::Execute() -> void
   histogram.SetMinimumIntensity(min_intensity);
   histogram.SetMaximumIntensity(max_intensity);
   histogram.Execute();
-  Memory::ReadObject<float>(hist, hist_array.data(), hist_array.size() * sizeof(float));
+  Memory::ReadObject<float>(hist, hist_array.data(), hist_array.size());
 
   // compute otsu threshold value from histogram
   float              threshold = -1;
@@ -77,30 +77,30 @@ ThresholdOtsuKernel::Execute() -> void
   float              mean_2 = 0;
   float              nb_pixels = src->Shape()[0] * src->Shape()[1] * src->Shape()[2];
   std::vector<float> range(hist_array.size());
-  for (auto i = 0; i < range.size(); ++i)
+  for (auto intensity = 0; intensity < range.size(); ++intensity)
   {
-    range[i] = i * (max_intensity - min_intensity) / (bin - 1) + min_intensity;
-    sum_1 += range[i] * hist_array[i];
+    range[intensity] = static_cast<float>(intensity) * (max_intensity - min_intensity) / (bin - 1) + min_intensity;
+    sum_1 += range[intensity] * hist_array[intensity];
   }
-  for (auto i = 0; i < range.size(); ++i)
+  for (auto intensity = 0; intensity < range.size(); ++intensity)
   {
-    if (hist_array[i] == 0)
+    if (hist_array[intensity] == 0)
     {
       continue;
     }
-    weight_1 += hist_array[i];
+    weight_1 += hist_array[intensity];
     weight_2 = nb_pixels - weight_1;
-    sum_2 += range[i] * hist_array[i];
+    sum_2 += range[intensity] * hist_array[intensity];
     mean_1 = sum_2 / weight_1;
     mean_2 = (sum_1 - sum_2) / weight_2;
     variance = weight_1 * weight_2 * ((mean_1 - mean_2) * (mean_1 - mean_2));
     if (variance > max_variance)
     {
-      threshold = range[i];
+      threshold = range[intensity];
       max_variance = variance;
     }
   }
-  if (src->GetDataType() != FLOAT)
+  if (src->GetDataType() != DataType::FLOAT32)
   {
     threshold = round(threshold);
   }

@@ -29,11 +29,11 @@ public:
   [[nodiscard]] auto
   Shape() const -> const ShapeArray & override;
   [[nodiscard]] auto
-  GetMemoryType_Str() const -> std::string override;
+  GetDataSizeOf() const -> size_t override;
   [[nodiscard]] auto
-  GetDataType_Str(const bool & short_version) const -> std::string override;
+  GetNumberOfElements() const -> size_t override;
   [[nodiscard]] auto
-  GetSizeOfElements() const -> size_t override;
+  GetMemorySize() const -> size_t override;
   [[nodiscard]] auto
   ToString() const -> std::string override;
 
@@ -49,7 +49,7 @@ private:
 template <class Type>
 Scalar<Type>::Scalar(const Type & data)
   : data_(data)
-  , LightObject(TypeToDataType<Type>(), SCALAR)
+  , LightObject(TypeToDataType<Type>(), MemoryType::SCALAR)
 {
   static_assert(std::is_fundamental<Type>::value, "Scalar can only be of native type");
 }
@@ -77,48 +77,21 @@ Scalar<Type>::Shape() const -> const ShapeArray &
 
 template <class Type>
 auto
-Scalar<Type>::GetMemoryType_Str() const -> std::string
+Scalar<Type>::GetNumberOfElements() const -> size_t
 {
-  return "scalar";
+  return 1;
 }
 
 template <class Type>
 auto
-Scalar<Type>::GetDataType_Str(const bool & short_version) const -> std::string
+Scalar<Type>::GetDataSizeOf() const -> size_t
 {
-  std::string res;
-  switch (this->GetDataType())
-  {
-    case CL_SIGNED_INT8:
-      res = (short_version) ? "c" : "char";
-      break;
-    case CL_SIGNED_INT16:
-      res = (short_version) ? "s" : "short";
-      break;
-    case CL_SIGNED_INT32:
-      res = (short_version) ? "i" : "int";
-      break;
-    case CL_UNSIGNED_INT8:
-      res = (short_version) ? "uc" : "uchar";
-      break;
-    case CL_UNSIGNED_INT16:
-      res = (short_version) ? "us" : "ushort";
-      break;
-    case CL_UNSIGNED_INT32:
-      res = (short_version) ? "ui" : "uint";
-      break;
-    case CL_FLOAT:
-      res = (short_version) ? "f" : "float";
-      break;
-    default:
-      res = "unknown";
-  }
-  return res;
+  return sizeof(this->Get());
 }
 
 template <class Type>
 auto
-Scalar<Type>::GetSizeOfElements() const -> size_t
+Scalar<Type>::GetMemorySize() const -> size_t
 {
   return sizeof(this->Get());
 }
@@ -128,7 +101,7 @@ auto
 Scalar<Type>::ToString() const -> std::string
 {
   std::stringstream out_string;
-  out_string << this->Get() << "(" << this->GetDataType_Str(false) << ")";
+  out_string << this->Get() << "(" << DataTypeToString(this->GetDataType()) << ")";
   return out_string.str();
 }
 

@@ -605,4 +605,20 @@ set_tests_properties(absolute_test
     threshold_otsu_test
     gradient_x_test
     gradient_z_test
-    voronoi_otsu_labeling_test PROPERTIES LABELS "KERNELS" WILL_FAIL FALSE)
+    voronoi_otsu_labeling_test PROPERTIES LABELS "TIERS1" WILL_FAIL FALSE)
+
+    set_tests_properties( maximum_all_pixels_test
+    minimum_all_pixels_test
+    sum_all_pixels_test
+    PROPERTIES LABELS "TIERS2" WILL_FAIL FALSE)
+
+    set_tests_properties(close_indexgaps_in_labelmap_test
+    difference_of_gaussian_test
+    histogram_test PROPERTIES LABELS "TIERS3" WILL_FAIL FALSE)
+
+    set_tests_properties(connected_component_labeling_box_test
+    threshold_otsu_test PROPERTIES LABELS "TIERS4" WILL_FAIL FALSE)
+
+    set_tests_properties(masked_voronoi_labeling_test PROPERTIES LABELS "TIERS5" WILL_FAIL FALSE)
+
+    set_tests_properties(voronoi_otsu_labeling_test PROPERTIES LABELS "TIERS6" WILL_FAIL FALSE)

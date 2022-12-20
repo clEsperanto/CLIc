@@ -36,19 +36,17 @@ public:
   [[nodiscard]] auto
   GetDevice() const -> ProcessorPointer;
   [[nodiscard]] auto
-  GetSizeOfElements() const -> size_t override;
+  GetDataSizeOf() const -> size_t override;
   [[nodiscard]] auto
-  GetSize() const -> size_t;
+  GetMemorySize() const -> size_t override;
   [[nodiscard]] auto
   Ndim() const -> unsigned int override;
   [[nodiscard]] auto
   Shape() const -> const ShapeArray & override;
   [[nodiscard]] auto
+  GetNumberOfElements() const -> size_t override;
+  [[nodiscard]] auto
   Origin() const -> const ShapeArray &;
-  [[nodiscard]] auto
-  GetMemoryType_Str() const -> std::string override;
-  [[nodiscard]] auto
-  GetDataType_Str(const bool & short_version) const -> std::string override;
   [[nodiscard]] auto
   ToString() const -> std::string override;
 
@@ -67,15 +65,16 @@ private:
   auto
   CastFill(const type & value) const -> void
   {
-    if (this->GetMemoryType() == BUFFER)
+    if (this->GetMemoryType() == MemoryType::BUFFER)
     {
-      Backend::EnqueueFillBuffer(this->GetDevice()->QueuePtr(), this->Get(), true, 0, this->GetSize(), value);
+      Backend::EnqueueFillBuffer(this->GetDevice()->QueuePtr(), this->Get(), true, 0, this->GetMemorySize(), value);
     }
     else
     {
       switch (this->GetDataType())
       {
-        case FLOAT: {
+        case DataType::FLOAT64:
+        case DataType::FLOAT32: {
           cl_float4 color = { static_cast<cl_float>(value),
                               static_cast<cl_float>(value),
                               static_cast<cl_float>(value),
@@ -84,9 +83,9 @@ private:
             this->GetDevice()->QueuePtr(), this->Get(), true, this->Origin(), this->Shape(), color);
           break;
         }
-        case INT8:
-        case INT16:
-        case INT32: {
+        case DataType::INT8:
+        case DataType::INT16:
+        case DataType::INT32: {
           cl_int4 color = { static_cast<cl_int>(value),
                             static_cast<cl_int>(value),
                             static_cast<cl_int>(value),
@@ -95,9 +94,9 @@ private:
             this->GetDevice()->QueuePtr(), this->Get(), true, this->Origin(), this->Shape(), color);
           break;
         }
-        case UINT8:
-        case UINT16:
-        case UINT32: {
+        case DataType::UINT8:
+        case DataType::UINT16:
+        case DataType::UINT32: {
           cl_uint4 color = { static_cast<cl_uint>(value),
                              static_cast<cl_uint>(value),
                              static_cast<cl_uint>(value),

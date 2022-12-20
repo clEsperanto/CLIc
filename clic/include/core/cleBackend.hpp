@@ -115,7 +115,14 @@ GetDeviceExtensions(const cl::Device & device_pointer) -> std::string
 inline auto
 ImageSupport(const cl::Device & device_pointer) -> bool
 {
-  return device_pointer.getInfo<CL_DEVICE_IMAGE_SUPPORT>() == CL_TRUE;
+  return device_pointer.getInfo<CL_DEVICE_IMAGE_SUPPORT>();
+}
+
+inline auto
+DoubleSupport(const cl::Device & device_pointer) -> bool
+{
+  auto extentions_list = device_pointer.getInfo<CL_DEVICE_EXTENSIONS>();
+  return extentions_list.find("cl_khr_fp64") != std::string::npos;
 }
 
 inline auto
@@ -511,19 +518,8 @@ EnqueueReadFromBufferRect(const cl::CommandQueue &      queue_pointer,
                           void *                        host_memory_pointer) -> void
 {
   const cl::Buffer memory(buffer_pointer.get(), true);
-  size_t           elementByteSize = memory.getInfo<CL_MEM_SIZE>() / (region[0] * region[1] * region[2]);
-  auto             bufferRegion = const_cast<std::array<size_t, 3> &>(region);
-  bufferRegion[0] *= elementByteSize;
-  cl_int err = queue_pointer.enqueueReadBufferRect(memory,
-                                                   static_cast<cl_bool>(block_flag),
-                                                   buffer_origin,
-                                                   host_origin,
-                                                   bufferRegion,
-                                                   0,
-                                                   0,
-                                                   0,
-                                                   0,
-                                                   host_memory_pointer);
+  cl_int           err = queue_pointer.enqueueReadBufferRect(
+    memory, static_cast<cl_bool>(block_flag), buffer_origin, host_origin, region, 0, 0, 0, 0, host_memory_pointer);
   if (err != CL_SUCCESS)
   {
     std::cerr << "Backend error in EnqueueReadFromBufferRect: " << GetOpenCLErrorInfo(err) << std::endl;
@@ -540,19 +536,8 @@ EnqueueWriteToBufferRect(const cl::CommandQueue &      queue_pointer,
                          const void *                  host_memory_pointer) -> void
 {
   const cl::Buffer memory(buffer_pointer.get(), true);
-  size_t           elementByteSize = memory.getInfo<CL_MEM_SIZE>() / (region[0] * region[1] * region[2]);
-  auto             bufferRegion = const_cast<std::array<size_t, 3> &>(region);
-  bufferRegion[0] *= elementByteSize;
-  cl_int err = queue_pointer.enqueueWriteBufferRect(memory,
-                                                    static_cast<cl_bool>(block_flag),
-                                                    buffer_origin,
-                                                    host_origin,
-                                                    bufferRegion,
-                                                    0,
-                                                    0,
-                                                    0,
-                                                    0,
-                                                    host_memory_pointer);
+  cl_int           err = queue_pointer.enqueueWriteBufferRect(
+    memory, static_cast<cl_bool>(block_flag), buffer_origin, host_origin, region, 0, 0, 0, 0, host_memory_pointer);
   if (err != CL_SUCCESS)
   {
     std::cerr << "Backend error in EnqueueWriteToBufferRect: " << GetOpenCLErrorInfo(err) << std::endl;

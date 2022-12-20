@@ -68,9 +68,9 @@ GaussianBlurKernel::Execute() -> void
   kernel.SetSigma(this->sigma_[0], this->sigma_[1], this->sigma_[2]);
   kernel.SetKernelSize(kernel_size[0], kernel_size[1], kernel_size[2]);
 
-  if (dst->GetDataType() != FLOAT)
+  if (dst->GetDataType() != FLOAT32)
   {
-    auto temp = Memory::AllocateMemory(this->GetDevice(), dst->Shape(), FLOAT, dst->GetMemoryType());
+    auto temp = Memory::AllocateMemory(this->GetDevice(), dst->Shape(), FLOAT32, dst->GetMemoryType());
     kernel.SetOutput(temp);
     kernel.Execute();
 
