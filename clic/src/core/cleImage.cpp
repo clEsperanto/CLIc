@@ -39,9 +39,6 @@ Image::Fill(const float & value) const -> void
     case DataType::FLOAT:
       this->CastFill<float>(static_cast<float>(value));
       break;
-    case DataType::DOUBLE:
-      this->CastFill<double>(static_cast<double>(value));
-      break;
     case DataType::INT64:
       this->CastFill<int64_t>(static_cast<int64_t>(value));
       break;
@@ -66,6 +63,8 @@ Image::Fill(const float & value) const -> void
     case DataType::UINT8:
       this->CastFill<uint8_t>(static_cast<uint8_t>(value));
       break;
+    default:
+      throw std::runtime_error("Unknown data type provided.");
   }
 }
 

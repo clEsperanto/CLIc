@@ -61,32 +61,32 @@ main(int argc, char ** argv) -> int
     return EXIT_FAILURE;
   }
 
-  if (!run_test<signed int>({ 10, 1, 1 }, cle::BUFFER))
+  if (!run_test<int32_t>({ 10, 1, 1 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<unsigned int>({ 10, 1, 1 }, cle::BUFFER))
+  if (!run_test<uint32_t>({ 10, 1, 1 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<signed short>({ 10, 1, 1 }, cle::BUFFER))
+  if (!run_test<int16_t>({ 10, 1, 1 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<unsigned short>({ 10, 1, 1 }, cle::BUFFER))
+  if (!run_test<uint16_t>({ 10, 1, 1 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<signed char>({ 10, 1, 1 }, cle::BUFFER))
+  if (!run_test<int8_t>({ 10, 1, 1 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<unsigned char>({ 10, 1, 1 }, cle::BUFFER))
+  if (!run_test<uint8_t>({ 10, 1, 1 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
@@ -96,32 +96,32 @@ main(int argc, char ** argv) -> int
     return EXIT_FAILURE;
   }
 
-  if (!run_test<signed int>({ 6, 7, 1 }, cle::BUFFER))
+  if (!run_test<int32_t>({ 6, 7, 1 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<unsigned int>({ 6, 7, 1 }, cle::BUFFER))
+  if (!run_test<uint32_t>({ 6, 7, 1 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<signed short>({ 6, 7, 1 }, cle::BUFFER))
+  if (!run_test<int16_t>({ 6, 7, 1 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<unsigned short>({ 6, 7, 1 }, cle::BUFFER))
+  if (!run_test<uint16_t>({ 6, 7, 1 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<signed char>({ 6, 7, 1 }, cle::BUFFER))
+  if (!run_test<int8_t>({ 6, 7, 1 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<unsigned char>({ 6, 7, 1 }, cle::BUFFER))
+  if (!run_test<uint8_t>({ 6, 7, 1 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
@@ -131,32 +131,32 @@ main(int argc, char ** argv) -> int
     return EXIT_FAILURE;
   }
 
-  if (!run_test<signed int>({ 7, 7, 3 }, cle::BUFFER))
+  if (!run_test<int32_t>({ 7, 7, 3 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<unsigned int>({ 7, 7, 3 }, cle::BUFFER))
+  if (!run_test<uint32_t>({ 7, 7, 3 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<signed short>({ 7, 7, 3 }, cle::BUFFER))
+  if (!run_test<int16_t>({ 7, 7, 3 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<unsigned short>({ 7, 7, 3 }, cle::BUFFER))
+  if (!run_test<uint16_t>({ 7, 7, 3 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<signed char>({ 7, 7, 3 }, cle::BUFFER))
+  if (!run_test<int8_t>({ 7, 7, 3 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<unsigned char>({ 7, 7, 3 }, cle::BUFFER))
+  if (!run_test<uint8_t>({ 7, 7, 3 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
@@ -166,32 +166,32 @@ main(int argc, char ** argv) -> int
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<signed int>({ 10, 1, 1 }, cle::IMAGE))
+  // if (!run_test<int32_t>({ 10, 1, 1 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<unsigned int>({ 10, 1, 1 }, cle::IMAGE))
+  // if (!run_test<uint32_t>({ 10, 1, 1 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<signed short>({ 10, 1, 1 }, cle::IMAGE))
+  // if (!run_test<int16_t>({ 10, 1, 1 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<unsigned short>({ 10, 1, 1 }, cle::IMAGE))
+  // if (!run_test<uint16_t>({ 10, 1, 1 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<signed char>({ 10, 1, 1 }, cle::IMAGE))
+  // if (!run_test<int8_t>({ 10, 1, 1 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<unsigned char>({ 10, 1, 1 }, cle::IMAGE))
+  // if (!run_test<uint8_t>({ 10, 1, 1 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
@@ -201,32 +201,32 @@ main(int argc, char ** argv) -> int
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<signed int>({ 6, 7, 1 }, cle::IMAGE))
+  // if (!run_test<int32_t>({ 6, 7, 1 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<unsigned int>({ 6, 7, 1 }, cle::IMAGE))
+  // if (!run_test<uint32_t>({ 6, 7, 1 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<signed short>({ 6, 7, 1 }, cle::IMAGE))
+  // if (!run_test<int16_t>({ 6, 7, 1 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<unsigned short>({ 6, 7, 1 }, cle::IMAGE))
+  // if (!run_test<uint16_t>({ 6, 7, 1 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<signed char>({ 6, 7, 1 }, cle::IMAGE))
+  // if (!run_test<int8_t>({ 6, 7, 1 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<unsigned char>({ 6, 7, 1 }, cle::IMAGE))
+  // if (!run_test<uint8_t>({ 6, 7, 1 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
@@ -236,32 +236,32 @@ main(int argc, char ** argv) -> int
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<signed int>({ 7, 7, 3 }, cle::IMAGE))
+  // if (!run_test<int32_t>({ 7, 7, 3 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<unsigned int>({ 7, 7, 3 }, cle::IMAGE))
+  // if (!run_test<uint32_t>({ 7, 7, 3 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<signed short>({ 7, 7, 3 }, cle::IMAGE))
+  // if (!run_test<int16_t>({ 7, 7, 3 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<unsigned short>({ 7, 7, 3 }, cle::IMAGE))
+  // if (!run_test<uint16_t>({ 7, 7, 3 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<signed char>({ 7, 7, 3 }, cle::IMAGE))
+  // if (!run_test<int8_t>({ 7, 7, 3 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
 
-  // if (!run_test<unsigned char>({ 7, 7, 3 }, cle::IMAGE))
+  // if (!run_test<uint8_t>({ 7, 7, 3 }, cle::IMAGE))
   // {
   // return EXIT_FAILURE;
   // }
