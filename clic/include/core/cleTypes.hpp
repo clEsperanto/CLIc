@@ -112,7 +112,7 @@ TypeToDataType() -> DataType
   {
     return DataType::UINT16;
   }
-  throw std::runtime_error("Unknown template type to cast in data type.");
+  throw(std::runtime_error("Unknown template type to cast in data type."));
 }
 
 inline auto
@@ -149,7 +149,7 @@ DataTypeToSizeOf(const DataType & type) -> size_t
       res = sizeof(uint64_t);
       break;
     default:
-      throw std::runtime_error("Unknown data type provided to cast in bytes size.");
+      throw(std::runtime_error("Unknown data type provided to cast in bytes size."));
   }
   return res;
 }
@@ -188,7 +188,7 @@ DataTypeToString(const DataType & type, const bool & use_abreviation = false) ->
       res = (use_abreviation) ? "us" : "ushort";
       break;
     default:
-      throw std::runtime_error("Unknown data type provided to cast in string.");
+      throw(std::runtime_error("Unknown data type provided to cast in string."));
   }
   return res;
 }
@@ -215,7 +215,7 @@ MemoryTypeToString(const MemoryType & type) -> std::string
       res = "Scalar";
       break;
     default:
-      throw std::runtime_error("Unknown memory type provided to cast in string.");
+      throw(std::runtime_error("Unknown memory type provided to cast in string."));
   }
   return res;
 }
@@ -224,6 +224,13 @@ inline auto
 IsImageCompatible(const DataType & type) -> bool
 {
   return (type != DataType::INT64 && type != DataType::UINT64);
+}
+
+template <class T>
+inline auto
+IsCompatible() -> bool
+{
+  return (std::is_fundamental<T>::value && !std::is_same<T, bool>::value && !std::is_same<T, double>::value);
 }
 
 } // namespace cle

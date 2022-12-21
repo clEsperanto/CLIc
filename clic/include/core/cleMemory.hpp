@@ -18,14 +18,12 @@ using ProcessorPointer = std::shared_ptr<Processor>;
 using ShapeArray = std::array<size_t, 3>;
 
 auto
-AllocateBufferMemory(const ProcessorPointer & device,
-                     const ShapeArray &       shape,
-                     const DataType &         type = DataType::FLOAT) -> Image;
+AllocateBufferMemory(const ProcessorPointer & device, const ShapeArray & shape, const DataType & type = DataType::FLOAT)
+  -> Image;
 
 auto
-AllocateImageMemory(const ProcessorPointer & device,
-                    const ShapeArray &       shape,
-                    const DataType &         type = DataType::FLOAT) -> Image;
+AllocateImageMemory(const ProcessorPointer & device, const ShapeArray & shape, const DataType & type = DataType::FLOAT)
+  -> Image;
 
 auto
 AllocateBufferMemory(const Image & image) -> Image;
@@ -99,6 +97,10 @@ template <class type>
 auto
 WriteObject(const Image & image, const type * array, const size_t & array_size) -> void
 {
+  if (!IsCompatible<type>())
+  {
+    throw(std::runtime_error("Error writing image to device: unsupported data type used."));
+  }
   if (image.GetNumberOfElements() != array_size)
   {
     throw(
@@ -132,6 +134,10 @@ template <class type>
 auto
 ReadObject(const Image & image, const type * array, const size_t & array_size) -> void
 {
+  if (!IsCompatible<type>())
+  {
+    throw(std::runtime_error("Error reading image to device: unsupported data type used."));
+  }
   if (image.GetNumberOfElements() != array_size)
   {
     throw(
