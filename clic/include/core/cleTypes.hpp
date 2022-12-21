@@ -23,8 +23,8 @@ enum ChannelType
 
 enum DataType
 {
-  FLOAT32 = CL_FLOAT,
-  FLOAT64 = 0x10E1, // 4321 CL_DOUBLE
+  FLOAT = CL_FLOAT,
+  DOUBLE = 0x10E1, // 4321 CL_DOUBLE
   INT8 = CL_SIGNED_INT8,
   INT16 = CL_SIGNED_INT16,
   INT32 = CL_SIGNED_INT32,
@@ -79,11 +79,11 @@ TypeToDataType() -> DataType
   static_assert(std::is_fundamental<T>::value, "Object can only be of native type");
   if (std::is_same<T, float>::value)
   {
-    return DataType::FLOAT32;
+    return DataType::FLOAT;
   }
   if (std::is_same<T, double>::value)
   {
-    return DataType::FLOAT64;
+    return DataType::DOUBLE;
   }
   if (std::is_same<T, int64_t>::value)
   {
@@ -117,7 +117,7 @@ TypeToDataType() -> DataType
   {
     return DataType::UINT16;
   }
-  return DataType::FLOAT32;
+  return DataType::FLOAT;
 }
 
 inline auto
@@ -126,10 +126,10 @@ DataTypeToSizeOf(const DataType & type) -> size_t
   size_t res;
   switch (type)
   {
-    case DataType::FLOAT32:
+    case DataType::FLOAT:
       res = sizeof(float);
       break;
-    case DataType::FLOAT64:
+    case DataType::DOUBLE:
       res = sizeof(double);
       break;
     case DataType::INT8:
@@ -168,10 +168,10 @@ DataTypeToString(const DataType & type, const bool & use_abreviation = false) ->
   std::string res;
   switch (type)
   {
-    case DataType::FLOAT32:
+    case DataType::FLOAT:
       res = (use_abreviation) ? "f" : "float";
       break;
-    case DataType::FLOAT64:
+    case DataType::DOUBLE:
       res = (use_abreviation) ? "d" : "double";
       break;
     case DataType::INT64:

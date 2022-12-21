@@ -44,7 +44,7 @@ VoronoiOtsuLabelingKernel::SetOutlineSigma(const float & sigma) -> void
 auto
 VoronoiOtsuLabelingKernel::Execute() -> void
 {
-  auto temp_data_type = FLOAT32;
+  auto temp_data_type = FLOAT;
   auto src = this->GetImage("src");
   auto dst = this->GetImage("dst");
 

@@ -42,7 +42,7 @@ DilateLabelsKernel::Execute() -> void
 
   auto flip = Memory::AllocateMemory(this->GetDevice(), dst->Shape(), dst->GetDataType(), dst->GetMemoryType());
   auto flop = Memory::AllocateMemory(this->GetDevice(), dst->Shape(), dst->GetDataType(), dst->GetMemoryType());
-  auto flag = Memory::AllocateMemory(this->GetDevice(), { 1, 1, 1 }, FLOAT32, BUFFER);
+  auto flag = Memory::AllocateMemory(this->GetDevice(), { 1, 1, 1 }, FLOAT, BUFFER);
   flag.Fill(1);
 
   CopyKernel copy(this->GetDevice());

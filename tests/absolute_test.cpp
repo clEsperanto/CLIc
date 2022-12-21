@@ -17,14 +17,6 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
   // print type
   std::cout << "type: " << typeid(type).name() << std::endl;
 
-  // print input and valid
-  std::cout << "input: ";
-  for (auto i : input)
-  {
-    std::cout << i << " ";
-  }
-  std::cout << std::endl;
-
   std::cout << "valid: ";
   for (auto i : valid)
   {
@@ -59,90 +51,90 @@ main(int argc, char ** argv) -> int
     return EXIT_FAILURE;
   }
 
-  // // if (!run_test<double>({ 10, 1, 1 }, cle::BUFFER))
-  // // {
-  // //   return EXIT_FAILURE;
-  // // }
-
-  // if (!run_test<int64_t>({ 10, 1, 1 }, cle::BUFFER))
+  // if (!run_test<double>({ 10, 1, 1 }, cle::BUFFER))
   // {
   //   return EXIT_FAILURE;
   // }
 
-  // if (!run_test<int32_t>({ 10, 1, 1 }, cle::BUFFER))
+  if (!run_test<int64_t>({ 10, 1, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<int32_t>({ 10, 1, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<int16_t>({ 10, 1, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<int8_t>({ 10, 1, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<float>({ 10, 5, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  // if (!run_test<double>({ 10, 5, 1 }, cle::BUFFER))
   // {
   //   return EXIT_FAILURE;
   // }
 
-  // if (!run_test<int16_t>({ 10, 1, 1 }, cle::BUFFER))
+  if (!run_test<int64_t>({ 10, 5, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<int32_t>({ 10, 5, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<int16_t>({ 10, 5, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<int8_t>({ 10, 5, 1 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<float>({ 10, 5, 3 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  // if (!run_test<double>({ 10, 5, 3 }, cle::BUFFER))
   // {
   //   return EXIT_FAILURE;
   // }
 
-  // if (!run_test<int8_t>({ 10, 1, 1 }, cle::BUFFER))
-  // {
-  //   return EXIT_FAILURE;
-  // }
+  if (!run_test<int64_t>({ 10, 5, 3 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
 
-  // if (!run_test<float>({ 10, 5, 1 }, cle::BUFFER))
-  // {
-  //   return EXIT_FAILURE;
-  // }
+  if (!run_test<int32_t>({ 10, 5, 3 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
 
-  // // if (!run_test<double>({ 10, 5, 1 }, cle::BUFFER))
-  // // {
-  // //   return EXIT_FAILURE;
-  // // }
+  if (!run_test<int16_t>({ 10, 5, 3 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
 
-  // if (!run_test<int64_t>({ 10, 5, 1 }, cle::BUFFER))
-  // {
-  //   return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<int32_t>({ 10, 5, 1 }, cle::BUFFER))
-  // {
-  //   return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<int16_t>({ 10, 5, 1 }, cle::BUFFER))
-  // {
-  //   return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<int8_t>({ 10, 5, 1 }, cle::BUFFER))
-  // {
-  //   return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<float>({ 10, 5, 3 }, cle::BUFFER))
-  // {
-  //   return EXIT_FAILURE;
-  // }
-
-  // // if (!run_test<double>({ 10, 5, 3 }, cle::BUFFER))
-  // // {
-  // //   return EXIT_FAILURE;
-  // // }
-
-  // if (!run_test<int64_t>({ 10, 5, 3 }, cle::BUFFER))
-  // {
-  //   return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<int32_t>({ 10, 5, 3 }, cle::BUFFER))
-  // {
-  //   return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<int16_t>({ 10, 5, 3 }, cle::BUFFER))
-  // {
-  //   return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<int8_t>({ 10, 5, 3 }, cle::BUFFER))
-  // {
-  //   return EXIT_FAILURE;
-  // }
+  if (!run_test<int8_t>({ 10, 5, 3 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
 
   // if (!run_test<float>({ 10, 1, 1 }, cle::IMAGE))
   // {

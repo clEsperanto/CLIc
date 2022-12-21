@@ -348,7 +348,7 @@ Operation::SetKernelArguments() -> bool
     }
     if (parameter_ptr->second->GetMemoryType() == MemoryType::SCALAR)
     {
-      if (parameter_ptr->second->GetDataType() == DataType::FLOAT32)
+      if (parameter_ptr->second->GetDataType() == DataType::FLOAT)
       {
         auto scalar = std::dynamic_pointer_cast<Float>(parameter_ptr->second);
         Backend::SetKernelArgument(&this->kernel_, idx, scalar->Get());

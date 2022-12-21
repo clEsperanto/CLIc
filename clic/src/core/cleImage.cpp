@@ -36,10 +36,10 @@ Image::Fill(const float & value) const -> void
 {
   switch (this->GetDataType())
   {
-    case DataType::FLOAT32:
+    case DataType::FLOAT:
       this->CastFill<float>(static_cast<float>(value));
       break;
-    case DataType::FLOAT64:
+    case DataType::DOUBLE:
       this->CastFill<double>(static_cast<double>(value));
       break;
     case DataType::INT64:
