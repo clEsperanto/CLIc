@@ -41,13 +41,8 @@ WriteBufferObject(const Image & image, const type * array, const size_t & array_
       image.GetDevice()->QueuePtr(), image.Get(), true, 0, array_size * sizeof(type), array);
     return;
   }
-  Backend::EnqueueWriteToBufferRect(image.GetDevice()->QueuePtr(),
-                                    image.Get(),
-                                    true,
-                                    image.Origin(),
-                                    image.Origin(),
-                                    { image.Shape()[0] * sizeof(type), image.Shape()[1], image.Shape()[2] },
-                                    array);
+  Backend::EnqueueWriteToBufferRect(
+    image.GetDevice()->QueuePtr(), image.Get(), true, image.Origin(), image.Origin(), image.Shape(), array);
 }
 
 template <class type>
@@ -67,13 +62,8 @@ ReadBufferObject(const Image & image, const type * array, const size_t & array_s
       image.GetDevice()->QueuePtr(), image.Get(), true, 0, array_size * sizeof(type), (void *)array);
     return;
   }
-  Backend::EnqueueReadFromBufferRect(image.GetDevice()->QueuePtr(),
-                                     image.Get(),
-                                     true,
-                                     image.Origin(),
-                                     image.Origin(),
-                                     { image.Shape()[0] * sizeof(type), image.Shape()[1], image.Shape()[2] },
-                                     (void *)array);
+  Backend::EnqueueReadFromBufferRect(
+    image.GetDevice()->QueuePtr(), image.Get(), true, image.Origin(), image.Origin(), image.Shape(), (void *)array);
 }
 
 template <class type>

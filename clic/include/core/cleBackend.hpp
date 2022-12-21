@@ -518,8 +518,11 @@ EnqueueReadFromBufferRect(const cl::CommandQueue &      queue_pointer,
                           void *                        host_memory_pointer) -> void
 {
   const cl::Buffer memory(buffer_pointer.get(), true);
-  cl_int           err = queue_pointer.enqueueReadBufferRect(
-    memory, static_cast<cl_bool>(block_flag), buffer_origin, host_origin, region, 0, 0, 0, 0, host_memory_pointer);
+
+  std::array<size_t, 3> region_copy = region;
+  region_copy[0] *= memory.getInfo<CL_MEM_SIZE>() / (region[0] * region[1] * region[2]);
+  cl_int err = queue_pointer.enqueueReadBufferRect(
+    memory, static_cast<cl_bool>(block_flag), buffer_origin, host_origin, region_copy, 0, 0, 0, 0, host_memory_pointer);
   if (err != CL_SUCCESS)
   {
     std::cerr << "Backend error in EnqueueReadFromBufferRect: " << GetOpenCLErrorInfo(err) << std::endl;
@@ -535,9 +538,11 @@ EnqueueWriteToBufferRect(const cl::CommandQueue &      queue_pointer,
                          const std::array<size_t, 3> & region,
                          const void *                  host_memory_pointer) -> void
 {
-  const cl::Buffer memory(buffer_pointer.get(), true);
-  cl_int           err = queue_pointer.enqueueWriteBufferRect(
-    memory, static_cast<cl_bool>(block_flag), buffer_origin, host_origin, region, 0, 0, 0, 0, host_memory_pointer);
+  const cl::Buffer      memory(buffer_pointer.get(), true);
+  std::array<size_t, 3> region_copy = region;
+  region_copy[0] *= memory.getInfo<CL_MEM_SIZE>() / (region[0] * region[1] * region[2]);
+  cl_int err = queue_pointer.enqueueWriteBufferRect(
+    memory, static_cast<cl_bool>(block_flag), buffer_origin, host_origin, region_copy, 0, 0, 0, 0, host_memory_pointer);
   if (err != CL_SUCCESS)
   {
     std::cerr << "Backend error in EnqueueWriteToBufferRect: " << GetOpenCLErrorInfo(err) << std::endl;
