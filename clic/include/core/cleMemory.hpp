@@ -38,7 +38,7 @@ WriteBufferObject(const Image & image, const type * array, const size_t & array_
   if (image.Ndim() == 1)
   {
     Backend::EnqueueWriteToBuffer(
-      image.GetDevice()->QueuePtr(), image.Get(), true, 0, array_size * sizeof(type), array);
+      image.GetDevice()->QueuePtr(), image.Get(), true, 0, array_size * DataTypeToSizeOf(image.GetDataType()), array);
     return;
   }
   Backend::EnqueueWriteToBufferRect(
@@ -58,8 +58,12 @@ ReadBufferObject(const Image & image, const type * array, const size_t & array_s
 {
   if (image.Ndim() == 1)
   {
-    Backend::EnqueueReadFromBuffer(
-      image.GetDevice()->QueuePtr(), image.Get(), true, 0, array_size * sizeof(type), (void *)array);
+    Backend::EnqueueReadFromBuffer(image.GetDevice()->QueuePtr(),
+                                   image.Get(),
+                                   true,
+                                   0,
+                                   array_size * DataTypeToSizeOf(image.GetDataType()),
+                                   (void *)array);
     return;
   }
   Backend::EnqueueReadFromBufferRect(
