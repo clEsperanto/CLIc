@@ -24,15 +24,14 @@ enum ChannelType
 enum DataType
 {
   FLOAT = CL_FLOAT,
-  DOUBLE = 0x10E1, // 4321 CL_DOUBLE
   INT8 = CL_SIGNED_INT8,
   INT16 = CL_SIGNED_INT16,
   INT32 = CL_SIGNED_INT32,
-  INT64 = 0x10E2, // 4322 CL_SIGNED_INT64
+  INT64 = 0x10E1, // 4321 CL_SIGNED_INT64
   UINT8 = CL_UNSIGNED_INT8,
   UINT16 = CL_UNSIGNED_INT16,
   UINT32 = CL_UNSIGNED_INT32,
-  UINT64 = 0x10E3, // 4323 CL_UNSIGNED_INT64
+  UINT64 = 0x10E2, // 4322 CL_UNSIGNED_INT64
 };
 
 enum DeviceType
@@ -81,10 +80,6 @@ TypeToDataType() -> DataType
   {
     return DataType::FLOAT;
   }
-  if (std::is_same<T, double>::value)
-  {
-    return DataType::DOUBLE;
-  }
   if (std::is_same<T, int64_t>::value)
   {
     return DataType::INT64;
@@ -117,7 +112,7 @@ TypeToDataType() -> DataType
   {
     return DataType::UINT16;
   }
-  return DataType::FLOAT;
+  throw std::runtime_error("Unknown template type to cast in data type.");
 }
 
 inline auto
@@ -128,9 +123,6 @@ DataTypeToSizeOf(const DataType & type) -> size_t
   {
     case DataType::FLOAT:
       res = sizeof(float);
-      break;
-    case DataType::DOUBLE:
-      res = sizeof(double);
       break;
     case DataType::INT8:
       res = sizeof(int8_t);
@@ -157,7 +149,7 @@ DataTypeToSizeOf(const DataType & type) -> size_t
       res = sizeof(uint64_t);
       break;
     default:
-      res = sizeof(float);
+      throw std::runtime_error("Unknown data type provided to cast in bytes size.");
   }
   return res;
 }
@@ -170,9 +162,6 @@ DataTypeToString(const DataType & type, const bool & use_abreviation = false) ->
   {
     case DataType::FLOAT:
       res = (use_abreviation) ? "f" : "float";
-      break;
-    case DataType::DOUBLE:
-      res = (use_abreviation) ? "d" : "double";
       break;
     case DataType::INT64:
       res = (use_abreviation) ? "l" : "long";
@@ -199,7 +188,7 @@ DataTypeToString(const DataType & type, const bool & use_abreviation = false) ->
       res = (use_abreviation) ? "us" : "ushort";
       break;
     default:
-      res = (use_abreviation) ? "f" : "float";
+      throw std::runtime_error("Unknown data type provided to cast in string.");
   }
   return res;
 }
@@ -226,9 +215,15 @@ MemoryTypeToString(const MemoryType & type) -> std::string
       res = "Scalar";
       break;
     default:
-      res = "Buffer";
+      throw std::runtime_error("Unknown memory type provided to cast in string.");
   }
   return res;
+}
+
+inline auto
+IsImageCompatible(const DataType & type) -> bool
+{
+  return (type != DataType::INT64 && type != DataType::UINT64);
 }
 
 } // namespace cle

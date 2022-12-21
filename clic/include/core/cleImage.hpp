@@ -73,7 +73,6 @@ private:
     {
       switch (this->GetDataType())
       {
-        case DataType::DOUBLE:
         case DataType::FLOAT: {
           cl_float4 color = { static_cast<cl_float>(value),
                               static_cast<cl_float>(value),
@@ -105,6 +104,8 @@ private:
             this->GetDevice()->QueuePtr(), this->Get(), true, this->Origin(), this->Shape(), color);
           break;
         }
+        default:
+          throw std::runtime_error("Unsupported data type for fill Image memory type.");
       }
     }
   }
