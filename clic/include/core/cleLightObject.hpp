@@ -55,7 +55,7 @@ public:
 
 private:
   MemoryType mem_type_ = MemoryType::BUFFER;
-  DataType   data_type_ = DataType::FLOAT;
+  DataType   data_type_ = DataType::FLOAT32;
 };
 
 } // namespace cle

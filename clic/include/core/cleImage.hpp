@@ -73,7 +73,7 @@ private:
     {
       switch (this->GetDataType())
       {
-        case DataType::FLOAT: {
+        case DataType::FLOAT32: {
           cl_float4 color = { static_cast<cl_float>(value),
                               static_cast<cl_float>(value),
                               static_cast<cl_float>(value),

@@ -18,11 +18,11 @@ using ProcessorPointer = std::shared_ptr<Processor>;
 using ShapeArray = std::array<size_t, 3>;
 
 auto
-AllocateBufferMemory(const ProcessorPointer & device, const ShapeArray & shape, const DataType & type = DataType::FLOAT)
+AllocateBufferMemory(const ProcessorPointer & device, const ShapeArray & shape, const DataType & type = DataType::FLOAT32)
   -> Image;
 
 auto
-AllocateImageMemory(const ProcessorPointer & device, const ShapeArray & shape, const DataType & type = DataType::FLOAT)
+AllocateImageMemory(const ProcessorPointer & device, const ShapeArray & shape, const DataType & type = DataType::FLOAT32)
   -> Image;
 
 auto
@@ -81,7 +81,7 @@ ReadImageObject(const Image & image, const type * array) -> void
 auto
 AllocateMemory(const ProcessorPointer & device,
                const ShapeArray &       shape = { 1, 1, 1 },
-               const DataType &         bit_type = DataType::FLOAT,
+               const DataType &         bit_type = DataType::FLOAT32,
                const MemoryType &       object_type = MemoryType::BUFFER) -> Image;
 
 auto

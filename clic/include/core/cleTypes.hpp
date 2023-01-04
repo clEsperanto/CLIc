@@ -23,7 +23,7 @@ enum ChannelType
 
 enum DataType
 {
-  FLOAT = CL_FLOAT,
+  FLOAT32 = CL_FLOAT,
   INT8 = CL_SIGNED_INT8,
   INT16 = CL_SIGNED_INT16,
   INT32 = CL_SIGNED_INT32,
@@ -78,7 +78,7 @@ TypeToDataType() -> DataType
   static_assert(std::is_fundamental<T>::value, "Object can only be of native type");
   if (std::is_same<T, float>::value)
   {
-    return DataType::FLOAT;
+    return DataType::FLOAT32;
   }
   if (std::is_same<T, int64_t>::value)
   {
@@ -121,7 +121,7 @@ DataTypeToSizeOf(const DataType & type) -> size_t
   size_t res;
   switch (type)
   {
-    case DataType::FLOAT:
+    case DataType::FLOAT32:
       res = sizeof(float);
       break;
     case DataType::INT8:
@@ -160,7 +160,7 @@ DataTypeToString(const DataType & type, const bool & use_abreviation = false) ->
   std::string res;
   switch (type)
   {
-    case DataType::FLOAT:
+    case DataType::FLOAT32:
       res = (use_abreviation) ? "f" : "float";
       break;
     case DataType::INT64:

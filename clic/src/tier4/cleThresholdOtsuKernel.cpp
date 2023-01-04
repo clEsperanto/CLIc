@@ -100,7 +100,7 @@ ThresholdOtsuKernel::Execute() -> void
       max_variance = variance;
     }
   }
-  if (src->GetDataType() != DataType::FLOAT)
+  if (src->GetDataType() != DataType::FLOAT32)
   {
     threshold = round(threshold);
   }
