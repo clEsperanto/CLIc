@@ -21,7 +21,7 @@ AllocateBufferMemory(const ProcessorPointer & device, const ShapeArray & shape, 
   size_t byte_length = shape[0] * shape[1] * shape[2] * DataTypeToSizeOf(type);
   auto   mem_ptr = Backend::GetBufferPointer(device->ContextPtr(), mem_alloc, host_access, kernel_access, byte_length);
 
-  MemoryType object_type = static_cast<MemoryType>(Backend::GetObjectType(mem_ptr));
+  auto object_type = static_cast<MemoryType>(Backend::GetObjectType(mem_ptr));
 
   return Image(device, mem_ptr, shape, type, object_type);
 }
@@ -37,7 +37,7 @@ AllocateImageMemory(const ProcessorPointer & device, const ShapeArray & shape, c
   auto mem_ptr =
     Backend::GetImagePointer(device->ContextPtr(), mem_alloc, host_access, kernel_access, channels_type, type, shape);
 
-  MemoryType object_type = static_cast<MemoryType>(Backend::GetObjectType(mem_ptr));
+  auto object_type = static_cast<MemoryType>(Backend::GetObjectType(mem_ptr));
 
   return Image(device, mem_ptr, shape, type, object_type);
 }
