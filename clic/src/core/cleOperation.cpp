@@ -306,15 +306,8 @@ Operation::MakeKernel() -> void
   std::hash<std::string> hasher;
 
   std::string program_source = this->MakeDefines() + cle::Operation::MakePreamble() + this->GetSource();
-
-  // save program_source to file for debugging
-  std::ofstream file;
-  file.open("program_source.cl");
-  file << program_source;
-  file.close();
-
-  size_t source_hash = hasher(program_source);
-  auto   source_ite = this->GetDevice()->GetProgramMemory().find(source_hash);
+  size_t      source_hash = hasher(program_source);
+  auto        source_ite = this->GetDevice()->GetProgramMemory().find(source_hash);
   if (source_ite == this->GetDevice()->GetProgramMemory().end())
   {
     program = Backend::GetProgramPointer(this->GetDevice()->ContextPtr(), program_source);
