@@ -43,9 +43,9 @@ MaskedVoronoiLabelingKernel::Execute() -> void
   auto msk = this->GetImage("src1");
   auto dst = this->GetImage("dst");
 
-  auto flup = Memory::AllocateMemory(this->GetDevice(), src->Shape(), FLOAT, src->GetMemoryType());
-  auto flip = Memory::AllocateMemory(this->GetDevice(), src->Shape(), FLOAT, src->GetMemoryType());
-  auto flop = Memory::AllocateMemory(this->GetDevice(), src->Shape(), FLOAT, src->GetMemoryType());
+  auto flup = Memory::AllocateMemory(this->GetDevice(), src->Shape(), DataType::FLOAT32, src->GetMemoryType());
+  auto flip = Memory::AllocateMemory(this->GetDevice(), src->Shape(), DataType::FLOAT32, src->GetMemoryType());
+  auto flop = Memory::AllocateMemory(this->GetDevice(), src->Shape(), DataType::FLOAT32, src->GetMemoryType());
   auto flag = Memory::AllocateMemory(this->GetDevice(), { 1, 1, 1 });
   flag.Fill(1);
 
