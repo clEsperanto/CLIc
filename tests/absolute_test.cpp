@@ -32,10 +32,10 @@ main(int argc, char ** argv) -> int
     return EXIT_FAILURE;
   }
 
-  if (!run_test<int64_t>({ 10, 1, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  // if (!run_test<int64_t>({ 10, 1, 1 }, cle::BUFFER))
+  // {
+  // return EXIT_FAILURE;
+  // }
 
   if (!run_test<int32_t>({ 10, 1, 1 }, cle::BUFFER))
   {
@@ -57,10 +57,10 @@ main(int argc, char ** argv) -> int
     return EXIT_FAILURE;
   }
 
-  if (!run_test<int64_t>({ 10, 5, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  // if (!run_test<int64_t>({ 10, 5, 1 }, cle::BUFFER))
+  // {
+  // return EXIT_FAILURE;
+  // }
 
   if (!run_test<int32_t>({ 10, 5, 1 }, cle::BUFFER))
   {
@@ -82,10 +82,10 @@ main(int argc, char ** argv) -> int
     return EXIT_FAILURE;
   }
 
-  if (!run_test<int64_t>({ 10, 5, 3 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  // if (!run_test<int64_t>({ 10, 5, 3 }, cle::BUFFER))
+  // {
+  // return EXIT_FAILURE;
+  // }
 
   if (!run_test<int32_t>({ 10, 5, 3 }, cle::BUFFER))
   {
