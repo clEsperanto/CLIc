@@ -183,10 +183,10 @@ auto
 Image::ToString() const -> std::string
 {
   std::stringstream out_string;
-  out_string << MemoryTypeToString(this->GetMemoryType());
+  out_string << this->GetMemoryType();
   out_string << "[" << std::to_string(this->Shape()[0]) << "," << std::to_string(this->Shape()[1]) << ","
              << std::to_string(this->Shape()[2]) << "]";
-  out_string << "(dtype=" << DataTypeToString(this->GetDataType()) << ")";
+  out_string << "(dtype=" << this->GetDataType() << ")";
   return out_string.str();
 }
 
