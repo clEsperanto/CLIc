@@ -135,7 +135,7 @@ Operation::LoadSource(const std::string & name, const std::string & file) -> voi
 auto
 Operation::Execute() -> void
 {
-  this->GenerateOutput();
+  // this->GenerateOutput();
   this->MakeKernel();
   this->SetKernelArguments();
   this->EnqueueOperation();
@@ -306,8 +306,13 @@ Operation::MakeKernel() -> void
   std::hash<std::string> hasher;
 
   std::string program_source = this->MakeDefines() + cle::Operation::MakePreamble() + this->GetSource();
-  size_t      source_hash = hasher(program_source);
-  auto        source_ite = this->GetDevice()->GetProgramMemory().find(source_hash);
+
+  // print make defines
+  std::cout << "MakeDefines:" << std::endl;
+  std::cout << this->MakeDefines() << std::endl;
+
+  size_t source_hash = hasher(program_source);
+  auto   source_ite = this->GetDevice()->GetProgramMemory().find(source_hash);
   if (source_ite == this->GetDevice()->GetProgramMemory().end())
   {
     program = Backend::GetProgramPointer(this->GetDevice()->ContextPtr(), program_source);
@@ -405,27 +410,27 @@ Operation::SetNumberOfConstants(const size_t & nb_constant) -> void
   this->constant_map_.reserve(nb_constant);
 }
 
-auto
-Operation::GenerateOutput(const std::string & input_tag, const std::string & output_tag) -> void
-{
-  if (this->parameter_map_.find(output_tag) == this->parameter_map_.end())
-  {
-    auto input_ptr = this->GetImage(input_tag);
-    if (input_ptr != nullptr)
-    {
-      if (input_ptr->GetMemoryType() == MemoryType::BUFFER)
-      {
-        auto output = cle::Memory::AllocateBufferMemory(*input_ptr);
-        this->AddParameter(output_tag, output);
-      }
-      if (input_ptr->GetMemoryType() == (MemoryType::IMAGE1D | MemoryType::IMAGE2D | MemoryType::IMAGE3D))
-      {
-        auto output = cle::Memory::AllocateImageMemory(*input_ptr);
-        this->AddParameter(output_tag, output);
-      }
-    }
-  }
-}
+// auto
+// Operation::GenerateOutput(const std::string & input_tag, const std::string & output_tag) -> void
+// {
+//   if (this->parameter_map_.find(output_tag) == this->parameter_map_.end())
+//   {
+//     auto input_ptr = this->GetImage(input_tag);
+//     if (input_ptr != nullptr)
+//     {
+//       if (input_ptr->GetMemoryType() == MemoryType::BUFFER)
+//       {
+//         auto output = cle::Memory::AllocateBufferMemory(*input_ptr);
+//         this->AddParameter(output_tag, output);
+//       }
+//       if (input_ptr->GetMemoryType() == (MemoryType::IMAGE1D | MemoryType::IMAGE2D | MemoryType::IMAGE3D))
+//       {
+//         auto output = cle::Memory::AllocateImageMemory(*input_ptr);
+//         this->AddParameter(output_tag, output);
+//       }
+//     }
+//   }
+// }
 
 auto
 Operation::GenerateOutput(const Image & object, const ShapeArray & shape) -> Image
