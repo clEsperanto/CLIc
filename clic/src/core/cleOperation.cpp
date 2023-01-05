@@ -306,13 +306,8 @@ Operation::MakeKernel() -> void
   std::hash<std::string> hasher;
 
   std::string program_source = this->MakeDefines() + cle::Operation::MakePreamble() + this->GetSource();
-
-  // print make defines
-  std::cout << "MakeDefines:" << std::endl;
-  std::cout << this->MakeDefines() << std::endl;
-
-  size_t source_hash = hasher(program_source);
-  auto   source_ite = this->GetDevice()->GetProgramMemory().find(source_hash);
+  size_t      source_hash = hasher(program_source);
+  auto        source_ite = this->GetDevice()->GetProgramMemory().find(source_hash);
   if (source_ite == this->GetDevice()->GetProgramMemory().end())
   {
     program = Backend::GetProgramPointer(this->GetDevice()->ContextPtr(), program_source);

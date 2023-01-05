@@ -44,7 +44,7 @@ jobs:
       - name: Generate coverage
         shell: bash
         run: |
-          cd ${{ runner.workspace }}/build && ctest -R absolute_test -C ${{ matrix.buildtype }} --verbose
+          cd ${{ runner.workspace }}/build && ctest -C ${{ matrix.buildtype }} --output-on-failure
 
       - name: Format coverage
         shell: bash
