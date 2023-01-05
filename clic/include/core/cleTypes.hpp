@@ -2,6 +2,7 @@
 #define __CORE_CLETYPES_HPP
 
 #include "clic.hpp"
+#include <iostream>
 namespace cle
 {
 
@@ -23,7 +24,6 @@ enum ChannelType
 
 enum DataType
 {
-  FLOAT64 = 0x10E3, // 4323 CL_DOUBLE
   FLOAT32 = CL_FLOAT,
   INT8 = CL_SIGNED_INT8,
   INT16 = CL_SIGNED_INT16,
@@ -77,10 +77,6 @@ inline auto
 TypeToDataType() -> DataType
 {
   static_assert(std::is_fundamental<T>::value, "Object can only be of native type");
-  if (std::is_same<T, double>::value)
-  {
-    return DataType::FLOAT64;
-  }
   if (std::is_same<T, float>::value)
   {
     return DataType::FLOAT32;
@@ -126,9 +122,6 @@ DataTypeToSizeOf(const DataType & type) -> size_t
   size_t res;
   switch (type)
   {
-    case DataType::FLOAT64:
-      res = sizeof(double);
-      break;
     case DataType::FLOAT32:
       res = sizeof(float);
       break;
@@ -168,9 +161,6 @@ DataTypeToString(const DataType & type, const bool & use_abreviation = false) ->
   std::string res;
   switch (type)
   {
-    case DataType::FLOAT64:
-      res = (use_abreviation) ? "d" : "double";
-      break;
     case DataType::FLOAT32:
       res = (use_abreviation) ? "f" : "float";
       break;
