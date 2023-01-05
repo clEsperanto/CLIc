@@ -95,7 +95,8 @@ WriteObject(const Image & image, const type * array, const size_t & array_size) 
 {
   if (!IsCompatible<type>())
   {
-    throw(std::runtime_error("Error writing image to device: unsupported data type used."));
+    throw(std::runtime_error(
+      "Error writing image to device: unsupported data type used : " + DataTypeToString(TypeToDataType<type>()) + "."));
   }
   if (image.GetNumberOfElements() != array_size)
   {
