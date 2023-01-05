@@ -36,27 +36,35 @@ Image::Fill(const float & value) const -> void
 {
   switch (this->GetDataType())
   {
-    case FLOAT:
+    case DataType::FLOAT32:
       this->CastFill<float>(static_cast<float>(value));
       break;
-    case INT32:
+    case DataType::INT64:
+      this->CastFill<int64_t>(static_cast<int64_t>(value));
+      break;
+    case DataType::UINT64:
+      this->CastFill<uint64_t>(static_cast<uint64_t>(value));
+      break;
+    case DataType::INT32:
       this->CastFill<int32_t>(static_cast<int32_t>(value));
       break;
-    case UINT32:
+    case DataType::UINT32:
       this->CastFill<uint32_t>(static_cast<uint32_t>(value));
       break;
-    case INT16:
+    case DataType::INT16:
       this->CastFill<int16_t>(static_cast<int16_t>(value));
       break;
-    case UINT16:
+    case DataType::UINT16:
       this->CastFill<uint16_t>(static_cast<uint16_t>(value));
       break;
-    case INT8:
+    case DataType::INT8:
       this->CastFill<int8_t>(static_cast<int8_t>(value));
       break;
-    case UINT8:
+    case DataType::UINT8:
       this->CastFill<uint8_t>(static_cast<uint8_t>(value));
       break;
+    default:
+      throw std::runtime_error("Unknown data type provided.");
   }
 }
 
@@ -75,12 +83,12 @@ Image::CopyDataTo(const Image & dst_img) const -> void
   }
 
   bool src_is_buffer = false;
-  if (this->GetMemoryType() == BUFFER)
+  if (this->GetMemoryType() == MemoryType::BUFFER)
   {
     src_is_buffer = true;
   }
   bool dst_is_buffer = false;
-  if (dst_img.GetMemoryType() == BUFFER)
+  if (dst_img.GetMemoryType() == MemoryType::BUFFER)
   {
     dst_is_buffer = true;
   }
@@ -98,7 +106,8 @@ Image::CopyDataTo(const Image & dst_img) const -> void
                                      this->Shape());
       return;
     }
-    Backend::EnqueueCopyBuffer(this->GetDevice()->QueuePtr(), this->Get(), dst_img.Get(), true, 0, 0, this->GetSize());
+    Backend::EnqueueCopyBuffer(
+      this->GetDevice()->QueuePtr(), this->Get(), dst_img.Get(), true, 0, 0, this->GetMemorySize());
     return;
   }
   if (src_is_buffer && !dst_is_buffer)
@@ -134,13 +143,13 @@ Image::GetDevice() const -> ProcessorPointer
 }
 
 auto
-Image::GetSize() const -> size_t
+Image::GetMemorySize() const -> size_t
 {
   return this->Get().getInfo<CL_MEM_SIZE>();
 }
 
 auto
-Image::GetSizeOfElements() const -> size_t
+Image::GetDataSizeOf() const -> size_t
 {
   return DataTypeToSizeOf(this->GetDataType());
 }
@@ -159,79 +168,25 @@ Image::Shape() const -> const ShapeArray &
 }
 
 auto
+Image::GetNumberOfElements() const -> size_t
+{
+  return this->shape_[0] * this->shape_[1] * this->shape_[2];
+}
+
+auto
 Image::Origin() const -> const ShapeArray &
 {
   return this->origin_;
 }
 
 auto
-Image::GetMemoryType_Str() const -> std::string
-{
-  std::string res;
-  switch (this->GetMemoryType())
-  {
-    case BUFFER:
-      res = "buffer";
-      break;
-    case SCALAR:
-      res = "scalar";
-      break;
-    case IMAGE1D:
-      res = "image1d";
-      break;
-    case IMAGE2D:
-      res = "image2d";
-      break;
-    case IMAGE3D:
-      res = "image3d";
-      break;
-    default:
-      res = "unknown";
-  }
-  return res;
-}
-
-auto
-Image::GetDataType_Str(const bool & short_version) const -> std::string
-{
-  std::string res;
-  switch (this->GetDataType())
-  {
-    case CL_SIGNED_INT8:
-      res = (short_version) ? "c" : "char";
-      break;
-    case CL_SIGNED_INT16:
-      res = (short_version) ? "s" : "short";
-      break;
-    case CL_SIGNED_INT32:
-      res = (short_version) ? "i" : "int";
-      break;
-    case CL_UNSIGNED_INT8:
-      res = (short_version) ? "uc" : "uchar";
-      break;
-    case CL_UNSIGNED_INT16:
-      res = (short_version) ? "us" : "ushort";
-      break;
-    case CL_UNSIGNED_INT32:
-      res = (short_version) ? "ui" : "uint";
-      break;
-    case CL_FLOAT:
-      res = (short_version) ? "f" : "float";
-      break;
-    default:
-      res = "unknown";
-  }
-  return res;
-}
-
-auto
 Image::ToString() const -> std::string
 {
   std::stringstream out_string;
-  out_string << this->GetMemoryType_Str();
+  out_string << this->GetMemoryType();
   out_string << "[" << std::to_string(this->Shape()[0]) << "," << std::to_string(this->Shape()[1]) << ","
              << std::to_string(this->Shape()[2]) << "]";
-  out_string << "(dtype=" << this->GetDataType_Str(false) << ")";
+  out_string << "(dtype=" << this->GetDataType() << ")";
   return out_string.str();
 }
 

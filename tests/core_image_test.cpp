@@ -23,10 +23,10 @@ run_test(const std::shared_ptr<cle::Processor> & gpu, const std::array<size_t, 3
   auto gpu_output = cle::Memory::AllocateMemory(gpu, shape, data_type, object_type);
   auto gpu_input = cle::Memory::AllocateMemory(gpu_output);
 
-  cle::Memory::WriteObject(gpu_input, array.data(), array.size() * sizeof(type));
+  cle::Memory::WriteObject(gpu_input, array.data(), array.size());
   gpu_input.CopyDataTo(gpu_output);
 
-  cle::Memory::ReadObject<type>(gpu_output, output.data(), output.size() * sizeof(type));
+  cle::Memory::ReadObject<type>(gpu_output, output.data(), output.size());
 
   return std::equal(output.begin(), output.end(), array.begin());
 }
@@ -44,32 +44,32 @@ main(int argc, char ** argv) -> int
     {
       return EXIT_FAILURE;
     }
-    // if (!run_test<signed int>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
-    // if (!run_test<signed short>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
-    // if (!run_test<signed char>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
-    // if (!run_test<unsigned int>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
-    // if (!run_test<unsigned short>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
-    // if (!run_test<unsigned char>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<int32_t>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<int16_t>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<int8_t>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<uint32_t>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<uint16_t>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<uint8_t>(gpu, { 10, 1, 1 })) { return EXIT_FAILURE; }
     if (!run_test<float>(gpu, { 10, 5, 1 }))
     {
       return EXIT_FAILURE;
     }
-    // if (!run_test<signed int>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
-    // if (!run_test<signed short>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
-    // if (!run_test<signed char>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
-    // if (!run_test<unsigned int>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
-    // if (!run_test<unsigned short>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
-    // if (!run_test<unsigned char>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<int32_t>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<int16_t>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<int8_t>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<uint32_t>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<uint16_t>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
+    // if (!run_test<uint8_t>(gpu, { 10, 5, 1 })) { return EXIT_FAILURE; }
     if (!run_test<float>(gpu, { 10, 5, 3 }))
     {
       return EXIT_FAILURE;
     }
-    // if (!run_test<signed int>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
-    // if (!run_test<signed short>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
-    // if (!run_test<signed char>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
-    // if (!run_test<unsigned int>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
-    // if (!run_test<unsigned short>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
-    // if (!run_test<unsigned char>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
+    // if (!run_test<int32_t>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
+    // if (!run_test<int16_t>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
+    // if (!run_test<int8_t>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
+    // if (!run_test<uint32_t>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
+    // if (!run_test<uint16_t>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
+    // if (!run_test<uint8_t>(gpu, { 10, 5, 3 })) { return EXIT_FAILURE; }
   }
   return EXIT_SUCCESS;
 }

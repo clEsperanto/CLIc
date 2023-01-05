@@ -38,13 +38,13 @@ public:
 
   template <class T = float>
   [[nodiscard]] auto
-  Create(const ShapeArray & shape = { 1, 1, 1 }, const MemoryType & type = BUFFER) const -> Image;
+  Create(const ShapeArray & shape = { 1, 1, 1 }, const MemoryType & memory_type = MemoryType::BUFFER) const -> Image;
 
   template <class T = float>
   [[nodiscard]] auto
   Push(const std::vector<T> & array = { 0 },
        const ShapeArray &     shape = { 1, 1, 1 },
-       const MemoryType &     type = BUFFER) const -> Image;
+       const MemoryType &     memory_type = MemoryType::BUFFER) const -> Image;
 
   template <class T = float>
   [[nodiscard]] auto
@@ -331,19 +331,19 @@ public:
 
 template <class T>
 auto
-Clesperanto::Create(const ShapeArray & shape, const MemoryType & type) const -> Image
+Clesperanto::Create(const ShapeArray & shape, const MemoryType & memory_type) const -> Image
 {
-  DataType bit_type = TypeToDataType<T>();
-  return Memory::AllocateMemory(this->GetDevice(), shape, bit_type, type);
+  DataType data_type = TypeToDataType<T>();
+  return Memory::AllocateMemory(this->GetDevice(), shape, data_type, memory_type);
 }
 
 template <class T>
 auto
-Clesperanto::Push(const std::vector<T> & array, const ShapeArray & shape, const MemoryType & type) const -> Image
+Clesperanto::Push(const std::vector<T> & array, const ShapeArray & shape, const MemoryType & memory_type) const -> Image
 {
-  DataType bit_type = TypeToDataType<T>();
-  auto     image = Memory::AllocateMemory(this->GetDevice(), shape, bit_type, type);
-  Memory::WriteObject(image, array.data(), array.size() * sizeof(T));
+  DataType data_type = TypeToDataType<T>();
+  auto     image = Memory::AllocateMemory(this->GetDevice(), shape, data_type, memory_type);
+  Memory::WriteObject(image, array.data(), array.size());
   return image;
 }
 
@@ -352,7 +352,7 @@ auto
 Clesperanto::Pull(const Image & image) const -> std::vector<T>
 {
   std::vector<T> array(image.Shape()[0] * image.Shape()[1] * image.Shape()[2]);
-  Memory::ReadObject<T>(image, array.data(), array.size() * sizeof(T));
+  Memory::ReadObject<T>(image, array.data(), array.size());
   return array;
 }
 

@@ -21,7 +21,7 @@ main(int argc, char ** argv) -> int
     return EXIT_FAILURE;
   }
 
-  if (!run_test<signed int>(static_cast<int>(2)))
+  if (!run_test<int32_t>(static_cast<int>(2)))
   {
     return EXIT_FAILURE;
   }

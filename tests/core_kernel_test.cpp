@@ -37,7 +37,7 @@ run_test(const std::shared_ptr<cle::Processor> & gpu, std::array<size_t, 3> shap
   auto          gpu_output = cle::Memory::AllocateMemory(gpu, shape, data_type, mem_type);
   auto          gpu_intput = cle::Memory::AllocateMemory(gpu_output);
 
-  cle::Memory::WriteObject(gpu_intput, input.data(), input.size() * sizeof(type));
+  cle::Memory::WriteObject(gpu_intput, input.data(), input.size());
 
   cle::AddImageAndScalarKernel kernel(gpu);
   kernel.SetInput(gpu_intput);
@@ -45,7 +45,7 @@ run_test(const std::shared_ptr<cle::Processor> & gpu, std::array<size_t, 3> shap
   kernel.SetScalar(add);
   kernel.Execute();
 
-  cle::Memory::ReadObject<type>(gpu_output, output.data(), output.size() * sizeof(type));
+  cle::Memory::ReadObject<type>(gpu_output, output.data(), output.size());
   return std::equal(output.begin(), output.end(), valid.begin());
 }
 

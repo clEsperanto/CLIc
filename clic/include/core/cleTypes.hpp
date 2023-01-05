@@ -23,13 +23,16 @@ enum ChannelType
 
 enum DataType
 {
-  FLOAT = CL_FLOAT,
+  FLOAT64 = 0x10E3, // 4323 CL_DOUBLE
+  FLOAT32 = CL_FLOAT,
   INT8 = CL_SIGNED_INT8,
   INT16 = CL_SIGNED_INT16,
   INT32 = CL_SIGNED_INT32,
+  INT64 = 0x10E1, // 4321 CL_SIGNED_INT64
   UINT8 = CL_UNSIGNED_INT8,
   UINT16 = CL_UNSIGNED_INT16,
-  UINT32 = CL_UNSIGNED_INT32
+  UINT32 = CL_UNSIGNED_INT32,
+  UINT64 = 0x10E2, // 4322 CL_UNSIGNED_INT64
 };
 
 enum DeviceType
@@ -74,35 +77,47 @@ inline auto
 TypeToDataType() -> DataType
 {
   static_assert(std::is_fundamental<T>::value, "Object can only be of native type");
+  if (std::is_same<T, double>::value)
+  {
+    return DataType::FLOAT64;
+  }
   if (std::is_same<T, float>::value)
   {
-    return FLOAT;
+    return DataType::FLOAT32;
+  }
+  if (std::is_same<T, int64_t>::value)
+  {
+    return DataType::INT64;
+  }
+  if (std::is_same<T, uint64_t>::value)
+  {
+    return DataType::UINT64;
   }
   if (std::is_same<T, int32_t>::value)
   {
-    return INT32;
+    return DataType::INT32;
   }
   if (std::is_same<T, uint32_t>::value)
   {
-    return UINT32;
+    return DataType::UINT32;
   }
   if (std::is_same<T, int8_t>::value)
   {
-    return INT8;
+    return DataType::INT8;
   }
   if (std::is_same<T, uint8_t>::value)
   {
-    return UINT8;
+    return DataType::UINT8;
   }
   if (std::is_same<T, int16_t>::value)
   {
-    return INT16;
+    return DataType::INT16;
   }
   if (std::is_same<T, uint16_t>::value)
   {
-    return UINT16;
+    return DataType::UINT16;
   }
-  return FLOAT;
+  throw(std::runtime_error("Unknown template type to cast in data type."));
 }
 
 inline auto
@@ -111,31 +126,136 @@ DataTypeToSizeOf(const DataType & type) -> size_t
   size_t res;
   switch (type)
   {
-    case CL_SIGNED_INT8:
+    case DataType::FLOAT64:
+      res = sizeof(double);
+      break;
+    case DataType::FLOAT32:
+      res = sizeof(float);
+      break;
+    case DataType::INT8:
       res = sizeof(int8_t);
       break;
-    case CL_SIGNED_INT16:
+    case DataType::INT16:
       res = sizeof(int16_t);
       break;
-    case CL_SIGNED_INT32:
+    case DataType::INT32:
       res = sizeof(int32_t);
       break;
-    case CL_UNSIGNED_INT8:
+    case DataType::INT64:
+      res = sizeof(int64_t);
+      break;
+    case DataType::UINT8:
       res = sizeof(uint8_t);
       break;
-    case CL_UNSIGNED_INT16:
+    case DataType::UINT16:
       res = sizeof(uint16_t);
       break;
-    case CL_UNSIGNED_INT32:
+    case DataType::UINT32:
       res = sizeof(uint32_t);
       break;
-    case CL_FLOAT:
-      res = sizeof(float);
+    case DataType::UINT64:
+      res = sizeof(uint64_t);
       break;
     default:
-      res = sizeof(float);
+      throw(std::runtime_error("Unknown data type provided to cast in bytes size."));
   }
   return res;
+}
+
+inline auto
+DataTypeToString(const DataType & type, const bool & use_abreviation = false) -> std::string
+{
+  std::string res;
+  switch (type)
+  {
+    case DataType::FLOAT64:
+      res = (use_abreviation) ? "d" : "double";
+      break;
+    case DataType::FLOAT32:
+      res = (use_abreviation) ? "f" : "float";
+      break;
+    case DataType::INT64:
+      res = (use_abreviation) ? "l" : "long";
+      break;
+    case DataType::UINT64:
+      res = (use_abreviation) ? "ul" : "ulong";
+      break;
+    case DataType::INT32:
+      res = (use_abreviation) ? "i" : "int";
+      break;
+    case DataType::UINT32:
+      res = (use_abreviation) ? "ui" : "uint";
+      break;
+    case DataType::INT8:
+      res = (use_abreviation) ? "c" : "char";
+      break;
+    case DataType::UINT8:
+      res = (use_abreviation) ? "uc" : "uchar";
+      break;
+    case DataType::INT16:
+      res = (use_abreviation) ? "s" : "short";
+      break;
+    case DataType::UINT16:
+      res = (use_abreviation) ? "us" : "ushort";
+      break;
+    default:
+      throw(std::runtime_error("Unknown data type provided to cast in string."));
+  }
+  return res;
+}
+
+inline auto
+MemoryTypeToString(const MemoryType & type) -> std::string
+{
+  std::string res;
+  switch (type)
+  {
+    case MemoryType::BUFFER:
+      res = "Buffer";
+      break;
+    case MemoryType::IMAGE1D:
+      res = "Image1D";
+      break;
+    case MemoryType::IMAGE2D:
+      res = "Image2D";
+      break;
+    case MemoryType::IMAGE3D:
+      res = "Image3D";
+      break;
+    case MemoryType::SCALAR:
+      res = "Scalar";
+      break;
+    default:
+      throw(std::runtime_error("Unknown memory type provided to cast in string."));
+  }
+  return res;
+}
+
+inline auto
+operator<<(std::ostream & out, DataType & value) -> std::ostream &
+{
+  out << DataTypeToString(value);
+  return out;
+}
+
+inline auto
+operator<<(std::ostream & out, MemoryType & value) -> std::ostream &
+{
+  out << MemoryTypeToString(value);
+  return out;
+}
+
+inline auto
+IsImageCompatible(const DataType & type) -> bool
+{
+  return (type != DataType::INT64 && type != DataType::UINT64);
+}
+
+template <class T>
+inline auto
+IsCompatible() -> bool
+{
+  return (std::is_fundamental<T>::value && !std::is_same<T, bool>::value && !std::is_same<T, double>::value);
 }
 
 } // namespace cle

@@ -36,6 +36,8 @@ ConnectedComponentLabelingBoxKernel::Execute() -> void
   auto temp1 = Memory::AllocateMemory(this->GetDevice(), dst->Shape(), dst->GetDataType(), dst->GetMemoryType());
   auto temp2 = Memory::AllocateMemory(this->GetDevice(), dst->Shape(), dst->GetDataType(), dst->GetMemoryType());
   auto temp3 = Memory::AllocateMemory(this->GetDevice(), dst->Shape(), dst->GetDataType(), dst->GetMemoryType());
+  auto flag = Memory::AllocateMemory(this->GetDevice(), { 1, 1, 1 });
+  flag.Fill(0);
 
   SetNonzeroPixelsToPixelindexKernel set_nonzero_to_index_kernel(this->GetDevice());
   set_nonzero_to_index_kernel.SetInput(*src);
@@ -48,15 +50,9 @@ ConnectedComponentLabelingBoxKernel::Execute() -> void
   set_init_kernel.SetValue(0);
   set_init_kernel.Execute();
 
-  std::array<size_t, 3> flag_dim = { 1, 1, 2 };
-  std::vector<float>    arr = { 0, 0 };
-  auto                  flag = Memory::AllocateMemory(this->GetDevice(), flag_dim);
-  Memory::WriteObject(flag, arr.data(), arr.size() * sizeof(float));
-
   float                   flag_value = 1;
   int                     iteration_count = 0;
   NonzeroMinimumBoxKernel nonzero_minimum_kernel(this->GetDevice());
-  SetKernel               set_flag_kernel(this->GetDevice());
   while (flag_value > 0)
   {
     nonzero_minimum_kernel.SetOutputFlag(flag);
@@ -73,10 +69,7 @@ ConnectedComponentLabelingBoxKernel::Execute() -> void
     nonzero_minimum_kernel.Execute();
 
     Memory::ReadObject<float>(flag, flag_value);
-    set_flag_kernel.SetInput(flag);
-    set_flag_kernel.SetValue(0);
-    set_flag_kernel.Execute();
-
+    flag.Fill(0);
     iteration_count++;
   }
 

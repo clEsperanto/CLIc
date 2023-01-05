@@ -108,6 +108,12 @@ Processor::ImageSupport() const -> bool
 }
 
 auto
+Processor::DoubleSupport() const -> bool
+{
+  return Backend::DoubleSupport(this->DevicePtr());
+}
+
+auto
 Processor::WaitForKernelToFinish(const bool & flag) -> void
 {
   this->wait_to_finish_ = flag;

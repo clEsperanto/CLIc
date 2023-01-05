@@ -48,6 +48,8 @@ public:
   GetProgramMemory() -> std::map<size_t, cl::Program> &;
   [[nodiscard]] auto
   ImageSupport() const -> bool;
+  [[nodiscard]] auto
+  DoubleSupport() const -> bool;
 
 private:
   cl::Platform                  platform_;

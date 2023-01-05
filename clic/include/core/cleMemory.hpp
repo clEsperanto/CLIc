@@ -8,7 +8,6 @@
 #include "cleProcessor.hpp"
 #include "cleTypes.hpp"
 
-
 #include <cassert>
 #include <type_traits>
 
@@ -19,10 +18,14 @@ using ProcessorPointer = std::shared_ptr<Processor>;
 using ShapeArray = std::array<size_t, 3>;
 
 auto
-AllocateBufferMemory(const ProcessorPointer & device, const ShapeArray & shape, const DataType & type = FLOAT) -> Image;
+AllocateBufferMemory(const ProcessorPointer & device,
+                     const ShapeArray &       shape,
+                     const DataType &         type = DataType::FLOAT32) -> Image;
 
 auto
-AllocateImageMemory(const ProcessorPointer & device, const ShapeArray & shape, const DataType & type = FLOAT) -> Image;
+AllocateImageMemory(const ProcessorPointer & device,
+                    const ShapeArray &       shape,
+                    const DataType &         type = DataType::FLOAT32) -> Image;
 
 auto
 AllocateBufferMemory(const Image & image) -> Image;
@@ -30,139 +33,49 @@ AllocateBufferMemory(const Image & image) -> Image;
 auto
 AllocateImageMemory(const Image & image) -> Image;
 
-// template <class type>
-// auto
-// WriteBufferObject(const Image & image, const std::vector<type> & array) -> void
-// {
-//   size_t byte_length = array.size() * sizeof(type);
-//   if (image.Ndim() == 1)
-//   {
-//     Backend::EnqueueWriteToBuffer(image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length, array.data());
-//     return;
-//   }
-//   Backend::EnqueueWriteToBufferRect(
-//     image.GetDevice()->QueuePtr(), image.Get(), true, image.Origin(), image.Origin(), image.Shape(), array.data());
-
-//   //** this may be only interesting if the buffer is very large and if both map and unmap are done
-//   //** in the same scope
-//   // auto ptr = Backend::EnqueueMapBuffer(image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length);
-//   // std::memcpy(ptr, array.data(), byte_length);
-//   // Backend::EnqueueUnmapMemObject(image.GetDevice()->QueuePtr(), image.Get(), ptr);
-//   // return;
-// }
-
 template <class type>
 auto
-WriteBufferObject(const Image & image, const type * array, const size_t & array_byte_size) -> void
+WriteBufferObject(const Image & image, const type * array, const size_t & array_size) -> void
 {
   if (image.Ndim() == 1)
   {
-    Backend::EnqueueWriteToBuffer(image.GetDevice()->QueuePtr(), image.Get(), true, 0, array_byte_size, array);
+    Backend::EnqueueWriteToBuffer(
+      image.GetDevice()->QueuePtr(), image.Get(), true, 0, array_size * DataTypeToSizeOf(image.GetDataType()), array);
     return;
   }
   Backend::EnqueueWriteToBufferRect(
     image.GetDevice()->QueuePtr(), image.Get(), true, image.Origin(), image.Origin(), image.Shape(), array);
-
-  //** this may be only interesting if the buffer is very large and if both map and unmap are done
-  //** in the same scope
-  // auto ptr = Backend::EnqueueMapBuffer(image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length);
-  // std::memcpy(ptr, array.data(), byte_length);
-  // Backend::EnqueueUnmapMemObject(image.GetDevice()->QueuePtr(), image.Get(), ptr);
-  // return;
 }
-
-// template <class type>
-// auto
-// WriteImageObject(const Image & image, const std::vector<type> & array) -> void
-// {
-//   Backend::EnqueueWriteToImage(
-//     image.GetDevice()->QueuePtr(), image.Get(), CL_TRUE, image.Origin(), image.Shape(), array.data());
-// }
 
 template <class type>
 auto
 WriteImageObject(const Image & image, const type * array) -> void
 {
-  Backend::EnqueueWriteToImage(
-    image.GetDevice()->QueuePtr(), image.Get(), CL_TRUE, image.Origin(), image.Shape(), array);
+  Backend::EnqueueWriteToImage(image.GetDevice()->QueuePtr(), image.Get(), true, image.Origin(), image.Shape(), array);
 }
-
-// template <class type>
-// auto
-// ReadBufferObject(const Image & image, const std::vector<type> & array) -> void
-// {
-//   if (sizeof(type) != image.GetSizeOfElements())
-//   {
-//     throw(std::runtime_error("Error: Buffer and host array are not of the same data type."));
-//   }
-//   size_t byte_length = array.size() * DataTypeToSizeOf(image.GetDataType());
-//   if (image.Ndim() == 1)
-//   {
-//     Backend::EnqueueReadFromBuffer(
-//       image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length, (void *)(array.data()));
-//     return;
-//   }
-//   Backend::EnqueueReadFromBufferRect(image.GetDevice()->QueuePtr(),
-//                                      image.Get(),
-//                                      true,
-//                                      image.Origin(),
-//                                      image.Origin(),
-//                                      image.Shape(),
-//                                      (void *)(array.data()));
-
-//   //** this may be only interesting if the buffer is very large and if both map and unmap are done
-//   //** in the same scope
-//   //  auto ptr = Backend::EnqueueMapBuffer(image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length);
-//   //  std::memcpy((void *)(array.data()), ptr, byte_length);
-//   //  Backend::EnqueueUnmapMemObject(image.GetDevice()->QueuePtr(), image.Get(), ptr);
-//   //  return;
-// }
 
 template <class type>
 auto
-ReadBufferObject(const Image & image, const type * array, const size_t & array_bytes_size) -> void
+ReadBufferObject(const Image & image, const type * array, const size_t & array_size) -> void
 {
-  if (sizeof(type) != image.GetSizeOfElements())
-  {
-    throw(std::runtime_error("Error: Buffer and host array are not of the same data type."));
-  }
   if (image.Ndim() == 1)
   {
-    Backend::EnqueueReadFromBuffer(
-      image.GetDevice()->QueuePtr(), image.Get(), true, 0, array_bytes_size, (void *)array);
+    Backend::EnqueueReadFromBuffer(image.GetDevice()->QueuePtr(),
+                                   image.Get(),
+                                   true,
+                                   0,
+                                   array_size * DataTypeToSizeOf(image.GetDataType()),
+                                   (void *)array);
     return;
   }
   Backend::EnqueueReadFromBufferRect(
     image.GetDevice()->QueuePtr(), image.Get(), true, image.Origin(), image.Origin(), image.Shape(), (void *)array);
-
-  //** this may be only interesting if the buffer is very large and if both map and unmap are done
-  //** in the same scope
-  //  auto ptr = Backend::EnqueueMapBuffer(image.GetDevice()->QueuePtr(), image.Get(), true, 0, byte_length);
-  //  std::memcpy((void *)(array.data()), ptr, byte_length);
-  //  Backend::EnqueueUnmapMemObject(image.GetDevice()->QueuePtr(), image.Get(), ptr);
-  //  return;
 }
-
-// template <class type>
-// auto
-// ReadImageObject(const Image & image, const std::vector<type> & array) -> void
-// {
-//   if (sizeof(type) != image.GetSizeOfElements())
-//   {
-//     throw(std::runtime_error("Error: Image and host array are not of the same type."));
-//   }
-//   Backend::EnqueueReadFromImage(
-//     image.GetDevice()->QueuePtr(), image.Get(), true, image.Origin(), image.Shape(), (void *)(array.data()));
-// }
 
 template <class type>
 auto
-ReadImageObject(const Image & image, const type * array, const size_t & array_bytes_size) -> void
+ReadImageObject(const Image & image, const type * array) -> void
 {
-  if (sizeof(type) != image.GetSizeOfElements())
-  {
-    throw(std::runtime_error("Error: Image and host array are not of the same type."));
-  }
   Backend::EnqueueReadFromImage(
     image.GetDevice()->QueuePtr(), image.Get(), true, image.Origin(), image.Shape(), (void *)array);
 }
@@ -170,33 +83,36 @@ ReadImageObject(const Image & image, const type * array, const size_t & array_by
 auto
 AllocateMemory(const ProcessorPointer & device,
                const ShapeArray &       shape = { 1, 1, 1 },
-               const DataType &         bit_type = FLOAT,
-               const MemoryType &       object_type = BUFFER) -> Image;
+               const DataType &         bit_type = DataType::FLOAT32,
+               const MemoryType &       object_type = MemoryType::BUFFER) -> Image;
 
 auto
 AllocateMemory(const Image & image) -> Image;
 
-// template <class type>
-// auto
-// WriteObject(const Image & image, const std::vector<type> & array) -> void
-// {
-//   if (image.GetMemoryType() == BUFFER)
-//   {
-//     WriteBufferObject(image, array);
-//   }
-//   else
-//   {
-//     WriteImageObject(image, array);
-//   }
-// }
-
 template <class type>
 auto
-WriteObject(const Image & image, const type * array, const size_t & array_bytes_size) -> void
+WriteObject(const Image & image, const type * array, const size_t & array_size) -> void
 {
-  if (image.GetMemoryType() == BUFFER)
+  if (!IsCompatible<type>())
   {
-    WriteBufferObject(image, array, array_bytes_size);
+    throw(std::runtime_error(
+      "Error writing image to device: unsupported data type used : " + DataTypeToString(TypeToDataType<type>()) + "."));
+  }
+  if (image.GetNumberOfElements() != array_size)
+  {
+    throw(
+      std::runtime_error("Error writing image to device: Image and host array are not of the same size. Image size: " +
+                         std::to_string(image.GetNumberOfElements()) + " Array size: " + std::to_string(array_size)));
+  }
+  if (image.GetDataType() != TypeToDataType<type>())
+  {
+    throw(std::runtime_error(
+      "Error writing image to device: Image and host array are not of the same data type. Image data type: " +
+      DataTypeToString(image.GetDataType()) + " Array data type: " + DataTypeToString(TypeToDataType<type>())));
+  }
+  if (image.GetMemoryType() == MemoryType::BUFFER)
+  {
+    WriteBufferObject(image, array, array_size);
   }
   else
   {
@@ -208,58 +124,51 @@ template <class type>
 auto
 WriteObject(const Image & image, const std::vector<type> & array) -> void
 {
-  if (image.GetMemoryType() == BUFFER)
-  {
-    WriteBufferObject(image, array.data(), array.size() * sizeof(type));
-  }
-  else
-  {
-    WriteImageObject(image, array.data());
-  }
+  WriteObject(image, array.data(), array.size());
 }
 
-// template <class type = float>
-// auto
-// ReadObject(const Image & image) -> std::vector<type>
-// {
-//   std::vector<type> array(image.Shape()[0] * image.Shape()[1] * image.Shape()[2]);
-//   if (image.GetMemoryType() == BUFFER)
-//   {
-//     ReadBufferObject(image, array.data(), array.size() * sizeof(type));
-//   }
-//   else
-//   {
-//     ReadImageObject(image, array.data(), array.size() * sizeof(type));
-//   }
-//   return array;
-// }
-
-template <class type = float>
+template <class type>
 auto
-ReadObject(const Image & image, const type * array, const size_t & array_bytes_size) -> void
+ReadObject(const Image & image, const type * array, const size_t & array_size) -> void
 {
-  if (image.GetMemoryType() == BUFFER)
+  if (!IsCompatible<type>())
   {
-    ReadBufferObject(image, array, array_bytes_size);
+    throw(std::runtime_error("Error reading image to device: unsupported data type used."));
+  }
+  if (image.GetNumberOfElements() != array_size)
+  {
+    throw(
+      std::runtime_error("Error reading image to host: Image and host array are not of the same size. Image size: " +
+                         std::to_string(image.GetNumberOfElements()) + " Array size: " + std::to_string(array_size)));
+  }
+  if (image.GetDataType() != TypeToDataType<type>())
+  {
+    throw(std::runtime_error(
+      "Error reading image to host: Image and host array are not of the same data type. Image data type: " +
+      DataTypeToString(image.GetDataType()) + " Array data type: " + DataTypeToString(TypeToDataType<type>())));
+  }
+  if (image.GetMemoryType() == MemoryType::BUFFER)
+  {
+    ReadBufferObject(image, array, array_size);
   }
   else
   {
-    ReadImageObject(image, array, array_bytes_size);
+    ReadImageObject(image, array);
   }
 }
 
-template <class type = float>
+template <class type>
+auto
+ReadObject(const Image & image, const std::vector<type> & array) -> void
+{
+  ReadObject(image, array.data(), array.size());
+}
+
+template <class type>
 auto
 ReadObject(const Image & image, const type & value) -> void
 {
-  if (image.GetMemoryType() == BUFFER)
-  {
-    ReadBufferObject(image, &value, sizeof(type));
-  }
-  else
-  {
-    ReadImageObject(image, &value, sizeof(type));
-  }
+  ReadObject(image, &value, 1);
 }
 
 } // namespace cle::Memory
