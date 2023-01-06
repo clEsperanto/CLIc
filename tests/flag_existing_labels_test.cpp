@@ -1,7 +1,5 @@
 
 
-#include <random>
-
 #include "clesperanto.hpp"
 
 template <class type>
@@ -10,13 +8,13 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
 {
   std::vector<type> input(shape[0] * shape[1] * shape[2]);
   std::vector<type> valid(shape[0]);
-
-  static std::uniform_int_distribution<int> distribution(0, shape[0] - 1);
-  static std::default_random_engine         generator;
-  std::generate(input.begin(), input.end(), []() { return static_cast<type>(distribution(generator)); });
-  for (auto && i : input)
+  for (size_t i = 0; i < input.size(); ++i)
   {
-    valid[i] = static_cast<type>(1);
+    input[i] = static_cast<type>(rand() % shape[0]);
+  }
+  for (size_t i = 0; i < input.size(); ++i)
+  {
+    valid[input[i]] = 1;
   }
 
   cle::Clesperanto cle;

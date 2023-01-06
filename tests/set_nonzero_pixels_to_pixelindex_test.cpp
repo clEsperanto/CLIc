@@ -1,23 +1,24 @@
 
-
-#include <random>
-
 #include "clesperanto.hpp"
 
 template <class type>
 auto
 run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) -> bool
 {
-  std::vector<type>                         input(shape[0] * shape[1] * shape[2]);
-  std::vector<type>                         valid(shape[0] * shape[1] * shape[2]);
-  static std::uniform_int_distribution<int> distribution(0, 1);
-  static std::default_random_engine         generator;
-  std::generate(input.begin(), input.end(), []() { return static_cast<type>(distribution(generator)); });
+  std::vector<type> input(shape[0] * shape[1] * shape[2]);
+  std::vector<type> valid(shape[0] * shape[1] * shape[2]);
+
+  for (auto it = input.begin(); it != input.end(); ++it)
+  {
+    *it = static_cast<type>(rand() % 2);
+  }
   for (auto it = input.begin(), it_valid = valid.begin(); (it != input.end()) && (it_valid != valid.end());
        ++it, ++it_valid)
   {
     if (*it != 0)
+    {
       *it_valid = static_cast<type>((it_valid - valid.begin()) + 1);
+    }
   }
 
   cle::Clesperanto cle;
