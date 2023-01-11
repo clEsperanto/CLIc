@@ -20,7 +20,7 @@ jobs:
       max-parallel: 3
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        includ:
+        include:
           - os: ubuntu-latest
             c-compiler: "gcc"
             cxx-compiler: "g++"
@@ -41,12 +41,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up conda with python 3.10
+      - name: Set up conda with python 3.9
         uses: conda-incubator/setup-miniconda@v2.2.0
         with:
           auto-update-conda: true
           activate-environment: test
-          python-version: 3.10
+          python-version: 3.9
           channels: conda-forge
 
       - name: Install PoCL
