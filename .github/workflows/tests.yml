@@ -1,0 +1,82 @@
+name: Tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  clespernato-kernels-git-tag: "d2348d964b1eaff60c60d7b3e18a59c2c8e3a84e"
+  opencl-sdk-git-tag: "v2022.09.30"
+  opencl-icd-loader-git-tag: "v2022.09.30"
+  opencl-headers-git-tag: "v2022.09.30"
+  opencl-clhpp-git-tag: "v2022.09.30"
+
+jobs:
+  build-cxx:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 3
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        includ:
+          - os: ubuntu-latest
+            c-compiler: "gcc"
+            cxx-compiler: "g++"
+            cmake-build-type: "Release"
+            cmake-build-flag: ""
+          # - os: windows-latest
+          #   c-compiler: "cl.exe"
+          #   cxx-compiler: "cl.exe"
+          #   cmake-build-type: "Release"
+          #   cmake-build-flag: "-A x64"
+          # - os: macos-latest
+          #   c-compiler: "clang"
+          #   cxx-compiler: "clang++"
+          #   cmake-build-type: "Release"
+          #   cmake-build-flag: ""
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up conda with python 3.10
+        uses: conda-incubator/setup-miniconda@v2.2.0
+        with:
+          auto-update-conda: true
+          activate-environment: test
+          python-version: 3.10
+          channels: conda-forge
+
+      - name: Install PoCL
+        shell: bash -l {0}
+        run: conda install -y pocl
+
+      - name: compile CLIc - linux
+        if: matrix.os == 'ubuntu-latest'
+        run : |
+          ocl-icd-path=$(find $(conda info --base)/envs -name "libOpenCL.so")
+          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARY:FILEPATH=$(ocl-icd-path)
+          cmake --build "${{ runner.workspace }}/build" --parallel 3 --config ${{ matrix.cmake-build-type }}}
+        shell: bash -l {0}   
+
+      - name: Generate coverage
+        shell: bash
+        run: |
+          cd ${{ runner.workspace }}/build && ctest -C ${{ matrix.cmake-build-type }} --output-on-failure
+ 
+
+      # - name: compile CLIc - windows
+      #   if: matrix.os == 'windows-latest'
+      #   run : |
+      #     cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARY:FILEPATH="C:/Program Files/OpenCL-ICD-Loader/lib/OpenCL.lib"
+      #     cmake --build "${{ runner.workspace }}/build" --parallel 3 --config ${{ matrix.cmake-build-type }}
+      #   shell: bash -l {0}
+
+      # - name: compile CLIc - macos
+      #   if: matrix.os == 'macos-latest'
+      #   run : |
+      #     cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF
+      #     cmake --build "${{ runner.workspace }}/build" --parallel 3 --config ${{ matrix.cmake-build-type }}
+      #   shell: bash -l {0}
