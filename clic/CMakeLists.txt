@@ -30,7 +30,7 @@ add_library(${PROJECT_NAME}::${LIBRARY_NAME} ALIAS ${LIBRARY_NAME})
 target_compile_definitions(${LIBRARY_NAME} PUBLIC "${PROJECT_NAME_UPPERCASE}_DEBUG=$<CONFIG:Debug>")
 
 # Use C++17 on target (avoid global define)
-target_compile_features(${LIBRARY_NAME} PUBLIC cxx_std_17)
+# target_compile_features(${LIBRARY_NAME} PUBLIC cxx_std_17)
 
 # Target dependencies
 add_dependencies(${LIBRARY_NAME} generate_kernels_list generate_kernels)
