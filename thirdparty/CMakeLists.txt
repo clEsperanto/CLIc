@@ -24,7 +24,7 @@ FetchContent_Declare(OpenCL_HEADERS
     GIT_TAG v2023.02.06
     CONFIGURE_COMMAND ""
     BUILD_ALWAYS OFF
-    GIT_SUBMODULES "docs"
+    GIT_SUBMODULES "tests"
     ) 
 
 FetchContent_Declare(OpenCL_CLHPP
