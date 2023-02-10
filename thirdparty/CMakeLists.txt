@@ -24,7 +24,6 @@ FetchContent_Declare(OpenCL_HEADERS
     GIT_TAG v2022.09.30
     CONFIGURE_COMMAND ""
     BUILD_ALWAYS OFF
-    GIT_SUBMODULES "docs"
     ) 
 
 FetchContent_Declare(OpenCL_CLHPP
@@ -32,7 +31,6 @@ FetchContent_Declare(OpenCL_CLHPP
     GIT_TAG v2022.09.30
     CONFIGURE_COMMAND ""
     BUILD_ALWAYS OFF
-    GIT_SUBMODULES "docs"
     )
 
 if(NOT OpenCL_HEADERS_POPULATED)
