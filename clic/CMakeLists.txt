@@ -74,6 +74,8 @@ target_include_directories(${LIBRARY_NAME} PUBLIC
 
 # Headers:
 # - foo/*.h -> <prefix>/include/*.h
+file(GLOB_RECURSE BUILD_HEADERS_FILE ${CMAKE_CURRENT_BINARY_DIR}/include/*.hpp)
+list(APPEND HEADERS_FILE ${BUILD_HEADERS_FILE})
 install(
     FILES ${HEADERS_FILE}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
