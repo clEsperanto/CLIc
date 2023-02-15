@@ -11,15 +11,20 @@ file(GLOB_RECURSE SOURCES_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 file(GLOB_RECURSE HEADERS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/include/core/*.hpp)
 file(GLOB_RECURSE OPENCL_FILE_H ${OpenCL_HEADERS_SRC_DIR}/*.h)
 file(GLOB_RECURSE OPENCL_FILE_HPP ${OpenCL_CLHPP_SRC_DIR}/*.hpp)
+file(GLOB_RECURSE BUILD_HEADERS_FILE ${CMAKE_CURRENT_BINARY_DIR}/include/*.hpp)
+
+list(APPEND HEADERS_FILE ${BUILD_HEADERS_FILE})
 list(APPEND OPENCL_FILE ${OPENCL_FILE_H} ${OPENCL_FILE_HPP})
 
 # define library target
 add_library(${LIBRARY_NAME} ${SOURCES_FILES})
 
 set_target_properties(${LIBRARY_NAME} PROPERTIES FOLDER ${LIBRARY_DIR})
+set_target_properties(${LIBRARY_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
+# set_target_properties(${LIBRARY_NAME} PROPERTIES PUBLIC_HEADER ${HEADERS_FILE})
 
 # Target links
-target_link_libraries(${LIBRARY_NAME} PRIVATE ${OpenCL_LIBRARY})
+target_link_libraries(${LIBRARY_NAME} INTERFACE ${OpenCL_LIBRARY})
 
 # Alias: -> Foo::foo alias of foo
 add_library(${PROJECT_NAME}::${LIBRARY_NAME} ALIAS ${LIBRARY_NAME})
@@ -74,8 +79,6 @@ target_include_directories(${LIBRARY_NAME} PUBLIC
 
 # Headers:
 # - foo/*.h -> <prefix>/include/*.h
-file(GLOB_RECURSE BUILD_HEADERS_FILE ${CMAKE_CURRENT_BINARY_DIR}/include/*.hpp)
-list(APPEND HEADERS_FILE ${BUILD_HEADERS_FILE})
 install(
     FILES ${HEADERS_FILE}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
