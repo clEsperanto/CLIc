@@ -19,13 +19,13 @@ class CropKernel : public Operation
         SetOutput(const Image & object) -> void;
 
         auto
-        SetIndex1(const Int & index) -> void;
+        SetIndex1(const int & index) -> void;
 
         auto
-        SetIndex2(const Int & index) -> void;
+        SetIndex2(const int & index) -> void;
 
         auto 
-        SetIndex3(const Int & index) -> void;
+        SetIndex3(const int & index) -> void;
     
 };
 
