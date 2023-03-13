@@ -36,15 +36,15 @@ inline auto
 HistogramKernel_Call(const std::shared_ptr<cle::Processor> & device,
                      const Image &                           src,
                      const Image &                           dst,
-                     const float &                           min_value,
-                     const float &                           max_value,
+                     const float &                           min_intensity,
+                     const float &                           max_intensity,
                      const size_t &                          bin) -> void
 {
   HistogramKernel kernel(device);
   kernel.SetInput(src);
   kernel.SetOutput(dst);
-  kernel.SetMinimumIntensity(min_value);
-  kernel.SetMaximumIntensity(max_value);
+  kernel.SetMinimumIntensity(min_intensity);
+  kernel.SetMaximumIntensity(max_intensity);
   kernel.SetSteps(1, 1, 1);
   kernel.SetNumBins(bin);
   kernel.Execute();
