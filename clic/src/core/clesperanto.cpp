@@ -121,18 +121,18 @@ Clesperanto::BinaryXor(const Image & source1, const Image & source2, const Image
 }
 
 auto
+Clesperanto::Convolve(const Image & source, const Image & convolve_kernel, const Image & destination) -> void
+{
+  ConvolveKernel_Call(this->GetDevice(), source, convolve_kernel, destination);
+}
+
+auto
 Clesperanto::Crop(const Image & source, const Image & destination,
                   const int & index0,
                   const int & index1,
                   const int & index2) -> void
 {
   CropKernel_Call(this->GetDevice(), source, destination, index0, index1, index2);
-}
-
-auto
-Clesperanto::Convolve(const Image & source, const Image & convolve_kernel, const Image & destination) -> void
-{
-  ConvolveKernel_Call(this->GetDevice(), source, convolve_kernel, destination);
 }
 
 auto

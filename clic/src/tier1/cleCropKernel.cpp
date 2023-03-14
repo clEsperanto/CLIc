@@ -1,5 +1,6 @@
 
-#include "cleCropKernel.hpp"    
+#include "cleCropKernel.hpp"   
+ 
 namespace cle                                
 {
     CropKernel::CropKernel(const ProcessorPointer & device) : 
