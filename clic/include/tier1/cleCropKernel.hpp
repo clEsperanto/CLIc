@@ -29,12 +29,13 @@ class CropKernel : public Operation
     
 };
 
-CropKernel_Call(const std::sharedptr<cle::Processor> & device, 
+inline auto
+CropKernel_Call(const std::shared_ptr<cle::Processor> & device, 
                 const Image & src,
                 const Image & dst, 
-                const Int & index0,
-                const Int & index1,
-                const Int & index2
+                const int & index0,
+                const int & index1,
+                const int & index2
                 ) -> void
 {
     CropKernel kernel(device);

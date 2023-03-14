@@ -126,7 +126,7 @@ Clesperanto::Crop(const Image & source, const Image & destination,
                   const int & index1,
                   const int & index2) -> void
 {
-  CropKernel_Call(this->getDevice(), source, destination, index0, index1, index2)
+  CropKernel_Call(this->GetDevice(), source, destination, index0, index1, index2);
 }
 
 auto
