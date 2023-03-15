@@ -94,7 +94,7 @@ public:
 
   auto
   ConnectedComponentLabelingBox(const Image & source, const Image & destination) -> void;
-  
+
   auto
   Convolve(const Image & source, const Image & convolve_kernel, const Image & destination) -> void;
 
@@ -102,11 +102,12 @@ public:
   Copy(const Image & source, const Image & destination) -> void;
 
   auto
-  Crop(const Image & source, const Image & destination, 
-                             const int & index0 = 0,
-                             const int & index1 = 0,
-                             const int & index2 = 0) -> void;
-                             
+  Crop(const Image & source,
+       const Image & destination,
+       const int &   index0 = 0,
+       const int &   index1 = 0,
+       const int &   index2 = 0) -> void;
+
   auto
   DetectMaximaBox(const Image & source, const Image & destination) -> void;
 
