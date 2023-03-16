@@ -47,4 +47,4 @@ CropKernel_Call(const std::shared_ptr<cle::Processor> & device,
 
 } // namespace cle
 
-#endif
+#endif // __TIER1_CLECROPKERNEL_HPP

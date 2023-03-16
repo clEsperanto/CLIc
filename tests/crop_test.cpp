@@ -5,39 +5,86 @@
 
 template <class type>
 auto
-run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) -> bool
+run_test(const std::array<size_t, 3> & shape,
+         const cle::MemoryType &       mem_type,
+         const std::array<size_t, 3> & output_shape,
+         const std::array<int, 3> &    crop_start) -> bool
 {
-    //std::vector<type> input(shape[0] * shape[1] * shape[2]);
-    //std::vector<type> valid(shape[0] * shape[1] * shape[2]);
+  std::random_device              rd;
+  std::mt19937                    gen(rd());
+  std::uniform_int_distribution<> dis(1, 100);
+  std::vector<type>               input(shape[0] * shape[1] * shape[2]);
+  std::generate(input.begin(), input.end(), [&]() { return dis(gen); });
 
-    std::vector<type> input{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-    std::vector<type> valid{6, 7, 10, 11};
+  std::vector<type> valid;
+  for (size_t i = crop_start[2]; i < crop_start[2] + output_shape[2]; i++)
+  {
+    for (size_t j = crop_start[0]; j < crop_start[0] + output_shape[0]; j++)
+    {
+      for (size_t k = crop_start[1]; k < crop_start[1] + output_shape[1]; k++)
+      {
+        valid.push_back(input[i * shape[0] * shape[1] + j * shape[0] + k]);
+      }
+    }
+  }
 
-    const int index0 = 1;
-    const int index1 = 1;
-    const int index2 = 0;
+  cle::Clesperanto cle;
+  cle.GetDevice()->WaitForKernelToFinish();
+  auto gpu_input = cle.Push<type>(input, shape, mem_type);
+  auto gpu_output = cle.Create<type>(output_shape, mem_type);
+  cle.Crop(gpu_input, gpu_output, crop_start[0], crop_start[1], crop_start[2]);
+  auto output = cle.Pull<type>(gpu_output);
 
-    //std::fill(input.begin(), input.end(), static_cast<type>(value));
-    //std::fill(valid.begin(), valid.end(), static_cast<type> );
-
-    cle::Clesperanto cle;
-    cle.GetDevice()->WaitForKernelToFinish();
-    auto gpu_input = cle.Push<type>(input, shape, mem_type);
-    auto gpu_output = cle.Create<type>({2, 2, 1}, mem_type);
-    cle.Crop(gpu_input, gpu_output, index0, index1, index2);
-    auto output = cle.Pull<type>(gpu_output);
-
-    return std::equal(output.begin(), output.end(), valid.begin());
-    
+  return std::equal(output.begin(), output.end(), valid.begin());
 }
 
 auto
 main(int argc, char ** argv) -> int
 {
-    if(!run_test<int32_t>({4, 4, 1}, cle::BUFFER))
-    {
-        return EXIT_FAILURE;
-    }
+  if (!run_test<int>({ 3, 3, 1 }, cle::BUFFER, { 2, 2, 1 }, { 1, 1, 0 }))
+  {
+    return EXIT_FAILURE;
+  }
 
-    return EXIT_SUCCESS;
+  if (!run_test<float>({ 5, 5, 2 }, cle::BUFFER, { 3, 3, 2 }, { 2, 2, 0 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<int>({ 8, 8, 1 }, cle::BUFFER, { 6, 6, 1 }, { 2, 2, 0 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<char>({ 2, 3, 4 }, cle::BUFFER, { 2, 2, 3 }, { 0, 1, 1 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<float>({ 2, 3, 4 }, cle::BUFFER, { 1, 2, 3 }, { 1, 0, 1 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<double>({ 6, 8, 6 }, cle::BUFFER, { 3, 5, 3 }, { 2, 3, 1 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<double>({ 6, 8, 10 }, cle::BUFFER, { 3, 5, 7 }, { 2, 3, 1 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<unsigned int>({ 5, 4, 6 }, cle::BUFFER, { 3, 3, 4 }, { 1, 1, 1 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<char>({ 2, 3, 4 }, cle::BUFFER, { 2, 2, 3 }, { 0, 1, 1 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  return EXIT_SUCCESS;
 }
