@@ -10,11 +10,8 @@ run_test(const std::array<size_t, 3> & shape,
          const std::array<size_t, 3> & output_shape,
          const std::array<int, 3> &    crop_start) -> bool
 {
-  std::random_device              rd;
-  std::mt19937                    gen(rd());
-  std::uniform_int_distribution<> dis(1, 100);
-  std::vector<type>               input(shape[0] * shape[1] * shape[2]);
-  std::generate(input.begin(), input.end(), [&]() { return dis(gen); });
+  std::vector<type> input(shape[0] * shape[1] * shape[2]);
+  std::generate(input.begin(), input.end(), [&]() { return (static_cast<type>((1 + (rand() % 9)))); });
 
   std::vector<type> valid;
   for (size_t i = crop_start[2]; i < crop_start[2] + output_shape[2]; i++)
@@ -41,47 +38,107 @@ run_test(const std::array<size_t, 3> & shape,
 auto
 main(int argc, char ** argv) -> int
 {
-  if (!run_test<int>({ 3, 3, 1 }, cle::BUFFER, { 2, 2, 1 }, { 1, 1, 0 }))
+  if (!run_test<float>({ 10, 1, 1 }, cle::BUFFER, { 5, 1, 1 }, { 2, 0, 0 }))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<float>({ 5, 5, 2 }, cle::BUFFER, { 3, 3, 2 }, { 2, 2, 0 }))
+  if (!run_test<int32_t>({ 10, 1, 1 }, cle::BUFFER, { 5, 1, 1 }, { 2, 0, 0 }))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<int>({ 8, 8, 1 }, cle::BUFFER, { 6, 6, 1 }, { 2, 2, 0 }))
+  if (!run_test<uint32_t>({ 10, 1, 1 }, cle::BUFFER, { 5, 1, 1 }, { 2, 0, 0 }))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<char>({ 2, 3, 4 }, cle::BUFFER, { 2, 2, 3 }, { 0, 1, 1 }))
+  if (!run_test<int16_t>({ 10, 1, 1 }, cle::BUFFER, { 5, 1, 1 }, { 2, 0, 0 }))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<float>({ 2, 3, 4 }, cle::BUFFER, { 1, 2, 3 }, { 1, 0, 1 }))
+  if (!run_test<uint16_t>({ 10, 1, 1 }, cle::BUFFER, { 5, 1, 1 }, { 2, 0, 0 }))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<double>({ 6, 8, 6 }, cle::BUFFER, { 3, 5, 3 }, { 2, 3, 1 }))
+  if (!run_test<int8_t>({ 10, 1, 1 }, cle::BUFFER, { 5, 1, 1 }, { 2, 0, 0 }))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<double>({ 6, 8, 10 }, cle::BUFFER, { 3, 5, 7 }, { 2, 3, 1 }))
+  if (!run_test<uint8_t>({ 10, 1, 1 }, cle::BUFFER, { 5, 1, 1 }, { 2, 0, 0 }))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<unsigned int>({ 5, 4, 6 }, cle::BUFFER, { 3, 3, 4 }, { 1, 1, 1 }))
+  if (!run_test<float>({ 6, 8, 1 }, cle::BUFFER, { 4, 5, 1 }, { 1, 2, 0 }))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<char>({ 2, 3, 4 }, cle::BUFFER, { 2, 2, 3 }, { 0, 1, 1 }))
+  if (!run_test<int32_t>({ 6, 8, 1 }, cle::BUFFER, { 4, 5, 1 }, { 1, 2, 0 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<uint32_t>({ 6, 8, 1 }, cle::BUFFER, { 4, 5, 1 }, { 1, 2, 0 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<int16_t>({ 6, 8, 1 }, cle::BUFFER, { 4, 5, 1 }, { 1, 2, 0 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<uint16_t>({ 6, 8, 1 }, cle::BUFFER, { 4, 5, 1 }, { 1, 2, 0 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<int8_t>({ 6, 8, 1 }, cle::BUFFER, { 4, 5, 1 }, { 1, 2, 0 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<uint8_t>({ 6, 8, 1 }, cle::BUFFER, { 4, 5, 1 }, { 1, 2, 0 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<float>({ 6, 8, 6 }, cle::BUFFER, { 3, 5, 3 }, { 2, 3, 1 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<int32_t>({ 6, 8, 6 }, cle::BUFFER, { 3, 5, 3 }, { 2, 3, 1 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<uint32_t>({ 6, 8, 6 }, cle::BUFFER, { 3, 5, 3 }, { 2, 3, 1 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<int16_t>({ 6, 8, 6 }, cle::BUFFER, { 3, 5, 3 }, { 2, 3, 1 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<uint16_t>({ 6, 8, 6 }, cle::BUFFER, { 3, 5, 3 }, { 2, 3, 1 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<int8_t>({ 6, 8, 6 }, cle::BUFFER, { 3, 5, 3 }, { 2, 3, 1 }))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (!run_test<uint8_t>({ 6, 8, 6 }, cle::BUFFER, { 3, 5, 3 }, { 2, 3, 1 }))
   {
     return EXIT_FAILURE;
   }
