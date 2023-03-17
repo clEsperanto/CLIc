@@ -2,10 +2,18 @@
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+# if msvc, set cxx_std_flag to "/std:c++17", else set to "-std=c++17"
+# if(MSVC)
+#   set(CXX_STD_FLAG "/std:c++17")
+# else()
+#   set(CXX_STD_FLAG "-std=c++17")
+# endif()
+
 # C++ compilation settings
-# set(CMAKE_CXX_STANDARD 14) # Use C++17
+set(CMAKE_CXX_STANDARD 17) # Use C++17
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # Require (at least) it
 set(CMAKE_CXX_EXTENSIONS OFF) # Don't use e.g. GNU extension (like -std=gnu++11) for portability
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON) # Export all symbols for shared library windows
 
 # Define upper and lower case project name
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPERCASE)

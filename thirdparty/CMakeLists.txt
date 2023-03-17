@@ -21,16 +21,18 @@ mark_as_advanced(OCL_KERNELS_DIR)
 ## Manage OpenCL headers source code
 FetchContent_Declare(OpenCL_HEADERS
     GIT_REPOSITORY https://github.com/KhronosGroup/OpenCL-Headers.git
-    GIT_TAG v2022.09.30
+    GIT_TAG v2023.02.06
     CONFIGURE_COMMAND ""
     BUILD_ALWAYS OFF
+    GIT_SUBMODULES "tests"
     ) 
 
 FetchContent_Declare(OpenCL_CLHPP
     GIT_REPOSITORY https://github.com/KhronosGroup/OpenCL-CLHPP.git
-    GIT_TAG v2022.09.30
+    GIT_TAG v2023.02.06
     CONFIGURE_COMMAND ""
     BUILD_ALWAYS OFF
+    GIT_SUBMODULES "docs"
     )
 
 if(NOT OpenCL_HEADERS_POPULATED)
