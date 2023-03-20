@@ -25,20 +25,11 @@ CropKernel::SetOutput(const Image & object) -> void
 }
 
 auto
-CropKernel::SetIndex1(const int & index) -> void
+CropKernel::SetIndex(const int & index0, const int & index1, const int & index2) -> void
 {
-  this->AddParameter("index0", index);
+  this->AddParameter("index0", index0);
+  this->AddParameter("index1", index1);
+  this->AddParameter("index2", index2);
 }
 
-auto
-CropKernel::SetIndex2(const int & index) -> void
-{
-  this->AddParameter("index1", index);
-}
-
-auto
-CropKernel::SetIndex3(const int & index) -> void
-{
-  this->AddParameter("index2", index);
-}
 } // namespace cle
