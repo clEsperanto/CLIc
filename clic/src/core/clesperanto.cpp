@@ -127,6 +127,16 @@ Clesperanto::Convolve(const Image & source, const Image & convolve_kernel, const
 }
 
 auto
+Clesperanto::Crop(const Image & source,
+                  const Image & destination,
+                  const int &   index0,
+                  const int &   index1,
+                  const int &   index2) -> void
+{
+  CropKernel_Call(this->GetDevice(), source, destination, index0, index1, index2);
+}
+
+auto
 Clesperanto::SubtractImages(const Image & source1, const Image & source2, const Image & destination) -> void
 {
   this->AddImagesWeighted(source1, source2, destination, 1, -1);

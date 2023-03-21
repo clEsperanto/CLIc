@@ -102,6 +102,10 @@ public:
   Copy(const Image & source, const Image & destination) -> void;
 
   auto
+  Crop(const Image & source, const Image & destination, const int & x = 0, const int & y = 0, const int & z = 0)
+    -> void;
+
+  auto
   DetectMaximaBox(const Image & source, const Image & destination) -> void;
 
   auto
