@@ -42,8 +42,6 @@ main(int argc, char ** argv)
       }
     }
     std::cout << "]" << std::endl;
-    auto gpu = std::make_shared<cle::Processor>();
-    gpu->SelectDevice(device_list.front());
   }
 
   // test device compatible with double
