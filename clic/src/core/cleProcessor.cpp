@@ -7,9 +7,9 @@
 namespace cle
 {
 
-Processor::Processor(const std::string & name)
+Processor::Processor(const std::string & name, const std::string & type)
 {
-  this->SelectDevice(name);
+  this->SelectDevice(name, type);
 }
 
 auto
@@ -49,6 +49,19 @@ Processor::ListAvailableDevices() -> std::vector<std::string>
       if (Backend::DeviceIsAvailable(device_ite))
       {
         std::string device_name = Backend::GetDeviceName(device_ite);
+        DeviceType  device_type = Backend::GetDeviceType(device_ite);
+        switch (device_type)
+        {
+          case DeviceType::CPU:
+            device_name += " (cpu)";
+            break;
+          case DeviceType::GPU:
+            device_name += " (gpu)";
+            break;
+          default:
+            device_name += " (?)";
+            break;
+        }
         list_available_device.push_back(device_name);
       }
     }
@@ -57,13 +70,22 @@ Processor::ListAvailableDevices() -> std::vector<std::string>
 }
 
 auto
-Processor::SelectDevice(const std::string & name) -> void
+Processor::SelectDevice(const std::string & name, const std::string & type) -> void
 {
-  bool                            found_flag = false;
+  bool       found_flag = false;
+  DeviceType device_type = DeviceType::ALL;
+  if (type == "cpu")
+  {
+    device_type = DeviceType::CPU;
+  }
+  if (type == "gpu")
+  {
+    device_type = DeviceType::GPU;
+  }
   const std::vector<cl::Platform> platforms_list = Backend::GetPlatformPointerList();
   for (const auto & platform_ite : platforms_list)
   {
-    const std::vector<cl::Device> devices_list = Backend::GetDevicesListFromPlatform(platform_ite);
+    const std::vector<cl::Device> devices_list = Backend::GetDevicesListFromPlatform(platform_ite, device_type);
     for (const auto & device_ite : devices_list)
     {
       if (Backend::DeviceIsAvailable(device_ite))

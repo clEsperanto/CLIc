@@ -14,7 +14,7 @@ class Processor
 {
 public:
   Processor() = default;
-  explicit Processor(const std::string & name);
+  explicit Processor(const std::string & name, const std::string & type = "all");
   ~Processor() = default;
   Processor(const Processor & obj) = default;
   Processor(Processor && obj) = default;
@@ -39,7 +39,7 @@ public:
   static auto
   ListAvailableDevices() -> std::vector<std::string>;
   auto
-  SelectDevice(const std::string & name = "") -> void;
+  SelectDevice(const std::string & name = "", const std::string & type = "all") -> void;
   [[nodiscard]] auto
   GetDeviceName() const -> std::string;
   [[nodiscard]] auto
