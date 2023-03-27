@@ -143,6 +143,15 @@ Clesperanto::SubtractImages(const Image & source1, const Image & source2, const 
 }
 
 auto
+Clesperanto::DetectMinima(const Image & source, const Image & destination) -> void
+{
+  DetectMinimaKernel kernel(this->GetDevice());
+  kernel.SetInput(source);
+  kernel.SetOutput(destination);
+  kernel.Execute();
+}
+
+auto
 Clesperanto::DilateSphere(const Image & source, const Image & destination) -> void
 {
   DilateSphereKernel kernel(this->GetDevice());
