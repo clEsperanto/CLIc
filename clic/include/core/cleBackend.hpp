@@ -88,6 +88,49 @@ GetDeviceName(const cl::Device & device_pointer) -> std::string
 }
 
 inline auto
+GetDeviceInfo(const cl::Device & device_pointer) -> std::string
+{
+  std::ostringstream out;
+  std::string        version;
+  cl_device_type     type;
+  cl_uint            compute_units;
+  size_t             global_mem_size;
+
+  // Get device information
+  auto name = GetDeviceName(device_pointer);
+  device_pointer.getInfo(CL_DEVICE_VERSION, &version);
+  device_pointer.getInfo(CL_DEVICE_TYPE, &type);
+  device_pointer.getInfo(CL_DEVICE_MAX_COMPUTE_UNITS, &compute_units);
+  device_pointer.getInfo(CL_DEVICE_GLOBAL_MEM_SIZE, &global_mem_size);
+
+  // Print device information to output string
+  out << name << " (" << version << ")\n";
+  switch (type)
+  {
+    case CL_DEVICE_TYPE_CPU:
+      out << "\tType: CPU\n";
+      break;
+    case CL_DEVICE_TYPE_GPU:
+      out << "\tType: GPU\n";
+      break;
+    default:
+      out << "\tType: Unknown\n";
+      break;
+  }
+  out << "\tCompute Units: " << compute_units << '\n';
+  out << "\tGlobal Memory Size: " << (global_mem_size / 1000000) << " MB\n";
+
+  return out.str();
+}
+
+
+inline auto
+GetPlatformPointer(const cl::Device & device_pointer) -> cl::Platform
+{
+  return cl::Platform(device_pointer.getInfo<CL_DEVICE_PLATFORM>());
+}
+
+inline auto
 GetDeviceType(const cl::Device & device_pointer) -> DeviceType
 {
   cl_device_type type = device_pointer.getInfo<CL_DEVICE_TYPE>();
