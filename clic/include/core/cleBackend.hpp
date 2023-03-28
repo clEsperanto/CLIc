@@ -96,13 +96,15 @@ GetDeviceInfo(const cl::Device & device_pointer) -> std::string
   cl_device_type     type;
   cl_uint            compute_units;
   size_t             global_mem_size;
+  size_t             max_mem_size;
 
   // Get device information
-  auto name = GetDeviceName(device_pointer);
+  const auto & name = GetDeviceName(device_pointer);
   device_pointer.getInfo(CL_DEVICE_VERSION, &version);
   device_pointer.getInfo(CL_DEVICE_TYPE, &type);
   device_pointer.getInfo(CL_DEVICE_MAX_COMPUTE_UNITS, &compute_units);
   device_pointer.getInfo(CL_DEVICE_GLOBAL_MEM_SIZE, &global_mem_size);
+  device_pointer.getInfo(CL_DEVICE_MAX_MEM_ALLOC_SIZE, &max_mem_size);
 
   // Print device information to output string
   result << name << " (" << version << ")\n";
@@ -120,10 +122,10 @@ GetDeviceInfo(const cl::Device & device_pointer) -> std::string
   }
   result << "\tCompute Units: " << compute_units << '\n';
   result << "\tGlobal Memory Size: " << (global_mem_size / 1000000) << " MB\n";
+  result << "\tMaximum Object Size: " << (max_mem_size / 1000000) << " MB\n";
 
   return result.str();
 }
-
 
 inline auto
 GetPlatformPointer(const cl::Device & device_pointer) -> cl::Platform
