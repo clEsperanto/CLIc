@@ -91,17 +91,24 @@ auto
 Processor::SelectDevice(const std::string & name, const std::string & type) -> void
 {
   auto list_of_device = Processor::GetDevices(type);
+  if (list_of_device.empty())
+  {
+    std::cerr << "Error: Fail to find/allocate device of type :" << type << std::endl;
+    return;
+  }
+  if (name == "default")
+  {
+    this->SetDevicePointers(list_of_device.back());
+    return;
+  }
   auto ite = std::find_if(list_of_device.begin(), list_of_device.end(), [&](const cl::Device & device) {
     return Backend::GetDeviceName(device).find(name) != std::string::npos;
   });
-  if (ite != list_of_device.end())
+  if (ite == list_of_device.end())
   {
-    SetDevicePointers(*ite);
+    std::cerr << "Error: Fail to find/allocate device " << name << " of type " << type << std::endl;
   }
-  else
-  {
-    std::cerr << "Error: Fail to find/allocate requested device\n";
-  }
+  this->SetDevicePointers(*ite);
 }
 
 auto

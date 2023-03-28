@@ -43,7 +43,7 @@ public:
   auto
   SelectDevice(const int & idx, const std::string & type = "all") -> void;
   auto
-  SelectDevice(const std::string & name = "", const std::string & type = "all") -> void;
+  SelectDevice(const std::string & name = "default", const std::string & type = "all") -> void;
   [[nodiscard]] auto
   GetDeviceName() const -> std::string;
   [[nodiscard]] auto
