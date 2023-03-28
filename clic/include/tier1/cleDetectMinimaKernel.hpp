@@ -6,15 +6,13 @@
 
 namespace cle
 {
-    
+
 class DetectMinimaKernel : public Operation
 {
 public:
   explicit DetectMinimaKernel(const ProcessorPointer & device);
-
   auto
   SetInput(const Image & object) -> void;
-
   auto
   SetOutput(const Image & object) -> void;
 };
@@ -27,6 +25,7 @@ DetectMinimaKernel_Call(const std::shared_ptr<cle::Processor> & device, const Im
   kernel.SetOutput(dst);
   kernel.Execute();
 }
+
 } // namespace cle
 
 #endif // __TIER1_CLEDETECTMINIMAKERNEL_HPP
