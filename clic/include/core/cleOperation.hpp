@@ -47,8 +47,6 @@ public:
   auto
   SetRange(const ShapeArray & range) -> void;
   auto
-  SetRange(const std::string & tag) -> void;
-  auto
   SetSource(const std::string & name, const std::string & src) -> void;
   [[nodiscard]] auto
   GetSource() const -> const std::string &;
@@ -62,7 +60,6 @@ public:
   ToString() const -> std::string;
   friend auto
   operator<<(std::ostream & out, const Operation & operation) -> std::ostream &;
-
 
 protected:
   [[nodiscard]] auto
@@ -83,14 +80,6 @@ protected:
   GetArgumentsInfo() -> void;
   auto
   EnqueueOperation() -> void;
-  auto
-  SetNumberOfParameters(const size_t & nb_parameter) -> void;
-  auto
-  SetNumberOfConstants(const size_t & nb_constant) -> void;
-  auto
-  GenerateOutput(const std::string & input_tag = "src", const std::string & output_tag = "dst") -> void;
-  static auto
-  GenerateOutput(const Image & object, const ShapeArray & shape) -> Image;
 
 private:
   cl::Kernel       kernel_;
