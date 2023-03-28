@@ -5,6 +5,7 @@
 #include "clic.hpp"
 
 #include <iostream>
+#include <sstream>
 
 namespace cle::Backend
 {
@@ -90,7 +91,7 @@ GetDeviceName(const cl::Device & device_pointer) -> std::string
 inline auto
 GetDeviceInfo(const cl::Device & device_pointer) -> std::string
 {
-  std::ostringstream out;
+  std::ostringstream result;
   std::string        version;
   cl_device_type     type;
   cl_uint            compute_units;
@@ -104,23 +105,23 @@ GetDeviceInfo(const cl::Device & device_pointer) -> std::string
   device_pointer.getInfo(CL_DEVICE_GLOBAL_MEM_SIZE, &global_mem_size);
 
   // Print device information to output string
-  out << name << " (" << version << ")\n";
+  result << name << " (" << version << ")\n";
   switch (type)
   {
     case CL_DEVICE_TYPE_CPU:
-      out << "\tType: CPU\n";
+      result << "\tType: CPU\n";
       break;
     case CL_DEVICE_TYPE_GPU:
-      out << "\tType: GPU\n";
+      result << "\tType: GPU\n";
       break;
     default:
-      out << "\tType: Unknown\n";
+      result << "\tType: Unknown\n";
       break;
   }
-  out << "\tCompute Units: " << compute_units << '\n';
-  out << "\tGlobal Memory Size: " << (global_mem_size / 1000000) << " MB\n";
+  result << "\tCompute Units: " << compute_units << '\n';
+  result << "\tGlobal Memory Size: " << (global_mem_size / 1000000) << " MB\n";
 
-  return out.str();
+  return result.str();
 }
 
 
