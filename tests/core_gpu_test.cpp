@@ -27,6 +27,7 @@ main(int argc, char ** argv)
   {
     auto gpu = std::make_shared<cle::Processor>();
     gpu->SelectDevice("GTX");
+    std::cout << gpu->GetDeviceInfo() << std::endl;
   }
 
   // test information methods
@@ -42,21 +43,19 @@ main(int argc, char ** argv)
       }
     }
     std::cout << "]" << std::endl;
-    auto gpu = std::make_shared<cle::Processor>();
-    gpu->SelectDevice(device_list.front());
   }
 
   // test device compatible with double
   {
     auto gpu = std::make_shared<cle::Processor>();
-    gpu->SelectDevice("GTX");
+    gpu->SelectDevice("TX");
     std::cout << gpu->DoubleSupport() << std::endl;
   }
 
   // test devise support image
   {
     auto gpu = std::make_shared<cle::Processor>();
-    gpu->SelectDevice("GTX");
+    gpu->SelectDevice("TX");
     std::cout << gpu->ImageSupport() << std::endl;
   }
 

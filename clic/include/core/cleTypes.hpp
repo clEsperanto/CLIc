@@ -222,6 +222,41 @@ MemoryTypeToString(const MemoryType & type) -> std::string
 }
 
 inline auto
+StringToDeviceType(const std::string & type) -> DeviceType
+{
+  if (type == "gpu" || type == "GPU")
+  {
+    return DeviceType::GPU;
+  }
+  if (type == "cpu" || type == "CPU")
+  {
+    return DeviceType::CPU;
+  }
+  return DeviceType::ALL;
+}
+
+inline auto
+DeviceTypeToString(const DeviceType & type) -> std::string
+{
+  std::string res;
+  switch (type)
+  {
+    case DeviceType::GPU:
+      res = "gpu";
+      break;
+    case DeviceType::CPU:
+      res = "cpu";
+      break;
+    case DeviceType::ALL:
+      res = "all";
+      break;
+    default:
+      throw(std::runtime_error("Unknown device type provided to cast in string."));
+  }
+  return res;
+}
+
+inline auto
 operator<<(std::ostream & out, DataType & value) -> std::ostream &
 {
   out << DataTypeToString(value);

@@ -14,7 +14,8 @@ class Processor
 {
 public:
   Processor() = default;
-  explicit Processor(const std::string & name);
+  explicit Processor(const std::string & name, const std::string & type = "all");
+  explicit Processor(const cl_device_id & device);
   ~Processor() = default;
   Processor(const Processor & obj) = default;
   Processor(Processor && obj) = default;
@@ -37,19 +38,30 @@ public:
   auto
   WaitForKernelToFinish(const bool & flag = true) -> void;
   static auto
-  ListAvailableDevices() -> std::vector<std::string>;
+  ListAvailableDevices(const std::string & type = "all") -> std::vector<std::string>;
+
   auto
-  SelectDevice(const std::string & name = "") -> void;
+  SelectDevice(const int & idx, const std::string & type = "all") -> void;
+  auto
+  SelectDevice(const std::string & name = "default", const std::string & type = "all") -> void;
   [[nodiscard]] auto
   GetDeviceName() const -> std::string;
   [[nodiscard]] auto
   GetDeviceInfo() const -> std::string;
+
   [[nodiscard]] auto
   GetProgramMemory() -> std::map<size_t, cl::Program> &;
+
   [[nodiscard]] auto
   ImageSupport() const -> bool;
   [[nodiscard]] auto
   DoubleSupport() const -> bool;
+
+protected:
+  static auto
+  GetDevices(const std::string & type) -> std::vector<cl::Device>;
+  auto
+  SetDevicePointers(const cl::Device & device) -> void;
 
 private:
   cl::Platform                  platform_;

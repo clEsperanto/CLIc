@@ -28,9 +28,9 @@ Clesperanto::WaitForKernelToFinish(const bool & flag) -> void
 }
 
 auto
-Clesperanto::SelectDevice(const std::string & name) -> void
+Clesperanto::SelectDevice(const std::string & name, const std::string & type) -> void
 {
-  this->GetDevice()->SelectDevice(name);
+  this->GetDevice()->SelectDevice(name, type);
 }
 
 auto

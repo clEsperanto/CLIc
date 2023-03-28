@@ -31,7 +31,7 @@ public:
   WaitForKernelToFinish(const bool & flag = true) -> void;
 
   auto
-  SelectDevice(const std::string & name = "") -> void;
+  SelectDevice(const std::string & name = "", const std::string & type = "all") -> void;
 
   auto
   Info() -> std::string;
