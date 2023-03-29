@@ -122,8 +122,7 @@ Operation::LoadSource(const std::string & name, const std::string & file) -> voi
   std::ifstream file_stream(file);
   if (!file_stream.is_open())
   {
-    std::cerr << "Failed to open file: " << file << std::endl;
-    return;
+    throw std::runtime_error("Failed to load source, could not open file: " + file);
   }
   std::ostringstream buffer;
   buffer << file_stream.rdbuf();
@@ -349,8 +348,7 @@ Operation::SetKernelArguments() -> bool
         }
         // Add more cases for other data types if needed
         default: {
-          std::cerr << "Error: unsupported data type for parameter : " << kernel_arg_tag << "\n";
-          return false;
+          throw std::invalid_argument("Unsupported data type for scalar argument : " + kernel_arg_tag);
         }
       }
     }
