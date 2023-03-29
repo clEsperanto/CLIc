@@ -1,6 +1,7 @@
 
 
 #include "cleSumReductionXKernel.hpp"
+#include "cle_sum_reduction_x.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 SumReductionXKernel::SumReductionXKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_sum_reduction_x.h"
-  };
-  this->SetSource("sum_reduction_x", cl_header);
+  this->SetSource("sum_reduction_x", oclKernel::sum_reduction_x);
 }
 
 auto

@@ -1,6 +1,7 @@
 
 
 #include "cleMultiplyImagesKernel.hpp"
+#include "cle_multiply_images.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 MultiplyImagesKernel::MultiplyImagesKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_multiply_images.h"
-  };
-  this->SetSource("multiply_images", cl_header);
+  this->SetSource("multiply_images", oclKernel::multiply_images);
 }
 
 auto

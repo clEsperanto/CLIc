@@ -1,5 +1,6 @@
 
 #include "cleCopyKernel.hpp"
+#include "cle_copy.h"
 
 namespace cle
 {
@@ -7,10 +8,7 @@ namespace cle
 CopyKernel::CopyKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header = {
-#include "cle_copy.h"
-  };
-  this->SetSource("copy", cl_header);
+  this->SetSource("copy", oclKernel::copy);
 }
 
 auto

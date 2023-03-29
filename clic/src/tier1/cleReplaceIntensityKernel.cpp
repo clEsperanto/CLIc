@@ -1,6 +1,7 @@
 
 
 #include "cleReplaceIntensityKernel.hpp"
+#include "cle_replace_intensity.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 ReplaceIntensityKernel::ReplaceIntensityKernel(const ProcessorPointer & device)
   : Operation(device, 4)
 {
-  std::string cl_header = {
-#include "cle_replace_intensity.h"
-  };
-  this->SetSource("replace_intensity", cl_header);
+  this->SetSource("replace_intensity", oclKernel::replace_intensity);
 }
 
 auto

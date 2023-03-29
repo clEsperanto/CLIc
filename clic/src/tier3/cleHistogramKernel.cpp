@@ -5,6 +5,7 @@
 #include "cleMemory.hpp"
 #include "cleMinimumOfAllPixelsKernel.hpp"
 #include "cleSumZProjectionKernel.hpp"
+#include "cle_histogram.h"
 
 
 namespace cle
@@ -13,10 +14,7 @@ namespace cle
 HistogramKernel::HistogramKernel(const ProcessorPointer & device)
   : Operation(device, 8, 1)
 {
-  std::string cl_header_ = {
-#include "cle_histogram.h"
-  };
-  this->SetSource("histogram", cl_header_);
+  this->SetSource("histogram", oclKernel::histogram);
 }
 
 auto

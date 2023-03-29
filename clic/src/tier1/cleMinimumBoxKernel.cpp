@@ -2,6 +2,7 @@
 
 #include "cleMinimumBoxKernel.hpp"
 #include "cleExecuteSeparableKernel.hpp"
+#include "cle_minimum_separable.h"
 
 #include <algorithm>
 
@@ -11,10 +12,7 @@ namespace cle
 MinimumBoxKernel::MinimumBoxKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header = {
-#include "cle_minimum_separable.h"
-  };
-  this->SetSource("minimum_separable", cl_header);
+  this->SetSource("minimum_separable", oclKernel::minimum_separable);
 }
 
 auto

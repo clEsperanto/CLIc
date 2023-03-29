@@ -1,4 +1,5 @@
 #include "cleAddImagesWeightedKernel.hpp"
+#include "cle_add_images_weighted.h"
 
 namespace cle
 {
@@ -6,10 +7,7 @@ namespace cle
 AddImagesWeightedKernel::AddImagesWeightedKernel(const ProcessorPointer & device)
   : Operation(device, 5)
 {
-  std::string cl_header = {
-#include "cle_add_images_weighted.h"
-  };
-  this->SetSource("add_images_weighted", cl_header);
+  this->SetSource("add_images_weighted", oclKernel::add_images_weighted);
 }
 
 auto

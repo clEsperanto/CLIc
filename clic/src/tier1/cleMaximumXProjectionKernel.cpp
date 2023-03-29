@@ -1,4 +1,5 @@
 #include "cleMaximumXProjectionKernel.hpp"
+#include "cle_maximum_x_projection.h"
 
 namespace cle
 {
@@ -6,10 +7,7 @@ namespace cle
 MaximumXProjectionKernel::MaximumXProjectionKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header = {
-#include "cle_maximum_x_projection.h"
-  };
-  this->SetSource("maximum_x_projection", cl_header);
+  this->SetSource("maximum_x_projection", oclKernel::maximum_x_projection);
 }
 
 auto

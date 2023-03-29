@@ -1,6 +1,7 @@
 
 
 #include "cleBlockEnumerateKernel.hpp"
+#include "cle_block_enumerate.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 BlockEnumerateKernel::BlockEnumerateKernel(const ProcessorPointer & device)
   : Operation(device, 4)
 {
-  std::string cl_header = {
-#include "cle_block_enumerate.h"
-  };
-  this->SetSource("block_enumerate", cl_header);
+  this->SetSource("block_enumerate", oclKernel::block_enumerate);
 }
 
 auto

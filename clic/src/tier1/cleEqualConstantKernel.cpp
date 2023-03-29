@@ -1,6 +1,7 @@
 
 
 #include "cleEqualConstantKernel.hpp"
+#include "cle_equal_constant.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 EqualConstantKernel::EqualConstantKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_equal_constant.h"
-  };
-  this->SetSource("equal_constant", cl_header);
+  this->SetSource("equal_constant", oclKernel::equal_constant);
 }
 
 auto

@@ -1,4 +1,5 @@
 #include "cleMaximumYProjectionKernel.hpp"
+#include "cle_maximum_y_projection.h"
 
 namespace cle
 {
@@ -6,10 +7,7 @@ namespace cle
 MaximumYProjectionKernel::MaximumYProjectionKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header = {
-#include "cle_maximum_y_projection.h"
-  };
-  this->SetSource("maximum_y_projection", cl_header);
+  this->SetSource("maximum_y_projection", oclKernel::maximum_y_projection);
 }
 
 auto

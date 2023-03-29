@@ -1,6 +1,7 @@
 
 
 #include "cleGreaterKernel.hpp"
+#include "cle_greater.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 GreaterKernel::GreaterKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_greater.h"
-  };
-  this->SetSource("greater", cl_header);
+  this->SetSource("greater", oclKernel::greater);
 }
 
 auto

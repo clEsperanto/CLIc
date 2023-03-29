@@ -2,6 +2,7 @@
 #include "cleCopyKernel.hpp"
 #include "cleExecuteSeparableKernel.hpp"
 #include "cleMemory.hpp"
+#include "cle_gaussian_blur_separable.h"
 
 namespace cle
 {
@@ -9,10 +10,7 @@ namespace cle
 GaussianBlurKernel::GaussianBlurKernel(const ProcessorPointer & device)
   : Operation(device)
 {
-  std::string cl_header = {
-#include "cle_gaussian_blur_separable.h"
-  };
-  this->SetSource("gaussian_blur_separable", cl_header);
+  this->SetSource("gaussian_blur_separable", oclKernel::gaussian_blur_separable);
 }
 
 auto

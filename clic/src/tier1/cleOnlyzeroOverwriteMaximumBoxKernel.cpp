@@ -1,6 +1,7 @@
 
 
 #include "cleOnlyzeroOverwriteMaximumBoxKernel.hpp"
+#include "cle_onlyzero_overwrite_maximum_box.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 OnlyzeroOverwriteMaximumBoxKernel::OnlyzeroOverwriteMaximumBoxKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_onlyzero_overwrite_maximum_box.h"
-  };
-  this->SetSource("onlyzero_overwrite_maximum_box", cl_header);
+  this->SetSource("onlyzero_overwrite_maximum_box", oclKernel::onlyzero_overwrite_maximum_box);
 }
 
 auto

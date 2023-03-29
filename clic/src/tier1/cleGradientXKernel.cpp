@@ -1,4 +1,5 @@
 #include "cleGradientXKernel.hpp"
+#include "cle_gradient_x.h"
 
 namespace cle
 {
@@ -6,10 +7,7 @@ namespace cle
 GradientXKernel::GradientXKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header_ = {
-#include "cle_gradient_x.h"
-  };
-  this->SetSource("gradient_x", cl_header_);
+  this->SetSource("gradient_x", oclKernel::gradient_x);
 }
 
 auto

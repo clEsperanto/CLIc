@@ -2,6 +2,7 @@
 
 #include "cleMeanBoxKernel.hpp"
 #include "cleExecuteSeparableKernel.hpp"
+#include "cle_mean_separable.h"
 
 #include <algorithm>
 
@@ -11,10 +12,7 @@ namespace cle
 MeanBoxKernel::MeanBoxKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header = {
-#include "cle_mean_separable.h"
-  };
-  this->SetSource("mean_separable", cl_header);
+  this->SetSource("mean_separable", oclKernel::mean_separable);
 }
 
 auto
