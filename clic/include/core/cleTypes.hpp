@@ -77,28 +77,45 @@ inline auto
 TypeToDataType() -> DataType
 {
   static_assert(std::is_fundamental_v<T>, "Template to cast can only be of native type");
-  switch (&typeid(T))
+  if (std::is_same_v<T, float>)
   {
-    case &typeid(float):
-      return DataType::FLOAT32;
-    case &typeid(int64_t):
-      return DataType::INT64;
-    case &typeid(uint64_t):
-      return DataType::UINT64;
-    case &typeid(int32_t):
-      return DataType::INT32;
-    case &typeid(uint32_t):
-      return DataType::UINT32;
-    case &typeid(int16_t):
-      return DataType::INT16;
-    case &typeid(uint16_t):
-      return DataType::UINT16;
-    case &typeid(int8_t):
-      return DataType::INT8;
-    case &typeid(uint8_t):
-      return DataType::UINT8;
-    default:
-      throw std::invalid_argument("Unknown template type to cast in data type.");
+    return DataType::FLOAT32;
+  }
+  else if (std::is_same_v<T, int64_t>)
+  {
+    return DataType::INT64;
+  }
+  else if (std::is_same_v<T, uint64_t>)
+  {
+    return DataType::UINT64;
+  }
+  else if (std::is_same_v<T, int32_t>)
+  {
+    return DataType::INT32;
+  }
+  else if (std::is_same_v<T, uint32_t>)
+  {
+    return DataType::UINT32;
+  }
+  else if (std::is_same_v<T, int16_t>)
+  {
+    return DataType::INT16;
+  }
+  else if (std::is_same_v<T, uint16_t>)
+  {
+    return DataType::UINT16;
+  }
+  else if (std::is_same_v<T, int8_t>)
+  {
+    return DataType::INT8;
+  }
+  else if (std::is_same_v<T, uint8_t>)
+  {
+    return DataType::UINT8;
+  }
+  else
+  {
+    throw std::invalid_argument("Unknown template type to cast in data type.");
   }
 }
 
