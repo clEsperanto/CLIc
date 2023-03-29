@@ -2,6 +2,7 @@
 #include "cleBackend.hpp"
 #include "cleTypes.hpp"
 
+#include <numeric>
 #include <sstream>
 
 namespace cle
@@ -12,59 +13,22 @@ Image::Image(const ProcessorPointer & device,
              const ShapeArray &       shape,
              const DataType &         data_type,
              const MemoryType &       object_type)
-  : data_(data)
+  : LightObject(data_type, object_type)
+  , data_(data)
   , device_(device)
   , shape_(shape)
-  , LightObject(data_type, object_type)
 {
-  if (this->shape_[2] > 1)
+  if (shape_[2] > 1)
   {
-    this->dim_ = 3;
+    dim_ = 3;
   }
-  else if (this->shape_[1] > 1)
+  else if (shape_[1] > 1)
   {
-    this->dim_ = 2;
+    dim_ = 2;
   }
   else
   {
-    this->dim_ = 1;
-  }
-}
-
-auto
-Image::Fill(const float & value) const -> void
-{
-  switch (this->GetDataType())
-  {
-    case DataType::FLOAT32:
-      this->CastFill<float>(static_cast<float>(value));
-      break;
-    case DataType::INT64:
-      this->CastFill<int64_t>(static_cast<int64_t>(value));
-      break;
-    case DataType::UINT64:
-      this->CastFill<uint64_t>(static_cast<uint64_t>(value));
-      break;
-    case DataType::INT32:
-      this->CastFill<int32_t>(static_cast<int32_t>(value));
-      break;
-    case DataType::UINT32:
-      this->CastFill<uint32_t>(static_cast<uint32_t>(value));
-      break;
-    case DataType::INT16:
-      this->CastFill<int16_t>(static_cast<int16_t>(value));
-      break;
-    case DataType::UINT16:
-      this->CastFill<uint16_t>(static_cast<uint16_t>(value));
-      break;
-    case DataType::INT8:
-      this->CastFill<int8_t>(static_cast<int8_t>(value));
-      break;
-    case DataType::UINT8:
-      this->CastFill<uint8_t>(static_cast<uint8_t>(value));
-      break;
-    default:
-      throw std::runtime_error("Unknown data type provided.");
+    dim_ = 1;
   }
 }
 
@@ -73,25 +37,15 @@ Image::CopyDataTo(const Image & dst_img) const -> void
 {
   if (this->GetDevice()->ContextPtr() != dst_img.GetDevice()->ContextPtr())
   {
-    std::cerr << "Error in CopyDataTo : Memory Objects does not share the same Context. \n";
-    return;
+    throw std::runtime_error("Error in CopyDataTo: Memory objects do not share the same context.");
   }
   if (this->GetDataType() != dst_img.GetDataType())
   {
-    std::cerr << "Error in CopyDataTo : Memory Objects does not share the same bytes size. \n";
-    return;
+    throw std::runtime_error("Error in CopyDataTo: Memory objects do not have the same data type.");
   }
 
-  bool src_is_buffer = false;
-  if (this->GetMemoryType() == MemoryType::BUFFER)
-  {
-    src_is_buffer = true;
-  }
-  bool dst_is_buffer = false;
-  if (dst_img.GetMemoryType() == MemoryType::BUFFER)
-  {
-    dst_is_buffer = true;
-  }
+  const bool src_is_buffer = (this->GetMemoryType() == MemoryType::BUFFER);
+  const bool dst_is_buffer = (dst_img.GetMemoryType() == MemoryType::BUFFER);
 
   if (src_is_buffer && dst_is_buffer)
   {
@@ -104,29 +58,27 @@ Image::CopyDataTo(const Image & dst_img) const -> void
                                      this->Origin(),
                                      dst_img.Origin(),
                                      this->Shape());
-      return;
     }
-    Backend::EnqueueCopyBuffer(
-      this->GetDevice()->QueuePtr(), this->Get(), dst_img.Get(), true, 0, 0, this->GetMemorySize());
-    return;
+    else
+    {
+      Backend::EnqueueCopyBuffer(
+        this->GetDevice()->QueuePtr(), this->Get(), dst_img.Get(), true, 0, 0, this->GetMemorySize());
+    }
   }
-  if (src_is_buffer && !dst_is_buffer)
+  else if (src_is_buffer && !dst_is_buffer)
   {
     Backend::EnqueueCopyBufferToImage(
       this->GetDevice()->QueuePtr(), this->Get(), dst_img.Get(), true, 0, this->Origin(), dst_img.Shape());
-    return;
   }
-  if (!src_is_buffer && dst_is_buffer)
+  else if (!src_is_buffer && dst_is_buffer)
   {
     Backend::EnqueueCopyImageToBuffer(
       this->GetDevice()->QueuePtr(), this->Get(), dst_img.Get(), true, this->Origin(), this->Shape(), 0);
-    return;
   }
-  if (!src_is_buffer && !dst_is_buffer)
+  else if (!src_is_buffer && !dst_is_buffer)
   {
     Backend::EnqueueCopyImage(
       this->GetDevice()->QueuePtr(), this->Get(), dst_img.Get(), true, this->Origin(), this->Origin(), this->Shape());
-    return;
   }
 }
 
@@ -154,7 +106,6 @@ Image::GetDataSizeOf() const -> size_t
   return DataTypeToSizeOf(this->GetDataType());
 }
 
-
 auto
 Image::Ndim() const -> unsigned int
 {
@@ -170,7 +121,7 @@ Image::Shape() const -> const ShapeArray &
 auto
 Image::GetNumberOfElements() const -> size_t
 {
-  return this->shape_[0] * this->shape_[1] * this->shape_[2];
+  return std::accumulate(shape_.begin(), shape_.end(), static_cast<size_t>(1), std::multiplies<size_t>{});
 }
 
 auto
@@ -182,11 +133,10 @@ Image::Origin() const -> const ShapeArray &
 auto
 Image::ToString() const -> std::string
 {
-  std::stringstream out_string;
-  out_string << this->GetMemoryType();
-  out_string << "[" << std::to_string(this->Shape()[0]) << "," << std::to_string(this->Shape()[1]) << ","
-             << std::to_string(this->Shape()[2]) << "]";
-  out_string << "(dtype=" << this->GetDataType() << ")";
+  std::ostringstream out_string{};
+  out_string << GetMemoryType() << "[" << std::to_string(Shape()[0]) << "," << std::to_string(Shape()[1]) << ","
+             << std::to_string(Shape()[2]) << "]"
+             << "(dtype=" << GetDataType() << ")";
   return out_string.str();
 }
 
@@ -195,6 +145,57 @@ operator<<(std::ostream & out, const Image & image) -> std::ostream &
 {
   out << image.ToString();
   return out;
+}
+
+auto
+Image::Fill(const float & value) const -> void
+{
+  if (this->GetMemoryType() == MemoryType::BUFFER)
+  {
+    Backend::EnqueueFillBuffer(this->GetDevice()->QueuePtr(), this->Get(), true, 0, this->GetMemorySize(), value);
+  }
+  else if (this->GetMemoryType() == MemoryType::IMAGE)
+  {
+    switch (this->GetDataType())
+    {
+      case DataType::FLOAT32: {
+        cl_float4 color = { static_cast<cl_float>(value),
+                            static_cast<cl_float>(value),
+                            static_cast<cl_float>(value),
+                            static_cast<cl_float>(value) };
+        Backend::EnqueueFillImage(
+          this->GetDevice()->QueuePtr(), this->Get(), true, this->Origin(), this->Shape(), color);
+        break;
+      }
+      case DataType::INT8:
+      case DataType::INT16:
+      case DataType::INT32: {
+        cl_int4 color = {
+          static_cast<cl_int>(value), static_cast<cl_int>(value), static_cast<cl_int>(value), static_cast<cl_int>(value)
+        };
+        Backend::EnqueueFillImage(
+          this->GetDevice()->QueuePtr(), this->Get(), true, this->Origin(), this->Shape(), color);
+        break;
+      }
+      case DataType::UINT8:
+      case DataType::UINT16:
+      case DataType::UINT32: {
+        cl_uint4 color = { static_cast<cl_uint>(value),
+                           static_cast<cl_uint>(value),
+                           static_cast<cl_uint>(value),
+                           static_cast<cl_uint>(value) };
+        Backend::EnqueueFillImage(
+          this->GetDevice()->QueuePtr(), this->Get(), true, this->Origin(), this->Shape(), color);
+        break;
+      }
+      default:
+        throw std::runtime_error("Unsupported data type for fill Image memory type.");
+    }
+  }
+  else
+  {
+    throw std::runtime_error("Unsupported memory type for fill operation.");
+  }
 }
 
 } // namespace cle
