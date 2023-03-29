@@ -1,6 +1,7 @@
 #include "cleOperation.hpp"
 #include "cleBackend.hpp"
 #include "cleMemory.hpp"
+#include "cle_preamble.h"
 
 #include <algorithm>
 #include <fstream>
@@ -177,10 +178,7 @@ Operation::GetKernel() const -> const cl::Kernel &
 auto
 Operation::MakePreamble() -> std::string
 {
-  std::string preamble = {
-#include "cle_preamble.h"
-  };
-  return preamble;
+  return std::string(oclKernel::preamble);
 }
 
 auto
