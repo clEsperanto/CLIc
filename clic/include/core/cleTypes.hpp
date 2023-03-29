@@ -2,6 +2,7 @@
 #define __CORE_CLETYPES_HPP
 
 #include "clic.hpp"
+#include <algorithm>
 #include <iostream>
 namespace cle
 {
@@ -77,46 +78,43 @@ inline auto
 TypeToDataType() -> DataType
 {
   static_assert(std::is_fundamental_v<T>, "Template to cast can only be of native type");
-  if (std::is_same_v<T, float>)
+  if constexpr (std::is_same_v<T, float>)
   {
     return DataType::FLOAT32;
   }
-  else if (std::is_same_v<T, int64_t>)
+  if constexpr (std::is_same_v<T, int64_t>)
   {
     return DataType::INT64;
   }
-  else if (std::is_same_v<T, uint64_t>)
+  if constexpr (std::is_same_v<T, uint64_t>)
   {
     return DataType::UINT64;
   }
-  else if (std::is_same_v<T, int32_t>)
+  if constexpr (std::is_same_v<T, int32_t>)
   {
     return DataType::INT32;
   }
-  else if (std::is_same_v<T, uint32_t>)
+  if constexpr (std::is_same_v<T, uint32_t>)
   {
     return DataType::UINT32;
   }
-  else if (std::is_same_v<T, int16_t>)
+  if constexpr (std::is_same_v<T, int16_t>)
   {
     return DataType::INT16;
   }
-  else if (std::is_same_v<T, uint16_t>)
+  if constexpr (std::is_same_v<T, uint16_t>)
   {
     return DataType::UINT16;
   }
-  else if (std::is_same_v<T, int8_t>)
+  if constexpr (std::is_same_v<T, int8_t>)
   {
     return DataType::INT8;
   }
-  else if (std::is_same_v<T, uint8_t>)
+  if constexpr (std::is_same_v<T, uint8_t>)
   {
     return DataType::UINT8;
   }
-  else
-  {
-    throw std::invalid_argument("Unknown template type to cast in data type.");
-  }
+  throw std::invalid_argument("Unknown template type to cast in data type.");
 }
 
 inline auto
@@ -206,18 +204,15 @@ StringToDeviceType(const std::string & type) -> DeviceType
   {
     return DeviceType::GPU;
   }
-  else if (lowercase_type == "cpu")
+  if (lowercase_type == "cpu")
   {
     return DeviceType::CPU;
   }
-  else if (lowercase_type == "all")
+  if (lowercase_type == "all")
   {
     return DeviceType::ALL;
   }
-  else
-  {
-    throw std::invalid_argument("Unknown device type provided to cast in device type.");
-  }
+  throw std::invalid_argument("Unknown device type provided to cast in device type.");
 }
 
 inline auto
