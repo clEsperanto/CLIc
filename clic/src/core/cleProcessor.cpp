@@ -93,7 +93,7 @@ Processor::SelectDevice(const std::string & name, const std::string & type) -> v
   auto list_of_device = Processor::GetDevices(type);
   if (list_of_device.empty())
   {
-    std::cerr << "Error: Fail to find/allocate device of type :" << type << std::endl;
+    throw std::runtime_error("Error: Fail to find/allocate device of type :" + type);
     return;
   }
   if (name == "default")
@@ -106,7 +106,7 @@ Processor::SelectDevice(const std::string & name, const std::string & type) -> v
   });
   if (ite == list_of_device.end())
   {
-    std::cerr << "Error: Fail to find/allocate device " << name << " of type " << type << std::endl;
+    throw std::runtime_error("Error: Fail to find/allocate device with name '" + name + "' of type '" + type + "'");
   }
   this->SetDevicePointers(*ite);
 }
@@ -128,10 +128,8 @@ Processor::SelectDevice(const int & idx, const std::string & type) -> void
   {
     SetDevicePointers(selected_device.value());
   }
-  else
-  {
-    std::cerr << "Error: Fail to find/allocate requested device\n";
-  }
+  throw std::runtime_error("Error: Fail to find/allocate device with index '" + std::to_string(idx) + "' of type '" +
+                           type + "'");
 }
 
 auto
