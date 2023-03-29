@@ -20,13 +20,20 @@ main(int argc, char ** argv)
 
   // test guided constructor for gpu
   {
-    auto gpu = std::make_shared<cle::Processor>("GTX");
+    try
+    {
+      auto gpu = std::make_shared<cle::Processor>("TX");
+    }
+    catch (const std::exception & e)
+    {
+      std::cerr << "No GPU found with TX" << std::endl;
+    }
   }
 
   // test device management methods
   {
     auto gpu = std::make_shared<cle::Processor>();
-    gpu->SelectDevice("GTX");
+    gpu->SelectDevice();
     std::cout << gpu->GetDeviceInfo() << std::endl;
   }
 
@@ -48,14 +55,14 @@ main(int argc, char ** argv)
   // test device compatible with double
   {
     auto gpu = std::make_shared<cle::Processor>();
-    gpu->SelectDevice("TX");
+    gpu->SelectDevice();
     std::cout << gpu->DoubleSupport() << std::endl;
   }
 
   // test devise support image
   {
     auto gpu = std::make_shared<cle::Processor>();
-    gpu->SelectDevice("TX");
+    gpu->SelectDevice();
     std::cout << gpu->ImageSupport() << std::endl;
   }
 
