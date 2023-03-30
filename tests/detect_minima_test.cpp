@@ -12,9 +12,14 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
   std::vector<type> valid(shape[0] * shape[1] * shape[2]);
   std::fill(input.begin(), input.end(), static_cast<type>(100));
   std::fill(valid.begin(), valid.end(), static_cast<type>(0));
+
   int center = (shape[0] / 2) + (shape[1] / 2) * shape[0] + (shape[2] / 2) * shape[0] * shape[1];
-  input[center] = static_cast<type>(0);
-  valid[center] = static_cast<type>(1);
+  // input[center] = static_cast<type>(0);
+  // valid[center] = static_cast<type>(1);
+
+  // Example
+  input[input.size()] = static_cast<type>(0);
+  valid[valid.size()] = static_cast<type>(1);
 
   cle::Clesperanto cle;
   cle.GetDevice()->WaitForKernelToFinish();
@@ -65,7 +70,7 @@ main(int argc, char ** argv) -> int
     return EXIT_FAILURE;
   }
 
-  if (!run_test<float>({ 4, 3, 1 }, cle::BUFFER))
+  if (!run_test<float>({ 4, 4, 1 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
@@ -131,6 +136,12 @@ main(int argc, char ** argv) -> int
   }
 
   if (!run_test<uint8_t>({ 5, 6, 3 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  }
+
+  // Center does not also work with a 3D array of (3, 3, 2)
+  if (!run_test<float>({ 3, 3, 2 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
