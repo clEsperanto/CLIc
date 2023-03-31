@@ -178,7 +178,7 @@ Operation::GetKernel() const -> const cl::Kernel &
 auto
 Operation::MakePreamble() -> std::string
 {
-  return ""; // oclKernel::preamble;
+  return oclKernel::preamble;
 }
 
 auto
