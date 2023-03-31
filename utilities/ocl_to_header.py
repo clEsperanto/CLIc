@@ -17,7 +17,8 @@ def stringify(in_file, out_folder, prefix="cle_"):
         f.write(f"#ifndef OCL_{upname}_H\n")
         f.write(f"#define OCL_{upname}_H\n\n")
         f.write("namespace oclKernel {\n")
-        f.write(f"    const char* {loname} = R\"({kernel_source})\";\n")
+        f.write("     ")
+        f.write(f"    constexpr const char* {loname} = R\"({kernel_source})\";\n")
         f.write("}\n\n")
         f.write(f"#endif // OCL_{upname}_H\n")
 
