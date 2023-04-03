@@ -290,6 +290,12 @@ Clesperanto::GreaterOrEqualConstant(const Image & source, const Image & destinat
 }
 
 auto
+Clesperanto::LaplaceBox(const Image & source, const Image & destination) -> void
+{
+  LaplaceBoxKernel_Call(this->GetDevice(), source, destination);
+}
+
+auto
 Clesperanto::Mask(const Image & source, const Image & t_mask, const Image & destination) -> void
 {
   MaskKernel kernel(this->GetDevice());
