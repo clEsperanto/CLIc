@@ -19,7 +19,7 @@ auto
 FlagExistingLabelsKernel::SetInput(const Image & object) -> void
 {
   this->AddParameter("src", object);
-  this->SetRange("src");
+  this->SetRange(this->GetImage("src")->Shape());
 }
 
 auto

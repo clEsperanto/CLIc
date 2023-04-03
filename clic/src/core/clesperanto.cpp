@@ -9,7 +9,6 @@ Clesperanto::Clesperanto()
 {
   if (Processor::ListAvailableDevices().empty())
   {
-    std::cerr << "Error in initialising clEsperanto. No available device found." << std::endl;
     throw std::runtime_error("Error in initialising clEsperanto. No available device found.");
   }
   this->GetDevice()->SelectDevice();
@@ -28,9 +27,9 @@ Clesperanto::WaitForKernelToFinish(const bool & flag) -> void
 }
 
 auto
-Clesperanto::SelectDevice(const std::string & name) -> void
+Clesperanto::SelectDevice(const std::string & name, const std::string & type) -> void
 {
-  this->GetDevice()->SelectDevice(name);
+  this->GetDevice()->SelectDevice(name, type);
 }
 
 auto

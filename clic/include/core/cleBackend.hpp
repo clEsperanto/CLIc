@@ -5,6 +5,7 @@
 #include "clic.hpp"
 
 #include <iostream>
+#include <sstream>
 
 namespace cle::Backend
 {
@@ -85,6 +86,51 @@ inline auto
 GetDeviceName(const cl::Device & device_pointer) -> std::string
 {
   return device_pointer.getInfo<CL_DEVICE_NAME>();
+}
+
+inline auto
+GetDeviceInfo(const cl::Device & device_pointer) -> std::string
+{
+  std::ostringstream result;
+  std::string        version;
+  cl_device_type     type;
+  cl_uint            compute_units;
+  size_t             global_mem_size;
+  size_t             max_mem_size;
+
+  // Get device information
+  const auto & name = GetDeviceName(device_pointer);
+  device_pointer.getInfo(CL_DEVICE_VERSION, &version);
+  device_pointer.getInfo(CL_DEVICE_TYPE, &type);
+  device_pointer.getInfo(CL_DEVICE_MAX_COMPUTE_UNITS, &compute_units);
+  device_pointer.getInfo(CL_DEVICE_GLOBAL_MEM_SIZE, &global_mem_size);
+  device_pointer.getInfo(CL_DEVICE_MAX_MEM_ALLOC_SIZE, &max_mem_size);
+
+  // Print device information to output string
+  result << name << " (" << version << ")\n";
+  switch (type)
+  {
+    case CL_DEVICE_TYPE_CPU:
+      result << "\tType: CPU\n";
+      break;
+    case CL_DEVICE_TYPE_GPU:
+      result << "\tType: GPU\n";
+      break;
+    default:
+      result << "\tType: Unknown\n";
+      break;
+  }
+  result << "\tCompute Units: " << compute_units << '\n';
+  result << "\tGlobal Memory Size: " << (global_mem_size / 1000000) << " MB\n";
+  result << "\tMaximum Object Size: " << (max_mem_size / 1000000) << " MB\n";
+
+  return result.str();
+}
+
+inline auto
+GetPlatformPointer(const cl::Device & device_pointer) -> cl::Platform
+{
+  return cl::Platform(device_pointer.getInfo<CL_DEVICE_PLATFORM>());
 }
 
 inline auto

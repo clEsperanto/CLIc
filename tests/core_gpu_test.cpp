@@ -20,13 +20,28 @@ main(int argc, char ** argv)
 
   // test guided constructor for gpu
   {
-    auto gpu = std::make_shared<cle::Processor>("GTX");
+    try
+    {
+      auto gpu = std::make_shared<cle::Processor>("RTX");
+    }
+    catch (const std::exception & e)
+    {
+      std::cerr << e.what() << std::endl;
+    }
   }
 
   // test device management methods
   {
     auto gpu = std::make_shared<cle::Processor>();
-    gpu->SelectDevice("GTX");
+    try
+    {
+      gpu->SelectDevice();
+      std::cout << gpu->GetDeviceInfo() << std::endl;
+    }
+    catch (const std::exception & e)
+    {
+      std::cerr << e.what() << std::endl;
+    }
   }
 
   // test information methods
@@ -42,22 +57,22 @@ main(int argc, char ** argv)
       }
     }
     std::cout << "]" << std::endl;
-    auto gpu = std::make_shared<cle::Processor>();
-    gpu->SelectDevice(device_list.front());
   }
 
   // test device compatible with double
   {
     auto gpu = std::make_shared<cle::Processor>();
-    gpu->SelectDevice("GTX");
-    std::cout << gpu->DoubleSupport() << std::endl;
-  }
-
-  // test devise support image
-  {
-    auto gpu = std::make_shared<cle::Processor>();
-    gpu->SelectDevice("GTX");
-    std::cout << gpu->ImageSupport() << std::endl;
+    try
+    {
+      gpu->SelectDevice();
+      std::cout << gpu->GetDeviceInfo() << std::endl;
+      std::cout << gpu->ImageSupport() << std::endl;
+      std::cout << gpu->DoubleSupport() << std::endl;
+    }
+    catch (const std::exception & e)
+    {
+      std::cerr << e.what() << std::endl;
+    }
   }
 
   return EXIT_SUCCESS;

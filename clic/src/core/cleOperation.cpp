@@ -15,8 +15,8 @@ Operation::Operation(const ProcessorPointer & device, const size_t & nb_paramete
   , name_("")
   , source_("")
 {
-  this->SetNumberOfConstants(nb_constant);
-  this->SetNumberOfParameters(nb_parameter);
+  this->parameter_map_.reserve(nb_parameter);
+  this->constant_map_.reserve(nb_constant);
 }
 
 auto
@@ -64,13 +64,13 @@ Operation::AddConstant(const std::string & tag, const size_t & constant) -> void
 auto
 Operation::GetParameter(const std::string & tag) -> ObjectPointer
 {
-  auto ite = this->parameter_map_.find(tag);
+  const auto ite = this->parameter_map_.find(tag);
   if (ite == this->parameter_map_.end())
   {
-    std::stringstream err_msg;
-    err_msg << "Error: could not get parameter \"" << tag;
-    err_msg << "\" from \"" << this->GetName() << "\", parameter is not found.\n";
-    throw std::runtime_error(err_msg.str());
+    std::ostringstream error_message;
+    error_message << "Error in Operation::GetParameter(): could not find parameter with tag \"" << tag
+                  << "\" for operation \"" << GetName() << "\".";
+    throw std::runtime_error(error_message.str());
   }
   return ite->second;
 }
@@ -97,13 +97,6 @@ Operation::SetRange(const ShapeArray & range) -> void
 }
 
 auto
-Operation::SetRange(const std::string & tag) -> void
-{
-  this->GetParameter(tag);
-  this->range_ = this->GetParameter(tag)->Shape();
-}
-
-auto
 Operation::SetSource(const std::string & name, const std::string & src) -> void
 {
   this->source_ = src;
@@ -126,16 +119,19 @@ auto
 Operation::LoadSource(const std::string & name, const std::string & file) -> void
 {
   this->name_ = name;
-  std::ifstream     inFileStream(file);
-  std::stringstream buffer;
-  buffer << inFileStream.rdbuf();
+  std::ifstream file_stream(file);
+  if (!file_stream.is_open())
+  {
+    throw std::runtime_error("Failed to load source, could not open file: " + file);
+  }
+  std::ostringstream buffer;
+  buffer << file_stream.rdbuf();
   this->source_ = buffer.str();
 }
 
 auto
 Operation::Execute() -> void
 {
-  // this->GenerateOutput();
   this->MakeKernel();
   this->SetKernelArguments();
   this->EnqueueOperation();
@@ -144,8 +140,7 @@ Operation::Execute() -> void
 auto
 Operation::ToString() const -> std::string
 {
-  std::stringstream out_string;
-
+  std::ostringstream out_string;
   out_string << "kernel: " << this->GetName();
   if (!parameter_map_.empty())
   {
@@ -191,12 +186,11 @@ Operation::MakePreamble() -> std::string
 auto
 Operation::MakeDefines() const -> std::string
 {
-  std::string defines;
-  //! Speed management for large string to investigate
-  defines += "\n#define GET_IMAGE_WIDTH(image_key) IMAGE_SIZE_ ## image_key ## _WIDTH";   // ! Not defined at runtime
-  defines += "\n#define GET_IMAGE_HEIGHT(image_key) IMAGE_SIZE_ ## image_key ## _HEIGHT"; // ! Not defined at runtime
-  defines += "\n#define GET_IMAGE_DEPTH(image_key) IMAGE_SIZE_ ## image_key ## _DEPTH";   // ! Not defined at runtime
-  defines += "\n";
+  std::ostringstream defines;
+  defines << "\n#define GET_IMAGE_WIDTH(image_key) IMAGE_SIZE_ ## image_key ## _WIDTH";   // ! Not defined at runtime
+  defines << "\n#define GET_IMAGE_HEIGHT(image_key) IMAGE_SIZE_ ## image_key ## _HEIGHT"; // ! Not defined at runtime
+  defines << "\n#define GET_IMAGE_DEPTH(image_key) IMAGE_SIZE_ ## image_key ## _DEPTH";   // ! Not defined at runtime
+  defines << "\n";
   for (auto && ite : parameter_map_)
   {
     if (ite.second->GetMemoryType() != MemoryType::SCALAR)
@@ -231,23 +225,24 @@ Operation::MakeDefines() const -> std::string
           break;
       }
       // define common information
-      defines += "\n";
-      defines += "\n#define CONVERT_" + ite.first + "_PIXEL_TYPE clij_convert_" + DataTypeToString(data_type) + "_sat";
-      defines += "\n#define IMAGE_" + ite.first + "_PIXEL_TYPE " + DataTypeToString(data_type) + "";
-      defines += "\n#define POS_" + ite.first + "_TYPE " + pos_type;
-      defines += "\n#define POS_" + ite.first + "_INSTANCE(pos0,pos1,pos2,pos3) (" + pos_type + ")" + pos;
-      defines += "\n";
+      defines << "\n";
+      defines << "\n#define CONVERT_" << ite.first << "_PIXEL_TYPE clij_convert_" << DataTypeToString(data_type)
+              << "_sat";
+      defines << "\n#define IMAGE_" << ite.first << "_PIXEL_TYPE " << DataTypeToString(data_type) << "";
+      defines << "\n#define POS_" << ite.first << "_TYPE " << pos_type;
+      defines << "\n#define POS_" << ite.first << "_INSTANCE(pos0,pos1,pos2,pos3) (" << pos_type << ")" << pos;
+      defines << "\n";
 
       // define specific information
       if (ite.second->GetMemoryType() == MemoryType::BUFFER)
       {
-        defines += "\n#define IMAGE_" + ite.first + "_TYPE __global " + DataTypeToString(data_type) + "*";
-        defines += "\n#define READ_" + ite.first + "_IMAGE(a,b,c) read_buffer" + ndim + "d" +
-                   DataTypeToString(data_type, true) +
-                   "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
-        defines += "\n#define WRITE_" + ite.first + "_IMAGE(a,b,c) write_buffer" + ndim + "d" +
-                   DataTypeToString(data_type, true) +
-                   "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
+        defines << "\n#define IMAGE_" << ite.first << "_TYPE __global " << DataTypeToString(data_type) << "*";
+        defines << "\n#define READ_" << ite.first << "_IMAGE(a,b,c) read_buffer" << ndim << "d"
+                << DataTypeToString(data_type, true)
+                << "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
+        defines << "\n#define WRITE_" << ite.first << "_IMAGE(a,b,c) write_buffer" << ndim << "d"
+                << DataTypeToString(data_type, true)
+                << "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
       }
       else
       {
@@ -274,16 +269,16 @@ Operation::MakeDefines() const -> std::string
             prefix = "i";
             break;
         }
-        defines += "\n#define IMAGE_" + ite.first + "_TYPE " + img_type_name;
-        defines += "\n#define READ_" + ite.first + "_IMAGE(a,b,c) read_image" + prefix + "(a,b,c)";
-        defines += "\n#define WRITE_" + ite.first + "_IMAGE(a,b,c) write_image" + prefix + "(a,b,c)";
+        defines << "\n#define IMAGE_" << ite.first << "_TYPE " << img_type_name;
+        defines << "\n#define READ_" << ite.first << "_IMAGE(a,b,c) read_image" << prefix << "(a,b,c)";
+        defines << "\n#define WRITE_" << ite.first << "_IMAGE(a,b,c) write_image" << prefix << "(a,b,c)";
       }
       // define size information
-      defines += "\n";
-      defines += "\n#define IMAGE_SIZE_" + ite.first + "_WIDTH " + std::to_string(shape[0]);
-      defines += "\n#define IMAGE_SIZE_" + ite.first + "_HEIGHT " + std::to_string(shape[1]);
-      defines += "\n#define IMAGE_SIZE_" + ite.first + "_DEPTH " + std::to_string(shape[2]);
-      defines += "\n";
+      defines << "\n";
+      defines << "\n#define IMAGE_SIZE_" << ite.first << "_WIDTH " << std::to_string(shape[0]);
+      defines << "\n#define IMAGE_SIZE_" << ite.first << "_HEIGHT " << std::to_string(shape[1]);
+      defines << "\n#define IMAGE_SIZE_" << ite.first << "_DEPTH " << std::to_string(shape[2]);
+      defines << "\n";
     }
   }
   // add constant definition if provided
@@ -291,70 +286,75 @@ Operation::MakeDefines() const -> std::string
   {
     for (auto && ite : this->constant_map_)
     {
-      defines += "#define " + ite.first + " " + ite.second + "\n";
+      defines << "#define " << ite.first << " " << ite.second << "\n";
     }
-    defines += "\n";
+    defines << "\n";
   }
-  defines += "\n";
-  return defines;
+  defines << "\n";
+  return defines.str();
 }
 
 auto
 Operation::MakeKernel() -> void
 {
-  cl::Program            program;
-  std::hash<std::string> hasher;
-
-  std::string program_source = this->MakeDefines() + cle::Operation::MakePreamble() + this->GetSource();
-  size_t      source_hash = hasher(program_source);
-  auto        source_ite = this->GetDevice()->GetProgramMemory().find(source_hash);
-  if (source_ite == this->GetDevice()->GetProgramMemory().end())
+  std::string  program_source = this->MakeDefines() + cle::Operation::MakePreamble() + this->GetSource();
+  const auto   source_hash = std::hash<std::string>{}(program_source);
+  const auto & program_iter = this->GetDevice()->GetProgramMemory().find(source_hash);
+  if (program_iter == this->GetDevice()->GetProgramMemory().end())
   {
-    program = Backend::GetProgramPointer(this->GetDevice()->ContextPtr(), program_source);
-    this->GetDevice()->GetProgramMemory().insert({ source_hash, program });
+    const auto program = Backend::GetProgramPointer(this->GetDevice()->ContextPtr(), program_source);
+    this->GetDevice()->GetProgramMemory().emplace(source_hash, program);
     Backend::BuildProgram(program, this->GetDevice()->DevicePtr(), "-cl-kernel-arg-info");
     if (program.getBuildInfo<CL_PROGRAM_BUILD_STATUS>(this->GetDevice()->DevicePtr()) != BuildStatus::SUCCESS)
     {
       auto log = Backend::GetBuildLog(this->GetDevice()->DevicePtr(), program);
       std::cout << log << std::endl;
     };
+    this->kernel_ = Backend::GetKernelPointer(program, this->GetName());
   }
   else
   {
-    program = source_ite->second;
+    this->kernel_ = Backend::GetKernelPointer(program_iter->second, this->GetName());
   }
-  this->kernel_ = Backend::GetKernelPointer(program, this->GetName());
 }
 
 auto
 Operation::SetKernelArguments() -> bool
 {
-  auto nb_arguments = Backend::GetNumberOfKernelArguments(this->kernel_);
-  for (int idx = 0; idx < nb_arguments; idx++)
+  const auto nb_arguments = Backend::GetNumberOfKernelArguments(this->kernel_);
+  for (auto idx = 0; idx < nb_arguments; idx++)
   {
-    auto kernel_arg_tag = Backend::GetKernelArgumentName(this->kernel_, idx);
-    auto parameter_ptr = this->parameter_map_.find(kernel_arg_tag);
+    const auto & kernel_arg_tag = Backend::GetKernelArgumentName(this->kernel_, idx);
+    const auto & parameter_ptr = this->parameter_map_.find(kernel_arg_tag);
     if (parameter_ptr == this->parameter_map_.end())
     {
-      std::cerr << "Error: missing parameter\n";
+      std::cerr << "Error: missing parameter : " << kernel_arg_tag << "\n";
       return EXIT_FAILURE;
     }
-    if (parameter_ptr->second->GetMemoryType() == MemoryType::SCALAR)
+    const auto & argument = parameter_ptr->second;
+    if (argument->GetMemoryType() == MemoryType::SCALAR)
     {
-      if (parameter_ptr->second->GetDataType() == DataType::FLOAT32)
+      switch (argument->GetDataType())
       {
-        auto scalar = std::dynamic_pointer_cast<Float>(parameter_ptr->second);
-        Backend::SetKernelArgument(&this->kernel_, idx, scalar->Get());
-      }
-      else
-      {
-        auto scalar = std::dynamic_pointer_cast<Int>(parameter_ptr->second);
-        Backend::SetKernelArgument(&this->kernel_, idx, scalar->Get());
+        case DataType::FLOAT32: {
+          auto scalar = std::dynamic_pointer_cast<Float>(argument);
+          Backend::SetKernelArgument(&this->kernel_, idx, scalar->Get());
+          break;
+        }
+        case DataType::INT32: {
+          auto scalar = std::dynamic_pointer_cast<Int>(argument);
+          Backend::SetKernelArgument(&this->kernel_, idx, scalar->Get());
+          break;
+        }
+        // Add more cases for other data types if needed
+        default: {
+          throw std::invalid_argument("Unsupported data type for scalar argument : " + kernel_arg_tag);
+        }
       }
     }
     else
     {
-      auto image = std::dynamic_pointer_cast<Image>(parameter_ptr->second);
+      auto image = std::dynamic_pointer_cast<Image>(argument);
       Backend::SetKernelArgument(&this->kernel_, idx, image->Get());
     }
   }
@@ -385,52 +385,13 @@ Operation::GetArgumentsInfo() -> void
 auto
 Operation::EnqueueOperation() -> void
 {
-  if (!std::any_of(this->range_.begin(), this->range_.end(), [](size_t dim_range) { return dim_range > 0; }))
+  if (std::none_of(this->range_.begin(), this->range_.end(), [](size_t dim_range) { return dim_range != 0; }))
   {
-    this->SetRange("dst");
+    this->SetRange(this->GetImage("dst")->Shape());
   }
   Backend::EnqueueKernelExecution(this->GetDevice()->QueuePtr(), this->kernel_, this->range_);
   this->GetDevice()->Finish();
 }
 
-auto
-Operation::SetNumberOfParameters(const size_t & nb_parameter) -> void
-{
-  this->parameter_map_.reserve(nb_parameter);
-}
-
-auto
-Operation::SetNumberOfConstants(const size_t & nb_constant) -> void
-{
-  this->constant_map_.reserve(nb_constant);
-}
-
-// auto
-// Operation::GenerateOutput(const std::string & input_tag, const std::string & output_tag) -> void
-// {
-//   if (this->parameter_map_.find(output_tag) == this->parameter_map_.end())
-//   {
-//     auto input_ptr = this->GetImage(input_tag);
-//     if (input_ptr != nullptr)
-//     {
-//       if (input_ptr->GetMemoryType() == MemoryType::BUFFER)
-//       {
-//         auto output = cle::Memory::AllocateBufferMemory(*input_ptr);
-//         this->AddParameter(output_tag, output);
-//       }
-//       if (input_ptr->GetMemoryType() == (MemoryType::IMAGE1D | MemoryType::IMAGE2D | MemoryType::IMAGE3D))
-//       {
-//         auto output = cle::Memory::AllocateImageMemory(*input_ptr);
-//         this->AddParameter(output_tag, output);
-//       }
-//     }
-//   }
-// }
-
-auto
-Operation::GenerateOutput(const Image & object, const ShapeArray & shape) -> Image
-{
-  return cle::Memory::AllocateMemory(object.GetDevice(), shape, object.GetDataType(), object.GetMemoryType());
-}
 
 } // namespace cle

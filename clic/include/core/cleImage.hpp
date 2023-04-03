@@ -60,55 +60,6 @@ private:
   ShapeArray       shape_{ 1, 1, 1 };
   ShapeArray       origin_{ 0, 0, 0 };
   ChannelType      channels_type_ = INTENSITY;
-
-  template <class type>
-  auto
-  CastFill(const type & value) const -> void
-  {
-    if (this->GetMemoryType() == MemoryType::BUFFER)
-    {
-      Backend::EnqueueFillBuffer(this->GetDevice()->QueuePtr(), this->Get(), true, 0, this->GetMemorySize(), value);
-    }
-    else
-    {
-      switch (this->GetDataType())
-      {
-        case DataType::FLOAT32: {
-          cl_float4 color = { static_cast<cl_float>(value),
-                              static_cast<cl_float>(value),
-                              static_cast<cl_float>(value),
-                              static_cast<cl_float>(value) };
-          Backend::EnqueueFillImage(
-            this->GetDevice()->QueuePtr(), this->Get(), true, this->Origin(), this->Shape(), color);
-          break;
-        }
-        case DataType::INT8:
-        case DataType::INT16:
-        case DataType::INT32: {
-          cl_int4 color = { static_cast<cl_int>(value),
-                            static_cast<cl_int>(value),
-                            static_cast<cl_int>(value),
-                            static_cast<cl_int>(value) };
-          Backend::EnqueueFillImage(
-            this->GetDevice()->QueuePtr(), this->Get(), true, this->Origin(), this->Shape(), color);
-          break;
-        }
-        case DataType::UINT8:
-        case DataType::UINT16:
-        case DataType::UINT32: {
-          cl_uint4 color = { static_cast<cl_uint>(value),
-                             static_cast<cl_uint>(value),
-                             static_cast<cl_uint>(value),
-                             static_cast<cl_uint>(value) };
-          Backend::EnqueueFillImage(
-            this->GetDevice()->QueuePtr(), this->Get(), true, this->Origin(), this->Shape(), color);
-          break;
-        }
-        default:
-          throw std::runtime_error("Unsupported data type for fill Image memory type.");
-      }
-    }
-  }
 };
 
 } // namespace cle

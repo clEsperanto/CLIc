@@ -24,7 +24,7 @@ auto
 BlockEnumerateKernel::SetInputSums(const Image & object) -> void
 {
   this->AddParameter("src1", object);
-  this->SetRange("src1");
+  this->SetRange(this->GetImage("src1")->Shape());
 }
 
 auto

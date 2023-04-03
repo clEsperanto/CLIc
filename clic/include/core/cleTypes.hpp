@@ -2,6 +2,7 @@
 #define __CORE_CLETYPES_HPP
 
 #include "clic.hpp"
+#include <algorithm>
 #include <iostream>
 namespace cle
 {
@@ -76,149 +77,158 @@ template <class T>
 inline auto
 TypeToDataType() -> DataType
 {
-  static_assert(std::is_fundamental<T>::value, "Object can only be of native type");
-  if (std::is_same<T, float>::value)
+  static_assert(std::is_fundamental_v<T>, "Template to cast can only be of native type");
+  if constexpr (std::is_same_v<T, float>)
   {
     return DataType::FLOAT32;
   }
-  if (std::is_same<T, int64_t>::value)
+  if constexpr (std::is_same_v<T, int64_t>)
   {
     return DataType::INT64;
   }
-  if (std::is_same<T, uint64_t>::value)
+  if constexpr (std::is_same_v<T, uint64_t>)
   {
     return DataType::UINT64;
   }
-  if (std::is_same<T, int32_t>::value)
+  if constexpr (std::is_same_v<T, int32_t>)
   {
     return DataType::INT32;
   }
-  if (std::is_same<T, uint32_t>::value)
+  if constexpr (std::is_same_v<T, uint32_t>)
   {
     return DataType::UINT32;
   }
-  if (std::is_same<T, int8_t>::value)
-  {
-    return DataType::INT8;
-  }
-  if (std::is_same<T, uint8_t>::value)
-  {
-    return DataType::UINT8;
-  }
-  if (std::is_same<T, int16_t>::value)
+  if constexpr (std::is_same_v<T, int16_t>)
   {
     return DataType::INT16;
   }
-  if (std::is_same<T, uint16_t>::value)
+  if constexpr (std::is_same_v<T, uint16_t>)
   {
     return DataType::UINT16;
   }
-  throw(std::runtime_error("Unknown template type to cast in data type."));
+  if constexpr (std::is_same_v<T, int8_t>)
+  {
+    return DataType::INT8;
+  }
+  if constexpr (std::is_same_v<T, uint8_t>)
+  {
+    return DataType::UINT8;
+  }
+  throw std::invalid_argument("Unknown template type to cast in data type.");
 }
 
 inline auto
 DataTypeToSizeOf(const DataType & type) -> size_t
 {
-  size_t res;
   switch (type)
   {
     case DataType::FLOAT32:
-      res = sizeof(float);
-      break;
+      return sizeof(float);
     case DataType::INT8:
-      res = sizeof(int8_t);
-      break;
+      return sizeof(int8_t);
     case DataType::INT16:
-      res = sizeof(int16_t);
-      break;
+      return sizeof(int16_t);
     case DataType::INT32:
-      res = sizeof(int32_t);
-      break;
+      return sizeof(int32_t);
     case DataType::INT64:
-      res = sizeof(int64_t);
-      break;
+      return sizeof(int64_t);
     case DataType::UINT8:
-      res = sizeof(uint8_t);
-      break;
+      return sizeof(uint8_t);
     case DataType::UINT16:
-      res = sizeof(uint16_t);
-      break;
+      return sizeof(uint16_t);
     case DataType::UINT32:
-      res = sizeof(uint32_t);
-      break;
+      return sizeof(uint32_t);
     case DataType::UINT64:
-      res = sizeof(uint64_t);
-      break;
+      return sizeof(uint64_t);
     default:
-      throw(std::runtime_error("Unknown data type provided to cast in bytes size."));
+      throw std::invalid_argument("Unknown data type provided to cast in bytes size.");
   }
-  return res;
 }
 
 inline auto
-DataTypeToString(const DataType & type, const bool & use_abreviation = false) -> std::string
+DataTypeToString(const DataType & type, const bool & use_abbreviation = false) -> std::string
 {
-  std::string res;
   switch (type)
   {
     case DataType::FLOAT32:
-      res = (use_abreviation) ? "f" : "float";
-      break;
+      return use_abbreviation ? "f" : "float";
     case DataType::INT64:
-      res = (use_abreviation) ? "l" : "long";
-      break;
+      return use_abbreviation ? "l" : "long";
     case DataType::UINT64:
-      res = (use_abreviation) ? "ul" : "ulong";
-      break;
+      return use_abbreviation ? "ul" : "ulong";
     case DataType::INT32:
-      res = (use_abreviation) ? "i" : "int";
-      break;
+      return use_abbreviation ? "i" : "int";
     case DataType::UINT32:
-      res = (use_abreviation) ? "ui" : "uint";
-      break;
-    case DataType::INT8:
-      res = (use_abreviation) ? "c" : "char";
-      break;
-    case DataType::UINT8:
-      res = (use_abreviation) ? "uc" : "uchar";
-      break;
+      return use_abbreviation ? "ui" : "uint";
     case DataType::INT16:
-      res = (use_abreviation) ? "s" : "short";
-      break;
+      return use_abbreviation ? "s" : "short";
     case DataType::UINT16:
-      res = (use_abreviation) ? "us" : "ushort";
-      break;
+      return use_abbreviation ? "us" : "ushort";
+    case DataType::INT8:
+      return use_abbreviation ? "c" : "char";
+    case DataType::UINT8:
+      return use_abbreviation ? "uc" : "uchar";
     default:
-      throw(std::runtime_error("Unknown data type provided to cast in string."));
+      throw std::invalid_argument("Unknown data type provided to cast in string.");
   }
-  return res;
 }
+
 
 inline auto
 MemoryTypeToString(const MemoryType & type) -> std::string
 {
-  std::string res;
   switch (type)
   {
     case MemoryType::BUFFER:
-      res = "Buffer";
-      break;
+      return "Buffer";
     case MemoryType::IMAGE1D:
-      res = "Image1D";
-      break;
+      return "Image1D";
     case MemoryType::IMAGE2D:
-      res = "Image2D";
-      break;
+      return "Image2D";
     case MemoryType::IMAGE3D:
-      res = "Image3D";
-      break;
+      return "Image3D";
     case MemoryType::SCALAR:
-      res = "Scalar";
-      break;
+      return "Scalar";
     default:
-      throw(std::runtime_error("Unknown memory type provided to cast in string."));
+      throw std::invalid_argument("Unknown memory type provided to cast in string.");
   }
-  return res;
+}
+
+inline auto
+StringToDeviceType(const std::string & type) -> DeviceType
+{
+  std::string lowercase_type;
+  std::transform(type.begin(), type.end(), std::back_inserter(lowercase_type), ::tolower);
+
+  if (lowercase_type == "gpu")
+  {
+    return DeviceType::GPU;
+  }
+  if (lowercase_type == "cpu")
+  {
+    return DeviceType::CPU;
+  }
+  if (lowercase_type == "all")
+  {
+    return DeviceType::ALL;
+  }
+  throw std::invalid_argument("Unknown device type provided to cast in device type.");
+}
+
+inline auto
+DeviceTypeToString(const DeviceType & type) -> std::string
+{
+  switch (type)
+  {
+    case DeviceType::GPU:
+      return "gpu";
+    case DeviceType::CPU:
+      return "cpu";
+    case DeviceType::ALL:
+      return "all";
+    default:
+      throw std::invalid_argument("Unknown device type provided to cast in string.");
+  }
 }
 
 inline auto

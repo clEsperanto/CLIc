@@ -24,7 +24,7 @@ auto
 NonzeroMinimumBoxKernel::SetOutput(const Image & object) -> void
 {
   this->AddParameter("dst1", object);
-  this->SetRange("dst1");
+  this->SetRange(this->GetImage("dst1")->Shape());
 }
 
 auto
