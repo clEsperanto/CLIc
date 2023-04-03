@@ -208,6 +208,12 @@ target_link_libraries(histogram_test PRIVATE CLIc::CLIc)
 set_target_properties(histogram_test PROPERTIES FOLDER "Tests")
 # target_compile_features(histogram_test PRIVATE cxx_std_17)
 
+add_executable(laplace_box_test laplace_box_test.cpp)
+add_dependencies(laplace_box_test CLIc)
+target_link_libraries(laplace_box_test PRIVATE CLIc::CLIc)
+set_target_properties(laplace_box_test PROPERTIES FOLDER "Tests")
+# target_compile_features(laplace_box_test PRIVATE cxx_std_17)
+
 add_executable(mask_test mask_test.cpp)
 add_dependencies(mask_test CLIc)
 target_link_libraries(mask_test PRIVATE CLIc::CLIc)
@@ -492,6 +498,7 @@ add_test(NAME greater_or_equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_B
 add_test(NAME greater_or_equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_or_equal_test)
 add_test(NAME greater_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_test)
 add_test(NAME histogram_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND histogram_test)
+add_test(NAME laplace_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND laplace_box_test)
 add_test(NAME mask_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND mask_test)
 add_test(NAME masked_voronoi_labeling_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND masked_voronoi_labeling_test)
 add_test(NAME maximum_all_pixels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND maximum_all_pixels_test)
@@ -571,6 +578,7 @@ set_tests_properties(absolute_test
     greater_or_equal_test
     greater_test
     histogram_test
+    laplace_box_test
     mask_test
     masked_voronoi_labeling_test
     maximum_all_pixels_test
