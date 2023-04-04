@@ -25,7 +25,7 @@ def stringify(in_file, out_folder, prefix="cle_"):
             f.write("    {\n")
             f.write(f"    static std::string str;\n")
             f.write(f"    str.reserve({length});\n")
-            f.write(f"    str = R\"({kernel_source})\";\n")
+            f.write(f"    str += R\"({kernel_source})\";\n")
             f.write("    return str;\n")
             f.write("    }\n")
         else:

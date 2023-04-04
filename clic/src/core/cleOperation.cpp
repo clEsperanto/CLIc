@@ -295,7 +295,10 @@ Operation::MakeDefines() const -> std::string
 auto
 Operation::MakeKernel() -> void
 {
-  std::string  program_source = this->MakeDefines() + cle::Operation::MakePreamble() + this->GetSource();
+  std::string defines = this->MakeDefines();
+  std::string program_source;
+  program_source.reserve(oclKernel::preamble().size() + this->GetSource().size() + defines.size());
+  program_source += defines + oclKernel::preamble() + this->GetSource();
   const auto   source_hash = std::hash<std::string>{}(program_source);
   const auto & program_iter = this->GetDevice()->GetProgramMemory().find(source_hash);
   if (program_iter == this->GetDevice()->GetProgramMemory().end())
