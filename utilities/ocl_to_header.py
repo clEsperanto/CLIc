@@ -6,7 +6,7 @@ def stringify(in_file, out_folder, prefix="cle_"):
     with open(in_file, 'r') as f:
         kernel_source = f.read()
 
-    length = len(kernel_source)
+    length = len(kernel_source) +10
     upname = in_file.split(os.sep)[-1].split(".")[0].upper()
     loname = upname.lower()
 
@@ -21,9 +21,9 @@ def stringify(in_file, out_folder, prefix="cle_"):
         f.write("     ")
         if loname == "preamble":
             f.write("\n")
-            f.write(f" inline const std::string {loname}()\n")
+            f.write(f" inline const std::string& {loname}()\n")
             f.write("    {\n")
-            f.write(f"    std::string str;\n")
+            f.write(f"    static std::string str;\n")
             f.write(f"    str.reserve({length});\n")
             f.write(f"    str = R\"({kernel_source})\";\n")
             f.write("    return str;\n")
