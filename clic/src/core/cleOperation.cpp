@@ -178,7 +178,7 @@ Operation::GetKernel() const -> const cl::Kernel &
 auto
 Operation::MakePreamble() -> std::string
 {
-  return oclKernel::preamble();
+  return oclKernel::preamble;
 }
 
 auto
@@ -297,8 +297,10 @@ Operation::MakeKernel() -> void
 {
   std::string defines = this->MakeDefines();
   std::string program_source;
-  program_source.reserve(oclKernel::preamble().size() + this->GetSource().size() + defines.size());
-  program_source += defines + oclKernel::preamble() + this->GetSource();
+  program_source.reserve(this->MakePreamble().size() + this->GetSource().size() + defines.size());
+  program_source += defines;
+  program_source += this->MakePreamble();
+  program_source += this->GetSource();
   const auto   source_hash = std::hash<std::string>{}(program_source);
   const auto & program_iter = this->GetDevice()->GetProgramMemory().find(source_hash);
   if (program_iter == this->GetDevice()->GetProgramMemory().end())
