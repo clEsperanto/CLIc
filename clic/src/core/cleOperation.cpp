@@ -1,6 +1,7 @@
 #include "cleOperation.hpp"
 #include "cleBackend.hpp"
 #include "cleMemory.hpp"
+
 #include "cle_preamble.h"
 
 #include <algorithm>
@@ -295,24 +296,30 @@ Operation::MakeDefines() const -> std::string
 auto
 Operation::MakeKernel() -> void
 {
-  std::string defines = this->MakeDefines();
+  const std::string & defines = this->MakeDefines();
+  const std::string & preamble = this->MakePreamble();
+  const std::string & source = this->GetSource();
+
   std::string program_source;
-  program_source.reserve(this->MakePreamble().size() + this->GetSource().size() + defines.size());
+  program_source.reserve(preamble.size() + defines.size() + source.size());
   program_source += defines;
-  program_source += this->MakePreamble();
-  program_source += this->GetSource();
-  const auto   source_hash = std::hash<std::string>{}(program_source);
-  const auto & program_iter = this->GetDevice()->GetProgramMemory().find(source_hash);
+  program_source += preamble;
+  program_source += source;
+
+  auto &       program_mem = this->GetDevice()->GetProgramMemory();
+  const auto & source_hash = std::hash<std::string>{}(program_source);
+  const auto & program_iter = program_mem.find(source_hash);
+
   if (program_iter == this->GetDevice()->GetProgramMemory().end())
   {
     const auto program = Backend::GetProgramPointer(this->GetDevice()->ContextPtr(), program_source);
-    this->GetDevice()->GetProgramMemory().emplace(source_hash, program);
+    program_mem.emplace_hint(program_mem.end(), source_hash, program);
     Backend::BuildProgram(program, this->GetDevice()->DevicePtr(), "-cl-kernel-arg-info");
     if (program.getBuildInfo<CL_PROGRAM_BUILD_STATUS>(this->GetDevice()->DevicePtr()) != BuildStatus::SUCCESS)
     {
       auto log = Backend::GetBuildLog(this->GetDevice()->DevicePtr(), program);
       std::cout << log << std::endl;
-    };
+    }
     this->kernel_ = Backend::GetKernelPointer(program, this->GetName());
   }
   else
