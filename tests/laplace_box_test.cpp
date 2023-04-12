@@ -21,7 +21,8 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
     // int width = shape[1];
     // int depth = shape[2];
 
-    // std::vector<int> kernel = { 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, -1, 0, -1, 6, -1, 0, -1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0 };
+    // std::vector<int> kernel = { 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, -1, 0, -1, 6, -1, 0, -1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0
+    // };
 
     // int padding = 1;
     // int padded_height = height + 2 * padding;
