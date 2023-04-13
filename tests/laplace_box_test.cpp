@@ -13,128 +13,16 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
   {
     input = { 1, 0, 2, 1, 0, 1, 0, 3, 0, 2, 0, 1, 3, 0, 0, 1, 0, 1, 1, 0, 2, 0, 2, 1 };
     valid = { 3, -4, 11, 0, -2, 3, -7, 16, -4, 11, -5, 2, 17, -4, -4, 5, -6, 4, 3, -6, 12, -7, 10, 3 };
-
-    // Below is the CPU version
-    // The input is extended by filling values beyond the edges with the same constant value (0)
-
-    // int height = shape[0];
-    // int width = shape[1];
-    // int depth = shape[2];
-
-    // std::vector<int> kernel = { 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, -1, 0, -1, 6, -1, 0, -1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0
-    // };
-
-    // int padding = 1;
-    // int padded_height = height + 2 * padding;
-    // int padded_width = width + 2 * padding;
-    // int padded_depth = depth + 2 * padding;
-
-    // std::vector<type> input_padded(padded_height * padded_width * padded_depth);
-
-    // for (int k = padding; k < depth + padding; k++)
-    // {
-    //   for (int i = padding; i < height + padding; i++)
-    //   {
-    //     for (int j = padding; j < width + padding; j++)
-    //     {
-    //       input_padded[(k * padded_height + i) * padded_width + j] =
-    //         input[((k - padding) * height + i - padding) * width + (j - padding)];
-    //     }
-    //   }
-    // }
-
-    // for (int k = padding; k < depth + padding; k++)
-    // {
-    //   for (int i = padding; i < height + padding; i++)
-    //   {
-    //     for (int j = padding; j < width + padding; j++)
-    //     {
-    //       int sum = 0;
-    //       for (int m = -padding; m <= padding; m++)
-    //       {
-    //         for (int n = -padding; n <= padding; n++)
-    //         {
-    //           for (int p = -padding; p <= padding; p++)
-    //           {
-    //             sum += kernel[((m + padding) * (2 * padding + 1) + (n + padding)) * (2 * padding + 1) + (p +
-    //             padding)] *
-    //                    input_padded[((k + m) * padded_height + i + n) * padded_width + (j + p)];
-    //           }
-    //         }
-    //       }
-    //       valid[((k - padding) * height + i - padding) * width + (j - padding)] = sum;
-    //     }
-    //   }
-    // }
   }
   else if (shape[1] > 1)
   {
     input = { 1, 0, 2, 1, 0, 1, 3, 1, 0, 2, 1, 1 };
     valid = { 7, -7, 10, 2, -4, -1, 15, 0, -3, 11, 0, 3 };
-
-    // Below is the CPU version
-    // The input is extended by filling values beyond the edges with the same constant value (0)
-
-    // int height = shape[0];
-    // int width = shape[1];
-
-    // std::vector<int> kernel = { -1, -1, -1, -1, 8, -1, -1, -1, -1 };
-
-    // int               padding = 1;
-    // int               padded_height = height + 2 * padding;
-    // int               padded_width = width + 2 * padding;
-    // std::vector<type> input_padded(padded_height * padded_width);
-
-    // for (int i = padding; i < height + padding; i++)
-    // {
-    //   for (int j = padding; j < width + padding; j++)
-    //   {
-    //     input_padded[i * padded_width + j] = input[(i - padding) * width + (j - padding)];
-    //   }
-    // }
-
-    // for (int i = padding; i < height + padding; i++)
-    // {
-    //   for (int j = padding; j < width + padding; j++)
-    //   {
-    //     int sum = 0;
-    //     for (int k = -padding; k <= padding; k++)
-    //     {
-    //       for (int l = -padding; l <= padding; l++)
-    //       {
-    //         sum +=
-    //           kernel[(k + padding) * (2 * padding + 1) + l + padding] * input_padded[(i + k) * padded_width + (j +
-    //           l)];
-    //       }
-    //     }
-    //     valid[(i - padding) * width + (j - padding)] = sum;
-    //   }
-    // }
   }
   else
   {
     input = { 1, 0, 0, 1, 1 };
     valid = { 2, -1, -1, 1, 1 };
-
-    // Below is the CPU version
-    // The input is extended by filling values beyond the edges with the same constant value (0)
-
-    // std::vector<int> kernel = { -1, 2, -1 };
-
-    // int padding = kernel.size() / 2;
-
-    // std::vector<type> input_padded(input.size() + 2 * padding);
-    // std::copy(input.begin(), input.end(), input_padded.begin() + padding);
-
-    // for (int i = padding; i < input.size() + padding; i++)
-    // {
-    //   int sum = 0;
-    //   for (int j = 0; j < kernel.size(); j++)
-    //   {
-    //     sum += kernel[j] * input_padded[i - padding + j];
-    //   }
-    //   valid[i - padding] = sum;
-    // }
   }
 
   cle::Clesperanto cle;
@@ -150,11 +38,6 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
 auto
 main(int argc, char ** argv) -> int
 {
-  if (!run_test<float>({ 5, 1, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
   if (!run_test<float>({ 5, 1, 1 }, cle::BUFFER))
   {
     return EXIT_FAILURE;

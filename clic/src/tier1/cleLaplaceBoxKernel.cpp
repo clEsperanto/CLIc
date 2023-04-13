@@ -1,5 +1,7 @@
 
+
 #include "cleLaplaceBoxKernel.hpp"
+#include "cle_laplace_box.h"
 
 namespace cle
 {
@@ -7,10 +9,7 @@ namespace cle
 LaplaceBoxKernel::LaplaceBoxKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header = {
-#include "cle_laplace_box.h"
-  };
-  this->SetSource("laplace_box", cl_header);
+  this->SetSource("laplace_box", oclKernel::laplace_box);
 }
 
 auto
