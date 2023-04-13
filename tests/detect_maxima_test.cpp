@@ -19,7 +19,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
   // valid[center] = static_cast<type>(1);
 
   // An example of a case where the maximal value is located at the bottom right
-  input[input.size() - 1] = static_cast<type>(0);
+  input[input.size() - 1] = static_cast<type>(100);
   valid[valid.size() - 1] = static_cast<type>(1);
 
   cle::Clesperanto cle;

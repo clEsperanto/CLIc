@@ -1,17 +1,15 @@
 
 #include "cleDetectMinimaKernel.hpp"
+#include "cle_detect_minima.h"
+
 
 namespace cle
-
 {
+
 DetectMinimaKernel::DetectMinimaKernel(const ProcessorPointer & device)
   : Operation(device, 2)
-
 {
-  std::string cl_header = {
-#include "cle_detect_minima.h"
-  };
-  this->SetSource("detect_minima", cl_header);
+  this->SetSource("detect_minima", oclKernel::detect_minima);
 }
 
 auto
