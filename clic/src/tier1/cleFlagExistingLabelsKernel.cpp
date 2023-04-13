@@ -2,6 +2,7 @@
 
 #include "cleFlagExistingLabelsKernel.hpp"
 #include "cleSetKernel.hpp"
+#include "cle_flag_existing_labels.h"
 
 namespace cle
 {
@@ -9,10 +10,7 @@ namespace cle
 FlagExistingLabelsKernel::FlagExistingLabelsKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header = {
-#include "cle_flag_existing_labels.h"
-  };
-  this->SetSource("flag_existing_labels", cl_header);
+  this->SetSource("flag_existing_labels", oclKernel::flag_existing_labels);
 }
 
 auto

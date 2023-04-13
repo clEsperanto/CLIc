@@ -1,5 +1,6 @@
 
 #include "cleMultiplyImageAndScalarKernel.hpp"
+#include "cle_multiply_image_and_scalar.h"
 
 namespace cle
 {
@@ -7,10 +8,7 @@ namespace cle
 MultiplyImageAndScalarKernel::MultiplyImageAndScalarKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_multiply_image_and_scalar.h"
-  };
-  this->SetSource("multiply_image_and_scalar", cl_header);
+  this->SetSource("multiply_image_and_scalar", oclKernel::multiply_image_and_scalar);
 }
 
 auto

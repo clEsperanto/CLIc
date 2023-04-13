@@ -22,7 +22,7 @@ main(int argc, char ** argv)
   {
     try
     {
-      auto gpu = std::make_shared<cle::Processor>("RTX");
+      auto gpu = std::make_shared<cle::Processor>("TOTO");
     }
     catch (const std::exception & e)
     {

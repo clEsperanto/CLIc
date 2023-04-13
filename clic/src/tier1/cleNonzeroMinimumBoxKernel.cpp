@@ -1,6 +1,7 @@
 
 
 #include "cleNonzeroMinimumBoxKernel.hpp"
+#include "cle_nonzero_minimum_box.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 NonzeroMinimumBoxKernel::NonzeroMinimumBoxKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_nonzero_minimum_box.h"
-  };
-  this->SetSource("nonzero_minimum_box", cl_header);
+  this->SetSource("nonzero_minimum_box", oclKernel::nonzero_minimum_box);
 }
 
 auto

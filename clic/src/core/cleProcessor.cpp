@@ -126,7 +126,7 @@ Processor::SelectDevice(const int & idx, const std::string & type) -> void
   }
   if (selected_device.has_value())
   {
-    SetDevicePointers(selected_device.value());
+    SetDevicePointers(*selected_device); // Use operator*() to access the value, to replace by value()
   }
   throw std::runtime_error("Error: Fail to find/allocate device with index '" + std::to_string(idx) + "' of type '" +
                            type + "'");

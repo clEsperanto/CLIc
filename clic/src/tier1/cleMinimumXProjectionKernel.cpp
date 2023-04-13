@@ -1,6 +1,7 @@
 
 
 #include "cleMinimumXProjectionKernel.hpp"
+#include "cle_minimum_x_projection.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 MinimumXProjectionKernel::MinimumXProjectionKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header = {
-#include "cle_minimum_x_projection.h"
-  };
-  this->SetSource("minimum_x_projection", cl_header);
+  this->SetSource("minimum_x_projection", oclKernel::minimum_x_projection);
 }
 
 auto

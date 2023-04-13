@@ -1,4 +1,5 @@
 #include "cleAbsoluteKernel.hpp"
+#include "cle_absolute.h"
 
 namespace cle
 {
@@ -6,10 +7,7 @@ namespace cle
 AbsoluteKernel::AbsoluteKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header_ = {
-#include "cle_absolute.h"
-  };
-  this->SetSource("absolute", cl_header_);
+  this->SetSource("absolute", oclKernel::absolute);
 }
 
 auto

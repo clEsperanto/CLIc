@@ -1,6 +1,7 @@
 
 
 #include "cleConvolveKernel.hpp"
+#include "cle_convolve.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 ConvolveKernel::ConvolveKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header_ = {
-#include "cle_convolve.h"
-  };
-  this->SetSource("convolve", cl_header_);
+  this->SetSource("convolve", oclKernel::convolve);
 }
 
 auto

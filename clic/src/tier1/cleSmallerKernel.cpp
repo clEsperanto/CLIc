@@ -1,6 +1,7 @@
 
 
 #include "cleSmallerKernel.hpp"
+#include "cle_smaller.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 SmallerKernel::SmallerKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_smaller.h"
-  };
-  this->SetSource("smaller", cl_header);
+  this->SetSource("smaller", oclKernel::smaller);
 }
 
 auto

@@ -1,6 +1,7 @@
 
 
 #include "cleGreaterConstantKernel.hpp"
+#include "cle_greater_constant.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 GreaterConstantKernel::GreaterConstantKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_greater_constant.h"
-  };
-  this->SetSource("greater_constant", cl_header);
+  this->SetSource("greater_constant", oclKernel::greater_constant);
 }
 
 auto

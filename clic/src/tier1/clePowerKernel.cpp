@@ -1,4 +1,5 @@
 #include "clePowerKernel.hpp"
+#include "cle_power.h"
 
 namespace cle
 {
@@ -6,10 +7,7 @@ namespace cle
 PowerKernel::PowerKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header_ = {
-#include "cle_power.h"
-  };
-  this->SetSource("power", cl_header_);
+  this->SetSource("power", oclKernel::power);
 }
 
 auto

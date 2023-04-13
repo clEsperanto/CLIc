@@ -1,6 +1,7 @@
 
 
 #include "cleSetNonzeroPixelsToPixelindexKernel.hpp"
+#include "cle_set_nonzero_pixels_to_pixelindex.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 SetNonzeroPixelsToPixelindexKernel::SetNonzeroPixelsToPixelindexKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_set_nonzero_pixels_to_pixelindex.h"
-  };
-  this->SetSource("set_nonzero_pixels_to_pixelindex", cl_header);
+  this->SetSource("set_nonzero_pixels_to_pixelindex", oclKernel::set_nonzero_pixels_to_pixelindex);
 }
 
 auto

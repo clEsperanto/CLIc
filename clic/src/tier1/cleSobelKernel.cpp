@@ -1,6 +1,7 @@
 
 
 #include "cleSobelKernel.hpp"
+#include "cle_sobel.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 SobelKernel::SobelKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header = {
-#include "cle_sobel.h"
-  };
-  this->SetSource("sobel", cl_header);
+  this->SetSource("sobel", oclKernel::sobel);
 }
 
 auto

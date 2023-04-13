@@ -1,6 +1,7 @@
 
 
 #include "cleErodeSphereKernel.hpp"
+#include "cle_erode_sphere.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 ErodeSphereKernel::ErodeSphereKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header = {
-#include "cle_erode_sphere.h"
-  };
-  this->SetSource("erode_sphere", cl_header);
+  this->SetSource("erode_sphere", oclKernel::erode_sphere);
 }
 
 auto

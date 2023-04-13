@@ -1,6 +1,7 @@
 
 
 #include "cleBinaryAndKernel.hpp"
+#include "cle_binary_and.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 BinaryAndKernel::BinaryAndKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_binary_and.h"
-  };
-  this->SetSource("binary_and", cl_header);
+  this->SetSource("binary_and", oclKernel::binary_and);
 }
 
 auto

@@ -1,6 +1,7 @@
 
 
 #include "cleBinaryNotKernel.hpp"
+#include "cle_binary_not.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 BinaryNotKernel::BinaryNotKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header = {
-#include "cle_binary_not.h"
-  };
-  this->SetSource("binary_not", cl_header);
+  this->SetSource("binary_not", oclKernel::binary_not);
 }
 
 auto
