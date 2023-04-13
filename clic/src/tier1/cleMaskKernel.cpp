@@ -1,6 +1,7 @@
 
 
 #include "cleMaskKernel.hpp"
+#include "cle_mask.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 MaskKernel::MaskKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_mask.h"
-  };
-  this->SetSource("mask", cl_header);
+  this->SetSource("mask", oclKernel::mask);
 }
 
 auto

@@ -1,6 +1,7 @@
 
 
 #include "cleDilateSphereKernel.hpp"
+#include "cle_dilate_sphere.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 DilateSphereKernel::DilateSphereKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header = {
-#include "cle_dilate_sphere.h"
-  };
-  this->SetSource("dilate_sphere", cl_header);
+  this->SetSource("dilate_sphere", oclKernel::dilate_sphere);
 }
 
 auto

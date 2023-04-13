@@ -69,10 +69,10 @@ For each header file we need to create a corresponding source file (`.cpp`) with
 //--> cleAddImageAndScalarKernel.cpp
 
 #include "cleAddImageAndScalarKernel.hpp"    // <-- include the header file
+#include "cle_add_image_and_scalar.h"        // <-- include the opencl kernel file
 
 namespace cle                                // <-- namespace cle
 {
-
     /* define class method here */
 
 } // namespace cle                           // <-- end namespace cle
@@ -89,13 +89,10 @@ The constructor is defined as follow:
 AddImageAndScalarKernel::AddImageAndScalarKernel(const ProcessorPointer & device) : 
     Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_add_image_and_scalar.h"
-  };
-  this->SetSource("add_image_and_scalar", cl_header);
+  this->SetSource("add_image_and_scalar", oclKernel::add_image_and_scalar);
 }
 ```
-This is the most complex methods we will declare for now. The constructor is called when we instanciate the kernel class. To do so we first rely on the mother class `Operation` constructor whic takes two arguments: the `device` on which the kernel will run and the number of arguments of the kernel. In this case we have three arguments: the input image, the output image and the scalar value. Then, to finish the constructor, we need to provide the kernel source code. This is done by calling the `SetSource` method which takes two arguments: the kernel name as it is name in the OpenCL code and the kernel source file. The kernel source file is stored in a string variable `cl_header` which is defined by including a stringify version of the kernel file `.cl`. This assume that the kernel to be compiled is located in the `clij-opencl-kernels` repository.
+This is the most complex methods we will declare for now. The constructor is called when we instanciate the kernel class. To do so we first rely on the mother class `Operation` constructor whic takes two arguments: the `device` on which the kernel will run and the number of arguments of the kernel. In this case we have three arguments: the `input` image, the `output` image and the `scalar` value. Then, to finish the constructor, we need to provide the kernel source code which will run on the GPU. This is done by calling the `SetSource` method which takes two arguments: the kernel name as it is name in the OpenCL code and the kernel source file. The kernel source file is stored in a string variable and is called from the included header of the opencl kernel. Those headers are generated from the list of OpenCL files from the [`clij-opencl-kernel`](https://github.com/clEsperanto/clij-opencl-kernels/tree/clesperanto_kernels) repository.
 
 Once the constructor is done, we can declare the `SetInput` and `SetOutput` functions as follow:
 ```cpp

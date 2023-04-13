@@ -1,6 +1,7 @@
 
 
 #include "cleOnlyzeroOverwriteMaximumDiamondKernel.hpp"
+#include "cle_onlyzero_overwrite_maximum_diamond.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 OnlyzeroOverwriteMaximumDiamondKernel::OnlyzeroOverwriteMaximumDiamondKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_onlyzero_overwrite_maximum_diamond.h"
-  };
-  this->SetSource("onlyzero_overwrite_maximum_diamond", cl_header);
+  this->SetSource("onlyzero_overwrite_maximum_diamond", oclKernel::onlyzero_overwrite_maximum_diamond);
 }
 
 auto

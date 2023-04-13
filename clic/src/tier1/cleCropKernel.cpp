@@ -1,15 +1,13 @@
 
 #include "cleCropKernel.hpp"
+#include "cle_crop.h"
 
 namespace cle
 {
 CropKernel::CropKernel(const ProcessorPointer & device)
   : Operation(device, 5)
 {
-  std::string cl_header = {
-#include "cle_crop.h"
-  };
-  this->SetSource("crop", cl_header);
+  this->SetSource("crop", oclKernel::crop);
 }
 
 auto

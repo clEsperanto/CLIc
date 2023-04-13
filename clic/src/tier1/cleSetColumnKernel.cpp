@@ -1,6 +1,7 @@
 
 
 #include "cleSetColumnKernel.hpp"
+#include "cle_set_column.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 SetColumnKernel::SetColumnKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_set_column.h"
-  };
-  this->SetSource("set_column", cl_header);
+  this->SetSource("set_column", oclKernel::set_column);
 }
 
 auto

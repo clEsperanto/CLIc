@@ -1,5 +1,6 @@
 
 #include "cleSubtractImageFromScalarKernel.hpp"
+#include "cle_subtract_image_from_scalar.h"
 
 namespace cle
 {
@@ -7,10 +8,7 @@ namespace cle
 SubtractImageFromScalarKernel::SubtractImageFromScalarKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_subtract_image_from_scalar.h"
-  };
-  this->SetSource("subtract_image_from_scalar", cl_header);
+  this->SetSource("subtract_image_from_scalar", oclKernel::subtract_image_from_scalar);
 }
 
 auto

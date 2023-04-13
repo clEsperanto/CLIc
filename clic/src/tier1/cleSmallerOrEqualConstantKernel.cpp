@@ -1,6 +1,7 @@
 
 
 #include "cleSmallerOrEqualConstantKernel.hpp"
+#include "cle_smaller_or_equal_constant.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 SmallerOrEqualConstantKernel::SmallerOrEqualConstantKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_smaller_or_equal_constant.h"
-  };
-  this->SetSource("smaller_or_equal_constant", cl_header);
+  this->SetSource("smaller_or_equal_constant", oclKernel::smaller_or_equal_constant);
 }
 
 auto

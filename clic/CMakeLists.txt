@@ -42,7 +42,7 @@ add_dependencies(${LIBRARY_NAME} generate_kernels_list generate_kernels)
 
 add_custom_target(
     generate_kernels 
-    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/convert_ocl_to_header.py ${OCL_KERNELS_DIR} ${CMAKE_CURRENT_BINARY_DIR}/kernels/
+    COMMAND ${Python3_EXECUTABLE} ${UTILITIES_DIR}/ocl_to_header.py ${OCL_KERNELS_DIR} ${CMAKE_CURRENT_BINARY_DIR}/kernels/
     BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/kernels 
     COMMENT "Generating kernels header from clij opencl files."
 )

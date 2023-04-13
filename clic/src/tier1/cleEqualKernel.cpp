@@ -1,5 +1,6 @@
 
 #include "cleEqualKernel.hpp"
+#include "cle_equal.h"
 
 namespace cle
 {
@@ -7,10 +8,7 @@ namespace cle
 EqualKernel::EqualKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_equal.h"
-  };
-  this->SetSource("equal", cl_header);
+  this->SetSource("equal", oclKernel::equal);
 }
 
 auto

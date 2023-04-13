@@ -1,6 +1,7 @@
 
 
 #include "cleBinaryXorKernel.hpp"
+#include "cle_binary_xor.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 BinaryXorKernel::BinaryXorKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_binary_xor.h"
-  };
-  this->SetSource("binary_xor", cl_header);
+  this->SetSource("binary_xor", oclKernel::binary_xor);
 }
 
 auto
