@@ -1,6 +1,7 @@
 
 
 #include "cleSmallerConstantKernel.hpp"
+#include "cle_smaller_constant.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 SmallerConstantKernel::SmallerConstantKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_smaller_constant.h"
-  };
-  this->SetSource("smaller_constant", cl_header);
+  this->SetSource("smaller_constant", oclKernel::smaller_constant);
 }
 
 auto

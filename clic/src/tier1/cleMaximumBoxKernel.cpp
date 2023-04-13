@@ -2,6 +2,7 @@
 
 #include "cleMaximumBoxKernel.hpp"
 #include "cleExecuteSeparableKernel.hpp"
+#include "cle_maximum_separable.h"
 
 #include <algorithm>
 
@@ -11,10 +12,7 @@ namespace cle
 MaximumBoxKernel::MaximumBoxKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header = {
-#include "cle_maximum_separable.h"
-  };
-  this->SetSource("maximum_separable", cl_header);
+  this->SetSource("maximum_separable", oclKernel::maximum_separable);
 }
 
 auto

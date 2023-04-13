@@ -1,6 +1,7 @@
 
 
 #include "cleNotEqualConstantKernel.hpp"
+#include "cle_not_equal_constant.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 NotEqualConstantKernel::NotEqualConstantKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_not_equal_constant.h"
-  };
-  this->SetSource("not_equal_constant", cl_header);
+  this->SetSource("not_equal_constant", oclKernel::not_equal_constant);
 }
 
 auto

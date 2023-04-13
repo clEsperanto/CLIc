@@ -1,6 +1,7 @@
 
 
 #include "cleSetKernel.hpp"
+#include "cle_set.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 SetKernel::SetKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header = {
-#include "cle_set.h"
-  };
-  this->SetSource("set", cl_header);
+  this->SetSource("set", oclKernel::set);
 }
 
 auto

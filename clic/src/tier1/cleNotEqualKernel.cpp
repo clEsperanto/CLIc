@@ -1,6 +1,7 @@
 
 
 #include "cleNotEqualKernel.hpp"
+#include "cle_not_equal.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 NotEqualKernel::NotEqualKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_not_equal.h"
-  };
-  this->SetSource("not_equal", cl_header);
+  this->SetSource("not_equal", oclKernel::not_equal);
 }
 
 auto

@@ -1,6 +1,7 @@
 
 
 #include "cleMinimumZProjectionKernel.hpp"
+#include "cle_minimum_z_projection.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 MinimumZProjectionKernel::MinimumZProjectionKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header = {
-#include "cle_minimum_z_projection.h"
-  };
-  this->SetSource("minimum_z_projection", cl_header);
+  this->SetSource("minimum_z_projection", oclKernel::minimum_z_projection);
 }
 
 auto

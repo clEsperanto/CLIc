@@ -1,6 +1,7 @@
 
 
 #include "cleDivideImagesKernel.hpp"
+#include "cle_divide_images.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 DivideImagesKernel::DivideImagesKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_divide_images.h"
-  };
-  this->SetSource("divide_images", cl_header);
+  this->SetSource("divide_images", oclKernel::divide_images);
 }
 
 auto

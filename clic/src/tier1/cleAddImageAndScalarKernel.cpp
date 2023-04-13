@@ -1,5 +1,6 @@
 
 #include "cleAddImageAndScalarKernel.hpp"
+#include "cle_add_image_and_scalar.h"
 
 namespace cle
 {
@@ -7,10 +8,7 @@ namespace cle
 AddImageAndScalarKernel::AddImageAndScalarKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_add_image_and_scalar.h"
-  };
-  this->SetSource("add_image_and_scalar", cl_header);
+  this->SetSource("add_image_and_scalar", oclKernel::add_image_and_scalar);
 }
 
 auto

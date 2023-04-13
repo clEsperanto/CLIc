@@ -1,6 +1,7 @@
 
 
 #include "cleBinarySubtractKernel.hpp"
+#include "cle_binary_subtract.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 BinarySubtractKernel::BinarySubtractKernel(const ProcessorPointer & device)
   : Operation(device, 3)
 {
-  std::string cl_header = {
-#include "cle_binary_subtract.h"
-  };
-  this->SetSource("binary_subtract", cl_header);
+  this->SetSource("binary_subtract", oclKernel::binary_subtract);
 }
 
 auto

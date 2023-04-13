@@ -1,5 +1,6 @@
 
 #include "cleMeanSphereKernel.hpp"
+#include "cle_mean_sphere.h"
 
 namespace cle
 {
@@ -7,10 +8,7 @@ namespace cle
 MeanSphereKernel::MeanSphereKernel(const ProcessorPointer & device)
   : Operation(device, 5)
 {
-  std::string cl_header = {
-#include "cle_mean_sphere.h"
-  };
-  this->SetSource("mean_sphere", cl_header);
+  this->SetSource("mean_sphere", oclKernel::mean_sphere);
 }
 
 auto

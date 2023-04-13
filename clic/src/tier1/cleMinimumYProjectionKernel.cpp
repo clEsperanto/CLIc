@@ -1,6 +1,7 @@
 
 
 #include "cleMinimumYProjectionKernel.hpp"
+#include "cle_minimum_y_projection.h"
 
 namespace cle
 {
@@ -8,10 +9,7 @@ namespace cle
 MinimumYProjectionKernel::MinimumYProjectionKernel(const ProcessorPointer & device)
   : Operation(device, 2)
 {
-  std::string cl_header = {
-#include "cle_minimum_y_projection.h"
-  };
-  this->SetSource("minimum_y_projection", cl_header);
+  this->SetSource("minimum_y_projection", oclKernel::minimum_y_projection);
 }
 
 auto
