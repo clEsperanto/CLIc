@@ -124,6 +124,12 @@ target_link_libraries(detect_maxima_test PRIVATE CLIc::CLIc)
 set_target_properties(detect_maxima_test PROPERTIES FOLDER "Tests")
 # target_compile_features(detect_maxima_test PRIVATE cxx_std_17)
 
+add_executable(detect_minima_test detect_minima_test.cpp)
+add_dependencies(detect_minima_test CLIc)
+target_link_libraries(detect_minima_test PRIVATE CLIc::CLIc)
+set_target_properties(detect_minima_test PROPERTIES FOLDER "Tests")
+# target_compile_features(detect_minima_test PRIVATE cxx_std_17)
+
 add_executable(difference_of_gaussian_test difference_of_gaussian_test.cpp)
 add_dependencies(difference_of_gaussian_test CLIc)
 target_link_libraries(difference_of_gaussian_test PRIVATE CLIc::CLIc)
@@ -482,6 +488,7 @@ add_test(NAME convolve_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAN
 add_test(NAME copy_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND copy_test)
 add_test(NAME crop_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND crop_test)
 add_test(NAME detect_maxima_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND detect_maxima_test)
+add_test(NAME detect_minima_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND detect_minima_test)
 add_test(NAME difference_of_gaussian_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND difference_of_gaussian_test)
 add_test(NAME dilate_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND dilate_sphere_test)
 add_test(NAME gradient_x_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gradient_x_test)
@@ -564,6 +571,7 @@ set_tests_properties(absolute_test
     copy_test
     crop_test
     detect_maxima_test
+    detect_minima_test
     difference_of_gaussian_test
     dilate_sphere_test
     equal_constant_test

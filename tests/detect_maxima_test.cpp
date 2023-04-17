@@ -12,9 +12,15 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
   std::vector<type> valid(shape[0] * shape[1] * shape[2]);
   std::fill(input.begin(), input.end(), static_cast<type>(0));
   std::fill(valid.begin(), valid.end(), static_cast<type>(0));
-  int center = (shape[0] / 2) + (shape[1] / 2) * shape[0] + (shape[2] / 2) * shape[0] * shape[1];
-  input[center] = static_cast<type>(100);
-  valid[center] = static_cast<type>(1);
+
+  // An example of a case where the maximal value is located in the center
+  // int center = (shape[0] / 2) + (shape[1] / 2) * shape[0] + (shape[2] / 2) * shape[0] * shape[1];
+  // input[center] = static_cast<type>(100);
+  // valid[center] = static_cast<type>(1);
+
+  // An example of a case where the maximal value is located at the bottom right
+  input[input.size() - 1] = static_cast<type>(100);
+  valid[valid.size() - 1] = static_cast<type>(1);
 
   cle::Clesperanto cle;
   cle.GetDevice()->WaitForKernelToFinish();
@@ -133,6 +139,14 @@ main(int argc, char ** argv) -> int
   {
     return EXIT_FAILURE;
   }
+
+  /* Although it works for the above tests, here is an example in which detecting the maximal value when it is located
+  in the center of a 3D array of shape (3, 3, 2) does not work.
+
+  if (!run_test<float>({ 3, 3, 2 }, cle::BUFFER))
+  {
+    return EXIT_FAILURE;
+  } */
 
   // if (!run_test<float>({ 10, 1, 1 }, cle::IMAGE))
   // {

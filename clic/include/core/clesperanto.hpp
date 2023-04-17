@@ -109,6 +109,9 @@ public:
   DetectMaximaBox(const Image & source, const Image & destination) -> void;
 
   auto
+  DetectMinima(const Image & source, const Image & destination) -> void;
+
+  auto
   DifferenceOfGaussian(const Image & source,
                        const Image & destination,
                        const float & sigma1_x = 0,
