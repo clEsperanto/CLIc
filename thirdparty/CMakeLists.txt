@@ -4,8 +4,8 @@ set(FETCHCONTENT_BASE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 ## Manage OpenCL Kernel Sources
 FetchContent_Declare(OpenCL_Kernels
-    GIT_REPOSITORY https://github.com/clEsperanto/clij-opencl-kernels.git
-    GIT_TAG        clesperanto_kernels
+    GIT_REPOSITORY https://github.com/CherifMZ/clij-opencl-kernels.git
+    GIT_TAG        fix_laplace_box
     BUILD_ALWAYS OFF
     CONFIGURE_COMMAND ""
 )

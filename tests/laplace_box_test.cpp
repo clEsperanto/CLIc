@@ -12,17 +12,17 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
   if (shape[2] > 1)
   {
     input = { 1, 0, 2, 1, 0, 1, 0, 3, 0, 2, 0, 1, 3, 0, 0, 1, 0, 1, 1, 0, 2, 0, 2, 1 };
-    valid = { 3, -4, 11, 0, -2, 3, -7, 16, -4, 11, -5, 2, 17, -4, -4, 5, -6, 4, 3, -6, 12, -7, 10, 3 };
+    valid = { 4, -22, 30, -6, -21, 6, -26, 50, -19, 34, -28, -2, 50, -23, -18, 3, -27, 3, 5, -26, 31, -25, 28, -1 };
   }
   else if (shape[1] > 1)
   {
     input = { 1, 0, 2, 1, 0, 1, 3, 1, 0, 2, 1, 1 };
-    valid = { 7, -7, 10, 2, -4, -1, 15, 0, -3, 11, 0, 3 };
+    valid = { 3, -8, 8, -2, -9, 2, 13, -1, -6, 1, -3, 2 };
   }
   else
   {
     input = { 1, 0, 0, 1, 1 };
-    valid = { 2, -1, -1, 1, 1 };
+    valid = { 1, -1, -1, 1, 0 };
   }
 
   cle::Clesperanto cle;
@@ -78,22 +78,22 @@ main(int argc, char ** argv) -> int
     return EXIT_FAILURE;
   }
 
-  if (!run_test<float>({ 3, 4, 2 }, cle::BUFFER))
+  if (!run_test<float>({ 4, 3, 2 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<int32_t>({ 3, 4, 2 }, cle::BUFFER))
+  if (!run_test<int32_t>({ 4, 3, 2 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<int16_t>({ 3, 4, 2 }, cle::BUFFER))
+  if (!run_test<int16_t>({ 4, 3, 2 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
 
-  if (!run_test<int8_t>({ 3, 4, 2 }, cle::BUFFER))
+  if (!run_test<int8_t>({ 4, 3, 2 }, cle::BUFFER))
   {
     return EXIT_FAILURE;
   }
