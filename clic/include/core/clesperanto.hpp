@@ -178,6 +178,9 @@ public:
             const float & max_intensity = FloatLimits::infinity()) -> void;
 
   auto
+  LaplaceBox(const Image & source, const Image & destination) -> void;
+
+  auto
   Mask(const Image & source, const Image & t_mask, const Image & destination) -> void;
 
   auto
