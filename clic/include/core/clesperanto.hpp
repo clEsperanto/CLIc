@@ -73,6 +73,9 @@ public:
   BinaryAnd(const Image & source1, const Image & source2, const Image & destination) -> void;
 
   auto
+  BinaryEdgeDetection(const Image & source, const Image & destination) -> void;
+
+  auto
   BinaryNot(const Image & source, const Image & destination) -> void;
 
   auto
@@ -119,6 +122,9 @@ public:
                        const float & sigma2_z = 0) -> void;
 
   auto
+  DilateBox(const Image & source, const Image & destination) -> void;
+
+  auto
   DilateLabels(const Image & source, const Image & destination, const int & radius = 1) -> void;
 
   auto
@@ -128,10 +134,16 @@ public:
   DivideImages(const Image & source1, const Image & source2, const Image & destination) -> void;
 
   auto
+  DivideImageAndScalar(const Image & source, const Image & destination, const float & scalar = 1) -> void;
+
+  auto
   Equal(const Image & source1, const Image & source2, const Image & destination) -> void;
 
   auto
   EqualConstant(const Image & source, const Image & destination, const float & scalar = 0) -> void;
+
+  auto
+  ErodeBox(const Image & source, const Image & destination) -> void;
 
   auto
   ErodeSphere(const Image & source, const Image & destination) -> void;
@@ -194,7 +206,17 @@ public:
              const int &   radius_z = 0) -> void;
 
   auto
+  MaximumImages(const Image & source1, const Image & source2, const Image & destination) -> void;
+
+  auto
   MaximumOfAllPixels(const Image & source, const Image & destination) -> void;
+
+  auto
+  MaximumSphere(const Image & source,
+                const Image & destination,
+                const float & radius_x = 0,
+                const float & radius_y = 0,
+                const float & radius_z = 0) -> void;
 
   auto
   MaximumXProjection(const Image & source, const Image & destination) -> void;
@@ -220,6 +242,9 @@ public:
              const float & radius_z = 0) -> void;
 
   auto
+  MinimumImages(const Image & source1, const Image & source2, const Image & destination) -> void;
+
+  auto
   MinimumBox(const Image & source,
              const Image & destination,
              const int &   radius_x = 0,
@@ -228,6 +253,13 @@ public:
 
   auto
   MinimumOfAllPixels(const Image & source, const Image & destination) -> void;
+
+  auto
+  MinimumSphere(const Image & source,
+                const Image & destination,
+                const float & radius_x = 0,
+                const float & radius_y = 0,
+                const float & radius_z = 0) -> void;
 
   auto
   MinimumXProjection(const Image & source, const Image & destination) -> void;
