@@ -41,11 +41,7 @@ Clesperanto::Info() -> std::string
 auto
 Clesperanto::AddImageAndScalar(const Image & source, const Image & destination, const float & scalar) -> void
 {
-  AddImageAndScalarKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetScalar(scalar);
-  kernel.Execute();
+  AddImageAndScalarKernel_Call(this->GetDevice(), source, destination, scalar);
 }
 
 auto
@@ -55,13 +51,7 @@ Clesperanto::AddImagesWeighted(const Image & source1,
                                const float & weight1,
                                const float & weight2) -> void
 {
-  AddImagesWeightedKernel kernel(this->GetDevice());
-  kernel.SetInput1(source1);
-  kernel.SetInput2(source2);
-  kernel.SetOutput(destination);
-  kernel.SetFactor1(weight1);
-  kernel.SetFactor2(weight2);
-  kernel.Execute();
+  AddImagesWeightedKernel_Call(this->GetDevice(), source1, source2, destination, weight1, weight2);
 }
 
 auto
@@ -71,52 +61,39 @@ Clesperanto::AddImages(const Image & source1, const Image & source2, const Image
 }
 
 auto
+Clesperanto::BinaryEdgeDetection(const Image & source, const Image & destination) -> void
+{
+  BinaryEdgeDetectionKernel_Call(this->GetDevice(), source, destination);
+}
+
+auto
 Clesperanto::BinaryAnd(const Image & source1, const Image & source2, const Image & destination) -> void
 {
-  BinaryAndKernel kernel(this->GetDevice());
-  kernel.SetInput1(source1);
-  kernel.SetInput2(source2);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  BinaryAndKernel_Call(this->GetDevice(), source1, source2, destination);
 }
 
 auto
 Clesperanto::BinaryOr(const Image & source1, const Image & source2, const Image & destination) -> void
 {
-  BinaryOrKernel kernel(this->GetDevice());
-  kernel.SetInput1(source1);
-  kernel.SetInput2(source2);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  BinaryOrKernel_Call(this->GetDevice(), source1, source2, destination);
 }
 
 auto
 Clesperanto::BinaryNot(const Image & source, const Image & destination) -> void
 {
-  BinaryNotKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  BinaryNotKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::BinarySubtract(const Image & source1, const Image & source2, const Image & destination) -> void
 {
-  BinarySubtractKernel kernel(this->GetDevice());
-  kernel.SetInput1(source1);
-  kernel.SetInput2(source2);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  BinarySubtractKernel_Call(this->GetDevice(), source1, source2, destination);
 }
 
 auto
 Clesperanto::BinaryXor(const Image & source1, const Image & source2, const Image & destination) -> void
 {
-  BinaryXorKernel kernel(this->GetDevice());
-  kernel.SetInput1(source1);
-  kernel.SetInput2(source2);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  BinaryXorKernel_Call(this->GetDevice(), source1, source2, destination);
 }
 
 auto
@@ -142,41 +119,45 @@ Clesperanto::SubtractImages(const Image & source1, const Image & source2, const 
 }
 
 auto
+Clesperanto::DilateBox(const Image & source, const Image & destination) -> void
+{
+  DilateBoxKernel_Call(this->GetDevice(), source, destination);
+}
+
+auto
 Clesperanto::DilateSphere(const Image & source, const Image & destination) -> void
 {
-  DilateSphereKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  DilateSphereKernel_Call(this->GetDevice(), source, destination);
+}
+
+auto
+Clesperanto::DivideImageAndScalar(const Image & source, const Image & destination, const float & scalar) -> void
+{
+  DivideImageAndScalarKernel_Call(this->GetDevice(), source, destination, scalar);
+}
+
+auto
+Clesperanto::ErodeBox(const Image & source, const Image & destination) -> void
+{
+  ErodeBoxKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::ErodeSphere(const Image & source, const Image & destination) -> void
 {
-  ErodeSphereKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  ErodeSphereKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::Equal(const Image & source1, const Image & source2, const Image & destination) -> void
 {
-  EqualKernel kernel(this->GetDevice());
-  kernel.SetInput1(source1);
-  kernel.SetInput2(source2);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  EqualKernel_Call(this->GetDevice(), source1, source2, destination);
 }
 
 auto
 Clesperanto::EqualConstant(const Image & source, const Image & destination, const float & scalar) -> void
 {
-  EqualConstantKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetConstant(scalar);
-  kernel.Execute();
+  EqualConstantKernel_Call(this->GetDevice(), source, destination, scalar);
 }
 
 auto
@@ -196,12 +177,31 @@ Clesperanto::MaximumBox(const Image & source,
                         const int &   radius_y,
                         const int &   radius_z) -> void
 {
-  MaximumBoxKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetRadius(radius_x, radius_y, radius_z);
-  kernel.Execute();
+  MaximumBoxKernel_Call(this->GetDevice(), source, destination, radius_x, radius_y, radius_z);
 }
+
+auto
+Clesperanto::MaximumSphere(const Image & source,
+                           const Image & destination,
+                           const float & radius_x,
+                           const float & radius_y,
+                           const float & radius_z) -> void
+{
+  MaximumSphereKernel_Call(this->GetDevice(), source, destination, radius_x, radius_y, radius_z);
+}
+
+auto
+Clesperanto::MaximumImages(const Image & source1, const Image & source2, const Image & destination) -> void
+{
+  MaximumImagesKernel_Call(this->GetDevice(), source1, source2, destination);
+}
+
+auto
+Clesperanto::MinimumImages(const Image & source1, const Image & source2, const Image & destination) -> void
+{
+  MinimumImagesKernel_Call(this->GetDevice(), source1, source2, destination);
+}
+
 
 auto
 Clesperanto::MinimumBox(const Image & source,
@@ -210,11 +210,17 @@ Clesperanto::MinimumBox(const Image & source,
                         const int &   radius_y,
                         const int &   radius_z) -> void
 {
-  MinimumBoxKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetRadius(radius_x, radius_y, radius_z);
-  kernel.Execute();
+  MinimumBoxKernel_Call(this->GetDevice(), source, destination, radius_x, radius_y, radius_z);
+}
+
+auto
+Clesperanto::MinimumSphere(const Image & source,
+                           const Image & destination,
+                           const float & radius_x,
+                           const float & radius_y,
+                           const float & radius_z) -> void
+{
+  MinimumSphereKernel_Call(this->GetDevice(), source, destination, radius_x, radius_y, radius_z);
 }
 
 auto
@@ -224,11 +230,7 @@ Clesperanto::MeanBox(const Image & source,
                      const int &   radius_y,
                      const int &   radius_z) -> void
 {
-  MeanBoxKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetRadius(radius_x, radius_y, radius_z);
-  kernel.Execute();
+  MeanBoxKernel_Call(this->GetDevice(), source, destination, radius_x, radius_y, radius_z);
 }
 
 auto
@@ -252,41 +254,25 @@ Clesperanto::GradientZ(const Image & source, const Image & destination) -> void
 auto
 Clesperanto::Greater(const Image & source1, const Image & source2, const Image & destination) -> void
 {
-  GreaterKernel kernel(this->GetDevice());
-  kernel.SetInput1(source1);
-  kernel.SetInput2(source2);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  GreaterKernel_Call(this->GetDevice(), source1, source2, destination);
 }
 
 auto
 Clesperanto::GreaterOrEqual(const Image & source1, const Image & source2, const Image & destination) -> void
 {
-  GreaterOrEqualKernel kernel(this->GetDevice());
-  kernel.SetInput1(source1);
-  kernel.SetInput2(source2);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  GreaterOrEqualKernel_Call(this->GetDevice(), source1, source2, destination);
 }
 
 auto
 Clesperanto::GreaterConstant(const Image & source, const Image & destination, const float & scalar) -> void
 {
-  GreaterConstantKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetConstant(scalar);
-  kernel.Execute();
+  GreaterConstantKernel_Call(this->GetDevice(), source, destination, scalar);
 }
 
 auto
 Clesperanto::GreaterOrEqualConstant(const Image & source, const Image & destination, const float & scalar) -> void
 {
-  GreaterOrEqualConstantKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetConstant(scalar);
-  kernel.Execute();
+  GreaterOrEqualConstantKernel_Call(this->GetDevice(), source, destination, scalar);
 }
 
 auto
@@ -298,93 +284,61 @@ Clesperanto::LaplaceBox(const Image & source, const Image & destination) -> void
 auto
 Clesperanto::Mask(const Image & source, const Image & t_mask, const Image & destination) -> void
 {
-  MaskKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetMask(t_mask);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  MaskKernel_Call(this->GetDevice(), source, t_mask, destination);
 }
 
 auto
 Clesperanto::MaskedVoronoiLabeling(const Image & source, const Image & t_mask, const Image & destination) -> void
 {
-  MaskedVoronoiLabelingKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetMask(t_mask);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  MaskedVoronoiLabelingKernel_Call(this->GetDevice(), source, destination, t_mask);
 }
 
 auto
 Clesperanto::MaximumZProjection(const Image & source, const Image & destination) -> void
 {
-  MaximumZProjectionKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  MaximumZProjectionKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::MaximumYProjection(const Image & source, const Image & destination) -> void
 {
-  MaximumYProjectionKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  MaximumYProjectionKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::MaximumXProjection(const Image & source, const Image & destination) -> void
 {
-  MaximumXProjectionKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  MaximumXProjectionKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::MaximumOfAllPixels(const Image & source, const Image & destination) -> void
 {
-  MaximumOfAllPixelsKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  MaximumOfAllPixelsKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::MinimumZProjection(const Image & source, const Image & destination) -> void
 {
-  MinimumZProjectionKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  MinimumZProjectionKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::MinimumYProjection(const Image & source, const Image & destination) -> void
 {
-  MinimumYProjectionKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  MinimumYProjectionKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::MinimumXProjection(const Image & source, const Image & destination) -> void
 {
-  MinimumXProjectionKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  MinimumXProjectionKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::MinimumOfAllPixels(const Image & source, const Image & destination) -> void
 {
-  MinimumOfAllPixelsKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  MinimumOfAllPixelsKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
@@ -415,12 +369,8 @@ Clesperanto::DifferenceOfGaussian(const Image & source,
                                   const float & sigma2_y,
                                   const float & sigma2_z) -> void
 {
-  DifferenceOfGaussianKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetSigma1(sigma1_x, sigma1_y, sigma1_z);
-  kernel.SetSigma2(sigma2_x, sigma2_y, sigma2_z);
-  kernel.Execute();
+  DifferenceOfGaussianKernel_Call(
+    this->GetDevice(), source, destination, sigma1_x, sigma1_y, sigma1_z, sigma2_x, sigma2_y, sigma2_z);
 }
 
 auto
@@ -430,81 +380,49 @@ Clesperanto::MeanSphere(const Image & source,
                         const float & radius_y,
                         const float & radius_z) -> void
 {
-  MeanSphereKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetRadius(radius_x, radius_y, radius_z);
-  kernel.Execute();
+  MeanSphereKernel_Call(this->GetDevice(), source, destination, radius_x, radius_y, radius_z);
 }
 
 auto
 Clesperanto::NonzeroMinimumBox(const Image & source, const Image & t_flag, const Image & destination) -> void
 {
-  NonzeroMinimumBoxKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetOutputFlag(t_flag);
-  kernel.Execute();
+  NonzeroMinimumBoxKernel_Call(this->GetDevice(), source, destination, t_flag);
 }
 
 auto
 Clesperanto::NotEqual(const Image & source1, const Image & source2, const Image & destination) -> void
 {
-  NotEqualKernel kernel(this->GetDevice());
-  kernel.SetInput1(source1);
-  kernel.SetInput2(source2);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  NotEqualKernel_Call(this->GetDevice(), source1, source2, destination);
 }
 
 auto
 Clesperanto::NotEqualConstant(const Image & source, const Image & destination, const float & scalar) -> void
 {
-  NotEqualConstantKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetConstant(scalar);
-  kernel.Execute();
+  NotEqualConstantKernel_Call(this->GetDevice(), source, destination, scalar);
 }
 
 auto
 Clesperanto::Smaller(const Image & source1, const Image & source2, const Image & destination) -> void
 {
-  SmallerKernel kernel(this->GetDevice());
-  kernel.SetInput1(source1);
-  kernel.SetInput2(source2);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  SmallerKernel_Call(this->GetDevice(), source1, source2, destination);
 }
 
 auto
 Clesperanto::SmallerOrEqual(const Image & source1, const Image & source2, const Image & destination) -> void
 {
-  SmallerOrEqualKernel kernel(this->GetDevice());
-  kernel.SetInput1(source1);
-  kernel.SetInput2(source2);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  SmallerOrEqualKernel_Call(this->GetDevice(), source1, source2, destination);
 }
 
 auto
 Clesperanto::SmallerConstant(const Image & source, const Image & destination, const float & scalar) -> void
 {
-  SmallerConstantKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetConstant(scalar);
-  kernel.Execute();
+  SmallerConstantKernel_Call(this->GetDevice(), source, destination, scalar);
 }
 
 auto
 Clesperanto::SmallerOrEqualConstant(const Image & source, const Image & destination, const float & scalar) -> void
 {
-  SmallerOrEqualConstantKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetConstant(scalar);
-  kernel.Execute();
+  SmallerOrEqualConstantKernel_Call(this->GetDevice(), source, destination, scalar);
 }
 
 auto
@@ -516,92 +434,61 @@ Clesperanto::Absolute(const Image & source, const Image & destination) -> void
 auto
 Clesperanto::Sobel(const Image & source, const Image & destination) -> void
 {
-  SobelKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  SobelKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::Set(const Image & source, const float & scalar) -> void
 {
-  SetKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetValue(scalar);
-  kernel.Execute();
+  SetKernel_Call(this->GetDevice(), source, scalar);
 }
 
 auto
 Clesperanto::SetNonzeroPixelsToPixelindex(const Image & source, const Image & destination) -> void
 {
-  SetNonzeroPixelsToPixelindexKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetOffset(1);
-  kernel.Execute();
+  SetNonzeroPixelsToPixelindexKernel_Call(this->GetDevice(), source, destination, 1);
 }
 
 auto
 Clesperanto::DetectMaximaBox(const Image & source, const Image & destination) -> void
 {
-  DetectMaximaKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  DetectMaximaKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::Copy(const Image & source, const Image & destination) -> void
 {
-  CopyKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  CopyKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::SumZProjection(const Image & source, const Image & destination) -> void
 {
-  SumZProjectionKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  SumZProjectionKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::SumYProjection(const Image & source, const Image & destination) -> void
 {
-  SumYProjectionKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  SumYProjectionKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::SumXProjection(const Image & source, const Image & destination) -> void
 {
-  SumXProjectionKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  SumXProjectionKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::SumOfAllPixels(const Image & source, const Image & destination) -> void
 {
-  SumOfAllPixelsKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  SumOfAllPixelsKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::ConnectedComponentLabelingBox(const Image & source, const Image & destination) -> void
 {
-  ConnectedComponentLabelingBoxKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  ConnectedComponentLabelingBoxKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
@@ -610,73 +497,44 @@ Clesperanto::ReplaceIntensity(const Image & source,
                               const float & input_intensity,
                               const float & output_intensity) -> void
 {
-  ReplaceIntensityKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetInValue(input_intensity);
-  kernel.SetOutValue(output_intensity);
-  kernel.Execute();
+  ReplaceIntensityKernel_Call(this->GetDevice(), source, destination, input_intensity, output_intensity);
 }
 
 auto
 Clesperanto::ReplaceIntensities(const Image & source, const Image & intensity_map, const Image & destination) -> void
 {
-  ReplaceIntensitiesKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetMap(intensity_map);
-  kernel.Execute();
+  ReplaceIntensitiesKernel_Call(this->GetDevice(), source, destination, intensity_map);
 }
 
 auto
 Clesperanto::SetColumn(const Image & source, const int & column_index, const float & scalar) -> void
 {
-  SetColumnKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetColumn(column_index);
-  kernel.SetValue(scalar);
-  kernel.Execute();
+  SetColumnKernel_Call(this->GetDevice(), source, column_index, scalar);
 }
 
 auto
 Clesperanto::SumReductionX(const Image & source, const Image & destination, const int & block_size) -> void
 {
-  SumReductionXKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetBlocksize(block_size);
-  kernel.Execute();
+  SumReductionXKernel_Call(this->GetDevice(), source, destination, block_size);
 }
 
 auto
 Clesperanto::BlockEnumerate(const Image & source, const Image & sum, const Image & destination, const int & block_size)
   -> void
 {
-  BlockEnumerateKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetInputSums(sum);
-  kernel.SetOutput(destination);
-  kernel.SetBlocksize(block_size);
-  kernel.Execute();
+  BlockEnumerateKernel_Call(this->GetDevice(), source, sum, destination, block_size);
 }
 
 auto
 Clesperanto::FlagExistingLabels(const Image & source, const Image & destination) -> void
 {
-  FlagExistingLabelsKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  FlagExistingLabelsKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::CloseIndexGapsInLabelMap(const Image & source, const Image & destination, const int & block_size) -> void
 {
-  CloseIndexGapsInLabelMapKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetBlockSize(block_size);
-  kernel.Execute();
+  CloseIndexGapsInLabelMapKernel_Call(this->GetDevice(), source, destination, block_size);
 }
 
 auto
@@ -686,44 +544,26 @@ Clesperanto::Histogram(const Image & source,
                        const float & min_intensity,
                        const float & max_intensity) -> void
 {
-  HistogramKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetSteps(1, 1, 1);
-  kernel.SetNumBins(bins);
-  kernel.SetMinimumIntensity(min_intensity);
-  kernel.SetMaximumIntensity(max_intensity);
-  kernel.Execute();
+  HistogramKernel_Call(this->GetDevice(), source, destination, bins, min_intensity, max_intensity);
 }
 
 auto
 Clesperanto::ThresholdOtsu(const Image & source, const Image & destination) -> void
 {
-  ThresholdOtsuKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  ThresholdOtsuKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
 Clesperanto::OnlyzeroOverwriteMaximumBox(const Image & source, const Image & flag, const Image & destination) -> void
 {
-  OnlyzeroOverwriteMaximumBoxKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput1(flag);
-  kernel.SetOutput2(destination);
-  kernel.Execute();
+  OnlyzeroOverwriteMaximumBoxKernel_Call(this->GetDevice(), source, flag, destination);
 }
 
 auto
 Clesperanto::OnlyzeroOverwriteMaximumDiamond(const Image & source, const Image & flag, const Image & destination)
   -> void
 {
-  OnlyzeroOverwriteMaximumDiamondKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput1(flag);
-  kernel.SetOutput2(destination);
-  kernel.Execute();
+  OnlyzeroOverwriteMaximumDiamondKernel_Call(this->GetDevice(), source, flag, destination);
 }
 
 auto
@@ -732,21 +572,13 @@ Clesperanto::VoronoiOtsuLabeling(const Image & source,
                                  const float & sigma_spot,
                                  const float & sigma_outline) -> void
 {
-  VoronoiOtsuLabelingKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetSpotSigma(sigma_spot);
-  kernel.SetOutlineSigma(sigma_outline);
-  kernel.Execute();
+  VoronoiOtsuLabelingKernel_Call(this->GetDevice(), source, destination, sigma_spot, sigma_outline);
 }
 
 auto
 Clesperanto::ExtendLabelingViaVoronoi(const Image & source, const Image & destination) -> void
 {
-  ExtendLabelingViaVoronoiKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  ExtendLabelingViaVoronoiKernel_Call(this->GetDevice(), source, destination);
 }
 
 auto
@@ -756,51 +588,31 @@ Clesperanto::TopHatBox(const Image & source,
                        const int &   radius_y,
                        const int &   radius_z) -> void
 {
-  TopHatBoxKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetRadius(radius_x, radius_y, radius_z);
-  kernel.Execute();
+  TopHatBoxKernel_Call(this->GetDevice(), source, destination, radius_x, radius_y, radius_z);
 }
 
 auto
 Clesperanto::MultiplyImages(const Image & source1, const Image & source2, const Image & destination) -> void
 {
-  MultiplyImagesKernel kernel(this->GetDevice());
-  kernel.SetInput1(source1);
-  kernel.SetInput2(source2);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  MultiplyImagesKernel_Call(this->GetDevice(), source1, source2, destination);
 }
 
 auto
 Clesperanto::DivideImages(const Image & source1, const Image & source2, const Image & destination) -> void
 {
-  DivideImagesKernel kernel(this->GetDevice());
-  kernel.SetInput1(source1);
-  kernel.SetInput2(source2);
-  kernel.SetOutput(destination);
-  kernel.Execute();
+  DivideImagesKernel_Call(this->GetDevice(), source1, source2, destination);
 }
 
 auto
 Clesperanto::SubtractImageFromScalar(const Image & source, const Image & destination, const float & scalar) -> void
 {
-  SubtractImageFromScalarKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetScalar(scalar);
-  kernel.Execute();
+  SubtractImageFromScalarKernel_Call(this->GetDevice(), source, destination, scalar);
 }
 
 auto
 Clesperanto::DilateLabels(const Image & source, const Image & destination, const int & radius) -> void
 {
-  DilateLabelsKernel kernel(this->GetDevice());
-  kernel.SetInput(source);
-  kernel.SetOutput(destination);
-  kernel.SetRadius(radius);
-  kernel.Execute();
+  DilateLabelsKernel_Call(this->GetDevice(), source, destination, radius);
 }
 
 } // namespace cle

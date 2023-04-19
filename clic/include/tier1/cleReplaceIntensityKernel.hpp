@@ -32,7 +32,7 @@ ReplaceIntensityKernel_Call(const std::shared_ptr<cle::Processor> & device,
   kernel.SetInput(src);
   kernel.SetOutput(dst);
   kernel.SetInValue(in_value);
-  kernel.SetInValue(out_value);
+  kernel.SetOutValue(out_value);
   kernel.Execute();
 }
 

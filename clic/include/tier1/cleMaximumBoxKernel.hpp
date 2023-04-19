@@ -30,9 +30,9 @@ inline auto
 MaximumBoxKernel_Call(const std::shared_ptr<cle::Processor> & device,
                       const Image &                           src,
                       const Image &                           dst,
-                      const float &                           radius_x,
-                      const float &                           radius_y,
-                      const float &                           radius_z) -> void
+                      const int &                             radius_x,
+                      const int &                             radius_y,
+                      const int &                             radius_z) -> void
 {
   MaximumBoxKernel kernel(device);
   kernel.SetInput(src);

@@ -134,9 +134,9 @@ auto
 Image::ToString() const -> std::string
 {
   std::ostringstream out_string{};
-  out_string << GetMemoryType() << "[" << std::to_string(Shape()[0]) << "," << std::to_string(Shape()[1]) << ","
-             << std::to_string(Shape()[2]) << "]"
-             << "(dtype=" << GetDataType() << ")";
+  out_string << MemoryTypeToString(GetMemoryType()) << "[" << std::to_string(Shape()[0]) << ","
+             << std::to_string(Shape()[1]) << "," << std::to_string(Shape()[2]) << "]"
+             << "(dtype=" << DataTypeToString(GetDataType()) << ")";
   return out_string.str();
 }
 

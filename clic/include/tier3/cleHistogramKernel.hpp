@@ -36,9 +36,9 @@ inline auto
 HistogramKernel_Call(const std::shared_ptr<cle::Processor> & device,
                      const Image &                           src,
                      const Image &                           dst,
+                     const size_t &                          bin,
                      const float &                           min_intensity,
-                     const float &                           max_intensity,
-                     const size_t &                          bin) -> void
+                     const float &                           max_intensity) -> void
 {
   HistogramKernel kernel(device);
   kernel.SetInput(src);

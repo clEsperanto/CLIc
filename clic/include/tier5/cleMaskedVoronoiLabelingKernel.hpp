@@ -28,8 +28,8 @@ MaskedVoronoiLabelingKernel_Call(const std::shared_ptr<cle::Processor> & device,
 {
   MaskedVoronoiLabelingKernel kernel(device);
   kernel.SetInput(src);
+  kernel.SetMask(mask);
   kernel.SetOutput(dst);
-  kernel.SetMask(dst);
   kernel.Execute();
 }
 
