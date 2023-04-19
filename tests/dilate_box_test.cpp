@@ -76,7 +76,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
     std::cout << std::endl;
     return false;
   }
-  return true
+  return true;
 }
 
 auto
