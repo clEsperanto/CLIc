@@ -61,6 +61,8 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
   if (std::equal(output.begin(), output.end(), valid.begin()) == false)
   {
     std::cout << "DilateBox test failed!" << std::endl;
+    std::cout << "gpu_input: " << gpu_input << std::endl;
+    std::cout << "gpu_output: " << gpu_output << std::endl;
     // print valid and output
     std::cout << "Valid: " << std::endl;
     for (size_t i = 0; i < valid.size(); i++)
