@@ -30,24 +30,25 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
   }
   if (shape[2] > 1)
   {
+    valid[center + (shape[1] * shape[0])] = static_cast<type>(1);
+    valid[center + (shape[1] * shape[0]) + 1] = static_cast<type>(1);
+    valid[center + (shape[1] * shape[0]) - 1] = static_cast<type>(1);
     valid[center + (shape[1] * shape[0]) + shape[0]] = static_cast<type>(1);
+    valid[center + (shape[1] * shape[0]) - shape[0]] = static_cast<type>(1);
     valid[center + (shape[1] * shape[0]) + shape[0] + 1] = static_cast<type>(1);
     valid[center + (shape[1] * shape[0]) + shape[0] - 1] = static_cast<type>(1);
-    valid[center + (shape[1] * shape[0]) - 1] = static_cast<type>(1);
-    valid[center + (shape[1] * shape[0]) + 1] = static_cast<type>(1);
-    valid[center + (shape[1] * shape[0]) - shape[0]] = static_cast<type>(1);
     valid[center + (shape[1] * shape[0]) - shape[0] + 1] = static_cast<type>(1);
     valid[center + (shape[1] * shape[0]) - shape[0] - 1] = static_cast<type>(1);
-    valid[center + (shape[1] * shape[0])] = static_cast<type>(1);
+
+    valid[center - (shape[1] * shape[0])] = static_cast<type>(1);
+    valid[center - (shape[1] * shape[0]) + 1] = static_cast<type>(1);
+    valid[center - (shape[1] * shape[0]) - 1] = static_cast<type>(1);
     valid[center - (shape[1] * shape[0]) + shape[0]] = static_cast<type>(1);
+    valid[center - (shape[1] * shape[0]) - shape[0]] = static_cast<type>(1);
     valid[center - (shape[1] * shape[0]) + shape[0] + 1] = static_cast<type>(1);
     valid[center - (shape[1] * shape[0]) + shape[0] - 1] = static_cast<type>(1);
-    valid[center - (shape[1] * shape[0]) - 1] = static_cast<type>(1);
-    valid[center - (shape[1] * shape[0]) + 1] = static_cast<type>(1);
-    valid[center - (shape[1] * shape[0]) - shape[0]] = static_cast<type>(1);
     valid[center - (shape[1] * shape[0]) - shape[0] + 1] = static_cast<type>(1);
     valid[center - (shape[1] * shape[0]) - shape[0] - 1] = static_cast<type>(1);
-    valid[center - (shape[1] * shape[0])] = static_cast<type>(1);
   }
 
   cle::Clesperanto cle;
@@ -57,7 +58,25 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) 
   cle.DilateBox(gpu_input, gpu_output);
   auto output = cle.Pull<type>(gpu_output);
 
-  return std::equal(output.begin(), output.end(), valid.begin());
+  if (std::equal(output.begin(), output.end(), valid.begin()) == false)
+  {
+    std::cout << "DilateBox test failed!" << std::endl;
+    // compute difference
+    std::vector<type> diff(valid.size());
+    std::transform(valid.begin(), valid.end(), output.begin(), diff.begin(), std::minus<type>());
+    std::cout << "diff: " << std::endl;
+    for (size_t i = 0; i < diff.size(); ++i)
+    {
+      std::cout << diff[i] << " ";
+      if ((i + 1) % shape[0] == 0)
+      {
+        std::cout << std::endl;
+      }
+    }
+    std::cout << std::endl;
+    return false;
+  }
+  return true
 }
 
 auto
