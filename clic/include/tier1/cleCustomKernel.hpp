@@ -28,9 +28,9 @@ inline auto
 CustomKernel_Call(const std::shared_ptr<cle::Processor> &                             device,
                   const std::string &                                                 file_name,
                   const std::string &                                                 kernel_name,
-                  const size_t &                                                      dx,
-                  const size_t &                                                      dy,
-                  const size_t &                                                      dz,
+                  const size_t &                                                      range_x,
+                  const size_t &                                                      range_y,
+                  const size_t &                                                      range_z,
                   const std::map<std::string, std::variant<cle::Image, float, int>> & parameters) -> void
 {
   CustomKernel kernel(device, file_name, kernel_name, parameters.size());
@@ -49,7 +49,7 @@ CustomKernel_Call(const std::shared_ptr<cle::Processor> &                       
       kernel.AddScalar(ite->first, std::get<int>(ite->second));
     }
   }
-  kernel.SetRange({ dx, dy, dz });
+  kernel.SetRange({ range_x, range_y, range_z });
   kernel.Execute();
 }
 
