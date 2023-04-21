@@ -51,23 +51,35 @@ CustomKernel_Call(const std::shared_ptr<cle::Processor> &                       
   CustomKernel kernel(device, file_name, kernel_name, parameters.size());
   for (auto ite = parameters.begin(); ite != parameters.end(); ite++)
   {
-    std::visit(
-      [&](auto && arg) {
-        using T = std::decay_t<decltype(arg)>;
-        if constexpr (std::is_same_v<T, cle::Image>)
-        {
-          kernel.AddImage(ite->first, arg);
-        }
-        else if constexpr (std::is_same_v<T, float>)
-        {
-          kernel.AddScalar(ite->first, arg);
-        }
-        else if constexpr (std::is_same_v<T, int>)
-        {
-          kernel.AddScalar(ite->first, arg);
-        }
-      },
-      ite->second);
+    // std::visit(
+    //   [&](auto && arg) {
+    //     using T = std::decay_t<decltype(arg)>;
+    //     if constexpr (std::is_same_v<T, cle::Image>)
+    //     {
+    //       kernel.AddImage(ite->first, arg);
+    //     }
+    //     else if constexpr (std::is_same_v<T, float>)
+    //     {
+    //       kernel.AddScalar(ite->first, arg);
+    //     }
+    //     else if constexpr (std::is_same_v<T, int>)
+    //     {
+    //       kernel.AddScalar(ite->first, arg);
+    //     }
+    //   },
+    //   ite->second);
+    if (std::holds_alternative<cle::Image>(ite->second))
+    {
+      kernel.AddImage(ite->first, std::get<cle::Image>(ite->second));
+    }
+    else if (std::holds_alternative<float>(ite->second))
+    {
+      kernel.AddScalar(ite->first, std::get<float>(ite->second));
+    }
+    else if (std::holds_alternative<int>(ite->second))
+    {
+      kernel.AddScalar(ite->first, std::get<int>(ite->second));
+    }
   }
   kernel.SetRange({ range_x, range_y, range_z });
   kernel.Execute();
