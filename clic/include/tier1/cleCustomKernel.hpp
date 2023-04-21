@@ -25,7 +25,7 @@ public:
 };
 
 inline auto
-CustomKernel_Call() -> void
+CustomKernel_Call(const std::shared_ptr<cle::Processor> & device) -> void
 {
   // CustomKernel kernel(device, filename, name, 1);
   // for (auto ite = parameters.begin(); ite != parameters.end(); ite++)
@@ -43,7 +43,7 @@ CustomKernel_Call() -> void
   //     kernel.AddScalar(ite->first, std::get<int>(ite->second));
   //   }
   // }
-  std::cout << "c++ global_range = ";
+  std::cout << "device = " << device->GetDeviceName() << std::endl;
   // for (auto x : global_range)
   // {
   //   std::cout << x << " ";
