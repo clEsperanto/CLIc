@@ -28,25 +28,25 @@ inline auto
 CustomKernel_Call(const std::shared_ptr<cle::Processor> & device,
                   const std::string &                     filename,
                   const std::string &                     name,
-                  const cle::ParametersMap &              parameters,
-                  const std::array<size_t, 3> &           global_range = { 1, 1, 1 }) -> void
+                  // const cle::ParametersMap &              parameters,
+                  const std::array<size_t, 3> & global_range = { 1, 1, 1 }) -> void
 {
-  CustomKernel kernel(device, filename, name, parameters.size());
-  for (auto ite = parameters.begin(); ite != parameters.end(); ite++)
-  {
-    if (std::holds_alternative<cle::Image>(ite->second))
-    {
-      kernel.AddImage(ite->first, std::get<cle::Image>(ite->second));
-    }
-    else if (std::holds_alternative<float>(ite->second))
-    {
-      kernel.AddScalar(ite->first, std::get<float>(ite->second));
-    }
-    else if (std::holds_alternative<int>(ite->second))
-    {
-      kernel.AddScalar(ite->first, std::get<int>(ite->second));
-    }
-  }
+  CustomKernel kernel(device, filename, name, 1);
+  // for (auto ite = parameters.begin(); ite != parameters.end(); ite++)
+  // {
+  //   if (std::holds_alternative<cle::Image>(ite->second))
+  //   {
+  //     kernel.AddImage(ite->first, std::get<cle::Image>(ite->second));
+  //   }
+  //   else if (std::holds_alternative<float>(ite->second))
+  //   {
+  //     kernel.AddScalar(ite->first, std::get<float>(ite->second));
+  //   }
+  //   else if (std::holds_alternative<int>(ite->second))
+  //   {
+  //     kernel.AddScalar(ite->first, std::get<int>(ite->second));
+  //   }
+  // }
   std::cout << "c++ global_range = ";
   for (auto x : global_range)
   {
@@ -54,7 +54,7 @@ CustomKernel_Call(const std::shared_ptr<cle::Processor> & device,
   }
   std::cout << std::endl;
   kernel.SetRange(global_range);
-  kernel.Execute();
+  // kernel.Execute();
 }
 
 } // namespace cle
