@@ -26,6 +26,7 @@ public:
 
 inline auto
 CustomKernel_Call(const std::shared_ptr<cle::Processor> &                             device,
+                  const std::string &                                                 kernel_name,
                   const std::map<std::string, std::variant<cle::Image, float, int>> & parameters) -> void
 {
   // CustomKernel kernel(device, filename, name, 1);
@@ -47,6 +48,7 @@ CustomKernel_Call(const std::shared_ptr<cle::Processor> &                       
       // kernel.AddScalar(ite->first, std::get<int>(ite->second));
     }
   }
+  std::cout << "kernel = " << kernel_name << std::endl;
   std::cout << "device = " << device->GetDeviceName() << std::endl;
   // for (auto x : global_range)
   // {
