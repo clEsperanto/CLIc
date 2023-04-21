@@ -33,30 +33,30 @@ CustomKernel_Call(const std::shared_ptr<cle::Processor> &                       
                   const size_t &                                                      dz,
                   const std::map<std::string, std::variant<cle::Image, float, int>> & parameters) -> void
 {
-  // CustomKernel kernel(device, filename, name, 1);
+  CustomKernel kernel(device, file_name, kernel_name, parameters.size());
   for (auto ite = parameters.begin(); ite != parameters.end(); ite++)
   {
     if (std::holds_alternative<cle::Image>(ite->second))
     {
       std::cout << ite->first << " : " << std::get<cle::Image>(ite->second) << std::endl;
-      // kernel.AddImage(ite->first, std::get<cle::Image>(ite->second));
+      kernel.AddImage(ite->first, std::get<cle::Image>(ite->second));
     }
     else if (std::holds_alternative<float>(ite->second))
     {
       std::cout << ite->first << " : " << std::get<float>(ite->second) << std::endl;
-      // kernel.AddScalar(ite->first, std::get<float>(ite->second));
+      kernel.AddScalar(ite->first, std::get<float>(ite->second));
     }
     else if (std::holds_alternative<int>(ite->second))
     {
       std::cout << ite->first << " : " << std::get<int>(ite->second) << std::endl;
-      // kernel.AddScalar(ite->first, std::get<int>(ite->second));
+      kernel.AddScalar(ite->first, std::get<int>(ite->second));
     }
   }
   std::cout << "kernel = " << file_name << " -> " << kernel_name << std::endl;
   std::cout << "device = " << device->GetDeviceName() << std::endl;
   std::cout << "global ranges: " << dx << "," << dy << "," << dz << std::endl;
-  // kernel.SetRange(global_range);
-  // kernel.Execute();
+  kernel.SetRange({ dx, dy, dz });
+  kernel.Execute();
 }
 
 } // namespace cle
