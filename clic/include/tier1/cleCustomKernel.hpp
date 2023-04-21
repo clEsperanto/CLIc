@@ -25,11 +25,9 @@ public:
 };
 
 inline auto
-CustomKernel_Call(const std::shared_ptr<cle::Processor> & device,
-                  const std::string &                     filename,
-                  const std::string &                     name) -> void
+CustomKernel_Call(const std::string & filename, const std::string & name) -> void
 {
-  CustomKernel kernel(device, filename, name, 1);
+  // CustomKernel kernel(device, filename, name, 1);
   // for (auto ite = parameters.begin(); ite != parameters.end(); ite++)
   // {
   //   if (std::holds_alternative<cle::Image>(ite->second))
