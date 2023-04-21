@@ -27,9 +27,7 @@ public:
 inline auto
 CustomKernel_Call(const std::shared_ptr<cle::Processor> & device,
                   const std::string &                     filename,
-                  const std::string &                     name,
-                  // const cle::ParametersMap &              parameters,
-                  const std::array<size_t, 3> & global_range = { 1, 1, 1 }) -> void
+                  const std::string &                     name) -> void
 {
   CustomKernel kernel(device, filename, name, 1);
   // for (auto ite = parameters.begin(); ite != parameters.end(); ite++)
@@ -47,13 +45,13 @@ CustomKernel_Call(const std::shared_ptr<cle::Processor> & device,
   //     kernel.AddScalar(ite->first, std::get<int>(ite->second));
   //   }
   // }
-  std::cout << "c++ global_range = ";
-  for (auto x : global_range)
-  {
-    std::cout << x << " ";
-  }
-  std::cout << std::endl;
-  kernel.SetRange(global_range);
+  // std::cout << "c++ global_range = ";
+  // for (auto x : global_range)
+  // {
+  //   std::cout << x << " ";
+  // }
+  // std::cout << std::endl;
+  // kernel.SetRange(global_range);
   // kernel.Execute();
 }
 
