@@ -25,7 +25,7 @@ public:
 };
 
 inline auto
-CustomKernel_Call(const std::string & filename, const std::string & name) -> void
+CustomKernel_Call() -> void
 {
   // CustomKernel kernel(device, filename, name, 1);
   // for (auto ite = parameters.begin(); ite != parameters.end(); ite++)
@@ -43,7 +43,7 @@ CustomKernel_Call(const std::string & filename, const std::string & name) -> voi
   //     kernel.AddScalar(ite->first, std::get<int>(ite->second));
   //   }
   // }
-  // std::cout << "c++ global_range = ";
+  std::cout << "c++ global_range = ";
   // for (auto x : global_range)
   // {
   //   std::cout << x << " ";
