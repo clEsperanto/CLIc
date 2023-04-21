@@ -53,7 +53,7 @@ CustomKernel_Call(const std::shared_ptr<cle::Processor> &                       
   }
   std::cout << "kernel = " << kernel_name << std::endl;
   std::cout << "device = " << device->GetDeviceName() << std::endl;
-  std::cout << "global ranges: " << dx << "," << dy << "," << dz << std::cout << std::endl;
+  std::cout << "global ranges: " << dx << "," << dy << "," << dz << std::endl;
   // kernel.SetRange(global_range);
   // kernel.Execute();
 }
