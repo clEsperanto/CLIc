@@ -47,6 +47,22 @@ CustomKernel_Call(const std::shared_ptr<cle::Processor> & device,
       kernel.AddScalar(ite->first, std::get<int>(ite->second));
     }
   }
+  std::cout << "c++ global_range = ";
+  for (auto x : global_range)
+  {
+    std::cout << x << " ";
+  }
+  std::cout << std::endl;
+
+  std::reverse(global_range.begin(), global_range.end());
+
+  std::cout << "c++ global_range R = ";
+  for (auto x : global_range)
+  {
+    std::cout << x << " ";
+  }
+  std::cout << std::endl;
+
   kernel.SetRange(global_range);
   kernel.Execute();
 }
