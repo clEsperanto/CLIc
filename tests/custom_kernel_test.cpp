@@ -23,7 +23,13 @@ run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type, 
 
   cle::ParametersMap params = { { "src", gpu_input }, { "dst", gpu_output }, { "scalar", value } };
 
-  cle::CustomKernel_Call(cle.GetDevice(), path, "add_image_and_scalar", params, gpu_output.Shape());
+  cle::CustomKernel_Call(cle.GetDevice(),
+                         path,
+                         "add_image_and_scalar",
+                         gpu_output.Shape()[0],
+                         gpu_output.Shape()[1],
+                         gpu_output.Shape()[2],
+                         params);
 
   auto output = cle.Pull<type>(gpu_output);
 
