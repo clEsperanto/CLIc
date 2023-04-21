@@ -25,24 +25,28 @@ public:
 };
 
 inline auto
-CustomKernel_Call(const std::shared_ptr<cle::Processor> & device) -> void
+CustomKernel_Call(const std::shared_ptr<cle::Processor> &                             device,
+                  const std::map<std::string, std::variant<cle::Image, float, int>> & parameters) -> void
 {
   // CustomKernel kernel(device, filename, name, 1);
-  // for (auto ite = parameters.begin(); ite != parameters.end(); ite++)
-  // {
-  //   if (std::holds_alternative<cle::Image>(ite->second))
-  //   {
-  //     kernel.AddImage(ite->first, std::get<cle::Image>(ite->second));
-  //   }
-  //   else if (std::holds_alternative<float>(ite->second))
-  //   {
-  //     kernel.AddScalar(ite->first, std::get<float>(ite->second));
-  //   }
-  //   else if (std::holds_alternative<int>(ite->second))
-  //   {
-  //     kernel.AddScalar(ite->first, std::get<int>(ite->second));
-  //   }
-  // }
+  for (auto ite = parameters.begin(); ite != parameters.end(); ite++)
+  {
+    if (std::holds_alternative<cle::Image>(ite->second))
+    {
+      std::cout << ite->first << " : " << std::get<cle::Image>(ite->second) << std::endl;
+      // kernel.AddImage(ite->first, std::get<cle::Image>(ite->second));
+    }
+    else if (std::holds_alternative<float>(ite->second))
+    {
+      std::cout << ite->first << " : " << std::get<float>(ite->second) << std::endl;
+      // kernel.AddScalar(ite->first, std::get<float>(ite->second));
+    }
+    else if (std::holds_alternative<int>(ite->second))
+    {
+      std::cout << ite->first << " : " << std::get<int>(ite->second) << std::endl;
+      // kernel.AddScalar(ite->first, std::get<int>(ite->second));
+    }
+  }
   std::cout << "device = " << device->GetDeviceName() << std::endl;
   // for (auto x : global_range)
   // {
