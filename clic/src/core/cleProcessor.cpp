@@ -106,7 +106,9 @@ Processor::SelectDevice(const std::string & name, const std::string & type) -> v
   });
   if (ite == list_of_device.end())
   {
-    throw std::runtime_error("Error: Fail to find/allocate device with name '" + name + "' of type '" + type + "'");
+    ite = list_of_device.end() - 1;
+    std::cerr << "Warning: Fail to find device with name '" << name << "' of type '" << type << "'\n";
+    std::cerr << "\tSelecting default device: '" << Backend::GetDeviceName(*ite) << "'\n";
   }
   this->SetDevicePointers(*ite);
 }
