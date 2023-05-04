@@ -22,21 +22,22 @@ CustomKernel::CustomKernel(const ProcessorPointer & device,
 }
 
 auto
-CustomKernel::AddImages(const std::map<std::string, Image> & images) -> void
+CustomKernel::AddImage(const std::string & tag, const cle::Image & object) -> void
 {
-  for (auto ite = images.begin(); ite != images.end(); ite++)
-  {
-    this->AddParameter(ite->first, ite->second);
-  }
+  this->AddParameter(tag, object);
 }
 
 auto
-CustomKernel::AddScalars(const std::map<std::string, float> & scalars) -> void
+CustomKernel::AddScalar(const std::string & tag, const float & value) -> void
 {
-  for (auto ite = scalars.begin(); ite != scalars.end(); ite++)
-  {
-    this->AddParameter(ite->first, ite->second);
-  }
+  this->AddParameter(tag, value);
 }
+
+auto
+CustomKernel::AddScalar(const std::string & tag, const int & value) -> void
+{
+  this->AddParameter(tag, value);
+}
+
 
 } // namespace cle

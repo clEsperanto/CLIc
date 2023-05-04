@@ -116,11 +116,11 @@ Processor::SelectDevice(const std::string & name, const std::string & type) -> v
 auto
 Processor::SelectDevice(const int & idx, const std::string & type) -> void
 {
-  auto                      list_of_device = Processor::GetDevices(type);
+  const auto                list_of_device = Processor::GetDevices(type);
   std::optional<cl::Device> selected_device;
   for (const auto & device : list_of_device)
   {
-    if (idx == -1 || idx == &device - &list_of_device[0])
+    if (idx == -1 || idx == static_cast<int>(&device - &list_of_device[0]))
     {
       selected_device = device;
       break;
@@ -128,7 +128,7 @@ Processor::SelectDevice(const int & idx, const std::string & type) -> void
   }
   if (selected_device.has_value())
   {
-    SetDevicePointers(*selected_device); // Use operator*() to access the value, to replace by value()
+    SetDevicePointers(selected_device.value()); // Use operator*() to access the value, to replace by value()
   }
   throw std::runtime_error("Error: Fail to find/allocate device with index '" + std::to_string(idx) + "' of type '" +
                            type + "'");

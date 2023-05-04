@@ -5,6 +5,7 @@
 #include "cleLightObject.hpp"
 #include "cleTypes.hpp"
 
+#include <variant>
 
 namespace cle
 {
@@ -61,6 +62,9 @@ private:
   ShapeArray       origin_{ 0, 0, 0 };
   ChannelType      channels_type_ = INTENSITY;
 };
+
+using ParametersMap = std::map<std::string, std::variant<Image, float, int>>;
+using ConstantsMap = std::map<std::string, std::variant<float, int>>;
 
 } // namespace cle
 

@@ -520,7 +520,7 @@ add_test(NAME core_buffer_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COM
 add_test(NAME core_image_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND core_image_test)
 add_test(NAME core_kernel_test_buffer WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND core_kernel_test buffer)
 # add_test(NAME core_kernel_test_image WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND core_kernel_test image)
-add_test(NAME custom_kernel_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND custom_kernel_test ${OCL_KERNELS_DIR}/kernels/absolute.cl)
+add_test(NAME custom_kernel_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND custom_kernel_test ${OCL_KERNELS_DIR}/kernels/add_image_and_scalar.cl)
 add_test(NAME absolute_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND absolute_test)
 add_test(NAME add_image_and_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_and_scalar_test)
 add_test(NAME add_image_weighted_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_weighted_test)
