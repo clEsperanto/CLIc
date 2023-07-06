@@ -52,7 +52,7 @@ if (BUILD_COVERAGE)
 endif()
 
 # set Test compilation (default: ON)
-option(BUILD_TESTING "Build ${LIBRARY_NAME} Tests." OFF)
+option(BUILD_TESTING "Build ${LIBRARY_NAME} Tests." ON)
 message(STATUS "Build tests: ${BUILD_TESTING}")
 
 # set Doc compilation (default: ON) (NOT IMPLEMENTED)

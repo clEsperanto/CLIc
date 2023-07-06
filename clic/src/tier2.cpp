@@ -26,32 +26,21 @@ difference_of_gaussian_func(const Device::Pointer & device,
 }
 
 auto
-maximum_all_pixels(const Device::Pointer & device, const Array::Pointer & src) -> float
+maximum_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> Array::Pointer
 {
-  Array::Pointer proj_z;
-  Array::Pointer proj_y;
-  Array::Pointer proj_x;
+  auto dst = const_cast<Array::Pointer &>(src);
   if (src->depth() > 1)
   {
-    proj_z = tier1::maximum_z_projection_func(device, src, nullptr);
-  }
-  else
-  {
-    proj_z = src;
+    auto proj_z = tier1::maximum_z_projection_func(device, dst, nullptr);
+    dst = proj_z;
   }
   if (src->height() > 1)
   {
-    proj_y = tier1::maximum_y_projection_func(device, src, nullptr);
+    auto proj_y = tier1::maximum_y_projection_func(device, dst, nullptr);
+    dst = proj_y;
   }
-  else
-  {
-    proj_y = src;
-  }
-  proj_x = tier1::maximum_x_projection_func(device, src, nullptr);
-
-  float result;
-  proj_z->read(&result);
-  return result;
+  auto proj_x = tier1::maximum_x_projection_func(device, dst, nullptr);
+  return proj_x;
 }
 
 } // namespace cle::tier2
