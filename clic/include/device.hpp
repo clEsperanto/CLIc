@@ -64,7 +64,7 @@ public:
   friend auto
   operator<<(std::ostream & out, const Device & device) -> std::ostream &
   {
-    out << device.getName() << " (" << device.getType() << ")";
+    out << "(" << device.getType() << ") " << device.getName();
     return out;
   }
 };
