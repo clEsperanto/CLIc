@@ -61,6 +61,13 @@ binary_xor_func(const Device::Pointer & device,
                 Array::Pointer          dst) -> Array::Pointer;
 
 auto
+block_enumerate_func(const Device::Pointer & device,
+                     const Array::Pointer &  src0,
+                     const Array::Pointer &  src1,
+                     Array::Pointer          dst,
+                     const int &             blocksize) -> Array::Pointer;
+
+auto
 convolve_func(const Device::Pointer & device,
               const Array::Pointer &  src0,
               const Array::Pointer &  src1,
@@ -457,6 +464,12 @@ subtract_image_from_scalar_func(const Device::Pointer & device,
                                 const Array::Pointer &  src,
                                 Array::Pointer          dst,
                                 const float &           scalar) -> Array::Pointer;
+
+auto
+sum_reduction_x_func(const Device::Pointer & device,
+                     const Array::Pointer &  src,
+                     Array::Pointer          dst,
+                     const int &             blocksize) -> Array::Pointer;
 
 auto
 sum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;

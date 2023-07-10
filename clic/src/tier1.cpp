@@ -16,6 +16,7 @@
 #include "cle_binary_or.h"
 #include "cle_binary_subtract.h"
 #include "cle_binary_xor.h"
+#include "cle_block_enumerate.h"
 #include "cle_convolve.h"
 #include "cle_copy.h"
 // #include "cle_copy_slice.h"
@@ -138,6 +139,7 @@
 // #include "cle_square_root.h"
 // #include "cle_standard_deviation_z_projection.h"
 #include "cle_subtract_image_from_scalar.h"
+#include "cle_sum_reduction_x.h"
 #include "cle_sum_x_projection.h"
 #include "cle_sum_y_projection.h"
 #include "cle_sum_z_projection.h"
@@ -278,6 +280,21 @@ binary_xor_func(const Device::Pointer & device,
   const KernelInfo    kernel = { "binary_xor", kernel::binary_xor };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
+auto
+block_enumerate_func(const Device::Pointer & device,
+                     const Array::Pointer &  src0,
+                     const Array::Pointer &  src1,
+                     Array::Pointer          dst,
+                     const int &             blocksize) -> Array::Pointer
+{
+  tier0::create_like(src0, dst);
+  const KernelInfo    kernel = { "block_enumerate", kernel::block_enumerate };
+  const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst }, { "index", blocksize } };
+  const RangeArray    range = { src1->width(), src1->height(), src1->depth() };
   execute(device, kernel, params, range);
   return dst;
 }
@@ -1242,6 +1259,34 @@ subtract_image_from_scalar_func(const Device::Pointer & device,
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "subtract_image_from_scalar", kernel::subtract_image_from_scalar };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar", scalar } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
+
+auto
+sum_reduction_x_func(const Device::Pointer & device,
+                     const Array::Pointer &  src,
+                     Array::Pointer          dst,
+                     const int &             blocksize) -> Array::Pointer
+{
+  if (dst == nullptr)
+  {
+    size_t dst_height = src->height();
+    size_t dst_depth = 1;
+    if (src->dim() == 3)
+    {
+      dst_depth = static_cast<size_t>(src->depth() / blocksize);
+    }
+    else
+    {
+      dst_height = static_cast<size_t>(src->height() / blocksize);
+    }
+    dst = Array::create(src->width(), dst_height, dst_depth, src->dtype(), src->mtype(), src->device());
+  }
+  const KernelInfo    kernel = { "sum_reduction_x", kernel::sum_reduction_x };
+  const ParameterList params = { { "src", src }, { "dst", dst }, { "index", blocksize } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
