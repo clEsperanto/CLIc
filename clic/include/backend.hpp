@@ -403,6 +403,9 @@ public:
   getInstance() -> BackendManager &;
 
   [[nodiscard]] static auto
+  getBackendsList() -> std::vector<std::string>;
+
+  [[nodiscard]] static auto
   cudaEnabled() -> bool;
 
   [[nodiscard]] static auto

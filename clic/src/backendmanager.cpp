@@ -4,6 +4,21 @@ namespace cle
 {
 
 auto
+BackendManager::getBackendsList() -> std::vector<std::string>
+{
+  std::vector<std::string> availableBackend;
+  if (cudaEnabled())
+  {
+    availableBackend.push_back("cuda");
+  }
+  if (openCLEnabled())
+  {
+    availableBackend.push_back("opencl");
+  }
+  return availableBackend;
+}
+
+auto
 BackendManager::getInstance() -> BackendManager &
 {
   static BackendManager instance;
