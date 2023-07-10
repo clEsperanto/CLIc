@@ -4,8 +4,11 @@
 #include <fstream>
 #include <iostream>
 
+#include <cmath>
+
 namespace cle
 {
+
 
 enum class mType
 {
