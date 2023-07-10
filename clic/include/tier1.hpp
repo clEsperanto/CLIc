@@ -414,8 +414,10 @@ set_row_func(const Device::Pointer & device, Array::Pointer dst, const int & row
   -> Array::Pointer;
 
 auto
-set_nonzero_pixels_to_pixelindex_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+set_nonzero_pixels_to_pixelindex_func(const Device::Pointer & device,
+                                      const Array::Pointer &  src,
+                                      Array::Pointer          dst,
+                                      const int &             offset) -> Array::Pointer;
 
 // set_where_x_equals_y_func
 // set_where_x_greater_than_y_func
