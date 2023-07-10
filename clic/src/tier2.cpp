@@ -26,7 +26,7 @@ difference_of_gaussian_func(const Device::Pointer & device,
 }
 
 auto
-maximum_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+maximum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
   tier0::create_one(src, dst);

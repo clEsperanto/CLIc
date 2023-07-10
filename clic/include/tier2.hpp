@@ -21,7 +21,7 @@ difference_of_gaussian_func(const Device::Pointer & device,
                             const float &           sigma2_z) -> Array::Pointer;
 
 auto
-maximum_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+maximum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer;
 
 } // namespace cle::tier2
