@@ -134,7 +134,7 @@ CUDADevice::getInfo() const -> std::string
   driverMinor = (driverVersion % 1000) / 10;
 
   std::ostringstream result;
-  result << getName() << " (" << driverMajor << "." << driverMinor << ")\n";
+  result << "(" << this->getType() << ")" << getName() << " (" << driverMajor << "." << driverMinor << ")\n";
   result << "\tType: GPU\n";
   result << "\tCompute Units: " << numMultiprocessors << '\n';
   result << "\tGlobal Memory Size: " << (totalMemory / (1000 * 1000)) << " MB\n";

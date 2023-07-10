@@ -133,7 +133,7 @@ OpenCLDevice::getInfo() const -> std::string
   clGetDeviceInfo(clDevice, CL_DEVICE_MAX_MEM_ALLOC_SIZE, sizeof(size_t), &max_mem_size, nullptr);
 
   // Print device information to output string
-  result << name << " (" << std::string(version) << ")\n";
+  result << "(" << this->getType() << ")" << name << " (" << std::string(version) << ")\n";
   switch (type)
   {
     case CL_DEVICE_TYPE_CPU:
