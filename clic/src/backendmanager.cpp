@@ -29,6 +29,7 @@ auto
 BackendManager::cudaEnabled() -> bool
 {
 #if USE_CUDA
+  cuInit(0);
   int  deviceCount = 0;
   auto error = cuDeviceGetCount(&deviceCount);
   if (error != CUDA_SUCCESS)
