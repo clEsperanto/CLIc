@@ -188,10 +188,16 @@ castTo(const T & value, const dType & dtype) ->
 }
 
 inline auto
-sigma2radius(const float & sigma) -> int
+sigma2kernelsize(const float & sigma) -> int
 {
   auto rad = static_cast<int>(sigma * 8.0);
   return (rad % 2 == 0) ? rad + 1 : rad;
+}
+
+inline auto
+radius2kernelsize(const int & radius) -> int
+{
+  return static_cast<int>(radius * 2 + 1);
 }
 
 inline auto
