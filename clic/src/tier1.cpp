@@ -31,8 +31,8 @@
 // #include "cle_dilate_box_slice_by_slice.h"
 #include "cle_dilate_sphere.h"
 // #include "cle_dilate_sphere_slice_by_slice.h"
+#include "cle_divide_image_and_scalar.h"
 #include "cle_divide_images.h"
-// #include "cle_divide_scalar_by_image.h"
 #include "cle_draw_box.h"
 #include "cle_draw_line.h"
 #include "cle_draw_sphere.h"
@@ -374,7 +374,20 @@ divide_images_func(const Device::Pointer & device,
   return dst;
 }
 
-// divide_scalar_by_image_func
+auto
+divide_image_and_scalar_func(const Device::Pointer & device,
+                             const Array::Pointer &  src,
+                             Array::Pointer          dst,
+                             const float &           scalar) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const KernelInfo    kernel = { "divide_image_and_scalar", kernel::divide_image_and_scalar };
+  const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar", scalar } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
 // draw_box_func
 // draw_sphere_func
 // draw_line_func
@@ -460,7 +473,7 @@ gaussian_blur_func(const Device::Pointer & device,
                                 src,
                                 dst,
                                 { sigma_x, sigma_y, sigma_z },
-                                { sigma2radius(sigma_x), sigma2radius(sigma_y), sigma2radius(sigma_z) });
+                                { sigma2kernelsize(sigma_x), sigma2kernelsize(sigma_y), sigma2kernelsize(sigma_z) });
   return dst;
 }
 
@@ -594,12 +607,12 @@ logarithm_func(const Device::Pointer & device, const Array::Pointer & src, Array
 }
 
 auto
-mask_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, const Array::Pointer & mask)
+mask_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask, Array::Pointer dst)
   -> Array::Pointer
 {
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "mask", kernel::mask };
-  const ParameterList params = { { "src", src }, { "dst", dst }, { "mask", mask } };
+  const ParameterList params = { { "src0", src }, { "src1", mask }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
@@ -664,7 +677,7 @@ maximum_box_func(const Device::Pointer & device,
     src,
     dst,
     { static_cast<float>(radius_x), static_cast<float>(radius_y), static_cast<float>(radius_z) },
-    { sigma2radius(radius_x), sigma2radius(radius_y), sigma2radius(radius_z) });
+    { radius2kernelsize(radius_x), radius2kernelsize(radius_y), radius2kernelsize(radius_z) });
   return dst;
 }
 
@@ -723,7 +736,7 @@ mean_box_func(const Device::Pointer & device,
     src,
     dst,
     { static_cast<float>(radius_x), static_cast<float>(radius_y), static_cast<float>(radius_z) },
-    { sigma2radius(radius_x), sigma2radius(radius_y), sigma2radius(radius_z) });
+    { radius2kernelsize(radius_x), radius2kernelsize(radius_y), radius2kernelsize(radius_z) });
   return dst;
 }
 
@@ -737,10 +750,12 @@ mean_sphere_func(const Device::Pointer & device,
 {
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "mean_sphere", kernel::mean_sphere };
-  const ParameterList params = {
-    { "src", src }, { "dst", dst }, { "scalar0", radius_x }, { "scalar1", radius_y }, { "scalar2", radius_z }
-  };
-  const RangeArray range = { dst->width(), dst->height(), dst->depth() };
+  const ParameterList params = { { "src", src },
+                                 { "dst", dst },
+                                 { "scalar0", radius2kernelsize(radius_x) },
+                                 { "scalar1", radius2kernelsize(radius_y) },
+                                 { "scalar2", radius2kernelsize(radius_z) } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
 }
@@ -797,7 +812,7 @@ minimum_box_func(const Device::Pointer & device,
     src,
     dst,
     { static_cast<float>(radius_x), static_cast<float>(radius_y), static_cast<float>(radius_z) },
-    { sigma2radius(radius_x), sigma2radius(radius_y), sigma2radius(radius_z) });
+    { radius2kernelsize(radius_x), radius2kernelsize(radius_y), radius2kernelsize(radius_z) });
   return dst;
 }
 
@@ -1092,10 +1107,12 @@ maximum_sphere_func(const Device::Pointer & device,
 {
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "maximum_sphere", kernel::maximum_sphere };
-  const ParameterList params = {
-    { "src", src }, { "dst", dst }, { "scalar0", radius_x }, { "scalar1", radius_y }, { "scalar2", radius_z }
-  };
-  const RangeArray range = { dst->width(), dst->height(), dst->depth() };
+  const ParameterList params = { { "src", src },
+                                 { "dst", dst },
+                                 { "scalar0", radius2kernelsize(radius_x) },
+                                 { "scalar1", radius2kernelsize(radius_y) },
+                                 { "scalar2", radius2kernelsize(radius_z) } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
 }
@@ -1110,10 +1127,12 @@ minimum_sphere_func(const Device::Pointer & device,
 {
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "minimum_sphere", kernel::minimum_sphere };
-  const ParameterList params = {
-    { "src", src }, { "scalar0", radius_x }, { "scalar1", radius_y }, { "scalar2", radius_z }
-  };
-  const RangeArray range = { dst->width(), dst->height(), dst->depth() };
+  const ParameterList params = { { "src", src },
+                                 { "dst", dst },
+                                 { "scalar0", radius2kernelsize(radius_x) },
+                                 { "scalar1", radius2kernelsize(radius_y) },
+                                 { "scalar2", radius2kernelsize(radius_z) } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
 }
@@ -1122,26 +1141,24 @@ minimum_sphere_func(const Device::Pointer & device,
 // reciprocal_func
 
 auto
-set_func(const Device::Pointer & device, Array::Pointer dst, const float & scalar) -> Array::Pointer
+set_func(const Device::Pointer & device, const Array::Pointer & src, const float & scalar) -> Array::Pointer
 {
-  tier0::create_like(dst, dst);
   const KernelInfo    kernel = { "set", kernel::set };
-  const ParameterList params = { { "dst", dst }, { "scalar", scalar } };
-  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  const ParameterList params = { { "dst", src }, { "scalar", scalar } };
+  const RangeArray    range = { src->width(), src->height(), src->depth() };
   execute(device, kernel, params, range);
-  return dst;
+  return src;
 }
 
 auto
-set_column_func(const Device::Pointer & device, Array::Pointer dst, const int & column, const float & value)
+set_column_func(const Device::Pointer & device, const Array::Pointer & src, const int & column, const float & value)
   -> Array::Pointer
 {
-  tier0::create_like(dst, dst);
   const KernelInfo    kernel = { "set_column", kernel::set_column };
-  const ParameterList params = { { "dst", dst }, { "index", column }, { "scalar", value } };
-  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  const ParameterList params = { { "dst", src }, { "index", column }, { "scalar", value } };
+  const RangeArray    range = { src->width(), src->height(), src->depth() };
   execute(device, kernel, params, range);
-  return dst;
+  return src;
 }
 
 // set_image_borders_func
@@ -1151,14 +1168,14 @@ set_column_func(const Device::Pointer & device, Array::Pointer dst, const int & 
 // set_ramp_z_func
 
 auto
-set_row_func(const Device::Pointer & device, Array::Pointer dst, const int & row, const float & value) -> Array::Pointer
+set_row_func(const Device::Pointer & device, const Array::Pointer & src, const int & row, const float & value)
+  -> Array::Pointer
 {
-  tier0::create_like(dst, dst);
   const KernelInfo    kernel = { "set_row", kernel::set_row };
-  const ParameterList params = { { "dst", dst }, { "index", row }, { "scalar", value } };
-  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  const ParameterList params = { { "dst", src }, { "index", row }, { "scalar", value } };
+  const RangeArray    range = { src->width(), src->height(), src->depth() };
   execute(device, kernel, params, range);
-  return dst;
+  return src;
 }
 
 auto
@@ -1273,17 +1290,22 @@ sum_reduction_x_func(const Device::Pointer & device,
 {
   if (dst == nullptr)
   {
+    size_t dst_width = src->width();
     size_t dst_height = src->height();
-    size_t dst_depth = 1;
-    if (src->dim() == 3)
+    size_t dst_depth = src->depth();
+    switch (src->dim())
     {
-      dst_depth = static_cast<size_t>(src->depth() / blocksize);
+      case 1:
+        dst_width = static_cast<size_t>(src->width() / blocksize);
+        break;
+      case 2:
+        dst_height = static_cast<size_t>(src->height() / blocksize);
+        break;
+      case 3:
+        dst_depth = static_cast<size_t>(src->depth() / blocksize);
+        break;
     }
-    else
-    {
-      dst_height = static_cast<size_t>(src->height() / blocksize);
-    }
-    dst = Array::create(src->width(), dst_height, dst_depth, src->dtype(), src->mtype(), src->device());
+    dst = Array::create(dst_width, dst_height, dst_depth, src->dtype(), src->mtype(), src->device());
   }
   const KernelInfo    kernel = { "sum_reduction_x", kernel::sum_reduction_x };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "index", blocksize } };

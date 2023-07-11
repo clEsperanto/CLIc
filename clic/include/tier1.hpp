@@ -99,7 +99,12 @@ divide_images_func(const Device::Pointer & device,
                    const Array::Pointer &  src1,
                    Array::Pointer          dst) -> Array::Pointer;
 
-// divide_scalar_by_image_func
+auto
+divide_image_and_scalar_func(const Device::Pointer & device,
+                             const Array::Pointer &  src,
+                             Array::Pointer          dst,
+                             const float &           scalar) -> Array::Pointer;
+
 // draw_box_func
 // draw_sphere_func
 // draw_line_func
@@ -182,7 +187,7 @@ auto
 logarithm_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 auto
-mask_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, const Array::Pointer & mask)
+mask_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask, Array::Pointer dst)
   -> Array::Pointer;
 
 auto
@@ -405,10 +410,10 @@ minimum_sphere_func(const Device::Pointer & device,
 // multiply_matrix_func
 // reciprocal_func
 auto
-set_func(const Device::Pointer & device, Array::Pointer dst, const float & scalar) -> Array::Pointer;
+set_func(const Device::Pointer & device, const Array::Pointer & src, const float & scalar) -> Array::Pointer;
 
 auto
-set_column_func(const Device::Pointer & device, Array::Pointer dst, const int & column, const float & value)
+set_column_func(const Device::Pointer & device, const Array::Pointer & src, const int & column, const float & value)
   -> Array::Pointer;
 
 // set_image_borders_func
@@ -417,7 +422,7 @@ set_column_func(const Device::Pointer & device, Array::Pointer dst, const int & 
 // set_ramp_y_func
 // set_ramp_z_func
 auto
-set_row_func(const Device::Pointer & device, Array::Pointer dst, const int & row, const float & value)
+set_row_func(const Device::Pointer & device, const Array::Pointer & src, const int & row, const float & value)
   -> Array::Pointer;
 
 auto
