@@ -1,7 +1,7 @@
+#include "cle.hpp"
 
+#include <assert.h>
 #include <random>
-
-#include "clesperanto.hpp"
 
 template <class type>
 auto

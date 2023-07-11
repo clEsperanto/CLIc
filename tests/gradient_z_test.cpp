@@ -1,237 +1,54 @@
+#include "cle.hpp"
 
-
-#include "clesperanto.hpp"
-
+#include <assert.h>
 #include <random>
 
 template <class type>
 auto
-run_test(const std::array<size_t, 3> & shape, const cle::MemoryType & mem_type) -> bool
+run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bool
 {
   std::vector<type> input = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   std::vector<type> valid = { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0 };
 
-  cle::Clesperanto cle;
-  cle.GetDevice()->WaitForKernelToFinish();
-  auto gpu_input = cle.Push<type>(input, shape, mem_type);
-  auto gpu_output = cle.Create<type>(shape, mem_type);
-  cle.GradientZ(gpu_input, gpu_output);
-  auto output = cle.Pull<type>(gpu_output);
-  return std::equal(output.begin(), output.end(), valid.begin());
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("TX", "all");
+  auto gpu_input = cle::Array::create(shape[0], shape[1], shape[2], cle::toType<type>(), mem_type, device);
+  gpu_input->write(input.data());
+
+  auto gpu_output = cle::tier1::gradient_z_func(device, gpu_input, nullptr);
+
+  std::vector<type> output(gpu_output->nbElements());
+  gpu_output->read(output.data());
+
+  return std::equal(output.begin(), output.end(), valid.begin()) ? 0 : 1;
 }
 
 auto
 main(int argc, char ** argv) -> int
 {
-  if (!run_test<float>({ 3, 3, 3 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-  /*
-  if (!run_test<int32_t>({ 10, 1, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  cle::BackendManager::getInstance().setBackend("opencl");
+  std::cout << cle::BackendManager::getInstance().getBackend() << " backend selected" << std::endl;
+  assert(run_test<float>({ 3, 3, 3 }, cle::mType::BUFFER) == 0);
+  assert(run_test<int64_t>({ 3, 3, 3 }, cle::mType::BUFFER) == 0);
+  assert(run_test<int32_t>({ 3, 3, 3 }, cle::mType::BUFFER) == 0);
+  assert(run_test<int16_t>({ 3, 3, 3 }, cle::mType::BUFFER) == 0);
+  assert(run_test<int8_t>({ 3, 3, 3 }, cle::mType::BUFFER) == 0);
+  // assert(run_test<float>({ 3, 3, 3 }, cle::mType::IMAGE) == 0);
+  // assert(run_test<int64_t>({ 3, 3, 3 }, cle::mType::IMAGE) == 0);
+  // assert(run_test<int32_t>({ 3, 3, 3 }, cle::mType::IMAGE) == 0);
+  // assert(run_test<int16_t>({ 3, 3, 3 }, cle::mType::IMAGE) == 0);
+  // assert(run_test<int8_t>({ 3, 3, 3 }, cle::mType::IMAGE) == 0);
 
-  if (!run_test<uint32_t>({ 10, 1, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
+  cle::BackendManager::getInstance().setBackend("cuda");
+  std::cout << cle::BackendManager::getInstance().getBackend() << " backend selected" << std::endl;
+  assert(run_test<float>({ 3, 3, 3 }, cle::mType::BUFFER) == 0);
+  // assert(run_test<int64_t>({ 3, 3, 3 }, cle::mType::BUFFER) == 0);
+  assert(run_test<int32_t>({ 3, 3, 3 }, cle::mType::BUFFER) == 0);
+  assert(run_test<int16_t>({ 3, 3, 3 }, cle::mType::BUFFER) == 0);
+  assert(run_test<int8_t>({ 3, 3, 3 }, cle::mType::BUFFER) == 0);
+  // assert(run_test<int64_t>({ 3, 3, 3 }, cle::mType::IMAGE) == 0);
+  // assert(run_test<int32_t>({ 3, 3, 3 }, cle::mType::IMAGE) == 0);
+  // assert(run_test<int16_t>({ 3, 3, 3 }, cle::mType::IMAGE) == 0);
+  // assert(run_test<int8_t>({ 3, 3, 3 }, cle::mType::IMAGE) == 0);
 
-  if (!run_test<int16_t>({ 10, 1, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  if (!run_test<uint16_t>({ 10, 1, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  if (!run_test<int8_t>({ 10, 1, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  if (!run_test<uint8_t>({ 10, 1, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  if (!run_test<float>({ 10, 7, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  if (!run_test<int32_t>({ 10, 7, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  if (!run_test<uint32_t>({ 10, 7, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  if (!run_test<int16_t>({ 10, 7, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  if (!run_test<uint16_t>({ 10, 7, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  if (!run_test<int8_t>({ 10, 7, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  if (!run_test<uint8_t>({ 10, 7, 1 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  if (!run_test<float>({ 10, 7, 5 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  if (!run_test<int32_t>({ 10, 7, 5 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  if (!run_test<uint32_t>({ 10, 7, 5 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  if (!run_test<int16_t>({ 10, 7, 5 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  if (!run_test<uint16_t>({ 10, 7, 5 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  if (!run_test<int8_t>({ 10, 7, 5 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  if (!run_test<uint8_t>({ 10, 7, 5 }, cle::BUFFER))
-  {
-    return EXIT_FAILURE;
-  }
-
-  // if (!run_test<float>({ 10, 1, 1 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<int32_t>({ 10, 1, 1 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<uint32_t>({ 10, 1, 1 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<int16_t>({ 10, 1, 1 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<uint16_t>({ 10, 1, 1 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<int8_t>({ 10, 1, 1 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<uint8_t>({ 10, 1, 1 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<float>({ 10, 7, 1 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<int32_t>({ 10, 7, 1 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<uint32_t>({ 10, 7, 1 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<int16_t>({ 10, 7, 1 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<uint16_t>({ 10, 7, 1 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<int8_t>({ 10, 7, 1 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<uint8_t>({ 10, 7, 1 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<float>({ 10, 7, 5 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<int32_t>({ 10, 7, 5 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<uint32_t>({ 10, 7, 5 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<int16_t>({ 10, 7, 5 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<uint16_t>({ 10, 7, 5 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<int8_t>({ 10, 7, 5 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
-
-  // if (!run_test<uint8_t>({ 10, 7, 5 }, cle::IMAGE))
-  // {
-  // return EXIT_FAILURE;
-  // }
- */
   return EXIT_SUCCESS;
 }
