@@ -34,40 +34,40 @@ target_link_libraries(absolute_test PRIVATE CLIc::CLIc)
 set_target_properties(absolute_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(add_image_and_scalar_test add_image_and_scalar_test.cpp)
-# add_dependencies(add_image_and_scalar_test CLIc)
-# target_link_libraries(add_image_and_scalar_test PRIVATE CLIc::CLIc)
-# set_target_properties(add_image_and_scalar_test PROPERTIES FOLDER "Tests")
+add_executable(add_image_and_scalar_test add_image_and_scalar_test.cpp)
+add_dependencies(add_image_and_scalar_test CLIc)
+target_link_libraries(add_image_and_scalar_test PRIVATE CLIc::CLIc)
+set_target_properties(add_image_and_scalar_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(add_image_weighted_test add_image_weighted_test.cpp)
-# add_dependencies(add_image_weighted_test CLIc)
-# target_link_libraries(add_image_weighted_test PRIVATE CLIc::CLIc)
-# set_target_properties(add_image_weighted_test PROPERTIES FOLDER "Tests")
+add_executable(add_image_weighted_test add_image_weighted_test.cpp)
+add_dependencies(add_image_weighted_test CLIc)
+target_link_libraries(add_image_weighted_test PRIVATE CLIc::CLIc)
+set_target_properties(add_image_weighted_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(binary_and_test binary_and_test.cpp)
-# add_dependencies(binary_and_test CLIc)
-# target_link_libraries(binary_and_test PRIVATE CLIc::CLIc)
-# set_target_properties(binary_and_test PROPERTIES FOLDER "Tests")
+add_executable(binary_and_test binary_and_test.cpp)
+add_dependencies(binary_and_test CLIc)
+target_link_libraries(binary_and_test PRIVATE CLIc::CLIc)
+set_target_properties(binary_and_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(binary_not_test binary_not_test.cpp)
-# add_dependencies(binary_not_test CLIc)
-# target_link_libraries(binary_not_test PRIVATE CLIc::CLIc)
-# set_target_properties(binary_not_test PROPERTIES FOLDER "Tests")
+add_executable(binary_not_test binary_not_test.cpp)
+add_dependencies(binary_not_test CLIc)
+target_link_libraries(binary_not_test PRIVATE CLIc::CLIc)
+set_target_properties(binary_not_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(binary_or_test binary_or_test.cpp)
-# add_dependencies(binary_or_test CLIc)
-# target_link_libraries(binary_or_test PRIVATE CLIc::CLIc)
-# set_target_properties(binary_or_test PROPERTIES FOLDER "Tests")
+add_executable(binary_or_test binary_or_test.cpp)
+add_dependencies(binary_or_test CLIc)
+target_link_libraries(binary_or_test PRIVATE CLIc::CLIc)
+set_target_properties(binary_or_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(binary_edge_detection_test binary_edge_detection_test.cpp)
-# add_dependencies(binary_edge_detection_test CLIc)
-# target_link_libraries(binary_edge_detection_test PRIVATE CLIc::CLIc)
-# set_target_properties(binary_edge_detection_test PROPERTIES FOLDER "Tests")
+add_executable(binary_edge_detection_test binary_edge_detection_test.cpp)
+add_dependencies(binary_edge_detection_test CLIc)
+target_link_libraries(binary_edge_detection_test PRIVATE CLIc::CLIc)
+set_target_properties(binary_edge_detection_test PROPERTIES FOLDER "Tests")
 
 
 # add_executable(custom_kernel_test custom_kernel_test.cpp)
@@ -76,16 +76,16 @@ set_target_properties(absolute_test PROPERTIES FOLDER "Tests")
 # set_target_properties(custom_kernel_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(binary_subtract_test binary_subtract_test.cpp)
-# add_dependencies(binary_subtract_test CLIc)
-# target_link_libraries(binary_subtract_test PRIVATE CLIc::CLIc)
-# set_target_properties(binary_subtract_test PROPERTIES FOLDER "Tests")
+add_executable(binary_subtract_test binary_subtract_test.cpp)
+add_dependencies(binary_subtract_test CLIc)
+target_link_libraries(binary_subtract_test PRIVATE CLIc::CLIc)
+set_target_properties(binary_subtract_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(binary_xor_test binary_xor_test.cpp)
-# add_dependencies(binary_xor_test CLIc)
-# target_link_libraries(binary_xor_test PRIVATE CLIc::CLIc)
-# set_target_properties(binary_xor_test PROPERTIES FOLDER "Tests")
+add_executable(binary_xor_test binary_xor_test.cpp)
+add_dependencies(binary_xor_test CLIc)
+target_link_libraries(binary_xor_test PRIVATE CLIc::CLIc)
+set_target_properties(binary_xor_test PROPERTIES FOLDER "Tests")
 
 
 # add_executable(block_enumerate_test block_enumerate_test.cpp)
@@ -522,14 +522,14 @@ set_target_properties(maximum_x_projection_test PROPERTIES FOLDER "Tests")
 # add_test(NAME core_kernel_test_image WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND core_kernel_test image)
 # add_test(NAME custom_kernel_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND custom_kernel_test ${OCL_KERNELS_DIR}/kernels/add_image_and_scalar.cl)
 add_test(NAME absolute_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND absolute_test)
-# add_test(NAME add_image_and_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_and_scalar_test)
-# add_test(NAME add_image_weighted_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_weighted_test)
-# add_test(NAME binary_and_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_and_test)
-# add_test(NAME binary_edge_detection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_edge_detection_test)
-# add_test(NAME binary_not_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_not_test)
-# add_test(NAME binary_or_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_or_test)
-# add_test(NAME binary_subtract_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_subtract_test)
-# add_test(NAME binary_xor_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_xor_test)
+add_test(NAME add_image_and_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_and_scalar_test)
+add_test(NAME add_image_weighted_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_weighted_test)
+add_test(NAME binary_and_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_and_test)
+add_test(NAME binary_edge_detection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_edge_detection_test)
+add_test(NAME binary_not_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_not_test)
+add_test(NAME binary_or_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_or_test)
+add_test(NAME binary_subtract_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_subtract_test)
+add_test(NAME binary_xor_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_xor_test)
 # add_test(NAME block_enumerate_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND block_enumerate_test)
 # add_test(NAME close_indexgaps_in_labelmap_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND close_indexgaps_in_labelmap_test)
 # add_test(NAME connected_component_labeling_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND connected_component_labeling_box_test)
@@ -613,14 +613,14 @@ add_test(NAME maximum_x_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY
 # )
 
 set_tests_properties(absolute_test 
-    # add_image_and_scalar_test
-    # add_image_weighted_test
-    # binary_and_test
-    # binary_edge_detection_test
-    # binary_not_test
-    # binary_or_test
-    # binary_subtract_test
-    # binary_xor_test
+    add_image_and_scalar_test
+    add_image_weighted_test
+    binary_and_test
+    binary_edge_detection_test
+    binary_not_test
+    binary_or_test
+    binary_subtract_test
+    binary_xor_test
     # block_enumerate_test
     # close_indexgaps_in_labelmap_test
     # connected_component_labeling_box_test
