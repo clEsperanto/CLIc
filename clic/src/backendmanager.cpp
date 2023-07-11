@@ -57,17 +57,38 @@ BackendManager::openCLEnabled() -> bool
 auto
 BackendManager::setBackend(const std::string & backend) -> void
 {
-  if (cudaEnabled() && backend == "cuda")
+  Backend::Type backend_type;
+  if (backend == "cuda" && !cudaEnabled())
   {
-    this->backend = std::make_unique<CUDABackend>();
-  }
-  else if (openCLEnabled())
-  {
-    this->backend = std::make_unique<OpenCLBackend>();
+    std::cerr << "Warning: 'CUDA' backend not available. Switching to 'OpenCL'." << std::endl;
+    backend_type = Backend::Type::OPENCL;
   }
   else
   {
-    throw std::runtime_error("No backend available.");
+    backend_type = Backend::Type::CUDA;
+  }
+  if (backend == "opencl" && !openCLEnabled())
+  {
+    std::cerr << "Warning: 'OpenCL' backend not available. Switching to 'CUDA'." << std::endl;
+    backend_type = Backend::Type::CUDA;
+  }
+  else
+  {
+    backend_type = Backend::Type::OPENCL;
+  }
+  switch (backend_type)
+  {
+    case Backend::Type::CUDA:
+      this->backend = std::make_unique<CUDABackend>();
+      break;
+
+    case Backend::Type::OPENCL:
+      this->backend = std::make_unique<OpenCLBackend>();
+      break;
+
+    default:
+      this->backend = std::make_unique<OpenCLBackend>();
+      std::cerr << "Warning: Using 'OpenCL' as default backend." << std::endl;
   }
 }
 
