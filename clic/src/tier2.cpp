@@ -148,8 +148,11 @@ gamma_correction_func(const Device::Pointer & device, // Tier3
                       Array::Pointer          dst,
                       const float &           gamma) -> Array::Pointer
 {
-  float max_intensity; // @StRigaud WARNING: not specific to image data type, will fail if not float
-  tier2::maximum_of_all_pixels_func(device, src, nullptr)->read(&max_intensity);
+  float max_intensity;
+  auto  max_int = Array::create(1, 1, 1, dType::FLOAT, mType::BUFFER, device);
+  tier2::maximum_of_all_pixels_func(device, src, max_int);
+  max_int->read(&max_intensity);
+
   auto temp1 = tier1::multiply_image_and_scalar_func(device, src, nullptr, 1.0 / max_intensity);
   auto temp2 = tier1::power_func(device, temp1, nullptr, gamma);
   return tier1::multiply_image_and_scalar_func(device, temp2, dst, max_intensity);
