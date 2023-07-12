@@ -3,6 +3,9 @@
 #include <assert.h>
 #include <random>
 
+#include <iomanip>
+#include <limits>
+
 template <class type>
 auto
 run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bool
@@ -14,19 +17,30 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   std::vector<type>   valid(input.size(), static_cast<type>(0));
   const size_t        center = (w / 2) + (h / 2) * w + (d / 2) * h * w;
   input[center] = 100;
-  valid = { static_cast<type>(0.2915041744709014892578125F), static_cast<type>(1.30643117427825927734375F),
-            static_cast<type>(2.1539404392242431640625F),    static_cast<type>(1.30643117427825927734375F),
-            static_cast<type>(0.2915041744709014892578125F), static_cast<type>(1.3064310550689697265625F),
-            static_cast<type>(5.855018138885498046875F),     static_cast<type>(9.6532917022705078125F),
-            static_cast<type>(5.855018138885498046875F),     static_cast<type>(1.3064310550689697265625F),
-            static_cast<type>(2.153940677642822265625F),     static_cast<type>(9.65329265594482421875F),
-            static_cast<type>(15.91558742523193359375F),     static_cast<type>(9.65329265594482421875F),
-            static_cast<type>(2.153940677642822265625F),     static_cast<type>(1.3064310550689697265625F),
-            static_cast<type>(5.855018138885498046875F),     static_cast<type>(9.6532917022705078125F),
-            static_cast<type>(5.855018138885498046875F),     static_cast<type>(1.3064310550689697265625F),
-            static_cast<type>(0.2915041744709014892578125F), static_cast<type>(1.30643117427825927734375F),
-            static_cast<type>(2.1539404392242431640625F),    static_cast<type>(1.30643117427825927734375F),
-            static_cast<type>(0.2915041744709014892578125F) };
+  // valid = { static_cast<type>(0.2915041744709014892578125F), static_cast<type>(1.30643117427825927734375F),
+  //           static_cast<type>(2.1539404392242431640625F),    static_cast<type>(1.30643117427825927734375F),
+  //           static_cast<type>(0.2915041744709014892578125F), static_cast<type>(1.3064310550689697265625F),
+  //           static_cast<type>(5.855018138885498046875F),     static_cast<type>(9.6532917022705078125F),
+  //           static_cast<type>(5.855018138885498046875F),     static_cast<type>(1.3064310550689697265625F),
+  //           static_cast<type>(2.153940677642822265625F),     static_cast<type>(9.65329265594482421875F),
+  //           static_cast<type>(15.91558742523193359375F),     static_cast<type>(9.65329265594482421875F),
+  //           static_cast<type>(2.153940677642822265625F),     static_cast<type>(1.3064310550689697265625F),
+  //           static_cast<type>(5.855018138885498046875F),     static_cast<type>(9.6532917022705078125F),
+  //           static_cast<type>(5.855018138885498046875F),     static_cast<type>(1.3064310550689697265625F),
+  //           static_cast<type>(0.2915041744709014892578125F), static_cast<type>(1.30643117427825927734375F),
+  //           static_cast<type>(2.1539404392242431640625F),    static_cast<type>(1.30643117427825927734375F),
+  //           static_cast<type>(0.2915041744709014892578125F) };
+
+  valid = { static_cast<type>(0.2915041745), static_cast<type>(1.306431174),  static_cast<type>(2.153940439),
+            static_cast<type>(1.306431174),  static_cast<type>(0.2915041745), static_cast<type>(1.306431055),
+            static_cast<type>(5.855018139),  static_cast<type>(9.653291702),  static_cast<type>(5.855018139),
+            static_cast<type>(1.306431055),  static_cast<type>(2.153940678),  static_cast<type>(9.653292656),
+            static_cast<type>(15.91558743),  static_cast<type>(9.653292656),  static_cast<type>(2.153940678),
+            static_cast<type>(1.306431055),  static_cast<type>(5.855018139),  static_cast<type>(9.653291702),
+            static_cast<type>(5.855018139),  static_cast<type>(1.306431055),  static_cast<type>(0.2915041745),
+            static_cast<type>(1.306431174),  static_cast<type>(2.153940439),  static_cast<type>(1.306431174),
+            static_cast<type>(0.2915041745) };
+
 
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   auto gpu_input = cle::Array::create(w, h, d, cle::toType<type>(), mem_type, input.data(), device);
@@ -36,11 +50,19 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   std::vector<type> output(gpu_output->nbElements());
   gpu_output->read(output.data());
 
-  // round values of valid vector values to 6 decimals to avoid float precision errors in comparison
-  std::transform(
-    valid.begin(), valid.end(), valid.begin(), [](type v) { return int(std::round(v * 1000000)) / 1000000.0; });
-  std::transform(
-    output.begin(), output.end(), output.begin(), [](type v) { return int(std::round(v * 1000000)) / 1000000.0; });
+  // // plot output value with maximum precision to debug
+  // for (auto && i : output)
+  // {
+  //   // print i with maximum precision
+  //   std::cout << std::setprecision(std::numeric_limits<type>::max_digits10 + 1) << i << " ";
+  // }
+  // std::cout << std::endl;
+
+  // // round values of valid vector values to 6 decimals to avoid float precision errors in comparison
+  // std::transform(
+  //   valid.begin(), valid.end(), valid.begin(), [](type v) { return int(std::round(v * 1000000)) / 1000000.0; });
+  // std::transform(
+  //   output.begin(), output.end(), output.begin(), [](type v) { return int(std::round(v * 1000000)) / 1000000.0; });
 
   for (auto && i : valid)
   {
