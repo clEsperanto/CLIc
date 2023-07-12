@@ -52,7 +52,7 @@ jobs:
           cd ${{ runner.workspace }}/build
           lcov --directory . --capture --output-file coverage.info
           lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
-          lcov --list coverage.info
+          lcov --ignore-errors inconsistent --list coverage.info
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v3

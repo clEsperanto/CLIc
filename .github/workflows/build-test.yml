@@ -125,11 +125,6 @@ jobs:
           cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
         shell: bash -l {0}
 
-      # - name: run CLIc core test
-      #   run: |
-      #     cd "${{ runner.workspace }}/build"
-      #     ctest -R core_gpu_test -C Release
-      #   shell: bash -l {0}
 
       
       
