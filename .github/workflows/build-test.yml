@@ -85,7 +85,7 @@ jobs:
           cmake -D CMAKE_INSTALL_PREFIX="${{ github.workspace }}/OpenCL-Headers/install" -S "./OpenCL-Headers" -B "./OpenCL-Headers/build" 
           cmake --build "./OpenCL-Headers/build" --parallel 6 --target install
           cmake -D CMAKE_PREFIX_PATH="${{ github.workspace }}/OpenCL-Headers/install" -D OPENCL_ICD_LOADER_HEADERS_DIR="./OpenCL-Headers/install/include" -S "./OpenCL-ICD-Loader" -B "./OpenCL-ICD-Loader/build"
-          cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
+          sudo cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
         shell: bash -l {0}
 
       - name: Install cuda toolkit (ubuntu)
