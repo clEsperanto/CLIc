@@ -58,20 +58,20 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   // }
   // std::cout << std::endl;
 
-  // // round values of valid vector values to 6 decimals to avoid float precision errors in comparison
-  // std::transform(
-  //   valid.begin(), valid.end(), valid.begin(), [](type v) { return int(std::round(v * 1000000)) / 1000000.0; });
-  // std::transform(
-  //   output.begin(), output.end(), output.begin(), [](type v) { return int(std::round(v * 1000000)) / 1000000.0; });
+  // round values of valid vector values to 6 decimals to avoid float precision errors in comparison
+  std::transform(
+    valid.begin(), valid.end(), valid.begin(), [](type v) { return int(std::round(v * 1000000)) / 1000000.0; });
+  std::transform(
+    output.begin(), output.end(), output.begin(), [](type v) { return int(std::round(v * 1000000)) / 1000000.0; });
 
   for (auto && i : valid)
   {
-    std::cout << i << ", ";
+    std::cout << std::setprecision(std::numeric_limits<type>::max_digits10 + 1) << i << ", ";
   }
   std::cout << std::endl;
   for (auto && i : output)
   {
-    std::cout << i << ", ";
+    std::cout << std::setprecision(std::numeric_limits<type>::max_digits10 + 1) << i << ", ";
   }
   std::cout << std::endl;
   for (size_t i = 0; i < output.size(); i++)
