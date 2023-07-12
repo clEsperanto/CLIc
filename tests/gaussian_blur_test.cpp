@@ -50,35 +50,9 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   std::vector<type> output(gpu_output->nbElements());
   gpu_output->read(output.data());
 
-  // // plot output value with maximum precision to debug
-  // for (auto && i : output)
-  // {
-  //   // print i with maximum precision
-  //   std::cout << std::setprecision(std::numeric_limits<type>::max_digits10 + 1) << i << " ";
-  // }
-  // std::cout << std::endl;
-
   // round values of valid vector values to 6 decimals to avoid float precision errors in comparison
-  std::transform(
-    valid.begin(), valid.end(), valid.begin(), [](type v) { return int(std::round(v * 1000000)) / 1000000.0; });
-  std::transform(
-    output.begin(), output.end(), output.begin(), [](type v) { return int(std::round(v * 1000000)) / 1000000.0; });
-
-  for (auto && i : valid)
-  {
-    std::cout << std::setprecision(std::numeric_limits<type>::max_digits10 + 1) << i << ", ";
-  }
-  std::cout << std::endl;
-  for (auto && i : output)
-  {
-    std::cout << std::setprecision(std::numeric_limits<type>::max_digits10 + 1) << i << ", ";
-  }
-  std::cout << std::endl;
-  for (size_t i = 0; i < output.size(); i++)
-  {
-    std::cout << std::abs(output[i] - valid[i]) << ", ";
-  }
-  std::cout << std::endl;
+  std::transform(valid.begin(), valid.end(), valid.begin(), [](type v) { return std::round(v * 100000); });
+  std::transform(output.begin(), output.end(), output.begin(), [](type v) { return std::round(v * 100000); });
 
   return std::equal(output.begin(), output.end(), valid.begin()) ? 0 : 1;
 }
