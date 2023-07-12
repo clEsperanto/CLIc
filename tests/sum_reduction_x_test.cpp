@@ -15,7 +15,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
             static_cast<type>(0.0), static_cast<type>(0.0), static_cast<type>(1.0), static_cast<type>(0.0) };
   valid = { static_cast<type>(2.0), static_cast<type>(2.0), static_cast<type>(1.0) };
 
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("TX", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   auto gpu_input = cle::Array::create(shape[0], shape[1], shape[2], cle::toType<type>(), mem_type, device);
   gpu_input->write(input.data());
 

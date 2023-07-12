@@ -13,7 +13,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   valid = { 4, -22, 30, -6, -21, 6, -26, 50, -19, 34, -28, -2, 50, -23, -18, 3, -27, 3, 5, -26, 31, -25, 28, -1 };
 
 
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("TX", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   auto gpu_input = cle::Array::create(shape[0], shape[1], shape[2], cle::toType<type>(), mem_type, device);
   gpu_input->write(input.data());
 

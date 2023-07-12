@@ -20,7 +20,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   valid[center] = input1[center];
   input2[center] = static_cast<type>(1);
 
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("TX", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   auto gpu_input1 = cle::Array::create(shape[0], shape[1], shape[2], cle::toType<type>(), mem_type, device);
   auto gpu_input2 = cle::Array::create(shape[0], shape[1], shape[2], cle::toType<type>(), mem_type, device);
   gpu_input1->write(input1.data());

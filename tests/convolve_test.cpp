@@ -14,7 +14,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   std::vector<type>           valid = { 3, 1, 0, 0, 1, 4, 0, 0, 0, 0, 4, 1, 0, 0, 1, 4 };
   const std::array<size_t, 3> kernel_shape = { 3, 3, 1 };
 
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("TX", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   auto gpu_input = cle::Array::create(shape[0], shape[1], shape[2], cle::toType<type>(), mem_type, device);
   auto gpu_kernel =
     cle::Array::create(kernel_shape[0], kernel_shape[1], kernel_shape[2], cle::toType<type>(), mem_type, device);

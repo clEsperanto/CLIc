@@ -27,7 +27,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
             static_cast<type>(2.125371456), static_cast<type>(3.62864542),  static_cast<type>(2.125371456),
             static_cast<type>(1.217670321), static_cast<type>(2.125371218), static_cast<type>(1.217670321) };
 
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("TX", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   auto gpu_input = cle::Array::create(shape[0], shape[1], shape[2], cle::toType<type>(), mem_type, device);
   gpu_input->write(input.data());
 

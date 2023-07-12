@@ -28,13 +28,18 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
             static_cast<type>(2.1539404392242431640625F),    static_cast<type>(1.30643117427825927734375F),
             static_cast<type>(0.2915041744709014892578125F) };
 
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("TX", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   auto gpu_input = cle::Array::create(w, h, d, cle::toType<type>(), mem_type, input.data(), device);
 
   auto gpu_output = cle::tier1::gaussian_blur_func(device, gpu_input, nullptr, 1, 1, 1);
 
   std::vector<type> output(gpu_output->nbElements());
   gpu_output->read(output.data());
+
+  // round values of valid vector values to 6 decimals to avoid float precision errors in comparison
+  std::transform(valid.begin(), valid.end(), valid.begin(), [](type v) { return std::round(v * 1000000) / 1000000; });
+  std::transform(
+    output.begin(), output.end(), output.begin(), [](type v) { return std::round(v * 1000000) / 1000000; });
 
   return std::equal(output.begin(), output.end(), valid.begin()) ? 0 : 1;
 }
