@@ -199,7 +199,7 @@ sum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & sr
   -> Array::Pointer;
 
 auto
-sum_reduction_x_func(const Device::Pointer & device, // Tier1
+sum_reduction_x_func(const Device::Pointer & device,
                      const Array::Pointer &  src,
                      Array::Pointer          dst,
                      const int &             blocksize) -> Array::Pointer;
