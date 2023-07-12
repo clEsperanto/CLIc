@@ -97,7 +97,7 @@ difference_of_gaussian_func(const Device::Pointer & device,
                             const float &           sigma2_z) -> Array::Pointer;
 
 auto
-gamma_correction_func(const Device::Pointer & device, // Tier3
+gamma_correction_func(const Device::Pointer & device,
                       const Array::Pointer &  src,
                       Array::Pointer          dst,
                       const float &           gamma) -> Array::Pointer;
