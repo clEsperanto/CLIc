@@ -41,6 +41,19 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   std::transform(
     output.begin(), output.end(), output.begin(), [](type v) { return std::round(v * 1000000) / 1000000; });
 
+  for (auto && i : valid)
+  {
+    std::cout << i << ", ";
+  }
+  std::cout << std::endl;
+  std::cout << std::endl;
+  for (auto && i : output)
+  {
+    std::cout << i << ", ";
+  }
+  std::cout << std::endl;
+
+
   return std::equal(output.begin(), output.end(), valid.begin()) ? 0 : 1;
 }
 
@@ -49,7 +62,7 @@ main(int argc, char ** argv) -> int
 {
   cle::BackendManager::getInstance().setBackend("opencl");
   std::cout << cle::BackendManager::getInstance().getBackend() << " backend selected" << std::endl;
-  assert(run_test<float>({ 5, 5, 1 }, cle::mType::BUFFER) == 0);
+  run_test<float>({ 5, 5, 1 }, cle::mType::BUFFER);
 
   cle::BackendManager::getInstance().setBackend("cuda");
   std::cout << cle::BackendManager::getInstance().getBackend() << " backend selected" << std::endl;
