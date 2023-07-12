@@ -1281,7 +1281,6 @@ subtract_image_from_scalar_func(const Device::Pointer & device,
   return dst;
 }
 
-
 auto
 sum_reduction_x_func(const Device::Pointer & device,
                      const Array::Pointer &  src,

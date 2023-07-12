@@ -102,7 +102,6 @@ gamma_correction_func(const Device::Pointer & device,
                       Array::Pointer          dst,
                       const float &           gamma) -> Array::Pointer;
 
-
 // @StRigaud TODO: auto generate_maximum_intensity_between_points_matrix_func;
 // @StRigaud TODO: auto generate_mean_intensity_between_points_matrix_func;
 // @StRigaud TODO: auto generate_minimum_intensity_between_points_matrix_func;
