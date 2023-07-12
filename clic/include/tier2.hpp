@@ -197,11 +197,11 @@ auto
 sum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer;
 
-auto
-sum_reduction_x_func(const Device::Pointer & device,
-                     const Array::Pointer &  src,
-                     Array::Pointer          dst,
-                     const int &             blocksize) -> Array::Pointer;
+// auto
+// sum_reduction_x_func(const Device::Pointer & device,
+//                      const Array::Pointer &  src,
+//                      Array::Pointer          dst,
+//                      const int &             blocksize) -> Array::Pointer;
 
 // @StRigaud TODO: auto symmetric_maximum_matrix_func;
 // @StRigaud TODO: auto symmetric_mean_matrix_func;
