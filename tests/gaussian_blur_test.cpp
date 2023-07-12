@@ -37,9 +37,10 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   gpu_output->read(output.data());
 
   // round values of valid vector values to 6 decimals to avoid float precision errors in comparison
-  std::transform(valid.begin(), valid.end(), valid.begin(), [](type v) { return std::round(v * 1000000) / 1000000; });
   std::transform(
-    output.begin(), output.end(), output.begin(), [](type v) { return std::round(v * 1000000) / 1000000; });
+    valid.begin(), valid.end(), valid.begin(), [](type v) { return int(std::round(v * 1000000)) / 1000000.0; });
+  std::transform(
+    output.begin(), output.end(), output.begin(), [](type v) { return int(std::round(v * 1000000)) / 1000000.0; });
 
   for (auto && i : valid)
   {
