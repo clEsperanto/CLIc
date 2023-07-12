@@ -1,17 +1,25 @@
+message(STATUS "Search librairy dependencies")
+
 set(CLE_OPENCL false)
 set(CLE_CUDA false)
 
 # find GPU Framework (OpenCL, CUDA)
-find_package(OpenCL)
+if (DEFINED OpenCL_LIBRARIES AND DEFINED OpenCL_INCLUDE_DIRS)
+    set(OpenCL_FOUND true)
+else()
+    find_package(OpenCL)
+endif()
 if (OpenCL_FOUND)
     set(CLE_OPENCL true)
-    message(STATUS "OpenCL found : ${CLE_OPENCL}")
+    message(STATUS "OpenCL librairy : ${OpenCL_LIBRARIES}")
+    message(STATUS "OpenCL includes : ${OpenCL_INCLUDE_DIRS}")
 endif()
 
 find_package(CUDAToolkit)
 if (CUDAToolkit_FOUND)
     set(CLE_CUDA true)
-    message(STATUS "CUDA found : ${CLE_CUDA}")
+    message(STATUS "CUDAToolkit librairy : ${CUDAToolkit_LIBRARY_DIR}")
+    message(STATUS "CUDAToolkit includes : ${CUDAToolkit_INCLUDE_DIRS}")
 endif()
 
 if (NOT OpenCL_FOUND AND NOT CUDAToolkit_FOUND)

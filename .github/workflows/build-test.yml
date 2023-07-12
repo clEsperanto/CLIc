@@ -63,11 +63,18 @@ jobs:
           cd ..
           git clone --branch ${{ env.opencl-icd-loader-git-tag }} https://github.com/KhronosGroup/OpenCL-ICD-Loader
           git clone --branch ${{ env.opencl-headers-git-tag }} https://github.com/KhronosGroup/OpenCL-Headers
-          cmake -S "./OpenCL-Headers" -B "./OpenCL-Headers/build" 
+          cmake -D CMAKE_INSTALL_PREFIX="${{ github.workspace }}/OpenCL-Headers/install" -S "./OpenCL-Headers" -B "./OpenCL-Headers/build" 
           cmake --build "./OpenCL-Headers/build" --parallel 6 --target install
-          cmake -S "./OpenCL-ICD-Loader" -B "./OpenCL-ICD-Loader/build" -A x64
+          cmake -D CMAKE_PREFIX_PATH="${{ github.workspace }}/OpenCL-Headers/install" -D OPENCL_ICD_LOADER_HEADERS_DIR="./OpenCL-Headers/install/include" -S "./OpenCL-ICD-Loader" -B "./OpenCL-ICD-Loader/build" -A x64
           cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
         shell: bash -l {0}
+
+      - name: Install cuda toolkit (windows)
+        if: matrix.os == 'windows-latest'
+        uses: Jimver/cuda-toolkit@v0.2.10
+        id: cuda-toolkit
+        with:
+          cuda: '12.1.0'
 
       - name: Install ocl-icd-loader - linux
         if: matrix.os == 'ubuntu-latest'
@@ -75,11 +82,22 @@ jobs:
           cd ..
           git clone --branch ${{ env.opencl-icd-loader-git-tag }} https://github.com/KhronosGroup/OpenCL-ICD-Loader
           git clone --branch ${{ env.opencl-headers-git-tag }} https://github.com/KhronosGroup/OpenCL-Headers
-          cmake -S "./OpenCL-Headers" -B "./OpenCL-Headers/build" 
+          cmake -D CMAKE_INSTALL_PREFIX="${{ github.workspace }}/OpenCL-Headers/install" -S "./OpenCL-Headers" -B "./OpenCL-Headers/build" 
           cmake --build "./OpenCL-Headers/build" --parallel 6 --target install
-          cmake -S "./OpenCL-ICD-Loader" -B "./OpenCL-ICD-Loader/build"
-          sudo cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
+          cmake -D CMAKE_PREFIX_PATH="${{ github.workspace }}/OpenCL-Headers/install" -D OPENCL_ICD_LOADER_HEADERS_DIR="./OpenCL-Headers/install/include" -S "./OpenCL-ICD-Loader" -B "./OpenCL-ICD-Loader/build"
+          cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
         shell: bash -l {0}
+
+      - name: Install cuda toolkit (ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
+          sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
+          wget https://developer.download.nvidia.com/compute/cuda/12.1.1/local_installers/cuda-repo-ubuntu2204-12-1-local_12.1.1-530.30.02-1_amd64.deb
+          sudo dpkg -i cuda-repo-ubuntu2204-12-1-local_12.1.1-530.30.02-1_amd64.deb
+          sudo cp /var/cuda-repo-ubuntu2204-12-1-local/cuda-*-keyring.gpg /usr/share/keyrings/
+          sudo apt-get update
+          sudo apt-get -y install cuda
       
       - uses: actions/checkout@v3
         with:
@@ -89,14 +107,14 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run : |
           pwd
-          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARY:FILEPATH="/usr/local/lib/libOpenCL.so.1.2"
+          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARIES:FILEPATH="/usr/local/lib/libOpenCL.so" -DOpenCL_INCLUDE_DIRS:PATH="${{ github.workspace }}/OpenCL-Headers/install/include/"
           cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
         shell: bash -l {0}    
 
       - name: compile CLIc - windows
         if: matrix.os == 'windows-latest'
         run : |
-          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARY:FILEPATH="C:/Program Files/OpenCL-ICD-Loader/lib/OpenCL.lib"
+          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARIES:FILEPATH="C:/Program Files/OpenCL-ICD-Loader/lib/OpenCL.lib" -DOpenCL_INCLUDE_DIRS:PATH="${{ github.workspace }}/OpenCL-Headers/install/include/"
           cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
         shell: bash -l {0}
 
