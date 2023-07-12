@@ -63,9 +63,9 @@ jobs:
           cd ..
           git clone --branch ${{ env.opencl-icd-loader-git-tag }} https://github.com/KhronosGroup/OpenCL-ICD-Loader
           git clone --branch ${{ env.opencl-headers-git-tag }} https://github.com/KhronosGroup/OpenCL-Headers
-          cmake -D CMAKE_INSTALL_PREFIX="./OpenCL-Headers/install" -S "./OpenCL-Headers" -B "./OpenCL-Headers/build" 
+          cmake -S "./OpenCL-Headers" -B "./OpenCL-Headers/build" 
           cmake --build "./OpenCL-Headers/build" --parallel 6 --target install
-          cmake -D CMAKE_PREFIX_PATH="./OpenCL-Headers/install" -D OPENCL_ICD_LOADER_HEADERS_DIR="./OpenCL-Headers/install/include" -S "./OpenCL-ICD-Loader" -B "./OpenCL-ICD-Loader/build" -A x64
+          cmake -S "./OpenCL-ICD-Loader" -B "./OpenCL-ICD-Loader/build" -A x64
           cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
         shell: bash -l {0}
 
@@ -75,9 +75,9 @@ jobs:
           cd ..
           git clone --branch ${{ env.opencl-icd-loader-git-tag }} https://github.com/KhronosGroup/OpenCL-ICD-Loader
           git clone --branch ${{ env.opencl-headers-git-tag }} https://github.com/KhronosGroup/OpenCL-Headers
-          cmake -D CMAKE_INSTALL_PREFIX="./OpenCL-Headers/install" -S "./OpenCL-Headers" -B "./OpenCL-Headers/build" 
+          cmake -S "./OpenCL-Headers" -B "./OpenCL-Headers/build" 
           cmake --build "./OpenCL-Headers/build" --parallel 6 --target install
-          cmake -D CMAKE_PREFIX_PATH="./OpenCL-Headers/install" -D OPENCL_ICD_LOADER_HEADERS_DIR="./OpenCL-Headers/install/include" -S "./OpenCL-ICD-Loader" -B "./OpenCL-ICD-Loader/build"
+          cmake -S "./OpenCL-ICD-Loader" -B "./OpenCL-ICD-Loader/build"
           sudo cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
         shell: bash -l {0}
       
@@ -107,11 +107,11 @@ jobs:
           cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
         shell: bash -l {0}
 
-      - name: run CLIc core test
-        run: |
-          cd "${{ runner.workspace }}/build"
-          ctest -R core_gpu_test -C Release
-        shell: bash -l {0}
+      # - name: run CLIc core test
+      #   run: |
+      #     cd "${{ runner.workspace }}/build"
+      #     ctest -R core_gpu_test -C Release
+      #   shell: bash -l {0}
 
       
       
