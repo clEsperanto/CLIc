@@ -38,7 +38,7 @@ set(CMAKE_RELEASE_POSTFIX "")
 ## Defines options for the build
 
 # set build as static or shared library (default: static)
-option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 if (WIN32 AND BUILD_SHARED_LIBS)
   set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
