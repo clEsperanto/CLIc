@@ -33,11 +33,6 @@ target_include_directories(${LIBRARY_NAME} PUBLIC
     $<INSTALL_INTERFACE:include>
 )
 
-message(message "\tBUILD_INTERFACE 1: " ${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_NAME_LOWERCASE}/include)
-message(message "\tBUILD_INTERFACE 2: " ${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME_LOWERCASE}/include)
-message(message "\tBUILD_INTERFACE 3: " ${KERNELS_HEADER_DIR})
-
-
 set_target_properties(${LIBRARY_NAME} PROPERTIES LINKER_LANGUAGE CXX)        # force C++ linker
 set_target_properties(${LIBRARY_NAME} PROPERTIES VERSION ${PROJECT_VERSION}) # set version
 add_dependencies(${LIBRARY_NAME} generate_kernels)

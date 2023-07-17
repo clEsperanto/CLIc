@@ -7,17 +7,6 @@ if(NOT DEFINED BUILD_CUDA_BACKEND)
 set(BUILD_CUDA_BACKEND ON)
 endif()
 
-if(BUILD_OCL_BACKEND)
-    message(STATUS "\tOpenCL backend is enabled")
-else()
-    message(STATUS "\tOpenCL backend is disabled")
-endif()
-if(BUILD_CUDA_BACKEND)
-    message(STATUS "\tCUDA backend is enabled")
-else()
-    message(STATUS "\tCUDA backend is disabled")
-endif()
-
 set(CLE_OPENCL false)
 set(CLE_CUDA false)
 
@@ -58,3 +47,15 @@ add_compile_definitions(
     $<$<BOOL:${CLE_CUDA}>:CLE_CUDA>
     $<$<BOOL:${CLE_OPENCL}>:CLE_OPENCL>
 )
+
+if(CLE_OPENCL)
+    message(STATUS "\tOpenCL backend is enabled")
+else()
+    message(STATUS "\tOpenCL backend is disabled")
+endif()
+if(CLE_CUDA)
+    message(STATUS "\tCUDA backend is enabled")
+else()
+    message(STATUS "\tCUDA backend is disabled")
+endif()
+
