@@ -15,13 +15,23 @@ create_like(const Array::Pointer & src, Array::Pointer & dst) -> void
 }
 
 auto
-create_one(const Array::Pointer & src, Array::Pointer & dst) -> void
+create_one(const Array::Pointer & src, Array::Pointer & dst, const dType & type) -> void
 {
   if (dst != nullptr)
   {
     return;
   }
-  dst = Array::create(1, 1, 1, src->dtype(), src->mtype(), src->device());
+  dst = Array::create(1, 1, 1, type, mType::BUFFER, src->device());
+}
+
+auto
+create_vector(const Array::Pointer & src, Array::Pointer & dst, const size_t & size, const dType & type) -> void
+{
+  if (dst != nullptr)
+  {
+    return;
+  }
+  dst = Array::create(size, 1, 1, type, mType::BUFFER, src->device());
 }
 
 auto

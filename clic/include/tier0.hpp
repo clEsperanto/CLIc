@@ -12,7 +12,13 @@ auto
 create_like(const Array::Pointer & src, Array::Pointer & dst) -> void;
 
 auto
-create_one(const Array::Pointer & src, Array::Pointer & dst) -> void;
+create_one(const Array::Pointer & src, Array::Pointer & dst, const dType & type = dType::FLOAT) -> void;
+
+auto
+create_vector(const Array::Pointer & src,
+              Array::Pointer &       dst,
+              const size_t &         size = 1,
+              const dType &          type = dType::FLOAT) -> void;
 
 auto
 create_xy(const Array::Pointer & src, Array::Pointer & dst) -> void;
