@@ -9,25 +9,14 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
 {
   std::vector<type> input(shape[0] * shape[1] * shape[2]);
   std::vector<type> valid(shape[0] * shape[1] * shape[2]);
-
-  for (auto it = input.begin(); it != input.end(); ++it)
-  {
-    *it = static_cast<type>(rand() % 2);
-  }
-  for (auto it = input.begin(), it_valid = valid.begin(); (it != input.end()) && (it_valid != valid.end());
-       ++it, ++it_valid)
-  {
-    if (*it != 0)
-    {
-      *it_valid = static_cast<type>((it_valid - valid.begin()) + 1);
-    }
-  }
+  input = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0 };
+  valid = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 2, 0, 1, 0, 0, 2, 0, 1, 1, 0, 2, 0, 0, 0 };
 
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   auto gpu_input = cle::Array::create(shape[0], shape[1], shape[2], cle::toType<type>(), mem_type, device);
   gpu_input->write(input.data());
 
-  auto gpu_output = cle::tier1::set_nonzero_pixels_to_pixelindex_func(device, gpu_input, nullptr, 1);
+  auto gpu_output = cle::tier5::connected_components_labeling_box_func(device, gpu_input, nullptr);
 
   std::vector<type> output(gpu_output->nbElements());
   gpu_output->read(output.data());

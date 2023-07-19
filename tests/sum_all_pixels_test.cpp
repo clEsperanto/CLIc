@@ -13,12 +13,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   auto gpu_input = cle::Array::create(shape[0], shape[1], shape[2], cle::toType<type>(), mem_type, device);
   gpu_input->write(input.data());
 
-  auto gpu_output = cle::tier2::sum_of_all_pixels_func(device, gpu_input, nullptr);
-
-  type output;
-  gpu_output->read(&output);
-
-  std::cout << output << " vs " << shape[0] * shape[1] * shape[2] << std::endl;
+  auto output = cle::tier2::sum_of_all_pixels_func(device, gpu_input);
 
   return (static_cast<type>(output) == static_cast<type>(shape[0] * shape[1] * shape[2])) ? 0 : 1;
 }

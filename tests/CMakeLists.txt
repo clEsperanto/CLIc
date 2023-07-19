@@ -71,10 +71,10 @@ set_target_properties(block_enumerate_test PROPERTIES FOLDER "Tests")
 # set_target_properties(close_indexgaps_in_labelmap_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(connected_component_labeling_box_test connected_component_labeling_box_test.cpp)
-# add_dependencies(connected_component_labeling_box_test CLIc)
-# target_link_libraries(connected_component_labeling_box_test PRIVATE CLIc::CLIc)
-# set_target_properties(connected_component_labeling_box_test PROPERTIES FOLDER "Tests")
+add_executable(connected_components_labeling_box_test connected_components_labeling_box_test.cpp)
+add_dependencies(connected_components_labeling_box_test CLIc)
+target_link_libraries(connected_components_labeling_box_test PRIVATE CLIc::CLIc)
+set_target_properties(connected_components_labeling_box_test PROPERTIES FOLDER "Tests")
 
 
 add_executable(convolve_test convolve_test.cpp)
@@ -215,10 +215,10 @@ target_link_libraries(greater_test PRIVATE CLIc::CLIc)
 set_target_properties(greater_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(histogram_test histogram_test.cpp)
-# add_dependencies(histogram_test CLIc)
-# target_link_libraries(histogram_test PRIVATE CLIc::CLIc)
-# set_target_properties(histogram_test PROPERTIES FOLDER "Tests")
+add_executable(histogram_test histogram_test.cpp)
+add_dependencies(histogram_test CLIc)
+target_link_libraries(histogram_test PRIVATE CLIc::CLIc)
+set_target_properties(histogram_test PROPERTIES FOLDER "Tests")
 
 
 add_executable(laplace_box_test laplace_box_test.cpp)
@@ -347,10 +347,10 @@ target_link_libraries(multiply_images_test PRIVATE CLIc::CLIc)
 set_target_properties(multiply_images_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(nonzero_minimum_box_test nonzero_minimum_box_test.cpp)
-# add_dependencies(nonzero_minimum_box_test CLIc)
-# target_link_libraries(nonzero_minimum_box_test PRIVATE CLIc::CLIc)
-# set_target_properties(nonzero_minimum_box_test PROPERTIES FOLDER "Tests")
+add_executable(nonzero_minimum_box_test nonzero_minimum_box_test.cpp)
+add_dependencies(nonzero_minimum_box_test CLIc)
+target_link_libraries(nonzero_minimum_box_test PRIVATE CLIc::CLIc)
+set_target_properties(nonzero_minimum_box_test PROPERTIES FOLDER "Tests")
 
 
 add_executable(not_equal_constant_test not_equal_constant_test.cpp)
@@ -413,10 +413,10 @@ target_link_libraries(set_row_test PRIVATE CLIc::CLIc)
 set_target_properties(set_row_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(set_nonzero_pixels_to_pixelindex_test set_nonzero_pixels_to_pixelindex_test.cpp)
-# add_dependencies(set_nonzero_pixels_to_pixelindex_test CLIc)
-# target_link_libraries(set_nonzero_pixels_to_pixelindex_test PRIVATE CLIc::CLIc)
-# set_target_properties(set_nonzero_pixels_to_pixelindex_test PROPERTIES FOLDER "Tests")
+add_executable(set_nonzero_pixels_to_pixelindex_test set_nonzero_pixels_to_pixelindex_test.cpp)
+add_dependencies(set_nonzero_pixels_to_pixelindex_test CLIc)
+target_link_libraries(set_nonzero_pixels_to_pixelindex_test PRIVATE CLIc::CLIc)
+set_target_properties(set_nonzero_pixels_to_pixelindex_test PROPERTIES FOLDER "Tests")
 
 
 add_executable(set_test set_test.cpp)
@@ -509,7 +509,7 @@ add_test(NAME binary_subtract_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 add_test(NAME binary_xor_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_xor_test)
 add_test(NAME block_enumerate_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND block_enumerate_test)
 # add_test(NAME close_indexgaps_in_labelmap_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND close_indexgaps_in_labelmap_test)
-# add_test(NAME connected_component_labeling_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND connected_component_labeling_box_test)
+add_test(NAME connected_components_labeling_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND connected_components_labeling_box_test)
 add_test(NAME convolve_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND convolve_test)
 add_test(NAME copy_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND copy_test)
 # add_test(NAME crop_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND crop_test)
@@ -533,7 +533,7 @@ add_test(NAME greater_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR
 add_test(NAME greater_or_equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_or_equal_constant_test)
 add_test(NAME greater_or_equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_or_equal_test)
 add_test(NAME greater_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_test)
-# add_test(NAME histogram_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND histogram_test)
+add_test(NAME histogram_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND histogram_test)
 add_test(NAME laplace_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND laplace_box_test)
 add_test(NAME mask_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND mask_test)
 # add_test(NAME masked_voronoi_labeling_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND masked_voronoi_labeling_test)
@@ -555,7 +555,7 @@ add_test(NAME minimum_y_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY
 add_test(NAME minimum_z_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_z_projection_test)
 add_test(NAME multiply_image_and_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND multiply_image_and_scalar_test)
 add_test(NAME multiply_images_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND multiply_images_test)
-# add_test(NAME nonzero_minimum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND nonzero_minimum_box_test)
+add_test(NAME nonzero_minimum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND nonzero_minimum_box_test)
 add_test(NAME not_equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND not_equal_constant_test)
 add_test(NAME not_equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND not_equal_test)
 add_test(NAME power_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND power_test)
@@ -566,7 +566,7 @@ add_test(NAME replace_intensities_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_
 add_test(NAME replace_intensity_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND replace_intensity_test)
 add_test(NAME set_column_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND set_column_test)
 add_test(NAME set_row_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND set_row_test)
-# add_test(NAME set_nonzero_pixels_to_pixelindex_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND set_nonzero_pixels_to_pixelindex_test)
+add_test(NAME set_nonzero_pixels_to_pixelindex_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND set_nonzero_pixels_to_pixelindex_test)
 add_test(NAME set_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND set_test)
 add_test(NAME smaller_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND smaller_constant_test)
 add_test(NAME smaller_or_equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND smaller_or_equal_constant_test)
@@ -631,7 +631,7 @@ set_tests_properties(absolute_test
     minimum_z_projection_test
     multiply_image_and_scalar_test
     multiply_images_test
-    # nonzero_minimum_box_test
+    nonzero_minimum_box_test
     not_equal_constant_test
     not_equal_test
     power_test
@@ -642,7 +642,7 @@ set_tests_properties(absolute_test
     replace_intensity_test
     set_column_test
     set_row_test
-    # set_nonzero_pixels_to_pixelindex_test
+    set_nonzero_pixels_to_pixelindex_test
     set_test
     smaller_constant_test
     smaller_or_equal_constant_test
@@ -658,12 +658,13 @@ set_tests_properties(absolute_test
     maximum_all_pixels_test
     minimum_all_pixels_test
     sum_all_pixels_test PROPERTIES LABELS "TIERS2" WILL_FAIL FALSE)
+    
+    set_tests_properties(
+    histogram_test PROPERTIES LABELS "TIERS3" WILL_FAIL FALSE)
+    # close_indexgaps_in_labelmap_test
 
-    # set_tests_properties(close_indexgaps_in_labelmap_test
-    # histogram_test PROPERTIES LABELS "TIERS3" WILL_FAIL FALSE)
-
-    # set_tests_properties(connected_component_labeling_box_test
-    # threshold_otsu_test PROPERTIES LABELS "TIERS4" WILL_FAIL FALSE)
+    set_tests_properties(connected_components_labeling_box_test PROPERTIES LABELS "TIERS4" WILL_FAIL FALSE)
+    # threshold_otsu_test 
 
     # set_tests_properties(masked_voronoi_labeling_test PROPERTIES LABELS "TIERS5" WILL_FAIL FALSE)
 

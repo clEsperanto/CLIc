@@ -19,10 +19,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   auto gpu_input = cle::Array::create(shape[0], shape[1], shape[2], cle::toType<type>(), mem_type, device);
   gpu_input->write(input.data());
 
-  auto gpu_output = cle::tier2::minimum_of_all_pixels_func(device, gpu_input, nullptr);
-
-  type output;
-  gpu_output->read(&output);
+  auto output = cle::tier2::minimum_of_all_pixels_func(device, gpu_input);
 
   return (static_cast<type>(output) == static_cast<type>(24)) ? 0 : 1;
 }
