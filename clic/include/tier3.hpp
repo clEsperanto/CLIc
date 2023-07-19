@@ -14,11 +14,6 @@ namespace cle::tier3
 // auto bounding_box_func
 // auto center_of_mass_func
 // auto proximal_other_labels_count_func
-
-auto
-relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int blocksize)
-  -> Array::Pointer;
-
 // auto divide_by_gaussian_background_func
 // auto exclude_labels_func
 // auto exclude_labels_on_edges_func

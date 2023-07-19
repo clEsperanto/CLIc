@@ -149,10 +149,7 @@ squared_difference_func(const Device::Pointer & device,
 // @StRigaud TODO: auto standard_deviation_box_func
 // @StRigaud TODO: auto standard_deviation_of_touching_neighbors_func
 // @StRigaud TODO: auto standard_deviation_sphere_func
-
-auto
-sub_stack_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int start_z, int end_z)
-  -> Array::Pointer;
+// @StRigaud TODO: auto sub_stack_func
 
 auto
 subtract_images_func(const Device::Pointer & device,

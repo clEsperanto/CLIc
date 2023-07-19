@@ -467,9 +467,9 @@ auto
 flip_func(const Device::Pointer & device,
           const Array::Pointer &  src,
           Array::Pointer          dst,
-          const bool &            flip_x,
-          const bool &            flip_y,
-          const bool &            flip_z) -> Array::Pointer
+          bool                    flip_x,
+          bool                    flip_y,
+          bool                    flip_z) -> Array::Pointer
 {
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "flip", kernel::flip };
