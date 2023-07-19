@@ -117,8 +117,7 @@ difference_of_gaussian_func(const Device::Pointer & device,
   auto gauss2 = Array::create(dst);
   tier1::gaussian_blur_func(device, src, gauss1, sigma1_x, sigma1_y, sigma1_z);
   tier1::gaussian_blur_func(device, src, gauss2, sigma2_x, sigma2_y, sigma2_z);
-  tier1::add_images_weighted_func(device, gauss1, gauss2, dst, 1, -1);
-  return dst;
+  return tier1::add_images_weighted_func(device, gauss1, gauss2, dst, 1, -1);
 }
 
 

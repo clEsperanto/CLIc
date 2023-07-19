@@ -51,14 +51,14 @@ if (CUDAToolkit_FOUND)
     target_link_libraries(${LIBRARY_NAME} PUBLIC CUDA::cudart CUDA::cuda_driver CUDA::nvrtc CUDA::OpenCL) 
 endif()
 
-# Set RPATH configuration
-if(APPLE)
-    set(CMAKE_BUILD_RPATH "@loader_path")
-    set(CMAKE_INSTALL_RPATH "@loader_path/../lib")
-else()
-    set(CMAKE_BUILD_RPATH "$ORIGIN")
-    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
-endif()
+# # Set RPATH configuration
+# if(APPLE)
+#     set(CMAKE_BUILD_RPATH "@loader_path")
+#     set(CMAKE_INSTALL_RPATH "@loader_path/../lib")
+# else()
+#     set(CMAKE_BUILD_RPATH "$ORIGIN")
+#     set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+# endif()
 
 # library install instructions
 include(${PROJECT_SOURCE_DIR}/cmake/Install.cmake)
