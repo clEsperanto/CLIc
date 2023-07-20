@@ -485,10 +485,10 @@ target_link_libraries(sum_z_projection_test PRIVATE CLIc::CLIc)
 set_target_properties(sum_z_projection_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(threshold_otsu_test threshold_otsu_test.cpp)
-# add_dependencies(threshold_otsu_test CLIc)
-# target_link_libraries(threshold_otsu_test PRIVATE CLIc::CLIc)
-# set_target_properties(threshold_otsu_test PROPERTIES FOLDER "Tests")
+add_executable(threshold_otsu_test threshold_otsu_test.cpp)
+add_dependencies(threshold_otsu_test CLIc)
+target_link_libraries(threshold_otsu_test PRIVATE CLIc::CLIc)
+set_target_properties(threshold_otsu_test PROPERTIES FOLDER "Tests")
 
 
 # add_executable(voronoi_otsu_labeling_test voronoi_otsu_labeling_test.cpp)
@@ -578,7 +578,7 @@ add_test(NAME sum_reduction_x_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 add_test(NAME sum_x_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_x_projection_test)
 add_test(NAME sum_y_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_y_projection_test)
 add_test(NAME sum_z_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_z_projection_test)
-# add_test(NAME threshold_otsu_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND threshold_otsu_test)
+add_test(NAME threshold_otsu_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND threshold_otsu_test)
 # add_test(NAME voronoi_otsu_labeling_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND voronoi_otsu_labeling_test)
 
 
@@ -663,9 +663,9 @@ set_tests_properties(absolute_test
     histogram_test PROPERTIES LABELS "TIERS3" WILL_FAIL FALSE)
     # close_indexgaps_in_labelmap_test
 
-    set_tests_properties(connected_components_labeling_box_test PROPERTIES LABELS "TIERS4" WILL_FAIL FALSE)
-    # threshold_otsu_test 
+    set_tests_properties(connected_components_labeling_box_test threshold_otsu_test PROPERTIES LABELS "TIERS4" WILL_FAIL FALSE)
+     
 
-    # set_tests_properties(masked_voronoi_labeling_test PROPERTIES LABELS "TIERS5" WILL_FAIL FALSE)
+    set_tests_properties(connected_components_labeling_box_test PROPERTIES LABELS "TIERS5" WILL_FAIL FALSE)
 
     # set_tests_properties(voronoi_otsu_labeling_test PROPERTIES LABELS "TIERS6" WILL_FAIL FALSE)

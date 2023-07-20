@@ -12,6 +12,8 @@ auto
 relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int blocksize)
   -> Array::Pointer;
 
+auto
+threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 } // namespace cle::tier4
 
