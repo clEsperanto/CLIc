@@ -9,16 +9,14 @@ namespace cle::tier0
 {
 
 auto
-create_like(const Array::Pointer & src, Array::Pointer & dst) -> void;
+create_like(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::UNKNOWN) -> void;
 
 auto
-create_one(const Array::Pointer & src, Array::Pointer & dst, const dType & type = dType::FLOAT) -> void;
+create_one(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::UNKNOWN) -> void;
 
 auto
-create_vector(const Array::Pointer & src,
-              Array::Pointer &       dst,
-              const size_t &         size = 1,
-              const dType &          type = dType::FLOAT) -> void;
+create_vector(const Array::Pointer & src, Array::Pointer & dst, const size_t & size = 1, dType type = dType::UNKNOWN)
+  -> void;
 
 auto
 create_xy(const Array::Pointer & src, Array::Pointer & dst) -> void;

@@ -5,31 +5,43 @@ namespace cle::tier0
 {
 
 auto
-create_like(const Array::Pointer & src, Array::Pointer & dst) -> void
+create_like(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
   if (dst != nullptr)
   {
     return;
   }
-  dst = Array::create(src);
+  if (type == dType::UNKNOWN)
+  {
+    type = src->dtype();
+  }
+  dst = Array::create(src->width(), src->height(), src->depth(), type, src->mtype(), src->device());
 }
 
 auto
-create_one(const Array::Pointer & src, Array::Pointer & dst, const dType & type) -> void
+create_one(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
   if (dst != nullptr)
   {
     return;
+  }
+  if (type == dType::UNKNOWN)
+  {
+    type = src->dtype();
   }
   dst = Array::create(1, 1, 1, type, mType::BUFFER, src->device());
 }
 
 auto
-create_vector(const Array::Pointer & src, Array::Pointer & dst, const size_t & size, const dType & type) -> void
+create_vector(const Array::Pointer & src, Array::Pointer & dst, const size_t & size, dType type) -> void
 {
   if (dst != nullptr)
   {
     return;
+  }
+  if (type == dType::UNKNOWN)
+  {
+    type = src->dtype();
   }
   dst = Array::create(size, 1, 1, type, mType::BUFFER, src->device());
 }

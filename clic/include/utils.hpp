@@ -29,7 +29,8 @@ enum class dType
   INT16,
   UINT16,
   INT64,
-  UINT64
+  UINT64,
+  UNKNOWN
 };
 
 inline auto
