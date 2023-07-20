@@ -156,7 +156,7 @@ maximum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer 
 {
   Array::Pointer dst = nullptr;
   Array::Pointer tmp = src;
-  tier0::create_one(src, dst);
+  tier0::create_one(src, dst, dType::FLOAT);
   if (src->depth() > 1)
   {
     auto proj_z = tier1::maximum_z_projection_func(device, tmp, nullptr);
@@ -182,7 +182,7 @@ minimum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer 
 {
   Array::Pointer dst = nullptr;
   Array::Pointer tmp = src;
-  tier0::create_one(src, dst);
+  tier0::create_one(src, dst, dType::FLOAT);
   if (src->depth() > 1)
   {
     auto proj_z = tier1::minimum_z_projection_func(device, tmp, nullptr);
@@ -277,7 +277,7 @@ sum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & sr
 {
   Array::Pointer dst = nullptr;
   Array::Pointer tmp = src;
-  tier0::create_one(src, dst);
+  tier0::create_one(src, dst, dType::FLOAT);
   if (src->depth() > 1)
   {
     auto proj_z = tier1::sum_z_projection_func(device, tmp, nullptr);
