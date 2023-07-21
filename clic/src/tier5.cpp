@@ -38,20 +38,20 @@ connected_components_labeling_box_func(const Device::Pointer & device, const Arr
 
   int flag_value = 1;
   int iteration_count = 0;
-  while (flag_value > 0)
-  {
-    if (iteration_count % 2 == 0)
-    {
-      tier1::nonzero_minimum_box_func(device, temp1, flag, temp2);
-    }
-    else
-    {
-      tier1::nonzero_minimum_box_func(device, temp2, flag, temp1);
-    }
-    flag->read(&flag_value);
-    flag->fill(0);
-    iteration_count++;
-  }
+  // while (flag_value > 0)
+  // {
+  //   if (iteration_count % 2 == 0)
+  //   {
+  //     tier1::nonzero_minimum_box_func(device, temp1, flag, temp2);
+  //   }
+  //   else
+  //   {
+  //     tier1::nonzero_minimum_box_func(device, temp2, flag, temp1);
+  //   }
+  //   flag->read(&flag_value);
+  //   flag->fill(0);
+  //   iteration_count++;
+  // }
   if (iteration_count % 2 == 0)
   {
     tier4::relabel_sequential_func(device, temp1, dst, 4096);
