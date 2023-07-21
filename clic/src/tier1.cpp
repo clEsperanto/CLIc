@@ -120,7 +120,7 @@
 #include "cle_maximum_sphere.h"
 #include "cle_minimum_sphere.h"
 #include "cle_multiply_matrix.h"
-// #include "cle_reciprocal.h"
+#include "cle_reciprocal.h"
 #include "cle_set.h"
 #include "cle_set_column.h"
 #include "cle_set_image_borders.h"
@@ -1277,7 +1277,17 @@ minimum_sphere_func(const Device::Pointer & device,
 }
 
 // multiply_matrix_func
-// reciprocal_func
+
+auto
+reciprocal_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const KernelInfo    kernel = { "reciprocal", kernel::reciprocal };
+  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
 
 auto
 set_func(const Device::Pointer & device, const Array::Pointer & src, float scalar) -> Array::Pointer

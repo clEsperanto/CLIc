@@ -463,7 +463,9 @@ minimum_sphere_func(const Device::Pointer & device,
                     int                     radius_z) -> Array::Pointer;
 
 // @StRigaud TODO : multiply_matrix_func
-// @StRigaud TODO : reciprocal_func
+
+auto
+reciprocal_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 auto
 set_func(const Device::Pointer & device, const Array::Pointer & src, float scalar) -> Array::Pointer;
