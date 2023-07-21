@@ -27,14 +27,16 @@ auto
 connected_components_labeling_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::INT64);
+
+  auto temp1 =Array::create(dst);
+  auto temp2 =Array::create(dst);
+  temp2->fill(0);
+
+  tier1::set_nonzero_pixels_to_pixelindex_func(device, src, temp1, 1);
 
   auto flag = Array::create(1, 1, 1, dType::INT32, mType::BUFFER, device);
   flag->fill(0);
-
-  auto temp1 = tier1::set_nonzero_pixels_to_pixelindex_func(device, src, nullptr, 1);
-  auto temp2 = Array::create(temp1);
-  temp2->fill(0);
 
   int flag_value = 1;
   int iteration_count = 0;
@@ -54,13 +56,11 @@ connected_components_labeling_box_func(const Device::Pointer & device, const Arr
   }
   if (iteration_count % 2 == 0)
   {
-    temp1->copy(dst);
-    // tier4::relabel_sequential_func(device, temp1, dst, 4096);
+    tier4::relabel_sequential_func(device, temp1, dst, 4096);
   }
   else
   {
-    temp2->copy(dst);
-    // tier4::relabel_sequential_func(device, temp2, dst, 4096);
+    tier4::relabel_sequential_func(device, temp2, dst, 4096);
   }
   return dst;
 }
