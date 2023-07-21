@@ -61,6 +61,7 @@ mean_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & s
 // auto mean_of_proximal_neighbors_map_func
 // auto mean_of_touch_portion_within_range_neighbors_map_func
 // auto mean_of_touching_neighbors_map_func
+
 // auto minimum_of_n_most_touching_neighbors_map_func
 // auto minimum_of_n_nearest_neighbors_map_func
 // auto minimum_of_proximal_neighbors_map_func

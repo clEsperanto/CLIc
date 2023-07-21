@@ -5,6 +5,21 @@ namespace cle::tier0
 {
 
 auto
+create_dst(const Array::Pointer & src, Array::Pointer & dst, size_t width, size_t height, size_t depth, dType type)
+  -> void
+{
+  if (dst != nullptr)
+  {
+    return;
+  }
+  if (type == dType::UNKNOWN)
+  {
+    type = src->dtype();
+  }
+  dst = Array::create(width, height, depth, type, src->mtype(), src->device());
+}
+
+auto
 create_like(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
   if (dst != nullptr)

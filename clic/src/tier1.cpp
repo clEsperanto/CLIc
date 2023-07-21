@@ -19,9 +19,12 @@
 #include "cle_block_enumerate.h"
 #include "cle_convolve.h"
 #include "cle_copy.h"
-// #include "cle_copy_slice.h"
-// #include "cle_copy_horizontal_slice.h"
-// #include "cle_copy_vertical_slice.h"
+#include "cle_copy_horizontal_slice_from.h"
+#include "cle_copy_horizontal_slice_to.h"
+#include "cle_copy_slice_from.h"
+#include "cle_copy_slice_to.h"
+#include "cle_copy_vertical_slice_from.h"
+#include "cle_copy_vertical_slice_to.h"
 #include "cle_count_touching_neighbors.h"
 #include "cle_crop.h"
 #include "cle_cubic_root.h"
@@ -88,7 +91,7 @@
 #include "cle_minimum_z_projection.h"
 // #include "cle_mode_box.h"
 // #include "cle_mode_sphere.h"
-// #include "cle_modulo_images.h"
+#include "cle_modulo_images.h"
 #include "cle_multiply_image_and_coordinate.h"
 #include "cle_multiply_image_and_scalar.h"
 #include "cle_multiply_images.h"
@@ -107,7 +110,7 @@
 // #include "cle_point_index_list_to_touch_matrix.h"
 #include "cle_power.h"
 #include "cle_power_images.h"
-// #include "cle_range.h"
+#include "cle_range.h"
 // #include "cle_read_intensities_from_map.h"
 // #include "cle_read_intensities_from_positions.h"
 #include "cle_replace_intensities.h"
@@ -130,7 +133,7 @@
 #include "cle_set_where_x_equals_y.h"
 #include "cle_set_where_x_greater_than_y.h"
 #include "cle_set_where_x_smaller_than_y.h"
-// #include "cle_sign.h"
+#include "cle_sign.h"
 #include "cle_smaller.h"
 #include "cle_smaller_constant.h"
 #include "cle_smaller_or_equal.h"
@@ -147,8 +150,8 @@
 #include "cle_transpose_xz.h"
 #include "cle_transpose_yz.h"
 #include "cle_undefined_to_zero.h"
-// #include "cle_variance_box.h"
-// #include "cle_variance_sphere.h"
+#include "cle_variance_box.h"
+#include "cle_variance_sphere.h"
 // #include "cle_write_values_to_positions.h"
 
 
@@ -322,11 +325,94 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
   return dst;
 }
 
-// copy_slice_func
-// copy_horizontal_slice_func
-// copy_vertical_slice_func
+auto
+copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
+  -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const ParameterList params = { { "src", src }, { "dst", dst }, { "index", slice } };
+  KernelInfo          kernel;
+  RangeArray          range;
+  if (dst->dim() == 3)
+  {
+    kernel = { "copy_slice_to", kernel::copy_slice_to };
+    range = { src->width(), src->height(), 1 };
+  }
+  else
+  {
+    kernel = { "copy_slice_from", kernel::copy_slice_from };
+    range = { dst->width(), dst->height(), dst->depth() };
+  }
+  execute(device, kernel, params, range);
+  return dst;
+}
+
+auto
+copy_horizontal_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
+  -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const ParameterList params = { { "src", src }, { "dst", dst }, { "index", slice } };
+  KernelInfo          kernel;
+  RangeArray          range;
+  if (dst->dim() == 3)
+  {
+    kernel = { "copy_horizontal_slice_to", kernel::copy_horizontal_slice_to };
+    range = { src->width(), src->height(), 1 };
+  }
+  else
+  {
+    kernel = { "copy_horizontal_slice_from", kernel::copy_horizontal_slice_from };
+    range = { dst->width(), dst->height(), dst->depth() };
+  }
+  execute(device, kernel, params, range);
+  return dst;
+}
+
+auto
+copy_vertical_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
+  -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const ParameterList params = { { "src", src }, { "dst", dst }, { "index", slice } };
+  KernelInfo          kernel;
+  RangeArray          range;
+  if (dst->dim() == 3)
+  {
+    kernel = { "copy_vertical_slice_to", kernel::copy_vertical_slice_to };
+    range = { src->width(), src->height(), 1 };
+  }
+  else
+  {
+    kernel = { "copy_vertical_slice_from", kernel::copy_vertical_slice_from };
+    range = { dst->width(), dst->height(), dst->depth() };
+  }
+  execute(device, kernel, params, range);
+  return dst;
+}
+
 // count_touching_neighbors_func
-// crop_func
+
+auto
+crop_func(const Device::Pointer & device,
+          const Array::Pointer &  src,
+          Array::Pointer          dst,
+          int                     start_x,
+          int                     start_y,
+          int                     start_z,
+          int                     witdh,
+          int                     height,
+          int                     depth) -> Array::Pointer
+{
+  tier0::create_dst(src, dst, witdh, height, depth);
+  const KernelInfo    kernel = { "crop", kernel::crop };
+  const ParameterList params = {
+    { "src", src }, { "dst", dst }, { "index0", start_x }, { "index1", start_y }, { "index2", start_z }
+  };
+  const RangeArray range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
 
 auto
 cubic_root_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
@@ -905,7 +991,21 @@ minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer &
 
 // mode_box_func
 // mode_sphere_func
-// modulo_images_func
+
+auto
+modulo_images_func(const Device::Pointer & device,
+                   const Array::Pointer &  src0,
+                   const Array::Pointer &  src1,
+                   Array::Pointer          dst) -> Array::Pointer
+{
+  tier0::create_like(src0, dst);
+  const KernelInfo    kernel = { "modulo_images", kernel::modulo_images };
+  const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
 // multiply_image_and_coordinate_func
 
 auto
@@ -1080,7 +1180,27 @@ power_images_func(const Device::Pointer & device,
   return dst;
 }
 
-// range_func
+auto
+range_func(const Device::Pointer & device,
+           const Array::Pointer &  src,
+           Array::Pointer          dst,
+           int                     start_x,
+           int                     start_y,
+           int                     start_z,
+           int                     step_x,
+           int                     step_y,
+           int                     step_z) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const KernelInfo    kernel = { "range", kernel::range };
+  const ParameterList params = { { "src", src },         { "dst", dst },         { "start_x", start_x },
+                                 { "start_y", start_y }, { "start_z", start_z }, { "step_x", step_x },
+                                 { "step_y", step_y },   { "step_z", step_z } };
+  const RangeArray    range = { 1, 1, 1 };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
 // read_intensities_from_map_func
 // read_intensities_from_positions_func
 
@@ -1212,7 +1332,17 @@ set_nonzero_pixels_to_pixelindex_func(const Device::Pointer & device,
 // set_where_x_equals_y_func
 // set_where_x_greater_than_y_func
 // set_where_x_smaller_than_y_func
-// sign_func
+
+auto
+sign_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const KernelInfo    kernel = { "sign", kernel::sign };
+  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
 
 auto
 smaller_func(const Device::Pointer & device,
@@ -1411,10 +1541,48 @@ transpose_yz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
   return dst;
 }
 
-
 // undefined_to_zero_func
-// variance_box_func
-// variance_sphere_func
+
+auto
+variance_box_func(const Device::Pointer & device,
+                  const Array::Pointer &  src,
+                  Array::Pointer          dst,
+                  int                     radius_x,
+                  int                     radius_y,
+                  int                     radius_z) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const KernelInfo    kernel = { "variance_box", kernel::variance_box };
+  const ParameterList params = { { "src", src },
+                                 { "dst", dst },
+                                 { "index0", radius2kernelsize(radius_x) },
+                                 { "index1", radius2kernelsize(radius_y) },
+                                 { "index2", radius2kernelsize(radius_z) } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
+auto
+variance_sphere_func(const Device::Pointer & device,
+                     const Array::Pointer &  src,
+                     Array::Pointer          dst,
+                     int                     radius_x,
+                     int                     radius_y,
+                     int                     radius_z) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const KernelInfo    kernel = { "variance_sphere", kernel::variance_sphere };
+  const ParameterList params = { { "src", src },
+                                 { "dst", dst },
+                                 { "index0", radius2kernelsize(radius_x) },
+                                 { "index1", radius2kernelsize(radius_y) },
+                                 { "index2", radius2kernelsize(radius_z) } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
 // write_values_to_positions_func
 
 } // namespace cle::tier1

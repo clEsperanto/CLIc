@@ -21,12 +21,12 @@ auto
 add_image_and_scalar_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
   -> Array::Pointer;
 
-// @StRigaud TODO : @StRigaud TODO : average_distance_of_n_far_off_distances_func
-// @StRigaud TODO : @StRigaud TODO : average_distance_of_n_far_off_distances_func
-// @StRigaud TODO : @StRigaud TODO : average_distance_of_n_shortest_distances_func
-// @StRigaud TODO : @StRigaud TODO : average_distance_of_n_shortest_distances_func
-// @StRigaud TODO : @StRigaud TODO : average_distance_of_n_nearest_distances_func
-// @StRigaud TODO : @StRigaud TODO : average_distance_of_touching_neighbors_func
+// @StRigaud TODO : average_distance_of_n_far_off_distances_func
+// @StRigaud TODO : average_distance_of_n_far_off_distances_func
+// @StRigaud TODO : average_distance_of_n_shortest_distances_func
+// @StRigaud TODO : average_distance_of_n_shortest_distances_func
+// @StRigaud TODO : average_distance_of_n_nearest_distances_func
+// @StRigaud TODO : average_distance_of_touching_neighbors_func
 
 auto
 binary_and_func(const Device::Pointer & device,
@@ -75,11 +75,30 @@ convolve_func(const Device::Pointer & device,
 auto
 copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
-// @StRigaud TODO : copy_slice_func
-// @StRigaud TODO : copy_horizontal_slice_func
-// @StRigaud TODO : copy_vertical_slice_func
+auto
+copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
+  -> Array::Pointer;
+
+auto
+copy_horizontal_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
+  -> Array::Pointer;
+
+auto
+copy_vertical_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
+  -> Array::Pointer;
+
 // @StRigaud TODO : count_touching_neighbors_func
-// @StRigaud TODO : crop_func
+
+auto
+crop_func(const Device::Pointer & device,
+          const Array::Pointer &  src,
+          Array::Pointer          dst,
+          int                     start_x,
+          int                     start_y,
+          int                     start_z,
+          int                     witdh,
+          int                     height,
+          int                     depth) -> Array::Pointer;
 
 auto
 cubic_root_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -312,7 +331,13 @@ minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer &
 
 // @StRigaud TODO : mode_box_func
 // @StRigaud TODO : mode_sphere_func
-// @StRigaud TODO : modulo_images_func
+
+auto
+modulo_images_func(const Device::Pointer & device,
+                   const Array::Pointer &  src0,
+                   const Array::Pointer &  src1,
+                   Array::Pointer          dst) -> Array::Pointer;
+
 // @StRigaud TODO : multiply_image_and_coordinate_func
 
 auto
@@ -391,7 +416,17 @@ power_images_func(const Device::Pointer & device,
                   const Array::Pointer &  src1,
                   Array::Pointer          dst) -> Array::Pointer;
 
-// @StRigaud TODO : range_func
+auto
+range_func(const Device::Pointer & device,
+           const Array::Pointer &  src,
+           Array::Pointer          dst,
+           int                     start_x,
+           int                     start_y,
+           int                     start_z,
+           int                     step_x,
+           int                     step_y,
+           int                     step_z) -> Array::Pointer;
+
 // @StRigaud TODO : read_intensities_from_map_func
 // @StRigaud TODO : read_intensities_from_positions_func
 
@@ -454,7 +489,9 @@ set_nonzero_pixels_to_pixelindex_func(const Device::Pointer & device,
 // @StRigaud TODO : set_where_x_equals_y_func
 // @StRigaud TODO : set_where_x_greater_than_y_func
 // @StRigaud TODO : set_where_x_smaller_than_y_func
-// @StRigaud TODO : sign_func
+
+auto
+sign_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 auto
 smaller_func(const Device::Pointer & device,
@@ -515,8 +552,23 @@ auto
 transpose_yz_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 // @StRigaud TODO : undefined_to_zero_func
-// @StRigaud TODO : variance_box_func
-// @StRigaud TODO : variance_sphere_func
+
+auto
+variance_box_func(const Device::Pointer & device,
+                  const Array::Pointer &  src,
+                  Array::Pointer          dst,
+                  int                     radius_x,
+                  int                     radius_y,
+                  int                     radius_z) -> Array::Pointer;
+
+auto
+variance_sphere_func(const Device::Pointer & device,
+                     const Array::Pointer &  src,
+                     Array::Pointer          dst,
+                     float                   radius_x,
+                     float                   radius_y,
+                     float                   radius_z) -> Array::Pointer;
+
 // @StRigaud TODO : write_values_to_positions_func
 
 } // namespace cle::tier1
