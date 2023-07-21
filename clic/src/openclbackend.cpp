@@ -683,9 +683,8 @@ OpenCLBackend::loadProgramFromCache(const Device::Pointer & device, const std::s
   auto       ite = opencl_device->getCache().find(hash);
   if (ite != opencl_device->getCache().end())
   {
-    prog = ite->second;
+    *static_cast<cl_program *>(program) = ite->second;
   }
-  *static_cast<cl_program *>(program) = prog;
 #else
   throw std::runtime_error("Error: OpenCL is not enabled");
 #endif
@@ -710,32 +709,33 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
                            void *                  kernel) const -> void
 {
 #if USE_OPENCL
-  cl_int     err;
-  auto       opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  cl_program prog = nullptr;
-  // // std::string hash = std::to_string(std::hash<std::string>{}(kernel_source));
-  // // loadProgramFromCache(device, hash, prog);
-  // // if (prog == nullptr)
-  // // {
-  const char * source = kernel_source.c_str();
-  prog = clCreateProgramWithSource(opencl_device->getCLContext(), 1, &source, nullptr, &err);
-  if (err != CL_SUCCESS)
+  cl_int      err;
+  auto        opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  cl_program  prog = nullptr;
+  std::string hash = std::to_string(std::hash<std::string>{}(kernel_source));
+  loadProgramFromCache(device, hash, &prog);
+  if (prog == nullptr)
   {
-    throw std::runtime_error("Error (ocl): Failed to create program from source with error code " +
-                             std::to_string(err));
+    const char * source = kernel_source.c_str();
+    prog = clCreateProgramWithSource(opencl_device->getCLContext(), 1, &source, nullptr, &err);
+    if (err != CL_SUCCESS)
+    {
+      throw std::runtime_error("Error (ocl): Failed to create program from source with error code " +
+                               std::to_string(err));
+    }
+    cl_int buildStatus = clBuildProgram(prog, 0, nullptr, nullptr, nullptr, nullptr);
+    if (buildStatus != CL_SUCCESS)
+    {
+      size_t                 len;
+      std::array<char, 2048> buffer;
+      clGetProgramBuildInfo(prog, opencl_device->getCLDevice(), CL_PROGRAM_BUILD_LOG, 0, nullptr, &len);
+      clGetProgramBuildInfo(
+        prog, opencl_device->getCLDevice(), CL_PROGRAM_BUILD_LOG, buffer.size(), buffer.data(), &len);
+      std::cerr << "Build log: " << buffer.data() << std::endl;
+      throw std::runtime_error("Error (ocl): Failed to build program with error code " + std::to_string(err));
+    }
+    saveProgramToCache(device, hash, &prog);
   }
-  cl_int buildStatus = clBuildProgram(prog, 0, nullptr, nullptr, nullptr, nullptr);
-  if (buildStatus != CL_SUCCESS)
-  {
-    size_t                 len;
-    std::array<char, 2048> buffer;
-    clGetProgramBuildInfo(prog, opencl_device->getCLDevice(), CL_PROGRAM_BUILD_LOG, 0, nullptr, &len);
-    clGetProgramBuildInfo(prog, opencl_device->getCLDevice(), CL_PROGRAM_BUILD_LOG, buffer.size(), buffer.data(), &len);
-    std::cerr << "Build log: " << buffer.data() << std::endl;
-    throw std::runtime_error("Error (ocl): Failed to build program with error code " + std::to_string(err));
-  }
-  // // saveProgramToCache(device, hash, prog);
-  // // }
   auto ocl_kernel = clCreateKernel(prog, kernel_name.c_str(), &err);
   if (err != CL_SUCCESS)
   {
