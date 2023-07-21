@@ -569,7 +569,7 @@ variance_sphere_func(const Device::Pointer & device,
                      Array::Pointer          dst,
                      int                     radius_x,
                      int                     radius_y,
-                     int                     radius_z) -> Array::Pointer
+                     int                     radius_z) -> Array::Pointer;
 
 // @StRigaud TODO : write_values_to_positions_func
 
