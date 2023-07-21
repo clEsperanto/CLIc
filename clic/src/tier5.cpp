@@ -54,12 +54,12 @@ connected_components_labeling_box_func(const Device::Pointer & device, const Arr
   }
   if (iteration_count % 2 == 0)
   {
-    dst->copy(temp1);
+    temp1->copy(dst);
     // tier4::relabel_sequential_func(device, temp1, dst, 4096);
   }
   else
   {
-    dst->copy(temp2);
+    temp2->copy(dst);
     // tier4::relabel_sequential_func(device, temp2, dst, 4096);
   }
   return dst;
