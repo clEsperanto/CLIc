@@ -26,33 +26,33 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
 
   tier1::add_image_and_scalar_func(device, mask, flup, -1);
   tier5::connected_components_labeling_box_func(device, src, flop);
-  tier1::add_images_weighted_func(device, flop, flup, flip, 1, 1);
+  tier1::add_images_weighted_func(device, flop, flup, dst, 1, 1);
   auto flag = Array::create(1, 1, 1, dType::INT32, mType::BUFFER, device);
   flag->fill(1);
   int flag_value = 1;
   int iteration_count = 0;
-  while (flag_value > 0)
-  {
-    if (iteration_count % 2 == 0)
-    {
-      tier1::onlyzero_overwrite_maximum_box_func(device, flip, flag, flop);
-    }
-    else
-    {
-      tier1::onlyzero_overwrite_maximum_diamond_func(device, flop, flag, flip);
-    }
-    flag->read(&flag_value);
-    flag->fill(0);
-    iteration_count++;
-  }
-  if (iteration_count % 2 == 0)
-  {
-    tier1::mask_func(device, flip, mask, dst);
-  }
-  else
-  {
-    tier1::mask_func(device, flop, mask, dst);
-  }
+  // while (flag_value > 0)
+  // {
+  //   if (iteration_count % 2 == 0)
+  //   {
+  //     tier1::onlyzero_overwrite_maximum_box_func(device, flip, flag, flop);
+  //   }
+  //   else
+  //   {
+  //     tier1::onlyzero_overwrite_maximum_diamond_func(device, flop, flag, flip);
+  //   }
+  //   flag->read(&flag_value);
+  //   flag->fill(0);
+  //   iteration_count++;
+  // }
+  // if (iteration_count % 2 == 0)
+  // {
+  //   tier1::mask_func(device, flip, mask, dst);
+  // }
+  // else
+  // {
+  //   tier1::mask_func(device, flop, mask, dst);
+  // }
   return dst;
 }
 
