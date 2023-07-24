@@ -60,9 +60,24 @@ closing_sphere_func(const Device::Pointer & device,
                     float                   radius_y,
                     float                   radius_z) -> Array::Pointer;
 
-// @StRigaud TODO: auto combine_horizontally_func
-// @StRigaud TODO: auto combine_vertically_func
-// @StRigaud TODO: auto concatenate_stacks_func
+auto
+combine_horizontally_func(const Device::Pointer & device,
+                          const Array::Pointer &  src0,
+                          const Array::Pointer &  src1,
+                          Array::Pointer          dst) -> Array::Pointer;
+
+auto
+combine_vertically_func(const Device::Pointer & device,
+                        const Array::Pointer &  src0,
+                        const Array::Pointer &  src1,
+                        Array::Pointer          dst) -> Array::Pointer;
+
+auto
+concatenate_stacks_func(const Device::Pointer & device,
+                        const Array::Pointer &  src0,
+                        const Array::Pointer &  src1,
+                        Array::Pointer          dst) -> Array::Pointer;
+
 // @StRigaud TODO: auto crop_border_func
 // @StRigaud TODO: auto distance_matrix_to_mesh_func
 
@@ -190,7 +205,6 @@ top_hat_sphere_func(const Device::Pointer & device,
 // @StRigaud TODO: auto z_position_of_maximum_z_projection_func
 // @StRigaud TODO: auto z_position_of_minimum_z_projection_func
 // @StRigaud TODO: auto z_position_projection_func
-
 
 } // namespace cle::tier2
 

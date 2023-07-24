@@ -88,9 +88,43 @@ closing_sphere_func(const Device::Pointer & device,
   return tier1::minimum_sphere_func(device, temp, dst, radius_x, radius_y, radius_z);
 }
 
-// @StRigaud TODO: auto combine_horizontally_func
-// @StRigaud TODO: auto combine_vertically_func
-// @StRigaud TODO: auto concatenate_stacks_func
+
+auto
+combine_horizontally_func(const Device::Pointer & device,
+                          const Array::Pointer &  src0,
+                          const Array::Pointer &  src1,
+                          Array::Pointer          dst) -> Array::Pointer
+{
+  tier0::create_dst(src0, dst, src0->width() + src1->width(), src0->height(), src0->depth(), src0->dtype());
+  tier1::paste_func(device, src0, dst, 0, 0, 0);
+  tier1::paste_func(device, src1, dst, src0->width(), 0, 0);
+  return dst;
+}
+
+auto
+combine_vertically_func(const Device::Pointer & device,
+                        const Array::Pointer &  src0,
+                        const Array::Pointer &  src1,
+                        Array::Pointer          dst) -> Array::Pointer
+{
+  tier0::create_dst(src0, dst, src0->width(), src0->height() + src1->height(), src0->depth(), src0->dtype());
+  tier1::paste_func(device, src0, dst, 0, 0, 0);
+  tier1::paste_func(device, src1, dst, 0, src0->height(), 0);
+  return dst;
+}
+
+auto
+concatenate_stacks_func(const Device::Pointer & device,
+                        const Array::Pointer &  src0,
+                        const Array::Pointer &  src1,
+                        Array::Pointer          dst) -> Array::Pointer
+{
+  tier0::create_dst(src0, dst, src0->width(), src0->height(), src0->depth() + src1->depth(), src0->dtype());
+  tier1::paste_func(device, src0, dst, 0, 0, 0);
+  tier1::paste_func(device, src1, dst, 0, 0, src0->depth());
+  return dst;
+}
+
 // @StRigaud TODO: auto crop_border_func
 // @StRigaud TODO: auto distance_matrix_to_mesh_func;
 
@@ -117,7 +151,6 @@ difference_of_gaussian_func(const Device::Pointer & device,
   auto gauss2 = tier1::gaussian_blur_func(device, src, nullptr, sigma2_x, sigma2_y, sigma2_z);
   return tier1::add_images_weighted_func(device, gauss1, gauss2, dst, 1, -1);
 }
-
 
 // @StRigaud TODO: auto generate_maximum_intensity_between_points_matrix_func;
 // @StRigaud TODO: auto generate_mean_intensity_between_points_matrix_func;
