@@ -446,6 +446,7 @@ detect_maxima_box_func(const Device::Pointer & device, const Array::Pointer & sr
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
+  return dst;
 }
 
 auto
@@ -456,6 +457,7 @@ detect_minima_box_func(const Device::Pointer & device, const Array::Pointer & sr
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
+  return dst;
 }
 
 auto

@@ -68,7 +68,7 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
     range.begin(), range.end(), histogram_array.begin(), 0.0f, std::plus<>(), [](float intensity, float hist_value) {
       return intensity * hist_value;
     });
-  for (auto index = 0; index < range.size(); ++index)
+  for (size_t index = 0; index < range.size(); ++index)
   {
     if (histogram_array[index] == 0)
     {
