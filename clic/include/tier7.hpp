@@ -9,8 +9,11 @@ namespace cle::tier7
 {
 
 auto
-voronoi_otsu_labeling_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+voronoi_otsu_labeling_func(const Device::Pointer & device,
+                           const Array::Pointer &  src,
+                           Array::Pointer          dst,
+                           float                   spot_sigma,
+                           float                   outline_sigma) -> Array::Pointer;
 
 } // namespace cle::tier7
 

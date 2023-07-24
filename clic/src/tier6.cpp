@@ -20,7 +20,7 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
   tier0::create_like(src, dst);
   auto flup = tier1::add_image_and_scalar_func(device, mask, nullptr, -1);
   auto flop = tier5::connected_components_labeling_box_func(device, src, nullptr);
-  auto flip = tier1::add_images_func(device, flup, flop, nullptr);
+  auto flip = tier1::add_images_weighted_func(device, flup, flop, nullptr, 1, 1);
   auto flag = Array::create(1, 1, 1, dType::INT32, mType::BUFFER, device);
   flag->fill(0);
   int flag_value = 1;
