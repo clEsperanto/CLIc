@@ -74,7 +74,7 @@ OpenCLDevice::finish() const -> void
     std::cerr << "OpenCL device not initialized" << std::endl;
     return;
   }
-  if (waitFinish) 
+  if (waitFinish)
   {
     clFinish(clCommandQueue);
   }

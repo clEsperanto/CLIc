@@ -78,7 +78,7 @@ CUDADevice::finish() const -> void
     std::cerr << "CUDA device not initialized" << std::endl;
     return;
   }
-  if (waitFinish) 
+  if (waitFinish)
   {
     cuStreamSynchronize(cudaStream);
   }
