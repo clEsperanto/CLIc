@@ -11,7 +11,6 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   std::fill(input.begin(), input.end(), static_cast<type>(0));
   std::fill(valid.begin(), valid.end(), static_cast<type>(0));
 
-  int index(0);
   int center((shape[0] / 2) + (shape[1] / 2) * shape[0] + (shape[2] / 2) * shape[1] * shape[0]);
 
   int i = 1, j = 1;

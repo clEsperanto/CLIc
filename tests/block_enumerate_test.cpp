@@ -10,7 +10,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   std::vector<type> input(shape[0] * shape[1] * shape[2]);
   std::vector<type> valid(shape[0] * shape[1] * shape[2]);
   type              index = 0;
-  for (auto i = 0; i < valid.size(); i++)
+  for (size_t i = 0; i < valid.size(); i++)
   {
     if (i % 2 == 0)
     {

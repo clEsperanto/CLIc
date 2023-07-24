@@ -11,8 +11,8 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   std::vector<type> valid(shape[0] * shape[1] * shape[2]);
   std::fill(input.begin(), input.end(), static_cast<type>(0));
   std::fill(valid.begin(), valid.end(), static_cast<type>(0));
-  int  center = (shape[0] / 2) + (shape[1] / 2) * shape[0] + (shape[2] / 2) * shape[1] * shape[0];
-  type d = 1;
+  const size_t center = (shape[0] / 2) + (shape[1] / 2) * shape[0] + (shape[2] / 2) * shape[1] * shape[0];
+  type         d = 1;
   if (shape[0] > 1)
     d += 2.0f;
   if (shape[1] > 1)
@@ -20,7 +20,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   if (shape[2] > 1)
     d += 2.0f;
   input[center] = d;
-  for (auto i = 0; i < input.size(); ++i)
+  for (size_t i = 0; i < input.size(); ++i)
   {
     if ((i >= center - 1 && i <= center + 1) || (i == center + shape[0]) || (i == center - shape[0]) ||
         (i == center - (shape[1] * shape[0])) || (i == center + (shape[1] * shape[0])))

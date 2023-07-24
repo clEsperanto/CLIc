@@ -16,7 +16,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   static std::default_random_engine         generator;
   std::generate(input1.begin(), input1.end(), []() { return static_cast<type>(distribution(generator)); });
   std::generate(input2.begin(), input2.end(), []() { return static_cast<type>(distribution(generator)); });
-  for (auto i = 0; i < valid.size(); i++)
+  for (size_t i = 0; i < valid.size(); i++)
   {
     valid[i] = ((input1[i] - input2[i]) <= 0) ? 0 : input1[i];
   }

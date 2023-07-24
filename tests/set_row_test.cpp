@@ -8,9 +8,6 @@ template <class type>
 auto
 run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bool
 {
-  size_t            w = shape[0];
-  size_t            h = shape[1];
-  size_t            d = shape[2];
   std::vector<type> input(shape[0] * shape[1] * shape[2]);
   std::vector<type> valid(shape[0] * shape[1] * shape[2]);
   for (auto it = input.begin(), it_valid = valid.begin(); (it != input.end()) && (it_valid != valid.end());
@@ -20,8 +17,8 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
     *it_valid = *it;
 
     // if iterator is at the second element of the row, set the value to 100
-    size_t row_index = std::floor((it - input.begin()) / w);
-    row_index = row_index % (h);
+    size_t row_index = std::floor((it - input.begin()) / shape[0]);
+    row_index = row_index % (shape[1]);
     if (row_index == 1)
     {
       *it_valid = static_cast<type>(100);

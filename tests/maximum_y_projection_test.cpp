@@ -13,7 +13,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   std::fill(valid.begin(), valid.end(), static_cast<type>(10));
   for (auto it = input.begin(); it != input.end(); std::advance(it, shape[0] * shape[1]))
   {
-    for (auto j = 0; j < shape[0]; j++)
+    for (size_t j = 0; j < shape[0]; j++)
     {
       int idx = (it - input.begin() + j) + (rand() % shape[1]) * shape[0];
       input[idx] = static_cast<type>(10);

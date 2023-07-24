@@ -11,7 +11,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   std::vector<type> valid(shape[0] * shape[1] * 1);
   std::fill(input.begin(), input.end(), static_cast<type>(0));
   std::fill(valid.begin(), valid.end(), static_cast<type>(10));
-  for (auto it = input.begin(); (it - input.begin()) < shape[1] * shape[0]; it++)
+  for (auto it = input.begin(); (it - input.begin()) < int(shape[1] * shape[0]); it++)
   {
     int idx = (it - input.begin()) + (rand() % shape[2]) * shape[0] * shape[1];
     input[idx] = static_cast<type>(10);
