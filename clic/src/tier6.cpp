@@ -26,7 +26,7 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
 
   tier1::add_image_and_scalar_func(device, mask, flup, -1);
   tier5::connected_components_labeling_box_func(device, src, flop);
-  tier1::add_images_weighted_func(device, flup, flop, flip, 1, 1);
+  tier1::add_images_weighted_func(device, flop, flup, flip, 1, 1);
   auto flag = Array::create(1, 1, 1, dType::INT32, mType::BUFFER, device);
   flag->fill(0);
   int flag_value = 1;
@@ -39,7 +39,7 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
     }
     else
     {
-      tier1::onlyzero_overwrite_maximum_box_func(device, flop, flag, flip);
+      tier1::onlyzero_overwrite_maximum_diamond_func(device, flop, flag, flip);
     }
     flag->read(&flag_value);
     flag->fill(0);
