@@ -28,7 +28,7 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
   tier5::connected_components_labeling_box_func(device, src, flop);
   tier1::add_images_weighted_func(device, flop, flup, flip, 1, 1);
   auto flag = Array::create(1, 1, 1, dType::INT32, mType::BUFFER, device);
-  flag->fill(0);
+  flag->fill(1);
   int flag_value = 1;
   int iteration_count = 0;
   while (flag_value > 0)
