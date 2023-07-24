@@ -103,9 +103,18 @@ crop_func(const Device::Pointer & device,
 auto
 cubic_root_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
-// @StRigaud TODO : detect_label_edges_func
-// @StRigaud TODO : detect_maxima_box_func
-// @StRigaud TODO : detect_minima_box_func
+auto
+detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
+
+auto
+detect_maxima_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
+
+auto
+detect_minima_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
+
 
 auto
 dilate_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -389,7 +398,13 @@ auto
 not_equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
   -> Array::Pointer;
 
-// @StRigaud TODO : paste_func
+auto
+paste_func(const Device::Pointer & device,
+           const Array::Pointer &  src,
+           Array::Pointer          dst,
+           int                     index_x,
+           int                     index_y,
+           int                     index_z) -> Array::Pointer;
 
 auto
 onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
@@ -474,7 +489,10 @@ auto
 set_column_func(const Device::Pointer & device, const Array::Pointer & src, int column, float value) -> Array::Pointer;
 
 // @StRigaud TODO : set_image_borders_func
-// @StRigaud TODO : set_plane_func
+
+auto
+set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int plane, float value) -> Array::Pointer;
+
 // @StRigaud TODO : set_ramp_x_func
 // @StRigaud TODO : set_ramp_y_func
 // @StRigaud TODO : set_ramp_z_func
@@ -571,7 +589,9 @@ variance_sphere_func(const Device::Pointer & device,
                      int                     radius_y,
                      int                     radius_z) -> Array::Pointer;
 
-// @StRigaud TODO : write_values_to_positions_func
+auto
+write_values_to_positions_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 } // namespace cle::tier1
 

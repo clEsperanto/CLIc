@@ -30,15 +30,16 @@
 #include "cle_cubic_root.h"
 #include "cle_detect_label_edges.h"
 #include "cle_detect_maxima.h"
+#include "cle_detect_minima.h"
 #include "cle_dilate_box.h"
 // #include "cle_dilate_box_slice_by_slice.h"
 #include "cle_dilate_sphere.h"
 // #include "cle_dilate_sphere_slice_by_slice.h"
 #include "cle_divide_image_and_scalar.h"
 #include "cle_divide_images.h"
-#include "cle_draw_box.h"
-#include "cle_draw_line.h"
-#include "cle_draw_sphere.h"
+// #include "cle_draw_box.h"
+// #include "cle_draw_line.h"
+// #include "cle_draw_sphere.h"
 // #include "cle_downsample_slice_by_slice_half_median.h"
 #include "cle_equal.h"
 #include "cle_equal_constant.h"
@@ -152,7 +153,7 @@
 #include "cle_undefined_to_zero.h"
 #include "cle_variance_box.h"
 #include "cle_variance_sphere.h"
-// #include "cle_write_values_to_positions.h"
+#include "cle_write_values_to_positions.h"
 
 
 namespace cle::tier1
@@ -425,9 +426,37 @@ cubic_root_func(const Device::Pointer & device, const Array::Pointer & src, Arra
   return dst;
 }
 
-// detect_label_edges_func
-// detect_maxima_box_func
-// detect_minima_box_func
+auto
+detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const KernelInfo    kernel = { "detect_label_edges", kernel::detect_label_edges };
+  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
+auto
+detect_maxima_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const KernelInfo    kernel = { "detect_maxima", kernel::detect_maxima };
+  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+}
+
+auto
+detect_minima_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const KernelInfo    kernel = { "detect_minima", kernel::detect_minima };
+  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+}
 
 auto
 dilate_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
@@ -1121,7 +1150,23 @@ not_equal_constant_func(const Device::Pointer & device, const Array::Pointer & s
   return dst;
 }
 
-// paste_func
+auto
+paste_func(const Device::Pointer & device,
+           const Array::Pointer &  src,
+           Array::Pointer          dst,
+           int                     index_x,
+           int                     index_y,
+           int                     index_z) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const KernelInfo    kernel = { "paste", kernel::paste };
+  const ParameterList params = {
+    { "src", src }, { "dst", dst }, { "scalar0", index_x }, { "scalar1", index_y }, { "scalar2", index_z }
+  };
+  const RangeArray range = { src->width(), src->height(), src->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
 
 auto
 onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
@@ -1310,7 +1355,17 @@ set_column_func(const Device::Pointer & device, const Array::Pointer & src, int 
 }
 
 // set_image_borders_func
-// set_plane_func
+
+auto
+set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int plane, float value) -> Array::Pointer
+{
+  const KernelInfo    kernel = { "set_plane", kernel::set_plane };
+  const ParameterList params = { { "dst", src }, { "index", plane }, { "scalar", value } };
+  const RangeArray    range = { src->width(), src->height(), src->depth() };
+  execute(device, kernel, params, range);
+  return src;
+}
+
 // set_ramp_x_func
 // set_ramp_y_func
 // set_ramp_z_func
@@ -1593,6 +1648,34 @@ variance_sphere_func(const Device::Pointer & device,
   return dst;
 }
 
-// write_values_to_positions_func
+auto
+write_values_to_positions_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer
+{
+  if (src->dim() != 2)
+  {
+    throw std::runtime_error("Source image is expected to be 2D, where rows are coordinates (x,y,z) and values v.");
+  }
+  if (dst == nullptr)
+  {
+    Array::Pointer temp = nullptr;
+    tier0::create_yz(src, temp, dType::INT32);
+    maximum_x_projection_func(device, src, temp);
+    auto nb_max_position = temp->nbElements() - 1;
+
+    std::vector<int> max_position(temp->nbElements());
+    temp->read(max_position.data());
+
+    size_t max_pos_x = max_position[0];
+    size_t max_pos_y = (nb_max_position > 2) ? max_position[1] : 1;
+    size_t max_pos_z = (nb_max_position > 3) ? max_position[2] : 1;
+    dst = Array::create(max_pos_x, max_pos_y, max_pos_z, src->dtype(), src->mtype(), src->device());
+  }
+  const KernelInfo    kernel = { "write_values_to_positions", kernel::write_values_to_positions };
+  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { src->width(), src->height(), src->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
 
 } // namespace cle::tier1
