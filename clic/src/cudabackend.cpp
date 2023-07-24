@@ -62,7 +62,7 @@ CUDABackend::getDevicesList(const std::string & type) const -> std::vector<std::
 #if USE_CUDA
   auto                     devices = getDevices(type);
   std::vector<std::string> deviceList;
-  for (int i = 0; i < devices.size(); i++)
+  for (size_t i = 0; i < devices.size(); i++)
   {
     deviceList.emplace_back(devices[i]->getName());
   }
@@ -797,7 +797,6 @@ CUDABackend::executeKernel(const Device::Pointer &       device,
   }
 
   CUfunction cuFunction;
-  CUresult   error;
   try
   {
     buildKernel(device, kernel_source, kernel_name, &cuFunction);

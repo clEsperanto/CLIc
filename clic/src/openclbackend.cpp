@@ -678,9 +678,8 @@ OpenCLBackend::loadProgramFromCache(const Device::Pointer & device, const std::s
   -> void
 {
 #if USE_OPENCL
-  auto       opencl_device = std::dynamic_pointer_cast<OpenCLDevice>(device);
-  cl_program prog = nullptr;
-  auto       ite = opencl_device->getCache().find(hash);
+  auto opencl_device = std::dynamic_pointer_cast<OpenCLDevice>(device);
+  auto ite = opencl_device->getCache().find(hash);
   if (ite != opencl_device->getCache().end())
   {
     *static_cast<cl_program *>(program) = ite->second;

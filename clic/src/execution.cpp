@@ -7,8 +7,7 @@
 namespace cle
 {
 
-// Helper function for word replacements
-static auto
+auto
 replaceWord(std::string & sentence, const std::string_view & wordToReplace, const std::string_view & replacement)
   -> void
 {
@@ -20,8 +19,7 @@ replaceWord(std::string & sentence, const std::string_view & wordToReplace, cons
   }
 }
 
-// Helper function for OpenCL to Cuda translation
-static auto
+auto
 srcOpenclToCuda(std::string opencl_code) -> std::string
 {
   replaceWord(opencl_code, "(int2){", "make_int2(");
@@ -51,7 +49,7 @@ srcOpenclToCuda(std::string opencl_code) -> std::string
   return opencl_code;
 }
 
-static auto
+auto
 cudaDefines(const ParameterList & parameter_list, const ConstantList & constant_list) -> std::string
 {
   // @CherifMZ TODO: write cuda Defines to transform ocl Kernel into compatible cuda kernel
@@ -131,7 +129,7 @@ cudaDefines(const ParameterList & parameter_list, const ConstantList & constant_
   return defines.str();
 }
 
-static auto
+auto
 oclDefines(const ParameterList & parameter_list, const ConstantList & constant_list) -> std::string
 {
   std::ostringstream defines;

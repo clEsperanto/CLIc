@@ -93,14 +93,14 @@ private:
         const mType &           mem_type,
         const Device::Pointer & device_ptr);
 
-  mType           memType_ = mType::BUFFER;
-  dType           dataType_ = dType::FLOAT;
   size_t          width_ = 1;
   size_t          height_ = 1;
   size_t          depth_ = 1;
-  bool            initialized_ = false;
+  dType           dataType_ = dType::FLOAT;
+  mType           memType_ = mType::BUFFER;
   Device::Pointer device_ = nullptr;
   MemoryPointer   data_ = std::make_shared<void *>(nullptr);
+  bool            initialized_ = false;
   const Backend & backend_ = cle::BackendManager::getInstance().getBackend();
 };
 

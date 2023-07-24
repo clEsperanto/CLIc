@@ -113,8 +113,8 @@ public:
   getCache() -> std::map<std::string, cl_program> &;
 
 private:
-  cl_platform_id                    clPlatform;
   cl_device_id                      clDevice;
+  cl_platform_id                    clPlatform;
   cl_context                        clContext;
   cl_command_queue                  clCommandQueue;
   std::map<std::string, cl_program> cache;

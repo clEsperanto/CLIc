@@ -18,10 +18,17 @@ using ConstantList = std::vector<std::pair<std::string, ConstantType>>;
 using KernelInfo = std::pair<std::string, std::string>;
 using RangeArray = std::array<size_t, 3>;
 
-static auto
+auto
+replaceWord(std::string & sentence, const std::string_view & wordToReplace, const std::string_view & replacement)
+  -> void;
+
+auto
+srcOpenclToCuda(std::string opencl_code) -> std::string;
+
+auto
 cudaDefines(const ParameterList & parameter_list, const ConstantList & constant_list) -> std::string;
 
-static auto
+auto
 oclDefines(const ParameterList & parameter_list, const ConstantList & constant_list) -> std::string;
 
 auto
