@@ -62,33 +62,45 @@ create_vector(const Array::Pointer & src, Array::Pointer & dst, const size_t & s
 }
 
 auto
-create_xy(const Array::Pointer & src, Array::Pointer & dst) -> void
+create_xy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
   if (dst != nullptr)
   {
     return;
   }
-  dst = Array::create(src->width(), src->height(), 1, src->dtype(), src->mtype(), src->device());
+  if (type == dType::UNKNOWN)
+  {
+    type = src->dtype();
+  }
+  dst = Array::create(src->width(), src->height(), 1, type, src->mtype(), src->device());
 }
 
 auto
-create_yz(const Array::Pointer & src, Array::Pointer & dst) -> void
+create_yz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
   if (dst != nullptr)
   {
     return;
   }
-  dst = Array::create(src->height(), src->depth(), 1, src->dtype(), src->mtype(), src->device());
+  if (type == dType::UNKNOWN)
+  {
+    type = src->dtype();
+  }
+  dst = Array::create(src->height(), src->depth(), 1, type, src->mtype(), src->device());
 }
 
 auto
-create_xz(const Array::Pointer & src, Array::Pointer & dst) -> void
+create_xz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
   if (dst != nullptr)
   {
     return;
   }
-  dst = Array::create(src->width(), src->depth(), 1, src->dtype(), src->mtype(), src->device());
+  if (type == dType::UNKNOWN)
+  {
+    type = src->dtype();
+  }
+  dst = Array::create(src->width(), src->depth(), 1, type, src->mtype(), src->device());
 }
 
 auto

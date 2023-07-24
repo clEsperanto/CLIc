@@ -27,13 +27,13 @@ create_vector(const Array::Pointer & src, Array::Pointer & dst, const size_t & s
   -> void;
 
 auto
-create_xy(const Array::Pointer & src, Array::Pointer & dst) -> void;
+create_xy(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::UNKNOWN) -> void;
 
 auto
-create_yz(const Array::Pointer & src, Array::Pointer & dst) -> void;
+create_yz(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::UNKNOWN) -> void;
 
 auto
-create_xz(const Array::Pointer & src, Array::Pointer & dst) -> void;
+create_xz(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::UNKNOWN) -> void;
 
 auto
 execute_separable_func(const Device::Pointer &      device,
