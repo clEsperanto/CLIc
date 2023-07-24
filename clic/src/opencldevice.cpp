@@ -58,6 +58,7 @@ OpenCLDevice::finalize() -> void
     std::cerr << "OpenCL device not initialized" << std::endl;
     return;
   }
+  this->waitFinish = true;
   this->finish();
   clReleaseContext(clContext);
   clReleaseCommandQueue(clCommandQueue);
@@ -66,14 +67,23 @@ OpenCLDevice::finalize() -> void
 }
 
 auto
-OpenCLDevice::finish() -> void
+OpenCLDevice::finish() const -> void
 {
   if (!isInitialized())
   {
     std::cerr << "OpenCL device not initialized" << std::endl;
     return;
   }
-  clFinish(clCommandQueue);
+  if (waitFinish) 
+  {
+    clFinish(clCommandQueue);
+  }
+}
+
+auto
+OpenCLDevice::setWaitToFinish(bool flag) -> void
+{
+  this->waitFinish = flag;
 }
 
 auto

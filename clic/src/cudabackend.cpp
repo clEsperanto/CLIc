@@ -826,6 +826,7 @@ CUDABackend::executeKernel(const Device::Pointer &       device,
   {
     throw std::runtime_error("Error in launching kernel.");
   }
+  cuda_device->finish();
 #else
   throw std::runtime_error("Error: CUDA backend is not enabled");
 #endif

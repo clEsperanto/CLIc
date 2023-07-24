@@ -35,7 +35,9 @@ public:
   virtual auto
   finalize() -> void = 0;
   virtual auto
-  finish() -> void = 0;
+  finish() const -> void = 0;
+  virtual auto
+  setWaitToFinish(bool) -> void = 0;
 
   [[nodiscard]] virtual auto
   isInitialized() const -> bool = 0;
@@ -87,7 +89,9 @@ public:
   auto
   finalize() -> void override;
   auto
-  finish() -> void override;
+  finish() const -> void override;
+  auto
+  setWaitToFinish(bool) -> void override;
 
   [[nodiscard]] auto
   getType() const -> Device::Type override;
@@ -115,6 +119,7 @@ private:
   cl_command_queue                  clCommandQueue;
   std::map<std::string, cl_program> cache;
   bool                              initialized = false;
+  bool                              waitFinish = false;
 };
 #endif // USE_OPENCL
 
@@ -136,7 +141,9 @@ public:
   auto
   finalize() -> void override;
   auto
-  finish() -> void override;
+  finish() const -> void override;
+  auto
+  setWaitToFinish(bool) -> void override;
 
   [[nodiscard]] auto
   getType() const -> Device::Type override;
@@ -163,6 +170,7 @@ private:
   CUcontext                       cudaContext;
   CUstream                        cudaStream;
   bool                            initialized = false;
+  bool                            waitFinish = false;
   std::map<std::string, CUmodule> cache;
 };
 #endif // USE_CUDA

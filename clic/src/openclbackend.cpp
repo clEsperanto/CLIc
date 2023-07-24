@@ -780,6 +780,7 @@ OpenCLBackend::executeKernel(const Device::Pointer &       device,
   {
     throw std::runtime_error("Error (ocl): Failed to launch kernel (" + std::to_string(err) + ").)");
   }
+  opencl_device->finish();
 #else
   throw std::runtime_error("Error: OpenCL is not enabled");
 #endif

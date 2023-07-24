@@ -62,7 +62,8 @@ CUDADevice::finalize() -> void
     std::cerr << "CUDA device not initialized" << std::endl;
     return;
   }
-  finish();
+  this->waitFinish = true;
+  this->finish();
   cuStreamDestroy(cudaStream);
   cuCtxDestroy(cudaContext);
   cuCtxSetCurrent(nullptr);
@@ -70,14 +71,23 @@ CUDADevice::finalize() -> void
 }
 
 auto
-CUDADevice::finish() -> void
+CUDADevice::finish() const -> void
 {
   if (!isInitialized())
   {
     std::cerr << "CUDA device not initialized" << std::endl;
     return;
   }
-  cuStreamSynchronize(cudaStream);
+  if (waitFinish) 
+  {
+    cuStreamSynchronize(cudaStream);
+  }
+}
+
+auto
+CUDADevice::setWaitToFinish(bool flag) -> void
+{
+  this->waitFinish = flag;
 }
 
 auto
