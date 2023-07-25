@@ -31,8 +31,8 @@ connected_components_labeling_box_func(const Device::Pointer & device, const Arr
 
   Array::Pointer temp1 = nullptr;
   Array::Pointer temp2 = nullptr;
-  tier0::create_like(dst, temp1, dType::FLOAT);
-  tier0::create_like(dst, temp2, dType::FLOAT);
+  tier0::create_like(dst, temp1, dType::UINT32);
+  tier0::create_like(dst, temp2, dType::UINT32);
   temp2->fill(0);
 
   tier1::set_nonzero_pixels_to_pixelindex_func(device, src, temp1, 1);
