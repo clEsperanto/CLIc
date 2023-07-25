@@ -740,19 +740,25 @@ CUDABackend::buildKernel(const Device::Pointer & device,
   auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Failed to set CUDA device before memory allocation.");
+    throw std::runtime_error("Error (cuda): Failed to set CUDA device before memory allocation.");
   }
 
   nvrtcProgram prog;
   auto         res = nvrtcCreateProgram(&prog, kernel_source.c_str(), nullptr, 0, nullptr, nullptr);
   if (res != NVRTC_SUCCESS)
   {
-    throw std::runtime_error("Error in creating program.");
+    throw std::runtime_error("Error (cuda): Failed to create program from source with error code " +
+                             std::to_string(res));
   }
   res = nvrtcCompileProgram(prog, 0, nullptr);
   if (res != NVRTC_SUCCESS)
   {
-    throw std::runtime_error("Error in Compiling program.");
+    size_t log_size;
+    nvrtcGetProgramLogSize(prog, &log_size);
+    std::string log(log_size, '\0');
+    nvrtcGetProgramLog(prog, &log[0]);
+    std::cerr << "Build log: " << log << std::endl;
+    throw std::runtime_error("Error (cuda): Failed to build program with error code " + std::to_string(res));
   }
   size_t ptxSize;
   nvrtcGetPTXSize(prog, &ptxSize);
@@ -763,14 +769,14 @@ CUDABackend::buildKernel(const Device::Pointer & device,
   err = cuModuleLoadData(&cuModule, ptx.data());
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error in loading module.");
+    throw std::runtime_error("Error (cuda): Loading module with error code " + std::to_string(err));
   }
 
   CUfunction cuFunction;
   err = cuModuleGetFunction(&cuFunction, cuModule, kernel_name.c_str());
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error in getting function.");
+    throw std::runtime_error("Error (cuda): Getting function from module with error code " + std::to_string(err));
   }
 
   *(reinterpret_cast<CUfunction *>(kernel)) = cuFunction;
@@ -793,7 +799,7 @@ CUDABackend::executeKernel(const Device::Pointer &       device,
   auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Failed to set CUDA device before memory allocation.");
+    throw std::runtime_error("Error (cuda): Failed to set CUDA device before memory allocation.");
   }
 
   CUfunction cuFunction;
@@ -803,7 +809,7 @@ CUDABackend::executeKernel(const Device::Pointer &       device,
   }
   catch (const std::exception & e)
   {
-    throw std::runtime_error("Error: Failed to build kernel. \n\t > " + std::string(e.what()));
+    throw std::runtime_error("Error (cuda): Failed to build kernel. \n\t > " + std::string(e.what()));
   }
 
   std::vector<void *> argsValues(args.size());
@@ -823,7 +829,7 @@ CUDABackend::executeKernel(const Device::Pointer &       device,
 
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error in launching kernel.");
+    throw std::runtime_error("Error (cuda): Failed launching kernel with error code " + std::to_string(err));
   }
   cuda_device->finish();
 #else
