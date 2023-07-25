@@ -153,7 +153,7 @@ difference_of_gaussian_func(const Device::Pointer & device,
 }
 
 auto
-extend_labeling_via_voronoi(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
   tier0::create_like(src, dst);

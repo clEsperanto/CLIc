@@ -97,7 +97,7 @@ difference_of_gaussian_func(const Device::Pointer & device,
                             float                   sigma2_z) -> Array::Pointer;
 
 auto
-extend_labeling_via_voronoi(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer;
 
 // @StRigaud TODO: auto generate_maximum_intensity_between_points_matrix_func
