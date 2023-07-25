@@ -95,10 +95,10 @@ set_target_properties(copy_test PROPERTIES FOLDER "Tests")
 # set_target_properties(crop_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(detect_maxima_test detect_maxima_test.cpp)
-# add_dependencies(detect_maxima_test CLIc)
-# target_link_libraries(detect_maxima_test PRIVATE CLIc::CLIc)
-# set_target_properties(detect_maxima_test PROPERTIES FOLDER "Tests")
+add_executable(detect_maxima_test detect_maxima_test.cpp)
+add_dependencies(detect_maxima_test CLIc)
+target_link_libraries(detect_maxima_test PRIVATE CLIc::CLIc)
+set_target_properties(detect_maxima_test PROPERTIES FOLDER "Tests")
 
 
 add_executable(difference_of_gaussian_test difference_of_gaussian_test.cpp)
@@ -513,7 +513,7 @@ add_test(NAME connected_components_labeling_box_test WORKING_DIRECTORY ${CMAKE_C
 add_test(NAME convolve_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND convolve_test)
 add_test(NAME copy_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND copy_test)
 # add_test(NAME crop_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND crop_test)
-# add_test(NAME detect_maxima_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND detect_maxima_test)
+add_test(NAME detect_maxima_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND detect_maxima_test)
 add_test(NAME difference_of_gaussian_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND difference_of_gaussian_test)
 add_test(NAME dilate_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND dilate_box_test)
 add_test(NAME dilate_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND dilate_sphere_test)
@@ -595,7 +595,7 @@ set_tests_properties(absolute_test
     convolve_test
     copy_test
     # crop_test
-    # detect_maxima_test
+    detect_maxima_test
     dilate_box_test
     dilate_sphere_test
     divide_image_and_scalar_test
