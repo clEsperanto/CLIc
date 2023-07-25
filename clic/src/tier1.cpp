@@ -832,7 +832,7 @@ auto
 maximum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_yz(src, dst);
+  tier0::create_zy(src, dst);
   const KernelInfo    kernel = { "maximum_x_projection", kernel::maximum_x_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -907,7 +907,7 @@ mean_sphere_func(const Device::Pointer & device,
 auto
 mean_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_yz(src, dst);
+  tier0::create_zy(src, dst);
   const KernelInfo    kernel = { "mean_x_projection", kernel::mean_x_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -994,7 +994,7 @@ auto
 minimum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_yz(src, dst);
+  tier0::create_zy(src, dst);
   const KernelInfo    kernel = { "minimum_x_projection", kernel::minimum_x_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1542,7 +1542,7 @@ sum_reduction_x_func(const Device::Pointer & device, const Array::Pointer & src,
 auto
 sum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_yz(src, dst);
+  tier0::create_zy(src, dst);
   const KernelInfo    kernel = { "sum_x_projection", kernel::sum_x_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1667,7 +1667,7 @@ write_values_to_positions_func(const Device::Pointer & device, const Array::Poin
   if (dst == nullptr)
   {
     Array::Pointer temp = nullptr;
-    tier0::create_yz(src, temp, dType::INT32);
+    tier0::create_zy(src, temp, dType::INT32);
     maximum_x_projection_func(device, src, temp);
     auto nb_max_position = temp->nbElements() - 1;
 

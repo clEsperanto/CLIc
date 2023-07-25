@@ -30,7 +30,7 @@ auto
 create_xy(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::UNKNOWN) -> void;
 
 auto
-create_yz(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::UNKNOWN) -> void;
+create_zy(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::UNKNOWN) -> void;
 
 auto
 create_xz(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::UNKNOWN) -> void;

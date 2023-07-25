@@ -76,7 +76,7 @@ create_xy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 }
 
 auto
-create_yz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
+create_zy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
   if (dst != nullptr)
   {
@@ -86,7 +86,7 @@ create_yz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
   {
     type = src->dtype();
   }
-  dst = Array::create(src->height(), src->depth(), 1, type, src->mtype(), src->device());
+  dst = Array::create(src->depth(), src->height(), 1, type, src->mtype(), src->device());
 }
 
 auto
