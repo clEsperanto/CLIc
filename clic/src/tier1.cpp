@@ -401,11 +401,11 @@ crop_func(const Device::Pointer & device,
           int                     start_x,
           int                     start_y,
           int                     start_z,
-          int                     witdh,
+          int                     width,
           int                     height,
           int                     depth) -> Array::Pointer
 {
-  tier0::create_dst(src, dst, witdh, height, depth);
+  tier0::create_dst(src, dst, width, height, depth);
   const KernelInfo    kernel = { "crop", kernel::crop };
   const ParameterList params = {
     { "src", src }, { "dst", dst }, { "index0", start_x }, { "index1", start_y }, { "index2", start_z }

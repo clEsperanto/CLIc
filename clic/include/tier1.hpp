@@ -96,7 +96,7 @@ crop_func(const Device::Pointer & device,
           int                     start_x,
           int                     start_y,
           int                     start_z,
-          int                     witdh,
+          int                     width,
           int                     height,
           int                     depth) -> Array::Pointer;
 
