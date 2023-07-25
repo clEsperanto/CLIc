@@ -17,7 +17,7 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
                              Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  Array::Pointer flip = nullptr ;
+  Array::Pointer flip = nullptr;
   Array::Pointer flop = nullptr;
   Array::Pointer flup = nullptr;
   tier0::create_like(src, flip, dType::FLOAT);
