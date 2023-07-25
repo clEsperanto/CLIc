@@ -155,10 +155,10 @@ target_link_libraries(erode_sphere_test PRIVATE CLIc::CLIc)
 set_target_properties(erode_sphere_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(extend_labeling_via_voronoi_test extend_labeling_via_voronoi_test.cpp)
-# add_dependencies(extend_labeling_via_voronoi_test CLIc)
-# target_link_libraries(extend_labeling_via_voronoi_test PRIVATE CLIc::CLIc)
-# set_target_properties(extend_labeling_via_voronoi_test PROPERTIES FOLDER "Tests")
+add_executable(extend_labeling_via_voronoi_test extend_labeling_via_voronoi_test.cpp)
+add_dependencies(extend_labeling_via_voronoi_test CLIc)
+target_link_libraries(extend_labeling_via_voronoi_test PRIVATE CLIc::CLIc)
+set_target_properties(extend_labeling_via_voronoi_test PROPERTIES FOLDER "Tests")
 
 
 # add_executable(flag_existing_labels_test flag_existing_labels_test.cpp)
@@ -233,10 +233,10 @@ target_link_libraries(mask_test PRIVATE CLIc::CLIc)
 set_target_properties(mask_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(masked_voronoi_labeling_test masked_voronoi_labeling_test.cpp)
-# add_dependencies(masked_voronoi_labeling_test CLIc)
-# target_link_libraries(masked_voronoi_labeling_test PRIVATE CLIc::CLIc)
-# set_target_properties(masked_voronoi_labeling_test PROPERTIES FOLDER "Tests")
+add_executable(masked_voronoi_labeling_test masked_voronoi_labeling_test.cpp)
+add_dependencies(masked_voronoi_labeling_test CLIc)
+target_link_libraries(masked_voronoi_labeling_test PRIVATE CLIc::CLIc)
+set_target_properties(masked_voronoi_labeling_test PROPERTIES FOLDER "Tests")
 
 
 add_executable(maximum_all_pixels_test maximum_all_pixels_test.cpp)
@@ -377,16 +377,16 @@ target_link_libraries(power_images_test PRIVATE CLIc::CLIc)
 set_target_properties(power_images_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(onlyzero_overwrite_maximum_box_test onlyzero_overwrite_maximum_box_test.cpp)
-# add_dependencies(onlyzero_overwrite_maximum_box_test CLIc)
-# target_link_libraries(onlyzero_overwrite_maximum_box_test PRIVATE CLIc::CLIc)
-# set_target_properties(onlyzero_overwrite_maximum_box_test PROPERTIES FOLDER "Tests")
+add_executable(onlyzero_overwrite_maximum_box_test onlyzero_overwrite_maximum_box_test.cpp)
+add_dependencies(onlyzero_overwrite_maximum_box_test CLIc)
+target_link_libraries(onlyzero_overwrite_maximum_box_test PRIVATE CLIc::CLIc)
+set_target_properties(onlyzero_overwrite_maximum_box_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(onlyzero_overwrite_maximum_diamond_test onlyzero_overwrite_maximum_diamond_test.cpp)
-# add_dependencies(onlyzero_overwrite_maximum_diamond_test CLIc)
-# target_link_libraries(onlyzero_overwrite_maximum_diamond_test PRIVATE CLIc::CLIc)
-# set_target_properties(onlyzero_overwrite_maximum_diamond_test PROPERTIES FOLDER "Tests")
+add_executable(onlyzero_overwrite_maximum_diamond_test onlyzero_overwrite_maximum_diamond_test.cpp)
+add_dependencies(onlyzero_overwrite_maximum_diamond_test CLIc)
+target_link_libraries(onlyzero_overwrite_maximum_diamond_test PRIVATE CLIc::CLIc)
+set_target_properties(onlyzero_overwrite_maximum_diamond_test PROPERTIES FOLDER "Tests")
 
 
 add_executable(replace_intensities_test replace_intensities_test.cpp)
@@ -491,10 +491,10 @@ target_link_libraries(threshold_otsu_test PRIVATE CLIc::CLIc)
 set_target_properties(threshold_otsu_test PROPERTIES FOLDER "Tests")
 
 
-# add_executable(voronoi_otsu_labeling_test voronoi_otsu_labeling_test.cpp)
-# add_dependencies(voronoi_otsu_labeling_test CLIc)
-# target_link_libraries(voronoi_otsu_labeling_test PRIVATE CLIc::CLIc)
-# set_target_properties(voronoi_otsu_labeling_test PROPERTIES FOLDER "Tests")
+add_executable(voronoi_otsu_labeling_test voronoi_otsu_labeling_test.cpp)
+add_dependencies(voronoi_otsu_labeling_test CLIc)
+target_link_libraries(voronoi_otsu_labeling_test PRIVATE CLIc::CLIc)
+set_target_properties(voronoi_otsu_labeling_test PROPERTIES FOLDER "Tests")
 
 
 # add_test(NAME custom_kernel_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND custom_kernel_test ${OCL_KERNELS_DIR}/kernels/add_image_and_scalar.cl)
@@ -523,7 +523,7 @@ add_test(NAME equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} 
 add_test(NAME equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND equal_test)
 add_test(NAME erode_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND erode_box_test)
 add_test(NAME erode_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND erode_sphere_test)
-# add_test(NAME extend_labeling_via_voronoi_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND extend_labeling_via_voronoi_test)
+add_test(NAME extend_labeling_via_voronoi_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND extend_labeling_via_voronoi_test)
 # add_test(NAME flag_existing_labels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND flag_existing_labels_test)
 add_test(NAME gaussian_blur_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gaussian_blur_test)
 add_test(NAME gradient_x_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gradient_x_test)
@@ -536,7 +536,7 @@ add_test(NAME greater_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND
 add_test(NAME histogram_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND histogram_test)
 add_test(NAME laplace_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND laplace_box_test)
 add_test(NAME mask_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND mask_test)
-# add_test(NAME masked_voronoi_labeling_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND masked_voronoi_labeling_test)
+add_test(NAME masked_voronoi_labeling_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND masked_voronoi_labeling_test)
 add_test(NAME maximum_all_pixels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND maximum_all_pixels_test)
 add_test(NAME maximum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND maximum_box_test)
 add_test(NAME maximum_images_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND maximum_images_test)
@@ -560,8 +560,8 @@ add_test(NAME not_equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_D
 add_test(NAME not_equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND not_equal_test)
 add_test(NAME power_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND power_test)
 add_test(NAME power_images_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND power_images_test)
-# add_test(NAME onlyzero_overwrite_maximum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND onlyzero_overwrite_maximum_box_test)
-# add_test(NAME onlyzero_overwrite_maximum_diamond_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND onlyzero_overwrite_maximum_diamond_test)
+add_test(NAME onlyzero_overwrite_maximum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND onlyzero_overwrite_maximum_box_test)
+add_test(NAME onlyzero_overwrite_maximum_diamond_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND onlyzero_overwrite_maximum_diamond_test)
 add_test(NAME replace_intensities_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND replace_intensities_test)
 add_test(NAME replace_intensity_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND replace_intensity_test)
 add_test(NAME set_column_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND set_column_test)
@@ -579,7 +579,7 @@ add_test(NAME sum_x_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR
 add_test(NAME sum_y_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_y_projection_test)
 add_test(NAME sum_z_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND sum_z_projection_test)
 add_test(NAME threshold_otsu_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND threshold_otsu_test)
-# add_test(NAME voronoi_otsu_labeling_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND voronoi_otsu_labeling_test)
+add_test(NAME voronoi_otsu_labeling_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND voronoi_otsu_labeling_test)
 
 
 set_tests_properties(absolute_test 
@@ -636,8 +636,8 @@ set_tests_properties(absolute_test
     not_equal_test
     power_test
     power_images_test
-    # onlyzero_overwrite_maximum_box_test
-    # onlyzero_overwrite_maximum_diamond_test
+    onlyzero_overwrite_maximum_box_test
+    onlyzero_overwrite_maximum_diamond_test
     replace_intensities_test
     replace_intensity_test
     set_column_test
@@ -661,11 +661,11 @@ set_tests_properties(absolute_test
     
     set_tests_properties(
     histogram_test PROPERTIES LABELS "TIERS3" WILL_FAIL FALSE)
-    # close_indexgaps_in_labelmap_test
 
-    set_tests_properties(connected_components_labeling_box_test threshold_otsu_test PROPERTIES LABELS "TIERS4" WILL_FAIL FALSE)
+    set_tests_properties(threshold_otsu_test PROPERTIES LABELS "TIERS4" WILL_FAIL FALSE)
      
-
     set_tests_properties(connected_components_labeling_box_test PROPERTIES LABELS "TIERS5" WILL_FAIL FALSE)
 
-    # set_tests_properties(voronoi_otsu_labeling_test PROPERTIES LABELS "TIERS6" WILL_FAIL FALSE)
+    set_tests_properties(masked_voronoi_labeling_test PROPERTIES LABELS "TIERS6" WILL_FAIL FALSE)
+
+    set_tests_properties(voronoi_otsu_labeling_test PROPERTIES LABELS "TIERS7" WILL_FAIL FALSE)
