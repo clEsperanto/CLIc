@@ -814,11 +814,54 @@ CUDABackend::executeKernel(const Device::Pointer &       device,
 
   std::vector<void *> argsValues(args.size());
   argsValues = args;
-  std::array<size_t, 3> block_size = toBlockDim(global_size);
+
+  int  maxThreads;
+  auto error = cudaDeviceGetAttribute(&maxThreads, cudaDevAttrMaxThreadsPerBlock, cuda_device->getCUDADeviceIndex());
+  if (error != CUDA_SUCCESS)
+  {
+    throw std::runtime_error("Error (cuda): Failed to get CUDA Maximum Threads." + std::to_string(error));
+  }
+
+  size_t                blockSize = maxThreads / 2;
+  std::array<size_t, 3> block_size = { 0, 0, 0 };
+  int                   dim = 0;
+
+  for (int i = 0; i < global_size.size(); ++i)
+  {
+    if (global_size[i] != 1)
+    {
+      dim++;
+      block_size[i] = 1;
+    }
+  }
+
+  switch (dim)
+  {
+    case 1:
+      // Warning: Ensure that the third dimension of the block size does not exceed 64. 
+      std::transform(block_size.begin(), block_size.end(), block_size.begin(), [](size_t value) {
+        return (value == 0) ? (value + 1) : (value * 512);
+      });
+      break;
+    case 2:
+      std::transform(block_size.begin(), block_size.end(), block_size.begin(), [](size_t value) {
+        return (value == 0) ? (value + 1) : (value * 16);
+      });
+      break;
+    default:
+      std::transform(
+        block_size.begin(), block_size.end(), block_size.begin(), [](size_t value) { return (value * 8); });
+      break;
+  }
+
+  std::array<size_t, 3> grid_size = { (global_size.data()[0] + block_size.data()[0] - 1) / block_size.data()[0],
+                                      (global_size.data()[1] + block_size.data()[1] - 1) / block_size.data()[1],
+                                      (global_size.data()[2] + block_size.data()[2] - 1) / block_size.data()[2] };
+
   err = cuLaunchKernel(cuFunction,
-                       global_size.data()[0],
-                       global_size.data()[1],
-                       global_size.data()[2],
+                       grid_size.data()[0],
+                       grid_size.data()[1],
+                       grid_size.data()[2],
                        block_size.data()[0],
                        block_size.data()[1],
                        block_size.data()[2],
@@ -841,21 +884,6 @@ auto
 CUDABackend::getPreamble() const -> std::string
 {
   return kernel::preamble_cu;
-}
-
-auto
-CUDABackend::toBlockDim(const std::array<size_t, 3> & global_size) const -> std::array<size_t, 3>
-{
-  // In general, we add the gridDim.x (gridDim.y & gridDim.z) to the problem size, subtract one and divide by the
-  // gridDim.x (gridDim.y & gridDim.z). However, since we're taking the global_size, which represents the gridDim which,
-  // in itself, is the shape of the array that represents the problem size, we get the following formulas:
-  std::array<size_t, 3> block_size = { (global_size.data()[0] + global_size.data()[0] - 1) / global_size.data()[0],
-                                       (global_size.data()[1] + global_size.data()[1] - 1) / global_size.data()[1],
-                                       (global_size.data()[2] + global_size.data()[2] - 1) / global_size.data()[2] };
-
-  // One can notice that the blockDim (block_size) will always be set to 1.
-
-  return block_size;
 }
 
 } // namespace cle
