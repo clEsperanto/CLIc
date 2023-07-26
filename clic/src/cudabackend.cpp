@@ -838,7 +838,7 @@ CUDABackend::executeKernel(const Device::Pointer &       device,
   switch (dim)
   {
     case 1:
-      // Warning: Ensure that the third dimension of the block size does not exceed 64. 
+      // Warning: Ensure that the third dimension of the block size does not exceed 64.
       std::transform(block_size.begin(), block_size.end(), block_size.begin(), [](size_t value) {
         return (value == 0) ? (value + 1) : (value * 512);
       });
