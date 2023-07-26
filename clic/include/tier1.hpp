@@ -477,7 +477,11 @@ minimum_sphere_func(const Device::Pointer & device,
                     int                     radius_y,
                     int                     radius_z) -> Array::Pointer;
 
-// @StRigaud TODO : multiply_matrix_func
+auto
+multiply_matrix_func(const Device::Pointer & device,
+                     const Array::Pointer &  src0,
+                     const Array::Pointer &  src1,
+                     Array::Pointer          dst) -> Array::Pointer;
 
 auto
 reciprocal_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -493,9 +497,14 @@ set_column_func(const Device::Pointer & device, const Array::Pointer & src, int 
 auto
 set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int plane, float value) -> Array::Pointer;
 
-// @StRigaud TODO : set_ramp_x_func
-// @StRigaud TODO : set_ramp_y_func
-// @StRigaud TODO : set_ramp_z_func
+auto
+set_ramp_x_func(const Device::Pointer & device, const Array::Pointer & src) -> Array::Pointer;
+
+auto
+set_ramp_y_func(const Device::Pointer & device, const Array::Pointer & src) -> Array::Pointer;
+
+auto
+set_ramp_z_func(const Device::Pointer & device, const Array::Pointer & src) -> Array::Pointer;
 
 auto
 set_row_func(const Device::Pointer & device, const Array::Pointer & src, int row, float value) -> Array::Pointer;
