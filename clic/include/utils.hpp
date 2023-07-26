@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <limits>
 
 #include <cmath>
 #ifndef M_PI
@@ -11,6 +12,8 @@
 
 namespace cle
 {
+
+constexpr float NaN = std::numeric_limits<float>::quiet_NaN();
 
 
 enum class mType
