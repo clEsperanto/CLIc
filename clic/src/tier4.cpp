@@ -84,7 +84,7 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
       max_variance = variance;
     }
   }
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::UINT8);
   return tier1::greater_constant_func(device, src, dst, threshold);
 }
 
