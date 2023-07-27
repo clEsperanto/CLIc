@@ -5,6 +5,7 @@
 
 #include "cle_flag_existing_labels.h"
 #include "cle_histogram.h"
+#include "cle_exclude_labels_on_edges.h"
 
 namespace cle::tier3
 {
@@ -14,7 +15,52 @@ namespace cle::tier3
 // auto proximal_other_labels_count_func
 // auto divide_by_gaussian_background_func
 // auto exclude_labels_func
-// auto exclude_labels_on_edges_func
+
+auto
+exclude_labels_on_edges_func(const Device::Pointer & device,
+                             const Array::Pointer &  src,
+                             Array::Pointer          dst,
+                             bool                    exclude_y,
+                             bool                    exclude_x,
+                             bool                    exclude_z) -> Array::Pointer
+{
+  tier0::create_like(src, dst, dType::UINT32);
+  auto num_labels = static_cast<int>(tier2::maximum_of_all_pixels_func(device, src));
+  auto label_map = Array::create(num_labels + 1, 1, 1, dType::UINT32, mType::BUFFER, src->device());
+  tier1::set_ramp_x_func(device, label_map);
+
+  const ParameterList params = { { "src", src }, { "dst", label_map } };
+  const RangeArray    range = { src->width(), src->height(), src->depth() };
+  if (exclude_x)
+  {
+    const KernelInfo kernel = { "exclude_labels_on_edges_x", kernel::exclude_labels_on_edges };
+    execute(device, kernel, params, range);
+  }
+  if (exclude_y)
+  {
+    const KernelInfo kernel = { "exclude_labels_on_edges_y", kernel::exclude_labels_on_edges };
+    execute(device, kernel, params, range);
+  }
+  if (exclude_z)
+  {
+    const KernelInfo kernel = { "exclude_labels_on_edges_z", kernel::exclude_labels_on_edges };
+    execute(device, kernel, params, range);
+  }
+  std::vector<int> label_map_vector(label_map.size());
+  label_map->read(label_map_vector.data());
+  int count = 1;
+  for (auto &i : label_map_vector)
+  {
+    if (i > 0)
+    {
+      i = count;
+      count++;
+    }
+  }
+  label_map->write(label_map_vector.data());
+  return tier1::replace_intensities_func(device, src, label_map, dst);
+}
+
 // auto exclude_labels_with_values_equal_to_constant_func
 // auto exclude_labels_with_values_not_equal_to_constant_func
 // auto exclude_labels_outside_size_range_func
