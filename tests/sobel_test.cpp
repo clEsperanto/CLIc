@@ -61,11 +61,13 @@ auto
 main(int argc, char ** argv) -> int
 {
   cle::BackendManager::getInstance().setBackend("opencl");
+  std::cout << cle::BackendManager::getInstance().getBackend() << " backend selected" << std::endl;
   assert(run_test<float>({ 10, 7, 5 }, cle::mType::BUFFER) == 0);
 
   // not compatible with CUDA for now
-  // cle::BackendManager::getInstance().setBackend("cuda");
-  // assert(run_test<float>({ 10, 7, 5 }, cle::mType::BUFFER) == 0);
+  cle::BackendManager::getInstance().setBackend("cuda");
+  std::cout << cle::BackendManager::getInstance().getBackend() << " backend selected" << std::endl;
+  assert(run_test<float>({ 10, 7, 5 }, cle::mType::BUFFER) == 0);
 
   return EXIT_SUCCESS;
 }
