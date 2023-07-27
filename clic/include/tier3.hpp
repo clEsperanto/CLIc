@@ -20,8 +20,8 @@ auto
 exclude_labels_on_edges_func(const Device::Pointer & device,
                              const Array::Pointer &  src,
                              Array::Pointer          dst,
-                             bool                    exclude_y,
                              bool                    exclude_x,
+                             bool                    exclude_y,
                              bool                    exclude_z) -> Array::Pointer;
 
 // exclude_labels_with_values_equal_to_constant

@@ -20,8 +20,8 @@ auto
 exclude_labels_on_edges_func(const Device::Pointer & device,
                              const Array::Pointer &  src,
                              Array::Pointer          dst,
-                             bool                    exclude_y,
                              bool                    exclude_x,
+                             bool                    exclude_y,
                              bool                    exclude_z) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::UINT32);
@@ -29,21 +29,24 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
   auto label_map = Array::create(num_labels + 1, 1, 1, dType::UINT32, mType::BUFFER, src->device());
   tier1::set_ramp_x_func(device, label_map);
 
+  RangeArray range = { 1,1,1 };
   const ParameterList params = { { "src", src }, { "dst", label_map } };
-  const RangeArray    range = { src->width(), src->height(), src->depth() };
-  if (exclude_x)
+  if (exclude_x && src->width() > 1)
   {
     const KernelInfo kernel = { "exclude_on_edges_x", kernel::exclude_on_edges };
+    const RangeArray range = { 1, src->height(), src->depth() };
     execute(device, kernel, params, range);
   }
-  if (exclude_y)
+  if (exclude_y && src->height() > 1)
   {
     const KernelInfo kernel = { "exclude_on_edges_y", kernel::exclude_on_edges };
+    const RangeArray range = { src->width(), 1, src->depth() };
     execute(device, kernel, params, range);
   }
-  if (exclude_z)
+  if (exclude_z && src->depth() > 1)
   {
     const KernelInfo kernel = { "exclude_on_edges_z", kernel::exclude_on_edges };
+    const RangeArray range = { src->width(), src->height(), 1 };
     execute(device, kernel, params, range);
   }
   std::vector<int> label_map_vector(label_map->nbElements());
