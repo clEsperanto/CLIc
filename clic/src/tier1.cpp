@@ -113,7 +113,7 @@
 #include "cle_power_images.h"
 #include "cle_range.h"
 // #include "cle_read_intensities_from_map.h"
-// #include "cle_read_intensities_from_positions.h"
+#include "cle_read_intensities_from_positions.h"
 #include "cle_replace_intensities.h"
 #include "cle_replace_intensity.h"
 // #include "cle_resample.h"
@@ -1255,7 +1255,24 @@ range_func(const Device::Pointer & device,
 }
 
 // read_intensities_from_map_func
-// read_intensities_from_positions_func
+
+auto
+read_intensities_from_positions_func(const Device::Pointer & device,
+                                     const Array::Pointer &  src,
+                                     const Array::Pointer &  list,
+                                     Array::Pointer          dst) -> Array::Pointer
+{
+  if (list->dim() != 2)
+  {
+    throw std::runtime_error("The list input is expected to be 2D, where rows are coordinates (x,y,z) and values v.");
+  }
+  tier0::create_vector(src, dst, src->width());
+  const KernelInfo    kernel = { "read_intensities_from_positions", kernel::read_intensities_from_positions };
+  const ParameterList params = { { "src0", src }, { "src1", list }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
 
 auto
 replace_intensities_func(const Device::Pointer & device,
@@ -1695,32 +1712,30 @@ variance_sphere_func(const Device::Pointer & device,
 }
 
 auto
-write_values_to_positions_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+write_values_to_positions_func(const Device::Pointer & device, const Array::Pointer & list, Array::Pointer dst)
   -> Array::Pointer
 {
-  // TODO @StRigaud : no tested, need to be checked
   if (src->dim() != 2)
   {
-    throw std::runtime_error("Source image is expected to be 2D, where rows are coordinates (x,y,z) and values v.");
+    throw std::runtime_error(
+      "The Coordinate list is expected to be 2D, where rows are coordinates (x,y,z) and values v.");
   }
   if (dst == nullptr)
   {
-    Array::Pointer temp = nullptr;
-    tier0::create_zy(src, temp, dType::INT32);
-    maximum_x_projection_func(device, src, temp);
-    auto nb_max_position = temp->nbElements() - 1;
-
+    // flatten the coords to get the max coordinate value in x,y,z
+    // as well as the number of rows (2->1D, 3->2D, 4->3D)
+    auto             temp = maximum_x_projection_func(device, list, nullptr);
+    auto             nb_max_position = temp->nbElements() - 1;
     std::vector<int> max_position(temp->nbElements());
     temp->read(max_position.data());
-
     size_t max_pos_x = max_position[0];
     size_t max_pos_y = (nb_max_position > 2) ? max_position[1] : 1;
     size_t max_pos_z = (nb_max_position > 3) ? max_position[2] : 1;
-    dst = Array::create(max_pos_x, max_pos_y, max_pos_z, src->dtype(), src->mtype(), src->device());
+    dst = Array::create(max_pos_x, max_pos_y, max_pos_z, list->dtype(), list->mtype(), list->device());
   }
   const KernelInfo    kernel = { "write_values_to_positions", kernel::write_values_to_positions };
-  const ParameterList params = { { "src", src }, { "dst", dst } };
-  const RangeArray    range = { src->width(), src->height(), src->depth() };
+  const ParameterList params = { { "src", list }, { "dst", dst } };
+  const RangeArray    range = { list->width(), list->height(), list->depth() };
   execute(device, kernel, params, range);
   return dst;
 }

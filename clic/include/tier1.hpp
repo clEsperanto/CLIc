@@ -443,7 +443,12 @@ range_func(const Device::Pointer & device,
            int                     step_z) -> Array::Pointer;
 
 // @StRigaud TODO : read_intensities_from_map_func
-// @StRigaud TODO : read_intensities_from_positions_func
+
+auto
+read_intensities_from_positions_func(const Device::Pointer & device,
+                                     const Array::Pointer &  src,
+                                     const Array::Pointer &  list,
+                                     Array::Pointer          dst) -> Array::Pointer;
 
 auto
 replace_intensities_func(const Device::Pointer & device,
