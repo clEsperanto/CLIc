@@ -1,6 +1,7 @@
 #include "execution.hpp"
 #include "backend.hpp"
 
+#include <regex>
 #include <fstream>
 #include <string_view>
 
@@ -8,52 +9,29 @@ namespace cle
 {
 
 auto
-replaceWord(std::string & sentence, const std::string_view & wordToReplace, const std::string_view & replacement)
-  -> void
-{
-  size_t pos = sentence.find(wordToReplace);
-  while (pos != std::string::npos)
-  {
-    sentence.replace(pos, wordToReplace.length(), replacement);
-    pos = sentence.find(wordToReplace, pos + replacement.length());
-  }
-}
-
-auto
 srcOpenclToCuda(std::string opencl_code) -> std::string
 {
-  replaceWord(opencl_code, "(int2){", "make_int2(");
-  replaceWord(opencl_code, "(int4){", "make_int4(");
-  replaceWord(opencl_code, "(int4)  {", "make_int4(");
-  replaceWord(opencl_code, "(float4){", "make_float4(");
-  replaceWord(opencl_code, "(float2){", "make_float2(");
-  replaceWord(opencl_code, "int2 pos = {", "int2 pos = make_int2(");
-  replaceWord(opencl_code, "int4 pos = {", "int4 pos = make_int4(");
-  replaceWord(opencl_code, "};", ");");
-  replaceWord(opencl_code, "})", "))");
-
-  replaceWord(opencl_code, "(int2)", "make_int2");
-  replaceWord(opencl_code, "(int4)", "make_int4");
-  replaceWord(opencl_code, "__constant sampler_t", "__device__ int");
-  replaceWord(opencl_code, "__const sampler_t", "__device__ int");
-  replaceWord(opencl_code, "inline", "__device__ inline");
-  replaceWord(opencl_code, "#pragma", "// #pragma");
-
-  replaceWord(opencl_code, "\nkernel void", "\nextern \"C\" __global__ void");
-  replaceWord(opencl_code, "__kernel ", "extern \"C\" __global__ ");
-
-  replaceWord(opencl_code, "get_global_id(0)", "blockDim.x * blockIdx.x + threadIdx.x");
-  replaceWord(opencl_code, "get_global_id(1)", "blockDim.y * blockIdx.y + threadIdx.y");
-  replaceWord(opencl_code, "get_global_id(2)", "blockDim.z * blockIdx.z + threadIdx.z");
-
+  std::regex pattern;
+  pattern = R"(\((int2|int4|float4|float2)\)\s*\{\s*([^}]*)\s*\}\s*;)";
+  opencl_code = std::regex_replace(opencl_code, pattern, "make_$1($2);");
+  opencl_code = std::regex_replace(opencl_code, std::regex(R"(__constant\s+sampler_t)"), "__device__ int");
+  opencl_code = std::regex_replace(opencl_code, std::regex(R"(__kernel\s+)"), "extern \"C\" __global__ ");
+  opencl_code = std::regex_replace(opencl_code, std::regex("inline"), "__device__ inline");
+  opencl_code = std::regex_replace(opencl_code, std::regex("#pragma"), "// #pragma");
+  opencl_code = std::regex_replace(opencl_code, std::regex(R"(\nkernel\s+void)"), "\nextern \"C\" __global__ void");
+  opencl_code = std::regex_replace(opencl_code, std::regex(R"(__kernel\s+)"), "extern \"C\" __global__ ");
+  opencl_code =
+    std::regex_replace(opencl_code, std::regex("get_global_id\\(0\\)"), "blockDim.x * blockIdx.x + threadIdx.x");
+  opencl_code =
+    std::regex_replace(opencl_code, std::regex("get_global_id\\(1\\)"), "blockDim.y * blockIdx.y + threadIdx.y");
+  opencl_code =
+    std::regex_replace(opencl_code, std::regex("get_global_id\\(2\\)"), "blockDim.z * blockIdx.z + threadIdx.z");
   return opencl_code;
 }
 
 auto
 cudaDefines(const ParameterList & parameter_list, const ConstantList & constant_list) -> std::string
 {
-  // @CherifMZ TODO: write cuda Defines to transform ocl Kernel into compatible cuda kernel
-
   std::ostringstream defines;
 
   if (!constant_list.empty())
@@ -190,7 +168,7 @@ oclDefines(const ParameterList & parameter_list, const ConstantList & constant_l
     defines << "\n#define POS_" << param.first << "_INSTANCE(pos0,pos1,pos2,pos3) (" << pos_type << ")" << pos;
     defines << "\n";
 
-    if (arr->mtype() == mType::BUFFER) // @StRigaud TODO: introduce cl_image / cudaArray
+    if (arr->mtype() == mType::BUFFER)
     {
       defines << "\n#define IMAGE_" << param.first << "_TYPE __global " << arr->dtype() << "*";
       defines << "\n#define READ_" << param.first << "_IMAGE(a,b,c) read_buffer" << ndim << "d" << arr->shortType()
