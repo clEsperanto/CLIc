@@ -3,9 +3,9 @@
 #include "tier1.hpp"
 #include "tier2.hpp"
 
+#include "cle_exclude_on_edges.h"
 #include "cle_flag_existing_labels.h"
 #include "cle_histogram.h"
-#include "cle_exclude_labels_on_edges.h"
 
 namespace cle::tier3
 {
@@ -33,23 +33,23 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
   const RangeArray    range = { src->width(), src->height(), src->depth() };
   if (exclude_x)
   {
-    const KernelInfo kernel = { "exclude_labels_on_edges_x", kernel::exclude_labels_on_edges };
+    const KernelInfo kernel = { "exclude_on_edges_x", kernel::exclude_on_edges };
     execute(device, kernel, params, range);
   }
   if (exclude_y)
   {
-    const KernelInfo kernel = { "exclude_labels_on_edges_y", kernel::exclude_labels_on_edges };
+    const KernelInfo kernel = { "exclude_on_edges_y", kernel::exclude_on_edges };
     execute(device, kernel, params, range);
   }
   if (exclude_z)
   {
-    const KernelInfo kernel = { "exclude_labels_on_edges_z", kernel::exclude_labels_on_edges };
+    const KernelInfo kernel = { "exclude_on_edges_z", kernel::exclude_on_edges };
     execute(device, kernel, params, range);
   }
-  std::vector<int> label_map_vector(label_map.size());
+  std::vector<int> label_map_vector(label_map->nbElements());
   label_map->read(label_map_vector.data());
   int count = 1;
-  for (auto &i : label_map_vector)
+  for (auto & i : label_map_vector)
   {
     if (i > 0)
     {
