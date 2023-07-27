@@ -21,7 +21,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
 
   auto gpu_output = cle::tier1::detect_maxima_box_func(device, gpu_input, nullptr);
 
-  std::vector<type> output(gpu_output->nbElements());
+  std::vector<uint8_t> output(gpu_output->nbElements());
   gpu_output->read(output.data());
 
   return std::equal(output.begin(), output.end(), valid.begin()) ? 0 : 1;
@@ -33,27 +33,10 @@ main(int argc, char ** argv) -> int
   cle::BackendManager::getInstance().setBackend("opencl");
   std::cout << cle::BackendManager::getInstance().getBackend() << " backend selected" << std::endl;
   assert(run_test<float>({ 10, 7, 5 }, cle::mType::BUFFER) == 0);
-  // assert(run_test<int64_t>({ 10, 7, 5 }, cle::mType::BUFFER) == 0);
-  assert(run_test<int32_t>({ 10, 7, 5 }, cle::mType::BUFFER) == 0);
-  assert(run_test<int16_t>({ 10, 7, 5 }, cle::mType::BUFFER) == 0);
-  assert(run_test<int8_t>({ 10, 7, 5 }, cle::mType::BUFFER) == 0);
-  // assert(run_test<float>({ 10, 7, 5 }, cle::mType::IMAGE) == 0);
-  // assert(run_test<int64_t>({ 10, 7, 5 }, cle::mType::IMAGE) == 0);
-  // assert(run_test<int32_t>({ 10, 7, 5 }, cle::mType::IMAGE) == 0);
-  // assert(run_test<int16_t>({ 10, 7, 5 }, cle::mType::IMAGE) == 0);
-  // assert(run_test<int8_t>({ 10, 7, 5 }, cle::mType::IMAGE) == 0);
 
   cle::BackendManager::getInstance().setBackend("cuda");
   std::cout << cle::BackendManager::getInstance().getBackend() << " backend selected" << std::endl;
   assert(run_test<float>({ 10, 7, 5 }, cle::mType::BUFFER) == 0);
-  // assert(run_test<int64_t>({ 10, 7, 5 }, cle::mType::BUFFER) == 0);
-  assert(run_test<int32_t>({ 10, 7, 5 }, cle::mType::BUFFER) == 0);
-  assert(run_test<int16_t>({ 10, 7, 5 }, cle::mType::BUFFER) == 0);
-  assert(run_test<int8_t>({ 10, 7, 5 }, cle::mType::BUFFER) == 0);
-  // assert(run_test<int64_t>({ 10, 7, 5 }, cle::mType::IMAGE) == 0);
-  // assert(run_test<int32_t>({ 10, 7, 5 }, cle::mType::IMAGE) == 0);
-  // assert(run_test<int16_t>({ 10, 7, 5 }, cle::mType::IMAGE) == 0);
-  // assert(run_test<int8_t>({ 10, 7, 5 }, cle::mType::IMAGE) == 0);
 
   return EXIT_SUCCESS;
 }

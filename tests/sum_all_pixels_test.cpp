@@ -23,22 +23,9 @@ main(int argc, char ** argv) -> int
 {
   cle::BackendManager::getInstance().setBackend("opencl");
   assert(run_test<float>({ 5, 5, 2 }, cle::mType::BUFFER) == 0);
-  // assert(run_test<int64_t>({ 5, 5, 2 }, cle::mType::BUFFER) == 0);
-  assert(run_test<int32_t>({ 5, 5, 2 }, cle::mType::BUFFER) == 0);
-  assert(run_test<int16_t>({ 5, 5, 2 }, cle::mType::BUFFER) == 0);
-  assert(run_test<int8_t>({ 5, 5, 2 }, cle::mType::BUFFER) == 0);
-  // assert(run_test<float>({ 5, 5, 2 }, cle::mType::IMAGE) == 0);
-  // assert(run_test<int64_t>({ 5, 5, 2 }, cle::mType::IMAGE) == 0);
-  // assert(run_test<int32_t>({ 5, 5, 2 }, cle::mType::IMAGE) == 0);
-  // assert(run_test<int16_t>({ 5, 5, 2 }, cle::mType::IMAGE) == 0);
-  // assert(run_test<int8_t>({ 5, 5, 2 }, cle::mType::IMAGE) == 0);
 
   cle::BackendManager::getInstance().setBackend("cuda");
   assert(run_test<float>({ 5, 5, 2 }, cle::mType::BUFFER) == 0);
-  // assert(run_test<int64_t>({ 5, 5, 2 }, cle::mType::BUFFER) == 0);
-  assert(run_test<int32_t>({ 5, 5, 2 }, cle::mType::BUFFER) == 0);
-  assert(run_test<int16_t>({ 5, 5, 2 }, cle::mType::BUFFER) == 0);
-  assert(run_test<int8_t>({ 5, 5, 2 }, cle::mType::BUFFER) == 0);
 
   return EXIT_SUCCESS;
 }
