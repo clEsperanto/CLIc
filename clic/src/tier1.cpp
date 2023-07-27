@@ -1520,7 +1520,7 @@ set_nonzero_pixels_to_pixelindex_func(const Device::Pointer & device,
                                       Array::Pointer          dst,
                                       int                     offset) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT32);
+  tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "set_nonzero_pixels_to_pixelindex", kernel::set_nonzero_pixels_to_pixelindex };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "offset", offset } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };

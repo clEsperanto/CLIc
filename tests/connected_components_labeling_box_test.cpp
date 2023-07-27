@@ -29,7 +29,7 @@ main(int argc, char ** argv) -> int
 {
   cle::BackendManager::getInstance().setBackend("opencl");
   std::cout << cle::BackendManager::getInstance().getBackend() << " backend selected" << std::endl;
-  assert(run_test<float>({ 5, 3, 2 }, cle::mType::BUFFER) == 0);
+  assert(run_test<uint8_t>({ 5, 3, 2 }, cle::mType::BUFFER) == 0);
 
 
   cle::BackendManager::getInstance().setBackend("cuda");
