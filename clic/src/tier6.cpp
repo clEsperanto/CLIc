@@ -16,7 +16,7 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
                              const Array::Pointer &  mask,
                              Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::UINT32);
   Array::Pointer flip = nullptr;
   Array::Pointer flop = nullptr;
   Array::Pointer flup = nullptr;
@@ -56,5 +56,12 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
   return dst;
 }
 
+auto
+voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+{
+  tier0::create_like(src, dst, dType::UINT32);
+  auto flip = tier5::connected_components_labeling_box_func(device, src, nullptr);
+  return tier2::extend_labeling_via_voronoi_func(device, flip, dst);
+}
 
 } // namespace cle::tier6

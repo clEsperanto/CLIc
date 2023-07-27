@@ -132,6 +132,7 @@ auto
 degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
+  tier0::create_like(src, dst, dType::FLOAT);
   return tier1::multiply_image_and_scalar_func(device, src, dst, static_cast<float>(M_PI) / 180.0);
 }
 
@@ -146,7 +147,7 @@ difference_of_gaussian_func(const Device::Pointer & device,
                             float                   sigma2_y,
                             float                   sigma2_z) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::FLOAT);
   auto gauss1 = tier1::gaussian_blur_func(device, src, nullptr, sigma1_x, sigma1_y, sigma1_z);
   auto gauss2 = tier1::gaussian_blur_func(device, src, nullptr, sigma2_x, sigma2_y, sigma2_z);
   return tier1::add_images_weighted_func(device, gauss1, gauss2, dst, 1, -1);
@@ -156,7 +157,7 @@ auto
 extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::UINT32);
   auto flip = Array::create(dst);
   auto flop = Array::create(dst);
   tier1::copy_func(device, src, flip);
@@ -205,7 +206,7 @@ invert_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
 auto
 label_spots_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::UINT32);
   dst->fill(0);
 
   auto spot_count_in_x = tier1::sum_x_projection_func(device, src, nullptr);
@@ -306,6 +307,7 @@ auto
 radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
+  tier0::create_like(src, dst, dType::FLOAT);
   return tier1::multiply_image_and_scalar_func(device, src, dst, 180.0 / static_cast<float>(M_PI));
 }
 
