@@ -29,7 +29,6 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
   auto label_map = Array::create(num_labels + 1, 1, 1, dType::UINT32, mType::BUFFER, src->device());
   tier1::set_ramp_x_func(device, label_map);
 
-  RangeArray range = { 1,1,1 };
   const ParameterList params = { { "src", src }, { "dst", label_map } };
   if (exclude_x && src->width() > 1)
   {
