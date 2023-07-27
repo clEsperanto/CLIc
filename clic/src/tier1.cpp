@@ -1715,7 +1715,7 @@ auto
 write_values_to_positions_func(const Device::Pointer & device, const Array::Pointer & list, Array::Pointer dst)
   -> Array::Pointer
 {
-  if (src->dim() != 2)
+  if (list->dim() != 2)
   {
     throw std::runtime_error(
       "The Coordinate list is expected to be 2D, where rows are coordinates (x,y,z) and values v.");
