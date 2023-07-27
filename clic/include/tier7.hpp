@@ -7,6 +7,15 @@
 
 namespace cle::tier7
 {
+// affine_transform
+// AffineTransform3D
+// apply_vector_field
+// deskew_y
+// deskew_x
+// rigid_transform
+// rotate
+// scale
+// translate
 
 auto
 voronoi_otsu_labeling_func(const Device::Pointer & device,
