@@ -14,7 +14,7 @@ combine_labels_func(const Device::Pointer & device,
                     const Array::Pointer &  src1,
                     Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src0, dst);
+  tier0::create_like(src0, dst, dType::UINT32);
   auto max_label = tier2::maximum_of_all_pixels_func(device, src0);
   auto temp1 = tier1::add_image_and_scalar_func(device, src1, nullptr, max_label);
   auto temp2 = tier1::greater_constant_func(device, src1, nullptr, 0);
@@ -27,15 +27,12 @@ auto
 connected_components_labeling_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::UINT32);
+  // Array::Pointer temp1 = Array::create(dst);
+  // Array::Pointer temp2 = Array::create(dst);
 
-  Array::Pointer temp1 = nullptr;
-  Array::Pointer temp2 = nullptr;
-  tier0::create_like(dst, temp1, dType::UINT32);
-  tier0::create_like(dst, temp2, dType::UINT32);
-  temp2->fill(0);
-
-  tier1::set_nonzero_pixels_to_pixelindex_func(device, src, temp1, 1);
+  auto temp1 = tier1::set_nonzero_pixels_to_pixelindex_func(device, src, nullptr, 1);
+  auto temp2 = Array::create(temp1);
 
   auto flag = Array::create(1, 1, 1, dType::INT32, mType::BUFFER, device);
   flag->fill(0);

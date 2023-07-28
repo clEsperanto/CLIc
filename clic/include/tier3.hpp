@@ -15,7 +15,15 @@ namespace cle::tier3
 // proximal_other_labels_count
 // divide_by_gaussian_background
 // exclude_labels
-// exclude_labels_on_edges
+
+auto
+exclude_labels_on_edges_func(const Device::Pointer & device,
+                             const Array::Pointer &  src,
+                             Array::Pointer          dst,
+                             bool                    exclude_x,
+                             bool                    exclude_y,
+                             bool                    exclude_z) -> Array::Pointer;
+
 // exclude_labels_with_values_equal_to_constant
 // exclude_labels_with_values_not_equal_to_constant
 // exclude_labels_outside_size_range

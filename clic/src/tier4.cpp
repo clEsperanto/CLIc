@@ -22,15 +22,15 @@ relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & s
   -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  auto max_label = tier2::maximum_of_all_pixels_func(device, src);
+  auto max_label = static_cast<int>(tier2::maximum_of_all_pixels_func(device, src));
   auto flagged = Array::create(int(max_label + 1), 1, 1, src->dtype(), src->mtype(), src->device());
   flagged->fill(0);
   tier3::flag_existing_labels_func(device, src, flagged);
   tier1::set_column_func(device, flagged, 0, 0);
   auto block_sums =
-    Array::create(int((int(max_label) + 1) / blocksize) + 1, 1, 1, src->dtype(), src->mtype(), src->device());
+    Array::create(((max_label + 1) / blocksize) + 1, 1, 1, flagged->dtype(), flagged->mtype(), flagged->device());
   tier1::sum_reduction_x_func(device, flagged, block_sums, blocksize);
-  auto new_indices = Array::create(int(max_label) + 1, 1, 1, src->dtype(), src->mtype(), src->device());
+  auto new_indices = Array::create(max_label + 1, 1, 1, flagged->dtype(), flagged->mtype(), flagged->device());
   tier1::block_enumerate_func(device, flagged, block_sums, new_indices, blocksize);
   tier1::replace_intensities_func(device, src, new_indices, dst);
   return dst;
@@ -39,7 +39,6 @@ relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & s
 auto
 threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  // compute the image histogram
   constexpr int bin = 256;
   const float   min_intensity = tier2::minimum_of_all_pixels_func(device, src);
   const float   max_intensity = tier2::maximum_of_all_pixels_func(device, src);
@@ -47,7 +46,6 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
   tier3::histogram_func(device, src, hist_array, bin, min_intensity, max_intensity);
   std::vector<float> histogram_array(hist_array->nbElements());
   hist_array->read(histogram_array.data());
-  // compute otsu threshold value from histogram
   float              threshold = -1;
   float              max_variance = -1;
   float              variance = 0;
@@ -86,8 +84,7 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
       max_variance = variance;
     }
   }
-  // Apply threshold and return
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::UINT8);
   return tier1::greater_constant_func(device, src, dst, threshold);
 }
 

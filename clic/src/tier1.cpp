@@ -90,14 +90,14 @@
 #include "cle_minimum_x_projection.h"
 #include "cle_minimum_y_projection.h"
 #include "cle_minimum_z_projection.h"
-// #include "cle_mode_box.h"
-// #include "cle_mode_sphere.h"
+#include "cle_mode_box.h"
+#include "cle_mode_sphere.h"
 #include "cle_modulo_images.h"
 #include "cle_multiply_image_and_coordinate.h"
 #include "cle_multiply_image_and_scalar.h"
 #include "cle_multiply_images.h"
 // #include "cle_n_closest_points.h"
-// #include "cle_nan_to_num.h"
+#include "cle_nan_to_num.h"
 #include "cle_nonzero_maximum_box.h"
 #include "cle_nonzero_maximum_diamond.h"
 #include "cle_nonzero_minimum_box.h"
@@ -113,7 +113,7 @@
 #include "cle_power_images.h"
 #include "cle_range.h"
 // #include "cle_read_intensities_from_map.h"
-// #include "cle_read_intensities_from_positions.h"
+#include "cle_read_intensities_from_positions.h"
 #include "cle_replace_intensities.h"
 #include "cle_replace_intensity.h"
 // #include "cle_resample.h"
@@ -1026,8 +1026,54 @@ minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer &
   return dst;
 }
 
-// mode_box_func
-// mode_sphere_func
+
+auto
+mode_box_func(const Device::Pointer & device,
+              const Array::Pointer &  src,
+              Array::Pointer          dst,
+              int                     radius_x,
+              int                     radius_y,
+              int                     radius_z) -> Array::Pointer
+{
+  if (src->dtype() != dType::UINT8)
+  {
+    std::cerr << "Warning: mode only support uint8 pixel type." << std::endl;
+  }
+  tier0::create_like(src, dst, dType::UINT8);
+  const KernelInfo    kernel = { "mode_box", kernel::mode_box };
+  const ParameterList params = { { "src", src },
+                                 { "dst", dst },
+                                 { "scalar0", radius2kernelsize(radius_x) },
+                                 { "scalar1", radius2kernelsize(radius_y) },
+                                 { "scalar2", radius2kernelsize(radius_z) } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
+auto
+mode_sphere_func(const Device::Pointer & device,
+                 const Array::Pointer &  src,
+                 Array::Pointer          dst,
+                 int                     radius_x,
+                 int                     radius_y,
+                 int                     radius_z) -> Array::Pointer
+{
+  if (src->dtype() != dType::UINT8)
+  {
+    std::cerr << "Warning: mode only support uint8 pixel type." << std::endl;
+  }
+  tier0::create_like(src, dst, dType::UINT8);
+  const KernelInfo    kernel = { "mode_sphere", kernel::mode_sphere };
+  const ParameterList params = { { "src", src },
+                                 { "dst", dst },
+                                 { "scalar0", radius2kernelsize(radius_x) },
+                                 { "scalar1", radius2kernelsize(radius_y) },
+                                 { "scalar2", radius2kernelsize(radius_z) } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
 
 auto
 modulo_images_func(const Device::Pointer & device,
@@ -1074,7 +1120,24 @@ multiply_images_func(const Device::Pointer & device,
 }
 
 // n_closest_points_func
-// nan_to_num_func
+
+auto
+nan_to_num_func(const Device::Pointer & device,
+                const Array::Pointer &  src,
+                Array::Pointer          dst,
+                float                   nan,
+                float                   posinf,
+                float                   neginf) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const KernelInfo    kernel = { "nan_to_num", kernel::nan_to_num };
+  const ParameterList params = {
+    { "src", src }, { "dst", dst }, { "nan", nan }, { "pinf", posinf }, { "ninf", neginf }
+  };
+  const RangeArray range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
 
 auto
 nonzero_maximum_box_func(const Device::Pointer & device,
@@ -1255,7 +1318,24 @@ range_func(const Device::Pointer & device,
 }
 
 // read_intensities_from_map_func
-// read_intensities_from_positions_func
+
+auto
+read_intensities_from_positions_func(const Device::Pointer & device,
+                                     const Array::Pointer &  src,
+                                     const Array::Pointer &  list,
+                                     Array::Pointer          dst) -> Array::Pointer
+{
+  if (list->dim() != 2)
+  {
+    throw std::runtime_error("The list input is expected to be 2D, where rows are coordinates (x,y,z) and values v.");
+  }
+  tier0::create_vector(src, dst, src->width());
+  const KernelInfo    kernel = { "read_intensities_from_positions", kernel::read_intensities_from_positions };
+  const ParameterList params = { { "src0", src }, { "src1", list }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
 
 auto
 replace_intensities_func(const Device::Pointer & device,
@@ -1374,7 +1454,15 @@ set_column_func(const Device::Pointer & device, const Array::Pointer & src, int 
   return src;
 }
 
-// set_image_borders_func
+auto
+set_image_borders_func(const Device::Pointer & device, const Array::Pointer & src, float value) -> Array::Pointer
+{
+  const KernelInfo    kernel = { "set_image_borders", kernel::set_image_borders };
+  const ParameterList params = { { "dst", src }, { "scalar", value } };
+  const RangeArray    range = { src->width(), src->height(), src->depth() };
+  execute(device, kernel, params, range);
+  return src;
+}
 
 auto
 set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int plane, float value) -> Array::Pointer
@@ -1432,7 +1520,7 @@ set_nonzero_pixels_to_pixelindex_func(const Device::Pointer & device,
                                       Array::Pointer          dst,
                                       int                     offset) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT32);
+  tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "set_nonzero_pixels_to_pixelindex", kernel::set_nonzero_pixels_to_pixelindex };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "offset", offset } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1440,9 +1528,37 @@ set_nonzero_pixels_to_pixelindex_func(const Device::Pointer & device,
   return dst;
 }
 
-// set_where_x_equals_y_func
-// set_where_x_greater_than_y_func
-// set_where_x_smaller_than_y_func
+auto
+set_where_x_equals_y_func(const Device::Pointer & device, const Array::Pointer & src, float value) -> Array::Pointer
+{
+  const KernelInfo    kernel = { "set_where_x_equals_y", kernel::set_where_x_equals_y };
+  const ParameterList params = { { "src", src }, { "scalar", value } };
+  const RangeArray    range = { src->width(), src->height(), src->depth() };
+  execute(device, kernel, params, range);
+  return src;
+}
+
+auto
+set_where_x_greater_than_y_func(const Device::Pointer & device, const Array::Pointer & src, float value)
+  -> Array::Pointer
+{
+  const KernelInfo    kernel = { "set_where_x_greater_than_y", kernel::set_where_x_greater_than_y };
+  const ParameterList params = { { "src", src }, { "scalar", value } };
+  const RangeArray    range = { src->width(), src->height(), src->depth() };
+  execute(device, kernel, params, range);
+  return src;
+}
+
+auto
+set_where_x_smaller_than_y_func(const Device::Pointer & device, const Array::Pointer & src, float value)
+  -> Array::Pointer
+{
+  const KernelInfo    kernel = { "set_where_x_smaller_than_y", kernel::set_where_x_smaller_than_y };
+  const ParameterList params = { { "src", src }, { "scalar", value } };
+  const RangeArray    range = { src->width(), src->height(), src->depth() };
+  execute(device, kernel, params, range);
+  return src;
+}
 
 auto
 sign_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
@@ -1652,7 +1768,16 @@ transpose_yz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
   return dst;
 }
 
-// undefined_to_zero_func
+auto
+undefined_to_zero_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const KernelInfo    kernel = { "undefined_to_zero", kernel::undefined_to_zero };
+  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
 
 auto
 variance_box_func(const Device::Pointer & device,
@@ -1695,32 +1820,30 @@ variance_sphere_func(const Device::Pointer & device,
 }
 
 auto
-write_values_to_positions_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+write_values_to_positions_func(const Device::Pointer & device, const Array::Pointer & list, Array::Pointer dst)
   -> Array::Pointer
 {
-  // TODO @StRigaud : no tested, need to be checked
-  if (src->dim() != 2)
+  if (list->dim() != 2)
   {
-    throw std::runtime_error("Source image is expected to be 2D, where rows are coordinates (x,y,z) and values v.");
+    throw std::runtime_error(
+      "The Coordinate list is expected to be 2D, where rows are coordinates (x,y,z) and values v.");
   }
   if (dst == nullptr)
   {
-    Array::Pointer temp = nullptr;
-    tier0::create_zy(src, temp, dType::INT32);
-    maximum_x_projection_func(device, src, temp);
-    auto nb_max_position = temp->nbElements() - 1;
-
+    // flatten the coords to get the max coordinate value in x,y,z
+    // as well as the number of rows (2->1D, 3->2D, 4->3D)
+    auto             temp = maximum_x_projection_func(device, list, nullptr);
+    auto             nb_max_position = temp->nbElements() - 1;
     std::vector<int> max_position(temp->nbElements());
     temp->read(max_position.data());
-
     size_t max_pos_x = max_position[0];
     size_t max_pos_y = (nb_max_position > 2) ? max_position[1] : 1;
     size_t max_pos_z = (nb_max_position > 3) ? max_position[2] : 1;
-    dst = Array::create(max_pos_x, max_pos_y, max_pos_z, src->dtype(), src->mtype(), src->device());
+    dst = Array::create(max_pos_x, max_pos_y, max_pos_z, list->dtype(), list->mtype(), list->device());
   }
   const KernelInfo    kernel = { "write_values_to_positions", kernel::write_values_to_positions };
-  const ParameterList params = { { "src", src }, { "dst", dst } };
-  const RangeArray    range = { src->width(), src->height(), src->depth() };
+  const ParameterList params = { { "src", list }, { "dst", dst } };
+  const RangeArray    range = { list->width(), list->height(), list->depth() };
   execute(device, kernel, params, range);
   return dst;
 }

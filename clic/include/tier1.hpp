@@ -338,8 +338,21 @@ auto
 minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer;
 
-// @StRigaud TODO : mode_box_func
-// @StRigaud TODO : mode_sphere_func
+auto
+mode_box_func(const Device::Pointer & device,
+              const Array::Pointer &  src,
+              Array::Pointer          dst,
+              int                     radius_x,
+              int                     radius_y,
+              int                     radius_z) -> Array::Pointer;
+
+auto
+mode_sphere_func(const Device::Pointer & device,
+                 const Array::Pointer &  src,
+                 Array::Pointer          dst,
+                 int                     radius_x,
+                 int                     radius_y,
+                 int                     radius_z) -> Array::Pointer;
 
 auto
 modulo_images_func(const Device::Pointer & device,
@@ -362,7 +375,14 @@ multiply_images_func(const Device::Pointer & device,
                      Array::Pointer          dst) -> Array::Pointer;
 
 // @StRigaud TODO : n_closest_points_func
-// @StRigaud TODO : nan_to_num_func
+
+auto
+nan_to_num_func(const Device::Pointer & device,
+                const Array::Pointer &  src,
+                Array::Pointer          dst,
+                float                   nan = NaN,
+                float                   posinf = pINF,
+                float                   neginf = nINF) -> Array::Pointer;
 
 auto
 nonzero_maximum_box_func(const Device::Pointer & device,
@@ -443,7 +463,12 @@ range_func(const Device::Pointer & device,
            int                     step_z) -> Array::Pointer;
 
 // @StRigaud TODO : read_intensities_from_map_func
-// @StRigaud TODO : read_intensities_from_positions_func
+
+auto
+read_intensities_from_positions_func(const Device::Pointer & device,
+                                     const Array::Pointer &  src,
+                                     const Array::Pointer &  list,
+                                     Array::Pointer          dst) -> Array::Pointer;
 
 auto
 replace_intensities_func(const Device::Pointer & device,
@@ -492,7 +517,8 @@ set_func(const Device::Pointer & device, const Array::Pointer & src, float scala
 auto
 set_column_func(const Device::Pointer & device, const Array::Pointer & src, int column, float value) -> Array::Pointer;
 
-// @StRigaud TODO : set_image_borders_func
+auto
+set_image_borders_func(const Device::Pointer & device, const Array::Pointer & src, float value) -> Array::Pointer;
 
 auto
 set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int plane, float value) -> Array::Pointer;
@@ -515,9 +541,15 @@ set_nonzero_pixels_to_pixelindex_func(const Device::Pointer & device,
                                       Array::Pointer          dst,
                                       int                     offset) -> Array::Pointer;
 
-// @StRigaud TODO : set_where_x_equals_y_func
-// @StRigaud TODO : set_where_x_greater_than_y_func
-// @StRigaud TODO : set_where_x_smaller_than_y_func
+auto
+set_where_x_equals_y_func(const Device::Pointer & device, const Array::Pointer & src, float value) -> Array::Pointer;
+
+auto
+set_where_x_greater_than_y_func(const Device::Pointer & device, const Array::Pointer & src, float value)
+  -> Array::Pointer;
+auto
+set_where_x_smaller_than_y_func(const Device::Pointer & device, const Array::Pointer & src, float value)
+  -> Array::Pointer;
 
 auto
 sign_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -580,7 +612,9 @@ transpose_xz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
 auto
 transpose_yz_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
-// @StRigaud TODO : undefined_to_zero_func
+auto
+undefined_to_zero_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 auto
 variance_box_func(const Device::Pointer & device,

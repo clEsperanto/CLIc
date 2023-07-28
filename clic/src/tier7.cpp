@@ -18,7 +18,7 @@ voronoi_otsu_labeling_func(const Device::Pointer & device,
                            float                   spot_sigma,
                            float                   outline_sigma) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::UINT32);
   auto temp = tier1::gaussian_blur_func(device, src, nullptr, spot_sigma, spot_sigma, spot_sigma);
   auto spot = tier1::detect_maxima_box_func(device, temp, nullptr);
   temp = tier1::gaussian_blur_func(device, src, nullptr, outline_sigma, outline_sigma, outline_sigma);

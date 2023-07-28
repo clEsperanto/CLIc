@@ -14,7 +14,8 @@ namespace cle
 {
 
 constexpr float NaN = std::numeric_limits<float>::quiet_NaN();
-
+constexpr float pINF = std::numeric_limits<float>::infinity();
+constexpr float nINF = -std::numeric_limits<float>::infinity();
 
 enum class mType
 {
