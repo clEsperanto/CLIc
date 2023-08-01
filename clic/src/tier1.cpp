@@ -81,8 +81,8 @@
 #include "cle_mean_x_projection.h"
 #include "cle_mean_y_projection.h"
 #include "cle_mean_z_projection.h"
-// #include "cle_median_box.h"
-// #include "cle_median_sphere.h"
+#include "cle_median_box.h"
+#include "cle_median_sphere.h"
 #include "cle_minimum_separable.h"
 // #include "cle_minimum_distance_of_touching_neighbors.h"
 #include "cle_minimum_image_and_scalar.h"
@@ -937,8 +937,45 @@ mean_z_projection_func(const Device::Pointer & device, const Array::Pointer & sr
   return dst;
 }
 
-// median_box_func
-// median_sphere_func
+auto
+median_box_func(const Device::Pointer & device,
+                const Array::Pointer &  src,
+                Array::Pointer          dst,
+                int                     radius_x,
+                int                     radius_y,
+                int                     radius_z) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const KernelInfo    kernel = { "median_box", kernel::median_box };
+  const ParameterList params = { { "src", src },
+                                 { "dst", dst },
+                                 { "scalar0", radius2kernelsize(radius_x) },
+                                 { "scalar1", radius2kernelsize(radius_y) },
+                                 { "scalar2", radius2kernelsize(radius_z) } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
+auto
+median_sphere_func(const Device::Pointer & device,
+                   const Array::Pointer &  src,
+                   Array::Pointer          dst,
+                   int                     radius_x,
+                   int                     radius_y,
+                   int                     radius_z) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const KernelInfo    kernel = { "median_sphere", kernel::median_sphere };
+  const ParameterList params = { { "src", src },
+                                 { "dst", dst },
+                                 { "scalar0", radius2kernelsize(radius_x) },
+                                 { "scalar1", radius2kernelsize(radius_y) },
+                                 { "scalar2", radius2kernelsize(radius_z) } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
 
 auto
 minimum_box_func(const Device::Pointer & device,

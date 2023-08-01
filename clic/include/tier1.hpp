@@ -301,8 +301,19 @@ auto
 mean_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer;
 
-// @StRigaud TODO : median_box_func
-// @StRigaud TODO : median_sphere_func
+auto median_box_func(const Device::Pointer & device,
+                     const Array::Pointer &  src,
+                     Array::Pointer          dst,
+                     int                     radius_x,
+                     int                     radius_y,
+                     int                     radius_z) -> Array::Pointer;
+
+auto median_sphere_func(const Device::Pointer & device,
+                        const Array::Pointer &  src,
+                        Array::Pointer          dst,
+                        int                     radius_x,
+                        int                     radius_y,
+                        int                     radius_z) -> Array::Pointer;
 
 auto
 minimum_box_func(const Device::Pointer & device,
