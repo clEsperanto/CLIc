@@ -952,8 +952,9 @@ median_box_func(const Device::Pointer & device,
                                  { "scalar0", radius2kernelsize(radius_x) },
                                  { "scalar1", radius2kernelsize(radius_y) },
                                  { "scalar2", radius2kernelsize(radius_z) } };
+  const ConstantList constants = { {"MAX_ARRAY_SIZE", radius2kernelsize(radius_x) * radius2kernelsize(radius_y) * radius2kernelsize(radius_z)} };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel, params, range, constants);
   return dst;
 }
 
@@ -972,8 +973,9 @@ median_sphere_func(const Device::Pointer & device,
                                  { "scalar0", radius2kernelsize(radius_x) },
                                  { "scalar1", radius2kernelsize(radius_y) },
                                  { "scalar2", radius2kernelsize(radius_z) } };
+  const ConstantList constants = { {"MAX_ARRAY_SIZE", radius2kernelsize(radius_x) * radius2kernelsize(radius_y) * radius2kernelsize(radius_z)} };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel, params, range, constants);
   return dst;
 }
 
