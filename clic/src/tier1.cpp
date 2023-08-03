@@ -1340,18 +1340,24 @@ range_func(const Device::Pointer & device,
            const Array::Pointer &  src,
            Array::Pointer          dst,
            int                     start_x,
-           int                     start_y,
-           int                     start_z,
+           int                     stop_x,
            int                     step_x,
+           int                     start_y,
+           int                     stop_y,
            int                     step_y,
+           int                     start_z,
+           int                     stop_z,
            int                     step_z) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  correct_range(&start_x, &stop_x, &step_x, src->width());
+  correct_range(&start_y, &stop_y, &step_y, src->height());
+  correct_range(&start_z, &stop_z, &step_z, src->depth());
+  tier0::create_dst(src, dst, abs(start_x-stop_x), abs(start_y-stop_y), abs(start_z-stop_z), src->dtype());
   const KernelInfo    kernel = { "range", kernel::range };
   const ParameterList params = { { "src", src },         { "dst", dst },         { "start_x", start_x },
                                  { "start_y", start_y }, { "start_z", start_z }, { "step_x", step_x },
                                  { "step_y", step_y },   { "step_z", step_z } };
-  const RangeArray    range = { 1, 1, 1 };
+  const RangeArray range = { 1, 1, 1 };
   execute(device, kernel, params, range);
   return dst;
 }
