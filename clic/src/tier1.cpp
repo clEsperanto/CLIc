@@ -952,8 +952,10 @@ median_box_func(const Device::Pointer & device,
                                  { "scalar0", radius2kernelsize(radius_x) },
                                  { "scalar1", radius2kernelsize(radius_y) },
                                  { "scalar2", radius2kernelsize(radius_z) } };
-  const ConstantList constants = { {"MAX_ARRAY_SIZE", radius2kernelsize(radius_x) * radius2kernelsize(radius_y) * radius2kernelsize(radius_z)} };
-  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  const ConstantList  constants = {
+    { "MAX_ARRAY_SIZE", radius2kernelsize(radius_x) * radius2kernelsize(radius_y) * radius2kernelsize(radius_z) }
+  };
+  const RangeArray range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range, constants);
   return dst;
 }
@@ -973,8 +975,10 @@ median_sphere_func(const Device::Pointer & device,
                                  { "scalar0", radius2kernelsize(radius_x) },
                                  { "scalar1", radius2kernelsize(radius_y) },
                                  { "scalar2", radius2kernelsize(radius_z) } };
-  const ConstantList constants = { {"MAX_ARRAY_SIZE", radius2kernelsize(radius_x) * radius2kernelsize(radius_y) * radius2kernelsize(radius_z)} };
-  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  const ConstantList  constants = {
+    { "MAX_ARRAY_SIZE", radius2kernelsize(radius_x) * radius2kernelsize(radius_y) * radius2kernelsize(radius_z) }
+  };
+  const RangeArray range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range, constants);
   return dst;
 }
@@ -1352,12 +1356,12 @@ range_func(const Device::Pointer & device,
   correct_range(&start_x, &stop_x, &step_x, src->width());
   correct_range(&start_y, &stop_y, &step_y, src->height());
   correct_range(&start_z, &stop_z, &step_z, src->depth());
-  tier0::create_dst(src, dst, abs(start_x-stop_x), abs(start_y-stop_y), abs(start_z-stop_z), src->dtype());
+  tier0::create_dst(src, dst, abs(start_x - stop_x), abs(start_y - stop_y), abs(start_z - stop_z), src->dtype());
   const KernelInfo    kernel = { "range", kernel::range };
   const ParameterList params = { { "src", src },         { "dst", dst },         { "start_x", start_x },
                                  { "start_y", start_y }, { "start_z", start_z }, { "step_x", step_x },
                                  { "step_y", step_y },   { "step_z", step_z } };
-  const RangeArray range = { 1, 1, 1 };
+  const RangeArray    range = { 1, 1, 1 };
   execute(device, kernel, params, range);
   return dst;
 }
@@ -1832,7 +1836,7 @@ variance_box_func(const Device::Pointer & device,
                   int                     radius_y,
                   int                     radius_z) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "variance_box", kernel::variance_box };
   const ParameterList params = { { "src", src },
                                  { "dst", dst },
@@ -1852,7 +1856,7 @@ variance_sphere_func(const Device::Pointer & device,
                      int                     radius_y,
                      int                     radius_z) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "variance_sphere", kernel::variance_sphere };
   const ParameterList params = { { "src", src },
                                  { "dst", dst },

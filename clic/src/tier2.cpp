@@ -331,9 +331,32 @@ squared_difference_func(const Device::Pointer & device,
   return tier1::power_func(device, tmp, dst, 2);
 }
 
-// @StRigaud TODO: auto standard_deviation_box_func
+auto
+standard_deviation_box_func(const Device::Pointer & device,
+                            const Array::Pointer &  src,
+                            Array::Pointer          dst,
+                            int                     radius_x,
+                            int                     radius_y,
+                            int                     radius_z) -> Array::Pointer
+{
+  auto temp = tier1::variance_box_func(device, src, nullptr, radius_x, radius_y, radius_z);
+  return tier1::power_func(device, temp, dst, 0.5);
+}
+
 // @StRigaud TODO: auto standard_deviation_of_touching_neighbors_func
-// @StRigaud TODO: auto standard_deviation_sphere_func
+
+auto
+standard_deviation_sphere_func(const Device::Pointer & device,
+                               const Array::Pointer &  src,
+                               Array::Pointer          dst,
+                               int                     radius_x,
+                               int                     radius_y,
+                               int                     radius_z) -> Array::Pointer
+{
+  auto temp = tier1::variance_sphere_func(device, src, nullptr, radius_x, radius_y, radius_z);
+  return tier1::power_func(device, temp, dst, 0.5);
+}
+
 // @StRigaud TODO: auto sub_stack_func
 
 auto

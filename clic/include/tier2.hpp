@@ -165,9 +165,24 @@ squared_difference_func(const Device::Pointer & device,
                         Array::Pointer          dst) -> Array::Pointer;
 
 
-// @StRigaud TODO: auto standard_deviation_box_func
+auto
+standard_deviation_box_func(const Device::Pointer & device,
+                            const Array::Pointer &  src,
+                            Array::Pointer          dst,
+                            int                     radius_x,
+                            int                     radius_y,
+                            int                     radius_z) -> Array::Pointer;
+
 // @StRigaud TODO: auto standard_deviation_of_touching_neighbors_func
-// @StRigaud TODO: auto standard_deviation_sphere_func
+
+auto
+standard_deviation_sphere_func(const Device::Pointer & device,
+                               const Array::Pointer &  src,
+                               Array::Pointer          dst,
+                               int                     radius_x,
+                               int                     radius_y,
+                               int                     radius_z) -> Array::Pointer;
+
 // @StRigaud TODO: auto sub_stack_func
 
 auto
