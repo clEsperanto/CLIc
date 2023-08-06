@@ -124,7 +124,10 @@ maximum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer 
 auto
 minimum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
 
-// @StRigaud TODO: auto minimum_of_masked_pixels_func
+auto
+minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask)
+  -> float;
+
 // @StRigaud TODO: auto minimum_of_touching_neighbors_func
 // @StRigaud TODO: auto mode_of_touching_neighbors_func
 // @StRigaud TODO: auto neighbors_of_neighbors_func
