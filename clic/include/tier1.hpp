@@ -301,19 +301,21 @@ auto
 mean_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer;
 
-auto median_box_func(const Device::Pointer & device,
-                     const Array::Pointer &  src,
-                     Array::Pointer          dst,
-                     int                     radius_x,
-                     int                     radius_y,
-                     int                     radius_z) -> Array::Pointer;
+auto
+median_box_func(const Device::Pointer & device,
+                const Array::Pointer &  src,
+                Array::Pointer          dst,
+                int                     radius_x,
+                int                     radius_y,
+                int                     radius_z) -> Array::Pointer;
 
-auto median_sphere_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        Array::Pointer          dst,
-                        int                     radius_x,
-                        int                     radius_y,
-                        int                     radius_z) -> Array::Pointer;
+auto
+median_sphere_func(const Device::Pointer & device,
+                   const Array::Pointer &  src,
+                   Array::Pointer          dst,
+                   int                     radius_x,
+                   int                     radius_y,
+                   int                     radius_z) -> Array::Pointer;
 
 auto
 minimum_box_func(const Device::Pointer & device,
@@ -350,6 +352,13 @@ minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer &
   -> Array::Pointer;
 
 auto
+minimum_of_masked_pixels_reduction_func(const Device::Pointer & device,
+                                        const Array::Pointer &  src,
+                                        const Array::Pointer &  mask,
+                                        Array::Pointer          reduced_src,
+                                        Array::Pointer          reduced_mask) -> Array::Pointer;
+
+auto
 mode_box_func(const Device::Pointer & device,
               const Array::Pointer &  src,
               Array::Pointer          dst,
@@ -371,7 +380,11 @@ modulo_images_func(const Device::Pointer & device,
                    const Array::Pointer &  src1,
                    Array::Pointer          dst) -> Array::Pointer;
 
-// @StRigaud TODO : multiply_image_and_coordinate_func
+auto
+multiply_image_and_coordinate_func(const Device::Pointer & device,
+                                   const Array::Pointer &  src,
+                                   Array::Pointer          dst,
+                                   int                     dimension) -> Array::Pointer;
 
 auto
 multiply_image_and_scalar_func(const Device::Pointer & device,

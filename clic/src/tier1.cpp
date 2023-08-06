@@ -87,6 +87,7 @@
 // #include "cle_minimum_distance_of_touching_neighbors.h"
 #include "cle_minimum_image_and_scalar.h"
 #include "cle_minimum_images.h"
+#include "cle_minimum_of_masked_pixels_reduction.h"
 #include "cle_minimum_x_projection.h"
 #include "cle_minimum_y_projection.h"
 #include "cle_minimum_z_projection.h"
@@ -1069,6 +1070,24 @@ minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer &
   return dst;
 }
 
+auto
+minimum_of_masked_pixels_reduction_func(const Device::Pointer & device,
+                                        const Array::Pointer &  src,
+                                        const Array::Pointer &  mask,
+                                        Array::Pointer          reduced_src,
+                                        Array::Pointer          reduced_mask) -> Array::Pointer
+{
+  tier0::create_xy(src, reduced_src);
+  tier0::create_xy(mask, reduced_mask);
+  const KernelInfo    kernel = { "minimum_of_masked_pixels_reduction", kernel::minimum_of_masked_pixels_reduction };
+  const ParameterList params = {
+    { "src", src }, { "mask", mask }, { "dst_src", reduced_src }, { "dst_mask", reduced_mask }
+  };
+  const RangeArray range = { reduced_src->width(), reduced_src->height(), reduced_src->depth() };
+  execute(device, kernel, params, range);
+  return reduced_src;
+}
+
 
 auto
 mode_box_func(const Device::Pointer & device,
@@ -1132,7 +1151,19 @@ modulo_images_func(const Device::Pointer & device,
   return dst;
 }
 
-// multiply_image_and_coordinate_func
+auto
+multiply_image_and_coordinate_func(const Device::Pointer & device,
+                                   const Array::Pointer &  src,
+                                   Array::Pointer          dst,
+                                   int                     dimension) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const KernelInfo    kernel = { "multiply_image_and_coordinate", kernel::multiply_image_and_coordinate };
+  const ParameterList params = { { "src", src }, { "dst", dst }, { "index", dimension } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
 
 auto
 multiply_image_and_scalar_func(const Device::Pointer & device,
