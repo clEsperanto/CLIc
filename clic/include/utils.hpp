@@ -233,28 +233,29 @@ saveFile(const std::string & file_path, const std::string & source) -> void
   ofs.close();
 }
 
-auto correct_range(int * start, int * stop, int *step, size_t size) -> void
+inline auto
+correct_range(int * start, int * stop, int * step, size_t size) -> void
 {
-    // # set in case not set (passed None)
-    if (step == nullptr)
-      *step = 1;
-    if (start == nullptr)
-      *start = (*step >= 0)? 0 : size - 1;
-    if (stop == nullptr)
-      *stop = (*step >= 0)? size : -1;
-    // # Check if ranges make sense
-    if (*start >= size)
-      *start = (*step >=0)? size : size -1;
-    if (*start < -size + 1)
-        *start = -size + 1;
-    if (*stop > size)
-        *stop = size;
-    if (*stop < -size)
-        *stop = (*start > 0)? 0-1 : -size;
-    if (*start < 0)
-        *start = size - *start;
-    if ((*start > *stop && *step > 0) || (*start < *stop && *step < 0))
-        *stop = *start;
+  // # set in case not set (passed None)
+  if (step == nullptr)
+    *step = 1;
+  if (start == nullptr)
+    *start = (*step >= 0) ? 0 : size - 1;
+  if (stop == nullptr)
+    *stop = (*step >= 0) ? size : -1;
+  // # Check if ranges make sense
+  if (*start >= size)
+    *start = (*step >= 0) ? size : size - 1;
+  if (*start < -size + 1)
+    *start = -size + 1;
+  if (*stop > size)
+    *stop = size;
+  if (*stop < -size)
+    *stop = (*start > 0) ? 0 - 1 : -size;
+  if (*start < 0)
+    *start = size - *start;
+  if ((*start > *stop && *step > 0) || (*start < *stop && *step < 0))
+    *stop = *start;
 }
 
 
