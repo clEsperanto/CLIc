@@ -10,8 +10,38 @@
 namespace cle::tier3
 {
 
-// auto bounding_box_func
-// auto center_of_mass_func
+auto
+bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<float, 6>
+{
+  float min_x, min_y, min_z, max_x, max_y, max_z = 1;
+  auto  temp = tier1::multiply_image_and_coordinate_func(device, src, nullptr, 0);
+  max_x = tier2::maximum_of_all_pixels_func(device, temp);
+  min_x = tier2::minimum_of_masked_pixels_func(device, temp, src);
+  temp = tier1::multiply_image_and_coordinate_func(device, src, nullptr, 1);
+  max_y = tier2::maximum_of_all_pixels_func(device, temp);
+  min_y = tier2::minimum_of_masked_pixels_func(device, temp, src);
+  if (src->depth() > 1)
+  {
+    temp = tier1::multiply_image_and_coordinate_func(device, src, nullptr, 2);
+    max_z = tier2::maximum_of_all_pixels_func(device, temp);
+    min_z = tier2::minimum_of_masked_pixels_func(device, temp, src);
+  }
+  return std::array<float, 6>{ min_x, min_y, min_z, max_x, max_y, max_z };
+}
+
+auto
+center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<float, 3>
+{
+  auto sum = tier2::sum_of_all_pixels_func(device, src);
+  auto temp = tier1::multiply_image_and_coordinate_func(device, src, nullptr, 0);
+  auto sum_x = tier2::sum_of_all_pixels_func(device, temp);
+  temp = tier1::multiply_image_and_coordinate_func(device, src, nullptr, 1);
+  auto sum_y = tier2::sum_of_all_pixels_func(device, temp);
+  temp = tier1::multiply_image_and_coordinate_func(device, src, nullptr, 2);
+  auto sum_z = tier2::sum_of_all_pixels_func(device, temp);
+  return std::array<float, 3>{ sum_x / sum, sum_y / sum, sum_z / sum };
+}
+
 // auto proximal_other_labels_count_func
 // auto divide_by_gaussian_background_func
 // auto exclude_labels_func

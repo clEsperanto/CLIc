@@ -10,8 +10,12 @@ namespace cle::tier3
 {
 
 
-// bounding_box
-// center_of_mass
+auto
+bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<float, 6>;
+
+auto
+center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<float, 3>;
+
 // proximal_other_labels_count
 // divide_by_gaussian_background
 // exclude_labels
