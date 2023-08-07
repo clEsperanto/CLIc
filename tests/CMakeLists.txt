@@ -299,6 +299,12 @@ target_link_libraries(minimum_all_pixels_test PRIVATE CLIc::CLIc)
 set_target_properties(minimum_all_pixels_test PROPERTIES FOLDER "Tests")
 
 
+add_executable(minimum_of_masked_pixels_test minimum_of_masked_pixels_test.cpp)
+add_dependencies(minimum_of_masked_pixels_test CLIc)
+target_link_libraries(minimum_of_masked_pixels_test PRIVATE CLIc::CLIc)
+set_target_properties(minimum_of_masked_pixels_test PROPERTIES FOLDER "Tests")
+
+
 add_executable(minimum_box_test minimum_box_test.cpp)
 add_dependencies(minimum_box_test CLIc)
 target_link_libraries(minimum_box_test PRIVATE CLIc::CLIc)
@@ -547,6 +553,7 @@ add_test(NAME maximum_z_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY
 add_test(NAME mean_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND mean_box_test)
 add_test(NAME mean_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND mean_sphere_test)
 add_test(NAME minimum_all_pixels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_all_pixels_test)
+add_test(NAME minimum_of_masked_pixels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_of_masked_pixels_test)
 add_test(NAME minimum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_box_test)
 add_test(NAME minimum_images_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_images_test)
 add_test(NAME minimum_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_sphere_test)
@@ -657,6 +664,7 @@ set_tests_properties(absolute_test
     set_tests_properties( difference_of_gaussian_test
     maximum_all_pixels_test
     minimum_all_pixels_test
+    minimum_of_masked_pixels_test
     sum_all_pixels_test PROPERTIES LABELS "TIERS2" WILL_FAIL FALSE)
     
     set_tests_properties(
