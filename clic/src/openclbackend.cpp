@@ -725,13 +725,14 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
     cl_int buildStatus = clBuildProgram(prog, 0, nullptr, nullptr, nullptr, nullptr);
     if (buildStatus != CL_SUCCESS)
     {
-      size_t                 len;
-      std::array<char, 2048> buffer;
+      size_t      len;
+      std::string buffer;
       clGetProgramBuildInfo(prog, opencl_device->getCLDevice(), CL_PROGRAM_BUILD_LOG, 0, nullptr, &len);
-      clGetProgramBuildInfo(
-        prog, opencl_device->getCLDevice(), CL_PROGRAM_BUILD_LOG, buffer.size(), buffer.data(), &len);
-      std::cerr << "Build log: " << buffer.data() << std::endl;
-      throw std::runtime_error("Error (ocl): Failed to build program with error code " + std::to_string(err));
+      buffer.resize(len);
+      clGetProgramBuildInfo(prog, opencl_device->getCLDevice(), CL_PROGRAM_BUILD_LOG, len, &buffer[0], &len);
+      std::cerr << "Build log: " << buffer << std::endl;
+      throw std::runtime_error("Error (ocl): Failed to build program " + kernel_name + " with error code " +
+                               std::to_string(err));
     }
     saveProgramToCache(device, hash, &prog);
   }
