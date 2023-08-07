@@ -285,7 +285,7 @@ minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Point
     dst_mask = nullptr;
     tier0::create_xy(src, dst_src);
     tier0::create_xy(mask, dst_mask);
-    tier1::minimum_of_masked_pixels_reduction_func(device, src, mask, dst_src, dst_mask);
+    tier1::minimum_of_masked_pixels_reduction_func(device, temp_src, temp_mask, dst_src, dst_mask);
     temp_src = dst_src;
     temp_mask = dst_mask;
   }
@@ -293,21 +293,21 @@ minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Point
   {
     dst_src = nullptr;
     dst_mask = nullptr;
-    tier0::create_xz(temp_src, dst_src);
-    tier0::create_xz(temp_mask, dst_mask);
-    temp_src = tier1::transpose_xz_func(device, temp_mask, nullptr);
+    temp_src = tier1::transpose_xz_func(device, temp_src, nullptr);
     temp_mask = tier1::transpose_xz_func(device, temp_mask, nullptr);
-    tier1::minimum_of_masked_pixels_reduction_func(device, src, mask, dst_src, dst_mask);
+    tier0::create_xy(temp_src, dst_src);
+    tier0::create_xy(temp_mask, dst_mask);
+    tier1::minimum_of_masked_pixels_reduction_func(device, temp_src, temp_mask, dst_src, dst_mask);
     temp_src = dst_src;
     temp_mask = dst_mask;
   }
   dst_src = nullptr;
   dst_mask = nullptr;
-  tier0::create_one(temp_src, dst_src);
-  tier0::create_one(temp_mask, dst_mask);
   temp_src = tier1::transpose_yz_func(device, temp_src, nullptr);
   temp_mask = tier1::transpose_yz_func(device, temp_mask, nullptr);
-  tier1::minimum_of_masked_pixels_reduction_func(device, src, mask, dst_src, dst_mask);
+  tier0::create_one(temp_src, dst_src);
+  tier0::create_one(temp_mask, dst_mask);
+  tier1::minimum_of_masked_pixels_reduction_func(device, temp_src, temp_mask, dst_src, dst_mask);
 
   float res;
   dst_src->read(&res);
