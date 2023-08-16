@@ -44,7 +44,34 @@ center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) 
 
 // auto proximal_other_labels_count_func
 // auto divide_by_gaussian_background_func
-// auto exclude_labels_func
+
+auto
+exclude_labels_func(const Device::Pointer & device,
+                    const Array::Pointer &  src,
+                    const Array::Pointer &  list,
+                    Array::Pointer          dst) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  if (list->dtype() != dType::UINT32)
+  {
+    throw std::runtime_error("exclude_labels: label list must be of type uint32");
+  }
+  std::vector<unsigned int> labels_list(list->nbElements());
+  list->read(labels_list.data());
+  labels_list.front() = 0;
+  for (unsigned int count = 1; auto && label : labels_list)
+  {
+    if (label == 0)
+    {
+      label = count;
+      count++;
+    }
+  }
+  auto index_list = Array::create(list->nbElements(), 1, 1, dType::UINT32, mType::BUFFER, src->device());
+  index_list->write(labels_list.data());
+  tier1::replace_intensities_func(device, src, index_list, dst);
+  return dst;
+}
 
 auto
 exclude_labels_on_edges_func(const Device::Pointer & device,

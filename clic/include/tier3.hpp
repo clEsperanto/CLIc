@@ -18,7 +18,12 @@ center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) 
 
 // proximal_other_labels_count
 // divide_by_gaussian_background
-// exclude_labels
+
+auto
+exclude_labels_func(const Device::Pointer & device,
+                    const Array::Pointer &  src,
+                    const Array::Pointer &  list,
+                    Array::Pointer          dst) -> Array::Pointer;
 
 auto
 exclude_labels_on_edges_func(const Device::Pointer & device,
