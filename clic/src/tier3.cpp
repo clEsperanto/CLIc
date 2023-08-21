@@ -59,7 +59,8 @@ exclude_labels_func(const Device::Pointer & device,
   std::vector<unsigned int> labels_list(list->nbElements());
   list->read(labels_list.data());
   labels_list.front() = 0;
-  for (unsigned int count = 1; auto && label : labels_list)
+  unsigned int count = 1;
+  for (auto && label : labels_list)
   {
     if (label == 0)
     {
