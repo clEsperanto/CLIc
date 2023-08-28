@@ -52,7 +52,6 @@ foreach(file ${files})
   set(FOLDERS ${FOLDERS} ${FOLDER})
 endforeach(file)
 
-
 # remove empty folders
 message(STATUS "")
 message(STATUS "Removing empty folders")

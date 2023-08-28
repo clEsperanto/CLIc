@@ -6,8 +6,12 @@ endif()
 
 set(@PROJECT_NAME_UPPERCASE@_LIBRARIES @PROJECT_NAME@::@PROJECT_NAME@)
 
-find_package(OpenCL REQUIRED)
+# find GPU Framework (OpenCL, CUDA)
+find_package(OpenCL)
+find_package(CUDA)
+find_package(CUDAToolkit)
+if (NOT OpenCL_FOUND AND NOT CUDAToolkit_FOUND AND NOT CUDA_FOUND)
+    message(FATAL_ERROR "No GPU framework found (OpenCL, CUDA). Please install one of them in order to compile the librairy.")
+endif()
 
-check_required_components(OpenCL)
 check_required_components("@PROJECT_NAME@")
-

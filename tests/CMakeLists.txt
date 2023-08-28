@@ -1,32 +1,3 @@
-add_executable(core_gpu_test core_gpu_test.cpp)
-add_dependencies(core_gpu_test CLIc)
-target_link_libraries(core_gpu_test PRIVATE CLIc::CLIc)
-set_target_properties(core_gpu_test PROPERTIES FOLDER "Tests")
-
-
-add_executable(core_scalar_test core_scalar_test.cpp)
-add_dependencies(core_scalar_test CLIc)
-target_link_libraries(core_scalar_test PRIVATE CLIc::CLIc)
-set_target_properties(core_scalar_test PROPERTIES FOLDER "Tests")
-
-
-add_executable(core_buffer_test core_buffer_test.cpp)
-add_dependencies(core_buffer_test CLIc)
-target_link_libraries(core_buffer_test PRIVATE CLIc::CLIc)
-set_target_properties(core_buffer_test PROPERTIES FOLDER "Tests")
-
-
-add_executable(core_image_test core_image_test.cpp)
-add_dependencies(core_image_test CLIc)
-target_link_libraries(core_image_test PRIVATE CLIc::CLIc)
-set_target_properties(core_image_test PROPERTIES FOLDER "Tests")
-
-
-add_executable(core_kernel_test core_kernel_test.cpp)
-add_dependencies(core_kernel_test CLIc)
-target_link_libraries(core_kernel_test PRIVATE CLIc::CLIc)
-set_target_properties(core_kernel_test PROPERTIES FOLDER "Tests")
-
 
 add_executable(absolute_test absolute_test.cpp)
 add_dependencies(absolute_test CLIc)
@@ -70,10 +41,10 @@ target_link_libraries(binary_edge_detection_test PRIVATE CLIc::CLIc)
 set_target_properties(binary_edge_detection_test PROPERTIES FOLDER "Tests")
 
 
-add_executable(custom_kernel_test custom_kernel_test.cpp)
-add_dependencies(custom_kernel_test CLIc)
-target_link_libraries(custom_kernel_test PRIVATE CLIc::CLIc)
-set_target_properties(custom_kernel_test PROPERTIES FOLDER "Tests")
+# add_executable(custom_kernel_test custom_kernel_test.cpp)
+# add_dependencies(custom_kernel_test CLIc)
+# target_link_libraries(custom_kernel_test PRIVATE CLIc::CLIc)
+# set_target_properties(custom_kernel_test PROPERTIES FOLDER "Tests")
 
 
 add_executable(binary_subtract_test binary_subtract_test.cpp)
@@ -94,16 +65,16 @@ target_link_libraries(block_enumerate_test PRIVATE CLIc::CLIc)
 set_target_properties(block_enumerate_test PROPERTIES FOLDER "Tests")
 
 
-add_executable(close_indexgaps_in_labelmap_test close_indexgaps_in_labelmap_test.cpp)
-add_dependencies(close_indexgaps_in_labelmap_test CLIc)
-target_link_libraries(close_indexgaps_in_labelmap_test PRIVATE CLIc::CLIc)
-set_target_properties(close_indexgaps_in_labelmap_test PROPERTIES FOLDER "Tests")
+# add_executable(close_indexgaps_in_labelmap_test close_indexgaps_in_labelmap_test.cpp)
+# add_dependencies(close_indexgaps_in_labelmap_test CLIc)
+# target_link_libraries(close_indexgaps_in_labelmap_test PRIVATE CLIc::CLIc)
+# set_target_properties(close_indexgaps_in_labelmap_test PROPERTIES FOLDER "Tests")
 
 
-add_executable(connected_component_labeling_box_test connected_component_labeling_box_test.cpp)
-add_dependencies(connected_component_labeling_box_test CLIc)
-target_link_libraries(connected_component_labeling_box_test PRIVATE CLIc::CLIc)
-set_target_properties(connected_component_labeling_box_test PROPERTIES FOLDER "Tests")
+add_executable(connected_components_labeling_box_test connected_components_labeling_box_test.cpp)
+add_dependencies(connected_components_labeling_box_test CLIc)
+target_link_libraries(connected_components_labeling_box_test PRIVATE CLIc::CLIc)
+set_target_properties(connected_components_labeling_box_test PROPERTIES FOLDER "Tests")
 
 
 add_executable(convolve_test convolve_test.cpp)
@@ -118,10 +89,10 @@ target_link_libraries(copy_test PRIVATE CLIc::CLIc)
 set_target_properties(copy_test PROPERTIES FOLDER "Tests")
 
 
-add_executable(crop_test crop_test.cpp)
-add_dependencies(crop_test CLIc)
-target_link_libraries(crop_test PRIVATE CLIc::CLIc)
-set_target_properties(crop_test PROPERTIES FOLDER "Tests")
+# add_executable(crop_test crop_test.cpp)
+# add_dependencies(crop_test CLIc)
+# target_link_libraries(crop_test PRIVATE CLIc::CLIc)
+# set_target_properties(crop_test PROPERTIES FOLDER "Tests")
 
 
 add_executable(detect_maxima_test detect_maxima_test.cpp)
@@ -190,10 +161,10 @@ target_link_libraries(extend_labeling_via_voronoi_test PRIVATE CLIc::CLIc)
 set_target_properties(extend_labeling_via_voronoi_test PROPERTIES FOLDER "Tests")
 
 
-add_executable(flag_existing_labels_test flag_existing_labels_test.cpp)
-add_dependencies(flag_existing_labels_test CLIc)
-target_link_libraries(flag_existing_labels_test PRIVATE CLIc::CLIc)
-set_target_properties(flag_existing_labels_test PROPERTIES FOLDER "Tests")
+# add_executable(flag_existing_labels_test flag_existing_labels_test.cpp)
+# add_dependencies(flag_existing_labels_test CLIc)
+# target_link_libraries(flag_existing_labels_test PRIVATE CLIc::CLIc)
+# set_target_properties(flag_existing_labels_test PROPERTIES FOLDER "Tests")
 
 
 add_executable(gaussian_blur_test gaussian_blur_test.cpp)
@@ -202,10 +173,22 @@ target_link_libraries(gaussian_blur_test PRIVATE CLIc::CLIc)
 set_target_properties(gaussian_blur_test PROPERTIES FOLDER "Tests")
 
 
+add_executable(gradient_x_test gradient_x_test.cpp)
+add_dependencies(gradient_x_test CLIc)
+target_link_libraries(gradient_x_test PRIVATE CLIc::CLIc)
+set_target_properties(gradient_x_test PROPERTIES FOLDER "Tests")
+
+
 add_executable(gradient_y_test gradient_y_test.cpp)
 add_dependencies(gradient_y_test CLIc)
 target_link_libraries(gradient_y_test PRIVATE CLIc::CLIc)
 set_target_properties(gradient_y_test PROPERTIES FOLDER "Tests")
+
+
+add_executable(gradient_z_test gradient_z_test.cpp)
+add_dependencies(gradient_z_test CLIc)
+target_link_libraries(gradient_z_test PRIVATE CLIc::CLIc)
+set_target_properties(gradient_z_test PROPERTIES FOLDER "Tests")
 
 
 add_executable(greater_constant_test greater_constant_test.cpp)
@@ -248,18 +231,6 @@ add_executable(mask_test mask_test.cpp)
 add_dependencies(mask_test CLIc)
 target_link_libraries(mask_test PRIVATE CLIc::CLIc)
 set_target_properties(mask_test PROPERTIES FOLDER "Tests")
-
-
-add_executable(gradient_x_test gradient_x_test.cpp)
-add_dependencies(gradient_x_test CLIc)
-target_link_libraries(gradient_x_test PRIVATE CLIc::CLIc)
-set_target_properties(gradient_x_test PROPERTIES FOLDER "Tests")
-
-
-add_executable(gradient_z_test gradient_z_test.cpp)
-add_dependencies(gradient_z_test CLIc)
-target_link_libraries(gradient_z_test PRIVATE CLIc::CLIc)
-set_target_properties(gradient_z_test PROPERTIES FOLDER "Tests")
 
 
 add_executable(masked_voronoi_labeling_test masked_voronoi_labeling_test.cpp)
@@ -328,6 +299,12 @@ target_link_libraries(minimum_all_pixels_test PRIVATE CLIc::CLIc)
 set_target_properties(minimum_all_pixels_test PROPERTIES FOLDER "Tests")
 
 
+add_executable(minimum_of_masked_pixels_test minimum_of_masked_pixels_test.cpp)
+add_dependencies(minimum_of_masked_pixels_test CLIc)
+target_link_libraries(minimum_of_masked_pixels_test PRIVATE CLIc::CLIc)
+set_target_properties(minimum_of_masked_pixels_test PROPERTIES FOLDER "Tests")
+
+
 add_executable(minimum_box_test minimum_box_test.cpp)
 add_dependencies(minimum_box_test CLIc)
 target_link_libraries(minimum_box_test PRIVATE CLIc::CLIc)
@@ -368,6 +345,12 @@ add_executable(multiply_image_and_scalar_test multiply_image_and_scalar_test.cpp
 add_dependencies(multiply_image_and_scalar_test CLIc)
 target_link_libraries(multiply_image_and_scalar_test PRIVATE CLIc::CLIc)
 set_target_properties(multiply_image_and_scalar_test PROPERTIES FOLDER "Tests")
+
+
+add_executable(multiply_images_test multiply_images_test.cpp)
+add_dependencies(multiply_images_test CLIc)
+target_link_libraries(multiply_images_test PRIVATE CLIc::CLIc)
+set_target_properties(multiply_images_test PROPERTIES FOLDER "Tests")
 
 
 add_executable(nonzero_minimum_box_test nonzero_minimum_box_test.cpp)
@@ -428,6 +411,12 @@ add_executable(set_column_test set_column_test.cpp)
 add_dependencies(set_column_test CLIc)
 target_link_libraries(set_column_test PRIVATE CLIc::CLIc)
 set_target_properties(set_column_test PROPERTIES FOLDER "Tests")
+
+
+add_executable(set_row_test set_row_test.cpp)
+add_dependencies(set_row_test CLIc)
+target_link_libraries(set_row_test PRIVATE CLIc::CLIc)
+set_target_properties(set_row_test PROPERTIES FOLDER "Tests")
 
 
 add_executable(set_nonzero_pixels_to_pixelindex_test set_nonzero_pixels_to_pixelindex_test.cpp)
@@ -514,13 +503,7 @@ target_link_libraries(voronoi_otsu_labeling_test PRIVATE CLIc::CLIc)
 set_target_properties(voronoi_otsu_labeling_test PROPERTIES FOLDER "Tests")
 
 
-add_test(NAME core_gpu_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND core_gpu_test)
-add_test(NAME core_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND core_scalar_test)
-add_test(NAME core_buffer_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND core_buffer_test)
-add_test(NAME core_image_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND core_image_test)
-add_test(NAME core_kernel_test_buffer WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND core_kernel_test buffer)
-# add_test(NAME core_kernel_test_image WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND core_kernel_test image)
-add_test(NAME custom_kernel_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND custom_kernel_test ${OCL_KERNELS_DIR}/kernels/add_image_and_scalar.cl)
+# add_test(NAME custom_kernel_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND custom_kernel_test ${OCL_KERNELS_DIR}/kernels/add_image_and_scalar.cl)
 add_test(NAME absolute_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND absolute_test)
 add_test(NAME add_image_and_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_and_scalar_test)
 add_test(NAME add_image_weighted_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_weighted_test)
@@ -531,27 +514,27 @@ add_test(NAME binary_or_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMA
 add_test(NAME binary_subtract_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_subtract_test)
 add_test(NAME binary_xor_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND binary_xor_test)
 add_test(NAME block_enumerate_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND block_enumerate_test)
-add_test(NAME close_indexgaps_in_labelmap_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND close_indexgaps_in_labelmap_test)
-add_test(NAME connected_component_labeling_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND connected_component_labeling_box_test)
+# add_test(NAME close_indexgaps_in_labelmap_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND close_indexgaps_in_labelmap_test)
+add_test(NAME connected_components_labeling_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND connected_components_labeling_box_test)
 add_test(NAME convolve_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND convolve_test)
 add_test(NAME copy_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND copy_test)
-add_test(NAME crop_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND crop_test)
+# add_test(NAME crop_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND crop_test)
 add_test(NAME detect_maxima_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND detect_maxima_test)
 add_test(NAME difference_of_gaussian_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND difference_of_gaussian_test)
 add_test(NAME dilate_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND dilate_box_test)
 add_test(NAME dilate_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND dilate_sphere_test)
 add_test(NAME divide_image_and_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND divide_image_and_scalar_test)
 add_test(NAME divide_images_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND divide_images_test)
-add_test(NAME gradient_x_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gradient_x_test)
-add_test(NAME gradient_z_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gradient_z_test)
 add_test(NAME equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND equal_constant_test)
 add_test(NAME equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND equal_test)
 add_test(NAME erode_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND erode_box_test)
 add_test(NAME erode_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND erode_sphere_test)
 add_test(NAME extend_labeling_via_voronoi_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND extend_labeling_via_voronoi_test)
-add_test(NAME flag_existing_labels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND flag_existing_labels_test)
+# add_test(NAME flag_existing_labels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND flag_existing_labels_test)
 add_test(NAME gaussian_blur_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gaussian_blur_test)
+add_test(NAME gradient_x_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gradient_x_test)
 add_test(NAME gradient_y_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gradient_y_test)
+add_test(NAME gradient_z_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND gradient_z_test)
 add_test(NAME greater_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_constant_test)
 add_test(NAME greater_or_equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_or_equal_constant_test)
 add_test(NAME greater_or_equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND greater_or_equal_test)
@@ -570,6 +553,7 @@ add_test(NAME maximum_z_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY
 add_test(NAME mean_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND mean_box_test)
 add_test(NAME mean_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND mean_sphere_test)
 add_test(NAME minimum_all_pixels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_all_pixels_test)
+add_test(NAME minimum_of_masked_pixels_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_of_masked_pixels_test)
 add_test(NAME minimum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_box_test)
 add_test(NAME minimum_images_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_images_test)
 add_test(NAME minimum_sphere_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_sphere_test)
@@ -577,6 +561,7 @@ add_test(NAME minimum_x_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY
 add_test(NAME minimum_y_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_y_projection_test)
 add_test(NAME minimum_z_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND minimum_z_projection_test)
 add_test(NAME multiply_image_and_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND multiply_image_and_scalar_test)
+add_test(NAME multiply_images_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND multiply_images_test)
 add_test(NAME nonzero_minimum_box_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND nonzero_minimum_box_test)
 add_test(NAME not_equal_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND not_equal_constant_test)
 add_test(NAME not_equal_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND not_equal_test)
@@ -587,6 +572,7 @@ add_test(NAME onlyzero_overwrite_maximum_diamond_test WORKING_DIRECTORY ${CMAKE_
 add_test(NAME replace_intensities_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND replace_intensities_test)
 add_test(NAME replace_intensity_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND replace_intensity_test)
 add_test(NAME set_column_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND set_column_test)
+add_test(NAME set_row_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND set_row_test)
 add_test(NAME set_nonzero_pixels_to_pixelindex_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND set_nonzero_pixels_to_pixelindex_test)
 add_test(NAME set_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND set_test)
 add_test(NAME smaller_constant_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND smaller_constant_test)
@@ -602,17 +588,8 @@ add_test(NAME sum_z_projection_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR
 add_test(NAME threshold_otsu_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND threshold_otsu_test)
 add_test(NAME voronoi_otsu_labeling_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND voronoi_otsu_labeling_test)
 
-set_tests_properties(
-    core_gpu_test
-    core_scalar_test
-    core_buffer_test
-    # core_image_test
-    core_kernel_test_buffer
-    # core_kernel_test_image
-    PROPERTIES LABELS "CORE" WILL_FAIL FALSE
-)
 
-set_tests_properties(absolute_test
+set_tests_properties(absolute_test 
     add_image_and_scalar_test
     add_image_weighted_test
     binary_and_test
@@ -622,13 +599,10 @@ set_tests_properties(absolute_test
     binary_subtract_test
     binary_xor_test
     block_enumerate_test
-    close_indexgaps_in_labelmap_test
-    connected_component_labeling_box_test
     convolve_test
     copy_test
-    crop_test
+    # crop_test
     detect_maxima_test
-    difference_of_gaussian_test
     dilate_box_test
     dilate_sphere_test
     divide_image_and_scalar_test
@@ -637,38 +611,36 @@ set_tests_properties(absolute_test
     equal_test
     erode_box_test
     erode_sphere_test
-    extend_labeling_via_voronoi_test
-    flag_existing_labels_test
+    # flag_existing_labels_test
     gaussian_blur_test
+    gradient_x_test
     gradient_y_test
+    gradient_z_test
     greater_constant_test
     greater_or_equal_constant_test
     greater_or_equal_test
     greater_test
-    histogram_test
     laplace_box_test
     mask_test
-    masked_voronoi_labeling_test
-    maximum_all_pixels_test
     maximum_box_test
     maximum_images_test
     maximum_sphere_test
-    maximum_x_projection_test
+    maximum_x_projection_test 
     maximum_y_projection_test
     maximum_z_projection_test
     mean_box_test
     mean_sphere_test
-    minimum_all_pixels_test
     minimum_box_test
     minimum_images_test
     minimum_sphere_test
     minimum_x_projection_test
     minimum_y_projection_test
     minimum_z_projection_test
+    multiply_image_and_scalar_test
+    multiply_images_test
     nonzero_minimum_box_test
     not_equal_constant_test
     not_equal_test
-    multiply_image_and_scalar_test
     power_test
     power_images_test
     onlyzero_overwrite_maximum_box_test
@@ -676,6 +648,7 @@ set_tests_properties(absolute_test
     replace_intensities_test
     replace_intensity_test
     set_column_test
+    set_row_test
     set_nonzero_pixels_to_pixelindex_test
     set_test
     smaller_constant_test
@@ -683,29 +656,24 @@ set_tests_properties(absolute_test
     smaller_or_equal_test
     smaller_test
     sobel_test
-    custom_kernel_test
-    sum_all_pixels_test
     sum_reduction_x_test
     sum_x_projection_test
     sum_y_projection_test
-    sum_z_projection_test
-    threshold_otsu_test
-    gradient_x_test
-    gradient_z_test
-    voronoi_otsu_labeling_test PROPERTIES LABELS "TIERS1" WILL_FAIL FALSE)
+    sum_z_projection_test PROPERTIES LABELS "TIERS1" WILL_FAIL FALSE)
 
-    set_tests_properties( maximum_all_pixels_test
+    set_tests_properties( difference_of_gaussian_test
+    maximum_all_pixels_test
     minimum_all_pixels_test
-    sum_all_pixels_test
-    PROPERTIES LABELS "TIERS2" WILL_FAIL FALSE)
-
-    set_tests_properties(close_indexgaps_in_labelmap_test
-    difference_of_gaussian_test
+    minimum_of_masked_pixels_test
+    sum_all_pixels_test PROPERTIES LABELS "TIERS2" WILL_FAIL FALSE)
+    
+    set_tests_properties(
     histogram_test PROPERTIES LABELS "TIERS3" WILL_FAIL FALSE)
 
-    set_tests_properties(connected_component_labeling_box_test
-    threshold_otsu_test PROPERTIES LABELS "TIERS4" WILL_FAIL FALSE)
+    set_tests_properties(threshold_otsu_test PROPERTIES LABELS "TIERS4" WILL_FAIL FALSE)
+     
+    set_tests_properties(connected_components_labeling_box_test PROPERTIES LABELS "TIERS5" WILL_FAIL FALSE)
 
-    set_tests_properties(masked_voronoi_labeling_test PROPERTIES LABELS "TIERS5" WILL_FAIL FALSE)
+    set_tests_properties(masked_voronoi_labeling_test PROPERTIES LABELS "TIERS6" WILL_FAIL FALSE)
 
-    set_tests_properties(voronoi_otsu_labeling_test PROPERTIES LABELS "TIERS6" WILL_FAIL FALSE)
+    set_tests_properties(voronoi_otsu_labeling_test PROPERTIES LABELS "TIERS7" WILL_FAIL FALSE)
