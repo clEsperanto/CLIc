@@ -4,7 +4,9 @@
 #include <cstdint>
 #include <fstream>
 #include <iostream>
+#include <istream>
 #include <limits>
+#include <string>
 
 #include <cmath>
 #ifndef M_PI
