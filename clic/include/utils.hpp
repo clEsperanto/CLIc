@@ -1,10 +1,11 @@
 #ifndef __INCLUDE_UTILS_HPP
 #define __INCLUDE_UTILS_HPP
 
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <limits>
-#include <cstdint>
+
 #include <cmath>
 #ifndef M_PI
 #  define M_PI 3.14159265358979323846 /* pi */
