@@ -815,17 +815,8 @@ CUDABackend::executeKernel(const Device::Pointer &       device,
   std::vector<void *> argsValues(args.size());
   argsValues = args;
 
-  int  maxThreads;
-  auto error = cudaDeviceGetAttribute(&maxThreads, cudaDevAttrMaxThreadsPerBlock, cuda_device->getCUDADeviceIndex());
-  if (error != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error (cuda): Failed to get CUDA Maximum Threads." + std::to_string(error));
-  }
-
-  size_t                blockSize = maxThreads / 2;
   std::array<size_t, 3> block_size = { 0, 0, 0 };
   int                   dim = 0;
-
   for (int i = 0; i < global_size.size(); ++i)
   {
     if (global_size[i] != 1)
