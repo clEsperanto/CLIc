@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(CLIc VERSION 0.7.1)
+project(CLIc VERSION 0.7.2)
 
 # set environment variables
 include(${PROJECT_SOURCE_DIR}/cmake/CMakeSetEnv.cmake)
