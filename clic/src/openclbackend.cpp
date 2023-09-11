@@ -251,8 +251,7 @@ OpenCLBackend::writeBuffer(const Device::Pointer &       device,
   auto                        opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
   cl_int                      err;
   const std::array<size_t, 3> host_origin = { 0, 0, 0 };
-  const size_t                rowPitch = (region[1] > 1) ? region[0] * toBytes(dtype) : 0;
-  const size_t                slicePitch = (region[2] > 1) ? rowPitch * region[1] : 0;
+  const std::array<size_t, 3> region_ocl = { region[0] * toBytes(dtype), region[1], region[2] };
   if (region[2] > 1 || region[1] > 1)
   {
     err = clEnqueueWriteBufferRect(opencl_device->getCLCommandQueue(),
@@ -260,11 +259,11 @@ OpenCLBackend::writeBuffer(const Device::Pointer &       device,
                                    CL_TRUE,
                                    origin.data(),
                                    host_origin.data(),
-                                   region.data(),
-                                   rowPitch,
-                                   slicePitch,
-                                   rowPitch,
-                                   slicePitch,
+                                   region_ocl.data(),
+                                   0,
+                                   0,
+                                   0,
+                                   0,
                                    host_ptr,
                                    0,
                                    nullptr,
@@ -276,7 +275,7 @@ OpenCLBackend::writeBuffer(const Device::Pointer &       device,
                                *static_cast<cl_mem *>(*data_ptr),
                                CL_TRUE,
                                origin[0],
-                               rowPitch,
+                               region_ocl[0],
                                host_ptr,
                                0,
                                nullptr,
@@ -356,9 +355,8 @@ OpenCLBackend::readBuffer(const Device::Pointer &       device,
 #if USE_OPENCL
   auto                        opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
   cl_int                      err;
+  const std::array<size_t, 3> region_ocl = { region[0] * toBytes(dtype), region[1], region[2] };
   const std::array<size_t, 3> host_origin = { 0, 0, 0 };
-  const size_t                rowPitch = (region[1] > 1) ? region[0] * toBytes(dtype) : 0;
-  const size_t                slicePitch = (region[2] > 1) ? rowPitch * region[1] : 0;
   if (region[2] > 1 || region[1] > 1)
   {
     err = clEnqueueReadBufferRect(opencl_device->getCLCommandQueue(),
@@ -366,11 +364,11 @@ OpenCLBackend::readBuffer(const Device::Pointer &       device,
                                   CL_TRUE,
                                   origin.data(),
                                   host_origin.data(),
-                                  region.data(),
-                                  rowPitch,
-                                  slicePitch,
-                                  rowPitch,
-                                  slicePitch,
+                                  region_ocl.data(),
+                                  0,
+                                  0,
+                                  0,
+                                  0,
                                   host_ptr,
                                   0,
                                   nullptr,
@@ -382,7 +380,7 @@ OpenCLBackend::readBuffer(const Device::Pointer &       device,
                               *static_cast<const cl_mem *>(*data_ptr),
                               CL_TRUE,
                               origin[0],
-                              rowPitch,
+                              region_ocl[0],
                               host_ptr,
                               0,
                               nullptr,
