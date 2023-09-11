@@ -462,8 +462,9 @@ OpenCLBackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
                                         void **                       dst_data_ptr) const -> void
 {
 #if USE_OPENCL
-  auto   opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  cl_int err;
+  auto                        opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  cl_int                      err;
+  const std::array<size_t, 3> region_ocl = { region[0] * bytes, region[1], region[2] };
   if (region[2] > 1 || region[1] > 1)
   {
     err = clEnqueueCopyBufferRect(opencl_device->getCLCommandQueue(),
@@ -471,24 +472,23 @@ OpenCLBackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
                                   *static_cast<cl_mem *>(*dst_data_ptr),
                                   origin.data(),
                                   origin.data(),
-                                  region.data(),
-                                  region[0] * bytes,
-                                  region[0] * region[1] * bytes,
-                                  region[0] * bytes,
-                                  region[0] * region[1] * bytes,
+                                  region_ocl.data(),
+                                  0,
+                                  0,
+                                  0,
+                                  0,
                                   0,
                                   nullptr,
                                   nullptr);
   }
   else
   {
-    const size_t size = region[0] * region[1] * region[2] * bytes;
     err = clEnqueueCopyBuffer(opencl_device->getCLCommandQueue(),
                               *static_cast<const cl_mem *>(*src_data_ptr),
                               *static_cast<cl_mem *>(*dst_data_ptr),
                               origin[0],
                               origin[0],
-                              size,
+                              region_ocl[0],
                               0,
                               nullptr,
                               nullptr);

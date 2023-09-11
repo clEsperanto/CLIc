@@ -126,20 +126,23 @@ Array::copy(const Array::Pointer & dst) const -> void
   }
   if (mtype() == mType::BUFFER && dst->mtype() == mType::BUFFER)
   {
-    // backend_.copyMemoryBufferToBuffer(device(), c_get(), nbElements() * bytesPerElements(), dst->get());
+    backend_.copyMemoryBufferToBuffer(
+      device(), c_get(), { width(), height(), depth() }, { 0, 0, 0 }, toBytes(dtype()), dst->get());
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::IMAGE)
   {
-    // backend_.copyMemoryImageToImage(device(), c_get(), width(), height(), depth(), toBytes(dtype()), dst->get());
+    backend_.copyMemoryImageToImage(
+      device(), c_get(), { width(), height(), depth() }, { 0, 0, 0 }, toBytes(dtype()), dst->get());
   }
   else if (mtype() == mType::BUFFER && dst->mtype() == mType::IMAGE)
   {
-    // backend_.copyMemoryBufferToImage(
-    //   device(), c_get(), dst->width(), dst->height(), dst->depth(), toBytes(dst->dtype()), dst->get());
+    backend_.copyMemoryBufferToImage(
+      device(), c_get(), { width(), height(), depth() }, { 0, 0, 0 }, toBytes(dtype()), dst->get());
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::BUFFER)
   {
-    // backend_.copyMemoryImageToBuffer(device(), c_get(), width(), height(), depth(), toBytes(dtype()), dst->get());
+    backend_.copyMemoryImageToBuffer(
+      device(), c_get(), { width(), height(), depth() }, { 0, 0, 0 }, toBytes(dtype()), dst->get());
   }
   else
   {
