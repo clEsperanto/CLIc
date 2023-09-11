@@ -237,7 +237,7 @@ saveFile(std::string & file_path, std::string & source) -> void
 }
 
 inline auto
-correct_range(int * start, int * stop, int * step, size_t size) -> void
+correct_range(int * start, int * stop, int * step, int size) -> void
 {
   // # set in case not set (passed None)
   if (step == nullptr)
