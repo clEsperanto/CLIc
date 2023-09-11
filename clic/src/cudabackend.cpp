@@ -768,7 +768,7 @@ CUDABackend::executeKernel(const Device::Pointer &       device,
 
   std::array<size_t, 3> block_size = { 0, 0, 0 };
   int                   dim = 0;
-  for (int i = 0; i < global_size.size(); ++i)
+  for (size_t i = 0; i < global_size.size(); ++i)
   {
     if (global_size[i] != 1)
     {
