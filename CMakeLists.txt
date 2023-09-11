@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.20)
 
 project(CLIc VERSION 0.7.2)
 
+set(BUILD_CUDA_BACKEND ON CACHE BOOL "Build CUDA backend")
+set(BUILD_OPENCL_BACKEND ON CACHE BOOL "Build OpenCL backend")
+
 # set environment variables
 include(${PROJECT_SOURCE_DIR}/cmake/CMakeSetEnv.cmake)
 # find library dependencies

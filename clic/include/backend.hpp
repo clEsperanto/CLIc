@@ -43,81 +43,71 @@ public:
   getPreamble() const -> std::string = 0;
 
   virtual auto
-  allocateMemory(const Device::Pointer & device, const size_t & size, void ** data_ptr) const -> void = 0;
-  virtual auto
-  allocateMemory(const Device::Pointer & device,
-                 const size_t &          width,
-                 const size_t &          height,
-                 const size_t &          depth,
-                 const dType &           dtype,
-                 void **                 data_ptr) const -> void = 0;
+  allocateMemory(const Device::Pointer &       device,
+                 const std::array<size_t, 3> & region,
+                 const dType &                 dtype,
+                 const mType &                 mtype,
+                 void **                       data_ptr) const -> void = 0;
+
   virtual auto
   freeMemory(const Device::Pointer & device, const mType & mtype, void ** data_ptr) const -> void = 0;
+
   virtual auto
-  writeMemory(const Device::Pointer & device, void ** data_ptr, const size_t & size, const void * host_ptr) const
-    -> void = 0;
+  writeMemory(const Device::Pointer &       device,
+              void **                       data_ptr,
+              const std::array<size_t, 3> & region,
+              const std::array<size_t, 3> & origin,
+              const dType &                 dtype,
+              const mType &                 mtype,
+              const void *                  host_ptr) const -> void = 0;
+
   virtual auto
-  writeMemory(const Device::Pointer & device,
-              void **                 data_ptr,
-              const size_t &          width,
-              const size_t &          height,
-              const size_t &          depth,
-              const size_t &          bytes,
-              const void *            host_ptr) const -> void = 0;
+  readMemory(const Device::Pointer &       device,
+             const void **                 data_ptr,
+             const std::array<size_t, 3> & region,
+             const std::array<size_t, 3> & origin,
+             const dType &                 dtype,
+             const mType &                 mtype,
+             void *                        host_ptr) const -> void = 0;
+
+
   virtual auto
-  readMemory(const Device::Pointer & device, const void ** data_ptr, const size_t & size, void * host_ptr) const
-    -> void = 0;
+  copyMemoryBufferToBuffer(const Device::Pointer &       device,
+                           const void **                 src_data_ptr,
+                           const std::array<size_t, 3> & region,
+                           const std::array<size_t, 3> & origin,
+                           const size_t &                bytes,
+                           void **                       dst_data_ptr) const -> void = 0;
   virtual auto
-  readMemory(const Device::Pointer & device,
-             const void **           data_ptr,
-             const size_t &          width,
-             const size_t &          height,
-             const size_t &          depth,
-             const size_t &          bytes,
-             void *                  host_ptr) const -> void = 0;
+  copyMemoryImageToBuffer(const Device::Pointer &       device,
+                          const void **                 src_data_ptr,
+                          const std::array<size_t, 3> & region,
+                          const std::array<size_t, 3> & origin,
+                          const size_t &                bytes,
+                          void **                       dst_data_ptr) const -> void = 0;
   virtual auto
-  copyMemoryBufferToBuffer(const Device::Pointer & device,
-                           const void **           src_data_ptr,
-                           const size_t &          size,
-                           void **                 dst_data_ptr) const -> void = 0;
+  copyMemoryBufferToImage(const Device::Pointer &       device,
+                          const void **                 src_data_ptr,
+                          const std::array<size_t, 3> & region,
+                          const std::array<size_t, 3> & origin,
+                          const size_t &                bytes,
+                          void **                       dst_data_ptr) const -> void = 0;
   virtual auto
-  copyMemoryImageToBuffer(const Device::Pointer & device,
-                          const void **           src_data_ptr,
-                          const size_t &          width,
-                          const size_t &          height,
-                          const size_t &          depth,
-                          const size_t &          bytes,
-                          void **                 dst_data_ptr) const -> void = 0;
+  copyMemoryImageToImage(const Device::Pointer &       device,
+                         const void **                 src_data_ptr,
+                         const std::array<size_t, 3> & region,
+                         const std::array<size_t, 3> & origin,
+                         const size_t &                bytes,
+                         void **                       dst_data_ptr) const -> void = 0;
+
   virtual auto
-  copyMemoryBufferToImage(const Device::Pointer & device,
-                          const void **           src_data_ptr,
-                          const size_t &          width,
-                          const size_t &          height,
-                          const size_t &          depth,
-                          const size_t &          bytes,
-                          void **                 dst_data_ptr) const -> void = 0;
-  virtual auto
-  copyMemoryImageToImage(const Device::Pointer & device,
-                         const void **           src_data_ptr,
-                         const size_t &          width,
-                         const size_t &          height,
-                         const size_t &          depth,
-                         const size_t &          bytes,
-                         void **                 dst_data_ptr) const -> void = 0;
-  virtual auto
-  setMemory(const Device::Pointer & device,
-            void **                 data_ptr,
-            const size_t &          size,
-            const float &           value,
-            const dType &           dtype) const -> void = 0;
-  virtual auto
-  setMemory(const Device::Pointer & device,
-            void **                 data_ptr,
-            const size_t &          width,
-            const size_t &          height,
-            const size_t &          depth,
-            const float &           value,
-            const dType &           dtype) const -> void = 0;
+  setMemory(const Device::Pointer &       device,
+            void **                       data_ptr,
+            const std::array<size_t, 3> & region,
+            const std::array<size_t, 3> & origin,
+            const dType &                 dtype,
+            const mType &                 mtype,
+            const float &                 value) const -> void = 0;
 
   virtual auto
   buildKernel(const Device::Pointer & device,
@@ -180,83 +170,102 @@ public:
   [[nodiscard]] auto
   getType() const -> Backend::Type override;
 
+  static auto
+  allocateBuffer(const Device::Pointer & device, const size_t & size, void ** data_ptr) -> void;
+  static auto
+  allocateImage(const Device::Pointer &       device,
+                const std::array<size_t, 3> & region,
+                const dType &                 dtype,
+                void **                       data_ptr) -> void;
   auto
-  allocateMemory(const Device::Pointer & device, const size_t & size, void ** data_ptr) const -> void override;
-  auto
-  allocateMemory(const Device::Pointer & device,
-                 const size_t &          width,
-                 const size_t &          height,
-                 const size_t &          depth,
-                 const dType &           dtype,
-                 void **                 data_ptr) const -> void override;
-  auto
-  freeMemory(const Device::Pointer & device, const mType & mtype, void ** data_ptr) const -> void override;
-  auto
-  writeMemory(const Device::Pointer & device, void ** data_ptr, const size_t & size, const void * host_ptr) const
-    -> void override;
-  auto
-  writeMemory(const Device::Pointer & device,
-              void **                 data_ptr,
-              const size_t &          width,
-              const size_t &          height,
-              const size_t &          depth,
-              const size_t &          bytes,
-              const void *            host_ptr) const -> void override;
-  auto
-  readMemory(const Device::Pointer & device, const void ** data_ptr, const size_t & size, void * host_ptr) const
-    -> void override;
-  auto
-  readMemory(const Device::Pointer & device,
-             const void **           data_ptr,
-             const size_t &          width,
-             const size_t &          height,
-             const size_t &          depth,
-             const size_t &          bytes,
-             void *                  host_ptr) const -> void override;
+  allocateMemory(const Device::Pointer &       device,
+                 const std::array<size_t, 3> & region,
+                 const dType &                 dtype,
+                 const mType &                 mtype,
+                 void **                       data_ptr) const -> void override;
 
   auto
-  copyMemoryBufferToBuffer(const Device::Pointer & device,
-                           const void **           src_data_ptr,
-                           const size_t &          size,
-                           void **                 dst_data_ptr) const -> void override;
+  freeMemory(const Device::Pointer & device, const mType & mtype, void ** data_ptr) const -> void override;
+
+  static auto
+  writeBuffer(const Device::Pointer &       device,
+              void **                       data_ptr,
+              const std::array<size_t, 3> & region,
+              const std::array<size_t, 3> & origin,
+              const dType &                 dtype,
+              const void *                  host_ptr) -> void;
   auto
-  copyMemoryImageToBuffer(const Device::Pointer & device,
-                          const void **           src_data_ptr,
-                          const size_t &          width,
-                          const size_t &          height,
-                          const size_t &          depth,
-                          const size_t &          bytes,
-                          void **                 dst_data_ptr) const -> void override;
+  writeMemory(const Device::Pointer &       device,
+              void **                       data_ptr,
+              const std::array<size_t, 3> & region,
+              const std::array<size_t, 3> & origin,
+              const dType &                 dtype,
+              const mType &                 mtype,
+              const void *                  host_ptr) const -> void override;
+
+  static auto
+  readBuffer(const Device::Pointer &       device,
+             const void **                 data_ptr,
+             const std::array<size_t, 3> & region,
+             const std::array<size_t, 3> & origin,
+             const dType &                 dtype,
+             void *                        host_ptr) -> void;
+
   auto
-  copyMemoryBufferToImage(const Device::Pointer & device,
-                          const void **           src_data_ptr,
-                          const size_t &          width,
-                          const size_t &          height,
-                          const size_t &          depth,
-                          const size_t &          bytes,
-                          void **                 dst_data_ptr) const -> void override;
+  readMemory(const Device::Pointer &       device,
+             const void **                 data_ptr,
+             const std::array<size_t, 3> & region,
+             const std::array<size_t, 3> & origin,
+             const dType &                 dtype,
+             const mType &                 mtype,
+             void *                        host_ptr) const -> void override;
+
   auto
-  copyMemoryImageToImage(const Device::Pointer & device,
-                         const void **           src_data_ptr,
-                         const size_t &          width,
-                         const size_t &          height,
-                         const size_t &          depth,
-                         const size_t &          bytes,
-                         void **                 dst_data_ptr) const -> void override;
+  copyMemoryBufferToBuffer(const Device::Pointer &       device,
+                           const void **                 src_data_ptr,
+                           const std::array<size_t, 3> & region,
+                           const std::array<size_t, 3> & origin,
+                           const size_t &                bytes,
+                           void **                       dst_data_ptr) const -> void override;
   auto
-  setMemory(const Device::Pointer & device,
-            void **                 data_ptr,
-            const size_t &          size,
-            const float &           value,
-            const dType &           dtype) const -> void override;
+  copyMemoryImageToBuffer(const Device::Pointer &       device,
+                          const void **                 src_data_ptr,
+                          const std::array<size_t, 3> & region,
+                          const std::array<size_t, 3> & origin,
+                          const size_t &                bytes,
+                          void **                       dst_data_ptr) const -> void override;
   auto
-  setMemory(const Device::Pointer & device,
-            void **                 data_ptr,
-            const size_t &          width,
-            const size_t &          height,
-            const size_t &          depth,
-            const float &           value,
-            const dType &           dtype) const -> void override;
+  copyMemoryBufferToImage(const Device::Pointer &       device,
+                          const void **                 src_data_ptr,
+                          const std::array<size_t, 3> & region,
+                          const std::array<size_t, 3> & origin,
+                          const size_t &                bytes,
+                          void **                       dst_data_ptr) const -> void override;
+  auto
+  copyMemoryImageToImage(const Device::Pointer &       device,
+                         const void **                 src_data_ptr,
+                         const std::array<size_t, 3> & region,
+                         const std::array<size_t, 3> & origin,
+                         const size_t &                bytes,
+                         void **                       dst_data_ptr) const -> void override;
+
+  auto
+  setMemory(const Device::Pointer &       device,
+            void **                       data_ptr,
+            const std::array<size_t, 3> & region,
+            const std::array<size_t, 3> & origin,
+            const dType &                 dtype,
+            const mType &                 mtype,
+            const float &                 value) const -> void override;
+
+  static auto
+  setBuffer(const Device::Pointer &       device,
+            void **                       data_ptr,
+            const std::array<size_t, 3> & region,
+            const std::array<size_t, 3> & origin,
+            const dType &                 dtype,
+            const float &                 value) -> void;
+
   auto
   loadProgramFromCache(const Device::Pointer & device, const std::string & hash, void * program) const -> void override;
   auto
@@ -298,82 +307,130 @@ public:
   [[nodiscard]] auto
   getType() const -> Backend::Type override;
 
+  static auto
+  allocateBuffer(const Device::Pointer & device, const size_t & size, void ** data_ptr) -> void;
+  static auto
+  allocateImage(const Device::Pointer &       device,
+                const std::array<size_t, 3> & region,
+                const dType &                 dtype,
+                void **                       data_ptr) -> void;
   auto
-  allocateMemory(const Device::Pointer & device, const size_t & size, void ** data_ptr) const -> void override;
-  auto
-  allocateMemory(const Device::Pointer & device,
-                 const size_t &          width,
-                 const size_t &          height,
-                 const size_t &          depth,
-                 const dType &           dtype,
-                 void **                 data_ptr) const -> void override;
+  allocateMemory(const Device::Pointer &       device,
+                 const std::array<size_t, 3> & region,
+                 const dType &                 dtype,
+                 const mType &                 mtype,
+                 void **                       data_ptr) const -> void override;
+
   auto
   freeMemory(const Device::Pointer & device, const mType & mtype, void ** data_ptr) const -> void override;
+
+  static auto
+  writeBuffer(const Device::Pointer &       device,
+              void **                       data_ptr,
+              const std::array<size_t, 3> & region,
+              const std::array<size_t, 3> & origin,
+              const dType &                 dtype,
+              const void *                  host_ptr) -> void;
+
+  static auto
+  writeImage(const Device::Pointer &       device,
+             void **                       data_ptr,
+             const std::array<size_t, 3> & region,
+             const std::array<size_t, 3> & origin,
+             const dType &                 dtype,
+             const void *                  host_ptr) -> void;
+
   auto
-  writeMemory(const Device::Pointer & device, void ** data_ptr, const size_t & size, const void * host_ptr) const
-    -> void override;
+  writeMemory(const Device::Pointer &       device,
+              void **                       data_ptr,
+              const std::array<size_t, 3> & region,
+              const std::array<size_t, 3> & origin,
+              const dType &                 dtype,
+              const mType &                 mtype,
+              const void *                  host_ptr) const -> void override;
+
+  static auto
+  readBuffer(const Device::Pointer &       device,
+             const void **                 data_ptr,
+             const std::array<size_t, 3> & region,
+             const std::array<size_t, 3> & origin,
+             const dType &                 dtype,
+             void *                        host_ptr) -> void;
+
+  static auto
+  readImage(const Device::Pointer &       device,
+            const void **                 data_ptr,
+            const std::array<size_t, 3> & region,
+            const std::array<size_t, 3> & origin,
+            const dType &                 dtype,
+            void *                        host_ptr) -> void;
+
   auto
-  writeMemory(const Device::Pointer & device,
-              void **                 data_ptr,
-              const size_t &          width,
-              const size_t &          height,
-              const size_t &          depth,
-              const size_t &          bytes,
-              const void *            host_ptr) const -> void override;
+  readMemory(const Device::Pointer &       device,
+             const void **                 data_ptr,
+             const std::array<size_t, 3> & region,
+             const std::array<size_t, 3> & origin,
+             const dType &                 dtype,
+             const mType &                 mtype,
+             void *                        host_ptr) const -> void override;
+
   auto
-  readMemory(const Device::Pointer & device, const void ** data_ptr, const size_t & size, void * host_ptr) const
-    -> void override;
+  copyMemoryBufferToBuffer(const Device::Pointer &       device,
+                           const void **                 src_data_ptr,
+                           const std::array<size_t, 3> & region,
+                           const std::array<size_t, 3> & origin,
+                           const size_t &                bytes,
+                           void **                       dst_data_ptr) const -> void override;
+
   auto
-  readMemory(const Device::Pointer & device,
-             const void **           data_ptr,
-             const size_t &          width,
-             const size_t &          height,
-             const size_t &          depth,
-             const size_t &          bytes,
-             void *                  host_ptr) const -> void override;
+  copyMemoryImageToBuffer(const Device::Pointer &       device,
+                          const void **                 src_data_ptr,
+                          const std::array<size_t, 3> & region,
+                          const std::array<size_t, 3> & origin,
+                          const size_t &                bytes,
+                          void **                       dst_data_ptr) const -> void override;
+
   auto
-  copyMemoryBufferToBuffer(const Device::Pointer & device,
-                           const void **           src_data_ptr,
-                           const size_t &          size,
-                           void **                 dst_data_ptr) const -> void override;
+  copyMemoryBufferToImage(const Device::Pointer &       device,
+                          const void **                 src_data_ptr,
+                          const std::array<size_t, 3> & region,
+                          const std::array<size_t, 3> & origin,
+                          const size_t &                bytes,
+                          void **                       dst_data_ptr) const -> void override;
+
   auto
-  copyMemoryImageToBuffer(const Device::Pointer & device,
-                          const void **           src_data_ptr,
-                          const size_t &          width,
-                          const size_t &          height,
-                          const size_t &          depth,
-                          const size_t &          bytes,
-                          void **                 dst_data_ptr) const -> void override;
+  copyMemoryImageToImage(const Device::Pointer &       device,
+                         const void **                 src_data_ptr,
+                         const std::array<size_t, 3> & region,
+                         const std::array<size_t, 3> & origin,
+                         const size_t &                bytes,
+                         void **                       dst_data_ptr) const -> void override;
+
   auto
-  copyMemoryBufferToImage(const Device::Pointer & device,
-                          const void **           src_data_ptr,
-                          const size_t &          width,
-                          const size_t &          height,
-                          const size_t &          depth,
-                          const size_t &          bytes,
-                          void **                 dst_data_ptr) const -> void override;
-  auto
-  copyMemoryImageToImage(const Device::Pointer & device,
-                         const void **           src_data_ptr,
-                         const size_t &          width,
-                         const size_t &          height,
-                         const size_t &          depth,
-                         const size_t &          bytes,
-                         void **                 dst_data_ptr) const -> void override;
-  auto
-  setMemory(const Device::Pointer & device,
-            void **                 data_ptr,
-            const size_t &          size,
-            const float &           value,
-            const dType &           dtype) const -> void override;
-  auto
-  setMemory(const Device::Pointer & device,
-            void **                 data_ptr,
-            const size_t &          width,
-            const size_t &          height,
-            const size_t &          depth,
-            const float &           value,
-            const dType &           dtype) const -> void override;
+  setMemory(const Device::Pointer &       device,
+            void **                       data_ptr,
+            const std::array<size_t, 3> & region,
+            const std::array<size_t, 3> & origin,
+            const dType &                 dtype,
+            const mType &                 mtype,
+            const float &                 value) const -> void override;
+
+  static auto
+  setImage(const Device::Pointer &       device,
+           void **                       data_ptr,
+           const std::array<size_t, 3> & region,
+           const std::array<size_t, 3> & origin,
+           const dType &                 dtype,
+           const float &                 value) -> void;
+
+  static auto
+  setBuffer(const Device::Pointer &       device,
+            void **                       data_ptr,
+            const std::array<size_t, 3> & region,
+            const std::array<size_t, 3> & origin,
+            const dType &                 dtype,
+            const float &                 value) -> void;
+
   auto
   loadProgramFromCache(const Device::Pointer & device, const std::string & hash, void * program) const -> void override;
   auto

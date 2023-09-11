@@ -82,14 +82,7 @@ Array::allocate() -> void
     std::cerr << "Warning: Array is already initialized" << std::endl;
     return;
   }
-  if (mtype() == mType::IMAGE)
-  {
-    backend_.allocateMemory(device(), this->width(), this->height(), this->depth(), dtype(), get());
-  }
-  else
-  {
-    backend_.allocateMemory(device(), nbElements() * bytesPerElements(), get());
-  }
+  backend_.allocateMemory(device(), { this->width(), this->height(), this->depth() }, dtype(), mtype(), get());
   initialized_ = true;
 }
 
@@ -100,14 +93,8 @@ Array::write(const void * host_data) -> void
   {
     allocate();
   }
-  if (mtype() == mType::IMAGE)
-  {
-    backend_.writeMemory(device(), get(), this->width(), this->height(), this->depth(), bytesPerElements(), host_data);
-  }
-  else
-  {
-    backend_.writeMemory(device(), get(), nbElements() * bytesPerElements(), host_data);
-  }
+  backend_.writeMemory(
+    device(), get(), { this->width(), this->height(), this->depth() }, { 0, 0, 0 }, dtype(), mtype(), host_data);
 }
 
 auto
@@ -117,14 +104,7 @@ Array::read(void * host_data) const -> void
   {
     throw std::runtime_error("Error: Array is not initialized, it cannot be read");
   }
-  if (mtype() == mType::IMAGE)
-  {
-    backend_.readMemory(device(), c_get(), width(), height(), depth(), bytesPerElements(), host_data);
-  }
-  else
-  {
-    backend_.readMemory(device(), c_get(), nbElements() * bytesPerElements(), host_data);
-  }
+  backend_.readMemory(device(), c_get(), { width(), height(), depth() }, { 0, 0, 0 }, dtype(), mtype(), host_data);
 }
 
 auto
@@ -145,20 +125,20 @@ Array::copy(const Array::Pointer & dst) const -> void
   }
   if (mtype() == mType::BUFFER && dst->mtype() == mType::BUFFER)
   {
-    backend_.copyMemoryBufferToBuffer(device(), c_get(), nbElements() * bytesPerElements(), dst->get());
+    // backend_.copyMemoryBufferToBuffer(device(), c_get(), nbElements() * bytesPerElements(), dst->get());
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::IMAGE)
   {
-    backend_.copyMemoryImageToImage(device(), c_get(), width(), height(), depth(), toBytes(dtype()), dst->get());
+    // backend_.copyMemoryImageToImage(device(), c_get(), width(), height(), depth(), toBytes(dtype()), dst->get());
   }
   else if (mtype() == mType::BUFFER && dst->mtype() == mType::IMAGE)
   {
-    backend_.copyMemoryBufferToImage(
-      device(), c_get(), dst->width(), dst->height(), dst->depth(), toBytes(dst->dtype()), dst->get());
+    // backend_.copyMemoryBufferToImage(
+    //   device(), c_get(), dst->width(), dst->height(), dst->depth(), toBytes(dst->dtype()), dst->get());
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::BUFFER)
   {
-    backend_.copyMemoryImageToBuffer(device(), c_get(), width(), height(), depth(), toBytes(dtype()), dst->get());
+    // backend_.copyMemoryImageToBuffer(device(), c_get(), width(), height(), depth(), toBytes(dtype()), dst->get());
   }
   else
   {
@@ -173,14 +153,7 @@ Array::fill(const float & value) const -> void
   {
     std::cerr << "Error: Arrays are not initialized_" << std::endl;
   }
-  if (mtype() == mType::IMAGE)
-  {
-    backend_.setMemory(device(), get(), width(), height(), depth(), value, dtype());
-  }
-  else
-  {
-    backend_.setMemory(device(), get(), nbElements() * bytesPerElements(), value, dtype());
-  }
+  backend_.setMemory(device(), get(), { width(), height(), depth() }, { 0, 0, 0 }, dtype(), mtype(), value);
 }
 
 auto
