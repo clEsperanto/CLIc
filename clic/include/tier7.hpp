@@ -5,6 +5,11 @@
 #include "device.hpp"
 #include "execution.hpp"
 
+/**
+ * @namespace cle::tier7
+ * @brief Contains all the functions of the tier 7 category.
+ *
+ */
 namespace cle::tier7
 {
 // affine_transform
