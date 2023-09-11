@@ -280,41 +280,41 @@ CUDABackend::writeBuffer(const Device::Pointer &       device,
   if (region[2] > 1)
   {
     CUDA_MEMCPY3D copyParams = { 0 };
+
     copyParams.srcMemoryType = CU_MEMORYTYPE_HOST; // Source memory type.
     copyParams.srcHost = host_ptr;
-    copyParams.srcPitch = region[0] * bytes;
     copyParams.srcXInBytes = host_origin[0] * bytes;
     copyParams.srcY = host_origin[1];
+    copyParams.srcZ = host_origin[2];
+
     copyParams.dstMemoryType = CU_MEMORYTYPE_DEVICE; // Destination memory type.
     copyParams.dstDevice = reinterpret_cast<CUdeviceptr>(*data_ptr);
-    copyParams.dstPitch = region[0] * bytes;
     copyParams.dstXInBytes = origin[0] * bytes;
     copyParams.dstY = origin[1];
+    copyParams.dstY = origin[2];
+
     copyParams.WidthInBytes = region[0] * bytes;
     copyParams.Height = region[1];
+    copyParams.Depth = region[2];
     err = cuMemcpy3D(&copyParams);
   }
   else if (region[1] > 1)
   {
-    CUDA_MEMCPY3D copyParams = { 0 };
+    CUDA_MEMCPY2D copyParams = { 0 };
+
     copyParams.srcMemoryType = CU_MEMORYTYPE_HOST; // Source memory type.
     copyParams.srcHost = host_ptr;
-    copyParams.srcPitch = region[0] * bytes;
-    copyParams.srcHeight = region[1];
-    copyParams.dstMemoryType = CU_MEMORYTYPE_DEVICE; // Destination memory type.
-    copyParams.dstDevice = reinterpret_cast<CUdeviceptr>(*data_ptr);
-    copyParams.dstPitch = region[0] * bytes;
-    copyParams.dstHeight = region[1];
-    copyParams.WidthInBytes = region[0] * bytes;
-    copyParams.Height = region[1];
-    copyParams.Depth = region[2];
     copyParams.srcXInBytes = host_origin[0] * bytes;
     copyParams.srcY = host_origin[1];
-    copyParams.srcZ = host_origin[2];
+
+    copyParams.dstMemoryType = CU_MEMORYTYPE_DEVICE; // Destination memory type.
+    copyParams.dstDevice = reinterpret_cast<CUdeviceptr>(*data_ptr);
     copyParams.dstXInBytes = origin[0] * bytes;
     copyParams.dstY = origin[1];
-    copyParams.dstZ = origin[2];
-    err = cuMemcpy3D(&copyParams);
+
+    copyParams.WidthInBytes = region[0] * bytes;
+    copyParams.Height = region[1];
+    err = cuMemcpy2D(&copyParams);
   }
   else
   {
@@ -353,43 +353,41 @@ CUDABackend::readBuffer(const Device::Pointer &       device,
   if (region[2] > 1)
   {
     CUDA_MEMCPY3D copyParams = { 0 };
+
     copyParams.dstMemoryType = CU_MEMORYTYPE_HOST; // Source memory type.
     copyParams.dstHost = host_ptr;
-    copyParams.dstPitch = region[0] * bytes;
     copyParams.dstXInBytes = host_origin[0] * bytes;
     copyParams.dstY = host_origin[1];
-    copyParams.srcMemoryType = CU_MEMORYTYPE_DEVICE; // Destination memory type.
-    copyParams.srcDevice = reinterpret_cast<CUdeviceptr>(*data_ptr);
-    copyParams.srcPitch = region[0] * bytes;
-    copyParams.srcXInBytes = origin[0] * bytes;
-    copyParams.srcY = origin[1];
-    copyParams.WidthInBytes = region[0] * bytes;
-    copyParams.Height = region[1];
-    err = cuMemcpy3D(&copyParams);
-  }
-  else if (region[1] > 1)
-  {
-    CUDA_MEMCPY3D copyParams = { 0 };
-    copyParams.dstMemoryType = CU_MEMORYTYPE_HOST; // Source memory type.
-    copyParams.dstHost = host_ptr;
-    copyParams.dstPitch = region[0] * bytes;
-    copyParams.dstHeight = region[1];
+    copyParams.dstZ = host_origin[2];
 
     copyParams.srcMemoryType = CU_MEMORYTYPE_DEVICE; // Destination memory type.
     copyParams.srcDevice = reinterpret_cast<CUdeviceptr>(*data_ptr);
-    copyParams.srcPitch = region[0] * bytes;
-    copyParams.srcHeight = region[1];
+    copyParams.srcXInBytes = origin[0] * bytes;
+    copyParams.srcY = origin[1];
+    copyParams.srcZ = origin[2];
 
     copyParams.WidthInBytes = region[0] * bytes;
     copyParams.Height = region[1];
     copyParams.Depth = region[2];
-    copyParams.srcXInBytes = host_origin[0] * bytes;
-    copyParams.srcY = host_origin[1];
-    copyParams.srcZ = host_origin[2];
-    copyParams.dstXInBytes = origin[0] * bytes;
-    copyParams.dstY = origin[1];
-    copyParams.dstZ = origin[2];
     err = cuMemcpy3D(&copyParams);
+  }
+  else if (region[1] > 1)
+  {
+    CUDA_MEMCPY2D copyParams = { 0 };
+
+    copyParams.dstMemoryType = CU_MEMORYTYPE_HOST; // Source memory type.
+    copyParams.dstHost = host_ptr;
+    copyParams.dstXInBytes = host_origin[0] * bytes;
+    copyParams.dstY = host_origin[1];
+
+    copyParams.srcMemoryType = CU_MEMORYTYPE_DEVICE; // Destination memory type.
+    copyParams.srcDevice = reinterpret_cast<CUdeviceptr>(*data_ptr);
+    copyParams.srcXInBytes = origin[0] * bytes;
+    copyParams.srcY = origin[1];
+
+    copyParams.WidthInBytes = region[0] * bytes;
+    copyParams.Height = region[1];
+    err = cuMemcpy2D(&copyParams);
   }
   else
   {
@@ -451,41 +449,41 @@ CUDABackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
   if (region[2] > 1)
   {
     CUDA_MEMCPY3D copyParams = { 0 };
+
     copyParams.dstMemoryType = CU_MEMORYTYPE_DEVICE; // Source memory type.
-    copyParams.dstHost = (*dst_data_ptr);
-    copyParams.dstPitch = region[0] * bytes;
+    copyParams.dstDevice = reinterpret_cast<CUdeviceptr>(*dst_data_ptr);
     copyParams.dstXInBytes = origin[0] * bytes;
     copyParams.dstY = origin[1];
+    copyParams.dstZ = origin[2];
+
     copyParams.srcMemoryType = CU_MEMORYTYPE_DEVICE; // Destination memory type.
     copyParams.srcDevice = reinterpret_cast<CUdeviceptr>(*src_data_ptr);
-    copyParams.srcPitch = region[0] * bytes;
     copyParams.srcXInBytes = origin[0] * bytes;
     copyParams.srcY = origin[1];
+    copyParams.srcZ = origin[2];
+
     copyParams.WidthInBytes = region[0] * bytes;
     copyParams.Height = region[1];
+    copyParams.Depth = region[2];
     err = cuMemcpy3D(&copyParams);
   }
   else if (region[1] > 1)
   {
-    CUDA_MEMCPY3D copyParams = { 0 };
+    CUDA_MEMCPY2D copyParams = { 0 };
+
     copyParams.dstMemoryType = CU_MEMORYTYPE_DEVICE; // Source memory type.
-    copyParams.dstHost = (*dst_data_ptr);
-    copyParams.dstPitch = region[0] * bytes;
-    copyParams.dstHeight = region[1];
-    copyParams.srcMemoryType = CU_MEMORYTYPE_DEVICE; // Destination memory type.
-    copyParams.srcDevice = reinterpret_cast<CUdeviceptr>(*src_data_ptr);
-    copyParams.srcPitch = region[0] * bytes;
-    copyParams.srcHeight = region[1];
-    copyParams.WidthInBytes = region[0] * bytes;
-    copyParams.Height = region[1];
-    copyParams.Depth = region[2];
-    copyParams.srcXInBytes = origin[0] * bytes;
-    copyParams.srcY = origin[1];
-    copyParams.srcZ = origin[2];
+    copyParams.dstDevice = reinterpret_cast<CUdeviceptr>(*dst_data_ptr);
     copyParams.dstXInBytes = origin[0] * bytes;
     copyParams.dstY = origin[1];
-    copyParams.dstZ = origin[2];
-    err = cuMemcpy3D(&copyParams);
+
+    copyParams.srcMemoryType = CU_MEMORYTYPE_DEVICE; // Destination memory type.
+    copyParams.srcDevice = reinterpret_cast<CUdeviceptr>(*src_data_ptr);
+    copyParams.srcXInBytes = origin[0] * bytes;
+    copyParams.srcY = origin[1];
+
+    copyParams.WidthInBytes = region[0] * bytes;
+    copyParams.Height = region[1];
+    err = cuMemcpy2D(&copyParams);
   }
   else
   {
