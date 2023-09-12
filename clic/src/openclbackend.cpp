@@ -112,7 +112,32 @@ OpenCLBackend::getType() const -> Backend::Type
 }
 
 auto
-OpenCLBackend::allocateMemory(const Device::Pointer & device, const size_t & size, void ** data_ptr) const -> void
+OpenCLBackend::allocateMemory(const Device::Pointer &       device,
+                              const std::array<size_t, 3> & region,
+                              const dType &                 dtype,
+                              const mType &                 mtype,
+                              void **                       data_ptr) const -> void
+{
+#if USE_OPENCL
+  switch (mtype)
+  {
+    case mType::BUFFER: {
+      const size_t size = region[0] * region[1] * region[2] * toBytes(dtype);
+      allocateBuffer(device, size, data_ptr);
+      break;
+    }
+    case mType::IMAGE: {
+      allocateImage(device, region, dtype, data_ptr);
+      break;
+    }
+  }
+#else
+  throw std::runtime_error("Error: OpenCL is not enabled");
+#endif
+}
+
+auto
+OpenCLBackend::allocateBuffer(const Device::Pointer & device, const size_t & size, void ** data_ptr) -> void
 {
 #if USE_OPENCL
   cl_int err;
@@ -129,12 +154,10 @@ OpenCLBackend::allocateMemory(const Device::Pointer & device, const size_t & siz
 }
 
 auto
-OpenCLBackend::allocateMemory(const Device::Pointer & device,
-                              const size_t &          width,
-                              const size_t &          height,
-                              const size_t &          depth,
-                              const dType &           dtype,
-                              void **                 data_ptr) const -> void
+OpenCLBackend::allocateImage(const Device::Pointer &       device,
+                             const std::array<size_t, 3> & region,
+                             const dType &                 dtype,
+                             void **                       data_ptr) -> void
 {
 #if USE_OPENCL
   auto            opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
@@ -142,10 +165,9 @@ OpenCLBackend::allocateMemory(const Device::Pointer & device,
   image_format.image_channel_order = CL_INTENSITY;
   cl_image_desc image_description = { 0 };
   image_description.image_type = CL_MEM_OBJECT_IMAGE1D;
-  image_description.image_width = width;
-  image_description.image_height = height;
-  image_description.image_depth = depth;
-
+  image_description.image_width = region[0];
+  image_description.image_height = region[1];
+  image_description.image_depth = region[2];
   switch (dtype)
   {
     case dType::FLOAT: {
@@ -181,11 +203,11 @@ OpenCLBackend::allocateMemory(const Device::Pointer & device,
       std::cerr << "Warning: Unsupported data type for 'image', default type 'float' will be used." << std::endl;
       break;
   }
-  if (height > 1)
+  if (region[1] > 1)
   {
     image_description.image_type = CL_MEM_OBJECT_IMAGE2D;
   }
-  if (depth > 1)
+  if (region[2] > 1)
   {
     image_description.image_type = CL_MEM_OBJECT_IMAGE3D;
   }
@@ -218,22 +240,47 @@ OpenCLBackend::freeMemory(const Device::Pointer & device, const mType & mtype, v
 }
 
 auto
-OpenCLBackend::writeMemory(const Device::Pointer & device,
-                           void **                 data_ptr,
-                           const size_t &          size,
-                           const void *            host_ptr) const -> void
+OpenCLBackend::writeBuffer(const Device::Pointer &       device,
+                           void **                       data_ptr,
+                           const std::array<size_t, 3> & region,
+                           const std::array<size_t, 3> & origin,
+                           const dType &                 dtype,
+                           const void *                  host_ptr) -> void
 {
 #if USE_OPENCL
-  auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  auto err = clEnqueueWriteBuffer(opencl_device->getCLCommandQueue(),
-                                  *static_cast<cl_mem *>(*data_ptr),
-                                  CL_TRUE,
-                                  0,
-                                  size,
-                                  host_ptr,
-                                  0,
-                                  nullptr,
-                                  nullptr);
+  auto                        opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  cl_int                      err;
+  const std::array<size_t, 3> host_origin = { 0, 0, 0 };
+  const std::array<size_t, 3> region_ocl = { region[0] * toBytes(dtype), region[1], region[2] };
+  if (region[2] > 1 || region[1] > 1)
+  {
+    err = clEnqueueWriteBufferRect(opencl_device->getCLCommandQueue(),
+                                   *static_cast<cl_mem *>(*data_ptr),
+                                   CL_TRUE,
+                                   origin.data(),
+                                   host_origin.data(),
+                                   region_ocl.data(),
+                                   0,
+                                   0,
+                                   0,
+                                   0,
+                                   host_ptr,
+                                   0,
+                                   nullptr,
+                                   nullptr);
+  }
+  else
+  {
+    err = clEnqueueWriteBuffer(opencl_device->getCLCommandQueue(),
+                               *static_cast<cl_mem *>(*data_ptr),
+                               CL_TRUE,
+                               origin[0],
+                               region_ocl[0],
+                               host_ptr,
+                               0,
+                               nullptr,
+                               nullptr);
+  }
   if (err != CL_SUCCESS)
   {
     throw std::runtime_error("Error (ocl): Failed to write memory (buffer) with error code " + std::to_string(err));
@@ -244,21 +291,18 @@ OpenCLBackend::writeMemory(const Device::Pointer & device,
 }
 
 auto
-OpenCLBackend::writeMemory(const Device::Pointer & device,
-                           void **                 data_ptr,
-                           const size_t &          width,
-                           const size_t &          height,
-                           const size_t &          depth,
-                           const size_t &          bytes,
-                           const void *            host_ptr) const -> void
+OpenCLBackend::writeImage(const Device::Pointer &       device,
+                          void **                       data_ptr,
+                          const std::array<size_t, 3> & region,
+                          const std::array<size_t, 3> & origin,
+                          const dType &                 dtype,
+                          const void *                  host_ptr) -> void
 {
 #if USE_OPENCL
-  auto                        opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  const std::array<size_t, 3> origin = { 0, 0, 0 };
-  const std::array<size_t, 3> region = { width, height, depth };
-  const size_t                rowPitch = (height > 1) ? width * bytes : 0;
-  const size_t                slicePitch = (depth > 1) ? rowPitch * height : 0;
-  auto                        err = clEnqueueWriteImage(opencl_device->getCLCommandQueue(),
+  auto         opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  const size_t rowPitch = (region[1] > 1) ? region[0] * toBytes(dtype) : 0;
+  const size_t slicePitch = (region[2] > 1) ? rowPitch * region[1] : 0;
+  auto         err = clEnqueueWriteImage(opencl_device->getCLCommandQueue(),
                                  *static_cast<cl_mem *>(*data_ptr),
                                  CL_TRUE,
                                  origin.data(),
@@ -279,22 +323,69 @@ OpenCLBackend::writeMemory(const Device::Pointer & device,
 }
 
 auto
-OpenCLBackend::readMemory(const Device::Pointer & device,
-                          const void **           data_ptr,
-                          const size_t &          size,
-                          void *                  host_ptr) const -> void
+OpenCLBackend::writeMemory(const Device::Pointer &       device,
+                           void **                       data_ptr,
+                           const std::array<size_t, 3> & region,
+                           const std::array<size_t, 3> & origin,
+                           const dType &                 dtype,
+                           const mType &                 mtype,
+                           const void *                  host_ptr) const -> void
+{
+  switch (mtype)
+  {
+    case mType::BUFFER: {
+      writeBuffer(device, data_ptr, region, origin, dtype, host_ptr);
+      break;
+    }
+    case mType::IMAGE: {
+      writeImage(device, data_ptr, region, origin, dtype, host_ptr);
+      break;
+    }
+  }
+}
+
+auto
+OpenCLBackend::readBuffer(const Device::Pointer &       device,
+                          const void **                 data_ptr,
+                          const std::array<size_t, 3> & region,
+                          const std::array<size_t, 3> & origin,
+                          const dType &                 dtype,
+                          void *                        host_ptr) -> void
 {
 #if USE_OPENCL
-  auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  auto err = clEnqueueReadBuffer(opencl_device->getCLCommandQueue(),
-                                 *static_cast<const cl_mem *>(*data_ptr),
-                                 CL_TRUE,
-                                 0,
-                                 size,
-                                 host_ptr,
-                                 0,
-                                 nullptr,
-                                 nullptr);
+  auto                        opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  cl_int                      err;
+  const std::array<size_t, 3> region_ocl = { region[0] * toBytes(dtype), region[1], region[2] };
+  const std::array<size_t, 3> host_origin = { 0, 0, 0 };
+  if (region[2] > 1 || region[1] > 1)
+  {
+    err = clEnqueueReadBufferRect(opencl_device->getCLCommandQueue(),
+                                  *static_cast<const cl_mem *>(*data_ptr),
+                                  CL_TRUE,
+                                  origin.data(),
+                                  host_origin.data(),
+                                  region_ocl.data(),
+                                  0,
+                                  0,
+                                  0,
+                                  0,
+                                  host_ptr,
+                                  0,
+                                  nullptr,
+                                  nullptr);
+  }
+  else
+  {
+    err = clEnqueueReadBuffer(opencl_device->getCLCommandQueue(),
+                              *static_cast<const cl_mem *>(*data_ptr),
+                              CL_TRUE,
+                              origin[0],
+                              region_ocl[0],
+                              host_ptr,
+                              0,
+                              nullptr,
+                              nullptr);
+  }
   if (err != CL_SUCCESS)
   {
     throw std::runtime_error("Error (ocl): Failed to read memory (buffer) with error code " + std::to_string(err));
@@ -305,21 +396,18 @@ OpenCLBackend::readMemory(const Device::Pointer & device,
 }
 
 auto
-OpenCLBackend::readMemory(const Device::Pointer & device,
-                          const void **           data_ptr,
-                          const size_t &          width,
-                          const size_t &          height,
-                          const size_t &          depth,
-                          const size_t &          bytes,
-                          void *                  host_ptr) const -> void
+OpenCLBackend::readImage(const Device::Pointer &       device,
+                         const void **                 data_ptr,
+                         const std::array<size_t, 3> & region,
+                         const std::array<size_t, 3> & origin,
+                         const dType &                 dtype,
+                         void *                        host_ptr) -> void
 {
 #if USE_OPENCL
-  auto                        opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  const std::array<size_t, 3> origin = { 0, 0, 0 };
-  const std::array<size_t, 3> region = { width, height, depth };
-  const size_t                rowPitch = (height > 1) ? width * bytes : 0;
-  const size_t                slicePitch = (depth > 1) ? rowPitch * height : 0;
-  auto                        err = clEnqueueReadImage(opencl_device->getCLCommandQueue(),
+  auto         opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  const size_t rowPitch = (region[1] > 1) ? region[0] * toBytes(dtype) : 0;
+  const size_t slicePitch = (region[2] > 1) ? rowPitch * region[1] : 0;
+  auto         err = clEnqueueReadImage(opencl_device->getCLCommandQueue(),
                                 *static_cast<const cl_mem *>(*data_ptr),
                                 CL_TRUE,
                                 origin.data(),
@@ -340,22 +428,71 @@ OpenCLBackend::readMemory(const Device::Pointer & device,
 }
 
 auto
-OpenCLBackend::copyMemoryBufferToBuffer(const Device::Pointer & device,
-                                        const void **           src_data_ptr,
-                                        const size_t &          size,
-                                        void **                 dst_data_ptr) const -> void
+OpenCLBackend::readMemory(const Device::Pointer &       device,
+                          const void **                 data_ptr,
+                          const std::array<size_t, 3> & region,
+                          const std::array<size_t, 3> & origin,
+                          const dType &                 dtype,
+                          const mType &                 mtype,
+                          void *                        host_ptr) const -> void
 {
 #if USE_OPENCL
-  auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  auto err = clEnqueueCopyBuffer(opencl_device->getCLCommandQueue(),
-                                 *static_cast<const cl_mem *>(*src_data_ptr),
-                                 *static_cast<cl_mem *>(*dst_data_ptr),
-                                 0,
-                                 0,
-                                 size,
-                                 0,
-                                 nullptr,
-                                 nullptr);
+  switch (mtype)
+  {
+    case mType::BUFFER: {
+      readBuffer(device, data_ptr, region, origin, dtype, host_ptr);
+      break;
+    }
+    case mType::IMAGE: {
+      readImage(device, data_ptr, region, origin, dtype, host_ptr);
+      break;
+    }
+  }
+#else
+  throw std::runtime_error("Error: OpenCL is not enabled");
+#endif
+}
+
+auto
+OpenCLBackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
+                                        const void **                 src_data_ptr,
+                                        const std::array<size_t, 3> & region,
+                                        const std::array<size_t, 3> & origin,
+                                        const size_t &                bytes,
+                                        void **                       dst_data_ptr) const -> void
+{
+#if USE_OPENCL
+  auto                        opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  cl_int                      err;
+  const std::array<size_t, 3> region_ocl = { region[0] * bytes, region[1], region[2] };
+  if (region[2] > 1 || region[1] > 1)
+  {
+    err = clEnqueueCopyBufferRect(opencl_device->getCLCommandQueue(),
+                                  *static_cast<const cl_mem *>(*src_data_ptr),
+                                  *static_cast<cl_mem *>(*dst_data_ptr),
+                                  origin.data(),
+                                  origin.data(),
+                                  region_ocl.data(),
+                                  0,
+                                  0,
+                                  0,
+                                  0,
+                                  0,
+                                  nullptr,
+                                  nullptr);
+  }
+  else
+  {
+    err = clEnqueueCopyBuffer(opencl_device->getCLCommandQueue(),
+                              *static_cast<const cl_mem *>(*src_data_ptr),
+                              *static_cast<cl_mem *>(*dst_data_ptr),
+                              origin[0],
+                              origin[0],
+                              region_ocl[0],
+                              0,
+                              nullptr,
+                              nullptr);
+  }
   if (err != CL_SUCCESS)
   {
     throw std::runtime_error("Error (ocl): Failed to copy memory (buffer->buffer) with error code " +
@@ -367,19 +504,16 @@ OpenCLBackend::copyMemoryBufferToBuffer(const Device::Pointer & device,
 }
 
 auto
-OpenCLBackend::copyMemoryBufferToImage(const Device::Pointer & device,
-                                       const void **           src_data_ptr,
-                                       const size_t &          width,
-                                       const size_t &          height,
-                                       const size_t &          depth,
-                                       const size_t &          bytes,
-                                       void **                 dst_data_ptr) const -> void
+OpenCLBackend::copyMemoryBufferToImage(const Device::Pointer &       device,
+                                       const void **                 src_data_ptr,
+                                       const std::array<size_t, 3> & region,
+                                       const std::array<size_t, 3> & origin,
+                                       const size_t &                bytes,
+                                       void **                       dst_data_ptr) const -> void
 {
 #if USE_OPENCL
-  auto                        opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  const std::array<size_t, 3> origin = { 0, 0, 0 };
-  const std::array<size_t, 3> region = { width, height, depth };
-  auto                        err = clEnqueueCopyBufferToImage(opencl_device->getCLCommandQueue(),
+  auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  auto err = clEnqueueCopyBufferToImage(opencl_device->getCLCommandQueue(),
                                         *static_cast<const cl_mem *>(*src_data_ptr),
                                         *static_cast<cl_mem *>(*dst_data_ptr),
                                         0,
@@ -399,19 +533,16 @@ OpenCLBackend::copyMemoryBufferToImage(const Device::Pointer & device,
 }
 
 auto
-OpenCLBackend::copyMemoryImageToBuffer(const Device::Pointer & device,
-                                       const void **           src_data_ptr,
-                                       const size_t &          width,
-                                       const size_t &          height,
-                                       const size_t &          depth,
-                                       const size_t &          bytes,
-                                       void **                 dst_data_ptr) const -> void
+OpenCLBackend::copyMemoryImageToBuffer(const Device::Pointer &       device,
+                                       const void **                 src_data_ptr,
+                                       const std::array<size_t, 3> & region,
+                                       const std::array<size_t, 3> & origin,
+                                       const size_t &                bytes,
+                                       void **                       dst_data_ptr) const -> void
 {
 #if USE_OPENCL
-  auto                        opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  const std::array<size_t, 3> origin = { 0, 0, 0 };
-  const std::array<size_t, 3> region = { width, height, depth };
-  auto                        err = clEnqueueCopyImageToBuffer(opencl_device->getCLCommandQueue(),
+  auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  auto err = clEnqueueCopyImageToBuffer(opencl_device->getCLCommandQueue(),
                                         *static_cast<const cl_mem *>(*src_data_ptr),
                                         *static_cast<cl_mem *>(*dst_data_ptr),
                                         origin.data(),
@@ -432,19 +563,16 @@ OpenCLBackend::copyMemoryImageToBuffer(const Device::Pointer & device,
 }
 
 auto
-OpenCLBackend::copyMemoryImageToImage(const Device::Pointer & device,
-                                      const void **           src_data_ptr,
-                                      const size_t &          width,
-                                      const size_t &          height,
-                                      const size_t &          depth,
-                                      const size_t &          bytes,
-                                      void **                 dst_data_ptr) const -> void
+OpenCLBackend::copyMemoryImageToImage(const Device::Pointer &       device,
+                                      const void **                 src_data_ptr,
+                                      const std::array<size_t, 3> & region,
+                                      const std::array<size_t, 3> & origin,
+                                      const size_t &                bytes,
+                                      void **                       dst_data_ptr) const -> void
 {
 #if USE_OPENCL
-  auto                        opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  const std::array<size_t, 3> origin = { 0, 0, 0 };
-  const std::array<size_t, 3> region = { width, height, depth };
-  auto                        err = clEnqueueCopyImage(opencl_device->getCLCommandQueue(),
+  auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  auto err = clEnqueueCopyImage(opencl_device->getCLCommandQueue(),
                                 *static_cast<const cl_mem *>(*src_data_ptr),
                                 *static_cast<cl_mem *>(*dst_data_ptr),
                                 origin.data(),
@@ -464,15 +592,43 @@ OpenCLBackend::copyMemoryImageToImage(const Device::Pointer & device,
 }
 
 auto
-OpenCLBackend::setMemory(const Device::Pointer & device,
-                         void **                 data_ptr,
-                         const size_t &          size,
-                         const float &           value,
-                         const dType &           dtype) const -> void
+OpenCLBackend::setMemory(const Device::Pointer &       device,
+                         void **                       data_ptr,
+                         const std::array<size_t, 3> & region,
+                         const std::array<size_t, 3> & origin,
+                         const dType &                 dtype,
+                         const mType &                 mtype,
+                         const float &                 value) const -> void
 {
 #if USE_OPENCL
-  auto   opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  cl_int err;
+  switch (mtype)
+  {
+    case mType::BUFFER: {
+      setBuffer(device, data_ptr, region, origin, dtype, value);
+      break;
+    }
+    case mType::IMAGE: {
+      setImage(device, data_ptr, region, origin, dtype, value);
+      break;
+    }
+  }
+#else
+  throw std::runtime_error("Error: OpenCL is not enabled");
+#endif
+}
+
+auto
+OpenCLBackend::setBuffer(const Device::Pointer &       device,
+                         void **                       data_ptr,
+                         const std::array<size_t, 3> & region,
+                         const std::array<size_t, 3> & origin,
+                         const dType &                 dtype,
+                         const float &                 value) -> void
+{
+#if USE_OPENCL
+  auto         opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  const size_t size = region[0] * region[1] * region[2] * toBytes(dtype);
+  cl_int       err;
   switch (dtype)
   {
     case dType::FLOAT: {
@@ -481,7 +637,7 @@ OpenCLBackend::setMemory(const Device::Pointer & device,
                                 *static_cast<cl_mem *>(*data_ptr),
                                 &cval,
                                 sizeof(cval),
-                                0,
+                                origin[0],
                                 size,
                                 0,
                                 nullptr,
@@ -494,7 +650,7 @@ OpenCLBackend::setMemory(const Device::Pointer & device,
                                 *static_cast<cl_mem *>(*data_ptr),
                                 &cval,
                                 sizeof(cval),
-                                0,
+                                origin[0],
                                 size,
                                 0,
                                 nullptr,
@@ -507,7 +663,7 @@ OpenCLBackend::setMemory(const Device::Pointer & device,
                                 *static_cast<cl_mem *>(*data_ptr),
                                 &cval,
                                 sizeof(cval),
-                                0,
+                                origin[0],
                                 size,
                                 0,
                                 nullptr,
@@ -520,7 +676,7 @@ OpenCLBackend::setMemory(const Device::Pointer & device,
                                 *static_cast<cl_mem *>(*data_ptr),
                                 &cval,
                                 sizeof(cval),
-                                0,
+                                origin[0],
                                 size,
                                 0,
                                 nullptr,
@@ -533,7 +689,7 @@ OpenCLBackend::setMemory(const Device::Pointer & device,
                                 *static_cast<cl_mem *>(*data_ptr),
                                 &cval,
                                 sizeof(cval),
-                                0,
+                                origin[0],
                                 size,
                                 0,
                                 nullptr,
@@ -546,7 +702,7 @@ OpenCLBackend::setMemory(const Device::Pointer & device,
                                 *static_cast<cl_mem *>(*data_ptr),
                                 &cval,
                                 sizeof(cval),
-                                0,
+                                origin[0],
                                 size,
                                 0,
                                 nullptr,
@@ -559,7 +715,7 @@ OpenCLBackend::setMemory(const Device::Pointer & device,
                                 *static_cast<cl_mem *>(*data_ptr),
                                 &cval,
                                 sizeof(cval),
-                                0,
+                                origin[0],
                                 size,
                                 0,
                                 nullptr,
@@ -572,7 +728,7 @@ OpenCLBackend::setMemory(const Device::Pointer & device,
                                 *static_cast<cl_mem *>(*data_ptr),
                                 &cval,
                                 sizeof(cval),
-                                0,
+                                origin[0],
                                 size,
                                 0,
                                 nullptr,
@@ -585,7 +741,7 @@ OpenCLBackend::setMemory(const Device::Pointer & device,
                                 *static_cast<cl_mem *>(*data_ptr),
                                 &cval,
                                 sizeof(cval),
-                                0,
+                                origin[0],
                                 size,
                                 0,
                                 nullptr,
@@ -606,19 +762,16 @@ OpenCLBackend::setMemory(const Device::Pointer & device,
 }
 
 auto
-OpenCLBackend::setMemory(const Device::Pointer & device,
-                         void **                 data_ptr,
-                         const size_t &          width,
-                         const size_t &          height,
-                         const size_t &          depth,
-                         const float &           value,
-                         const dType &           dtype) const -> void
+OpenCLBackend::setImage(const Device::Pointer &       device,
+                        void **                       data_ptr,
+                        const std::array<size_t, 3> & region,
+                        const std::array<size_t, 3> & origin,
+                        const dType &                 dtype,
+                        const float &                 value) -> void
 {
 #if USE_OPENCL
-  auto                  opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  std::array<size_t, 3> origin{ 0, 0, 0 };
-  std::array<size_t, 3> region{ width, height, depth };
-  cl_int                err;
+  auto   opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  cl_int err;
   switch (dtype)
   {
     case dType::FLOAT: {

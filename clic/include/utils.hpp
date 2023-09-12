@@ -225,7 +225,7 @@ loadFile(const std::string & file_path) -> std::string
 }
 
 inline auto
-saveFile(std::string & file_path, std::string & source) -> void
+saveFile(const std::string & file_path, const std::string & source) -> void
 {
   std::ofstream ofs(file_path);
   if (!ofs.is_open())
@@ -237,7 +237,7 @@ saveFile(std::string & file_path, std::string & source) -> void
 }
 
 inline auto
-correct_range(int * start, int * stop, int * step, size_t size) -> void
+correct_range(int * start, int * stop, int * step, int size) -> void
 {
   // # set in case not set (passed None)
   if (step == nullptr)

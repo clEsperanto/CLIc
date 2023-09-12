@@ -1,4 +1,9 @@
 
+add_executable(array_test array_test.cpp)
+add_dependencies(array_test CLIc)
+target_link_libraries(array_test PRIVATE CLIc::CLIc)
+set_target_properties(array_test PROPERTIES FOLDER "Tests")
+
 add_executable(absolute_test absolute_test.cpp)
 add_dependencies(absolute_test CLIc)
 target_link_libraries(absolute_test PRIVATE CLIc::CLIc)
@@ -503,7 +508,7 @@ target_link_libraries(voronoi_otsu_labeling_test PRIVATE CLIc::CLIc)
 set_target_properties(voronoi_otsu_labeling_test PROPERTIES FOLDER "Tests")
 
 
-# add_test(NAME custom_kernel_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND custom_kernel_test ${OCL_KERNELS_DIR}/kernels/add_image_and_scalar.cl)
+add_test(NAME array_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND array_test)
 add_test(NAME absolute_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND absolute_test)
 add_test(NAME add_image_and_scalar_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_and_scalar_test)
 add_test(NAME add_image_weighted_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND add_image_weighted_test)
@@ -589,7 +594,8 @@ add_test(NAME threshold_otsu_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} 
 add_test(NAME voronoi_otsu_labeling_test WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND voronoi_otsu_labeling_test)
 
 
-set_tests_properties(absolute_test 
+set_tests_properties(array_test
+    absolute_test 
     add_image_and_scalar_test
     add_image_weighted_test
     binary_and_test

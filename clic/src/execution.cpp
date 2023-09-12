@@ -9,24 +9,35 @@ namespace cle
 {
 
 auto
-srcOpenclToCuda(std::string opencl_code) -> std::string
+srcOpenclToCuda(const std::string & opencl_code) -> std::string
 {
-  std::regex pattern;
-  pattern = R"(\((int2|int4|float4|float2)\)\s*\{\s*([^}]*)\s*\}\s*;)";
-  opencl_code = std::regex_replace(opencl_code, pattern, "make_$1($2);");
-  opencl_code = std::regex_replace(opencl_code, std::regex(R"(__constant\s+sampler_t)"), "__device__ int");
-  opencl_code = std::regex_replace(opencl_code, std::regex(R"(__kernel\s+)"), "extern \"C\" __global__ ");
-  opencl_code = std::regex_replace(opencl_code, std::regex("inline"), "__device__ inline");
-  opencl_code = std::regex_replace(opencl_code, std::regex("#pragma"), "// #pragma");
-  opencl_code = std::regex_replace(opencl_code, std::regex(R"(\nkernel\s+void)"), "\nextern \"C\" __global__ void");
-  opencl_code = std::regex_replace(opencl_code, std::regex(R"(__kernel\s+)"), "extern \"C\" __global__ ");
-  opencl_code =
-    std::regex_replace(opencl_code, std::regex("get_global_id\\(0\\)"), "blockDim.x * blockIdx.x + threadIdx.x");
-  opencl_code =
-    std::regex_replace(opencl_code, std::regex("get_global_id\\(1\\)"), "blockDim.y * blockIdx.y + threadIdx.y");
-  opencl_code =
-    std::regex_replace(opencl_code, std::regex("get_global_id\\(2\\)"), "blockDim.z * blockIdx.z + threadIdx.z");
-  return opencl_code;
+  std::string cuda_code = opencl_code; // Start with a copy of the input code
+
+  // Precompile regular expressions
+  static const std::regex int2_float4_regex(R"(\((int2|int4|float4|float2)\)\s*\{\s*([^}]*)\s*\}\s*;)");
+  static const std::regex constant_sampler_regex(R"(__constant\s+sampler_t)");
+  static const std::regex kernel_inline_regex(R"(__kernel\s+)");
+  static const std::regex inline_regex(R"(inline)");
+  static const std::regex pragma_regex(R"(#pragma)");
+  static const std::regex kernel_void_regex(R"(\nkernel\s+void)");
+  static const std::regex kernel_regex(R"(__kernel\s+)");
+  static const std::regex global_id0_regex(R"(get_global_id\(0\))");
+  static const std::regex global_id1_regex(R"(get_global_id\(1\))");
+  static const std::regex global_id2_regex(R"(get_global_id\(2\))");
+
+  // Perform replacements in a single pass
+  cuda_code = std::regex_replace(cuda_code, int2_float4_regex, "make_$1($2);");
+  cuda_code = std::regex_replace(cuda_code, constant_sampler_regex, "__device__ int");
+  cuda_code = std::regex_replace(cuda_code, kernel_inline_regex, "extern \"C\" __global__ ");
+  cuda_code = std::regex_replace(cuda_code, inline_regex, "__device__ inline");
+  cuda_code = std::regex_replace(cuda_code, pragma_regex, "// #pragma");
+  cuda_code = std::regex_replace(cuda_code, kernel_void_regex, "\nextern \"C\" __global__ void");
+  cuda_code = std::regex_replace(cuda_code, kernel_regex, "extern \"C\" __global__ ");
+  cuda_code = std::regex_replace(cuda_code, global_id0_regex, "blockDim.x * blockIdx.x + threadIdx.x");
+  cuda_code = std::regex_replace(cuda_code, global_id1_regex, "blockDim.y * blockIdx.y + threadIdx.y");
+  cuda_code = std::regex_replace(cuda_code, global_id2_regex, "blockDim.z * blockIdx.z + threadIdx.z");
+
+  return cuda_code;
 }
 
 auto

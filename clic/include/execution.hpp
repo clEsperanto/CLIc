@@ -23,7 +23,7 @@ replaceWord(std::string & sentence, const std::string_view & wordToReplace, cons
   -> void;
 
 auto
-srcOpenclToCuda(std::string opencl_code) -> std::string;
+srcOpenclToCuda(const std::string & opencl_code) -> std::string;
 
 auto
 cudaDefines(const ParameterList & parameter_list, const ConstantList & constant_list) -> std::string;
