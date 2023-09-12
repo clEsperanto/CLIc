@@ -9,8 +9,6 @@ set(BUILD_OPENCL_BACKEND ON CACHE BOOL "Build OpenCL backend")
 include(${PROJECT_SOURCE_DIR}/cmake/CMakeSetEnv.cmake)
 # find library dependencies
 include(${PROJECT_SOURCE_DIR}/cmake/CMakeDependencies.cmake)
-# set documentation
-include(${PROJECT_SOURCE_DIR}/cmake/CMakeDoxygen.cmake)
 # managed third party libraries
 add_subdirectory(thirdparty)
 
@@ -41,7 +39,6 @@ target_include_directories(${LIBRARY_NAME} PUBLIC
 set_target_properties(${LIBRARY_NAME} PROPERTIES LINKER_LANGUAGE CXX)        # force C++ linker
 set_target_properties(${LIBRARY_NAME} PROPERTIES VERSION ${PROJECT_VERSION}) # set version
 add_dependencies(${LIBRARY_NAME} generate_kernels)
-add_dependencies(${LIBRARY_NAME} documentation)
 
 # link GPU framework to the target
 if (OpenCL_FOUND)
@@ -74,6 +71,11 @@ if(BUILD_TESTING)
     include(CTest)
     add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
 endif(BUILD_TESTING)
+
+# Build documentation
+if (BUILD_DOCUMENTATION)
+    include(${PROJECT_SOURCE_DIR}/cmake/CMakeDoxygen.cmake)
+endif()
 
 
 
