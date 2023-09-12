@@ -743,7 +743,6 @@ CUDABackend::executeKernel(const Device::Pointer &       device,
                            const std::vector<size_t> &   sizes) const -> void
 {
 #if USE_CUDA
-  // TODO
   auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);
   auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
   if (err != CUDA_SUCCESS)
@@ -768,7 +767,7 @@ CUDABackend::executeKernel(const Device::Pointer &       device,
   int                   dim = 0;
   for (size_t i = 0; i < global_size.size(); ++i)
   {
-    if (global_size[i] != 1)
+    if (global_size[i] > 1)
     {
       dim++;
       block_size[i] = 1;
@@ -780,19 +779,22 @@ CUDABackend::executeKernel(const Device::Pointer &       device,
     case 1:
       // Warning: Ensure that the third dimension of the block size does not exceed 64.
       std::transform(block_size.begin(), block_size.end(), block_size.begin(), [](size_t value) {
-        return (value == 0) ? (value + 1) : (value * 512);
+        return (value == 0) ? (1) : (value * 512);
       });
       break;
     case 2:
       std::transform(block_size.begin(), block_size.end(), block_size.begin(), [](size_t value) {
-        return (value == 0) ? (value + 1) : (value * 16);
+        return (value == 0) ? (1) : (value * 16);
       });
       break;
-    default:
+    case 3:
       std::transform(
         block_size.begin(), block_size.end(), block_size.begin(), [](size_t value) { return (value * 8); });
       break;
+    default:
+      block_size = { 1, 1, 1 };
   }
+
 
   std::array<size_t, 3> grid_size = { (global_size.data()[0] + block_size.data()[0] - 1) / block_size.data()[0],
                                       (global_size.data()[1] + block_size.data()[1] - 1) / block_size.data()[1],
