@@ -225,7 +225,7 @@ loadFile(const std::string & file_path) -> std::string
 }
 
 inline auto
-saveFile(std::string & file_path, std::string & source) -> void
+saveFile(const std::string & file_path, const std::string & source) -> void
 {
   std::ofstream ofs(file_path);
   if (!ofs.is_open())
