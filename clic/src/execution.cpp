@@ -5,46 +5,73 @@
 #include <regex>
 #include <string_view>
 
+#include <chrono>
 namespace cle
 {
 
 auto
-srcOpenclToCuda(const std::string & opencl_code) -> std::string
+replace_code(std::string & code, const std::string & from, const std::string & to) -> void
 {
-  std::string cuda_code = opencl_code; // Start with a copy of the input code
-
-  // Precompile regular expressions
-  static const std::regex int2_float4_regex(R"(\((int2|int4|float4|float2)\)\s*\{\s*([^}]*)\s*\}\s*;)");
-  static const std::regex constant_sampler_regex(R"(__constant\s+sampler_t)");
-  static const std::regex kernel_inline_regex(R"(__kernel\s+)");
-  static const std::regex inline_regex(R"(inline)");
-  static const std::regex pragma_regex(R"(#pragma)");
-  static const std::regex kernel_void_regex(R"(\nkernel\s+void)");
-  static const std::regex kernel_regex(R"(__kernel\s+)");
-  static const std::regex global_id0_regex(R"(get_global_id\(0\))");
-  static const std::regex global_id1_regex(R"(get_global_id\(1\))");
-  static const std::regex global_id2_regex(R"(get_global_id\(2\))");
-
-  // Perform replacements in a single pass
-  cuda_code = std::regex_replace(cuda_code, int2_float4_regex, "make_$1($2);");
-  cuda_code = std::regex_replace(cuda_code, constant_sampler_regex, "__device__ int");
-  cuda_code = std::regex_replace(cuda_code, kernel_inline_regex, "extern \"C\" __global__ ");
-  cuda_code = std::regex_replace(cuda_code, inline_regex, "__device__ inline");
-  cuda_code = std::regex_replace(cuda_code, pragma_regex, "// #pragma");
-  cuda_code = std::regex_replace(cuda_code, kernel_void_regex, "\nextern \"C\" __global__ void");
-  cuda_code = std::regex_replace(cuda_code, kernel_regex, "extern \"C\" __global__ ");
-  cuda_code = std::regex_replace(cuda_code, global_id0_regex, "blockDim.x * blockIdx.x + threadIdx.x");
-  cuda_code = std::regex_replace(cuda_code, global_id1_regex, "blockDim.y * blockIdx.y + threadIdx.y");
-  cuda_code = std::regex_replace(cuda_code, global_id2_regex, "blockDim.z * blockIdx.z + threadIdx.z");
-
-  return cuda_code;
+  std::string::size_type pos = 0;
+  while ((pos = code.find(from, pos)) != std::string::npos)
+  {
+    code.replace(pos, from.length(), to);
+    pos += to.length();
+  }
 }
+
+auto
+srcOpenclToCuda(std::string & code) -> void
+{
+  replace_code(code, "get_global_id(2)", "blockDim.z * blockIdx.z + threadIdx.z");
+  replace_code(code, "get_global_id(1)", "blockDim.y * blockIdx.y + threadIdx.y");
+  replace_code(code, "get_global_id(0)", "blockDim.x * blockIdx.x + threadIdx.x");
+  replace_code(code, "#pragma", "// #pragma");
+  replace_code(code, "inline", "__device__ inline");
+  replace_code(code, "__kernel void", "extern \"C\" __global__ void");
+  replace_code(code, "__constant sampler_t", "__device__ int");
+  replace_code(code, "float4", "make_float4");
+  replace_code(code, "float2", "make_float2");
+  replace_code(code, "int4", "make_int4");
+  replace_code(code, "int2", "make_int2");
+}
+
+// REGEX based implementation - clean and scalable but slow
+// auto
+// srcOpenclToCuda_old(std::string & code) -> void
+// {
+//   auto start_time = std::chrono::high_resolution_clock::now();
+//   // Precompile regular expressions
+//   static const std::regex int2_float4_regex(R"(\((int2|int4|float4|float2)\)\s*\{\s*([^}]*)\s*\}\s*;)");
+//   static const std::regex constant_sampler_regex(R"(__constant\s+sampler_t)");
+//   static const std::regex kernel_inline_regex(R"(__kernel\s+)");
+//   static const std::regex inline_regex(R"(inline)");
+//   static const std::regex pragma_regex(R"(#pragma)");
+//   static const std::regex kernel_void_regex(R"(\nkernel\s+void)");
+//   static const std::regex kernel_regex(R"(__kernel\s+)");
+//   static const std::regex global_id0_regex(R"(get_global_id\(0\))");
+//   static const std::regex global_id1_regex(R"(get_global_id\(1\))");
+//   static const std::regex global_id2_regex(R"(get_global_id\(2\))");
+//   // Perform replacements in a single pass
+//   code = std::regex_replace(code, int2_float4_regex, "make_$1($2);");
+//   code = std::regex_replace(code, constant_sampler_regex, "__device__ int");
+//   code = std::regex_replace(code, kernel_inline_regex, "extern \"C\" __global__ ");
+//   code = std::regex_replace(code, inline_regex, "__device__ inline");
+//   code = std::regex_replace(code, pragma_regex, "// #pragma");
+//   code = std::regex_replace(code, kernel_void_regex, "\nextern \"C\" __global__ void");
+//   code = std::regex_replace(code, kernel_regex, "extern \"C\" __global__ ");
+//   code = std::regex_replace(code, global_id0_regex, "blockDim.x * blockIdx.x + threadIdx.x");
+//   code = std::regex_replace(code, global_id1_regex, "blockDim.y * blockIdx.y + threadIdx.y");
+//   code = std::regex_replace(code, global_id2_regex, "blockDim.z * blockIdx.z + threadIdx.z");
+//   auto end_time = std::chrono::high_resolution_clock::now();
+//   auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+//   std::cout << "\t\tocl2cu(): " << duration.count() << " microseconds" << std::endl;
+// }
 
 auto
 cudaDefines(const ParameterList & parameter_list, const ConstantList & constant_list) -> std::string
 {
   std::ostringstream defines;
-
   if (!constant_list.empty())
   {
     for (const auto & [key, value] : constant_list)
@@ -53,7 +80,6 @@ cudaDefines(const ParameterList & parameter_list, const ConstantList & constant_
     }
     defines << "\n";
   }
-
   std::string size_params = "";
   for (const auto & param : parameter_list)
   {
@@ -90,19 +116,16 @@ cudaDefines(const ParameterList & parameter_list, const ConstantList & constant_
         defines << "\n#define POS_" << param.first << "_INSTANCE(pos0,pos1,pos2,pos3) make_" << pos_type << "" << pos;
         break;
     }
-
     defines << "\n";
     defines << "\n#define CONVERT_" << param.first << "_PIXEL_TYPE clij_convert_" << arr->dtype() << "_sat";
     defines << "\n#define IMAGE_" << param.first << "_PIXEL_TYPE " << arr->dtype() << "";
     defines << "\n#define POS_" << param.first << "_TYPE " << pos_type;
     defines << "\n";
-
     defines << "\n";
     defines << "\n#define IMAGE_SIZE_" << param.first << "_WIDTH " << std::to_string(arr->width());
     defines << "\n#define IMAGE_SIZE_" << param.first << "_HEIGHT " << std::to_string(arr->height());
     defines << "\n#define IMAGE_SIZE_" << param.first << "_DEPTH " << std::to_string(arr->depth());
     defines << "\n";
-
     defines << "\n";
     defines << "\n#define IMAGE_" << param.first << "_TYPE " << size_params << "" << arr->dtype() << "*";
     defines << "\n#define READ_" << param.first << "_IMAGE(a,b,c) read_buffer" << ndim << "d" << arr->shortType()
@@ -110,11 +133,9 @@ cudaDefines(const ParameterList & parameter_list, const ConstantList & constant_
     defines << "\n#define WRITE_" << param.first << "_IMAGE(a,b,c) write_buffer" << ndim << "d" << arr->shortType()
             << "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
     defines << "\n";
-
     size_params = "";
   }
   defines << "\n";
-
   return defines.str();
 }
 
@@ -122,7 +143,6 @@ auto
 oclDefines(const ParameterList & parameter_list, const ConstantList & constant_list) -> std::string
 {
   std::ostringstream defines;
-
   if (!constant_list.empty())
   {
     for (const auto & [key, value] : constant_list)
@@ -131,12 +151,10 @@ oclDefines(const ParameterList & parameter_list, const ConstantList & constant_l
     }
     defines << "\n";
   }
-
   defines << "\n#define GET_IMAGE_WIDTH(image_key) IMAGE_SIZE_ ## image_key ## _WIDTH";
   defines << "\n#define GET_IMAGE_HEIGHT(image_key) IMAGE_SIZE_ ## image_key ## _HEIGHT";
   defines << "\n#define GET_IMAGE_DEPTH(image_key) IMAGE_SIZE_ ## image_key ## _DEPTH";
   defines << "\n";
-
   for (const auto & param : parameter_list)
   {
     if (std::holds_alternative<const float>(param.second) || std::holds_alternative<const int>(param.second))
@@ -144,10 +162,9 @@ oclDefines(const ParameterList & parameter_list, const ConstantList & constant_l
       continue;
     }
     const auto & arr = std::get<Array::Pointer>(param.second);
-
-    std::string pos_type;
-    std::string pos;
-    std::string ndim;
+    std::string  pos_type;
+    std::string  pos;
+    std::string  ndim;
     switch (arr->dim())
     {
       case 1:
@@ -171,14 +188,12 @@ oclDefines(const ParameterList & parameter_list, const ConstantList & constant_l
         pos = "(pos0, pos1, pos2, 0)";
         break;
     }
-
     defines << "\n";
     defines << "\n#define CONVERT_" << param.first << "_PIXEL_TYPE clij_convert_" << arr->dtype() << "_sat";
     defines << "\n#define IMAGE_" << param.first << "_PIXEL_TYPE " << arr->dtype() << "";
     defines << "\n#define POS_" << param.first << "_TYPE " << pos_type;
     defines << "\n#define POS_" << param.first << "_INSTANCE(pos0,pos1,pos2,pos3) (" << pos_type << ")" << pos;
     defines << "\n";
-
     if (arr->mtype() == mType::BUFFER)
     {
       defines << "\n#define IMAGE_" << param.first << "_TYPE __global " << arr->dtype() << "*";
@@ -216,7 +231,6 @@ oclDefines(const ParameterList & parameter_list, const ConstantList & constant_l
       defines << "\n#define READ_" << param.first << "_IMAGE(a,b,c) read_image" << prefix << "(a,b,c)";
       defines << "\n#define WRITE_" << param.first << "_IMAGE(a,b,c) write_image" << prefix << "(a,b,c)";
     }
-
     defines << "\n";
     defines << "\n#define IMAGE_SIZE_" << param.first << "_WIDTH " << std::to_string(arr->width());
     defines << "\n#define IMAGE_SIZE_" << param.first << "_HEIGHT " << std::to_string(arr->height());
@@ -224,7 +238,6 @@ oclDefines(const ParameterList & parameter_list, const ConstantList & constant_l
     defines << "\n";
   }
   defines << "\n";
-
   return defines.str();
 }
 
@@ -235,6 +248,8 @@ execute(const Device::Pointer & device,
         const RangeArray &      global_range,
         const ConstantList &    constants) -> void
 {
+  // auto start_time = std::chrono::high_resolution_clock::now();
+
   // build program source
   std::string program_source;
   std::string preamble = cle::BackendManager::getInstance().getBackend().getPreamble();
@@ -245,7 +260,7 @@ execute(const Device::Pointer & device,
   {
     case Device::Type::CUDA:
       defines = cle::cudaDefines(parameters, constants);
-      kernel_source = cle::srcOpenclToCuda(kernel_source);
+      cle::srcOpenclToCuda(kernel_source);
       break;
     case Device::Type::OPENCL:
       defines = cle::oclDefines(parameters, constants);
@@ -301,6 +316,10 @@ execute(const Device::Pointer & device,
   {
     throw std::runtime_error("Error: Failed to execute the kernel. \n\t > " + std::string(e.what()));
   }
+
+  // auto end_time = std::chrono::high_resolution_clock::now();
+  // auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+  // std::cout << "\tExecution(): " << duration.count() << " microseconds" << std::endl;
 }
 
 } // namespace cle
