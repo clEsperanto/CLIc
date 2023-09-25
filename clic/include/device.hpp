@@ -162,6 +162,8 @@ public:
   [[nodiscard]] auto
   getInfo() const -> std::string override;
   [[nodiscard]] auto
+  getArch() const -> std::string;
+  [[nodiscard]] auto
   getCache() -> std::map<std::string, CUmodule> &;
 
 private:
