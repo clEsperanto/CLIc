@@ -831,11 +831,14 @@ OpenCLBackend::loadProgramFromCache(const Device::Pointer & device, const std::s
   -> void
 {
 #if USE_OPENCL
-  auto opencl_device = std::dynamic_pointer_cast<OpenCLDevice>(device);
-  auto ite = opencl_device->getCache().find(hash);
-  if (ite != opencl_device->getCache().end())
+  if (auto opencl_device = std::dynamic_pointer_cast<OpenCLDevice>(device))
   {
-    *static_cast<cl_program *>(program) = ite->second;
+    const auto & cache = opencl_device->getCache();
+    auto         ite = cache.find(hash);
+    if (ite != cache.end())
+    {
+      *static_cast<cl_program *>(program) = ite->second;
+    }
   }
 #else
   throw std::runtime_error("Error: OpenCL is not enabled");
@@ -847,8 +850,10 @@ OpenCLBackend::saveProgramToCache(const Device::Pointer & device, const std::str
   -> void
 {
 #if USE_OPENCL
-  auto opencl_device = std::dynamic_pointer_cast<OpenCLDevice>(device);
-  opencl_device->getCache().emplace_hint(opencl_device->getCache().end(), hash, *static_cast<cl_program *>(program));
+  if (auto opencl_device = std::dynamic_pointer_cast<OpenCLDevice>(device))
+  {
+    opencl_device->getCache().emplace(hash, *static_cast<cl_program *>(program));
+  }
 #else
   throw std::runtime_error("Error: OpenCL is not enabled");
 #endif

@@ -655,11 +655,14 @@ CUDABackend::loadProgramFromCache(const Device::Pointer & device, const std::str
   -> void
 {
 #if USE_CUDA
-  auto cuda_device = std::dynamic_pointer_cast<CUDADevice>(device);
-  auto ite = cuda_device->getCache().find(hash);
-  if (ite != cuda_device->getCache().end())
+  if (auto cuda_device = std::dynamic_pointer_cast<CUDADevice>(device))
   {
-    *static_cast<CUmodule *>(program) = ite->second;
+    const auto & cache = cuda_device->getCache();
+    auto         ite = cache.find(hash);
+    if (ite != cache.end())
+    {
+      *static_cast<CUmodule *>(program) = ite->second;
+    }
   }
 #else
   throw std::runtime_error("Error: CUDA is not enabled");
@@ -670,8 +673,10 @@ auto
 CUDABackend::saveProgramToCache(const Device::Pointer & device, const std::string & hash, void * program) const -> void
 {
 #if USE_CUDA
-  auto cuda_device = std::dynamic_pointer_cast<CUDADevice>(device);
-  cuda_device->getCache().emplace_hint(cuda_device->getCache().end(), hash, *reinterpret_cast<CUmodule *>(program));
+  if (auto cuda_device = std::dynamic_pointer_cast<CUDADevice>(device))
+  {
+    cuda_device->getCache().emplace(hash, *reinterpret_cast<CUmodule *>(program));
+  }
 #else
   throw std::runtime_error("Error: CUDA is not enabled");
 #endif
