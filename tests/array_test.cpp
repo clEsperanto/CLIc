@@ -18,7 +18,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
     gpu_input->write(input.data());
     auto gpu_copy = cle::Array::create(gpu_input);
     gpu_input->copy(gpu_copy);
-    std::vector<type> input_test(gpu_copy->nbElements());
+    std::vector<type> input_test(gpu_copy->size());
     gpu_copy->read(input_test.data());
     std::equal(input_test.begin(), input_test.end(), input.begin()) ? std::cout << "all good\n"
                                                                     : std::cout << "not good\n";
@@ -31,7 +31,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
     gpu_input->write(input.data());
     auto gpu_copy = cle::Array::create(gpu_input);
     gpu_input->copy(gpu_copy);
-    std::vector<type> input_test(gpu_copy->nbElements());
+    std::vector<type> input_test(gpu_copy->size());
     gpu_copy->read(input_test.data());
     std::equal(input_test.begin(), input_test.end(), input.begin()) ? std::cout << "all good\n"
                                                                     : std::cout << "not good\n";
@@ -44,7 +44,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
     gpu_input->write(input.data());
     auto gpu_copy = cle::Array::create(gpu_input);
     gpu_input->copy(gpu_copy);
-    std::vector<type> input_test(gpu_copy->nbElements());
+    std::vector<type> input_test(gpu_copy->size());
     gpu_copy->read(input_test.data());
     std::equal(input_test.begin(), input_test.end(), input.begin()) ? std::cout << "all good\n"
                                                                     : std::cout << "not good\n";

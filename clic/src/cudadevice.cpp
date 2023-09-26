@@ -129,6 +129,15 @@ CUDADevice::getName() const -> std::string
 }
 
 auto
+CUDADevice::getArch() const -> std::string
+{
+  int major = 0, minor = 0;
+  cuDeviceGetAttribute(&major, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, this->getCUDADevice());
+  cuDeviceGetAttribute(&minor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, this->getCUDADevice());
+  return std::to_string(major) + std::to_string(minor);
+}
+
+auto
 CUDADevice::getInfo() const -> std::string
 {
   int    numMultiprocessors;

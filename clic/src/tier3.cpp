@@ -56,7 +56,7 @@ exclude_labels_func(const Device::Pointer & device,
   {
     throw std::runtime_error("exclude_labels: label list must be of type uint32");
   }
-  std::vector<unsigned int> labels_list(list->nbElements());
+  std::vector<unsigned int> labels_list(list->size());
   list->read(labels_list.data());
   labels_list.front() = 0;
   unsigned int count = 1;
@@ -68,7 +68,7 @@ exclude_labels_func(const Device::Pointer & device,
       count++;
     }
   }
-  auto index_list = Array::create(list->nbElements(), 1, 1, dType::UINT32, mType::BUFFER, src->device());
+  auto index_list = Array::create(list->size(), 1, 1, dType::UINT32, mType::BUFFER, src->device());
   index_list->write(labels_list.data());
   tier1::replace_intensities_func(device, src, index_list, dst);
   return dst;
@@ -106,7 +106,7 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
     const RangeArray range = { src->width(), src->height(), 1 };
     execute(device, kernel, params, range);
   }
-  std::vector<int> label_map_vector(label_map->nbElements());
+  std::vector<int> label_map_vector(label_map->size());
   label_map->read(label_map_vector.data());
   int count = 1;
   for (auto & i : label_map_vector)
@@ -194,7 +194,7 @@ auto
 mean_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float
 {
   auto temp = tier2::sum_of_all_pixels_func(device, src);
-  return temp / src->nbElements();
+  return temp / src->size();
 }
 
 // auto mean_of_n_most_touching_neighbors_map_func

@@ -41,57 +41,57 @@ enum class dType
 };
 
 inline auto
-operator<<(std::ostream & out, const dType & dtype) -> std::ostream &
+toString(const dType & dtype) -> std::string
 {
   switch (dtype)
   {
     case dType::FLOAT:
-      out << "float";
-      break;
+      return "float";
     case dType::INT32:
-      out << "int";
-      break;
+      return "int";
     case dType::UINT32:
-      out << "uint";
-      break;
+      return "uint";
     case dType::INT8:
-      out << "char";
-      break;
+      return "char";
     case dType::UINT8:
-      out << "uchar";
-      break;
+      return "uchar";
     case dType::INT16:
-      out << "short";
-      break;
+      return "short";
     case dType::UINT16:
-      out << "ushort";
-      break;
+      return "ushort";
     case dType::INT64:
-      out << "long";
-      break;
+      return "long";
     case dType::UINT64:
-      out << "ulong";
-      break;
+      return "ulong";
     default:
-      out << "unknown";
-      break;
+      return "unknown";
   }
-  return out;
+}
+
+inline auto
+operator<<(std::ostream & out, const dType & dtype) -> std::ostream &
+{
+  return out << toString(dtype);
+}
+
+inline auto
+toString(const mType & mtype) -> std::string
+{
+  switch (mtype)
+  {
+    case mType::BUFFER:
+      return "Buffer";
+    case mType::IMAGE:
+      return "Image";
+    default:
+      return "unknown";
+  }
 }
 
 inline auto
 operator<<(std::ostream & out, const mType & mtype) -> std::ostream &
 {
-  switch (mtype)
-  {
-    case mType::BUFFER:
-      out << "Buffer";
-      break;
-    case mType::IMAGE:
-      out << "Image";
-      break;
-  }
-  return out;
+  return out << toString(mtype);
 }
 
 template <typename T>

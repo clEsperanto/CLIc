@@ -1913,8 +1913,8 @@ write_values_to_positions_func(const Device::Pointer & device, const Array::Poin
     // flatten the coords to get the max coordinate value in x,y,z
     // as well as the number of rows (2->1D, 3->2D, 4->3D)
     auto             temp = maximum_x_projection_func(device, list, nullptr);
-    auto             nb_max_position = temp->nbElements() - 1;
-    std::vector<int> max_position(temp->nbElements());
+    auto             nb_max_position = temp->size() - 1;
+    std::vector<int> max_position(temp->size());
     temp->read(max_position.data());
     size_t max_pos_x = max_position[0];
     size_t max_pos_y = (nb_max_position > 2) ? max_position[1] : 1;

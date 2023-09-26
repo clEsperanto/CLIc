@@ -1,6 +1,7 @@
 #include "backend.hpp"
 #include "cle_preamble_cu.h"
 #include <array>
+#include <chrono>
 
 namespace cle
 {
@@ -654,14 +655,15 @@ CUDABackend::loadProgramFromCache(const Device::Pointer & device, const std::str
   -> void
 {
 #if USE_CUDA
-  auto     cuda_device = std::dynamic_pointer_cast<CUDADevice>(device);
-  CUmodule module = nullptr;
-  auto     ite = cuda_device->getCache().find(hash);
-  if (ite != cuda_device->getCache().end())
+  if (auto cuda_device = std::dynamic_pointer_cast<CUDADevice>(device))
   {
-    module = ite->second;
+    const auto & cache = cuda_device->getCache();
+    auto         ite = cache.find(hash);
+    if (ite != cache.end())
+    {
+      *static_cast<CUmodule *>(program) = ite->second;
+    }
   }
-  program = module;
 #else
   throw std::runtime_error("Error: CUDA is not enabled");
 #endif
@@ -671,12 +673,15 @@ auto
 CUDABackend::saveProgramToCache(const Device::Pointer & device, const std::string & hash, void * program) const -> void
 {
 #if USE_CUDA
-  auto cuda_device = std::dynamic_pointer_cast<CUDADevice>(device);
-  cuda_device->getCache().emplace_hint(cuda_device->getCache().end(), hash, reinterpret_cast<CUmodule>(program));
+  if (auto cuda_device = std::dynamic_pointer_cast<CUDADevice>(device))
+  {
+    cuda_device->getCache().emplace(hash, *reinterpret_cast<CUmodule *>(program));
+  }
 #else
   throw std::runtime_error("Error: CUDA is not enabled");
 #endif
 }
+
 
 auto
 CUDABackend::buildKernel(const Device::Pointer & device,
@@ -692,42 +697,59 @@ CUDABackend::buildKernel(const Device::Pointer & device,
     throw std::runtime_error("Error (cuda): Failed to set CUDA device before memory allocation.");
   }
 
-  nvrtcProgram prog;
-  auto         res = nvrtcCreateProgram(&prog, kernel_source.c_str(), nullptr, 0, nullptr, nullptr);
-  if (res != NVRTC_SUCCESS)
-  {
-    throw std::runtime_error("Error (cuda): Failed to create program from source with error code " +
-                             std::to_string(res));
-  }
-  res = nvrtcCompileProgram(prog, 0, nullptr);
-  if (res != NVRTC_SUCCESS)
-  {
-    size_t log_size;
-    nvrtcGetProgramLogSize(prog, &log_size);
-    std::string log(log_size, '\0');
-    nvrtcGetProgramLog(prog, &log[0]);
-    std::cerr << "Build log: " << log << std::endl;
-    throw std::runtime_error("Error (cuda): Failed to build program with error code " + std::to_string(res));
-  }
-  size_t ptxSize;
-  nvrtcGetPTXSize(prog, &ptxSize);
-  std::vector<char> ptx(ptxSize);
-  nvrtcGetPTX(prog, ptx.data());
+  std::chrono::high_resolution_clock::time_point start_time, end_time;
+  std::chrono::microseconds                      duration;
 
-  CUmodule cuModule;
-  err = cuModuleLoadData(&cuModule, ptx.data());
-  if (err != CUDA_SUCCESS)
+  CUmodule    cuModule = nullptr;
+  std::string hash = std::to_string(std::hash<std::string>{}(kernel_source));
+  loadProgramFromCache(device, hash, &cuModule);
+  if (cuModule == nullptr)
   {
-    throw std::runtime_error("Error (cuda): Loading module with error code " + std::to_string(err));
-  }
+    nvrtcProgram prog;
+    auto         res = nvrtcCreateProgram(&prog, kernel_source.c_str(), nullptr, 0, nullptr, nullptr);
+    if (res != NVRTC_SUCCESS)
+    {
+      throw std::runtime_error("Error (cuda): Failed to create program from source with error code " +
+                               std::to_string(res));
+    }
 
+    const std::string                 arch_comp = "-arch=compute_" + cuda_device->getArch();
+    const std::array<const char *, 1> options = { arch_comp.c_str() };
+    res = nvrtcCompileProgram(prog, options.size(), options.data());
+    if (res != NVRTC_SUCCESS)
+    {
+      size_t log_size;
+      nvrtcGetProgramLogSize(prog, &log_size);
+      std::string log(log_size, '\0');
+      nvrtcGetProgramLog(prog, &log[0]);
+      std::cerr << "Build log: " << log << std::endl;
+      throw std::runtime_error("Error (cuda): Failed to build program with error code " + std::to_string(res));
+    }
+    size_t ptxSize;
+    nvrtcGetPTXSize(prog, &ptxSize);
+    std::vector<char> ptx(ptxSize);
+    nvrtcGetPTX(prog, ptx.data());
+    res = nvrtcDestroyProgram(&prog);
+    if (res != NVRTC_SUCCESS)
+    {
+      throw std::runtime_error("Error (cuda): Failed to destroy program with error code " + std::to_string(res));
+    }
+
+    err = cuModuleLoadData(&cuModule, ptx.data());
+    if (err != CUDA_SUCCESS)
+    {
+      throw std::runtime_error("Error (cuda): Loading module with error code " + std::to_string(err));
+    }
+
+
+    saveProgramToCache(device, hash, &cuModule);
+  }
   CUfunction cuFunction;
   err = cuModuleGetFunction(&cuFunction, cuModule, kernel_name.c_str());
   if (err != CUDA_SUCCESS)
   {
     throw std::runtime_error("Error (cuda): Getting function from module with error code " + std::to_string(err));
   }
-
   *(reinterpret_cast<CUfunction *>(kernel)) = cuFunction;
 #else
   throw std::runtime_error("Error: CUDA is not enabled");

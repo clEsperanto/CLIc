@@ -40,7 +40,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   std::cout << "GPU output: " << output << std::endl;
   std::cout << "valid output: " << valid << std::endl;
 
-  // std::vector<type> output(gpu_output->nbElements());
+  // std::vector<type> output(gpu_output->size());
   // gpu_output->read(output.data());
 
   return output == valid ? 0 : 1;

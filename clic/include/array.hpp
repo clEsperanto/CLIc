@@ -53,7 +53,7 @@ public:
   fill(const float & value) const -> void;
 
   [[nodiscard]] auto
-  nbElements() const -> size_t;
+  size() const -> size_t;
   [[nodiscard]] auto
   width() const -> size_t;
   [[nodiscard]] auto
@@ -61,7 +61,7 @@ public:
   [[nodiscard]] auto
   depth() const -> size_t;
   [[nodiscard]] auto
-  bytesPerElements() const -> size_t;
+  itemSize() const -> size_t;
   [[nodiscard]] auto
   dtype() const -> dType;
   [[nodiscard]] auto

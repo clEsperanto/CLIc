@@ -44,7 +44,7 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
   const float   max_intensity = tier2::maximum_of_all_pixels_func(device, src);
   auto          hist_array = Array::create(bin, 1, 1, dType::FLOAT, mType::BUFFER, src->device());
   tier3::histogram_func(device, src, hist_array, bin, min_intensity, max_intensity);
-  std::vector<float> histogram_array(hist_array->nbElements());
+  std::vector<float> histogram_array(hist_array->size());
   hist_array->read(histogram_array.data());
   float              threshold = -1;
   float              max_variance = -1;
@@ -55,7 +55,7 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
   float              weight_2 = 0;
   float              mean_1 = 0;
   float              mean_2 = 0;
-  const float        nb_pixels = src->nbElements();
+  const float        nb_pixels = src->size();
   const float        intensity_factor = (max_intensity - min_intensity) / (bin - 1);
   std::vector<float> range(histogram_array.size());
   std::iota(range.begin(), range.end(), 0);

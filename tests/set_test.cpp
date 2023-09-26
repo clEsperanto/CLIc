@@ -21,7 +21,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
 
   cle::tier1::set_func(device, gpu_input, 10);
 
-  std::vector<type> output(gpu_input->nbElements());
+  std::vector<type> output(gpu_input->size());
   gpu_input->read(output.data());
 
   return std::equal(output.begin(), output.end(), valid.begin()) ? 0 : 1;

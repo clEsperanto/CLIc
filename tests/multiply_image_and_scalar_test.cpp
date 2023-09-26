@@ -21,7 +21,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
 
   auto gpu_output = cle::tier1::multiply_image_and_scalar_func(device, gpu_input, nullptr, scalar);
 
-  std::vector<type> output(gpu_output->nbElements());
+  std::vector<type> output(gpu_output->size());
   gpu_output->read(output.data());
 
   return std::equal(output.begin(), output.end(), valid.begin()) ? 0 : 1;

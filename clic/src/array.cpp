@@ -90,6 +90,10 @@ Array::allocate() -> void
 auto
 Array::write(const void * host_data) -> void
 {
+  if (host_data == nullptr)
+  {
+    throw std::runtime_error("Error: host_data is null");
+  }
   if (!initialized())
   {
     allocate();
@@ -101,6 +105,10 @@ Array::write(const void * host_data) -> void
 auto
 Array::read(void * host_data) const -> void
 {
+  if (host_data == nullptr)
+  {
+    throw std::runtime_error("Error: host_data is null");
+  }
   if (!initialized())
   {
     throw std::runtime_error("Error: Array is not initialized, it cannot be read");
@@ -119,8 +127,7 @@ Array::copy(const Array::Pointer & dst) const -> void
   {
     std::cerr << "Error: copying Arrays from different devices" << std::endl;
   }
-  if (width() != dst->width() || height() != dst->height() || depth() != dst->depth() ||
-      bytesPerElements() != dst->bytesPerElements())
+  if (width() != dst->width() || height() != dst->height() || depth() != dst->depth() || itemSize() != dst->itemSize())
   {
     std::cerr << "Error: Arrays dimensions do not match" << std::endl;
   }
@@ -161,7 +168,7 @@ Array::fill(const float & value) const -> void
 }
 
 auto
-Array::nbElements() const -> size_t
+Array::size() const -> size_t
 {
   return width_ * height_ * depth_;
 }
@@ -181,7 +188,7 @@ Array::depth() const -> size_t
   return depth_;
 }
 auto
-Array::bytesPerElements() const -> size_t
+Array::itemSize() const -> size_t
 {
   return toBytes(dataType_);
 }
@@ -224,29 +231,9 @@ Array::c_get() const -> const void **
 auto
 Array::shortType() const -> std::string
 {
-  switch (this->dataType_)
-  {
-    case dType::FLOAT:
-      return "f";
-    case dType::INT32:
-      return "i";
-    case dType::UINT32:
-      return "ui";
-    case dType::INT8:
-      return "c";
-    case dType::UINT8:
-      return "uc";
-    case dType::INT16:
-      return "s";
-    case dType::UINT16:
-      return "us";
-    case dType::INT64:
-      return "l";
-    case dType::UINT64:
-      return "ul";
-    default:
-      throw std::invalid_argument("Invalid Array::Type value");
-  }
+  const auto str_type = toString(dtype());
+  return (str_type[0] == 'u') ? str_type.substr(0, 2) : str_type.substr(0, 1);
 }
+
 
 } // namespace cle

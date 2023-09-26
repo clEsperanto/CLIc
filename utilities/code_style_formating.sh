@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 
 # Check if the project root directory is provided as an argument
-if [ $# -ne 1 ]; then
+if [ $# -ne 1 ] || [ ! -d "$1" ]; then
     echo "Usage: $0 <project_directory>"
     exit 1
 fi
@@ -13,6 +13,5 @@ files=$(find "$project_directory" -name "*.hpp" -o -name "*.cpp")
 
 # Run clang-format-14 on each file
 for file in $files; do
-    clang-format -i -style=file "$file"
-    echo "Formatted: $file"
+    clang-format -i -style=file -- "$file" || echo "Failed to format: $file"
 done
