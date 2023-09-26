@@ -33,7 +33,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
 
   auto gpu_output = cle::tier2::difference_of_gaussian_func(device, gpu_input, nullptr, 1, 1, 1, 3, 3, 3);
 
-  std::vector<type> output(gpu_output->nbElements());
+  std::vector<type> output(gpu_output->size());
   gpu_output->read(output.data());
 
   // for (auto && i : output)

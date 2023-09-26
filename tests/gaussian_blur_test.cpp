@@ -47,7 +47,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
 
   auto gpu_output = cle::tier1::gaussian_blur_func(device, gpu_input, nullptr, 1, 1, 1);
 
-  std::vector<type> output(gpu_output->nbElements());
+  std::vector<type> output(gpu_output->size());
   gpu_output->read(output.data());
 
   // round values of valid vector values to 6 decimals to avoid float precision errors in comparison
