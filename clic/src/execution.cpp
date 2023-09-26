@@ -6,40 +6,39 @@
 #include <string_view>
 #include <vector>
 
-#include <chrono>
 namespace cle
 {
-
-
-auto
-replace_string(std::string & code, const std::vector<std::pair<std::string, std::string>> & replacements) -> void
-{
-  for (const auto & replacement : replacements)
-  {
-    std::string::size_type pos = 0;
-    while ((pos = code.find(replacement.first, pos)) != std::string::npos)
-    {
-      code.replace(pos, replacement.first.length(), replacement.second);
-      pos += replacement.first.length();
-    }
-  }
-}
 
 auto
 translateOpenclToCuda(std::string & code) -> void
 {
-  replace_string(code,
-                 { { "get_global_id(2)", "blockDim.z * blockIdx.z + threadIdx.z" },
-                   { "get_global_id(1)", "blockDim.y * blockIdx.y + threadIdx.y" },
-                   { "get_global_id(0)", "blockDim.x * blockIdx.x + threadIdx.x" },
-                   { "#pragma", "// #pragma" },
-                   { "inline", "__device__ inline" },
-                   { "__kernel void", "extern \"C\" __global__ void" },
-                   { "__constant sampler_t", "__device__ int" },
-                   { "float4", "make_float4" },
-                   { "float2", "make_float2" },
-                   { "int4", "make_int4" },
-                   { "int2", "make_int2" } });
+  const std::vector<std::pair<std::string, std::string>> replacements = {
+    { "(int2){", "make_int2(" },     // need to close with ');'
+    { "(int4){", "make_int4(" },     // need to close with ');'
+    { "(float4){", "make_float4(" }, // need to close with ');'
+    { "(float2){", "make_float2(" }, // need to close with ');'
+    { "__constant sampler_t", "__device__ int" },
+    { "inline", "__device__ inline" },
+    { "#pragma", "// #pragma" },
+    { "__kernel void", "extern \"C\" __global__ void" },
+    { "get_global_id(0)", "blockDim.x * blockIdx.x + threadIdx.x" },
+    { "get_global_id(1)", "blockDim.y * blockIdx.y + threadIdx.y" },
+    { "get_global_id(2)", "blockDim.z * blockIdx.z + threadIdx.z" }
+  };
+  for (const auto & [to_replace, replace_with] : replacements)
+  {
+    size_t pos = 0;
+    while ((pos = code.find(to_replace, pos)) != std::string::npos)
+    {
+      code.replace(pos, to_replace.length(), replace_with);
+      pos += replace_with.length();
+      if (to_replace.find("(int") != std::string::npos || to_replace.find("(float") != std::string::npos)
+      {
+        size_t pos2 = code.find("};", pos);
+        code.replace(pos2, 2, ");");
+      }
+    }
+  }
 }
 
 auto
@@ -216,13 +215,15 @@ execute(const Device::Pointer & device,
   std::string defines;
   switch (device->getType())
   {
-    case Device::Type::CUDA:
+    case Device::Type::CUDA: {
       defines = cle::cudaDefines(parameters, constants);
       cle::translateOpenclToCuda(kernel_source);
       break;
-    case Device::Type::OPENCL:
+    }
+    case Device::Type::OPENCL: {
       defines = cle::oclDefines(parameters, constants);
       break;
+    }
   }
   std::string program_source;
   program_source.reserve(kernel_preamble.size() + defines.size() + kernel_source.size());
