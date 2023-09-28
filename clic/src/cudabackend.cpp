@@ -327,7 +327,7 @@ CUDABackend::writeBuffer(const Device::Pointer &       device,
   {
     void * cast_host_ptr = const_cast<void *>(host_ptr);
     cast_host_ptr = static_cast<char *>(cast_host_ptr) + (host_origin[0]);
-    CUdeviceptr devicePtr = reinterpret_cast<CUdeviceptr>(*buffer_ptr + buffer_origin[0]);
+    CUdeviceptr devicePtr = reinterpret_cast<CUdeviceptr>(reinterpret_cast<char *>(*buffer_ptr) + buffer_origin[0]);
     err = cuMemcpy(reinterpret_cast<CUdeviceptr>(*buffer_ptr), reinterpret_cast<CUdeviceptr>(cast_host_ptr), region[0]);
   }
   if (err != CUDA_SUCCESS)
@@ -401,7 +401,8 @@ CUDABackend::readBuffer(const Device::Pointer &       device,
   {
     void * cast_host_ptr = const_cast<void *>(host_ptr);
     cast_host_ptr = static_cast<char *>(cast_host_ptr) + (host_origin[0]);
-    CUdeviceptr devicePtr = reinterpret_cast<CUdeviceptr>(*buffer_ptr + buffer_origin[0]);
+    CUdeviceptr devicePtr =
+      reinterpret_cast<CUdeviceptr>(reinterpret_cast<const char *>(*buffer_ptr) + buffer_origin[0]);
     err = cuMemcpy((CUdeviceptr)cast_host_ptr, devicePtr, region[0]);
   }
   if (err != CUDA_SUCCESS)

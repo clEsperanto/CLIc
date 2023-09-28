@@ -105,6 +105,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
     //   std::cout << input[i] << " ";
     // }
     // std::cout << std::endl;
+    std::cout << "all good\n";
   }
 
 
