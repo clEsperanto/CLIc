@@ -77,13 +77,13 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
     std::vector<type> test(gpu_input->size());
     gpu_input->read(test.data());
 
-    for (int i = 0; i < test.size(); i++)
-    {
-      if (i % 10 == 0)
-        std::cout << std::endl;
-      std::cout << test[i] << " ";
-    }
-    std::cout << std::endl;
+    // for (int i = 0; i < test.size(); i++)
+    // {
+    //   if (i % 10 == 0)
+    //     std::cout << std::endl;
+    //   std::cout << test[i] << " ";
+    // }
+    // std::cout << std::endl;
 
 
     std::array<size_t, 3> region = { 6, 3, 1 };
@@ -98,6 +98,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
     // }
     // std::cout << std::endl;
 
+    gpu_input->read(&value, 6, 6, 0);
     gpu_input->fill(0);
     gpu_input->read(input.data());
 
@@ -108,9 +109,10 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
     //   std::cout << input[i] << " ";
     // }
     // std::cout << std::endl;
+    // std::cout << std::endl;
+    // std::cout << value << std::endl;
     std::cout << "all good\n";
   }
-
 
   return 0;
 }
@@ -122,9 +124,9 @@ main(int argc, char ** argv) -> int
   std::cout << cle::BackendManager::getInstance().getBackend() << " backend selected" << std::endl;
   assert(run_test<float>({ 10, 5, 3 }, cle::mType::BUFFER) == 0);
 
-  // cle::BackendManager::getInstance().setBackend("cuda");
-  // std::cout << cle::BackendManager::getInstance().getBackend() << " backend selected" << std::endl;
-  // assert(run_test<float>({ 10, 5, 3 }, cle::mType::BUFFER) == 0);
+  cle::BackendManager::getInstance().setBackend("cuda");
+  std::cout << cle::BackendManager::getInstance().getBackend() << " backend selected" << std::endl;
+  assert(run_test<float>({ 10, 5, 3 }, cle::mType::BUFFER) == 0);
 
   return EXIT_SUCCESS;
 }
