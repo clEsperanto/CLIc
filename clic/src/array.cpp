@@ -98,8 +98,34 @@ Array::write(const void * host_data) -> void
   {
     allocate();
   }
-  backend_.writeMemory(
-    device(), get(), { this->width(), this->height(), this->depth() }, { 0, 0, 0 }, dtype(), mtype(), host_data);
+  std::array<size_t, 3> _origin = { 0, 0, 0 };
+  std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
+  std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
+  backend_.writeMemory(device(), get(), _shape, _origin, _region, dtype(), mtype(), host_data);
+}
+
+auto
+Array::write(const void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin)
+  -> void
+{
+  if (host_data == nullptr)
+  {
+    throw std::runtime_error("Error: host_data is null");
+  }
+  if (!initialized())
+  {
+    allocate();
+  }
+  std::array<size_t, 3> _origin = buffer_origin;
+  std::array<size_t, 3> _region = region;
+  std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
+  backend_.writeMemory(device(), get(), _shape, _origin, _region, dtype(), mtype(), host_data);
+}
+
+auto
+Array::write(const void * host_data, const size_t & x_coord, const size_t & y_coord, const size_t & z_coord) -> void
+{
+  write(host_data, { 1, 1, 1 }, { x_coord, y_coord, z_coord });
 }
 
 auto
@@ -113,7 +139,34 @@ Array::read(void * host_data) const -> void
   {
     throw std::runtime_error("Error: Array is not initialized, it cannot be read");
   }
-  backend_.readMemory(device(), c_get(), { width(), height(), depth() }, { 0, 0, 0 }, dtype(), mtype(), host_data);
+  std::array<size_t, 3> _origin = { 0, 0, 0 };
+  std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
+  std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
+  backend_.readMemory(device(), c_get(), _shape, _origin, _region, dtype(), mtype(), host_data);
+}
+
+auto
+Array::read(void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin) const
+  -> void
+{
+  if (host_data == nullptr)
+  {
+    throw std::runtime_error("Error: host_data is null");
+  }
+  if (!initialized())
+  {
+    throw std::runtime_error("Error: Array is not initialized, it cannot be read");
+  }
+  std::array<size_t, 3> _origin = buffer_origin;
+  std::array<size_t, 3> _region = region;
+  std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
+  backend_.readMemory(device(), c_get(), _shape, _origin, _region, dtype(), mtype(), host_data);
+}
+
+auto
+Array::read(void * host_data, const size_t & x_coord, const size_t & y_coord, const size_t & z_coord) const -> void
+{
+  read(host_data, { 1, 1, 1 }, { x_coord, y_coord, z_coord });
 }
 
 auto
@@ -164,7 +217,10 @@ Array::fill(const float & value) const -> void
   {
     std::cerr << "Error: Arrays are not initialized_" << std::endl;
   }
-  backend_.setMemory(device(), get(), { width(), height(), depth() }, { 0, 0, 0 }, dtype(), mtype(), value);
+  std::array<size_t, 3> _origin = { 0, 0, 0 };
+  std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
+  std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
+  backend_.setMemory(device(), get(), _shape, _origin, _region, dtype(), mtype(), value);
 }
 
 auto

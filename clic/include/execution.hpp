@@ -19,11 +19,7 @@ using KernelInfo = std::pair<std::string, std::string>;
 using RangeArray = std::array<size_t, 3>;
 
 auto
-replaceWord(std::string & sentence, const std::string_view & wordToReplace, const std::string_view & replacement)
-  -> void;
-
-auto
-srcOpenclToCuda(const std::string & opencl_code) -> std::string;
+translateOpenclToCuda(std::string & code) -> void;
 
 auto
 cudaDefines(const ParameterList & parameter_list, const ConstantList & constant_list) -> std::string;

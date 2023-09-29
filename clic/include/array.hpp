@@ -11,10 +11,11 @@
 namespace cle
 {
 
-class Array : public std::enable_shared_from_this<Array>
+class Array
 {
 public:
   using Pointer = std::shared_ptr<Array>;
+
   static auto
   New() -> Array::Pointer
   {
@@ -41,14 +42,29 @@ public:
   friend auto
   operator<<(std::ostream & out, const Array::Pointer & array) -> std::ostream &;
 
+
   auto
   allocate() -> void;
+
   auto
   write(const void * host_data) -> void;
   auto
+  write(const void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin)
+    -> void;
+  auto
+  write(const void * host_data, const size_t & x_coord, const size_t & y_coord, const size_t & z_coord) -> void;
+
+  auto
   read(void * host_data) const -> void;
   auto
+  read(void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin) const
+    -> void;
+  auto
+  read(void * host_data, const size_t & x_coord, const size_t & y_coord, const size_t & z_coord) const -> void;
+
+  auto
   copy(const Array::Pointer & dst) const -> void;
+
   auto
   fill(const float & value) const -> void;
 

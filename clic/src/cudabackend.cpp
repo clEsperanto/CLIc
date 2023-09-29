@@ -235,24 +235,28 @@ CUDABackend::freeMemory(const Device::Pointer & device, const mType & mtype, voi
 }
 
 auto
-CUDABackend::writeMemory(const Device::Pointer &       device,
-                         void **                       data_ptr,
-                         const std::array<size_t, 3> & region,
-                         const std::array<size_t, 3> & origin,
-                         const dType &                 dtype,
-                         const mType &                 mtype,
-                         const void *                  host_ptr) const -> void
+CUDABackend::writeMemory(const Device::Pointer & device,
+                         void **                 buffer_ptr,
+                         std::array<size_t, 3> & buffer_shape,
+                         std::array<size_t, 3> & buffer_origin,
+                         std::array<size_t, 3> & region,
+                         const dType &           dtype,
+                         const mType &           mtype,
+                         const void *            host_ptr) const -> void
 {
 #if USE_CUDA
   switch (mtype)
   {
     case mType::BUFFER: {
-      writeBuffer(device, data_ptr, region, origin, dtype, host_ptr);
+      buffer_shape[0] *= toBytes(dtype);
+      buffer_origin[0] *= toBytes(dtype);
+      region[0] *= toBytes(dtype);
+      writeBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
       break;
     }
     case mType::IMAGE: {
       // TODO @StRigaud: implement image support for CUDA
-      writeBuffer(device, data_ptr, region, origin, dtype, host_ptr);
+      writeBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
       break;
     }
   }
@@ -263,10 +267,10 @@ CUDABackend::writeMemory(const Device::Pointer &       device,
 
 auto
 CUDABackend::writeBuffer(const Device::Pointer &       device,
-                         void **                       data_ptr,
+                         void **                       buffer_ptr,
+                         const std::array<size_t, 3> & buffer_shape,
+                         const std::array<size_t, 3> & buffer_origin,
                          const std::array<size_t, 3> & region,
-                         const std::array<size_t, 3> & origin,
-                         const dType &                 dtype,
                          const void *                  host_ptr) -> void
 {
 #if USE_CUDA
@@ -276,53 +280,54 @@ CUDABackend::writeBuffer(const Device::Pointer &       device,
   {
     throw std::runtime_error("Error (cuda): Failed to get context from device (" + std::to_string(err) + ").");
   }
-  const size_t                bytes = toBytes(dtype);
+
+  size_t buffer_row_pitch = buffer_shape[1] > 1 ? buffer_shape[0] : 0;
+  size_t buffer_slice_pitch = buffer_shape[2] > 1 ? buffer_shape[1] : 0;
+
   const std::array<size_t, 3> host_origin = { 0, 0, 0 };
-  if (region[2] > 1)
+  if (buffer_shape[2] > 1)
   {
     CUDA_MEMCPY3D copyParams = { 0 };
 
     copyParams.srcMemoryType = CU_MEMORYTYPE_HOST; // Source memory type.
     copyParams.srcHost = host_ptr;
-    copyParams.srcXInBytes = host_origin[0] * bytes;
-    copyParams.srcY = host_origin[1];
-    copyParams.srcZ = host_origin[2];
 
     copyParams.dstMemoryType = CU_MEMORYTYPE_DEVICE; // Destination memory type.
-    copyParams.dstDevice = reinterpret_cast<CUdeviceptr>(*data_ptr);
-    copyParams.dstXInBytes = origin[0] * bytes;
-    copyParams.dstY = origin[1];
-    copyParams.dstY = origin[2];
+    copyParams.dstDevice = reinterpret_cast<CUdeviceptr>(*buffer_ptr);
+    copyParams.dstPitch = buffer_row_pitch;
+    copyParams.dstHeight = buffer_slice_pitch;
+    copyParams.dstXInBytes = buffer_origin[0];
+    copyParams.dstY = buffer_origin[1];
+    copyParams.dstZ = buffer_origin[2];
 
-    copyParams.WidthInBytes = region[0] * bytes;
+    copyParams.WidthInBytes = region[0];
     copyParams.Height = region[1];
     copyParams.Depth = region[2];
     err = cuMemcpy3D(&copyParams);
   }
-  else if (region[1] > 1)
+  else if (buffer_shape[1] > 1)
   {
     CUDA_MEMCPY2D copyParams = { 0 };
 
     copyParams.srcMemoryType = CU_MEMORYTYPE_HOST; // Source memory type.
     copyParams.srcHost = host_ptr;
-    copyParams.srcXInBytes = host_origin[0] * bytes;
-    copyParams.srcY = host_origin[1];
 
     copyParams.dstMemoryType = CU_MEMORYTYPE_DEVICE; // Destination memory type.
-    copyParams.dstDevice = reinterpret_cast<CUdeviceptr>(*data_ptr);
-    copyParams.dstXInBytes = origin[0] * bytes;
-    copyParams.dstY = origin[1];
+    copyParams.dstDevice = reinterpret_cast<CUdeviceptr>(*buffer_ptr);
+    copyParams.dstPitch = buffer_row_pitch;
+    copyParams.dstXInBytes = buffer_origin[0];
+    copyParams.dstY = buffer_origin[1];
 
-    copyParams.WidthInBytes = region[0] * bytes;
+    copyParams.WidthInBytes = region[0];
     copyParams.Height = region[1];
     err = cuMemcpy2D(&copyParams);
   }
   else
   {
     void * cast_host_ptr = const_cast<void *>(host_ptr);
-    cast_host_ptr = static_cast<char *>(cast_host_ptr) + (host_origin[0] * bytes);
-    CUdeviceptr devicePtr = reinterpret_cast<CUdeviceptr>(*data_ptr) + (origin[0] * bytes);
-    err = cuMemcpy(devicePtr, (CUdeviceptr)cast_host_ptr, region[0] * bytes);
+    cast_host_ptr = static_cast<char *>(cast_host_ptr) + (host_origin[0]);
+    CUdeviceptr devicePtr = reinterpret_cast<CUdeviceptr>(reinterpret_cast<char *>(*buffer_ptr) + buffer_origin[0]);
+    err = cuMemcpy(reinterpret_cast<CUdeviceptr>(*buffer_ptr), reinterpret_cast<CUdeviceptr>(cast_host_ptr), region[0]);
   }
   if (err != CUDA_SUCCESS)
   {
@@ -336,10 +341,10 @@ CUDABackend::writeBuffer(const Device::Pointer &       device,
 
 auto
 CUDABackend::readBuffer(const Device::Pointer &       device,
-                        const void **                 data_ptr,
+                        const void **                 buffer_ptr,
+                        const std::array<size_t, 3> & buffer_shape,
+                        const std::array<size_t, 3> & buffer_origin,
                         const std::array<size_t, 3> & region,
-                        const std::array<size_t, 3> & origin,
-                        const dType &                 dtype,
                         void *                        host_ptr) -> void
 {
 #if USE_CUDA
@@ -349,53 +354,54 @@ CUDABackend::readBuffer(const Device::Pointer &       device,
   {
     throw std::runtime_error("Error (cuda): Failed to get context from device (" + std::to_string(err) + ").");
   }
-  const size_t                bytes = toBytes(dtype);
+  size_t buffer_row_pitch = buffer_shape[1] > 1 ? buffer_shape[0] : 0;
+  size_t buffer_slice_pitch = buffer_shape[2] > 1 ? buffer_shape[1] : 0;
+
   const std::array<size_t, 3> host_origin = { 0, 0, 0 };
-  if (region[2] > 1)
+  if (buffer_shape[2] > 1)
   {
     CUDA_MEMCPY3D copyParams = { 0 };
 
     copyParams.dstMemoryType = CU_MEMORYTYPE_HOST; // Source memory type.
     copyParams.dstHost = host_ptr;
-    copyParams.dstXInBytes = host_origin[0] * bytes;
-    copyParams.dstY = host_origin[1];
-    copyParams.dstZ = host_origin[2];
 
     copyParams.srcMemoryType = CU_MEMORYTYPE_DEVICE; // Destination memory type.
-    copyParams.srcDevice = reinterpret_cast<CUdeviceptr>(*data_ptr);
-    copyParams.srcXInBytes = origin[0] * bytes;
-    copyParams.srcY = origin[1];
-    copyParams.srcZ = origin[2];
+    copyParams.srcDevice = reinterpret_cast<CUdeviceptr>(*buffer_ptr);
+    copyParams.srcPitch = buffer_row_pitch;
+    copyParams.srcHeight = buffer_slice_pitch;
+    copyParams.srcXInBytes = buffer_origin[0];
+    copyParams.srcY = buffer_origin[1];
+    copyParams.srcZ = buffer_origin[2];
 
-    copyParams.WidthInBytes = region[0] * bytes;
+    copyParams.WidthInBytes = region[0];
     copyParams.Height = region[1];
     copyParams.Depth = region[2];
     err = cuMemcpy3D(&copyParams);
   }
-  else if (region[1] > 1)
+  else if (buffer_shape[1] > 1)
   {
     CUDA_MEMCPY2D copyParams = { 0 };
 
     copyParams.dstMemoryType = CU_MEMORYTYPE_HOST; // Source memory type.
     copyParams.dstHost = host_ptr;
-    copyParams.dstXInBytes = host_origin[0] * bytes;
-    copyParams.dstY = host_origin[1];
 
     copyParams.srcMemoryType = CU_MEMORYTYPE_DEVICE; // Destination memory type.
-    copyParams.srcDevice = reinterpret_cast<CUdeviceptr>(*data_ptr);
-    copyParams.srcXInBytes = origin[0] * bytes;
-    copyParams.srcY = origin[1];
+    copyParams.srcDevice = reinterpret_cast<CUdeviceptr>(*buffer_ptr);
+    copyParams.srcPitch = buffer_row_pitch;
+    copyParams.srcXInBytes = buffer_origin[0];
+    copyParams.srcY = buffer_origin[1];
 
-    copyParams.WidthInBytes = region[0] * bytes;
+    copyParams.WidthInBytes = region[0];
     copyParams.Height = region[1];
     err = cuMemcpy2D(&copyParams);
   }
   else
   {
     void * cast_host_ptr = const_cast<void *>(host_ptr);
-    cast_host_ptr = static_cast<char *>(cast_host_ptr) + (host_origin[0] * bytes);
-    CUdeviceptr devicePtr = reinterpret_cast<CUdeviceptr>(*data_ptr) + (origin[0] * bytes);
-    err = cuMemcpy((CUdeviceptr)cast_host_ptr, devicePtr, region[0] * bytes);
+    cast_host_ptr = static_cast<char *>(cast_host_ptr) + (host_origin[0]);
+    CUdeviceptr devicePtr =
+      reinterpret_cast<CUdeviceptr>(reinterpret_cast<const char *>(*buffer_ptr) + buffer_origin[0]);
+    err = cuMemcpy((CUdeviceptr)cast_host_ptr, devicePtr, region[0]);
   }
   if (err != CUDA_SUCCESS)
   {
@@ -408,24 +414,30 @@ CUDABackend::readBuffer(const Device::Pointer &       device,
 }
 
 auto
-CUDABackend::readMemory(const Device::Pointer &       device,
-                        const void **                 data_ptr,
-                        const std::array<size_t, 3> & region,
-                        const std::array<size_t, 3> & origin,
-                        const dType &                 dtype,
-                        const mType &                 mtype,
-                        void *                        host_ptr) const -> void
+CUDABackend::readMemory(const Device::Pointer & device,
+                        const void **           buffer_ptr,
+                        std::array<size_t, 3> & buffer_shape,
+                        std::array<size_t, 3> & buffer_origin,
+                        std::array<size_t, 3> & region,
+                        const dType &           dtype,
+                        const mType &           mtype,
+                        void *                  host_ptr) const -> void
 {
 #if USE_CUDA
   switch (mtype)
   {
-    case mType::BUFFER:
-      readBuffer(device, data_ptr, region, origin, dtype, host_ptr);
+    case mType::BUFFER: {
+      buffer_shape[0] *= toBytes(dtype);
+      buffer_origin[0] *= toBytes(dtype);
+      region[0] *= toBytes(dtype);
+      readBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
       break;
-    case mType::IMAGE:
+    }
+    case mType::IMAGE: {
       // TODO @StRigaud: implement image support for CUDA
-      readBuffer(device, data_ptr, region, origin, dtype, host_ptr);
+      readBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
       break;
+    }
   }
 #else
   throw std::runtime_error("Error: CUDA is not enabled");
@@ -549,9 +561,10 @@ CUDABackend::copyMemoryImageToImage(const Device::Pointer &       device,
 
 auto
 CUDABackend::setBuffer(const Device::Pointer &       device,
-                       void **                       data_ptr,
+                       void **                       buffer_ptr,
+                       const std::array<size_t, 3> & buffer_shape,
+                       const std::array<size_t, 3> & buffer_origin,
                        const std::array<size_t, 3> & region,
-                       const std::array<size_t, 3> & origin,
                        const dType &                 dtype,
                        const float &                 value) -> void
 {
@@ -563,7 +576,7 @@ CUDABackend::setBuffer(const Device::Pointer &       device,
     throw std::runtime_error("Error (cuda): Failed to get context from device (" + std::to_string(err) + ").");
   }
   const auto count = region[0] * region[1] * region[2];
-  const auto dev_ptr = reinterpret_cast<CUdeviceptr>(*data_ptr);
+  const auto dev_ptr = reinterpret_cast<CUdeviceptr>(*buffer_ptr);
   switch (dtype)
   {
     case dType::FLOAT: {
@@ -571,16 +584,16 @@ CUDABackend::setBuffer(const Device::Pointer &       device,
       err = cuMemsetD32(dev_ptr, *(reinterpret_cast<uint32_t *>(&cval)), count);
       break;
     }
-    case dType::INT64: {
-      std::vector<int64_t> host_buffer(count, static_cast<int64_t>(value));
-      writeBuffer(device, data_ptr, region, origin, dType::INT64, host_buffer.data());
-      break;
-    }
-    case dType::UINT64: {
-      std::vector<uint64_t> host_buffer(count, static_cast<uint64_t>(value));
-      writeBuffer(device, data_ptr, region, origin, dType::UINT64, host_buffer.data());
-      break;
-    }
+    // case dType::INT64: {
+    //   std::vector<int64_t> host_buffer(count, static_cast<int64_t>(value));
+    //   writeBuffer(device, buffer_ptr, region, origin, dType::INT64, host_buffer.data());
+    //   break;
+    // }
+    // case dType::UINT64: {
+    //   std::vector<uint64_t> host_buffer(count, static_cast<uint64_t>(value));
+    //   writeBuffer(device, buffer_ptr, region, origin, dType::UINT64, host_buffer.data());
+    //   break;
+    // }
     case dType::INT32: {
       auto cval = static_cast<int32_t>(value);
       err = cuMemsetD32(dev_ptr, *(reinterpret_cast<uint32_t *>(&cval)), count);
@@ -625,28 +638,29 @@ CUDABackend::setBuffer(const Device::Pointer &       device,
 }
 
 auto
-CUDABackend::setMemory(const Device::Pointer &       device,
-                       void **                       data_ptr,
-                       const std::array<size_t, 3> & region,
-                       const std::array<size_t, 3> & origin,
-                       const dType &                 dtype,
-                       const mType &                 mtype,
-                       const float &                 value) const -> void
+CUDABackend::setMemory(const Device::Pointer & device,
+                       void **                 buffer_ptr,
+                       std::array<size_t, 3> & buffer_shape,
+                       std::array<size_t, 3> & buffer_origin,
+                       std::array<size_t, 3> & region,
+                       const dType &           dtype,
+                       const mType &           mtype,
+                       const float &           value) const -> void
 {
-#if USE_OPENCL
+#if USE_CUDA
   switch (mtype)
   {
     case mType::BUFFER: {
-      setBuffer(device, data_ptr, region, origin, dtype, value);
+      setBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, dtype, value);
       break;
     }
     case mType::IMAGE: {
-      setBuffer(device, data_ptr, region, origin, dtype, value);
+      setBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, dtype, value);
       break;
     }
   }
 #else
-  throw std::runtime_error("Error: OpenCL is not enabled");
+  throw std::runtime_error("Error: CUDA is not enabled");
 #endif
 }
 
