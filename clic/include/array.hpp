@@ -11,7 +11,7 @@
 namespace cle
 {
 
-class Array : public std::enable_shared_from_this<Array>
+class Array
 {
 public:
   using Pointer = std::shared_ptr<Array>;

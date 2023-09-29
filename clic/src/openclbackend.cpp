@@ -245,7 +245,6 @@ OpenCLBackend::writeBuffer(const Device::Pointer &       device,
                            const std::array<size_t, 3> & buffer_shape,
                            const std::array<size_t, 3> & buffer_origin,
                            const std::array<size_t, 3> & region,
-                           const dType &                 dtype,
                            const void *                  host_ptr) -> void
 {
 #if USE_OPENCL
@@ -302,7 +301,6 @@ OpenCLBackend::writeImage(const Device::Pointer &       device,
                           const std::array<size_t, 3> & buffer_shape,
                           const std::array<size_t, 3> & buffer_origin,
                           const std::array<size_t, 3> & region,
-                          const dType &                 dtype,
                           const void *                  host_ptr) -> void
 {
 #if USE_OPENCL
@@ -348,11 +346,11 @@ OpenCLBackend::writeMemory(const Device::Pointer & device,
       buffer_shape[0] *= toBytes(dtype);
       buffer_origin[0] *= toBytes(dtype);
       region[0] *= toBytes(dtype);
-      writeBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, dtype, host_ptr);
+      writeBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
       break;
     }
     case mType::IMAGE: {
-      writeImage(device, buffer_ptr, buffer_shape, buffer_origin, region, dtype, host_ptr);
+      writeImage(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
       break;
     }
   }
@@ -364,7 +362,6 @@ OpenCLBackend::readBuffer(const Device::Pointer &       device,
                           const std::array<size_t, 3> & buffer_shape,
                           const std::array<size_t, 3> & buffer_origin,
                           const std::array<size_t, 3> & region,
-                          const dType &                 dtype,
                           void *                        host_ptr) -> void
 {
 #if USE_OPENCL
@@ -421,7 +418,6 @@ OpenCLBackend::readImage(const Device::Pointer &       device,
                          const std::array<size_t, 3> & buffer_shape,
                          const std::array<size_t, 3> & buffer_origin,
                          const std::array<size_t, 3> & region,
-                         const dType &                 dtype,
                          void *                        host_ptr) -> void
 {
 #if USE_OPENCL
@@ -466,11 +462,11 @@ OpenCLBackend::readMemory(const Device::Pointer & device,
       buffer_shape[0] *= toBytes(dtype);
       buffer_origin[0] *= toBytes(dtype);
       region[0] *= toBytes(dtype);
-      readBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, dtype, host_ptr);
+      readBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
       break;
     }
     case mType::IMAGE: {
-      readImage(device, buffer_ptr, buffer_shape, buffer_origin, region, dtype, host_ptr);
+      readImage(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
       break;
     }
   }

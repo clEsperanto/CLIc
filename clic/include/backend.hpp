@@ -196,7 +196,6 @@ public:
               const std::array<size_t, 3> & buffer_shape,
               const std::array<size_t, 3> & buffer_origin,
               const std::array<size_t, 3> & region,
-              const dType &                 dtype,
               const void *                  host_ptr) -> void;
   auto
   writeMemory(const Device::Pointer & device,
@@ -214,7 +213,6 @@ public:
              const std::array<size_t, 3> & buffer_shape,
              const std::array<size_t, 3> & buffer_origin,
              const std::array<size_t, 3> & region,
-             const dType &                 dtype,
              void *                        host_ptr) -> void;
 
   auto
@@ -339,7 +337,6 @@ public:
               const std::array<size_t, 3> & buffer_shape,
               const std::array<size_t, 3> & buffer_origin,
               const std::array<size_t, 3> & region,
-              const dType &                 dtype,
               const void *                  host_ptr) -> void;
 
   static auto
@@ -348,7 +345,6 @@ public:
              const std::array<size_t, 3> & buffer_shape,
              const std::array<size_t, 3> & buffer_origin,
              const std::array<size_t, 3> & region,
-             const dType &                 dtype,
              const void *                  host_ptr) -> void;
 
   auto
@@ -367,7 +363,6 @@ public:
              const std::array<size_t, 3> & buffer_shape,
              const std::array<size_t, 3> & buffer_origin,
              const std::array<size_t, 3> & region,
-             const dType &                 dtype,
              void *                        host_ptr) -> void;
 
   static auto
@@ -376,7 +371,6 @@ public:
             const std::array<size_t, 3> & buffer_shape,
             const std::array<size_t, 3> & buffer_origin,
             const std::array<size_t, 3> & region,
-            const dType &                 dtype,
             void *                        host_ptr) -> void;
 
   auto
