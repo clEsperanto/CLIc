@@ -123,6 +123,12 @@ Array::write(const void * host_data, const std::array<size_t, 3> & region, const
 }
 
 auto
+Array::write(const void * host_data, const size_t & x_coord, const size_t & y_coord, const size_t & z_coord) -> void
+{
+  write(host_data, { 1, 1, 1 }, { x_coord, y_coord, z_coord });
+}
+
+auto
 Array::read(void * host_data) const -> void
 {
   if (host_data == nullptr)
@@ -155,6 +161,12 @@ Array::read(void * host_data, const std::array<size_t, 3> & region, const std::a
   std::array<size_t, 3> _region = region;
   std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
   backend_.readMemory(device(), c_get(), _shape, _origin, _region, dtype(), mtype(), host_data);
+}
+
+auto
+Array::read(void * host_data, const size_t & x_coord, const size_t & y_coord, const size_t & z_coord) const -> void
+{
+  read(host_data, { 1, 1, 1 }, { x_coord, y_coord, z_coord });
 }
 
 auto

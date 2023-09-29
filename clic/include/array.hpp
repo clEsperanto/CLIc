@@ -51,12 +51,16 @@ public:
   auto
   write(const void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin)
     -> void;
+  auto
+  write(const void * host_data, const size_t & x_coord, const size_t & y_coord, const size_t & z_coord) -> void;
 
   auto
   read(void * host_data) const -> void;
   auto
   read(void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin) const
     -> void;
+  auto
+  read(void * host_data, const size_t & x_coord, const size_t & y_coord, const size_t & z_coord) const -> void;
 
   auto
   copy(const Array::Pointer & dst) const -> void;

@@ -258,7 +258,7 @@ OpenCLBackend::writeBuffer(const Device::Pointer &       device,
   const std::array<size_t, 3> host_origin = { 0, 0, 0 };
 
   cl_int err;
-  if (region[2] > 1 || region[1] > 1)
+  if (buffer_shape[2] > 1 || buffer_shape[1] > 1)
   {
     err = clEnqueueWriteBufferRect(opencl_device->getCLCommandQueue(),
                                    *static_cast<cl_mem *>(*buffer_ptr),
@@ -342,7 +342,6 @@ OpenCLBackend::writeMemory(const Device::Pointer & device,
                            const void *            host_ptr) const -> void
 {
 
-
   switch (mtype)
   {
     case mType::BUFFER: {
@@ -378,7 +377,7 @@ OpenCLBackend::readBuffer(const Device::Pointer &       device,
   const std::array<size_t, 3> host_origin = { 0, 0, 0 };
 
   cl_int err;
-  if (region[2] > 1 || region[1] > 1)
+  if (buffer_shape[2] > 1 || buffer_shape[1] > 1)
   {
     err = clEnqueueReadBufferRect(opencl_device->getCLCommandQueue(),
                                   *static_cast<const cl_mem *>(*buffer_ptr),

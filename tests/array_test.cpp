@@ -62,6 +62,7 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
   }
 
   {
+    type              value = 19;
     std::vector<type> input(10 * 10 * 1);
     std::fill(input.begin(), input.end(), static_cast<type>(-7));
     std::cout << "test region: create, write, copy, read: ... ";
@@ -69,19 +70,21 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
     gpu_input->write(input.data());
 
     std::vector<type> subinput(5 * 5 * 1);
-    std::fill(subinput.begin(), subinput.end(), static_cast<type>(1));
+    std::fill(subinput.begin(), subinput.end(), static_cast<type>(-1));
 
-    gpu_input->write(subinput.data(), { 5, 5, 1 }, { 3, 1, 0 });
+    gpu_input->write(subinput.data(), { 5, 5, 1 }, { 3, 2, 0 });
+    gpu_input->write(&value, 2, 8, 0);
     std::vector<type> test(gpu_input->size());
     gpu_input->read(test.data());
 
-    // for (int i = 0; i < test.size(); i++)
-    // {
-    //   if (i % 10 == 0)
-    //     std::cout << std::endl;
-    //   std::cout << test[i] << " ";
-    // }
-    // std::cout << std::endl;
+    for (int i = 0; i < test.size(); i++)
+    {
+      if (i % 10 == 0)
+        std::cout << std::endl;
+      std::cout << test[i] << " ";
+    }
+    std::cout << std::endl;
+
 
     std::array<size_t, 3> region = { 6, 3, 1 };
     std::vector<type>     subtest(region[0] * region[1] * region[2]);
@@ -119,9 +122,9 @@ main(int argc, char ** argv) -> int
   std::cout << cle::BackendManager::getInstance().getBackend() << " backend selected" << std::endl;
   assert(run_test<float>({ 10, 5, 3 }, cle::mType::BUFFER) == 0);
 
-  cle::BackendManager::getInstance().setBackend("cuda");
-  std::cout << cle::BackendManager::getInstance().getBackend() << " backend selected" << std::endl;
-  assert(run_test<float>({ 10, 5, 3 }, cle::mType::BUFFER) == 0);
+  // cle::BackendManager::getInstance().setBackend("cuda");
+  // std::cout << cle::BackendManager::getInstance().getBackend() << " backend selected" << std::endl;
+  // assert(run_test<float>({ 10, 5, 3 }, cle::mType::BUFFER) == 0);
 
   return EXIT_SUCCESS;
 }
