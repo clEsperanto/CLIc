@@ -31,7 +31,6 @@ OpenCLDevice::initialize() -> void
 {
   if (isInitialized())
   {
-    // std::cerr << "OpenCL device already initialized" << std::endl;
     return;
   }
   cl_int err = CL_SUCCESS;

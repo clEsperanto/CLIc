@@ -906,7 +906,7 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
       throw std::runtime_error("Error (ocl): Failed to create program from source with error code " +
                                std::to_string(err));
     }
-    cl_int buildStatus = clBuildProgram(prog, 0, nullptr, nullptr, nullptr, nullptr);
+    cl_int buildStatus = clBuildProgram(prog, 1, &opencl_device->getCLDevice(), "-w", nullptr, nullptr);
     if (buildStatus != CL_SUCCESS)
     {
       size_t      len;

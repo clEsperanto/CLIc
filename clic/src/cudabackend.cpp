@@ -727,8 +727,9 @@ CUDABackend::buildKernel(const Device::Pointer & device,
                                std::to_string(res));
     }
 
-    const std::string                 arch_comp = "-arch=compute_" + cuda_device->getArch();
-    const std::array<const char *, 1> options = { arch_comp.c_str() };
+    const std::string                 arch_comp = "--gpu-architecture=compute_" + cuda_device->getArch();
+    const std::string                 woff = "--disable-warnings";
+    const std::array<const char *, 2> options = { arch_comp.c_str(), woff.c_str() };
     res = nvrtcCompileProgram(prog, options.size(), options.data());
     if (res != NVRTC_SUCCESS)
     {
