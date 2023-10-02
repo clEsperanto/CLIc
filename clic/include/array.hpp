@@ -64,6 +64,11 @@ public:
 
   auto
   copy(const Array::Pointer & dst) const -> void;
+  auto
+  copy(const Array::Pointer &        dst,
+       const std::array<size_t, 3> & region,
+       const std::array<size_t, 3> & src_origin,
+       const std::array<size_t, 3> & dst_origin) const -> void;
 
   auto
   fill(const float & value) const -> void;

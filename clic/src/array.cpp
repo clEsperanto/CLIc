@@ -184,25 +184,79 @@ Array::copy(const Array::Pointer & dst) const -> void
   {
     std::cerr << "Error: Arrays dimensions do not match" << std::endl;
   }
+  std::array<size_t, 3> _src_origin = { 0, 0, 0 };
+  std::array<size_t, 3> _dst_origin = { 0, 0, 0 };
+  std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
+  std::array<size_t, 3> _src_shape = { this->width(), this->height(), this->depth() };
+  std::array<size_t, 3> _dst_shape = { dst->width(), dst->height(), dst->depth() };
   if (mtype() == mType::BUFFER && dst->mtype() == mType::BUFFER)
   {
     backend_.copyMemoryBufferToBuffer(
-      device(), c_get(), { width(), height(), depth() }, { 0, 0, 0 }, toBytes(dtype()), dst->get());
+      device(), c_get(), _src_origin, _src_shape, dst->get(), _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::IMAGE)
   {
     backend_.copyMemoryImageToImage(
-      device(), c_get(), { width(), height(), depth() }, { 0, 0, 0 }, toBytes(dtype()), dst->get());
+      device(), c_get(), _src_origin, _src_shape, dst->get(), _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::BUFFER && dst->mtype() == mType::IMAGE)
   {
     backend_.copyMemoryBufferToImage(
-      device(), c_get(), { width(), height(), depth() }, { 0, 0, 0 }, toBytes(dtype()), dst->get());
+      device(), c_get(), _src_origin, _src_shape, dst->get(), _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::BUFFER)
   {
     backend_.copyMemoryImageToBuffer(
-      device(), c_get(), { width(), height(), depth() }, { 0, 0, 0 }, toBytes(dtype()), dst->get());
+      device(), c_get(), _src_origin, _src_shape, dst->get(), _dst_origin, _dst_shape, _region, toBytes(dtype()));
+  }
+  else
+  {
+    std::cerr << "Error: copying Arrays from different memory types" << std::endl;
+  }
+}
+
+auto
+Array::copy(const Array::Pointer &        dst,
+            const std::array<size_t, 3> & region,
+            const std::array<size_t, 3> & src_origin,
+            const std::array<size_t, 3> & dst_origin) const -> void
+{
+  if (!initialized() || !dst->initialized())
+  {
+    std::cerr << "Error: Arrays are not initialized_" << std::endl;
+  }
+  if (device() != dst->device())
+  {
+    std::cerr << "Error: copying Arrays from different devices" << std::endl;
+  }
+  if (width() != dst->width() || height() != dst->height() || depth() != dst->depth() || itemSize() != dst->itemSize())
+  {
+    std::cerr << "Error: Arrays dimensions do not match" << std::endl;
+  }
+  std::array<size_t, 3> _src_origin = src_origin;
+  std::array<size_t, 3> _dst_origin = dst_origin;
+  std::array<size_t, 3> _region = region;
+  std::array<size_t, 3> _src_shape = { this->width(), this->height(), this->depth() };
+  std::array<size_t, 3> _dst_shape = { dst->width(), dst->height(), dst->depth() };
+  if (mtype() == mType::BUFFER && dst->mtype() == mType::BUFFER)
+  {
+    backend_.copyMemoryBufferToBuffer(
+      device(), c_get(), _src_origin, _src_shape, dst->get(), _dst_origin, _dst_shape, _region, toBytes(dtype()));
+  }
+  else if (mtype() == mType::IMAGE && dst->mtype() == mType::IMAGE)
+  {
+    backend_.copyMemoryImageToImage(
+      device(), c_get(), _src_origin, _src_shape, dst->get(), _dst_origin, _dst_shape, _region, toBytes(dtype()));
+  }
+  else if (mtype() == mType::BUFFER && dst->mtype() == mType::IMAGE)
+  {
+    backend_.copyMemoryBufferToImage(
+      device(), c_get(), _src_origin, _src_shape, dst->get(), _dst_origin, _dst_shape, _region, toBytes(dtype()));
+  }
+  else if (mtype() == mType::IMAGE && dst->mtype() == mType::BUFFER)
+  {
+    backend_.copyMemoryImageToBuffer(
+      device(), c_get(), _src_origin, _src_shape, dst->get(), _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else
   {
