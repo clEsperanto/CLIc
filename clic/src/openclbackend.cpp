@@ -476,29 +476,43 @@ OpenCLBackend::readMemory(const Device::Pointer & device,
 }
 
 auto
-OpenCLBackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
-                                        const void **                 src_data_ptr,
-                                        const std::array<size_t, 3> & region,
-                                        const std::array<size_t, 3> & origin,
-                                        const size_t &                bytes,
-                                        void **                       dst_data_ptr) const -> void
+OpenCLBackend::copyMemoryBufferToBuffer(const Device::Pointer & device,
+                                        const void **           src_ptr,
+                                        std::array<size_t, 3> & src_origin,
+                                        std::array<size_t, 3> & src_shape,
+                                        void **                 dst_ptr,
+                                        std::array<size_t, 3> & dst_origin,
+                                        std::array<size_t, 3> & dst_shape,
+                                        std::array<size_t, 3> & region,
+                                        const size_t &          bytes) const -> void
 {
 #if USE_OPENCL
-  auto                        opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  cl_int                      err;
-  const std::array<size_t, 3> region_ocl = { region[0] * bytes, region[1], region[2] };
-  if (region[2] > 1 || region[1] > 1)
+  auto   opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  cl_int err;
+
+  region[0] *= bytes;
+  src_origin[0] *= bytes;
+  src_shape[0] *= bytes;
+  dst_origin[0] *= bytes;
+  dst_shape[0] *= bytes;
+
+  size_t src_row_pitch = src_shape[1] > 1 ? src_shape[0] : 0;
+  size_t src_slice_pitch = src_shape[2] > 1 ? src_shape[0] * src_shape[1] : 0;
+  size_t dst_row_pitch = dst_shape[1] > 1 ? dst_shape[0] : 0;
+  size_t dst_slice_pitch = dst_shape[2] > 1 ? dst_shape[0] * dst_shape[1] : 0;
+
+  if (src_shape[2] > 1 || src_shape[1] > 1)
   {
     err = clEnqueueCopyBufferRect(opencl_device->getCLCommandQueue(),
-                                  *static_cast<const cl_mem *>(*src_data_ptr),
-                                  *static_cast<cl_mem *>(*dst_data_ptr),
-                                  origin.data(),
-                                  origin.data(),
-                                  region_ocl.data(),
-                                  0,
-                                  0,
-                                  0,
-                                  0,
+                                  *static_cast<const cl_mem *>(*src_ptr),
+                                  *static_cast<cl_mem *>(*dst_ptr),
+                                  src_origin.data(),
+                                  dst_origin.data(),
+                                  region.data(),
+                                  src_row_pitch,
+                                  src_slice_pitch,
+                                  dst_row_pitch,
+                                  dst_slice_pitch,
                                   0,
                                   nullptr,
                                   nullptr);
@@ -506,11 +520,11 @@ OpenCLBackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
   else
   {
     err = clEnqueueCopyBuffer(opencl_device->getCLCommandQueue(),
-                              *static_cast<const cl_mem *>(*src_data_ptr),
-                              *static_cast<cl_mem *>(*dst_data_ptr),
-                              origin[0],
-                              origin[0],
-                              region_ocl[0],
+                              *static_cast<const cl_mem *>(*src_ptr),
+                              *static_cast<cl_mem *>(*dst_ptr),
+                              src_origin[0],
+                              dst_origin[0],
+                              region[0],
                               0,
                               nullptr,
                               nullptr);
@@ -526,20 +540,33 @@ OpenCLBackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
 }
 
 auto
-OpenCLBackend::copyMemoryBufferToImage(const Device::Pointer &       device,
-                                       const void **                 src_data_ptr,
-                                       const std::array<size_t, 3> & region,
-                                       const std::array<size_t, 3> & origin,
-                                       const size_t &                bytes,
-                                       void **                       dst_data_ptr) const -> void
+OpenCLBackend::copyMemoryBufferToImage(const Device::Pointer & device,
+                                       const void **           src_ptr,
+                                       std::array<size_t, 3> & src_origin,
+                                       std::array<size_t, 3> & src_shape,
+                                       void **                 dst_ptr,
+                                       std::array<size_t, 3> & dst_origin,
+                                       std::array<size_t, 3> & dst_shape,
+                                       std::array<size_t, 3> & region,
+                                       const size_t &          bytes) const -> void
 {
 #if USE_OPENCL
   auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+
+  region[0] *= bytes;
+  src_origin[0] *= bytes;
+  src_shape[0] *= bytes;
+  dst_origin[0] *= bytes;
+
+  size_t src_row_pitch = src_shape[1] > 1 ? src_shape[0] : 0;
+  size_t src_slice_pitch = src_shape[2] > 1 ? src_shape[0] * src_shape[1] : 0;
+  size_t bufferOffset = src_origin[0] + src_origin[1] * src_row_pitch + src_origin[2] * src_slice_pitch;
+
   auto err = clEnqueueCopyBufferToImage(opencl_device->getCLCommandQueue(),
-                                        *static_cast<const cl_mem *>(*src_data_ptr),
-                                        *static_cast<cl_mem *>(*dst_data_ptr),
-                                        0,
-                                        origin.data(),
+                                        *static_cast<const cl_mem *>(*src_ptr),
+                                        *static_cast<cl_mem *>(*dst_ptr),
+                                        bufferOffset,
+                                        dst_origin.data(),
                                         region.data(),
                                         0,
                                         nullptr,
@@ -555,21 +582,34 @@ OpenCLBackend::copyMemoryBufferToImage(const Device::Pointer &       device,
 }
 
 auto
-OpenCLBackend::copyMemoryImageToBuffer(const Device::Pointer &       device,
-                                       const void **                 src_data_ptr,
-                                       const std::array<size_t, 3> & region,
-                                       const std::array<size_t, 3> & origin,
-                                       const size_t &                bytes,
-                                       void **                       dst_data_ptr) const -> void
+OpenCLBackend::copyMemoryImageToBuffer(const Device::Pointer & device,
+                                       const void **           src_ptr,
+                                       std::array<size_t, 3> & src_origin,
+                                       std::array<size_t, 3> & src_shape,
+                                       void **                 dst_ptr,
+                                       std::array<size_t, 3> & dst_origin,
+                                       std::array<size_t, 3> & dst_shape,
+                                       std::array<size_t, 3> & region,
+                                       const size_t &          bytes) const -> void
 {
 #if USE_OPENCL
   auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+
+  region[0] *= bytes;
+  src_origin[0] *= bytes;
+  dst_shape[0] *= bytes;
+  dst_origin[0] *= bytes;
+
+  size_t dst_row_pitch = dst_shape[1] > 1 ? dst_shape[0] : 0;
+  size_t dst_slice_pitch = dst_shape[2] > 1 ? dst_shape[0] * dst_shape[1] : 0;
+  size_t bufferOffset = src_origin[0] + src_origin[1] * dst_row_pitch + src_origin[2] * dst_slice_pitch;
+
   auto err = clEnqueueCopyImageToBuffer(opencl_device->getCLCommandQueue(),
-                                        *static_cast<const cl_mem *>(*src_data_ptr),
-                                        *static_cast<cl_mem *>(*dst_data_ptr),
-                                        origin.data(),
+                                        *static_cast<const cl_mem *>(*src_ptr),
+                                        *static_cast<cl_mem *>(*dst_ptr),
+                                        src_origin.data(),
                                         region.data(),
-                                        0,
+                                        bufferOffset,
                                         0,
                                         nullptr,
                                         nullptr);
@@ -585,20 +625,30 @@ OpenCLBackend::copyMemoryImageToBuffer(const Device::Pointer &       device,
 }
 
 auto
-OpenCLBackend::copyMemoryImageToImage(const Device::Pointer &       device,
-                                      const void **                 src_data_ptr,
-                                      const std::array<size_t, 3> & region,
-                                      const std::array<size_t, 3> & origin,
-                                      const size_t &                bytes,
-                                      void **                       dst_data_ptr) const -> void
+OpenCLBackend::copyMemoryImageToImage(const Device::Pointer & device,
+                                      const void **           src_ptr,
+                                      std::array<size_t, 3> & src_origin,
+                                      std::array<size_t, 3> & src_shape,
+                                      void **                 dst_ptr,
+                                      std::array<size_t, 3> & dst_origin,
+                                      std::array<size_t, 3> & dst_shape,
+                                      std::array<size_t, 3> & region,
+                                      const size_t &          bytes) const -> void
 {
 #if USE_OPENCL
   auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+
+  region[0] *= bytes;
+  src_origin[0] *= bytes;
+  src_shape[0] *= bytes;
+  dst_origin[0] *= bytes;
+  dst_shape[0] *= bytes;
+
   auto err = clEnqueueCopyImage(opencl_device->getCLCommandQueue(),
-                                *static_cast<const cl_mem *>(*src_data_ptr),
-                                *static_cast<cl_mem *>(*dst_data_ptr),
-                                origin.data(),
-                                origin.data(),
+                                *static_cast<const cl_mem *>(*src_ptr),
+                                *static_cast<cl_mem *>(*dst_ptr),
+                                src_origin.data(),
+                                dst_origin.data(),
                                 region.data(),
                                 0,
                                 nullptr,
