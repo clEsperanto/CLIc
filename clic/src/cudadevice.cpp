@@ -30,7 +30,6 @@ CUDADevice::initialize() -> void
 {
   if (isInitialized())
   {
-    // std::cerr << "CUDA device already initialized" << std::endl;
     return;
   }
   auto err = cuDeviceGet(&cudaDevice, 0);
