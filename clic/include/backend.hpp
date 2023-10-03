@@ -315,6 +315,11 @@ public:
                 const std::vector<size_t> &   sizes) const -> void override;
   [[nodiscard]] auto
   getPreamble() const -> std::string override;
+
+  [[nodiscard]] static auto
+  getErrorString(const CUresult & error) -> std::string;
+  [[nodiscard]] static auto
+  getErrorString(const nvrtcResult & error) -> std::string;
 };
 
 class OpenCLBackend : public Backend
@@ -495,6 +500,9 @@ public:
                 const std::vector<size_t> &   sizes) const -> void override;
   [[nodiscard]] auto
   getPreamble() const -> std::string override;
+
+  [[nodiscard]] static auto
+  getErrorString(const cl_int & error) -> std::string;
 };
 
 class BackendManager
