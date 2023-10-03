@@ -240,16 +240,8 @@ execute(const Device::Pointer & device,
     }
   }
 
-  // execute kernel in backend
-  try
-  {
-    cle::BackendManager::getInstance().getBackend().executeKernel(
-      device, program_source, kernel_name, global_range, args_ptr, args_size);
-  }
-  catch (const std::exception & e)
-  {
-    throw std::runtime_error("Error: Failed to execute the kernel. \n\t > " + std::string(e.what()));
-  }
+  cle::BackendManager::getInstance().getBackend().executeKernel(
+    device, program_source, kernel_name, global_range, args_ptr, args_size);
 }
 
 auto
