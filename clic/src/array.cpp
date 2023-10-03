@@ -4,25 +4,21 @@
 namespace cle
 {
 
-Array::Array(const size_t &          width,
-             const size_t &          height,
-             const size_t &          depth,
+Array::Array(const size_t            width,
+             const size_t            height,
+             const size_t            depth,
              const dType &           data_type,
              const mType &           mem_type,
              const Device::Pointer & device_ptr)
-  : width_(width)
-  , height_(height)
-  , depth_(depth)
+  : width_((width > 1) ? width : 1)
+  , height_((height > 1) ? height : 1)
+  , depth_((depth > 1) ? depth : 1)
   , dataType_(data_type)
   , memType_(mem_type)
   , device_(device_ptr)
   , data_(std::make_shared<void *>(nullptr))
   , initialized_(false)
-{
-  width_ = (width_ > 1) ? width_ : 1;
-  height_ = (height_ > 1) ? height_ : 1;
-  depth_ = (depth_ > 1) ? depth_ : 1;
-}
+{}
 
 Array::~Array()
 {
@@ -33,9 +29,9 @@ Array::~Array()
 }
 
 auto
-Array::create(const size_t &          width,
-              const size_t &          height,
-              const size_t &          depth,
+Array::create(const size_t            width,
+              const size_t            height,
+              const size_t            depth,
               const dType &           data_type,
               const mType &           mem_type,
               const Device::Pointer & device_ptr) -> Array::Pointer
@@ -46,9 +42,9 @@ Array::create(const size_t &          width,
 }
 
 auto
-Array::create(const size_t &          width,
-              const size_t &          height,
-              const size_t &          depth,
+Array::create(const size_t            width,
+              const size_t            height,
+              const size_t            depth,
               const dType &           data_type,
               const mType &           mem_type,
               const void *            host_data,
@@ -80,7 +76,6 @@ Array::allocate() -> void
 {
   if (initialized())
   {
-    std::cerr << "Warning: Array is already initialized" << std::endl;
     return;
   }
   backend_.allocateMemory(device(), { this->width(), this->height(), this->depth() }, dtype(), mtype(), get());
@@ -123,7 +118,7 @@ Array::write(const void * host_data, const std::array<size_t, 3> & region, const
 }
 
 auto
-Array::write(const void * host_data, const size_t & x_coord, const size_t & y_coord, const size_t & z_coord) -> void
+Array::write(const void * host_data, const size_t x_coord, const size_t y_coord, const size_t z_coord) -> void
 {
   write(host_data, { 1, 1, 1 }, { x_coord, y_coord, z_coord });
 }
@@ -164,7 +159,7 @@ Array::read(void * host_data, const std::array<size_t, 3> & region, const std::a
 }
 
 auto
-Array::read(void * host_data, const size_t & x_coord, const size_t & y_coord, const size_t & z_coord) const -> void
+Array::read(void * host_data, const size_t x_coord, const size_t y_coord, const size_t z_coord) const -> void
 {
   read(host_data, { 1, 1, 1 }, { x_coord, y_coord, z_coord });
 }
@@ -174,15 +169,15 @@ Array::copy(const Array::Pointer & dst) const -> void
 {
   if (!initialized() || !dst->initialized())
   {
-    std::cerr << "Error: Arrays are not initialized_" << std::endl;
+    throw std::runtime_error("Error: Arrays are not initialized_");
   }
   if (device() != dst->device())
   {
-    std::cerr << "Error: copying Arrays from different devices" << std::endl;
+    throw std::runtime_error("Error: copying Arrays from different devices");
   }
   if (width() != dst->width() || height() != dst->height() || depth() != dst->depth() || itemSize() != dst->itemSize())
   {
-    std::cerr << "Error: Arrays dimensions do not match" << std::endl;
+    throw std::runtime_error("Error: Arrays dimensions do not match");
   }
   std::array<size_t, 3> _src_origin = { 0, 0, 0 };
   std::array<size_t, 3> _dst_origin = { 0, 0, 0 };
@@ -211,7 +206,7 @@ Array::copy(const Array::Pointer & dst) const -> void
   }
   else
   {
-    std::cerr << "Error: copying Arrays from different memory types" << std::endl;
+    throw std::runtime_error("Error: copying Arrays from different memory types");
   }
 }
 
@@ -223,21 +218,22 @@ Array::copy(const Array::Pointer &        dst,
 {
   if (!initialized() || !dst->initialized())
   {
-    std::cerr << "Error: Arrays are not initialized_" << std::endl;
+    throw std::runtime_error("Error: Arrays are not initialized_");
   }
   if (device() != dst->device())
   {
-    std::cerr << "Error: copying Arrays from different devices" << std::endl;
+    throw std::runtime_error("Error: copying Arrays from different devices");
   }
   if (width() != dst->width() || height() != dst->height() || depth() != dst->depth() || itemSize() != dst->itemSize())
   {
-    std::cerr << "Error: Arrays dimensions do not match" << std::endl;
+    throw std::runtime_error("Error: Arrays dimensions do not match");
   }
   std::array<size_t, 3> _src_origin = src_origin;
   std::array<size_t, 3> _dst_origin = dst_origin;
   std::array<size_t, 3> _region = region;
   std::array<size_t, 3> _src_shape = { this->width(), this->height(), this->depth() };
   std::array<size_t, 3> _dst_shape = { dst->width(), dst->height(), dst->depth() };
+
   if (mtype() == mType::BUFFER && dst->mtype() == mType::BUFFER)
   {
     backend_.copyMemoryBufferToBuffer(
@@ -258,18 +254,14 @@ Array::copy(const Array::Pointer &        dst,
     backend_.copyMemoryImageToBuffer(
       device(), c_get(), _src_origin, _src_shape, dst->get(), _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
-  else
-  {
-    std::cerr << "Error: copying Arrays from different memory types" << std::endl;
-  }
 }
 
 auto
-Array::fill(const float & value) const -> void
+Array::fill(const float value) const -> void
 {
   if (!initialized())
   {
-    std::cerr << "Error: Arrays are not initialized_" << std::endl;
+    throw std::runtime_error("Error: Cannot fill Array because it is not initialized.");
   }
   std::array<size_t, 3> _origin = { 0, 0, 0 };
   std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
