@@ -87,7 +87,7 @@ Array::write(const void * host_data) -> void
 {
   if (host_data == nullptr)
   {
-    throw std::runtime_error("Error: host_data is null");
+    throw std::runtime_error("Error: Host data is null");
   }
   if (!initialized())
   {
@@ -105,7 +105,7 @@ Array::write(const void * host_data, const std::array<size_t, 3> & region, const
 {
   if (host_data == nullptr)
   {
-    throw std::runtime_error("Error: host_data is null");
+    throw std::runtime_error("Error: Host data is null");
   }
   if (!initialized())
   {
@@ -128,7 +128,7 @@ Array::read(void * host_data) const -> void
 {
   if (host_data == nullptr)
   {
-    throw std::runtime_error("Error: host_data is null");
+    throw std::runtime_error("Error: Host data is null");
   }
   if (!initialized())
   {
@@ -146,7 +146,7 @@ Array::read(void * host_data, const std::array<size_t, 3> & region, const std::a
 {
   if (host_data == nullptr)
   {
-    throw std::runtime_error("Error: host_data is null");
+    throw std::runtime_error("Error: Host data is null");
   }
   if (!initialized())
   {
@@ -173,7 +173,7 @@ Array::copy(const Array::Pointer & dst) const -> void
   }
   if (device() != dst->device())
   {
-    throw std::runtime_error("Error: copying Arrays from different devices");
+    throw std::runtime_error("Error: Copying Arrays from different devices");
   }
   if (width() != dst->width() || height() != dst->height() || depth() != dst->depth() || itemSize() != dst->itemSize())
   {
@@ -206,7 +206,7 @@ Array::copy(const Array::Pointer & dst) const -> void
   }
   else
   {
-    throw std::runtime_error("Error: copying Arrays from different memory types");
+    throw std::runtime_error("Error: Copying Arrays from different memory types");
   }
 }
 
@@ -222,7 +222,7 @@ Array::copy(const Array::Pointer &        dst,
   }
   if (device() != dst->device())
   {
-    throw std::runtime_error("Error: copying Arrays from different devices");
+    throw std::runtime_error("Error: Copying Arrays from different devices");
   }
   if (width() != dst->width() || height() != dst->height() || depth() != dst->depth() || itemSize() != dst->itemSize())
   {
@@ -261,7 +261,7 @@ Array::fill(const float value) const -> void
 {
   if (!initialized())
   {
-    throw std::runtime_error("Error: Cannot fill Array because it is not initialized.");
+    throw std::runtime_error("Error: Array it is not initialized.");
   }
   std::array<size_t, 3> _origin = { 0, 0, 0 };
   std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
