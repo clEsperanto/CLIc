@@ -6,6 +6,7 @@
 #include "utils.hpp"
 
 #include <algorithm>
+#include <array>
 #include <vector>
 
 namespace cle
