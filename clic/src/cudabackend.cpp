@@ -13,27 +13,21 @@ CUDABackend::CUDABackend()
 #endif
 }
 
+#if USE_CUDA
 [[nodiscard]] static auto
 getErrorString(const CUresult & error) -> std::string
 {
-#if USE_CUDA
   const char * error_string;
   cuGetErrorString(error, &error_string);
   return std::string(error_string);
-#else
-  return std::string("CUDA is not enabled");
-#endif
 }
 
 [[nodiscard]] static auto
 getErrorString(const nvrtcResult & error) -> std::string
 {
-#if USE_CUDA
   return std::string(nvrtcGetErrorString(error));
-#else
-  return std::string("CUDA is not enabled");
-#endif
 }
+#endif
 
 auto
 CUDABackend::getDevices(const std::string & type) const -> std::vector<Device::Pointer>

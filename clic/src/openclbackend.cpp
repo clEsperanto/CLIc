@@ -2,6 +2,7 @@
 #include "cle_preamble_cl.h"
 
 #include <array>
+#include <unordered_map>
 
 namespace cle
 {
