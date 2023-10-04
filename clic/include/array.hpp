@@ -37,7 +37,7 @@ public:
          const void *            host_data,
          const Device::Pointer & device_ptr) -> Array::Pointer;
   static auto
-  create(Array::Pointer array) -> Array::Pointer;
+  create(const Array::Pointer & array) -> Array::Pointer;
 
   friend auto
   operator<<(std::ostream & out, const Array::Pointer & array) -> std::ostream &;
