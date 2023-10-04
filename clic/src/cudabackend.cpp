@@ -13,8 +13,8 @@ CUDABackend::CUDABackend()
 #endif
 }
 
-[[nodiscard]] auto
-CUDABackend::getErrorString(const CUresult & error) -> std::string
+[[nodiscard]] static auto
+getErrorString(const CUresult & error) -> std::string
 {
 #if USE_CUDA
   const char * error_string;
@@ -25,8 +25,8 @@ CUDABackend::getErrorString(const CUresult & error) -> std::string
 #endif
 }
 
-[[nodiscard]] auto
-CUDABackend::getErrorString(const nvrtcResult & error) -> std::string
+[[nodiscard]] static auto
+getErrorString(const nvrtcResult & error) -> std::string
 {
 #if USE_CUDA
   return std::string(nvrtcGetErrorString(error));
