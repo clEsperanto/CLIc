@@ -2,10 +2,6 @@
 #include "backend.hpp"
 #include "clic.hpp"
 
-// #include <fstream>
-// #include <string_view>
-// #include <vector>
-
 namespace cle
 {
 
@@ -31,11 +27,12 @@ translateOpenclToCuda(std::string & code) -> void
   };
 
   // list of replacements to be performed (not exhaustive)
+  // special case: 'make_' need to followed by ');' replacement, e.g. (int2){1,2}; -> make_int2(1,2);
   const std::vector<std::pair<std::string, std::string>> replacements = {
-    { "(int2){", "make_int2(" },     // special case - need to followed by ');' replacement
-    { "(int4){", "make_int4(" },     // special case - need to followed by ');' replacement
-    { "(float4){", "make_float4(" }, // special case - need to followed by ');' replacement
-    { "(float2){", "make_float2(" }, // special case - need to followed by ');' replacement
+    { "(int2){", "make_int2(" },
+    { "(int4){", "make_int4(" },
+    { "(float4){", "make_float4(" },
+    { "(float2){", "make_float2(" },
     { "__constant sampler_t", "__device__ int" },
     { "inline", "__device__ inline" },
     { "#pragma", "// #pragma" },
@@ -113,6 +110,8 @@ arrayDefines(const ParameterList & parameter_list, const Device::Type & device) 
   static constexpr std::array<const char *, 3> ndimMap = { "1", "2", "3" };
   static constexpr std::array<const char *, 3> posTypeMap = { "int", "int2", "int4" };
   static constexpr std::array<const char *, 3> posMap = { "(pos0)", "(pos0, pos1)", "(pos0, pos1, pos2, 0)" };
+
+  // loop over all parameters, skip if parameter is not an array
   for (const auto & param : parameter_list)
   {
     if (std::holds_alternative<const float>(param.second) || std::holds_alternative<const int>(param.second))
@@ -122,6 +121,7 @@ arrayDefines(const ParameterList & parameter_list, const Device::Type & device) 
     const auto & arr = std::get<Array::Pointer>(param.second);
     const auto & key = param.first;
 
+    // manage array dimension
     const size_t      dimIndex = arr->dim() - 1;
     const std::string ndim = ndimMap[dimIndex];
     const std::string pos_type = posTypeMap[dimIndex];
@@ -134,7 +134,8 @@ arrayDefines(const ParameterList & parameter_list, const Device::Type & device) 
     defines << "\n#define POS_" << param.first << "_INSTANCE(pos0,pos1,pos2,pos3) " << prefix << pos;
     defines << "\n";
 
-    if (arr->mtype() == mType::BUFFER)
+    // manage array type (buffer or image), and read/write macros
+    if (arr->mtype() == mType::BUFFER || device == Device::Type::CUDA)
     {
       std::string ocl_keyword = (device == Device::Type::OPENCL) ? "__global " : "";
       bufferDefines(defines, key, ndim, toString(arr->dtype()), arr->shortType(), ocl_keyword);
@@ -153,6 +154,8 @@ arrayDefines(const ParameterList & parameter_list, const Device::Type & device) 
       }
       imageDefines(defines, key, ndim, arr->shortType(), access_type);
     }
+
+    // manage array size
     defines << "\n";
     defines << "\n#define IMAGE_SIZE_" << key << "_WIDTH " << std::to_string(arr->width());
     defines << "\n#define IMAGE_SIZE_" << key << "_HEIGHT " << std::to_string(arr->height());

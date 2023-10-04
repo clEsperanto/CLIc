@@ -1,5 +1,4 @@
 #include "array.hpp"
-#include <array>
 
 namespace cle
 {
@@ -17,7 +16,6 @@ Array::Array(const size_t            width,
   , memType_(mem_type)
   , device_(device_ptr)
   , data_(std::make_shared<void *>(nullptr))
-  , initialized_(false)
 {}
 
 Array::~Array()
@@ -56,7 +54,7 @@ Array::create(const size_t            width,
 }
 
 auto
-Array::create(Array::Pointer array) -> Array::Pointer
+Array::create(const Array::Pointer & array) -> Array::Pointer
 {
   auto ptr = create(array->width(), array->height(), array->depth(), array->dtype(), array->mtype(), array->device());
   array->copy(ptr);

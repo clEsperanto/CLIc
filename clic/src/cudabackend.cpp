@@ -1,7 +1,5 @@
 #include "backend.hpp"
 #include "cle_preamble_cu.h"
-#include <array>
-#include <chrono>
 
 namespace cle
 {
@@ -755,9 +753,6 @@ CUDABackend::buildKernel(const Device::Pointer & device,
     throw std::runtime_error("Error: Fail to get context from device.\nCUDA error : " + getErrorString(err) + " (" +
                              std::to_string(err) + ").");
   }
-
-  std::chrono::high_resolution_clock::time_point start_time, end_time;
-  std::chrono::microseconds                      duration;
 
   CUmodule    cuModule = nullptr;
   std::string hash = std::to_string(std::hash<std::string>{}(kernel_source));

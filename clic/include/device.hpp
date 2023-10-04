@@ -1,12 +1,12 @@
 #ifndef __INCLUDE_DEVICE_HPP
 #define __INCLUDE_DEVICE_HPP
 
+#include "clic.hpp"
+
 #include <iostream>
 #include <map>
 #include <memory>
 #include <sstream>
-
-#include "clic.hpp"
 
 namespace cle
 {

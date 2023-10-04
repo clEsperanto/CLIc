@@ -1,12 +1,12 @@
 #include "backend.hpp"
 #include "cle_preamble_cl.h"
 
-#include <array>
 #include <unordered_map>
 
 namespace cle
 {
 
+#if USE_OPENCL
 [[nodiscard]] static auto
 getErrorString(const cl_int & error) -> std::string
 {
@@ -62,6 +62,7 @@ getErrorString(const cl_int & error) -> std::string
   auto ite = openCLErrorToStr.find(error);
   return (ite != openCLErrorToStr.end()) ? ite->second : "CL_UNKNOWN_ERROR";
 }
+#endif
 
 auto
 OpenCLBackend::getDevices(const std::string & type) const -> std::vector<Device::Pointer>
