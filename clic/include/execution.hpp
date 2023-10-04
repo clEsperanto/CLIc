@@ -19,15 +19,6 @@ using KernelInfo = std::pair<std::string, std::string>;
 using RangeArray = std::array<size_t, 3>;
 
 auto
-translateOpenclToCuda(std::string & code) -> void;
-
-auto
-cudaDefines(const ParameterList & parameter_list, const ConstantList & constant_list) -> std::string;
-
-auto
-oclDefines(const ParameterList & parameter_list, const ConstantList & constant_list) -> std::string;
-
-auto
 execute(const Device::Pointer & device,
         const KernelInfo &      kernel_func,
         const ParameterList &   parameters,
@@ -40,9 +31,6 @@ native_execute(const Device::Pointer & device,
                const ParameterList &   parameters,
                const RangeArray &      global_range = { 1, 1, 1 },
                const RangeArray &      local_range = { 1, 1, 1 }) -> void;
-
-auto
-loadSource(const std::string & source_path) -> std::string;
 
 } // namespace cle
 
