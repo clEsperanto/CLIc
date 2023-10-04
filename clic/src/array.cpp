@@ -1,5 +1,7 @@
 #include "array.hpp"
 
+#include <array>
+
 namespace cle
 {
 

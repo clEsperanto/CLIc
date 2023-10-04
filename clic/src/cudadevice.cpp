@@ -160,7 +160,7 @@ CUDADevice::getInfo() const -> std::string
 }
 
 auto
-CUDADevice::getCache() -> std::map<std::string, CUmodule> &
+CUDADevice::getCache() -> CUDADevice::CacheType &
 {
   return this->cache;
 }

@@ -4,9 +4,9 @@
 #include "clic.hpp"
 
 #include <iostream>
-#include <map>
 #include <memory>
 #include <sstream>
+#include <unordered_map>
 
 namespace cle
 {
@@ -69,6 +69,8 @@ public:
 class OpenCLDevice : public Device
 {
 public:
+  using CacheType = std::unordered_map<std::string, cl_program>;
+
   OpenCLDevice(const cl_platform_id & platform, const cl_device_id & device);
   ~OpenCLDevice() override;
 
@@ -98,16 +100,16 @@ public:
   [[nodiscard]] auto
   getInfo() const -> std::string override;
   [[nodiscard]] auto
-  getCache() -> std::map<std::string, cl_program> &;
+  getCache() -> CacheType &;
 
 private:
-  cl_device_id                      clDevice;
-  cl_platform_id                    clPlatform;
-  cl_context                        clContext;
-  cl_command_queue                  clCommandQueue;
-  std::map<std::string, cl_program> cache;
-  bool                              initialized = false;
-  bool                              waitFinish = false;
+  cl_device_id     clDevice;
+  cl_platform_id   clPlatform;
+  cl_context       clContext;
+  cl_command_queue clCommandQueue;
+  CacheType        cache;
+  bool             initialized = false;
+  bool             waitFinish = false;
 };
 #endif // USE_OPENCL
 
@@ -115,6 +117,8 @@ private:
 class CUDADevice : public Device
 {
 public:
+  using CacheType = std::unordered_map<std::string, CUmodule>;
+
   explicit CUDADevice(int deviceIndex);
   ~CUDADevice() override;
 
@@ -146,16 +150,16 @@ public:
   [[nodiscard]] auto
   getArch() const -> std::string;
   [[nodiscard]] auto
-  getCache() -> std::map<std::string, CUmodule> &;
+  getCache() -> CacheType &;
 
 private:
-  int                             cudaDeviceIndex;
-  CUdevice                        cudaDevice;
-  CUcontext                       cudaContext;
-  CUstream                        cudaStream;
-  bool                            initialized = false;
-  bool                            waitFinish = false;
-  std::map<std::string, CUmodule> cache;
+  int       cudaDeviceIndex;
+  CUdevice  cudaDevice;
+  CUcontext cudaContext;
+  CUstream  cudaStream;
+  bool      initialized = false;
+  bool      waitFinish = false;
+  CacheType cache;
 };
 #endif // USE_CUDA
 

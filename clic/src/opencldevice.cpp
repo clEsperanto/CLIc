@@ -162,7 +162,7 @@ OpenCLDevice::getInfo() const -> std::string
 }
 
 auto
-OpenCLDevice::getCache() -> std::map<std::string, cl_program> &
+OpenCLDevice::getCache() -> OpenCLDevice::CacheType &
 {
   return this->cache;
 }

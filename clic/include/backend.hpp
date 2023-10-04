@@ -6,9 +6,6 @@
 #include "utils.hpp"
 
 #include <algorithm>
-#include <map>
-#include <memory>
-#include <vector>
 
 namespace cle
 {
