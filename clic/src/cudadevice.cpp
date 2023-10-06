@@ -30,7 +30,6 @@ CUDADevice::initialize() -> void
 {
   if (isInitialized())
   {
-    // std::cerr << "CUDA device already initialized" << std::endl;
     return;
   }
   auto err = cuDeviceGet(&cudaDevice, 0);
@@ -161,7 +160,7 @@ CUDADevice::getInfo() const -> std::string
 }
 
 auto
-CUDADevice::getCache() -> std::map<std::string, CUmodule> &
+CUDADevice::getCache() -> CUDADevice::CacheType &
 {
   return this->cache;
 }

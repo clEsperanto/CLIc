@@ -5,9 +5,6 @@
 #include "device.hpp"
 #include "utils.hpp"
 
-#include <algorithm>
-#include <variant>
-
 namespace cle
 {
 
@@ -22,22 +19,22 @@ public:
     return std::shared_ptr<Array>(new Array());
   }
   static auto
-  create(const size_t &          width,
-         const size_t &          height,
-         const size_t &          depth,
+  create(size_t                  width,
+         size_t                  height,
+         size_t                  depth,
          const dType &           data_type,
          const mType &           mem_type,
          const Device::Pointer & device_ptr) -> Array::Pointer;
   static auto
-  create(const size_t &          width,
-         const size_t &          height,
-         const size_t &          depth,
+  create(size_t                  width,
+         size_t                  height,
+         size_t                  depth,
          const dType &           data_type,
          const mType &           mem_type,
          const void *            host_data,
          const Device::Pointer & device_ptr) -> Array::Pointer;
   static auto
-  create(Array::Pointer array) -> Array::Pointer;
+  create(const Array::Pointer & array) -> Array::Pointer;
 
   friend auto
   operator<<(std::ostream & out, const Array::Pointer & array) -> std::ostream &;
@@ -52,7 +49,7 @@ public:
   write(const void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin)
     -> void;
   auto
-  write(const void * host_data, const size_t & x_coord, const size_t & y_coord, const size_t & z_coord) -> void;
+  write(const void * host_data, size_t x_coord, size_t y_coord, size_t z_coord) -> void;
 
   auto
   read(void * host_data) const -> void;
@@ -60,13 +57,18 @@ public:
   read(void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin) const
     -> void;
   auto
-  read(void * host_data, const size_t & x_coord, const size_t & y_coord, const size_t & z_coord) const -> void;
+  read(void * host_data, size_t x_coord, size_t y_coord, size_t z_coord) const -> void;
 
   auto
   copy(const Array::Pointer & dst) const -> void;
+  auto
+  copy(const Array::Pointer &        dst,
+       const std::array<size_t, 3> & region,
+       const std::array<size_t, 3> & src_origin,
+       const std::array<size_t, 3> & dst_origin) const -> void;
 
   auto
-  fill(const float & value) const -> void;
+  fill(float value) const -> void;
 
   [[nodiscard]] auto
   size() const -> size_t;
@@ -102,9 +104,9 @@ private:
   using MemoryPointer = std::shared_ptr<void *>;
 
   Array() = default;
-  Array(const size_t &          width,
-        const size_t &          height,
-        const size_t &          depth,
+  Array(size_t                  width,
+        size_t                  height,
+        size_t                  depth,
         const dType &           data_type,
         const mType &           mem_type,
         const Device::Pointer & device_ptr);

@@ -1,12 +1,12 @@
 #ifndef __INCLUDE_DEVICE_HPP
 #define __INCLUDE_DEVICE_HPP
 
+#include "clic.hpp"
+
 #include <iostream>
-#include <map>
 #include <memory>
 #include <sstream>
-
-#include "clic.hpp"
+#include <unordered_map>
 
 namespace cle
 {
@@ -23,12 +23,6 @@ public:
 
   Device() = default;
   virtual ~Device() = default;
-  Device(const Device &) = default;
-  Device(Device &&) = default;
-  auto
-  operator=(const Device &) -> Device & = default;
-  auto
-  operator=(Device &&) -> Device & = default;
 
   virtual auto
   initialize() -> void = 0;
@@ -37,7 +31,7 @@ public:
   virtual auto
   finish() const -> void = 0;
   virtual auto
-  setWaitToFinish(bool) -> void = 0;
+  setWaitToFinish(bool flag) -> void = 0;
 
   [[nodiscard]] virtual auto
   isInitialized() const -> bool = 0;
@@ -75,14 +69,10 @@ public:
 class OpenCLDevice : public Device
 {
 public:
+  using CacheType = std::unordered_map<std::string, cl_program>;
+
   OpenCLDevice(const cl_platform_id & platform, const cl_device_id & device);
   ~OpenCLDevice() override;
-  OpenCLDevice(const OpenCLDevice &) = default;
-  OpenCLDevice(OpenCLDevice &&) = default;
-  auto
-  operator=(const OpenCLDevice &) -> OpenCLDevice & = default;
-  auto
-  operator=(OpenCLDevice &&) -> OpenCLDevice & = default;
 
   auto
   initialize() -> void override;
@@ -91,7 +81,7 @@ public:
   auto
   finish() const -> void override;
   auto
-  setWaitToFinish(bool) -> void override;
+  setWaitToFinish(bool flag) -> void override;
 
   [[nodiscard]] auto
   getType() const -> Device::Type override;
@@ -110,16 +100,16 @@ public:
   [[nodiscard]] auto
   getInfo() const -> std::string override;
   [[nodiscard]] auto
-  getCache() -> std::map<std::string, cl_program> &;
+  getCache() -> CacheType &;
 
 private:
-  cl_device_id                      clDevice;
-  cl_platform_id                    clPlatform;
-  cl_context                        clContext;
-  cl_command_queue                  clCommandQueue;
-  std::map<std::string, cl_program> cache;
-  bool                              initialized = false;
-  bool                              waitFinish = false;
+  cl_device_id     clDevice;
+  cl_platform_id   clPlatform;
+  cl_context       clContext;
+  cl_command_queue clCommandQueue;
+  CacheType        cache;
+  bool             initialized = false;
+  bool             waitFinish = false;
 };
 #endif // USE_OPENCL
 
@@ -127,14 +117,10 @@ private:
 class CUDADevice : public Device
 {
 public:
+  using CacheType = std::unordered_map<std::string, CUmodule>;
+
   explicit CUDADevice(int deviceIndex);
   ~CUDADevice() override;
-  CUDADevice(const CUDADevice &) = default;
-  CUDADevice(CUDADevice &&) = default;
-  auto
-  operator=(const CUDADevice &) -> CUDADevice & = default;
-  auto
-  operator=(CUDADevice &&) -> CUDADevice & = default;
 
   auto
   initialize() -> void override;
@@ -143,7 +129,7 @@ public:
   auto
   finish() const -> void override;
   auto
-  setWaitToFinish(bool) -> void override;
+  setWaitToFinish(bool flag) -> void override;
 
   [[nodiscard]] auto
   getType() const -> Device::Type override;
@@ -164,16 +150,16 @@ public:
   [[nodiscard]] auto
   getArch() const -> std::string;
   [[nodiscard]] auto
-  getCache() -> std::map<std::string, CUmodule> &;
+  getCache() -> CacheType &;
 
 private:
-  int                             cudaDeviceIndex;
-  CUdevice                        cudaDevice;
-  CUcontext                       cudaContext;
-  CUstream                        cudaStream;
-  bool                            initialized = false;
-  bool                            waitFinish = false;
-  std::map<std::string, CUmodule> cache;
+  int       cudaDeviceIndex;
+  CUdevice  cudaDevice;
+  CUcontext cudaContext;
+  CUstream  cudaStream;
+  bool      initialized = false;
+  bool      waitFinish = false;
+  CacheType cache;
 };
 #endif // USE_CUDA
 

@@ -1,15 +1,13 @@
 #include "execution.hpp"
 #include "backend.hpp"
-
-#include <fstream>
-#include <regex>
-#include <string_view>
-#include <vector>
+#include "clic.hpp"
 
 namespace cle
 {
 
-auto
+// Function for translating OpenCL code to CUDA code
+// @StRigaud TODO: function is not exhaustive and needs to be improved to support more features
+static auto
 translateOpenclToCuda(std::string & code) -> void
 {
   // nested lambda function to find and replace all occurrences of a string
@@ -29,11 +27,12 @@ translateOpenclToCuda(std::string & code) -> void
   };
 
   // list of replacements to be performed (not exhaustive)
+  // special case: 'make_' need to followed by ');' replacement, e.g. (int2){1,2}; -> make_int2(1,2);
   const std::vector<std::pair<std::string, std::string>> replacements = {
-    { "(int2){", "make_int2(" },     // special case - need to followed by ');' replacement
-    { "(int4){", "make_int4(" },     // special case - need to followed by ');' replacement
-    { "(float4){", "make_float4(" }, // special case - need to followed by ');' replacement
-    { "(float2){", "make_float2(" }, // special case - need to followed by ');' replacement
+    { "(int2){", "make_int2(" },
+    { "(int4){", "make_int4(" },
+    { "(float4){", "make_float4(" },
+    { "(float2){", "make_float2(" },
     { "__constant sampler_t", "__device__ int" },
     { "inline", "__device__ inline" },
     { "#pragma", "// #pragma" },
@@ -50,63 +49,10 @@ translateOpenclToCuda(std::string & code) -> void
   }
 }
 
-auto
-cudaDefines(const ParameterList & parameter_list, const ConstantList & constant_list) -> std::string
-{
-  std::ostringstream defines;
-  for (const auto & [key, value] : constant_list)
-  {
-    defines << "#define " << key << " " << value << "\n";
-  }
-  defines << "\n";
-  for (const auto & param : parameter_list)
-  {
-    if (std::holds_alternative<const float>(param.second) || std::holds_alternative<const int>(param.second))
-    {
-      continue;
-    }
-    const auto & arr = std::get<Array::Pointer>(param.second);
 
-    // Function to format and append the define string
-    static constexpr std::array<const char *, 3> ndimMap = { "1", "2", "3" };
-    static constexpr std::array<const char *, 3> posTypeMap = { "int", "int2", "int4" };
-    static constexpr std::array<const char *, 3> posMap = { "(pos0)", "(pos0, pos1)", "(pos0, pos1, pos2, 0)" };
-
-    int         dim = arr->dim();
-    std::string ndim = ndimMap[dim - 1];
-    std::string pos_type = posTypeMap[dim - 1];
-    std::string pos = posMap[dim - 1];
-    if (pos_type == "int")
-    {
-      defines << "\n#define POS_" << param.first << "_INSTANCE(pos0,pos1,pos2,pos3) " << pos;
-    }
-    else
-    {
-      defines << "\n#define POS_" << param.first << "_INSTANCE(pos0,pos1,pos2,pos3) make_" << pos_type << "" << pos;
-    }
-
-    defines << "\n";
-    defines << "\n#define CONVERT_" << param.first << "_PIXEL_TYPE clij_convert_" << arr->dtype() << "_sat";
-    defines << "\n#define IMAGE_" << param.first << "_PIXEL_TYPE " << arr->dtype() << "";
-    defines << "\n#define POS_" << param.first << "_TYPE " << pos_type;
-    defines << "\n\n";
-    defines << "\n#define IMAGE_SIZE_" << param.first << "_WIDTH " << std::to_string(arr->width());
-    defines << "\n#define IMAGE_SIZE_" << param.first << "_HEIGHT " << std::to_string(arr->height());
-    defines << "\n#define IMAGE_SIZE_" << param.first << "_DEPTH " << std::to_string(arr->depth());
-    defines << "\n\n";
-    defines << "\n#define IMAGE_" << param.first << "_TYPE " << arr->dtype() << "*";
-    defines << "\n#define READ_" << param.first << "_IMAGE(a,b,c) read_buffer" << ndim << "d" << arr->shortType()
-            << "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
-    defines << "\n#define WRITE_" << param.first << "_IMAGE(a,b,c) write_buffer" << ndim << "d" << arr->shortType()
-            << "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
-    defines << "\n";
-  }
-  defines << "\n";
-  return defines.str();
-}
-
-auto
-oclDefines(const ParameterList & parameter_list, const ConstantList & constant_list) -> std::string
+// Function creating common defines for constants
+static auto
+commonDefines(const ConstantList & constant_list) -> std::string
 {
   std::ostringstream defines;
   for (const auto & [key, value] : constant_list)
@@ -118,6 +64,54 @@ oclDefines(const ParameterList & parameter_list, const ConstantList & constant_l
   defines << "\n#define GET_IMAGE_HEIGHT(image_key) IMAGE_SIZE_ ## image_key ## _HEIGHT";
   defines << "\n#define GET_IMAGE_DEPTH(image_key) IMAGE_SIZE_ ## image_key ## _DEPTH";
   defines << "\n";
+  return defines.str();
+}
+
+
+// Function creating buffer specific defines
+static auto
+bufferDefines(std::ostringstream & defines,
+              const std::string &  key,
+              const std::string &  ndim,
+              const std::string &  dtype,
+              const std::string &  stype,
+              const std::string &  ocl) -> void
+{
+  defines << "\n#define IMAGE_" << key << "_TYPE " << ocl << dtype << "*";
+  defines << "\n#define READ_" << key << "_IMAGE(a,b,c) read_buffer" << ndim << "d" << stype
+          << "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
+  defines << "\n#define WRITE_" << key << "_IMAGE(a,b,c) write_buffer" << ndim << "d" << stype
+          << "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
+}
+
+
+// Function creating image specific defines (OpenCL only for now)
+static auto
+imageDefines(std::ostringstream & defines,
+             const std::string &  key,
+             const std::string &  ndim,
+             const std::string &  stype,
+             const std::string &  access_type) -> void
+{
+  char        front_char = stype.front();
+  std::string prefix = (front_char == 'u') ? "ui" : (front_char == 'f') ? "f" : "i";
+  std::string img_type_name = access_type + " image" + ndim + "d_t";
+  defines << "\n#define IMAGE_" << key << "_TYPE " << img_type_name;
+  defines << "\n#define READ_" << key << "_IMAGE(a,b,c) read_image" << prefix << "(a,b,c)";
+  defines << "\n#define WRITE_" << key << "_IMAGE(a,b,c) write_image" << prefix << "(a,b,c)";
+}
+
+
+// Function for creating defines for each array parameters
+static auto
+arrayDefines(const ParameterList & parameter_list, const Device::Type & device) -> std::string
+{
+  std::ostringstream                           defines;
+  static constexpr std::array<const char *, 3> ndimMap = { "1", "2", "3" };
+  static constexpr std::array<const char *, 3> posTypeMap = { "int", "int2", "int4" };
+  static constexpr std::array<const char *, 3> posMap = { "(pos0)", "(pos0, pos1)", "(pos0, pos1, pos2, 0)" };
+
+  // loop over all parameters, skip if parameter is not an array
   for (const auto & param : parameter_list)
   {
     if (std::holds_alternative<const float>(param.second) || std::holds_alternative<const int>(param.second))
@@ -125,35 +119,29 @@ oclDefines(const ParameterList & parameter_list, const ConstantList & constant_l
       continue;
     }
     const auto & arr = std::get<Array::Pointer>(param.second);
+    const auto & key = param.first;
 
-    static constexpr std::array<const char *, 3> ndimMap = { "1", "2", "3" };
-    static constexpr std::array<const char *, 3> posTypeMap = { "int", "int2", "int4" };
-    static constexpr std::array<const char *, 3> posMap = { "(pos0)", "(pos0, pos1)", "(pos0, pos1, pos2, 0)" };
-
-    const int         dimIndex = arr->dim() - 1;
+    // manage array dimension
+    const size_t      dimIndex = arr->dim() - 1;
     const std::string ndim = ndimMap[dimIndex];
     const std::string pos_type = posTypeMap[dimIndex];
     const std::string pos = posMap[dimIndex];
+    defines << "\n#define CONVERT_" << key << "_PIXEL_TYPE clij_convert_" << arr->dtype() << "_sat";
+    defines << "\n#define IMAGE_" << key << "_PIXEL_TYPE " << arr->dtype();
+    defines << "\n#define POS_" << key << "_TYPE " << pos_type;
+    const std::string prefix =
+      (device == Device::Type::OPENCL || pos_type == "int") ? "(" + pos_type + ")" : "make_" + pos_type;
+    defines << "\n#define POS_" << param.first << "_INSTANCE(pos0,pos1,pos2,pos3) " << prefix << pos;
+    defines << "\n";
 
-    defines << "\n";
-    defines << "\n#define CONVERT_" << param.first << "_PIXEL_TYPE clij_convert_" << arr->dtype() << "_sat";
-    defines << "\n#define IMAGE_" << param.first << "_PIXEL_TYPE " << arr->dtype() << "";
-    defines << "\n#define POS_" << param.first << "_TYPE " << pos_type;
-    defines << "\n#define POS_" << param.first << "_INSTANCE(pos0,pos1,pos2,pos3) (" << pos_type << ")" << pos;
-    defines << "\n";
-    if (arr->mtype() == mType::BUFFER)
+    // manage array type (buffer or image), and read/write macros
+    if (arr->mtype() == mType::BUFFER || device == Device::Type::CUDA)
     {
-      defines << "\n#define IMAGE_" << param.first << "_TYPE __global " << arr->dtype() << "*";
-      defines << "\n#define READ_" << param.first << "_IMAGE(a,b,c) read_buffer" << ndim << "d" << arr->shortType()
-              << "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
-      defines << "\n#define WRITE_" << param.first << "_IMAGE(a,b,c) write_buffer" << ndim << "d" << arr->shortType()
-              << "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
+      std::string ocl_keyword = (device == Device::Type::OPENCL) ? "__global " : "";
+      bufferDefines(defines, key, ndim, toString(arr->dtype()), arr->shortType(), ocl_keyword);
     }
     else
     {
-      char        front_char = arr->shortType().front();
-      std::string prefix = (front_char == 'u') ? "ui" : (front_char == 'f') ? "f" : "i";
-
       std::string access_type;
       if (param.first.find("dst") != std::string::npos || param.first.find("destination") != std::string::npos ||
           param.first.find("output") != std::string::npos)
@@ -164,21 +152,31 @@ oclDefines(const ParameterList & parameter_list, const ConstantList & constant_l
       {
         access_type = "__read_only";
       }
-      std::string img_type_name = access_type + " image" + ndim + "d_t";
-
-      defines << "\n#define IMAGE_" << param.first << "_TYPE " << img_type_name;
-      defines << "\n#define READ_" << param.first << "_IMAGE(a,b,c) read_image" << prefix << "(a,b,c)";
-      defines << "\n#define WRITE_" << param.first << "_IMAGE(a,b,c) write_image" << prefix << "(a,b,c)";
+      imageDefines(defines, key, ndim, arr->shortType(), access_type);
     }
+
+    // manage array size
     defines << "\n";
-    defines << "\n#define IMAGE_SIZE_" << param.first << "_WIDTH " << std::to_string(arr->width());
-    defines << "\n#define IMAGE_SIZE_" << param.first << "_HEIGHT " << std::to_string(arr->height());
-    defines << "\n#define IMAGE_SIZE_" << param.first << "_DEPTH " << std::to_string(arr->depth());
-    defines << "\n";
+    defines << "\n#define IMAGE_SIZE_" << key << "_WIDTH " << std::to_string(arr->width());
+    defines << "\n#define IMAGE_SIZE_" << key << "_HEIGHT " << std::to_string(arr->height());
+    defines << "\n#define IMAGE_SIZE_" << key << "_DEPTH " << std::to_string(arr->depth());
+    defines << "\n\n";
   }
-  defines << "\n";
   return defines.str();
 }
+
+
+// Top function for creating defines at runtime
+auto
+generateDefines(const ParameterList & parameter_list, const ConstantList & constant_list, const Device::Type & device)
+  -> std::string
+{
+  std::ostringstream defines;
+  defines << commonDefines(constant_list);
+  defines << arrayDefines(parameter_list, device);
+  return defines.str();
+}
+
 
 auto
 execute(const Device::Pointer & device,
@@ -188,21 +186,13 @@ execute(const Device::Pointer & device,
         const ConstantList &    constants) -> void
 {
   // prepare kernel source for compilation and execution
-  auto        kernel_source = kernel_func.second;
-  const auto  kernel_name = kernel_func.first;
-  const auto  kernel_preamble = cle::BackendManager::getInstance().getBackend().getPreamble();
-  std::string defines;
-  switch (device->getType())
+  auto       kernel_source = kernel_func.second;
+  const auto kernel_name = kernel_func.first;
+  const auto kernel_preamble = cle::BackendManager::getInstance().getBackend().getPreamble();
+  const auto defines = generateDefines(parameters, constants, device->getType());
+  if (device->getType() == Device::Type::CUDA)
   {
-    case Device::Type::CUDA: {
-      defines = cle::cudaDefines(parameters, constants);
-      cle::translateOpenclToCuda(kernel_source);
-      break;
-    }
-    case Device::Type::OPENCL: {
-      defines = cle::oclDefines(parameters, constants);
-      break;
-    }
+    cle::translateOpenclToCuda(kernel_source);
   }
   const std::string program_source = defines + kernel_preamble + kernel_source;
 
@@ -211,18 +201,12 @@ execute(const Device::Pointer & device,
   std::vector<size_t> args_size;
   args_ptr.reserve(parameters.size());
   args_size.reserve(parameters.size());
-
-#if USE_OPENCL
-  const constexpr size_t size_of_pointer = sizeof(cl_mem);
-#else
-  const constexpr size_t size_of_pointer = sizeof(void *);
-#endif
   for (const auto & param : parameters)
   {
     if (const auto & arr = std::get_if<Array::Pointer>(&param.second))
     {
       args_ptr.push_back(device->getType() == Device::Type::CUDA ? (*arr)->get() : *(*arr)->get());
-      args_size.push_back(size_of_pointer);
+      args_size.push_back(GPU_MEM_PTR_SIZE);
     }
     else if (const auto & f = std::get_if<const float>(&param.second))
     {
@@ -240,17 +224,11 @@ execute(const Device::Pointer & device,
     }
   }
 
-  // execute kernel in backend
-  try
-  {
-    cle::BackendManager::getInstance().getBackend().executeKernel(
-      device, program_source, kernel_name, global_range, args_ptr, args_size);
-  }
-  catch (const std::exception & e)
-  {
-    throw std::runtime_error("Error: Failed to execute the kernel. \n\t > " + std::string(e.what()));
-  }
+  // execute kernel
+  cle::BackendManager::getInstance().getBackend().executeKernel(
+    device, program_source, kernel_name, global_range, args_ptr, args_size);
 }
+
 
 auto
 native_execute(const Device::Pointer & device,
@@ -261,7 +239,7 @@ native_execute(const Device::Pointer & device,
 {
   // TODO @StRigaud: Implement native execution for OpenCL and CUDA
   // allows execution of pure CUDA or OpenCL code without CLIJ syntax
-  throw std::runtime_error("Error: Native execution is not implemented yet.");
+  throw std::runtime_error("WIP: Native execution is not implemented yet.");
 }
 
 } // namespace cle

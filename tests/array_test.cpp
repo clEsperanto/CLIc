@@ -85,7 +85,6 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
     // }
     // std::cout << std::endl;
 
-
     std::array<size_t, 3> region = { 6, 3, 1 };
     std::vector<type>     subtest(region[0] * region[1] * region[2]);
     gpu_input->read(subtest.data(), region, { 1, 1, 0 });
@@ -99,8 +98,13 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
     // std::cout << std::endl;
 
     gpu_input->read(&value, 6, 6, 0);
-    gpu_input->fill(0);
-    gpu_input->read(input.data());
+    // std::cout << value << std::endl << std::endl;
+
+    auto gpu_copy = cle::Array::create(gpu_input);
+    gpu_copy->fill(-5);
+
+    gpu_input->copy(gpu_copy, region, { 1, 1, 0 }, { 3, 2, 0 });
+    gpu_copy->read(input.data());
 
     // for (int i = 0; i < input.size(); i++)
     // {
@@ -110,7 +114,6 @@ run_test(const std::array<size_t, 3> & shape, const cle::mType & mem_type) -> bo
     // }
     // std::cout << std::endl;
     // std::cout << std::endl;
-    // std::cout << value << std::endl;
     std::cout << "all good\n";
   }
 

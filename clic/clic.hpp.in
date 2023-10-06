@@ -23,4 +23,10 @@
 #  include <nvrtc.h>
 #endif
 
+#if USE_OPENCL
+  const constexpr size_t GPU_MEM_PTR_SIZE = sizeof(cl_mem);
+#else
+  const constexpr size_t GPU_MEM_PTR_SIZE = sizeof(void *);
+#endif
+
 #endif // __CLIC_HPP
