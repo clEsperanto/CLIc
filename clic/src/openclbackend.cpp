@@ -998,8 +998,9 @@ saveBinaryToCache(const std::string & hash, const cl_program & program) -> void
     throw std::runtime_error("Error: Fail to fetch program binary size.\nOpenCL error : " + getErrorString(err) + " (" +
                              std::to_string(err) + ").");
   }
-  std::unique_ptr<unsigned char[]> binary(new unsigned char[binary_size]);
-  err = clGetProgramInfo(program, CL_PROGRAM_BINARIES, sizeof(char *), &binary, nullptr);
+  std::vector<unsigned char> binary_vec(binary_size);
+  auto                       pointer_to_binary_vec = binary_vec.data();
+  err = clGetProgramInfo(program, CL_PROGRAM_BINARIES, binary_vec.size(), &pointer_to_binary_vec, nullptr);
   if (err != CL_SUCCESS)
   {
     throw std::runtime_error("Error: Fail to fetch program binary.\nOpenCL error : " + getErrorString(err) + " (" +
@@ -1011,7 +1012,7 @@ saveBinaryToCache(const std::string & hash, const cl_program & program) -> void
   {
     throw std::runtime_error("Error: Fail to open binary cache file.");
   }
-  outfile.write(reinterpret_cast<char *>(binary.get()), binary_size);
+  outfile.write(reinterpret_cast<char *>(binary_vec.data()), binary_size);
   if (!outfile.good())
   {
     throw std::runtime_error("Error: Fail to write binary cache file.");
@@ -1019,13 +1020,13 @@ saveBinaryToCache(const std::string & hash, const cl_program & program) -> void
 }
 
 static auto
-loadBinaryFromCache(const Device::Pointer & device, const std::string & hash, cl_program & program) -> void
+loadBinaryFromCache(const Device::Pointer & device, const std::string & hash) -> cl_program
 {
   cl_int                err;
   std::filesystem::path binary_path = OLC_CACHE_FOLDER_PATH / std::filesystem::path(hash + ".bin");
   if (!std::filesystem::exists(binary_path))
   {
-    return;
+    return nullptr;
   }
   std::ifstream binary_file(binary_path, std::ios::binary | std::ios::ate);
   if (!binary_file.is_open())
@@ -1034,22 +1035,22 @@ loadBinaryFromCache(const Device::Pointer & device, const std::string & hash, cl
   }
   size_t binary_size = binary_file.tellg();
   binary_file.seekg(0, std::ios::beg);
-  std::string binary(binary_size, '\0');
-  if (!binary_file.read(&binary[0], binary_size))
+  std::vector<unsigned char> binary(binary_size);
+  if (!binary_file.read((char *)binary.data(), binary_size))
   {
     throw std::runtime_error("Error: Fail to read binary file.");
   }
   binary_file.close();
-  auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  auto binary_code_ptr = reinterpret_cast<const unsigned char *>(binary.data());
-  program = clCreateProgramWithBinary(
+  auto         opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  const auto * binary_code_ptr = reinterpret_cast<const unsigned char *>(binary.data());
+  auto         program = clCreateProgramWithBinary(
     opencl_device->getCLContext(), 1, &opencl_device->getCLDevice(), &binary_size, &binary_code_ptr, nullptr, &err);
   if (err != CL_SUCCESS)
   {
     throw std::runtime_error("Error: Fail to create program from binary.\nOpenCL error : " + getErrorString(err) +
                              " (" + std::to_string(err) + ").");
   }
-  buildProgram(device, program);
+  return program;
 }
 #endif
 
@@ -1062,9 +1063,8 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
 #if USE_OPENCL
   cl_int      err;
   auto        opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  cl_program  program = nullptr;
   std::string hash = std::to_string(std::hash<std::string>{}(kernel_source));
-  loadBinaryFromCache(device, hash, program);
+  cl_program  program = loadBinaryFromCache(device, hash);
   if (program == nullptr)
   {
     const char * source = kernel_source.c_str();
@@ -1077,7 +1077,11 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
     buildProgram(device, program);
     saveBinaryToCache(hash, program);
   }
-  auto ocl_kernel = clCreateKernel(program, kernel_name.c_str(), &err);
+  else
+  {
+    buildProgram(device, program);
+  }
+  auto * ocl_kernel = clCreateKernel(program, kernel_name.c_str(), &err);
   if (err != CL_SUCCESS)
   {
     throw std::runtime_error("Error: Fail to create kernel.\nOpenCL error : " + getErrorString(err) + " (" +
