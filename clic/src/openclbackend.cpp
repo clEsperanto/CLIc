@@ -974,7 +974,7 @@ static auto
 buildProgram(const Device::Pointer & device, const cl_program & program) -> void
 {
   auto   opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  cl_int buildStatus = clBuildProgram(program, 1, &opencl_device->getCLDevice(), "-w", nullptr, nullptr);
+  cl_int buildStatus = clBuildProgram(program, 1, &opencl_device->getCLDevice(), nullptr, nullptr, nullptr);
   if (buildStatus != CL_SUCCESS)
   {
     size_t      len;
@@ -1074,12 +1074,16 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
       throw std::runtime_error("Error: Fail to create program from source.\nOpenCL error : " + getErrorString(err) +
                                " (" + std::to_string(err) + ").");
     }
+    std::cout << "Building program (1st)...";
     buildProgram(device, program);
+    std::cout << "Done!" << std::endl;
     saveBinaryToCache(hash, program);
   }
   else
   {
+    std::cout << "Building program (2nd)...";
     buildProgram(device, program);
+    std::cout << "Done!" << std::endl;
   }
   auto * ocl_kernel = clCreateKernel(program, kernel_name.c_str(), &err);
   if (err != CL_SUCCESS)
