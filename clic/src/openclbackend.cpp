@@ -1007,7 +1007,8 @@ saveBinaryToCache(const std::string & hash, const cl_program & program) -> void
                              std::to_string(err) + ").");
   }
   std::filesystem::path binary_path = OLC_CACHE_FOLDER_PATH / std::filesystem::path(hash + ".bin");
-  std::ofstream         outfile(binary_path, std::ios::binary);
+  std::cout << "Saving binary to " << binary_path << std::endl;
+  std::ofstream outfile(binary_path, std::ios::binary);
   if (!outfile)
   {
     throw std::runtime_error("Error: Fail to open binary cache file.");
@@ -1024,6 +1025,7 @@ loadBinaryFromCache(const Device::Pointer & device, const std::string & hash) ->
 {
   cl_int                err;
   std::filesystem::path binary_path = OLC_CACHE_FOLDER_PATH / std::filesystem::path(hash + ".bin");
+  std::cout << "Loading binary from " << binary_path << std::endl;
   if (!std::filesystem::exists(binary_path))
   {
     return nullptr;
@@ -1034,6 +1036,10 @@ loadBinaryFromCache(const Device::Pointer & device, const std::string & hash) ->
     throw std::runtime_error("Error: Fail to open binary cache file.");
   }
   size_t binary_size = binary_file.tellg();
+  if (binary_size <= 0)
+  {
+    throw std::runtime_error("Error: Fail to read binary file size.");
+  }
   binary_file.seekg(0, std::ios::beg);
   std::vector<unsigned char> binary(binary_size);
   if (!binary_file.read((char *)binary.data(), binary_size))
