@@ -969,38 +969,89 @@ OpenCLBackend::setImage(const Device::Pointer &       device,
 #endif
 }
 
-auto
-OpenCLBackend::loadProgramFromCache(const Device::Pointer & device, const std::string & hash, void * program) const
-  -> void
-{
 #if USE_OPENCL
-  if (auto opencl_device = std::dynamic_pointer_cast<OpenCLDevice>(device))
+static auto
+buildProgram(const Device::Pointer & device, cl_program program) -> void
+{
+  auto   opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  cl_int buildStatus = clBuildProgram(program, 1, &opencl_device->getCLDevice(), "-w", nullptr, nullptr);
+  if (buildStatus != CL_SUCCESS)
   {
-    const auto & cache = opencl_device->getCache();
-    auto         ite = cache.find(hash);
-    if (ite != cache.end())
-    {
-      *static_cast<cl_program *>(program) = ite->second;
-    }
+    size_t      len;
+    std::string buffer;
+    clGetProgramBuildInfo(program, opencl_device->getCLDevice(), CL_PROGRAM_BUILD_LOG, 0, nullptr, &len);
+    buffer.resize(len);
+    clGetProgramBuildInfo(program, opencl_device->getCLDevice(), CL_PROGRAM_BUILD_LOG, len, &buffer[0], &len);
+    std::cerr << "Build log: " << buffer << std::endl;
+    throw std::runtime_error("Error: Fail to build program.\nOpenCL error : " + getErrorString(buildStatus) + " (" +
+                             std::to_string(buildStatus) + ").");
   }
-#else
-  throw std::runtime_error("Error: OpenCL is not enabled");
-#endif
 }
 
-auto
-OpenCLBackend::saveProgramToCache(const Device::Pointer & device, const std::string & hash, void * program) const
-  -> void
+static auto
+saveBinaryToCache(const std::string & hash, cl_program program) -> void
 {
-#if USE_OPENCL
-  if (auto opencl_device = std::dynamic_pointer_cast<OpenCLDevice>(device))
+  size_t binary_size;
+  auto   err = clGetProgramInfo(program, CL_PROGRAM_BINARY_SIZES, sizeof(size_t), &binary_size, nullptr);
+  if (err != CL_SUCCESS)
   {
-    opencl_device->getCache().emplace(hash, *static_cast<cl_program *>(program));
+    throw std::runtime_error("Error: Fail to fetch program binary size.\nOpenCL error : " + getErrorString(err) + " (" +
+                             std::to_string(err) + ").");
   }
-#else
-  throw std::runtime_error("Error: OpenCL is not enabled");
-#endif
+  std::unique_ptr<unsigned char[]> binary(new unsigned char[binary_size]);
+  err = clGetProgramInfo(program, CL_PROGRAM_BINARIES, sizeof(char *), &binary, nullptr);
+  if (err != CL_SUCCESS)
+  {
+    throw std::runtime_error("Error: Fail to fetch program binary.\nOpenCL error : " + getErrorString(err) + " (" +
+                             std::to_string(err) + ").");
+  }
+  std::filesystem::path binary_path = OLC_CACHE_FOLDER_PATH / std::filesystem::path(hash + ".bin");
+  std::ofstream         outfile(binary_path, std::ios::binary);
+  if (!outfile)
+  {
+    throw std::runtime_error("Error: Fail to open binary cache file.");
+  }
+  outfile.write(reinterpret_cast<char *>(binary.get()), binary_size);
+  if (!outfile.good())
+  {
+    throw std::runtime_error("Error: Fail to write binary cache file.");
+  }
 }
+
+static auto
+loadBinaryFromCache(const Device::Pointer & device, const std::string & hash, cl_program program) -> void
+{
+  cl_int                err;
+  std::filesystem::path binary_path = OLC_CACHE_FOLDER_PATH / std::filesystem::path(hash + ".bin");
+  if (!std::filesystem::exists(binary_path))
+  {
+    return;
+  }
+  std::ifstream binary_file(binary_path, std::ios::binary | std::ios::ate);
+  if (!binary_file.is_open())
+  {
+    throw std::runtime_error("Error: Fail to open binary cache file.");
+  }
+  size_t binary_size = binary_file.tellg();
+  binary_file.seekg(0, std::ios::beg);
+  std::string binary(binary_size, '\0');
+  if (!binary_file.read(&binary[0], binary_size))
+  {
+    throw std::runtime_error("Error: Fail to read binary file.");
+  }
+  binary_file.close();
+  auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  auto binary_code_ptr = reinterpret_cast<const unsigned char *>(binary.data());
+  program = clCreateProgramWithBinary(
+    opencl_device->getCLContext(), 1, &opencl_device->getCLDevice(), &binary_size, &binary_code_ptr, nullptr, &err);
+  if (err != CL_SUCCESS)
+  {
+    throw std::runtime_error("Error: Fail to create program from binary.\nOpenCL error : " + getErrorString(err) +
+                             " (" + std::to_string(err) + ").");
+  }
+  buildProgram(device, program);
+}
+#endif
 
 auto
 OpenCLBackend::buildKernel(const Device::Pointer & device,
@@ -1011,33 +1062,22 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
 #if USE_OPENCL
   cl_int      err;
   auto        opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  cl_program  prog = nullptr;
+  cl_program  program = nullptr;
   std::string hash = std::to_string(std::hash<std::string>{}(kernel_source));
-  loadProgramFromCache(device, hash, &prog);
-  if (prog == nullptr)
+  loadBinaryFromCache(device, hash, program);
+  if (program == nullptr)
   {
     const char * source = kernel_source.c_str();
-    prog = clCreateProgramWithSource(opencl_device->getCLContext(), 1, &source, nullptr, &err);
+    program = clCreateProgramWithSource(opencl_device->getCLContext(), 1, &source, nullptr, &err);
     if (err != CL_SUCCESS)
     {
       throw std::runtime_error("Error: Fail to create program from source.\nOpenCL error : " + getErrorString(err) +
                                " (" + std::to_string(err) + ").");
     }
-    cl_int buildStatus = clBuildProgram(prog, 1, &opencl_device->getCLDevice(), "-w", nullptr, nullptr);
-    if (buildStatus != CL_SUCCESS)
-    {
-      size_t      len;
-      std::string buffer;
-      clGetProgramBuildInfo(prog, opencl_device->getCLDevice(), CL_PROGRAM_BUILD_LOG, 0, nullptr, &len);
-      buffer.resize(len);
-      clGetProgramBuildInfo(prog, opencl_device->getCLDevice(), CL_PROGRAM_BUILD_LOG, len, &buffer[0], &len);
-      std::cerr << "Build log: " << buffer << std::endl;
-      throw std::runtime_error("Error: Fail to build program " + kernel_name +
-                               ".\nOpenCL error : " + getErrorString(err) + " (" + std::to_string(err) + ").");
-    }
-    saveProgramToCache(device, hash, &prog);
+    buildProgram(device, program);
+    saveBinaryToCache(hash, program);
   }
-  auto ocl_kernel = clCreateKernel(prog, kernel_name.c_str(), &err);
+  auto ocl_kernel = clCreateKernel(program, kernel_name.c_str(), &err);
   if (err != CL_SUCCESS)
   {
     throw std::runtime_error("Error: Fail to create kernel.\nOpenCL error : " + getErrorString(err) + " (" +

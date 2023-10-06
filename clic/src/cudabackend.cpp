@@ -1,6 +1,8 @@
 #include "backend.hpp"
 #include "cle_preamble_cu.h"
 
+#include <string>
+
 namespace cle
 {
 
@@ -706,37 +708,53 @@ CUDABackend::setMemory(const Device::Pointer & device,
 #endif
 }
 
-auto
-CUDABackend::loadProgramFromCache(const Device::Pointer & device, const std::string & hash, void * program) const
-  -> void
-{
 #if USE_CUDA
-  if (auto cuda_device = std::dynamic_pointer_cast<CUDADevice>(device))
+static auto
+saveBinaryToCache(const std::string & hash, const std::string & program) -> void
+{
+  std::filesystem::path binary_path = CU_CACHE_FOLDER_PATH / std::filesystem::path(hash + ".ptx");
+  std::ofstream         outfile(binary_path);
+  if (!outfile)
   {
-    const auto & cache = cuda_device->getCache();
-    auto         ite = cache.find(hash);
-    if (ite != cache.end())
-    {
-      *static_cast<CUmodule *>(program) = ite->second;
-    }
+    throw std::runtime_error("Error: Fail to open binary cache file.");
   }
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
+  outfile.write(program.c_str(), program.size());
+  if (!outfile.good())
+  {
+    throw std::runtime_error("Error: Fail to write binary cache file.");
+  }
 }
 
-auto
-CUDABackend::saveProgramToCache(const Device::Pointer & device, const std::string & hash, void * program) const -> void
+static auto
+loadBinaryFromCache(const Device::Pointer & device, const std::string & hash, std::string & ptx) -> void
 {
-#if USE_CUDA
-  if (auto cuda_device = std::dynamic_pointer_cast<CUDADevice>(device))
+  cl_int                err;
+  std::filesystem::path binary_path = CU_CACHE_FOLDER_PATH / std::filesystem::path(hash + ".ptx");
+  if (!std::filesystem::exists(binary_path))
   {
-    cuda_device->getCache().emplace(hash, *reinterpret_cast<CUmodule *>(program));
+    return;
   }
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
+  std::ifstream ptx_file(binary_path);
+  if (!ptx_file.is_open())
+  {
+    throw std::runtime_error("Error: Fail to open binary cache file.");
+  }
+  ptx_file.seekg(0, std::ios::end);
+  size_t size = ptx_file.tellg();
+  if (size == -1)
+  {
+    throw std::runtime_error("Error: Problem encountered while reading the file");
+  }
+
+  ptx_file.seekg(0, std::ios::beg);
+  ptx.resize(size);
+  ptx.assign((std::istreambuf_iterator<char>(ptx_file)), std::istreambuf_iterator<char>());
+  if (ptx_file.fail())
+  {
+    throw std::runtime_error("Error: Fail to read PTX file.");
+  }
 }
+#endif
 
 
 auto
@@ -753,11 +771,10 @@ CUDABackend::buildKernel(const Device::Pointer & device,
     throw std::runtime_error("Error: Fail to get context from device.\nCUDA error : " + getErrorString(err) + " (" +
                              std::to_string(err) + ").");
   }
-
-  CUmodule    cuModule = nullptr;
+  std::string ptx;
   std::string hash = std::to_string(std::hash<std::string>{}(kernel_source));
-  loadProgramFromCache(device, hash, &cuModule);
-  if (cuModule == nullptr)
+  loadBinaryFromCache(device, hash, ptx);
+  if (ptx.empty())
   {
     nvrtcProgram prog;
     auto         res = nvrtcCreateProgram(&prog, kernel_source.c_str(), nullptr, 0, nullptr, nullptr);
@@ -766,7 +783,6 @@ CUDABackend::buildKernel(const Device::Pointer & device,
       throw std::runtime_error("Error: Fail to create kernel program from source.\nCUDA error : " +
                                getErrorString(res) + " (" + std::to_string(res) + ").");
     }
-
     const std::string                 arch_comp = "--gpu-architecture=compute_" + cuda_device->getArch();
     const std::string                 woff = "--disable-warnings";
     const std::array<const char *, 2> options = { arch_comp.c_str(), woff.c_str() };
@@ -781,26 +797,34 @@ CUDABackend::buildKernel(const Device::Pointer & device,
       throw std::runtime_error("Error: Fail to build kernel program.\nCUDA error : " + getErrorString(res) + " (" +
                                std::to_string(res) + ").");
     }
-    size_t ptxSize;
-    nvrtcGetPTXSize(prog, &ptxSize);
-    std::vector<char> ptx(ptxSize);
-    nvrtcGetPTX(prog, ptx.data());
-    res = nvrtcDestroyProgram(&prog);
-    if (res != NVRTC_SUCCESS)
+    size_t      ptxSize;
+    nvrtcResult result = nvrtcGetPTXSize(prog, &ptxSize);
+    if (result != NVRTC_SUCCESS)
     {
-      throw std::runtime_error("Error: Fail to destroy kernel program.\nCUDA error : " + getErrorString(res) + " (" +
-                               std::to_string(res) + ").");
+      throw std::runtime_error("Error: Fail to get PTX size.\nCUDA error : " + getErrorString(result) + " (" +
+                               std::to_string(result) + ").");
     }
-
-    err = cuModuleLoadData(&cuModule, ptx.data());
-    if (err != CUDA_SUCCESS)
+    ptx.resize(ptxSize + 1); // +1 for null terminator
+    result = nvrtcGetPTX(prog, &ptx[0]);
+    if (result != NVRTC_SUCCESS)
     {
-      throw std::runtime_error("Error: Fail to load module.\nCUDA error : " + getErrorString(err) + " (" +
-                               std::to_string(err) + ").");
+      throw std::runtime_error("Error: Fail to get PTX.\nCUDA error : " + getErrorString(result) + " (" +
+                               std::to_string(result) + ").");
     }
-
-
-    saveProgramToCache(device, hash, &cuModule);
+    result = nvrtcDestroyProgram(&prog);
+    if (result != NVRTC_SUCCESS)
+    {
+      throw std::runtime_error("Error: Fail to destroy kernel program.\nCUDA error : " + getErrorString(result) + " (" +
+                               std::to_string(result) + ").");
+    }
+    saveBinaryToCache(hash, ptx);
+  }
+  CUmodule cuModule;
+  err = cuModuleLoadData(&cuModule, ptx.c_str());
+  if (err != CUDA_SUCCESS)
+  {
+    throw std::runtime_error("Error: Fail to load module.\nCUDA error : " + getErrorString(err) + " (" +
+                             std::to_string(err) + ").");
   }
   CUfunction cuFunction;
   err = cuModuleGetFunction(&cuFunction, cuModule, kernel_name.c_str());
