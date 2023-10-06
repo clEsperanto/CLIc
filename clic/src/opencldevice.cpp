@@ -161,11 +161,6 @@ OpenCLDevice::getInfo() const -> std::string
   return result.str();
 }
 
-auto
-OpenCLDevice::getCache() -> OpenCLDevice::CacheType &
-{
-  return this->cache;
-}
 
 #endif // USE_OPENCL
 

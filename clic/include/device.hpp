@@ -69,8 +69,6 @@ public:
 class OpenCLDevice : public Device
 {
 public:
-  using CacheType = std::unordered_map<std::string, cl_program>;
-
   OpenCLDevice(const cl_platform_id & platform, const cl_device_id & device);
   ~OpenCLDevice() override;
 
@@ -99,15 +97,12 @@ public:
   getName() const -> std::string override;
   [[nodiscard]] auto
   getInfo() const -> std::string override;
-  [[nodiscard]] auto
-  getCache() -> CacheType &;
 
 private:
   cl_device_id     clDevice;
   cl_platform_id   clPlatform;
   cl_context       clContext;
   cl_command_queue clCommandQueue;
-  CacheType        cache;
   bool             initialized = false;
   bool             waitFinish = false;
 };
@@ -117,8 +112,6 @@ private:
 class CUDADevice : public Device
 {
 public:
-  using CacheType = std::unordered_map<std::string, CUmodule>;
-
   explicit CUDADevice(int deviceIndex);
   ~CUDADevice() override;
 
@@ -149,8 +142,6 @@ public:
   getInfo() const -> std::string override;
   [[nodiscard]] auto
   getArch() const -> std::string;
-  [[nodiscard]] auto
-  getCache() -> CacheType &;
 
 private:
   int       cudaDeviceIndex;
@@ -159,7 +150,6 @@ private:
   CUstream  cudaStream;
   bool      initialized = false;
   bool      waitFinish = false;
-  CacheType cache;
 };
 #endif // USE_CUDA
 
