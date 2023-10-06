@@ -971,7 +971,7 @@ OpenCLBackend::setImage(const Device::Pointer &       device,
 
 #if USE_OPENCL
 static auto
-buildProgram(const Device::Pointer & device, cl_program program) -> void
+buildProgram(const Device::Pointer & device, const cl_program & program) -> void
 {
   auto   opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
   cl_int buildStatus = clBuildProgram(program, 1, &opencl_device->getCLDevice(), "-w", nullptr, nullptr);
@@ -989,7 +989,7 @@ buildProgram(const Device::Pointer & device, cl_program program) -> void
 }
 
 static auto
-saveBinaryToCache(const std::string & hash, cl_program program) -> void
+saveBinaryToCache(const std::string & hash, const cl_program & program) -> void
 {
   size_t binary_size;
   auto   err = clGetProgramInfo(program, CL_PROGRAM_BINARY_SIZES, sizeof(size_t), &binary_size, nullptr);
@@ -1019,7 +1019,7 @@ saveBinaryToCache(const std::string & hash, cl_program program) -> void
 }
 
 static auto
-loadBinaryFromCache(const Device::Pointer & device, const std::string & hash, cl_program program) -> void
+loadBinaryFromCache(const Device::Pointer & device, const std::string & hash, cl_program & program) -> void
 {
   cl_int                err;
   std::filesystem::path binary_path = OLC_CACHE_FOLDER_PATH / std::filesystem::path(hash + ".bin");
