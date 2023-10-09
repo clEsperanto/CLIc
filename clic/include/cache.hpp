@@ -6,73 +6,48 @@
 #include <iostream>
 #include <string>
 
+#include "device.hpp"
+
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-#  include <userenv.h>
+#  include <ShlObj.h>
 #  include <windows.h>
-#  pragma comment(lib, "userenv.lib")
 #endif
 
 namespace cle
 {
 
-const constexpr char * HIDDEN_FOLDER = ".cle";
-const constexpr char * OCL_CACHE_FOLDER = "ocl_cache";
-const constexpr char * CU_CACHE_FOLDER = "cuda_cache";
+// const constexpr char * HIDDEN_FOLDER = ".cache";
+const constexpr char * CACHE_FOLDER = ".cache/clesperanto";
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 static auto
-get_home_directory_path() -> std::filesystem::path
+get_cache_directory_path() -> std::filesystem::path
 {
-  HANDLE hToken;
-  DWORD  bufSize = MAX_PATH;
-  if (!OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
-  {
-    std::cerr << "Failed to open process token\n";
-    return std::filesystem::current_path();
-  }
+  // cache directory is %LOCALAPPDATA%/clesperanto
   TCHAR path[MAX_PATH];
-  if (!GetUserProfileDirectory(hToken, path, &bufSize))
+  if (FAILED(SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, path)))
   {
-    std::cerr << "Failed to get user profile directory\n";
-    CloseHandle(hToken);
-    return std::filesystem::current_path();
+    std::cerr << "Failed to get AppData\\Local directory\n";
+    return std::filesystem::current_path() / std::filesystem::path(CACHE_FOLDER);
   }
-  CloseHandle(hToken);
-  return std::filesystem::path(path);
+  return std::filesystem::path(path) / std::filesystem::path(CACHE_FOLDER);
 }
 #else
 static auto
-get_home_directory_path() -> std::filesystem::path
+get_cache_directory_path() -> std::filesystem::path
 {
+  // cache directory is $HOME/.cache/clesperanto
   char * home_dir = std::getenv("HOME");
   if (home_dir != nullptr)
   {
-    return { home_dir };
+    return std::filesystem::path(home_dir) / std::filesystem::path(CACHE_FOLDER);
   }
   std::cerr << "Failed to get user home directory\n";
-  return std::filesystem::current_path();
+  return std::filesystem::current_path() / std::filesystem::path(CACHE_FOLDER);
 }
 #endif
 
-static auto
-get_home_directory(const std::string & cache) -> std::filesystem::path
-{
-  const auto hidden_folder = std::filesystem::path(cle::HIDDEN_FOLDER);
-  const auto cache_folder = std::filesystem::path(cache);
-  auto       cache_folder_path = get_home_directory_path() / hidden_folder / cache_folder;
-  try
-  {
-    std::filesystem::create_directories(cache_folder_path);
-  }
-  catch (const std::exception & e)
-  {
-    std::cerr << e.what() << '\n';
-  }
-  return cache_folder_path;
-}
-
-static const auto OLC_CACHE_FOLDER_PATH = get_home_directory("opencl_cache");
-static const auto CU_CACHE_FOLDER_PATH = get_home_directory("cuda_cache");
+static const auto CACHE_FOLDER_PATH = get_cache_directory_path();
 
 } // namespace cle
 

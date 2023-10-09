@@ -973,6 +973,7 @@ OpenCLBackend::setImage(const Device::Pointer &       device,
 static auto
 buildProgram(const Device::Pointer & device, const cl_program & program) -> void
 {
+
   auto   opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
   cl_int buildStatus = clBuildProgram(program, 1, &opencl_device->getCLDevice(), "-w", nullptr, nullptr);
   if (buildStatus != CL_SUCCESS)
@@ -989,7 +990,7 @@ buildProgram(const Device::Pointer & device, const cl_program & program) -> void
 }
 
 static auto
-saveBinaryToCache(const std::string & hash, const cl_program & program) -> void
+saveBinaryToCache(const std::string & device_hash, const std::string & source_hash, const cl_program & program) -> void
 {
   size_t binary_size;
   auto   err = clGetProgramInfo(program, CL_PROGRAM_BINARY_SIZES, sizeof(size_t), &binary_size, nullptr);
@@ -1006,7 +1007,11 @@ saveBinaryToCache(const std::string & hash, const cl_program & program) -> void
     throw std::runtime_error("Error: Fail to fetch program binary.\nOpenCL error : " + getErrorString(err) + " (" +
                              std::to_string(err) + ").");
   }
-  std::filesystem::path binary_path = OLC_CACHE_FOLDER_PATH / std::filesystem::path(hash + ".bin");
+
+  std::filesystem::path binary_path =
+    CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".bin");
+  std::filesystem::create_directories(binary_path.parent_path());
+
   std::cout << "Saving binary to " << binary_path << std::endl;
   std::ofstream outfile(binary_path, std::ios::binary);
   if (!outfile)
@@ -1021,10 +1026,14 @@ saveBinaryToCache(const std::string & hash, const cl_program & program) -> void
 }
 
 static auto
-loadBinaryFromCache(const Device::Pointer & device, const std::string & hash) -> cl_program
+loadBinaryFromCache(const Device::Pointer & device, const std::string & device_hash, const std::string & source_hash)
+  -> cl_program
 {
-  cl_int                err;
-  std::filesystem::path binary_path = OLC_CACHE_FOLDER_PATH / std::filesystem::path(hash + ".bin");
+  cl_int err;
+
+  std::filesystem::path binary_path =
+    CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".bin");
+
   std::cout << "Loading binary from " << binary_path << std::endl;
   if (!std::filesystem::exists(binary_path))
   {
@@ -1067,10 +1076,14 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
                            void *                  kernel) const -> void
 {
 #if USE_OPENCL
-  cl_int      err;
-  auto        opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  std::string hash = std::to_string(std::hash<std::string>{}(kernel_source));
-  cl_program  program = loadBinaryFromCache(device, hash);
+  cl_int err;
+  auto   opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+
+  std::hash<std::string> hasher;
+  const auto             source_hash = std::to_string(hasher(kernel_source));
+  const auto             device_hash = std::to_string(hasher(opencl_device->getInfo()));
+
+  cl_program program = loadBinaryFromCache(device, device_hash, source_hash);
   if (program == nullptr)
   {
     const char * source = kernel_source.c_str();
@@ -1083,7 +1096,7 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
     std::cout << "Building program (1st)...";
     buildProgram(device, program);
     std::cout << "Done!" << std::endl;
-    saveBinaryToCache(hash, program);
+    saveBinaryToCache(device_hash, source_hash, program);
   }
   else
   {

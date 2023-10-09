@@ -710,10 +710,13 @@ CUDABackend::setMemory(const Device::Pointer & device,
 
 #if USE_CUDA
 static auto
-saveBinaryToCache(const std::string & hash, const std::string & program) -> void
+saveBinaryToCache(const std::string & device_hash, const std::string & source_hash, const std::string & program) -> void
 {
-  std::filesystem::path binary_path = CU_CACHE_FOLDER_PATH / std::filesystem::path(hash + ".ptx");
-  std::ofstream         outfile(binary_path);
+  std::filesystem::path binary_path =
+    CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".ptx");
+  std::filesystem::create_directories(binary_path.parent_path());
+
+  std::ofstream outfile(binary_path);
   if (!outfile)
   {
     throw std::runtime_error("Error: Fail to open binary cache file.");
@@ -726,13 +729,16 @@ saveBinaryToCache(const std::string & hash, const std::string & program) -> void
 }
 
 static auto
-loadBinaryFromCache(const Device::Pointer & device, const std::string & hash, std::string & ptx) -> void
+loadBinaryFromCache(const Device::Pointer & device, const std::string & device_hash, const std::string & source_hash)
+  -> std::string
 {
   cl_int                err;
-  std::filesystem::path binary_path = CU_CACHE_FOLDER_PATH / std::filesystem::path(hash + ".ptx");
+  std::filesystem::path binary_path =
+    CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".ptx");
+
   if (!std::filesystem::exists(binary_path))
   {
-    return;
+    return {};
   }
   std::ifstream ptx_file(binary_path);
   if (!ptx_file.is_open())
@@ -747,12 +753,13 @@ loadBinaryFromCache(const Device::Pointer & device, const std::string & hash, st
   }
 
   ptx_file.seekg(0, std::ios::beg);
-  ptx.resize(size);
+  std::string ptx(size, '\0');
   ptx.assign((std::istreambuf_iterator<char>(ptx_file)), std::istreambuf_iterator<char>());
   if (ptx_file.fail())
   {
     throw std::runtime_error("Error: Fail to read PTX file.");
   }
+  return ptx;
 }
 #endif
 
@@ -771,9 +778,11 @@ CUDABackend::buildKernel(const Device::Pointer & device,
     throw std::runtime_error("Error: Fail to get context from device.\nCUDA error : " + getErrorString(err) + " (" +
                              std::to_string(err) + ").");
   }
-  std::string ptx;
-  std::string hash = std::to_string(std::hash<std::string>{}(kernel_source));
-  loadBinaryFromCache(device, hash, ptx);
+  std::hash<std::string> hasher;
+  const auto             source_hash = std::to_string(hasher(kernel_source));
+  const auto             device_hash = std::to_string(hasher(cuda_device->getInfo()));
+
+  auto ptx = loadBinaryFromCache(device, device_hash, source_hash);
   if (ptx.empty())
   {
     nvrtcProgram prog;
@@ -817,7 +826,7 @@ CUDABackend::buildKernel(const Device::Pointer & device,
       throw std::runtime_error("Error: Fail to destroy kernel program.\nCUDA error : " + getErrorString(result) + " (" +
                                std::to_string(result) + ").");
     }
-    saveBinaryToCache(hash, ptx);
+    saveBinaryToCache(device_hash, source_hash, ptx);
   }
   CUmodule cuModule;
   err = cuModuleLoadData(&cuModule, ptx.c_str());

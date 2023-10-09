@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Check if the .cle folder exists in the home directory
-if [ -d "${HOME}/.cle" ]; then
+if [ -d "${HOME}/.cache/clesperanto" ]; then
     # Prompt the user for confirmation before removing the .cle folder from the home directory
-    printf "Are you sure you want to remove the ${HOME}/.cle folder from your home directory? (y/n) "
+    printf "Are you sure you want to remove the clesperanto folder from your cache directory? (y/n) "
     read confirm
 
     # Convert the input to lower case
@@ -11,14 +11,14 @@ if [ -d "${HOME}/.cle" ]; then
 
     # Check if the input is 'y' or 'yes'
     if [ "$confirm" = "y" ] || [ "$confirm" = "yes" ]; then
-        # Remove the .cle folder from the home directory without prompting for confirmation
-        rm -rf "${HOME}/.cle"
-        echo "The ${HOME}/.cle folder has been removed from your home directory."
+        # Remove the .cle folder from the cache directory without prompting for confirmation
+        rm -rf "${HOME}/.cache/clesperanto"
+        echo "The clesperanto folder has been removed from your cache directory."
     else
-        echo "The ${HOME}/.cle folder was not removed from your home directory."
+        echo "The clesperanto folder was not removed from your cache directory."
     fi
 else
-    echo "The ${HOME}/.cle folder does not exist in your home directory."
+    echo "The clesperanto folder does not exist in your cache directory."
 fi
 
 
