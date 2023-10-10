@@ -973,7 +973,6 @@ OpenCLBackend::setImage(const Device::Pointer &       device,
 static auto
 buildProgram(const Device::Pointer & device, const cl_program & program) -> void
 {
-
   auto   opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
   cl_int buildStatus = clBuildProgram(program, 0, nullptr, nullptr, nullptr, nullptr);
   if (buildStatus != CL_SUCCESS)
@@ -1030,7 +1029,7 @@ saveBinaryToCache(const std::string & device_hash, const std::string & source_ha
 }
 
 static auto
-loadBinaryFromCache(const Device::Pointer & device, const std::string & device_hash, const std::string & source_hash)
+loadProgramFromCache(const Device::Pointer & device, const std::string & device_hash, const std::string & source_hash)
   -> cl_program
 {
   cl_int err;
@@ -1042,25 +1041,26 @@ loadBinaryFromCache(const Device::Pointer & device, const std::string & device_h
   {
     return nullptr;
   }
-
-  std::cout << "Loading binary from " << binary_path << std::endl;
   std::ifstream binary_file(binary_path, std::ios::binary | std::ios::ate);
   if (!binary_file.is_open())
   {
-    throw std::runtime_error("Error: Fail to open binary cache file.");
+    std::cerr << "Error: Fail to open binary cache file." << std::endl;
+    return nullptr;
   }
   size_t binary_size = binary_file.tellg();
   if (binary_size <= 0)
   {
-    throw std::runtime_error("Error: Fail to read binary file size.");
+    std::cerr << "Error: Fail to read binary file size." << std::endl;
+    return nullptr;
   }
   binary_file.seekg(0, std::ios::beg);
   std::vector<unsigned char> binary(binary_size);
   if (!binary_file.read((char *)binary.data(), binary_size))
   {
-    throw std::runtime_error("Error: Fail to read binary file.");
+    std::cerr << "Error: Fail to read binary file." << std::endl;
+    return nullptr;
   }
-  binary_file.close();
+
   auto         opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
   const auto * binary_code_ptr = reinterpret_cast<const unsigned char *>(binary.data());
   auto         program = clCreateProgramWithBinary(
@@ -1072,8 +1072,37 @@ loadBinaryFromCache(const Device::Pointer & device, const std::string & device_h
               << std::endl;
     return nullptr;
   }
+  try
+  {
+    buildProgram(device, program);
+  }
+  catch (const std::exception & e)
+  {
+    return nullptr;
+  }
   return program;
 }
+
+
+static auto
+CreateProgramFromSource(const Device::Pointer & device, const std::string & kernel_source) -> cl_program
+{
+  cl_int err;
+  cl_int status;
+  auto   opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+
+  const char * source = kernel_source.c_str();
+  auto         program = clCreateProgramWithSource(opencl_device->getCLContext(), 1, &source, nullptr, &err);
+  if (err != CL_SUCCESS)
+  {
+    throw std::runtime_error("Error: Fail to create program from source.\nOpenCL error : " + getErrorString(err) +
+                             " (" + std::to_string(err) + ").");
+  }
+  buildProgram(device, program);
+  return program;
+}
+
+
 #endif
 
 auto
@@ -1090,27 +1119,13 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
   const auto             source_hash = std::to_string(hasher(kernel_source));
   const auto             device_hash = std::to_string(hasher(opencl_device->getInfo()));
 
-  cl_program program = loadBinaryFromCache(device, device_hash, source_hash);
+  cl_program program = loadProgramFromCache(device, device_hash, source_hash);
   if (program == nullptr)
   {
-    const char * source = kernel_source.c_str();
-    program = clCreateProgramWithSource(opencl_device->getCLContext(), 1, &source, nullptr, &err);
-    if (err != CL_SUCCESS)
-    {
-      throw std::runtime_error("Error: Fail to create program from source.\nOpenCL error : " + getErrorString(err) +
-                               " (" + std::to_string(err) + ").");
-    }
-    std::cout << "Building program (1st)...";
-    buildProgram(device, program);
-    std::cout << "Done!" << std::endl;
+    program = CreateProgramFromSource(device, kernel_source);
     saveBinaryToCache(device_hash, source_hash, program);
   }
-  else
-  {
-    std::cout << "Building program (2nd)...";
-    buildProgram(device, program);
-    std::cout << "Done!" << std::endl;
-  }
+
   auto * ocl_kernel = clCreateKernel(program, kernel_name.c_str(), &err);
   if (err != CL_SUCCESS)
   {
