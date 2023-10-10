@@ -73,4 +73,28 @@ if(BUILD_TESTING)
 endif(BUILD_TESTING)
 
 
+# delete folder and all its content (sub folder and files)
+function(delete_folder folder)
+    if(EXISTS ${folder})
+        file(GLOB children RELATIVE ${folder} ${folder}/*)
+        foreach(child ${children})
+            if(IS_DIRECTORY ${folder}/${child})
+                delete_folder(${folder}/${child})
+            else()
+                message(STATUS "Deleting file: ${folder}/${child}")
+                file(REMOVE ${folder}/${child})
+            endif()
+        endforeach()
+        message(STATUS "Deleting folder: ${folder}")
+        file(REMOVE_RECURSE ${folder})
+    endif()
+endfunction()
+
+# on windows, find the path for AppLocal
+if(WIN32)
+    set(CACHE_PATH "$ENV{LOCALAPPDATA}/clesperanto")
+else()
+    set(CACHE_PATH "$ENV{HOME}/.cache/clesperanto")
+endif()
+delete_folder(${CACHE_PATH})
 
