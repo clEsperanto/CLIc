@@ -978,11 +978,14 @@ buildProgram(const Device::Pointer & device, const cl_program & program) -> void
   cl_int buildStatus = clBuildProgram(program, 1, &opencl_device->getCLDevice(), "-w", nullptr, nullptr);
   if (buildStatus != CL_SUCCESS)
   {
+    cl_int      err;
     size_t      len;
     std::string buffer;
-    clGetProgramBuildInfo(program, opencl_device->getCLDevice(), CL_PROGRAM_BUILD_LOG, 0, nullptr, &len);
+    err = clGetProgramBuildInfo(program, opencl_device->getCLDevice(), CL_PROGRAM_BUILD_LOG, 0, nullptr, &len);
     buffer.resize(len);
-    clGetProgramBuildInfo(program, opencl_device->getCLDevice(), CL_PROGRAM_BUILD_LOG, len, &buffer[0], &len);
+    std::cout << "clGetProgramBuildInfo err: " << err << std::endl;
+    err = clGetProgramBuildInfo(program, opencl_device->getCLDevice(), CL_PROGRAM_BUILD_LOG, len, &buffer[0], &len);
+    std::cout << "clGetProgramBuildInfo log err: " << err << std::endl;
     std::cerr << "Build log: " << buffer << std::endl;
     throw std::runtime_error("Error: Fail to build program.\nOpenCL error : " + getErrorString(buildStatus) + " (" +
                              std::to_string(buildStatus) + ").");
