@@ -978,6 +978,7 @@ buildProgram(const Device::Pointer & device, const cl_program & program) -> void
   cl_int buildStatus = clBuildProgram(program, 1, &opencl_device->getCLDevice(), "-w", nullptr, nullptr);
   if (buildStatus != CL_SUCCESS)
   {
+    std::cout << "buildStatus err: " << buildStatus << std::endl;
     cl_int      err;
     size_t      len;
     std::string buffer;
