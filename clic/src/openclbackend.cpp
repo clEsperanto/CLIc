@@ -975,7 +975,7 @@ buildProgram(const Device::Pointer & device, const cl_program & program) -> void
 {
 
   auto   opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  cl_int buildStatus = clBuildProgram(program, 1, &opencl_device->getCLDevice(), "-w", nullptr, nullptr);
+  cl_int buildStatus = clBuildProgram(program, 0, nullptr, nullptr, nullptr, nullptr);
   if (buildStatus != CL_SUCCESS)
   {
     std::cout << "buildStatus err: " << buildStatus << std::endl;
@@ -1034,15 +1034,16 @@ loadBinaryFromCache(const Device::Pointer & device, const std::string & device_h
   -> cl_program
 {
   cl_int err;
+  cl_int status;
 
   std::filesystem::path binary_path =
     CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".bin");
-
-  std::cout << "Loading binary from " << binary_path << std::endl;
   if (!std::filesystem::exists(binary_path))
   {
     return nullptr;
   }
+
+  std::cout << "Loading binary from " << binary_path << std::endl;
   std::ifstream binary_file(binary_path, std::ios::binary | std::ios::ate);
   if (!binary_file.is_open())
   {
@@ -1063,11 +1064,13 @@ loadBinaryFromCache(const Device::Pointer & device, const std::string & device_h
   auto         opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
   const auto * binary_code_ptr = reinterpret_cast<const unsigned char *>(binary.data());
   auto         program = clCreateProgramWithBinary(
-    opencl_device->getCLContext(), 1, &opencl_device->getCLDevice(), &binary_size, &binary_code_ptr, nullptr, &err);
-  if (err != CL_SUCCESS)
+    opencl_device->getCLContext(), 1, &opencl_device->getCLDevice(), &binary_size, &binary_code_ptr, &status, &err);
+  if (status != CL_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to create program from binary.\nOpenCL error : " + getErrorString(err) +
-                             " (" + std::to_string(err) + ").");
+    std::cerr << "Error: Fail to create program from binary.\nOpenCL error : " + getErrorString(err) + " (" +
+                   std::to_string(err) + ")."
+              << std::endl;
+    return nullptr;
   }
   return program;
 }
