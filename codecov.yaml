@@ -7,10 +7,6 @@ coverage:
 ignore:
   - "tests/*" # Ignore test files and directories
 
-# You can specify which files to include in coverage reports
-files:
-  - "clic/src/*"
-
 comment:
   layout: "header, diff, sunburst, changes, tree" # Specify which sections of the comment to include
   behavior: default # Comment behavior (you can customize this)
