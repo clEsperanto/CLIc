@@ -70,12 +70,12 @@ jobs:
           cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
         shell: bash -l {0}
 
-      # - name: Install cuda toolkit (windows)
-      #   if: matrix.os == 'windows-latest'
-      #   uses: Jimver/cuda-toolkit@v0.2.10
-      #   id: cuda-toolkit
-      #   with:
-      #     cuda: '12.1.0'
+      - name: Install cuda toolkit (windows)
+        if: matrix.os == 'windows-latest'
+        uses: Jimver/cuda-toolkit@v0.2.10
+        id: cuda-toolkit
+        with:
+          cuda: '12.1.0'
 
       - name: Install ocl-icd-loader - linux
         if: matrix.os == 'ubuntu-latest'
