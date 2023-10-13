@@ -5,7 +5,7 @@ coverage:
   precision: 2 # Set the precision for coverage percentages
 
 ignore:
-  - "tests/*" # Ignore test files and directories
+  - "*/tests/*" # Ignore test files and directories
 
 comment:
   layout: "header, diff, sunburst, changes, tree" # Specify which sections of the comment to include
