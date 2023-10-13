@@ -70,12 +70,12 @@ jobs:
           cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
         shell: bash -l {0}
 
-      - name: Install cuda toolkit (windows)
-        if: matrix.os == 'windows-latest'
-        uses: Jimver/cuda-toolkit@v0.2.10
-        id: cuda-toolkit
-        with:
-          cuda: '12.1.0'
+      # - name: Install cuda toolkit (windows)
+      #   if: matrix.os == 'windows-latest'
+      #   uses: Jimver/cuda-toolkit@v0.2.10
+      #   id: cuda-toolkit
+      #   with:
+      #     cuda: '12.1.0'
 
       - name: Install ocl-icd-loader - linux
         if: matrix.os == 'ubuntu-latest'
@@ -89,16 +89,16 @@ jobs:
           sudo cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
         shell: bash -l {0}
 
-      - name: Install cuda toolkit (ubuntu)
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
-          sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
-          wget https://developer.download.nvidia.com/compute/cuda/12.1.1/local_installers/cuda-repo-ubuntu2204-12-1-local_12.1.1-530.30.02-1_amd64.deb
-          sudo dpkg -i cuda-repo-ubuntu2204-12-1-local_12.1.1-530.30.02-1_amd64.deb
-          sudo cp /var/cuda-repo-ubuntu2204-12-1-local/cuda-*-keyring.gpg /usr/share/keyrings/
-          sudo apt-get update
-          sudo apt-get -y install cuda
+      # - name: Install cuda toolkit (ubuntu)
+      #   if: matrix.os == 'ubuntu-latest'
+      #   run: |
+      #     wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
+      #     sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
+      #     wget https://developer.download.nvidia.com/compute/cuda/12.1.1/local_installers/cuda-repo-ubuntu2204-12-1-local_12.1.1-530.30.02-1_amd64.deb
+      #     sudo dpkg -i cuda-repo-ubuntu2204-12-1-local_12.1.1-530.30.02-1_amd64.deb
+      #     sudo cp /var/cuda-repo-ubuntu2204-12-1-local/cuda-*-keyring.gpg /usr/share/keyrings/
+      #     sudo apt-get update
+      #     sudo apt-get -y install cuda
       
       - uses: actions/checkout@v4
         with:
