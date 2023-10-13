@@ -58,7 +58,7 @@ jobs:
         shell: bash
         run: |
           cd ${{ runner.workspace }}/build
-          gcovr --root .. --exclude 'tests' --output coverage.xml
+          gcovr --root .. --output coverage.xml
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v3
