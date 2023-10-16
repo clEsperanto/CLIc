@@ -1,19 +1,15 @@
 codecov:
-  require_ci_to_pass: yes
+  require_ci_to_pass: yes # Require CI build to pass before uploading coverage reports
 
 coverage:
-  precision: 2
-  status:
-    project:
-      default:
-        target: auto
-        threshold: 1% # You can adjust the threshold value
-        paths:
-          - "clic/src/*"
+  precision: 2 # Set the precision for coverage percentages
+
+ignore:
+  - "*/tests/*" # Ignore test files and directories
 
 comment:
-  layout: "header, diff, sunburst, changes, tree"
-  behavior: default
+  layout: "header, diff, sunburst, changes, tree" # Specify which sections of the comment to include
+  behavior: default # Comment behavior (you can customize this)
 
 parsers:
   gcov:
