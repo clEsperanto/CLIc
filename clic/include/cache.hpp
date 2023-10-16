@@ -1,7 +1,7 @@
 #ifndef __INCLUDE_CACHE_HPP
 #define __INCLUDE_CACHE_HPP
 
-#include <cstdlib> // for std::getenv
+#include <cstdlib>
 #include <filesystem>
 #include <iostream>
 #include <string>
@@ -16,39 +16,44 @@
 namespace cle
 {
 
-const constexpr char * CACHE_FOLDER = ".cache/clesperanto";
+static const std::string CACHE_FOLDER = "clesperanto";
+static const std::string CACHE_DIR_WIN = "AppData\\Local";
+static const std::string CACHE_DIR_UNIX = ".cache";
+
+static auto
+get_path_with_cache_folder(const std::filesystem::path & base_path) -> std::filesystem::path
+{
+  return base_path / std::filesystem::path(CACHE_FOLDER);
+}
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 static auto
 get_cache_directory_path() -> std::filesystem::path
 {
-  // cache directory is %LOCALAPPDATA%/clesperanto
   TCHAR path[MAX_PATH];
   if (FAILED(SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, path)))
   {
-    std::cerr << "Failed to get AppData\\Local directory\n";
-    return std::filesystem::current_path() / std::filesystem::path(CACHE_FOLDER);
+    std::cerr << "Failed to get " << CACHE_DIR_WIN << " directory\n";
+    return get_path_with_cache_folder(std::filesystem::current_path());
   }
-  return std::filesystem::path(path) / std::filesystem::path(CACHE_FOLDER);
+  return get_path_with_cache_folder(std::filesystem::path(path));
 }
 #else
 static auto
 get_cache_directory_path() -> std::filesystem::path
 {
-  // cache directory is $HOME/.cache/clesperanto
   char * home_dir = std::getenv("HOME");
   if (home_dir != nullptr)
   {
-    return std::filesystem::path(home_dir) / std::filesystem::path(CACHE_FOLDER);
+    return get_path_with_cache_folder(std::filesystem::path(home_dir) / std::filesystem::path(CACHE_DIR_UNIX));
   }
   std::cerr << "Failed to get user home directory\n";
-  return std::filesystem::current_path() / std::filesystem::path(CACHE_FOLDER);
+  return get_path_with_cache_folder(std::filesystem::current_path() / std::filesystem::path(CACHE_DIR_UNIX));
 }
 #endif
 
 static const auto CACHE_FOLDER_PATH = get_cache_directory_path();
 
 } // namespace cle
-
 
 #endif // __INCLUDE_CACHE_HPP
