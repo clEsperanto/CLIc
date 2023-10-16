@@ -49,7 +49,7 @@ if (WIN32 AND BUILD_SHARED_LIBS)
 endif()
 
 # set Code coverage options (default: OFF)
-option(BUILD_COVERAGE "Enable coverage reporting" OFF)
+option(BUILD_COVERAGE "Enable coverage reporting" ON)
 message(STATUS "Build project code coverage: ${BUILD_COVERAGE}")
 if (BUILD_COVERAGE)
   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}  " --coverage -g -O0")
