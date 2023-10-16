@@ -52,6 +52,15 @@ get_cache_directory_path() -> std::filesystem::path
 }
 #endif
 
+static auto
+is_cache_enabled() -> bool
+{
+  const char * env_var = std::getenv("CLESPERANTO_NO_CACHE");
+  bool         cache_disabled = (env_var != nullptr);
+  return !cache_disabled;
+}
+
+
 static const auto CACHE_FOLDER_PATH = get_cache_directory_path();
 
 } // namespace cle

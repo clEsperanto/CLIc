@@ -779,7 +779,13 @@ CUDABackend::buildKernel(const Device::Pointer & device,
   const auto             source_hash = std::to_string(hasher(kernel_source));
   const auto             device_hash = std::to_string(hasher(cuda_device->getInfo()));
 
-  auto ptx = loadBinaryFromCache(device, device_hash, source_hash);
+  const auto  use_cache = is_cache_enabled();
+  std::string ptx;
+
+  if (use_cache)
+  {
+    ptx = loadBinaryFromCache(device, device_hash, source_hash);
+  }
   if (ptx.empty())
   {
     nvrtcProgram prog;
@@ -823,7 +829,10 @@ CUDABackend::buildKernel(const Device::Pointer & device,
       throw std::runtime_error("Error: Fail to destroy kernel program. CUDA error : " + getErrorString(result) + " (" +
                                std::to_string(result) + ").");
     }
-    saveBinaryToCache(device_hash, source_hash, ptx);
+    if (use_cache)
+    {
+      saveBinaryToCache(device_hash, source_hash, ptx);
+    }
   }
   CUmodule cuModule;
   err = cuModuleLoadData(&cuModule, ptx.c_str());

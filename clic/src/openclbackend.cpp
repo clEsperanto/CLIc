@@ -1102,18 +1102,26 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
                            void *                  kernel) const -> void
 {
 #if USE_OPENCL
-  cl_int err;
-  auto   opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  cl_int     err;
+  auto       opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  const auto use_cache = is_cache_enabled();
 
   std::hash<std::string> hasher;
   const auto             source_hash = std::to_string(hasher(kernel_source));
   const auto             device_hash = std::to_string(hasher(opencl_device->getInfo()));
 
-  cl_program program = loadProgramFromCache(device, device_hash, source_hash);
+  cl_program program = nullptr;
+  if (use_cache)
+  {
+    program = loadProgramFromCache(device, device_hash, source_hash);
+  }
   if (program == nullptr)
   {
     program = CreateProgramFromSource(device, kernel_source);
-    saveBinaryToCache(device_hash, source_hash, program);
+    if (use_cache)
+    {
+      saveBinaryToCache(device_hash, source_hash, program);
+    }
   }
 
   auto * ocl_kernel = clCreateKernel(program, kernel_name.c_str(), &err);
