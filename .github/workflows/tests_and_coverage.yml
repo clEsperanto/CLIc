@@ -50,7 +50,7 @@ jobs:
         shell: bash
         run: |
           cd ${{ runner.workspace }}/build
-          lcov --no-external --capture --directory . --output-file ./coverage.info
+          lcov --capture --directory . --output-file ./coverage.info
           # lcov --extract coverage.info '*/clic/src/*' --output-file coverage.info.filtered
           # lcov --list coverage.info.filtered
 
