@@ -46,18 +46,17 @@ jobs:
         run: |
           cd ${{ runner.workspace }}/build && ctest -C ${{ matrix.buildtype }} --output-on-failure
 
-      # - name: Format coverage
-      #   shell: bash
-      #   run: |
-      #     cd ${{ runner.workspace }}/build
-      #     lcov --directory . --capture --output-file coverage.info
-      #     lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
-      #     lcov --list coverage.info
-      
       - name: Format coverage
         shell: bash
         run: |
-          gcovr --root . --output coverage.xml
+          lcov --directory . --capture --output-file coverage.info
+          lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' '*/tests/*' --output-file coverage.info
+          lcov --list coverage.info
+      
+      # - name: Format coverage
+      #   shell: bash
+      #   run: |
+      #     gcovr --root . --output coverage.xml
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v3
