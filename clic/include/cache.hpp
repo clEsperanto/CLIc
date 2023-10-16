@@ -16,7 +16,6 @@
 namespace cle
 {
 
-// const constexpr char * HIDDEN_FOLDER = ".cache";
 const constexpr char * CACHE_FOLDER = ".cache/clesperanto";
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
