@@ -51,6 +51,7 @@ jobs:
         run: |
           cd ${{ runner.workspace }}/build
           lcov --directory . --capture --output-file coverage.info
+          lcov --remove coverage.info '/usr/include/*' -o coverage.info
           lcov --extract coverage.info './clic/src/*' --output-file coverage.info.filtered
           lcov --list coverage.info.filtered
         # lcov --directory . --capture --output-file coverage.info
