@@ -52,20 +52,6 @@ jobs:
           cd ${{ runner.workspace }}/build
           gcovr -r . --filter='.*/clic/src/.*' --xml -o coverage.xml
 
-        # lcov --capture --directory . --output-file ./coverage.info
-        # lcov --extract coverage.info '*/clic/src/*' --output-file coverage.info.filtered
-        # lcov --list coverage.info.filtered
-
-        # lcov --remove coverage.info '/usr/include/*' -o coverage.info
-        # lcov --directory . --capture --output-file coverage.info
-        # lcov --remove coverage.info "${HOME}"'/.cache/*' '*/tests/*' --output-file coverage.info
-        # lcov --list coverage.info
-      
-      # - name: Format coverage
-      #   shell: bash
-      #   run: |
-      #     gcovr --root . --output coverage.xml
-
       - name: Upload coverage report
         uses: codecov/codecov-action@v3
         with:
