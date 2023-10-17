@@ -9,6 +9,7 @@
 #include "device.hpp"
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+#  define NOMINMAX
 #  include <ShlObj.h>
 #  include <windows.h>
 #endif
