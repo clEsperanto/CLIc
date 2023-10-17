@@ -18,7 +18,7 @@ jobs:
         cxx: [clang++]
         cc: [clang]
         triplet: [x64-osx]
-        packages: [lcov gcovr]
+        packages: [lcov gcovr googletest]
 
     steps:
       - name: Checkout
