@@ -1,26 +1,31 @@
 #include "cle.hpp"
 
 #include <array>
+#include <random>
+
 #include <gtest/gtest.h>
 
-class TestAddImageAndScalar : public ::testing::TestWithParam<std::string>
+class TestMaximumProjectionZ : public ::testing::TestWithParam<std::string>
 {
 protected:
-  const float                   value = 10;
-  const float                   scalar = 10;
-  std::array<float, 10 * 5 * 3> output;
+  std::array<float, 10 * 5 * 1> output;
   std::array<float, 10 * 5 * 3> input;
-  std::array<float, 10 * 5 * 3> valid;
+  std::array<float, 10 * 5 * 1> valid;
 
   virtual void
   SetUp()
   {
-    std::fill(input.begin(), input.end(), static_cast<float>(value));
-    std::fill(valid.begin(), valid.end(), static_cast<float>(value + scalar));
+    std::fill(input.begin(), input.end(), static_cast<float>(0));
+    std::fill(valid.begin(), valid.end(), static_cast<float>(10));
+    for (auto it = input.begin(); (it - input.begin()) < int(5 * 10); it++)
+    {
+      int idx = (it - input.begin()) + (rand() % 3) * 10 * 5;
+      input[idx] = static_cast<float>(10);
+    }
   }
 };
 
-TEST_P(TestAddImageAndScalar, execute)
+TEST_P(TestMaximumProjectionZ, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -29,7 +34,7 @@ TEST_P(TestAddImageAndScalar, execute)
   auto gpu_input = cle::Array::create(10, 5, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
-  auto gpu_output = cle::tier1::add_image_and_scalar_func(device, gpu_input, nullptr, scalar);
+  auto gpu_output = cle::tier1::maximum_z_projection_func(device, gpu_input, nullptr);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
@@ -54,4 +59,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_CASE_P(InstantiationName, TestAddImageAndScalar, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_CASE_P(InstantiationName, TestMaximumProjectionZ, ::testing::ValuesIn(getParameters()));

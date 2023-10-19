@@ -3,24 +3,30 @@
 #include <array>
 #include <gtest/gtest.h>
 
-class TestAddImageAndScalar : public ::testing::TestWithParam<std::string>
+class TestMinimumProjectionY : public ::testing::TestWithParam<std::string>
 {
 protected:
-  const float                   value = 10;
-  const float                   scalar = 10;
-  std::array<float, 10 * 5 * 3> output;
+  std::array<float, 10 * 1 * 3> output;
   std::array<float, 10 * 5 * 3> input;
-  std::array<float, 10 * 5 * 3> valid;
+  std::array<float, 10 * 1 * 3> valid;
 
   virtual void
   SetUp()
   {
-    std::fill(input.begin(), input.end(), static_cast<float>(value));
-    std::fill(valid.begin(), valid.end(), static_cast<float>(value + scalar));
+    std::fill(input.begin(), input.end(), static_cast<float>(10));
+    std::fill(valid.begin(), valid.end(), static_cast<float>(1));
+    for (auto it = input.begin(); it != input.end(); std::advance(it, 10 * 5))
+    {
+      for (size_t j = 0; j < 10; ++j)
+      {
+        int idx = (it - input.begin() + j) + (rand() % 5) * 10;
+        input[idx] = static_cast<float>(1);
+      }
+    }
   }
 };
 
-TEST_P(TestAddImageAndScalar, execute)
+TEST_P(TestMinimumProjectionY, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -29,7 +35,7 @@ TEST_P(TestAddImageAndScalar, execute)
   auto gpu_input = cle::Array::create(10, 5, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
-  auto gpu_output = cle::tier1::add_image_and_scalar_func(device, gpu_input, nullptr, scalar);
+  auto gpu_output = cle::tier1::minimum_y_projection_func(device, gpu_input, nullptr);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
@@ -54,4 +60,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_CASE_P(InstantiationName, TestAddImageAndScalar, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_CASE_P(InstantiationName, TestMinimumProjectionY, ::testing::ValuesIn(getParameters()));

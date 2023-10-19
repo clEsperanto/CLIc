@@ -3,11 +3,9 @@
 #include <array>
 #include <gtest/gtest.h>
 
-class TestAddImageAndScalar : public ::testing::TestWithParam<std::string>
+class TestSetColumn : public ::testing::TestWithParam<std::string>
 {
 protected:
-  const float                   value = 10;
-  const float                   scalar = 10;
   std::array<float, 10 * 5 * 3> output;
   std::array<float, 10 * 5 * 3> input;
   std::array<float, 10 * 5 * 3> valid;
@@ -15,12 +13,20 @@ protected:
   virtual void
   SetUp()
   {
-    std::fill(input.begin(), input.end(), static_cast<float>(value));
-    std::fill(valid.begin(), valid.end(), static_cast<float>(value + scalar));
+    for (auto it = input.begin(), it_valid = valid.begin(); (it != input.end()) && (it_valid != valid.end());
+         ++it, ++it_valid)
+    {
+      *it = static_cast<float>((int)rand() % 10);
+      *it_valid = *it;
+      if ((it - input.begin()) % 10 == 1)
+      {
+        *it_valid = static_cast<float>(100);
+      }
+    }
   }
 };
 
-TEST_P(TestAddImageAndScalar, execute)
+TEST_P(TestSetColumn, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -29,9 +35,9 @@ TEST_P(TestAddImageAndScalar, execute)
   auto gpu_input = cle::Array::create(10, 5, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
-  auto gpu_output = cle::tier1::add_image_and_scalar_func(device, gpu_input, nullptr, scalar);
+  cle::tier1::set_column_func(device, gpu_input, 1, 100);
 
-  gpu_output->read(output.data());
+  gpu_input->read(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);
@@ -54,4 +60,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_CASE_P(InstantiationName, TestAddImageAndScalar, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_CASE_P(InstantiationName, TestSetColumn, ::testing::ValuesIn(getParameters()));
