@@ -868,7 +868,10 @@ CUDABackend::executeKernel(const Device::Pointer &       device,
     default:
       block_size = { 1, 1, 1 };
   }
-
+  if (block_size.back() > 64)
+  {
+    block_size.back() = 64;
+  }
 
   std::array<size_t, 3> grid_size = { (global_size.data()[0] + block_size.data()[0] - 1) / block_size.data()[0],
                                       (global_size.data()[1] + block_size.data()[1] - 1) / block_size.data()[1],
