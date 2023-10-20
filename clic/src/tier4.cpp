@@ -58,7 +58,7 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
   const float        nb_pixels = src->size();
   const float        intensity_factor = (max_intensity - min_intensity) / (bin - 1);
   std::vector<float> range(histogram_array.size());
-  std::iota(range.begin(), range.end(), 0);
+  std::iota(range.begin(), range.end(), 0.0f);
   std::transform(range.begin(), range.end(), range.begin(), [intensity_factor, min_intensity](float intensity) {
     return intensity * intensity_factor + min_intensity;
   });

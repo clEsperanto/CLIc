@@ -1,6 +1,7 @@
 #ifndef __INCLUDE_BACKEND_HPP
 #define __INCLUDE_BACKEND_HPP
 
+#include "cache.hpp"
 #include "clic.hpp"
 #include "device.hpp"
 #include "utils.hpp"
@@ -128,10 +129,7 @@ public:
               const std::string &     kernel_source,
               const std::string &     kernel_name,
               void *                  kernel) const -> void = 0;
-  virtual auto
-  loadProgramFromCache(const Device::Pointer & device, const std::string & hash, void * program) const -> void = 0;
-  virtual auto
-  saveProgramToCache(const Device::Pointer & device, const std::string & hash, void * program) const -> void = 0;
+
   virtual auto
   executeKernel(const Device::Pointer &       device,
                 const std::string &           kernel_source,
@@ -296,10 +294,6 @@ public:
             const dType &                 dtype,
             const float &                 value) -> void;
 
-  auto
-  loadProgramFromCache(const Device::Pointer & device, const std::string & hash, void * program) const -> void override;
-  auto
-  saveProgramToCache(const Device::Pointer & device, const std::string & hash, void * program) const -> void override;
   auto
   buildKernel(const Device::Pointer & device,
               const std::string &     kernel_source,
@@ -476,10 +470,6 @@ public:
             const dType &                 dtype,
             const float &                 value) -> void;
 
-  auto
-  loadProgramFromCache(const Device::Pointer & device, const std::string & hash, void * program) const -> void override;
-  auto
-  saveProgramToCache(const Device::Pointer & device, const std::string & hash, void * program) const -> void override;
   auto
   buildKernel(const Device::Pointer & device,
               const std::string &     kernel_source,

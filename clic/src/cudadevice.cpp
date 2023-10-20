@@ -159,12 +159,6 @@ CUDADevice::getInfo() const -> std::string
   return result.str();
 }
 
-auto
-CUDADevice::getCache() -> CUDADevice::CacheType &
-{
-  return this->cache;
-}
-
 #endif // USE_CUDA
 
 } // namespace cle
