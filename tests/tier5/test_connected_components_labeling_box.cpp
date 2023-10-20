@@ -6,10 +6,10 @@
 class TestLabelingBox : public ::testing::TestWithParam<std::string>
 {
 protected:
-  const std::array<float, 5 * 3 * 2>    input = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
-                                                  1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0 };
   const std::array<uint32_t, 5 * 3 * 2> valid = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
                                                   2, 2, 0, 1, 0, 0, 2, 0, 1, 1, 0, 2, 0, 0, 0 };
+  const std::array<float, 5 * 3 * 2>    input = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+                                                  1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0 };
   std::array<uint32_t, 5 * 3 * 2>       output;
 };
 
