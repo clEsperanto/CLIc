@@ -25,6 +25,13 @@ TEST_P(TestArray, allocate)
   EXPECT_EQ(array->width(), 10);
   EXPECT_EQ(array->height(), 20);
   EXPECT_EQ(array->depth(), 30);
+  EXPECT_EQ(array->dim(), 3);
+  EXPECT_EQ(array->itemSize(), sizeof(float));
+  EXPECT_EQ(array->shortType(), "f");
+
+  auto array_other = cle::Array::create(10, 20, 30, cle::dType::UINT8, cle::mType::BUFFER, device);
+  EXPECT_EQ(array_other->shortType(), "uc");
+  EXPECT_EQ(array_other->itemSize(), sizeof(uint8_t));
 }
 
 TEST_P(TestArray, typeDataMemory)
@@ -41,6 +48,33 @@ TEST_P(TestArray, typeDataMemory)
 
   // Check that the memory type is correct
   EXPECT_EQ(array->mtype(), cle::mType::BUFFER);
+}
+
+TEST_P(TestArray, allocateWrite)
+{
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+
+  // Write some data to the array
+  std::array<float, 10 * 20 * 30> data;
+  for (int i = 0; i < 10 * 20 * 30; i++)
+  {
+    data[i] = static_cast<float>(i);
+  }
+
+  // Create a new Array
+  auto array = cle::Array::create(10, 20, 30, cle::dType::FLOAT, cle::mType::BUFFER, data.data(), device);
+
+  // Read the data back from the array
+  std::array<float, 10 * 20 * 30> read_data;
+  array->read(read_data.data());
+
+  // Check that the data was read correctly
+  for (int i = 0; i < 10 * 20 * 30; i++)
+  {
+    EXPECT_EQ(read_data[i], static_cast<float>(i));
+  }
 }
 
 TEST_P(TestArray, readWrite)
@@ -211,6 +245,46 @@ TEST_P(TestArray, regionOperation)
     EXPECT_EQ(copy_valid[i], read_copy[i]);
   }
 }
+
+TEST_P(TestArray, throwErrors)
+{
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+
+  // Create a new Array
+  auto array = cle::Array::create(10, 20, 30, cle::dType::FLOAT, cle::mType::BUFFER, device);
+
+  EXPECT_THROW(array->write(nullptr), std::runtime_error);
+  EXPECT_THROW(array->write(nullptr, { 10, 10, 10 }, { 0, 0, 0 }), std::runtime_error);
+  EXPECT_THROW(array->write(nullptr, 10, 5, 6), std::runtime_error);
+
+  // Write some data to the array
+  std::array<float, 10 * 20 * 30> data;
+  for (int i = 0; i < 10 * 20 * 30; i++)
+  {
+    data[i] = static_cast<float>(i);
+  }
+  array->write(data.data());
+
+  EXPECT_THROW(array->read(nullptr), std::runtime_error);
+  EXPECT_THROW(array->read(nullptr, { 10, 10, 10 }, { 0, 0, 0 }), std::runtime_error);
+  EXPECT_THROW(array->read(nullptr, 10, 5, 6), std::runtime_error);
+
+
+  auto test_empty = cle::Array::New();
+  EXPECT_THROW(test_empty->write(nullptr), std::runtime_error);
+  EXPECT_THROW(test_empty->write(nullptr, { 10, 10, 10 }, { 0, 0, 0 }), std::runtime_error);
+  EXPECT_THROW(test_empty->write(nullptr, 10, 5, 6), std::runtime_error);
+  EXPECT_THROW(test_empty->read(nullptr), std::runtime_error);
+  EXPECT_THROW(test_empty->read(nullptr, { 10, 10, 10 }, { 0, 0, 0 }), std::runtime_error);
+  EXPECT_THROW(test_empty->read(nullptr, 10, 5, 6), std::runtime_error);
+
+  auto array_other = cle::Array::create(30, 20, 10, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  EXPECT_THROW(array->copy(array_other), std::runtime_error);
+  EXPECT_THROW(array->copy(array_other, { 10, 10, 10 }, { 0, 0, 0 }, { 0, 0, 0 }), std::runtime_error);
+}
+
 
 std::vector<std::string>
 getParameters()
