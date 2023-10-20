@@ -47,15 +47,12 @@ std::vector<std::string>
 getParameters()
 {
   std::vector<std::string> parameters;
-
-#ifdef USE_OPENCL
+#if USE_OPENCL
   parameters.push_back("opencl");
 #endif
-
-#ifdef USE_CUDA
+#if USE_CUDA
   parameters.push_back("cuda");
 #endif
-
   return parameters;
 }
 
