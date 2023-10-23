@@ -3,11 +3,10 @@
 #include <array>
 #include <gtest/gtest.h>
 
-class TestAddImageAndScalar : public ::testing::TestWithParam<std::string>
+class TestExponential : public ::testing::TestWithParam<std::string>
 {
 protected:
-  const float                   value = 10;
-  const float                   scalar = 5;
+  const float                   value = 3;
   std::array<float, 10 * 5 * 3> output;
   std::array<float, 10 * 5 * 3> input;
   std::array<float, 10 * 5 * 3> valid;
@@ -16,11 +15,11 @@ protected:
   SetUp()
   {
     std::fill(input.begin(), input.end(), static_cast<float>(value));
-    std::fill(valid.begin(), valid.end(), static_cast<float>(value + scalar));
+    std::fill(valid.begin(), valid.end(), static_cast<float>(std::exp(value)));
   }
 };
 
-TEST_P(TestAddImageAndScalar, execute)
+TEST_P(TestExponential, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -29,7 +28,8 @@ TEST_P(TestAddImageAndScalar, execute)
   auto gpu_input = cle::Array::create(10, 5, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
-  auto gpu_output = cle::tier1::add_image_and_scalar_func(device, gpu_input, nullptr, scalar);
+
+  auto gpu_output = cle::tier1::exponential_func(device, gpu_input, nullptr);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
@@ -51,4 +51,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_CASE_P(InstantiationName, TestAddImageAndScalar, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_CASE_P(InstantiationName, TestExponential, ::testing::ValuesIn(getParameters()));

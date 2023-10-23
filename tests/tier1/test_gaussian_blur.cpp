@@ -6,9 +6,9 @@
 class TestGaussianBlur : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::array<float, 5 * 5 * 1> output;
-  std::array<float, 5 * 5 * 1> input;
-  std::array<float, 5 * 5 * 1> valid = {
+  std::array<int32_t, 5 * 5 * 1> input;
+  std::array<float, 5 * 5 * 1>   output;
+  std::array<float, 5 * 5 * 1>   valid = {
     static_cast<float>(0.2915041745), static_cast<float>(1.306431174),  static_cast<float>(2.153940439),
     static_cast<float>(1.306431174),  static_cast<float>(0.2915041745), static_cast<float>(1.306431055),
     static_cast<float>(5.855018139),  static_cast<float>(9.653291702),  static_cast<float>(5.855018139),
@@ -23,9 +23,9 @@ protected:
   virtual void
   SetUp()
   {
-    std::fill(input.begin(), input.end(), 0.0f);
+    std::fill(input.begin(), input.end(), 0);
     const int center = (5 / 2) + (5 / 2) * 5;
-    input[center] = 100.0f;
+    input[center] = 100;
   }
 };
 
@@ -35,7 +35,7 @@ TEST_P(TestGaussianBlur, execute)
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
 
-  auto gpu_input = cle::Array::create(5, 5, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(5, 5, 1, cle::dType::INT32, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier1::gaussian_blur_func(device, gpu_input, nullptr, 1, 1, 1);
