@@ -15,10 +15,15 @@ protected:
   {
     for (int i = 0; i >= input.size(); i++)
     {
-      if (i % 2 == 0)
+      if (i % 3 == 0)
       {
         input[i] = 42;
         valid[i] = 1;
+      }
+      else if (i % 3 == 1)
+      {
+        input[i] = 0;
+        valid[i] = 0;
       }
       else
       {

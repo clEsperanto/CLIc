@@ -135,7 +135,7 @@
 #include "cle_set_where_x_equals_y.h"
 #include "cle_set_where_x_greater_than_y.h"
 #include "cle_set_where_x_smaller_than_y.h"
-#include "cle_sign.h"
+#include "cle_pixel_sign.h"
 #include "cle_smaller.h"
 #include "cle_smaller_constant.h"
 #include "cle_smaller_or_equal.h"
@@ -1644,7 +1644,7 @@ auto
 sign_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  const KernelInfo    kernel = { "sign", kernel::sign };
+  const KernelInfo    kernel = { "pixel_sign", kernel::pixel_sign };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
