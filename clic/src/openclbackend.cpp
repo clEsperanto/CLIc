@@ -1008,7 +1008,6 @@ saveBinaryToCache(const std::string & device_hash, const std::string & source_ha
     CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".bin");
   std::filesystem::create_directories(binary_path.parent_path());
 
-  std::cout << "Saving binary to " << binary_path << std::endl;
   std::ofstream outfile(binary_path, std::ios::binary);
   if (!outfile)
   {
