@@ -71,8 +71,8 @@ TEST_P(TestExecution, rangeArray)
 
 TEST_P(TestExecution, constantList)
 {
-  int bins = 255;
-  cle::ConstantType cts = bins;
+  int                     bins = 255;
+  cle::ConstantType       cts = bins;
   const cle::ConstantList constants = { { "bins", cts } };
 
   ASSERT_EQ(constants.size(), 1);

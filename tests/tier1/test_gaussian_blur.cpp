@@ -9,15 +9,15 @@ protected:
   std::array<int32_t, 5 * 5 * 1> input;
   std::array<float, 5 * 5 * 1>   output;
   std::array<float, 5 * 5 * 1>   valid = {
-    static_cast<float>(0.2915041745), static_cast<float>(1.306431174),  static_cast<float>(2.153940439),
-    static_cast<float>(1.306431174),  static_cast<float>(0.2915041745), static_cast<float>(1.306431055),
-    static_cast<float>(5.855018139),  static_cast<float>(9.653291702),  static_cast<float>(5.855018139),
-    static_cast<float>(1.306431055),  static_cast<float>(2.153940678),  static_cast<float>(9.653292656),
-    static_cast<float>(15.91558743),  static_cast<float>(9.653292656),  static_cast<float>(2.153940678),
-    static_cast<float>(1.306431055),  static_cast<float>(5.855018139),  static_cast<float>(9.653291702),
-    static_cast<float>(5.855018139),  static_cast<float>(1.306431055),  static_cast<float>(0.2915041745),
-    static_cast<float>(1.306431174),  static_cast<float>(2.153940439),  static_cast<float>(1.306431174),
-    static_cast<float>(0.2915041745)
+      static_cast<float>(0.2915041745), static_cast<float>(1.306431174),  static_cast<float>(2.153940439),
+      static_cast<float>(1.306431174),  static_cast<float>(0.2915041745), static_cast<float>(1.306431055),
+      static_cast<float>(5.855018139),  static_cast<float>(9.653291702),  static_cast<float>(5.855018139),
+      static_cast<float>(1.306431055),  static_cast<float>(2.153940678),  static_cast<float>(9.653292656),
+      static_cast<float>(15.91558743),  static_cast<float>(9.653292656),  static_cast<float>(2.153940678),
+      static_cast<float>(1.306431055),  static_cast<float>(5.855018139),  static_cast<float>(9.653291702),
+      static_cast<float>(5.855018139),  static_cast<float>(1.306431055),  static_cast<float>(0.2915041745),
+      static_cast<float>(1.306431174),  static_cast<float>(2.153940439),  static_cast<float>(1.306431174),
+      static_cast<float>(0.2915041745)
   };
 
   virtual void
