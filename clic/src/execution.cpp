@@ -114,7 +114,7 @@ arrayDefines(const ParameterList & parameter_list, const Device::Type & device) 
   // loop over all parameters, skip if parameter is not an array
   for (const auto & param : parameter_list)
   {
-    if (std::holds_alternative<const float>(param.second) || std::holds_alternative<const int>(param.second))
+    if (std::holds_alternative<float>(param.second) || std::holds_alternative<int>(param.second))
     {
       continue;
     }
@@ -208,12 +208,12 @@ execute(const Device::Pointer & device,
       args_ptr.push_back(device->getType() == Device::Type::CUDA ? (*arr)->get() : *(*arr)->get());
       args_size.push_back(GPU_MEM_PTR_SIZE);
     }
-    else if (const auto & f = std::get_if<const float>(&param.second))
+    else if (const auto & f = std::get_if<float>(&param.second))
     {
       args_ptr.push_back(const_cast<float *>(f));
       args_size.push_back(sizeof(float));
     }
-    else if (const auto & i = std::get_if<const int>(&param.second))
+    else if (const auto & i = std::get_if<int>(&param.second))
     {
       args_ptr.push_back(const_cast<int *>(i));
       args_size.push_back(sizeof(int));
