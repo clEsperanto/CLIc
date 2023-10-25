@@ -45,6 +45,12 @@ CUDABackend::getDevices(const std::string & type) const -> std::vector<Device::P
   {
     devices.push_back(std::make_shared<CUDADevice>(i));
   }
+
+  if (devices.empty())
+  {
+    std::cerr << "Warning: Fail to find '" << type << "' CUDA compatible devices." << std::endl;
+  }
+
   return devices;
 #else
   throw std::runtime_error("Error: CUDA is not enabled");
@@ -65,7 +71,7 @@ CUDABackend::getDevice(const std::string & name, const std::string & type) const
   }
   if (!devices.empty())
   {
-    std::cerr << "WARNING: Device with name '" << name << "' not found. Using default device instead." << std::endl;
+    std::cerr << "Warning: Device with name '" << name << "' not found. Using default device instead." << std::endl;
     return std::move(devices.back());
   }
   return nullptr;
@@ -907,7 +913,10 @@ CUDABackend::executeKernel(const Device::Pointer &       device,
     default:
       block_size = { 1, 1, 1 };
   }
-
+  if (block_size.back() > 64)
+  {
+    block_size.back() = 64;
+  }
 
   std::array<size_t, 3> grid_size = { (global_size.data()[0] + block_size.data()[0] - 1) / block_size.data()[0],
                                       (global_size.data()[1] + block_size.data()[1] - 1) / block_size.data()[1],

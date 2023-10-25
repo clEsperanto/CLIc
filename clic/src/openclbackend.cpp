@@ -116,7 +116,7 @@ OpenCLBackend::getDevices(const std::string & type) const -> std::vector<Device:
 
   if (devices.empty())
   {
-    throw std::runtime_error("Error: Fail to find OpenCL compatible devices.");
+    std::cerr << "Warning: Fail to find '" << type << "' OpenCL compatible devices." << std::endl;
   }
 
   return devices;
@@ -139,6 +139,7 @@ OpenCLBackend::getDevice(const std::string & name, const std::string & type) con
   }
   if (!devices.empty())
   {
+    std::cerr << "Warning: Device with name '" << name << "' not found. Using default device instead." << std::endl;
     return std::move(devices.back());
   }
   return nullptr;
@@ -1008,7 +1009,6 @@ saveBinaryToCache(const std::string & device_hash, const std::string & source_ha
     CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".bin");
   std::filesystem::create_directories(binary_path.parent_path());
 
-  std::cout << "Saving binary to " << binary_path << std::endl;
   std::ofstream outfile(binary_path, std::ios::binary);
   if (!outfile)
   {
