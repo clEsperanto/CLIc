@@ -3,7 +3,7 @@
 #include <array>
 #include <gtest/gtest.h>
 
-class TestGaussianBlur : public ::testing::TestWithParam<std::string>
+class TestLaplaceBox : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<float, 4 * 3 * 2> output;
@@ -12,7 +12,7 @@ protected:
                                          50, -23, -18, 3,  -27, 3, 5,   -26, 31,  -25, 28,  -1 };
 };
 
-TEST_P(TestGaussianBlur, execute)
+TEST_P(TestLaplaceBox, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -43,4 +43,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_CASE_P(InstantiationName, TestGaussianBlur, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_CASE_P(InstantiationName, TestLaplaceBox, ::testing::ValuesIn(getParameters()));
