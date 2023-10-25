@@ -116,7 +116,7 @@ OpenCLBackend::getDevices(const std::string & type) const -> std::vector<Device:
 
   if (devices.empty())
   {
-    throw std::runtime_error("Error: Fail to find OpenCL compatible devices.");
+    std::cerr << "Warning: Fail to find '" << type << "' OpenCL compatible devices." << std::endl;
   }
 
   return devices;
@@ -139,6 +139,7 @@ OpenCLBackend::getDevice(const std::string & name, const std::string & type) con
   }
   if (!devices.empty())
   {
+    std::cerr << "Warning: Device with name '" << name << "' not found. Using default device instead." << std::endl;
     return std::move(devices.back());
   }
   return nullptr;
