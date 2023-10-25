@@ -6,6 +6,32 @@
 class TestDevice : public ::testing::TestWithParam<std::string>
 {};
 
+TEST_P(TestDevice, availableDevices)
+{
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto devices_all = cle::BackendManager::getInstance().getBackend().getDevices("all");
+  auto devices_gpu = cle::BackendManager::getInstance().getBackend().getDevices("gpu");
+  auto devices_cpu = cle::BackendManager::getInstance().getBackend().getDevices("cpu");
+  if (param == "cuda")
+  {
+    devices_cpu.clear();
+  }
+
+  EXPECT_FALSE(devices_all.empty());
+  EXPECT_GE(devices_all.size(), devices_cpu.size());
+  EXPECT_GE(devices_all.size(), devices_gpu.size());
+  EXPECT_EQ(devices_all.size(), devices_gpu.size() + devices_cpu.size());
+
+  auto devices_wrong = cle::BackendManager::getInstance().getBackend().getDevices("gfds");
+  EXPECT_EQ(devices_all.size(), devices_wrong.size());
+
+  auto devices_list_all = cle::BackendManager::getInstance().getBackend().getDevicesList("all");
+  EXPECT_FALSE(devices_list_all.empty());
+  EXPECT_EQ(devices_all.size(), devices_list_all.size());
+}
+
+
 TEST_P(TestDevice, type)
 {
   std::string param = GetParam();
