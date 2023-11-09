@@ -50,8 +50,8 @@ jobs:
         shell: bash
         run: |
           cd ${{ runner.workspace }}/build
-          gcovr -r . --filter='.*/clic/src/.*' --xml -o coverage.xml
-
+          gcovr -r . --filter='.*/clic/src/.*' --exclude-throw-branches --xml -o coverage.xml
+          
       - name: Upload coverage report
         uses: codecov/codecov-action@v3
         with:
