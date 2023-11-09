@@ -28,7 +28,7 @@ TEST_P(TestAbsoluteDifference, execute)
 
   for (int i = 0; i < output.size(); i++)
   {
-    EXPECT_NEAR(output[i], valid[i], 0.0001);
+    EXPECT_EQ(output[i], valid[i]);
   }
 }
 
