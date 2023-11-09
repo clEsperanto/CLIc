@@ -1453,9 +1453,9 @@ auto
 maximum_sphere_func(const Device::Pointer & device,
                     const Array::Pointer &  src,
                     Array::Pointer          dst,
-                    int                     radius_x,
-                    int                     radius_y,
-                    int                     radius_z) -> Array::Pointer
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z) -> Array::Pointer
 {
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "maximum_sphere", kernel::maximum_sphere };
@@ -1473,9 +1473,9 @@ auto
 minimum_sphere_func(const Device::Pointer & device,
                     const Array::Pointer &  src,
                     Array::Pointer          dst,
-                    int                     radius_x,
-                    int                     radius_y,
-                    int                     radius_z) -> Array::Pointer
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z) -> Array::Pointer
 {
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "minimum_sphere", kernel::minimum_sphere };

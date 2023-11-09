@@ -517,17 +517,17 @@ auto
 maximum_sphere_func(const Device::Pointer & device,
                     const Array::Pointer &  src,
                     Array::Pointer          dst,
-                    int                     radius_x,
-                    int                     radius_y,
-                    int                     radius_z) -> Array::Pointer;
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z) -> Array::Pointer;
 
 auto
 minimum_sphere_func(const Device::Pointer & device,
                     const Array::Pointer &  src,
                     Array::Pointer          dst,
-                    int                     radius_x,
-                    int                     radius_y,
-                    int                     radius_z) -> Array::Pointer;
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z) -> Array::Pointer;
 
 auto
 multiply_matrix_func(const Device::Pointer & device,
