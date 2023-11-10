@@ -10,7 +10,12 @@ protected:
   std::array<float, 5 * 5 * 1> input = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 0, 0, 9, 9, 9, 0, 0, 9, 9, 9, 0, 0,
   };
-  std::array<float, 5 * 5 * 1> valid = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 0, 0, 0, 9, 9, 9, 0, 0, 9, 9, 9, 0, 0 };
+  std::array<float, 5 * 5 * 1> valid_box = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 0, 0, 0, 9, 9, 9, 0, 0, 9, 9, 9, 0, 0
+  };
+  std::array<float, 5 * 5 * 1> valid_sphere = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 0, 0, 9, 9, 9, 0, 0, 9, 9, 9, 0, 0,
+  };
 };
 
 TEST_P(TestMedian, executeBox)
@@ -27,27 +32,27 @@ TEST_P(TestMedian, executeBox)
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
   {
-    EXPECT_EQ(output[i], valid[i]);
+    EXPECT_EQ(output[i], valid_box[i]);
   }
 }
 
-// TEST_P(TestMedian, executeDiamond)
-// {
-//   std::string param = GetParam();
-//   cle::BackendManager::getInstance().setBackend(param);
-//   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+TEST_P(TestMedian, executeDiamond)
+{
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
 
-//   auto gpu_input = cle::Array::create(5, 5, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
-//   gpu_input->write(input.data());
+  auto gpu_input = cle::Array::create(5, 5, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  gpu_input->write(input.data());
 
-//   auto gpu_output = cle::tier1::median_diamond_func(device, gpu_input, nullptr, 1, 1, 0);
+  auto gpu_output = cle::tier1::median_sphere_func(device, gpu_input, nullptr, 1, 1, 0);
 
-//   gpu_output->read(output.data());
-//   for (int i = 0; i < output.size(); i++)
-//   {
-//     EXPECT_EQ(output[i], valid[i]);
-//   }
-// }
+  gpu_output->read(output.data());
+  for (int i = 0; i < output.size(); i++)
+  {
+    EXPECT_EQ(output[i], valid_sphere[i]);
+  }
+}
 
 std::vector<std::string>
 getParameters()
@@ -62,4 +67,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_CASE_P(InstantiationName, TestMedian, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestMedian, ::testing::ValuesIn(getParameters()));

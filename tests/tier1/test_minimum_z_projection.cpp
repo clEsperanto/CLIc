@@ -54,4 +54,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_CASE_P(InstantiationName, TestMinimumProjectionZ, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestMinimumProjectionZ, ::testing::ValuesIn(getParameters()));

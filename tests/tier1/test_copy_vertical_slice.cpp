@@ -87,4 +87,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_CASE_P(InstantiationName, TestCopyVerticalSlice, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestCopyVerticalSlice, ::testing::ValuesIn(getParameters()));

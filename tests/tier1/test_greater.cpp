@@ -58,4 +58,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_CASE_P(InstantiationName, TestGreater, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestGreater, ::testing::ValuesIn(getParameters()));

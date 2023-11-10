@@ -3,24 +3,23 @@
 #include <array>
 #include <gtest/gtest.h>
 
-class TestSumReductionX : public ::testing::TestWithParam<std::string>
+class TestDegreeToRadiant : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::array<float, 3 * 1 * 1>  output;
-  std::array<float, 12 * 1 * 1> input = { 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0 };
-  std::array<float, 3 * 1 * 1>  valid = { 2.0, 2.0, 1.0 };
+  std::array<float, 3 * 1 * 1> output;
+  std::array<float, 3 * 1 * 1> input = { 180, 0, -90 };
+  std::array<float, 3 * 1 * 1> valid = { M_PI, 0, -0.5 * M_PI };
 };
 
-TEST_P(TestSumReductionX, execute)
+TEST_P(TestDegreeToRadiant, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
 
-  auto gpu_input = cle::Array::create(12, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(3, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
-
-  auto gpu_output = cle::tier1::sum_reduction_x_func(device, gpu_input, nullptr, 4);
+  auto gpu_output = cle::tier2::degrees_to_radians_func(device, gpu_input, nullptr);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
@@ -42,4 +41,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestSumReductionX, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDegreeToRadiant, ::testing::ValuesIn(getParameters()));

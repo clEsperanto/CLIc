@@ -51,4 +51,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_CASE_P(InstantiationName, TestDivideImageAndScalar, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDivideImageAndScalar, ::testing::ValuesIn(getParameters()));

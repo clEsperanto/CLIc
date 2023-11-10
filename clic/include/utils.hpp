@@ -201,7 +201,7 @@ sigma2kernelsize(const float & sigma) -> int
 }
 
 inline auto
-radius2kernelsize(const int & radius) -> int
+radius2kernelsize(const float & radius) -> int
 {
   return static_cast<int>(radius * 2 + 1);
 }
