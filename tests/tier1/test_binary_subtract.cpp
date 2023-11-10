@@ -60,4 +60,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_CASE_P(InstantiationName, TestBinarySubtract, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestBinarySubtract, ::testing::ValuesIn(getParameters()));

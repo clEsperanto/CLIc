@@ -53,4 +53,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_CASE_P(InstantiationName, TestSmallerEqualConstant, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestSmallerEqualConstant, ::testing::ValuesIn(getParameters()));

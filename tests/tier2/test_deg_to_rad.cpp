@@ -41,4 +41,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_CASE_P(InstantiationName, TestDegreeToRadiant, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDegreeToRadiant, ::testing::ValuesIn(getParameters()));
