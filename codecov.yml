@@ -1,0 +1,15 @@
+codecov:
+  require_ci_to_pass: yes
+
+parsers:
+  gcov:
+    branch_detection:
+      conditional: no
+      loop: no
+      method: no
+      macro: no
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false
