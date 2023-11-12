@@ -29,6 +29,7 @@ jobs:
       - name: Install packages
         shell: bash
         run: |
+          brew update
           brew install ${{ matrix.packages }}
 
       - name: Cmake configure
