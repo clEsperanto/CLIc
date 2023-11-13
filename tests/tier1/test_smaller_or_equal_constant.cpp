@@ -27,6 +27,7 @@ TEST_P(TestSmallerEqualConstant, execute)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(10, 5, 3, cle::dType::INT8, cle::mType::BUFFER, device);
   gpu_input->write(input.data());

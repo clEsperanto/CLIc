@@ -25,6 +25,7 @@ TEST_P(TestMaxAllPixel, execute)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   auto array = cle::Array::create(10, 20, 30, cle::dType::FLOAT, cle::mType::BUFFER, device);
   array->write(input.data());

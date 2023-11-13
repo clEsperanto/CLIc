@@ -23,6 +23,7 @@ TEST_P(TestMedian, executeBox)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
@@ -41,6 +42,7 @@ TEST_P(TestMedian, executeDiamond)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());

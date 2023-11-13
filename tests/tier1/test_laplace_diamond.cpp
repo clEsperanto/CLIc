@@ -18,6 +18,7 @@ TEST_P(TestLaplaceDiamond, execute)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
