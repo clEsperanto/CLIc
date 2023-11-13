@@ -28,7 +28,7 @@ jobs:
         shell: bash
         run: |
           sudo apt upgrade && sudo apt update
-          sudo apt install -y ocl-icd-opencl-dev intel-opencl-icd
+          sudo apt install -y ocl-icd-opencl-dev intel-opencl-icd pocl
 
       - name: Cmake configure
         shell: bash
