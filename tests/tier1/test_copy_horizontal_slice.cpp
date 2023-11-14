@@ -20,6 +20,7 @@ TEST_P(TestCopyHorizontalSlice, executeFrom)
   auto gpu_input = cle::Array::create(2, 2, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_output = cle::Array::create(2, 2, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
+  gpu_output->fill(0);
 
   cle::tier1::copy_horizontal_slice_func(device, gpu_input, gpu_output, 0);
 
@@ -69,6 +70,7 @@ TEST_P(TestCopyHorizontalSlice, executeIMG)
   auto gpu_input = cle::Array::create(3, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_output = cle::Array::create(3, 3, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
+  gpu_output->fill(0);
 
   cle::tier1::copy_horizontal_slice_func(device, gpu_input, gpu_output, 1);
 
