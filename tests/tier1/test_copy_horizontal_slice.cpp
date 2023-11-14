@@ -32,8 +32,8 @@ TEST_P(TestCopyHorizontalSlice, executeFrom)
 
 TEST_P(TestCopyHorizontalSlice, executeTo)
 {
-  std::array<float, 2 * 2 * 2> output;
   std::array<float, 2 * 2 * 1> input = { 3, 4, 4, 5 };
+  std::array<float, 2 * 2 * 2> output;
 
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -43,6 +43,7 @@ TEST_P(TestCopyHorizontalSlice, executeTo)
   auto gpu_input = cle::Array::create(2, 2, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_output = cle::Array::create(2, 2, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
+  gpu_output->fill(0);
 
   cle::tier1::copy_horizontal_slice_func(device, gpu_input, gpu_output, 0);
 
