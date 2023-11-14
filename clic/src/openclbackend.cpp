@@ -973,7 +973,8 @@ static auto
 buildProgram(const Device::Pointer & device, const cl_program & program) -> void
 {
   auto   opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  cl_int buildStatus = clBuildProgram(program, 1, &opencl_device->getCLDevice(), "-w", nullptr, nullptr);
+  // cl_int buildStatus = clBuildProgram(program, 1, &opencl_device->getCLDevice(), "-w", nullptr, nullptr);
+  cl_int buildStatus = clBuildProgram(program, 0, nullptr, "-w", nullptr, nullptr);
   if (buildStatus != CL_SUCCESS)
   {
     size_t      len;
@@ -1056,8 +1057,10 @@ loadProgramFromCache(const Device::Pointer & device, const std::string & device_
 
   auto         opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
   const auto * binary_code_ptr = reinterpret_cast<const unsigned char *>(binary.data());
+  // auto         program = clCreateProgramWithBinary(
+  //   opencl_device->getCLContext(), 1, &opencl_device->getCLDevice(), &binary_size, &binary_code_ptr, &status, &err);
   auto         program = clCreateProgramWithBinary(
-    opencl_device->getCLContext(), 1, &opencl_device->getCLDevice(), &binary_size, &binary_code_ptr, &status, &err);
+    opencl_device->getCLContext(), 0, nullptr, &binary_size, &binary_code_ptr, &status, &err);
   if (status != CL_SUCCESS)
   {
     std::cerr << "Error: Fail to create program from binary. OpenCL error : " + getErrorString(err) + " (" +
