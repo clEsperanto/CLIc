@@ -24,7 +24,7 @@ TEST_P(TestNanToNum, execute)
 
   auto gpu_input = cle::Array::create(5, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
-  auto gpu_output = cle::tier1::nan_to_num(device, gpu_input, nullptr, 3, 4, 5);
+  auto gpu_output = cle::tier1::nan_to_num_func(device, gpu_input, nullptr, 3, 4, 5);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
