@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.os }}-${{ matrix.buildtype }}-Test-and-Coverage
+    name: ${{ matrix.os }}-${{ matrix.buildtype }}
     runs-on: ${{ matrix.os }}
     strategy:
       max-parallel: 1
@@ -28,7 +28,7 @@ jobs:
         shell: bash
         run: |
           sudo apt update -y && sudo apt upgrade -y
-          sudo apt install -y build-essential llvm-15-dev gcov lcov
+          sudo apt install -y build-essential llvm-15-dev lcov
           sudo apt install -y ocl-icd-opencl-dev intel-opencl-icd pocl-opencl-icd
 
       - name: Cmake configure
