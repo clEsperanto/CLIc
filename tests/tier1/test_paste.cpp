@@ -24,7 +24,7 @@ TEST_P(TestPaste, execute)
   gpu_input1->write(input1.data());
   gpu_input2->write(input2.data());
 
-  cle::tier1::paste_func(device, gpu_input2, gpu_input1, nullptr, 1, 2, 0);
+  cle::tier1::paste_func(device, gpu_input2, gpu_input1, 1, 2, 0);
 
   gpu_input1->read(output.data());
   for (int i = 0; i < output.size(); i++)
