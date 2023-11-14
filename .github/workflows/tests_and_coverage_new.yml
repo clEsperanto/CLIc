@@ -24,16 +24,11 @@ jobs:
         with:
           submodules: true
 
-      - name: Install packages
+      - name: Install OpenCL
         shell: bash
         run: |
-          sudo apt update && sudo apt upgrade -y
-          sudo apt install -y ocl-icd-opencl-dev intel-opencl-icd
-      
-      - name: Install pocl
-        shell: bash
-        run: |
-          pip install pocl-binary-distribution
+          sudo apt update -y && sudo apt upgrade -y
+          sudo apt install -y ocl-icd-opencl-dev intel-opencl-icd pocl-opencl-icd
 
       - name: Cmake configure
         shell: bash
