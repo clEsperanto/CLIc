@@ -28,8 +28,8 @@ jobs:
         shell: bash
         run: |
           sudo apt update -y && sudo apt upgrade -y
-          sudo apt install -y build-essential lcov
-          sudo apt install -y ocl-icd-opencl-dev intel-opencl-icd llvm-15-dev pocl-opencl-icd
+          sudo apt install -y build-essential lcov llvm-15-dev
+          sudo apt install -y ocl-icd-opencl-dev intel-opencl-icd libpocl-dev
 
       - name: Cmake configure
         shell: bash
