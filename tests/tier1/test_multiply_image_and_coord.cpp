@@ -21,7 +21,7 @@ TEST_P(TestMultiplyPixelAndCoord, execute)
   auto gpu_input = cle::Array::create(5, 3, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
-  auto gpu_output = cle::tier1::multiply_image_and_coordinate_func(device, gpu_input, nullptr);
+  auto gpu_output = cle::tier1::multiply_image_and_coordinate_func(device, gpu_input, nullptr, 0);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
