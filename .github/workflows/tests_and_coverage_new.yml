@@ -28,6 +28,7 @@ jobs:
         shell: bash
         run: |
           sudo apt update -y && sudo apt upgrade -y
+          sudo apt install -y build-essential llvm-15-dev
           sudo apt install -y ocl-icd-opencl-dev intel-opencl-icd pocl-opencl-icd
 
       - name: Cmake configure
