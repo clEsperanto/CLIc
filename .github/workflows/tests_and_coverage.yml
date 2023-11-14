@@ -24,12 +24,12 @@ jobs:
         with:
           submodules: true
 
-      - name: Install OpenCL
+      - name: Install packages
         shell: bash
         run: |
           sudo apt update -y && sudo apt upgrade -y
-          sudo apt install -y build-essential llvm-15-dev lcov
-          sudo apt install -y ocl-icd-opencl-dev intel-opencl-icd pocl-opencl-icd
+          sudo apt install -y build-essential lcov
+          sudo apt install -y ocl-icd-opencl-dev intel-opencl-icd llvm-15-dev pocl-opencl-icd
 
       - name: Cmake configure
         shell: bash
