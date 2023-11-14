@@ -27,6 +27,7 @@ jobs:
         shell: bash
         run: |
           brew update
+          brew upgrade
           brew install ${{ matrix.packages }}
 
       - name: Cmake configure
