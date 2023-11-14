@@ -14,22 +14,20 @@ jobs:
       max-parallel: 1
       matrix:
         buildtype: [Debug]
-        os: [ubuntu-latest]
-        cxx: [g++]
-        cc: [gcc]
+        os: [macos-latest]
+        cxx: [clang++]
+        cc: [clang]
+        packages: [lcov gcovr]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          submodules: true
 
       - name: Install packages
         shell: bash
         run: |
-          sudo apt update -y && sudo apt upgrade -y
-          sudo apt install -y build-essential lcov llvm-15-dev
-          sudo apt install -y ocl-icd-opencl-dev intel-opencl-icd libpocl-dev
+          brew update
+          brew install ${{ matrix.packages }}
 
       - name: Cmake configure
         shell: bash
@@ -50,14 +48,14 @@ jobs:
         shell: bash
         run: |
           cd ${{ runner.workspace }}/build
-          # gcovr -r . --filter='.*/clic/src/.*' --exclude-throw-branches --exclude-unreachable-branches --xml -o coverage.xml
-          lcov --base-directory . --directory . --capture --output-file coverage.info
-          lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' '*/deps_/*' '*/tests/tier*/*.cpp' --output-file coverage.info
-          lcov --list coverage.info
+          gcovr -r . --filter='.*/clic/src/.*' --exclude-throw-branches --exclude-unreachable-branches --xml -o coverage.xml
+          # lcov --base-directory . --directory . --capture --output-file coverage.info
+          # lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' ''*/deps_/*' --output-file coverage.info
+          # lcov --list coverage.info
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          files: ${{ runner.workspace }}/build/coverage.info
+          files: ${{ runner.workspace }}/build/coverage.xml
           fail_ci_if_error: true # optional (default = false)
