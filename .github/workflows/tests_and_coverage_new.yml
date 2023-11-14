@@ -31,7 +31,7 @@ jobs:
           sudo apt install -y ocl-icd-opencl-dev intel-opencl-icd
       
       - name: Install pocl
-        shell: basj
+        shell: bash
         run: |
           pip install pocl-binary-distribution
 
