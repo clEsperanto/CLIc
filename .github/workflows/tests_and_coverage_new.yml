@@ -28,8 +28,12 @@ jobs:
         shell: bash
         run: |
           sudo apt update && sudo apt upgrade -y
-          sudo apt install clang lldb lld -y
-          sudo apt install -y ocl-icd-opencl-dev intel-opencl-icd libpocl-dev
+          sudo apt install -y ocl-icd-opencl-dev intel-opencl-icd
+      
+      - name: Install pocl
+        shell: basj
+        run: |
+          pip install pocl-binary-distribution
 
       - name: Cmake configure
         shell: bash
