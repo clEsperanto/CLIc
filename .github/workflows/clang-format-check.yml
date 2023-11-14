@@ -1,4 +1,4 @@
-name: clang-format Check
+name: Clang-format
 on: [pull_request]
 jobs:
   formatting-check:

@@ -25,6 +25,7 @@ TEST_P(TestMaskedVoronoiLabeling, execute)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   auto gpu_input1 = cle::Array::create(6, 4, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(gpu_input1);

@@ -20,6 +20,7 @@ TEST_P(TestExtLabelVoronoi, execute)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(6, 3, 2, cle::dType::INT32, cle::mType::BUFFER, device);
   gpu_input->write(input.data());

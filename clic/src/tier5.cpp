@@ -28,12 +28,9 @@ connected_components_labeling_box_func(const Device::Pointer & device, const Arr
   -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::UINT32);
-  // Array::Pointer temp1 = Array::create(dst);
-  // Array::Pointer temp2 = Array::create(dst);
 
   auto temp1 = tier1::set_nonzero_pixels_to_pixelindex_func(device, src, nullptr, 1);
   auto temp2 = Array::create(temp1);
-
   auto flag = Array::create(1, 1, 1, dType::INT32, mType::BUFFER, device);
   flag->fill(0);
 

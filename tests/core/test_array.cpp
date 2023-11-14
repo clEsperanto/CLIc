@@ -11,6 +11,7 @@ TEST_P(TestArray, allocate)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 30, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -39,6 +40,7 @@ TEST_P(TestArray, typeDataMemory)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 30, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -55,6 +57,7 @@ TEST_P(TestArray, allocateWrite)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   // Write some data to the array
   std::array<float, 10 * 20 * 30> data;
@@ -82,6 +85,7 @@ TEST_P(TestArray, readWrite)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 30, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -113,6 +117,7 @@ TEST_P(TestArray, copyFill)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 30, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -157,6 +162,7 @@ TEST_P(TestArray, stringCout)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 30, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -177,6 +183,7 @@ TEST_P(TestArray, regionOperation)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   // Create a new Array
   auto array = cle::Array::create(7, 7, 1, cle::toType<float>(), cle::mType::BUFFER, device);
@@ -251,6 +258,7 @@ TEST_P(TestArray, throwErrors)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 30, cle::dType::FLOAT, cle::mType::BUFFER, device);

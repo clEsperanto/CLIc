@@ -15,10 +15,12 @@ TEST_P(TestCopyVerticalSlice, executeFrom)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(2, 2, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_output = cle::Array::create(2, 2, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
+  gpu_output->fill(0);
 
   cle::tier1::copy_vertical_slice_func(device, gpu_input, gpu_output, 0);
 
@@ -37,10 +39,12 @@ TEST_P(TestCopyVerticalSlice, executeTo)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(2, 2, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_output = cle::Array::create(2, 2, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
+  gpu_output->fill(0);
 
   cle::tier1::copy_vertical_slice_func(device, gpu_input, gpu_output, 0);
 
@@ -60,10 +64,12 @@ TEST_P(TestCopyVerticalSlice, executeIMG)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(3, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_output = cle::Array::create(3, 3, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
+  gpu_output->fill(0);
 
   cle::tier1::copy_vertical_slice_func(device, gpu_input, gpu_output, 1);
 

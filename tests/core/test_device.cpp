@@ -37,6 +37,7 @@ TEST_P(TestDevice, type)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   // Check that the device type is correct
   if (param == "opencl")
@@ -58,6 +59,7 @@ TEST_P(TestDevice, name)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   // Check that the device name is not empty
   EXPECT_FALSE(device->getName().empty());
@@ -68,6 +70,7 @@ TEST_P(TestDevice, info)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   // Check that the device info is not empty
   EXPECT_FALSE(device->getInfo().empty());
@@ -78,6 +81,7 @@ TEST_P(TestDevice, waitInitFinit)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   // Initialize the device
   device->initialize();
@@ -185,6 +189,7 @@ TEST_P(TestDevice, stringCout)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
   // Capture the output of the << operator
   testing::internal::CaptureStdout();
