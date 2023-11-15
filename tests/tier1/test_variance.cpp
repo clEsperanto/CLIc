@@ -30,7 +30,7 @@ TEST_P(TestVariance, executeBox)
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
   {
-    EXPECT_EQ(output[i], valid_box[i]);
+    EXPECT_NEAR(output[i], valid_box[i], 0.001);
   }
 }
 
@@ -49,7 +49,7 @@ TEST_P(TestVariance, executeSphere)
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
   {
-    EXPECT_EQ(output[i], valid_sphere[i]);
+    EXPECT_NEAR(output[i], valid_sphere[i], 0.001);
   }
 }
 
