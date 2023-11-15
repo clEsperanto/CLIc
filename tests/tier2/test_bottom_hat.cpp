@@ -29,12 +29,13 @@ TEST_P(TestBottomHat, executeBox)
   EXPECT_EQ(*std::min_element(output.begin(), output.end()), 0);
 }
 
+// TODO @strigaud: fix test
 // TEST_P(TestBottomHat, executeSphere)
 // {
 //   std::string param = GetParam();
 //   cle::BackendManager::getInstance().setBackend(param);
-// auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
-//  device->setWaitToFinish(true);
+//   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+//   device->setWaitToFinish(true);
 
 //   auto gpu_input = cle::Array::create(5, 5, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
 //   gpu_input->write(input.data());

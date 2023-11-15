@@ -39,6 +39,7 @@ TEST_P(TestOpening, executeBox)
   }
 }
 
+// TODO @strigaud: fix test
 // TEST_P(TestOpening, executeSphere)
 // {
 //   std::string param = GetParam();

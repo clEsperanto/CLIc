@@ -493,22 +493,22 @@ range_func(const Device::Pointer & device,
 
 auto
 read_values_from_coordinates_func(const Device::Pointer & device,
-                                     const Array::Pointer &  src,
-                                     const Array::Pointer &  list,
-                                     Array::Pointer          dst) -> Array::Pointer;
+                                  const Array::Pointer &  src,
+                                  const Array::Pointer &  list,
+                                  Array::Pointer          dst) -> Array::Pointer;
 
 auto
 replace_values_func(const Device::Pointer & device,
-                         const Array::Pointer &  src0,
-                         const Array::Pointer &  src1,
-                         Array::Pointer          dst) -> Array::Pointer;
+                    const Array::Pointer &  src0,
+                    const Array::Pointer &  src1,
+                    Array::Pointer          dst) -> Array::Pointer;
 
 auto
 replace_value_func(const Device::Pointer & device,
-                       const Array::Pointer &  src,
-                       Array::Pointer          dst,
-                       float                   scalar0,
-                       float                   scalar1) -> Array::Pointer;
+                   const Array::Pointer &  src,
+                   Array::Pointer          dst,
+                   float                   scalar0,
+                   float                   scalar1) -> Array::Pointer;
 
 // @StRigaud TODO : resample_func
 // @StRigaud TODO : touch_matrix_to_mesh_func

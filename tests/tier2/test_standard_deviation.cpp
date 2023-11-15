@@ -34,6 +34,7 @@ TEST_P(TestStandardDeviation, executeBox)
   }
 }
 
+// TODO @strigaud: fix test
 // TEST_P(TestStandardDeviation, executeSphere)
 // {
 //   std::string param = GetParam();

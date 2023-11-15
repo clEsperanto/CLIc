@@ -115,8 +115,8 @@
 #include "cle_range.h"
 // #include "cle_read_values_from_map.h"
 #include "cle_read_values_from_coordinates.h"
-#include "cle_replace_values.h"
 #include "cle_replace_value.h"
+#include "cle_replace_values.h"
 // #include "cle_resample.h"
 // #include "cle_touch_matrix_to_mesh.h"
 #include "cle_maximum_sphere.h"
@@ -1401,9 +1401,9 @@ range_func(const Device::Pointer & device,
 
 auto
 read_values_from_coordinates_func(const Device::Pointer & device,
-                                     const Array::Pointer &  src,
-                                     const Array::Pointer &  list,
-                                     Array::Pointer          dst) -> Array::Pointer
+                                  const Array::Pointer &  src,
+                                  const Array::Pointer &  list,
+                                  Array::Pointer          dst) -> Array::Pointer
 {
   if (list->dim() != 2)
   {
@@ -1419,9 +1419,9 @@ read_values_from_coordinates_func(const Device::Pointer & device,
 
 auto
 replace_values_func(const Device::Pointer & device,
-                         const Array::Pointer &  src0,
-                         const Array::Pointer &  src1,
-                         Array::Pointer          dst) -> Array::Pointer
+                    const Array::Pointer &  src0,
+                    const Array::Pointer &  src1,
+                    Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(src0, dst);
   const KernelInfo    kernel = { "replace_values", kernel::replace_values };
@@ -1433,10 +1433,10 @@ replace_values_func(const Device::Pointer & device,
 
 auto
 replace_value_func(const Device::Pointer & device,
-                       const Array::Pointer &  src,
-                       Array::Pointer          dst,
-                       float                   scalar0,
-                       float                   scalar1) -> Array::Pointer
+                   const Array::Pointer &  src,
+                   Array::Pointer          dst,
+                   float                   scalar0,
+                   float                   scalar1) -> Array::Pointer
 {
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "replace_value", kernel::replace_value };
