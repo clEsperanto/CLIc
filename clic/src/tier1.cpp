@@ -833,7 +833,7 @@ auto
 maximum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_zy(src, dst);
+  tier0::create_zy(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "maximum_x_projection", kernel::maximum_x_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -845,7 +845,7 @@ auto
 maximum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_xz(src, dst);
+  tier0::create_xz(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "maximum_y_projection", kernel::maximum_y_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -857,7 +857,7 @@ auto
 maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_xy(src, dst);
+  tier0::create_xy(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "maximum_z_projection", kernel::maximum_z_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1912,18 +1912,19 @@ write_values_to_positions_func(const Device::Pointer & device, const Array::Poin
   {
     // flatten the coords to get the max coordinate value in x,y,z
     // as well as the number of rows (2->1D, 3->2D, 4->3D)
-    auto             temp = maximum_x_projection_func(device, list, nullptr);
-    auto             nb_max_position = temp->size() - 1;
+    auto temp = Array::create(1, list->height(), 1, dType::INT32, list->mtype(), list->device());
+    maximum_x_projection_func(device, list, temp);
     std::vector<int> max_position(temp->size());
     temp->read(max_position.data());
-    size_t max_pos_x = max_position[0];
-    size_t max_pos_y = (nb_max_position > 2) ? max_position[1] : 1;
-    size_t max_pos_z = (nb_max_position > 3) ? max_position[2] : 1;
+    size_t max_pos_x = max_position[0] + 1;
+    size_t max_pos_y = (list->height() > 2) ? max_position[1] + 1 : 1;
+    size_t max_pos_z = (list->height() > 3) ? max_position[2] + 1 : 1;
     dst = Array::create(max_pos_x, max_pos_y, max_pos_z, list->dtype(), list->mtype(), list->device());
+    dst->fill(0);
   }
   const KernelInfo    kernel = { "write_values_to_positions", kernel::write_values_to_positions };
   const ParameterList params = { { "src", list }, { "dst", dst } };
-  const RangeArray    range = { list->width(), list->height(), list->depth() };
+  const RangeArray    range = { list->width(), 1, 1 };
   execute(device, kernel, params, range);
   return dst;
 }
