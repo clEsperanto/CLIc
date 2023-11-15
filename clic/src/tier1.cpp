@@ -113,10 +113,10 @@
 #include "cle_power.h"
 #include "cle_power_images.h"
 #include "cle_range.h"
-// #include "cle_read_intensities_from_map.h"
-#include "cle_read_intensities_from_positions.h"
-#include "cle_replace_intensities.h"
-#include "cle_replace_intensity.h"
+// #include "cle_read_values_from_map.h"
+#include "cle_read_values_from_coordinates.h"
+#include "cle_replace_values.h"
+#include "cle_replace_value.h"
 // #include "cle_resample.h"
 // #include "cle_touch_matrix_to_mesh.h"
 #include "cle_maximum_sphere.h"
@@ -154,7 +154,7 @@
 #include "cle_undefined_to_zero.h"
 #include "cle_variance_box.h"
 #include "cle_variance_sphere.h"
-#include "cle_write_values_to_positions.h"
+#include "cle_write_values_to_coordinates.h"
 
 
 namespace cle::tier1
@@ -1397,10 +1397,10 @@ range_func(const Device::Pointer & device,
   return dst;
 }
 
-// read_intensities_from_map_func
+// read_values_from_map_func
 
 auto
-read_intensities_from_positions_func(const Device::Pointer & device,
+read_values_from_coordinates_func(const Device::Pointer & device,
                                      const Array::Pointer &  src,
                                      const Array::Pointer &  list,
                                      Array::Pointer          dst) -> Array::Pointer
@@ -1410,7 +1410,7 @@ read_intensities_from_positions_func(const Device::Pointer & device,
     throw std::runtime_error("The list input is expected to be 2D, where rows are coordinates (x,y,z) and values v.");
   }
   tier0::create_vector(src, dst, src->width());
-  const KernelInfo    kernel = { "read_intensities_from_positions", kernel::read_intensities_from_positions };
+  const KernelInfo    kernel = { "read_values_from_coordinates", kernel::read_values_from_coordinates };
   const ParameterList params = { { "src0", src }, { "src1", list }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
@@ -1418,13 +1418,13 @@ read_intensities_from_positions_func(const Device::Pointer & device,
 }
 
 auto
-replace_intensities_func(const Device::Pointer & device,
+replace_values_func(const Device::Pointer & device,
                          const Array::Pointer &  src0,
                          const Array::Pointer &  src1,
                          Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(src0, dst);
-  const KernelInfo    kernel = { "replace_intensities", kernel::replace_intensities };
+  const KernelInfo    kernel = { "replace_values", kernel::replace_values };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
@@ -1432,14 +1432,14 @@ replace_intensities_func(const Device::Pointer & device,
 }
 
 auto
-replace_intensity_func(const Device::Pointer & device,
+replace_value_func(const Device::Pointer & device,
                        const Array::Pointer &  src,
                        Array::Pointer          dst,
                        float                   scalar0,
                        float                   scalar1) -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  const KernelInfo    kernel = { "replace_intensity", kernel::replace_intensity };
+  const KernelInfo    kernel = { "replace_value", kernel::replace_value };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar0", scalar0 }, { "scalar1", scalar1 } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
@@ -1900,7 +1900,7 @@ variance_sphere_func(const Device::Pointer & device,
 }
 
 auto
-write_values_to_positions_func(const Device::Pointer & device, const Array::Pointer & list, Array::Pointer dst)
+write_values_to_coordinates_func(const Device::Pointer & device, const Array::Pointer & list, Array::Pointer dst)
   -> Array::Pointer
 {
   if (list->dim() != 2)
@@ -1922,7 +1922,7 @@ write_values_to_positions_func(const Device::Pointer & device, const Array::Poin
     dst = Array::create(max_pos_x, max_pos_y, max_pos_z, list->dtype(), list->mtype(), list->device());
     dst->fill(0);
   }
-  const KernelInfo    kernel = { "write_values_to_positions", kernel::write_values_to_positions };
+  const KernelInfo    kernel = { "write_values_to_coordinates", kernel::write_values_to_coordinates };
   const ParameterList params = { { "src", list }, { "dst", dst } };
   const RangeArray    range = { list->width(), 1, 1 };
   execute(device, kernel, params, range);
