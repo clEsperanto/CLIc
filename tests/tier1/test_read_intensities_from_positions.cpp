@@ -24,7 +24,7 @@ TEST_P(TestReadIntensityFromPositions, execute)
   gpu_input1->write(input.data());
   gpu_input2->write(list.data());
 
-  auto gpu_output = cle::tier1::read_intensities_from_positions_func(device, gpu_input1, gpu_input2, nullptr);
+  auto gpu_output = cle::tier1::read_values_from_coordinates_func(device, gpu_input1, gpu_input2, nullptr);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)

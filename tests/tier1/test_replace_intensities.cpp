@@ -41,7 +41,7 @@ TEST_P(TestReplaceIntensities, execute)
   gpu_input1->write(input.data());
   gpu_input2->write(intmap.data());
 
-  auto gpu_output = cle::tier1::replace_intensities_func(device, gpu_input1, gpu_input2, nullptr);
+  auto gpu_output = cle::tier1::replace_values_func(device, gpu_input1, gpu_input2, nullptr);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)

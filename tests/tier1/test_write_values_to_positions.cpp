@@ -28,7 +28,7 @@ TEST_P(TestWriteValuesToPositions, execute2D)
   auto gpu_coord = cle::Array::create(5, 3, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_coord->write(list_2d.data());
 
-  auto gpu_output = cle::tier1::write_values_to_positions_func(device, gpu_coord, nullptr);
+  auto gpu_output = cle::tier1::write_values_to_coordinates_func(device, gpu_coord, nullptr);
 
   gpu_output->read(output_2d.data());
   for (int i = 0; i < output_2d.size(); i++)
@@ -47,7 +47,7 @@ TEST_P(TestWriteValuesToPositions, execute3D)
   auto gpu_coord = cle::Array::create(5, 4, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_coord->write(list_3d.data());
 
-  auto gpu_output = cle::tier1::write_values_to_positions_func(device, gpu_coord, nullptr);
+  auto gpu_output = cle::tier1::write_values_to_coordinates_func(device, gpu_coord, nullptr);
 
   gpu_output->read(output_3d.data());
   for (int i = 0; i < output_3d.size(); i++)
