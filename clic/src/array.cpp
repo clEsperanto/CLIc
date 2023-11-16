@@ -38,7 +38,6 @@ Array::create(const size_t            width,
 {
   auto ptr = std::shared_ptr<Array>(new Array(width, height, depth, data_type, mem_type, device_ptr));
   ptr->allocate();
-  ptr->fill(0.0F);
   return ptr;
 }
 
@@ -60,7 +59,6 @@ auto
 Array::create(const Array::Pointer & array) -> Array::Pointer
 {
   auto ptr = create(array->width(), array->height(), array->depth(), array->dtype(), array->mtype(), array->device());
-  array->copy(ptr);
   return ptr;
 }
 
