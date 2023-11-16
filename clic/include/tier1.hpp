@@ -216,7 +216,12 @@ greater_or_equal_constant_func(const Device::Pointer & device,
                                Array::Pointer          dst,
                                float                   scalar) -> Array::Pointer;
 
-// @StRigaud TODO : hessian_eigenvalues_func
+auto
+hessian_eigenvalues_func(const Device::Pointer & device,
+                         const Array::Pointer &  src,
+                         Array::Pointer          small_eigenvalue,
+                         Array::Pointer          middle_eigenvalue,
+                         Array::Pointer          large_eigenvalue) -> std::vector<Array::Pointer>;
 
 auto
 laplace_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;

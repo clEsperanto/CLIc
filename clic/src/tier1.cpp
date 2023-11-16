@@ -61,7 +61,7 @@
 #include "cle_greater_constant.h"
 #include "cle_greater_or_equal.h"
 #include "cle_greater_or_equal_constant.h"
-// #include "cle_hessian_eigenvalues.h"
+#include "cle_hessian_eigenvalues.h"
 #include "cle_laplace_box.h"
 #include "cle_laplace_diamond.h"
 #include "cle_logarithm.h"
@@ -716,7 +716,37 @@ greater_or_equal_constant_func(const Device::Pointer & device,
   return dst;
 }
 
-// hessian_eigenvalues_func
+auto
+hessian_eigenvalues_func(const Device::Pointer & device,
+                         const Array::Pointer &  src,
+                         Array::Pointer          small_eigenvalue,
+                         Array::Pointer          middle_eigenvalue,
+                         Array::Pointer          large_eigenvalue) -> std::vector<Array::Pointer>
+{
+  tier0::create_like(src, small_eigenvalue, dType::FLOAT);
+  tier0::create_like(src, large_eigenvalue, dType::FLOAT);
+  if (src->dim() == 3)
+  {
+    tier0::create_like(src, middle_eigenvalue, dType::FLOAT);
+  }
+  else
+  {
+    // no middle eigenvalue for 2D images, we replace the image by a scalar to save memory
+    tier0::create_one(src, middle_eigenvalue, dType::FLOAT);
+  }
+  const KernelInfo    kernel = { "hessian_eigenvalues", kernel::hessian_eigenvalues };
+  const ParameterList params = { { "src", src },
+                                 { "small_eigenvalue", small_eigenvalue },
+                                 { "middle_eigenvalue", middle_eigenvalue },
+                                 { "large_eigenvalue", large_eigenvalue } };
+  const RangeArray    range = { src->width(), src->height(), src->depth() };
+  execute(device, kernel, params, range);
+  if (src->dim() == 2)
+  {
+    return { small_eigenvalue, large_eigenvalue };
+  }
+  return { small_eigenvalue, middle_eigenvalue, large_eigenvalue };
+}
 
 auto
 laplace_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer

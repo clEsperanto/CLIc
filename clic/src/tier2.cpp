@@ -221,7 +221,14 @@ label_spots_func(const Device::Pointer & device, const Array::Pointer & src, Arr
   return dst;
 }
 
-// @StRigaud TODO: auto large_hessian_eigenvalue_func;
+auto
+large_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer
+{
+  tier0::create_like(src, dst, dType::FLOAT);
+  tier1::hessian_eigenvalues_func(device, src, nullptr, nullptr, dst);
+  return dst;
+}
 
 auto
 maximum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float
@@ -354,12 +361,20 @@ radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & s
 }
 
 // @StRigaud TODO: auto reduce_stack_func;
-// @StRigaud TODO: auto small_hessian_eigenvalue_func;
+
+auto
+small_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer
+{
+  tier0::create_like(src, dst, dType::FLOAT);
+  tier1::hessian_eigenvalues_func(device, src, dst, nullptr, nullptr);
+  return dst;
+}
 
 auto
 square_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return dst;
+  return tier1::power_func(device, src, dst, 2);
 }
 
 auto
