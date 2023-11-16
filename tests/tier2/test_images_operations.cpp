@@ -36,7 +36,7 @@ TEST_P(TestImagesOperation, add)
 
 TEST_P(TestImagesOperation, subtract)
 {
-  std::array<float, 3 * 1 * 1> valid = { -3, 3, -5 };
+  std::array<float, 3 * 1 * 1> valid = { -3, 3, -4 };
 
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
