@@ -39,25 +39,24 @@ TEST_P(TestOpening, executeBox)
   }
 }
 
-// TODO @strigaud: fix test
-// TEST_P(TestOpening, executeSphere)
-// {
-//   std::string param = GetParam();
-//   cle::BackendManager::getInstance().setBackend(param);
-//   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
-//   device->setWaitToFinish(true);
+TEST_P(TestOpening, executeSphere)
+{
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
-//   auto gpu_input = cle::Array::create(6, 6, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
-//   gpu_input->write(input.data());
+  auto gpu_input = cle::Array::create(6, 6, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  gpu_input->write(input.data());
 
-//   auto gpu_output = cle::tier2::opening_sphere_func(device, gpu_input, nullptr, 1, 1, 0);
+  auto gpu_output = cle::tier2::opening_sphere_func(device, gpu_input, nullptr, 1, 1, 0);
 
-//   gpu_output->read(output.data());
-//   for (int i = 0; i < output.size(); i++)
-//   {
-//     EXPECT_EQ(output[i], valid_sphere[i]);
-//   }
-// }
+  gpu_output->read(output.data());
+  for (int i = 0; i < output.size(); i++)
+  {
+    EXPECT_EQ(output[i], valid_sphere[i]);
+  }
+}
 
 std::vector<std::string>
 getParameters()
