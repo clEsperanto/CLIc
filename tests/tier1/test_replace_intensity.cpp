@@ -40,7 +40,7 @@ TEST_P(TestReplaceIntensity, execute)
   auto gpu_input = cle::Array::create(10, 5, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
-  auto gpu_output = cle::tier1::replace_intensity_func(device, gpu_input, nullptr, 5, 100);
+  auto gpu_output = cle::tier1::replace_value_func(device, gpu_input, nullptr, 5, 100);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)

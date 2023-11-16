@@ -6,24 +6,23 @@
 class TestAbsoluteDifference : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::array<float, 3 * 1 * 1> output;
-  std::array<float, 3 * 1 * 1> input1 = { 1, 5, 3 };
-  std::array<float, 3 * 1 * 1> input2 = { 4, 2, 7 };
-  std::array<float, 3 * 1 * 1> valid = { 3, 3, 4 };
+  std::array<float, 2 * 2 * 1> output;
+  std::array<float, 2 * 2 * 1> input = { 0, 1, 2, 3 };
 };
 
-TEST_P(TestAbsoluteDifference, execute)
+TEST_P(TestAbsoluteDifference, executeMinMax)
 {
+  std::array<float, 2 * 2 * 1> valid = { 1, 1, 2, 2 };
+
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input1 = cle::Array::create(3, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  auto gpu_input2 = cle::Array::create(gpu_input1);
-  gpu_input1->write(input1.data());
-  gpu_input2->write(input2.data());
-  auto gpu_output = cle::tier2::absolute_difference_func(device, gpu_input1, gpu_input2, nullptr);
+  auto gpu_input = cle::Array::create(2, 2, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  gpu_input->write(input.data());
+
+  auto gpu_output = cle::tier2::clip_func(device, gpu_input, nullptr, 1, 2);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)

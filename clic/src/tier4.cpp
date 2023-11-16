@@ -32,7 +32,7 @@ relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & s
   tier1::sum_reduction_x_func(device, flagged, block_sums, blocksize);
   auto new_indices = Array::create(max_label + 1, 1, 1, flagged->dtype(), flagged->mtype(), flagged->device());
   tier1::block_enumerate_func(device, flagged, block_sums, new_indices, blocksize);
-  tier1::replace_intensities_func(device, src, new_indices, dst);
+  tier1::replace_values_func(device, src, new_indices, dst);
   return dst;
 }
 

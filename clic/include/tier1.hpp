@@ -489,26 +489,26 @@ range_func(const Device::Pointer & device,
            int                     stop_z,
            int                     step_z) -> Array::Pointer;
 
-// @StRigaud TODO : read_intensities_from_map_func
+// @StRigaud TODO : read_values_from_map_func
 
 auto
-read_intensities_from_positions_func(const Device::Pointer & device,
-                                     const Array::Pointer &  src,
-                                     const Array::Pointer &  list,
-                                     Array::Pointer          dst) -> Array::Pointer;
+read_values_from_coordinates_func(const Device::Pointer & device,
+                                  const Array::Pointer &  src,
+                                  const Array::Pointer &  list,
+                                  Array::Pointer          dst) -> Array::Pointer;
 
 auto
-replace_intensities_func(const Device::Pointer & device,
-                         const Array::Pointer &  src0,
-                         const Array::Pointer &  src1,
-                         Array::Pointer          dst) -> Array::Pointer;
+replace_values_func(const Device::Pointer & device,
+                    const Array::Pointer &  src0,
+                    const Array::Pointer &  src1,
+                    Array::Pointer          dst) -> Array::Pointer;
 
 auto
-replace_intensity_func(const Device::Pointer & device,
-                       const Array::Pointer &  src,
-                       Array::Pointer          dst,
-                       float                   scalar0,
-                       float                   scalar1) -> Array::Pointer;
+replace_value_func(const Device::Pointer & device,
+                   const Array::Pointer &  src,
+                   Array::Pointer          dst,
+                   float                   scalar0,
+                   float                   scalar1) -> Array::Pointer;
 
 // @StRigaud TODO : resample_func
 // @StRigaud TODO : touch_matrix_to_mesh_func
@@ -660,7 +660,7 @@ variance_sphere_func(const Device::Pointer & device,
                      int                     radius_z) -> Array::Pointer;
 
 auto
-write_values_to_positions_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+write_values_to_coordinates_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer;
 
 } // namespace cle::tier1

@@ -2,7 +2,7 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
 
-#include "cle_label_spot_in_x.h"
+#include "cle_label_spots_in_x.h"
 
 namespace cle::tier2
 {
@@ -90,10 +90,10 @@ closing_sphere_func(const Device::Pointer & device,
 
 
 auto
-combine_horizontally_func(const Device::Pointer & device,
-                          const Array::Pointer &  src0,
-                          const Array::Pointer &  src1,
-                          Array::Pointer          dst) -> Array::Pointer
+concatenate_along_x_func(const Device::Pointer & device,
+                         const Array::Pointer &  src0,
+                         const Array::Pointer &  src1,
+                         Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_dst(src0, dst, src0->width() + src1->width(), src0->height(), src0->depth(), src0->dtype());
   tier1::paste_func(device, src0, dst, 0, 0, 0);
@@ -102,10 +102,10 @@ combine_horizontally_func(const Device::Pointer & device,
 }
 
 auto
-combine_vertically_func(const Device::Pointer & device,
-                        const Array::Pointer &  src0,
-                        const Array::Pointer &  src1,
-                        Array::Pointer          dst) -> Array::Pointer
+concatenate_along_y_func(const Device::Pointer & device,
+                         const Array::Pointer &  src0,
+                         const Array::Pointer &  src1,
+                         Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_dst(src0, dst, src0->width(), src0->height() + src1->height(), src0->depth(), src0->dtype());
   tier1::paste_func(device, src0, dst, 0, 0, 0);
@@ -114,10 +114,10 @@ combine_vertically_func(const Device::Pointer & device,
 }
 
 auto
-concatenate_stacks_func(const Device::Pointer & device,
-                        const Array::Pointer &  src0,
-                        const Array::Pointer &  src1,
-                        Array::Pointer          dst) -> Array::Pointer
+concatenate_along_z_func(const Device::Pointer & device,
+                         const Array::Pointer &  src0,
+                         const Array::Pointer &  src1,
+                         Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_dst(src0, dst, src0->width(), src0->height(), src0->depth() + src1->depth(), src0->dtype());
   tier1::paste_func(device, src0, dst, 0, 0, 0);
@@ -212,11 +212,11 @@ label_spots_func(const Device::Pointer & device, const Array::Pointer & src, Arr
   auto spot_count_in_x = tier1::sum_x_projection_func(device, src, nullptr);
   auto spot_count_in_xy = tier1::sum_y_projection_func(device, spot_count_in_x, nullptr);
 
-  const KernelInfo    kernel = { "label_spot_in_x", kernel::label_spot_in_x };
+  const KernelInfo    kernel = { "label_spots_in_x", kernel::label_spots_in_x };
   const ParameterList params = {
     { "src", src }, { "dst", dst }, { "countX", spot_count_in_x }, { "countXY", spot_count_in_xy }
   };
-  const RangeArray range = { dst->width(), dst->height(), 1 };
+  const RangeArray range = { 1, dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
 }

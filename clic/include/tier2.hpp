@@ -61,22 +61,22 @@ closing_sphere_func(const Device::Pointer & device,
                     float                   radius_z) -> Array::Pointer;
 
 auto
-combine_horizontally_func(const Device::Pointer & device,
-                          const Array::Pointer &  src0,
-                          const Array::Pointer &  src1,
-                          Array::Pointer          dst) -> Array::Pointer;
+concatenate_along_x_func(const Device::Pointer & device,
+                         const Array::Pointer &  src0,
+                         const Array::Pointer &  src1,
+                         Array::Pointer          dst) -> Array::Pointer;
 
 auto
-combine_vertically_func(const Device::Pointer & device,
-                        const Array::Pointer &  src0,
-                        const Array::Pointer &  src1,
-                        Array::Pointer          dst) -> Array::Pointer;
+concatenate_along_y_func(const Device::Pointer & device,
+                         const Array::Pointer &  src0,
+                         const Array::Pointer &  src1,
+                         Array::Pointer          dst) -> Array::Pointer;
 
 auto
-concatenate_stacks_func(const Device::Pointer & device,
-                        const Array::Pointer &  src0,
-                        const Array::Pointer &  src1,
-                        Array::Pointer          dst) -> Array::Pointer;
+concatenate_along_z_func(const Device::Pointer & device,
+                         const Array::Pointer &  src0,
+                         const Array::Pointer &  src1,
+                         Array::Pointer          dst) -> Array::Pointer;
 
 // @StRigaud TODO: auto crop_border_func
 // @StRigaud TODO: auto distance_matrix_to_mesh_func
