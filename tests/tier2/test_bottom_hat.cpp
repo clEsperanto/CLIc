@@ -29,23 +29,22 @@ TEST_P(TestBottomHat, executeBox)
   EXPECT_EQ(*std::min_element(output.begin(), output.end()), 0);
 }
 
-// TODO @strigaud: fix test
-// TEST_P(TestBottomHat, executeSphere)
-// {
-//   std::string param = GetParam();
-//   cle::BackendManager::getInstance().setBackend(param);
-//   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
-//   device->setWaitToFinish(true);
+TEST_P(TestBottomHat, executeSphere)
+{
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
-//   auto gpu_input = cle::Array::create(5, 5, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
-//   gpu_input->write(input.data());
+  auto gpu_input = cle::Array::create(5, 5, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  gpu_input->write(input.data());
 
-//   auto gpu_output = cle::tier2::bottom_hat_sphere_func(device, gpu_input, nullptr, 1, 1, 0);
+  auto gpu_output = cle::tier2::bottom_hat_sphere_func(device, gpu_input, nullptr, 1, 1, 0);
 
-//   gpu_output->read(output.data());
-//   EXPECT_EQ(*std::max_element(output.begin(), output.end()), 50);
-//   EXPECT_EQ(*std::min_element(output.begin(), output.end()), 0);
-// }
+  gpu_output->read(output.data());
+  EXPECT_EQ(*std::max_element(output.begin(), output.end()), 50);
+  EXPECT_EQ(*std::min_element(output.begin(), output.end()), 0);
+}
 
 std::vector<std::string>
 getParameters()
