@@ -26,7 +26,6 @@ TEST_P(TestAbsoluteDifference, execute)
   auto gpu_output = cle::tier2::absolute_difference_func(device, gpu_input1, gpu_input2, nullptr);
 
   gpu_output->read(output.data());
-
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

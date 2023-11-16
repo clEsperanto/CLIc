@@ -9,12 +9,12 @@ protected:
   std::array<float, 2 * 2 * 2> output;
   std::array<float, 2 * 2 * 1> input1 = { 1, 1, 1, 1 };
   std::array<float, 2 * 2 * 1> input2 = { 2, 2, 2, 2 };
-  std::array<float, 4 * 2 * 1> valid_x = { 1, 1, 2, 2, 1, 1, 2, 2 };
-  std::array<float, 2 * 2 * 2> valid_xz = { 1, 1, 1, 1, 2, 2, 2, 2 };
 };
 
 TEST_P(TestConcatenate, alongX)
 {
+  std::array<float, 4 * 2 * 1> valid = { 1, 1, 2, 2, 1, 1, 2, 2 };
+
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
@@ -25,12 +25,12 @@ TEST_P(TestConcatenate, alongX)
   gpu_input1->write(input1.data());
   gpu_input2->write(input2.data());
 
-  auto gpu_output = cle::tier2::concatenate_along_x(device, gpu_input1, gpu_input2, nullptr);
+  auto gpu_output = cle::tier2::concatenate_along_x_func(device, gpu_input1, gpu_input2, nullptr);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
   {
-    EXPECT_EQ(output[i], valid_x[i]);
+    EXPECT_EQ(output[i], valid[i]);
   }
   EXPECT_EQ(gpu_output->width(), 4);
   EXPECT_EQ(gpu_output->height(), 2);
@@ -39,6 +39,8 @@ TEST_P(TestConcatenate, alongX)
 
 TEST_P(TestConcatenate, alongY)
 {
+  std::array<float, 2 * 2 * 2> valid = { 1, 1, 1, 1, 2, 2, 2, 2 };
+
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
@@ -49,12 +51,12 @@ TEST_P(TestConcatenate, alongY)
   gpu_input1->write(input1.data());
   gpu_input2->write(input2.data());
 
-  auto gpu_output = cle::tier2::concatenate_along_y(device, gpu_input1, gpu_input2, nullptr);
+  auto gpu_output = cle::tier2::concatenate_along_y_func(device, gpu_input1, gpu_input2, nullptr);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
   {
-    EXPECT_EQ(output[i], valid_yz[i]);
+    EXPECT_EQ(output[i], valid[i]);
   }
   EXPECT_EQ(gpu_output->width(), 2);
   EXPECT_EQ(gpu_output->height(), 4);
@@ -63,6 +65,8 @@ TEST_P(TestConcatenate, alongY)
 
 TEST_P(TestConcatenate, alongZ)
 {
+  std::array<float, 2 * 2 * 2> valid = { 1, 1, 1, 1, 2, 2, 2, 2 };
+
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
@@ -73,12 +77,12 @@ TEST_P(TestConcatenate, alongZ)
   gpu_input1->write(input1.data());
   gpu_input2->write(input2.data());
 
-  auto gpu_output = cle::tier2::concatenate_along_z(device, gpu_input1, gpu_input2, nullptr);
+  auto gpu_output = cle::tier2::concatenate_along_z_func(device, gpu_input1, gpu_input2, nullptr);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
   {
-    EXPECT_EQ(output[i], valid_yz[i]);
+    EXPECT_EQ(output[i], valid[i]);
   }
   EXPECT_EQ(gpu_output->width(), 2);
   EXPECT_EQ(gpu_output->height(), 2);

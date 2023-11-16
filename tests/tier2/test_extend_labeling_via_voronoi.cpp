@@ -28,7 +28,6 @@ TEST_P(TestExtLabelVoronoi, execute)
   auto gpu_output = cle::tier2::extend_labeling_via_voronoi_func(device, gpu_input, nullptr);
 
   gpu_output->read(output.data());
-
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

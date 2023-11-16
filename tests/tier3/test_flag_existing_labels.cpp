@@ -37,7 +37,6 @@ TEST_P(TestExistingLabels, execute)
   auto gpu_output = cle::tier3::flag_existing_labels_func(device, gpu_input, nullptr);
 
   gpu_output->read(output.data());
-
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);
