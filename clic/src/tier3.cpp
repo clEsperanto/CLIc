@@ -58,16 +58,22 @@ exclude_labels_func(const Device::Pointer & device,
   }
   std::vector<unsigned int> labels_list(list->size());
   list->read(labels_list.data());
+
   labels_list.front() = 0;
   unsigned int count = 1;
-  for (auto && label : labels_list)
+  for (int i = 1; i < labels_list.size(); i++)
   {
-    if (label == 0)
+    if (labels_list[i] == 0)
     {
-      label = count;
+      labels_list[i] = count;
       count++;
     }
+    else
+    {
+      labels_list[i] = 0;
+    }
   }
+
   auto index_list = Array::create(list->size(), 1, 1, dType::UINT32, mType::BUFFER, src->device());
   index_list->write(labels_list.data());
   tier1::replace_values_func(device, src, index_list, dst);
