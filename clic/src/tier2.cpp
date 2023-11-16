@@ -90,10 +90,10 @@ closing_sphere_func(const Device::Pointer & device,
 
 
 auto
-combine_horizontally_func(const Device::Pointer & device,
-                          const Array::Pointer &  src0,
-                          const Array::Pointer &  src1,
-                          Array::Pointer          dst) -> Array::Pointer
+concatenate_along_x_func(const Device::Pointer & device,
+                         const Array::Pointer &  src0,
+                         const Array::Pointer &  src1,
+                         Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_dst(src0, dst, src0->width() + src1->width(), src0->height(), src0->depth(), src0->dtype());
   tier1::paste_func(device, src0, dst, 0, 0, 0);
@@ -102,10 +102,10 @@ combine_horizontally_func(const Device::Pointer & device,
 }
 
 auto
-combine_vertically_func(const Device::Pointer & device,
-                        const Array::Pointer &  src0,
-                        const Array::Pointer &  src1,
-                        Array::Pointer          dst) -> Array::Pointer
+concatenate_along_y_func(const Device::Pointer & device,
+                         const Array::Pointer &  src0,
+                         const Array::Pointer &  src1,
+                         Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_dst(src0, dst, src0->width(), src0->height() + src1->height(), src0->depth(), src0->dtype());
   tier1::paste_func(device, src0, dst, 0, 0, 0);
@@ -114,10 +114,10 @@ combine_vertically_func(const Device::Pointer & device,
 }
 
 auto
-concatenate_stacks_func(const Device::Pointer & device,
-                        const Array::Pointer &  src0,
-                        const Array::Pointer &  src1,
-                        Array::Pointer          dst) -> Array::Pointer
+concatenate_along_z_func(const Device::Pointer & device,
+                         const Array::Pointer &  src0,
+                         const Array::Pointer &  src1,
+                         Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_dst(src0, dst, src0->width(), src0->height(), src0->depth() + src1->depth(), src0->dtype());
   tier1::paste_func(device, src0, dst, 0, 0, 0);
