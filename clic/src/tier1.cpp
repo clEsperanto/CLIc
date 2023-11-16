@@ -1871,9 +1871,9 @@ variance_box_func(const Device::Pointer & device,
   const KernelInfo    kernel = { "variance_box", kernel::variance_box };
   const ParameterList params = { { "src", src },
                                  { "dst", dst },
-                                 { "index0", radius2kernelsize(radius_x) },
-                                 { "index1", radius2kernelsize(radius_y) },
-                                 { "index2", radius2kernelsize(radius_z) } };
+                                 { "scalar0", radius2kernelsize(radius_x) },
+                                 { "scalar1", radius2kernelsize(radius_y) },
+                                 { "scalar2", radius2kernelsize(radius_z) } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
@@ -1891,9 +1891,9 @@ variance_sphere_func(const Device::Pointer & device,
   const KernelInfo    kernel = { "variance_sphere", kernel::variance_sphere };
   const ParameterList params = { { "src", src },
                                  { "dst", dst },
-                                 { "index0", radius2kernelsize(radius_x) },
-                                 { "index1", radius2kernelsize(radius_y) },
-                                 { "index2", radius2kernelsize(radius_z) } };
+                                 { "scalar0", radius2kernelsize(radius_x) },
+                                 { "scalar1", radius2kernelsize(radius_y) },
+                                 { "scalar2", radius2kernelsize(radius_z) } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
