@@ -79,6 +79,12 @@ concatenate_along_z_func(const Device::Pointer & device,
                          Array::Pointer          dst) -> Array::Pointer;
 
 auto
+count_touching_neighbors_func(const Device::Pointer & device,
+                              const Array::Pointer &  src,
+                              Array::Pointer          dst,
+                              bool                    ignore_background) -> Array::Pointer;
+
+auto
 crop_border_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int border_size)
   -> Array::Pointer;
 
