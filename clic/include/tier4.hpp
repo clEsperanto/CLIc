@@ -8,7 +8,7 @@
 namespace cle::tier4
 {
 
-// auto local_cross_correlation_func
+
 // auto proximal_other_labels_count_map_func
 // auto erode_labels_func
 // auto erode_connected_labels_func
