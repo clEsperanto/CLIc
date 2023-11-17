@@ -230,6 +230,12 @@ auto
 laplace_diamond_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 auto
+local_cross_correlation_func(const Device::Pointer & device,
+                             const Array::Pointer &  src0,
+                             const Array::Pointer &  src1,
+                             Array::Pointer          dst) -> Array::Pointer;
+
+auto
 logarithm_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 auto

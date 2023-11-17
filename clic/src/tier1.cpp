@@ -64,6 +64,7 @@
 #include "cle_hessian_eigenvalues.h"
 #include "cle_laplace_box.h"
 #include "cle_laplace_diamond.h"
+#include "cle_local_cross_correlation.h"
 #include "cle_logarithm.h"
 #include "cle_mask.h"
 #include "cle_mask_label.h"
@@ -765,6 +766,20 @@ laplace_diamond_func(const Device::Pointer & device, const Array::Pointer & src,
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "laplace_diamond", kernel::laplace_diamond };
   const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
+auto
+local_cross_correlation_func(const Device::Pointer & device,
+                             const Array::Pointer &  src0,
+                             const Array::Pointer &  src1,
+                             Array::Pointer          dst) -> Array::Pointer
+{
+  tier0::create_like(src0, dst);
+  const KernelInfo    kernel = { "local_cross_correlation", kernel::local_cross_correlation };
+  const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
