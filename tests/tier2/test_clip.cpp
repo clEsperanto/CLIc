@@ -3,14 +3,14 @@
 #include <array>
 #include <gtest/gtest.h>
 
-class TestAbsoluteDifference : public ::testing::TestWithParam<std::string>
+class TestClip : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<float, 2 * 2 * 1> output;
   std::array<float, 2 * 2 * 1> input = { 0, 1, 2, 3 };
 };
 
-TEST_P(TestAbsoluteDifference, executeMinMax)
+TEST_P(TestClip, executeMinMax)
 {
   std::array<float, 2 * 2 * 1> valid = { 1, 1, 2, 2 };
 
@@ -44,4 +44,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestAbsoluteDifference, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestClip, ::testing::ValuesIn(getParameters()));
