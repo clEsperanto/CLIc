@@ -10,7 +10,6 @@ namespace cle::tier5
 
 // array_equal
 // closing_labels
-// connected_components_labeling_diamond
 // fill_zeros_inpainting
 // generate_touch_mean_intensity_within_range_matrix
 // is_matrix_symmetric
