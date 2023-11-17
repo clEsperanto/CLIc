@@ -5,6 +5,7 @@
 
 #include "cle_exclude_on_edges.h"
 #include "cle_flag_existing_labels.h"
+#include "cle_generate_touch_matrix.h"
 #include "cle_histogram.h"
 
 namespace cle::tier3
@@ -156,6 +157,20 @@ gamma_correction_func(const Device::Pointer & device, const Array::Pointer & src
   return tier1::multiply_image_and_scalar_func(device, temp2, dst, max_intensity);
 }
 
+auto
+generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer
+{
+  auto max_label = tier2::maximum_of_all_pixels_func(device, src) + 1;
+  tier0::create_dst(src, dst, max_label, max_label, 1, dType::UINT32);
+  dst->fill(0);
+  const KernelInfo    kernel = { "generate_touch_matrix", kernel::generate_touch_matrix };
+  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { src->width(), src->height(), src->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
 // auto generate_n_nearest_neighbors_matrix_func
 // auto generate_proximal_neighbors_matrix_func
 // auto generate_touch_count_matrix_func
@@ -185,7 +200,6 @@ histogram_func(const Device::Pointer & device,
   execute(device, kernel, params, range, consts);
   return tier1::sum_z_projection_func(device, partial_hist, dst);
 }
-
 
 auto
 jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src1, const Array::Pointer & src2) -> float

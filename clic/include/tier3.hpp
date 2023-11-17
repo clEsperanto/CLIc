@@ -46,6 +46,10 @@ auto
 gamma_correction_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float gamma)
   -> Array::Pointer;
 
+auto
+generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
+
 // generate_n_nearest_neighbors_matrix
 // generate_proximal_neighbors_matrix
 // generate_touch_count_matrix
