@@ -9,12 +9,11 @@ namespace cle::tier5
 {
 
 // array_equal
-// closing_labels
+
 // fill_zeros_inpainting
 // generate_touch_mean_intensity_within_range_matrix
 // is_matrix_symmetric
 // merge_labels_according_to_touch_matrix
-// opening_labels
 
 
 auto
