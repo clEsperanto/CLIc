@@ -34,7 +34,7 @@ TEST_P(TestLabelOperations, executeDilate)
     EXPECT_EQ(output[i], dilated[i]);
   }
 
-  auto gpu_output = cle::tier6::dilate_labels_func(device, gpu_input, nullptr, 0);
+  cle::tier6::dilate_labels_func(device, gpu_input, gpu_output, 0);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
@@ -68,7 +68,7 @@ TEST_P(TestLabelOperations, executeErode)
     EXPECT_EQ(output[i], eroded[i]);
   }
 
-  auto gpu_output = cle::tier6::erode_labels_func(device, gpu_input, nullptr, 0, true);
+  cle::tier6::erode_labels_func(device, gpu_input, gpu_output, 0, true);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
@@ -102,7 +102,7 @@ TEST_P(TestLabelOperations, executeOpening)
     EXPECT_EQ(output[i], opened[i]);
   }
 
-  auto gpu_output = cle::tier7::opening_labels_func(device, gpu_input, nullptr, 0);
+  cle::tier7::opening_labels_func(device, gpu_input, gpu_output, 0);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
@@ -136,7 +136,7 @@ TEST_P(TestLabelOperations, executeClosing)
     EXPECT_EQ(output[i], closed[i]);
   }
 
-  auto gpu_output = cle::tier7::closing_labels_func(device, gpu_input, nullptr, 0);
+  cle::tier7::closing_labels_func(device, gpu_input, gpu_output, 0);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
