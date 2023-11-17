@@ -43,7 +43,7 @@ center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) 
 }
 
 // auto proximal_other_labels_count_func
-// auto divide_by_gaussian_background_func
+
 
 auto
 exclude_labels_func(const Device::Pointer & device,
@@ -187,7 +187,14 @@ histogram_func(const Device::Pointer & device,
 }
 
 
-// auto jaccard_index_func
+auto
+jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src1, const Array::Pointer & src2) -> float
+{
+  auto intersection_ = tier1::binary_and_func(device, src1, src2, nullptr);
+  auto union_ = tier1::binary_or_func(device, src1, src2, nullptr);
+  return tier2::sum_of_all_pixels_func(device, intersection_) / tier2::sum_of_all_pixels_func(device, union_);
+}
+
 // auto labelled_spots_to_pointlist_func
 // auto maximum_of_n_most_touching_neighbors_map_func
 // auto maximum_of_n_nearest_neighbors_map_func
@@ -226,7 +233,6 @@ mean_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & s
 // auto standard_deviation_of_touch_portion_within_range_neighbors_map_func
 // auto standard_deviation_of_touching_neighbors_map_func
 // auto standard_deviation_of_proximal_neighbors_map_func
-// auto subtract_gaussian_background_func
 // auto z_position_range_projection_func
 
 } // namespace cle::tier3

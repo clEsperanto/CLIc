@@ -17,7 +17,6 @@ auto
 center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<float, 3>;
 
 // proximal_other_labels_count
-// divide_by_gaussian_background
 
 auto
 exclude_labels_func(const Device::Pointer & device,
@@ -60,7 +59,9 @@ histogram_func(const Device::Pointer & device,
                float                   min = NaN,
                float                   max = NaN) -> Array::Pointer;
 
-// jaccard_index
+auto
+jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src1, const Array::Pointer & src2) -> float;
+
 // labelled_spots_to_pointlist
 // maximum_of_n_most_touching_neighbors_map
 // maximum_of_n_nearest_neighbors_map
@@ -96,7 +97,7 @@ mean_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & s
 // standard_deviation_of_touch_portion_within_range_neighbors_map
 // standard_deviation_of_touching_neighbors_map
 // standard_deviation_of_proximal_neighbors_map
-// subtract_gaussian_background
+
 // z_position_range_projection
 
 } // namespace cle::tier3
