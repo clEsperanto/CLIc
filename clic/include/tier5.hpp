@@ -26,8 +26,10 @@ combine_labels_func(const Device::Pointer & device,
 
 
 auto
-connected_components_labeling_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+connected_components_labeling_func(const Device::Pointer & device,
+                                   const Array::Pointer &  src,
+                                   Array::Pointer          dst,
+                                   const std::string &     connectivity) -> Array::Pointer;
 
 
 } // namespace cle::tier5
