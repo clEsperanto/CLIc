@@ -125,8 +125,30 @@ concatenate_along_z_func(const Device::Pointer & device,
   return dst;
 }
 
-// @StRigaud TODO: auto crop_border_func
+auto
+crop_border_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int border_size)
+  -> Array::Pointer
+{
+  std::array<int, 3> region = { static_cast<int>(src->width()) - 2 * border_size,
+                                static_cast<int>(src->height()) - 2 * border_size,
+                                static_cast<int>(src->depth()) - 2 * border_size };
+  std::transform(region.begin(), region.end(), region.begin(), [](int i) { return std::max(i, 0); });
+  return tier1::crop_func(device, src, dst, border_size, border_size, border_size, region[0], region[1], region[2]);
+}
+
 // @StRigaud TODO: auto distance_matrix_to_mesh_func;
+
+auto
+divide_by_gaussian_background_func(const Device::Pointer & device,
+                                   const Array::Pointer &  src,
+                                   Array::Pointer          dst,
+                                   float                   sigma_x,
+                                   float                   sigma_y,
+                                   float                   sigma_z) -> Array::Pointer
+{
+  auto temp = tier1::gaussian_blur_func(device, src, nullptr, sigma_x, sigma_y, sigma_z);
+  return tier1::divide_images_func(device, src, temp, dst);
+}
 
 auto
 degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -415,6 +437,18 @@ standard_deviation_sphere_func(const Device::Pointer & device,
 }
 
 // @StRigaud TODO: auto sub_stack_func
+
+auto
+subtract_gaussian_background_func(const Device::Pointer & device,
+                                  const Array::Pointer &  src,
+                                  Array::Pointer          dst,
+                                  float                   sigma_x,
+                                  float                   sigma_y,
+                                  float                   sigma_z) -> Array::Pointer
+{
+  auto temp = tier1::gaussian_blur_func(device, src, nullptr, sigma_x, sigma_y, sigma_z);
+  return tier1::add_images_weighted_func(device, src, temp, dst, 1, -1);
+}
 
 auto
 subtract_images_func(const Device::Pointer & device,

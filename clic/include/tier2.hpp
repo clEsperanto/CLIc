@@ -78,8 +78,19 @@ concatenate_along_z_func(const Device::Pointer & device,
                          const Array::Pointer &  src1,
                          Array::Pointer          dst) -> Array::Pointer;
 
-// @StRigaud TODO: auto crop_border_func
+auto
+crop_border_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int border_size)
+  -> Array::Pointer;
+
 // @StRigaud TODO: auto distance_matrix_to_mesh_func
+
+auto
+divide_by_gaussian_background_func(const Device::Pointer & device,
+                                   const Array::Pointer &  src,
+                                   Array::Pointer          dst,
+                                   float                   sigma_x,
+                                   float                   sigma_y,
+                                   float                   sigma_z) -> Array::Pointer;
 
 auto
 degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -192,6 +203,14 @@ standard_deviation_sphere_func(const Device::Pointer & device,
                                int                     radius_z) -> Array::Pointer;
 
 // @StRigaud TODO: auto sub_stack_func
+
+auto
+subtract_gaussian_background_func(const Device::Pointer & device,
+                                  const Array::Pointer &  src,
+                                  Array::Pointer          dst,
+                                  float                   sigma_x,
+                                  float                   sigma_y,
+                                  float                   sigma_z) -> Array::Pointer;
 
 auto
 subtract_images_func(const Device::Pointer & device,
