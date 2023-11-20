@@ -180,7 +180,6 @@ gaussian_blur_func(const Device::Pointer & device,
                    float                   sigma_z) -> Array::Pointer;
 
 // @StRigaud TODO : generate_angle_matrix_func
-// @StRigaud TODO : generate_binary_overlap_matrix_func
 
 auto
 generate_distance_matrix_func(const Device::Pointer & device,

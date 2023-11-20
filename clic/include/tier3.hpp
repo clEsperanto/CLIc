@@ -47,6 +47,12 @@ gamma_correction_func(const Device::Pointer & device, const Array::Pointer & src
   -> Array::Pointer;
 
 auto
+generate_binary_overlap_matrix_func(const Device::Pointer & device,
+                                    const Array::Pointer &  src0,
+                                    const Array::Pointer &  src1,
+                                    Array::Pointer          dst) -> Array::Pointer;
+
+auto
 generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer;
 
