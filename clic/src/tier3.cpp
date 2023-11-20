@@ -7,6 +7,7 @@
 #include "cle_flag_existing_labels.h"
 #include "cle_generate_touch_matrix.h"
 #include "cle_histogram.h"
+#include "cle_labelled_spots_to_point_list.h"
 
 namespace cle::tier3
 {
@@ -209,7 +210,23 @@ jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src1, 
   return tier2::sum_of_all_pixels_func(device, intersection_) / tier2::sum_of_all_pixels_func(device, union_);
 }
 
-// auto labelled_spots_to_pointlist_func
+auto
+labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer
+{
+  auto max_label = tier2::maximum_of_all_pixels_func(device, src);
+  auto dim = src->dim();
+  tier0::create_dst(src, dst, max_label, dim, 1, dType::UINT32);
+  dst->fill(0);
+
+  const KernelInfo    kernel = { "labelled_spots_to_point_list", kernel::labelled_spots_to_point_list };
+  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { src->width(), src->height(), src->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
+
 // auto maximum_of_n_most_touching_neighbors_map_func
 // auto maximum_of_n_nearest_neighbors_map_func
 // auto maximum_of_touch_portion_within_range_neighbors_map_func

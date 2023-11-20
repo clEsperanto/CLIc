@@ -66,7 +66,10 @@ histogram_func(const Device::Pointer & device,
 auto
 jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src1, const Array::Pointer & src2) -> float;
 
-// labelled_spots_to_pointlist
+auto
+labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
+
 // maximum_of_n_most_touching_neighbors_map
 // maximum_of_n_nearest_neighbors_map
 // maximum_of_touch_portion_within_range_neighbors_map
