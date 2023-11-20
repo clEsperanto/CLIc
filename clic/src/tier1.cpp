@@ -25,7 +25,6 @@
 #include "cle_copy_slice_to.h"
 #include "cle_copy_vertical_slice_from.h"
 #include "cle_copy_vertical_slice_to.h"
-#include "cle_count_touching_neighbors.h"
 #include "cle_crop.h"
 #include "cle_cubic_root.h"
 #include "cle_detect_label_edges.h"
@@ -52,8 +51,7 @@
 #include "cle_gaussian_blur_separable.h"
 // #include "cle_generate_angle_matrix.h"
 // #include "cle_generate_binary_overlap_matrix.h"
-// #include "cle_generate_distance_matrix.h"
-// #include "cle_generate_touch_matrix.h"
+#include "cle_generate_distance_matrix.h"
 #include "cle_gradient_x.h"
 #include "cle_gradient_y.h"
 #include "cle_gradient_z.h"
@@ -627,8 +625,21 @@ gaussian_blur_func(const Device::Pointer & device,
 
 // generate_angle_matrix_func
 // generate_binary_overlap_matrix_func
-// generate_distance_matrix_func
-// generate_touch_matrix_func
+
+auto
+generate_distance_matrix_func(const Device::Pointer & device,
+                              const Array::Pointer &  src0,
+                              const Array::Pointer &  src1,
+                              Array::Pointer          dst) -> Array::Pointer
+{
+  tier0::create_dst(src0, dst, src0->width() + 1, src0->width() + 1, 1, dType::FLOAT);
+  dst->fill(0);
+  const KernelInfo    kernel = { "generate_distance_matrix", kernel::generate_distance_matrix };
+  const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
 
 auto
 gradient_x_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer

@@ -87,8 +87,6 @@ auto
 copy_vertical_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
   -> Array::Pointer;
 
-// @StRigaud TODO : count_touching_neighbors_func
-
 auto
 crop_func(const Device::Pointer & device,
           const Array::Pointer &  src,
@@ -182,8 +180,12 @@ gaussian_blur_func(const Device::Pointer & device,
 
 // @StRigaud TODO : generate_angle_matrix_func
 // @StRigaud TODO : generate_binary_overlap_matrix_func
-// @StRigaud TODO : generate_distance_matrix_func
-// @StRigaud TODO : generate_touch_matrix_func
+
+auto
+generate_distance_matrix_func(const Device::Pointer & device,
+                              const Array::Pointer &  src0,
+                              const Array::Pointer &  src1,
+                              Array::Pointer          dst) -> Array::Pointer;
 
 auto
 gradient_x_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
