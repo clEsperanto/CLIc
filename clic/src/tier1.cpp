@@ -25,7 +25,6 @@
 #include "cle_copy_slice_to.h"
 #include "cle_copy_vertical_slice_from.h"
 #include "cle_copy_vertical_slice_to.h"
-#include "cle_count_touching_neighbors.h"
 #include "cle_crop.h"
 #include "cle_cubic_root.h"
 #include "cle_detect_label_edges.h"
@@ -52,8 +51,7 @@
 #include "cle_gaussian_blur_separable.h"
 // #include "cle_generate_angle_matrix.h"
 // #include "cle_generate_binary_overlap_matrix.h"
-// #include "cle_generate_distance_matrix.h"
-// #include "cle_generate_touch_matrix.h"
+#include "cle_generate_distance_matrix.h"
 #include "cle_gradient_x.h"
 #include "cle_gradient_y.h"
 #include "cle_gradient_z.h"
@@ -61,9 +59,10 @@
 #include "cle_greater_constant.h"
 #include "cle_greater_or_equal.h"
 #include "cle_greater_or_equal_constant.h"
-// #include "cle_hessian_eigenvalues.h"
+#include "cle_hessian_eigenvalues.h"
 #include "cle_laplace_box.h"
 #include "cle_laplace_diamond.h"
+#include "cle_local_cross_correlation.h"
 #include "cle_logarithm.h"
 #include "cle_mask.h"
 #include "cle_mask_label.h"
@@ -142,12 +141,14 @@
 #include "cle_smaller_or_equal_constant.h"
 #include "cle_sobel.h"
 #include "cle_square_root.h"
-// #include "cle_standard_deviation_z_projection.h"
+#include "cle_std_z_projection.h"
+// #include "cle_inferior_superior.h"
 #include "cle_subtract_image_from_scalar.h"
 #include "cle_sum_reduction_x.h"
 #include "cle_sum_x_projection.h"
 #include "cle_sum_y_projection.h"
 #include "cle_sum_z_projection.h"
+// #include "cle_superior_inferior.h"
 #include "cle_transpose_xy.h"
 #include "cle_transpose_xz.h"
 #include "cle_transpose_yz.h"
@@ -626,8 +627,21 @@ gaussian_blur_func(const Device::Pointer & device,
 
 // generate_angle_matrix_func
 // generate_binary_overlap_matrix_func
-// generate_distance_matrix_func
-// generate_touch_matrix_func
+
+auto
+generate_distance_matrix_func(const Device::Pointer & device,
+                              const Array::Pointer &  src0,
+                              const Array::Pointer &  src1,
+                              Array::Pointer          dst) -> Array::Pointer
+{
+  tier0::create_dst(src0, dst, src0->width() + 1, src0->width() + 1, 1, dType::FLOAT);
+  dst->fill(0);
+  const KernelInfo    kernel = { "generate_distance_matrix", kernel::generate_distance_matrix };
+  const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
 
 auto
 gradient_x_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
@@ -716,7 +730,52 @@ greater_or_equal_constant_func(const Device::Pointer & device,
   return dst;
 }
 
-// hessian_eigenvalues_func
+auto
+hessian_eigenvalues_func(const Device::Pointer & device,
+                         const Array::Pointer &  src,
+                         Array::Pointer          small_eigenvalue,
+                         Array::Pointer          middle_eigenvalue,
+                         Array::Pointer          large_eigenvalue) -> std::vector<Array::Pointer>
+{
+  tier0::create_like(src, small_eigenvalue, dType::FLOAT);
+  tier0::create_like(src, large_eigenvalue, dType::FLOAT);
+  if (src->dim() == 3)
+  {
+    tier0::create_like(src, middle_eigenvalue, dType::FLOAT);
+  }
+  else
+  {
+    // no middle eigenvalue for 2D images, we replace the image by a scalar to save memory
+    tier0::create_one(src, middle_eigenvalue, dType::FLOAT);
+  }
+  const KernelInfo    kernel = { "hessian_eigenvalues", kernel::hessian_eigenvalues };
+  const ParameterList params = { { "src", src },
+                                 { "small_eigenvalue", small_eigenvalue },
+                                 { "middle_eigenvalue", middle_eigenvalue },
+                                 { "large_eigenvalue", large_eigenvalue } };
+  const RangeArray    range = { src->width(), src->height(), src->depth() };
+  execute(device, kernel, params, range);
+  if (src->dim() == 2)
+  {
+    return { small_eigenvalue, large_eigenvalue };
+  }
+  return { small_eigenvalue, middle_eigenvalue, large_eigenvalue };
+}
+
+// auto
+// inferior_superior(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+// {
+//   tier0::create_like(src, dst, dType::UINT8);
+//   if (src->dtype() != dType::UINT8)
+//   {
+//     throw std::runtime_error("inferior_superior only supports UINT8 images");
+//   }
+//   const KernelInfo    kernel = { "inferior_superior", kernel::inferior_superior };
+//   const ParameterList params = { { "src", src }, { "dst", dst } };
+//   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+//   execute(device, kernel, params, range);
+//   return dst;
+// }
 
 auto
 laplace_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
@@ -735,6 +794,20 @@ laplace_diamond_func(const Device::Pointer & device, const Array::Pointer & src,
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "laplace_diamond", kernel::laplace_diamond };
   const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
+auto
+local_cross_correlation_func(const Device::Pointer & device,
+                             const Array::Pointer &  src0,
+                             const Array::Pointer &  src1,
+                             Array::Pointer          dst) -> Array::Pointer
+{
+  tier0::create_like(src0, dst);
+  const KernelInfo    kernel = { "local_cross_correlation", kernel::local_cross_correlation };
+  const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
@@ -1727,7 +1800,16 @@ square_root_func(const Device::Pointer & device, const Array::Pointer & src, Arr
   return dst;
 }
 
-// standard_deviation_z_projection_func
+auto
+std_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+{
+  tier0::create_xy(src, dst);
+  const KernelInfo    kernel = { "std_z_projection", kernel::std_z_projection };
+  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
 
 auto
 subtract_image_from_scalar_func(const Device::Pointer & device,
@@ -1805,6 +1887,21 @@ sum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src
   execute(device, kernel, params, range);
   return dst;
 }
+
+// auto
+// superior_inferior(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+// {
+//   tier0::create_like(src, dst, dType::UINT8);
+//   if (src->dtype() != dType::UINT8)
+//   {
+//     throw std::runtime_error("inferior_superior only supports UINT8 images");
+//   }
+//   const KernelInfo    kernel = { "superior_inferior", kernel::superior_inferior };
+//   const ParameterList params = { { "src", src }, { "dst", dst } };
+//   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+//   execute(device, kernel, params, range);
+//   return dst;
+// }
 
 auto
 transpose_xy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer

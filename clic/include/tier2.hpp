@@ -78,8 +78,25 @@ concatenate_along_z_func(const Device::Pointer & device,
                          const Array::Pointer &  src1,
                          Array::Pointer          dst) -> Array::Pointer;
 
-// @StRigaud TODO: auto crop_border_func
+auto
+count_touching_neighbors_func(const Device::Pointer & device,
+                              const Array::Pointer &  src,
+                              Array::Pointer          dst,
+                              bool                    ignore_background) -> Array::Pointer;
+
+auto
+crop_border_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int border_size)
+  -> Array::Pointer;
+
 // @StRigaud TODO: auto distance_matrix_to_mesh_func
+
+auto
+divide_by_gaussian_background_func(const Device::Pointer & device,
+                                   const Array::Pointer &  src,
+                                   Array::Pointer          dst,
+                                   float                   sigma_x,
+                                   float                   sigma_y,
+                                   float                   sigma_z) -> Array::Pointer;
 
 auto
 degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -112,7 +129,9 @@ invert_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
 auto
 label_spots_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
-// @StRigaud TODO: auto large_hessian_eigenvalue_func
+auto
+large_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 auto
 maximum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
@@ -156,7 +175,10 @@ radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & s
   -> Array::Pointer;
 
 // @StRigaud TODO: auto reduce_stack_func
-// @StRigaud TODO: auto small_hessian_eigenvalue_func
+
+auto
+small_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 auto
 square_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -187,6 +209,14 @@ standard_deviation_sphere_func(const Device::Pointer & device,
                                int                     radius_z) -> Array::Pointer;
 
 // @StRigaud TODO: auto sub_stack_func
+
+auto
+subtract_gaussian_background_func(const Device::Pointer & device,
+                                  const Array::Pointer &  src,
+                                  Array::Pointer          dst,
+                                  float                   sigma_x,
+                                  float                   sigma_y,
+                                  float                   sigma_z) -> Array::Pointer;
 
 auto
 subtract_images_func(const Device::Pointer & device,

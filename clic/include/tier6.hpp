@@ -8,6 +8,17 @@
 namespace cle::tier6
 {
 
+auto
+dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
+  -> Array::Pointer;
+
+auto
+erode_labels_func(const Device::Pointer & device,
+                  const Array::Pointer &  src,
+                  Array::Pointer          dst,
+                  int                     radius,
+                  bool                    relabel) -> Array::Pointer;
+
 // merge_annotated_touching_labels
 // merge_labels_with_border_intensity_within_range
 // smooth_labels

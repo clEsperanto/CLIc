@@ -57,26 +57,26 @@ TEST_P(TestImagesOperation, subtract)
   }
 }
 
-// TEST_P(TestImagesOperation, square)
-// {
-//   std::array<float, 3 * 1 * 1> valid = { 1, 25, 9 };
+TEST_P(TestImagesOperation, square)
+{
+  std::array<float, 3 * 1 * 1> valid = { 1, 25, 9 };
 
-//   std::string param = GetParam();
-//   cle::BackendManager::getInstance().setBackend(param);
-//   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
-//   device->setWaitToFinish(true);
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
-//   auto gpu_input = cle::Array::create(3, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
-//   gpu_input->write(input.data());
+  auto gpu_input = cle::Array::create(3, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  gpu_input->write(input1.data());
 
-//   auto gpu_output = cle::tier2::square_func(device, gpu_input, nullptr);
+  auto gpu_output = cle::tier2::square_func(device, gpu_input, nullptr);
 
-//   gpu_output->read(output.data());
-//   for (int i = 0; i < output.size(); i++)
-//   {
-//     EXPECT_EQ(output[i], valid[i]);
-//   }
-// }
+  gpu_output->read(output.data());
+  for (int i = 0; i < output.size(); i++)
+  {
+    EXPECT_NEAR(output[i], valid[i], 0.00001);
+  }
+}
 
 std::vector<std::string>
 getParameters()
