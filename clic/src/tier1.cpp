@@ -141,12 +141,14 @@
 #include "cle_smaller_or_equal_constant.h"
 #include "cle_sobel.h"
 #include "cle_square_root.h"
-// #include "cle_standard_deviation_z_projection.h"
+#include "cle_std_z_projection.h"
+// #include "cle_inferior_superior.h"
 #include "cle_subtract_image_from_scalar.h"
 #include "cle_sum_reduction_x.h"
 #include "cle_sum_x_projection.h"
 #include "cle_sum_y_projection.h"
 #include "cle_sum_z_projection.h"
+// #include "cle_superior_inferior.h"
 #include "cle_transpose_xy.h"
 #include "cle_transpose_xz.h"
 #include "cle_transpose_yz.h"
@@ -759,6 +761,21 @@ hessian_eigenvalues_func(const Device::Pointer & device,
   }
   return { small_eigenvalue, middle_eigenvalue, large_eigenvalue };
 }
+
+// auto
+// inferior_superior(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+// {
+//   tier0::create_like(src, dst, dType::UINT8);
+//   if (src->dtype() != dType::UINT8)
+//   {
+//     throw std::runtime_error("inferior_superior only supports UINT8 images");
+//   }
+//   const KernelInfo    kernel = { "inferior_superior", kernel::inferior_superior };
+//   const ParameterList params = { { "src", src }, { "dst", dst } };
+//   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+//   execute(device, kernel, params, range);
+//   return dst;
+// }
 
 auto
 laplace_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
@@ -1783,7 +1800,16 @@ square_root_func(const Device::Pointer & device, const Array::Pointer & src, Arr
   return dst;
 }
 
-// standard_deviation_z_projection_func
+auto
+std_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+{
+  tier0::create_xy(src, dst);
+  const KernelInfo    kernel = { "std_z_projection", kernel::std_z_projection };
+  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
 
 auto
 subtract_image_from_scalar_func(const Device::Pointer & device,
@@ -1861,6 +1887,21 @@ sum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src
   execute(device, kernel, params, range);
   return dst;
 }
+
+// auto
+// superior_inferior(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+// {
+//   tier0::create_like(src, dst, dType::UINT8);
+//   if (src->dtype() != dType::UINT8)
+//   {
+//     throw std::runtime_error("inferior_superior only supports UINT8 images");
+//   }
+//   const KernelInfo    kernel = { "superior_inferior", kernel::superior_inferior };
+//   const ParameterList params = { { "src", src }, { "dst", dst } };
+//   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+//   execute(device, kernel, params, range);
+//   return dst;
+// }
 
 auto
 transpose_xy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer

@@ -139,6 +139,7 @@ divide_image_and_scalar_func(const Device::Pointer & device,
 // @StRigaud TODO : draw_box_func
 // @StRigaud TODO : draw_sphere_func
 // @StRigaud TODO : draw_line_func
+
 // @StRigaud TODO : downsample_slice_by_slice_half_median_func
 
 auto
@@ -224,6 +225,9 @@ hessian_eigenvalues_func(const Device::Pointer & device,
                          Array::Pointer          small_eigenvalue,
                          Array::Pointer          middle_eigenvalue,
                          Array::Pointer          large_eigenvalue) -> std::vector<Array::Pointer>;
+
+// auto
+// inferior_superior(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 auto
 laplace_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -622,7 +626,8 @@ sobel_func(const Device::Pointer & device, const Array::Pointer & src, Array::Po
 auto
 square_root_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
-// @StRigaud TODO : standard_deviation_z_projection_func
+auto
+std_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 auto
 subtract_image_from_scalar_func(const Device::Pointer & device,
@@ -642,6 +647,9 @@ sum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src
 
 auto
 sum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+// auto
+// superior_inferior(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 auto
 transpose_xy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
