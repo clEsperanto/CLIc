@@ -18,11 +18,11 @@ namespace cle::tier7
 // translate
 
 auto
-closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer, int radius)
+closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
   -> Array::Pointer;
 
 auto
-opening_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer, int radius)
+opening_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
   -> Array::Pointer;
 
 auto
