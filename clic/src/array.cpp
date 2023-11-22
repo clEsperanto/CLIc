@@ -223,10 +223,7 @@ Array::copy(const Array::Pointer &        dst,
   {
     throw std::runtime_error("Error: Copying Arrays from different devices");
   }
-  if (width() != dst->width() || height() != dst->height() || depth() != dst->depth() || itemSize() != dst->itemSize())
-  {
-    throw std::runtime_error("Error: Arrays dimensions do not match");
-  }
+
   std::array<size_t, 3> _src_origin = src_origin;
   std::array<size_t, 3> _dst_origin = dst_origin;
   std::array<size_t, 3> _region = region;
