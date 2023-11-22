@@ -45,6 +45,8 @@ connected_components_labeling_func(const Device::Pointer & device,
 
   auto temp1 = tier1::set_nonzero_pixels_to_pixelindex_func(device, src, nullptr, 1);
   auto temp2 = Array::create(temp1);
+  temp2->fill(0);
+
   auto flag = Array::create(1, 1, 1, dType::INT32, mType::BUFFER, device);
   flag->fill(0);
 
