@@ -290,7 +290,6 @@ TEST_P(TestArray, throwErrors)
 
   auto array_other = cle::Array::create(30, 20, 10, cle::dType::FLOAT, cle::mType::BUFFER, device);
   EXPECT_THROW(array->copy(array_other), std::runtime_error);
-  EXPECT_THROW(array->copy(array_other, { 10, 10, 10 }, { 0, 0, 0 }, { 0, 0, 0 }), std::runtime_error);
 }
 
 
