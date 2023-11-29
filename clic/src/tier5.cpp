@@ -27,7 +27,6 @@ array_equal_func(const Device::Pointer & device, const Array::Pointer & src0, co
     return true;
   }
   auto mse = tier4::mean_squared_error_func(device, src0, src1);
-  std::cout << "MSE: " << std::to_string(mse) << std::endl;
   return mse == 0;
 }
 
