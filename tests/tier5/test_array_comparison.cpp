@@ -31,10 +31,10 @@ TEST_P(TestArrayComparisons, execute)
   gpu_input4->write(input4.data());
   gpu_input5->write(input4.data());
 
-  EXPECT_FALSE(cle::tier5::array_equal(device, gpu_input1, gpu_input2));
-  EXPECT_FALSE(cle::tier5::array_equal(device, gpu_input1, gpu_input3));
-  EXPECT_TRUE(cle::tier5::array_equal(device, gpu_input1, gpu_input4));
-  EXPECT_FALSE(cle::tier5::array_equal(device, gpu_input1, gpu_input5));
+  EXPECT_FALSE(cle::tier5::array_equal_func(device, gpu_input1, gpu_input2));
+  EXPECT_FALSE(cle::tier5::array_equal_func(device, gpu_input1, gpu_input3));
+  EXPECT_TRUE(cle::tier5::array_equal_func(device, gpu_input1, gpu_input4));
+  EXPECT_FALSE(cle::tier5::array_equal_func(device, gpu_input1, gpu_input5));
 }
 
 std::vector<std::string>

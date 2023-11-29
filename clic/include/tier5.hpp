@@ -9,7 +9,7 @@ namespace cle::tier5
 {
 
 auto
-array_equal(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1) -> bool;
+array_equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1) -> bool;
 
 // fill_zeros_inpainting
 // generate_touch_mean_intensity_within_range_matrix

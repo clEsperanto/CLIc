@@ -9,7 +9,7 @@ namespace cle::tier5
 {
 
 auto
-array_equal(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1) -> bool
+array_equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1) -> bool
 {
   // check if size is equal
   if (src0->size() != src1->size())
