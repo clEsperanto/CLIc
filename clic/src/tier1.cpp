@@ -1480,9 +1480,9 @@ range_func(const Device::Pointer & device,
                     abs(stop_z - start_z) / std::max(std::abs(step_z), 1),
                     src->dtype());
 
-  // correct_range(&start_x, &stop_x, &step_x, static_cast<int>(src->width()));
-  // correct_range(&start_y, &stop_y, &step_y, static_cast<int>(src->height()));
-  // correct_range(&start_z, &stop_z, &step_z, static_cast<int>(src->depth()));
+  correct_range(&start_x, &stop_x, &step_x, static_cast<int>(src->width()));
+  correct_range(&start_y, &stop_y, &step_y, static_cast<int>(src->height()));
+  correct_range(&start_z, &stop_z, &step_z, static_cast<int>(src->depth()));
 
   const KernelInfo    kernel = { "range", kernel::range };
   const ParameterList params = { { "src", src },         { "dst", dst },         { "start_x", start_x },
