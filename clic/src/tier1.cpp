@@ -1457,21 +1457,21 @@ range_func(const Device::Pointer & device,
            int                     stop_z,
            int                     step_z) -> Array::Pointer
 {
-  start_x = (start_x < 0) ? 0 : start_x;
-  start_y = (start_y < 0) ? 0 : start_y;
-  start_z = (start_z < 0) ? 0 : start_z;
+  // start_x = (start_x < 0) ? 0 : start_x;
+  // start_y = (start_y < 0) ? 0 : start_y;
+  // start_z = (start_z < 0) ? 0 : start_z;
 
-  start_x = (start_x > src->width()) ? src->width() : start_x;
-  start_y = (start_y > src->height()) ? src->height() : start_y;
-  start_z = (start_z > src->depth()) ? src->depth() : start_z;
+  // start_x = (start_x > src->width()) ? src->width() : start_x;
+  // start_y = (start_y > src->height()) ? src->height() : start_y;
+  // start_z = (start_z > src->depth()) ? src->depth() : start_z;
 
-  stop_x = (stop_x < 0) ? 0 : stop_x;
-  stop_y = (stop_y < 0) ? 0 : stop_y;
-  stop_z = (stop_z < 0) ? 0 : stop_z;
+  // stop_x = (stop_x < 0) ? 0 : stop_x;
+  // stop_y = (stop_y < 0) ? 0 : stop_y;
+  // stop_z = (stop_z < 0) ? 0 : stop_z;
 
-  stop_x = (stop_x > src->width()) ? src->width() : stop_x;
-  stop_y = (stop_y > src->height()) ? src->height() : stop_y;
-  stop_z = (stop_z > src->depth()) ? src->depth() : stop_z;
+  // stop_x = (stop_x > src->width()) ? src->width() : stop_x;
+  // stop_y = (stop_y > src->height()) ? src->height() : stop_y;
+  // stop_z = (stop_z > src->depth()) ? src->depth() : stop_z;
 
   tier0::create_dst(src,
                     dst,
@@ -1480,9 +1480,9 @@ range_func(const Device::Pointer & device,
                     abs(stop_z - start_z) / std::max(std::abs(step_z), 1),
                     src->dtype());
 
-  correct_range(&start_x, &stop_x, &step_x, static_cast<int>(src->width()));
-  correct_range(&start_y, &stop_y, &step_y, static_cast<int>(src->height()));
-  correct_range(&start_z, &stop_z, &step_z, static_cast<int>(src->depth()));
+  // correct_range(&start_x, &stop_x, &step_x, static_cast<int>(src->width()));
+  // correct_range(&start_y, &stop_y, &step_y, static_cast<int>(src->height()));
+  // correct_range(&start_z, &stop_z, &step_z, static_cast<int>(src->depth()));
 
   const KernelInfo    kernel = { "range", kernel::range };
   const ParameterList params = { { "src", src },         { "dst", dst },         { "start_x", start_x },
