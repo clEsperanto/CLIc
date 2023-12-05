@@ -1155,8 +1155,8 @@ OpenCLBackend::executeKernel(const Device::Pointer &       device,
     auto err = clSetKernelArg(ocl_kernel, i, sizes[i], args[i]);
     if (err != CL_SUCCESS)
     {
-      throw std::runtime_error("Error: Fail to set kernel arguments. OpenCL error : " + getErrorString(err) + " (" +
-                               std::to_string(err) + ").");
+      throw std::runtime_error("Error: Fail to set kernel argument " + std::to_string(i) +
+                               ". OpenCL error : " + getErrorString(err) + " (" + std::to_string(err) + ").");
     }
   }
   auto err = clEnqueueNDRangeKernel(
