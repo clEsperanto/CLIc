@@ -322,39 +322,40 @@ auto
 minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask)
   -> float
 {
-  Array::Pointer dst_src;
-  Array::Pointer dst_mask;
-  Array::Pointer temp_src = src;
-  Array::Pointer temp_mask = mask;
-  if (temp_src->dim() == 3)
+  Array::Pointer dst_src = nullptr;
+  Array::Pointer dst_mask = nullptr;
+
+  Array::Pointer tmp_src = src;
+  Array::Pointer tmp_mask = mask;
+  if (tmp_src->dim() == 3)
   {
     dst_src = nullptr;
     dst_mask = nullptr;
     tier0::create_xy(src, dst_src);
     tier0::create_xy(mask, dst_mask);
-    tier1::minimum_of_masked_pixels_reduction_func(device, temp_src, temp_mask, dst_src, dst_mask);
-    temp_src = dst_src;
-    temp_mask = dst_mask;
+    tier1::minimum_of_masked_pixels_reduction_func(device, tmp_src, tmp_mask, dst_src, dst_mask);
+    tmp_src = dst_src;
+    tmp_mask = dst_mask;
   }
-  if (temp_src->dim() == 2)
+  if (tmp_src->dim() == 2)
   {
     dst_src = nullptr;
     dst_mask = nullptr;
-    temp_src = tier1::transpose_xz_func(device, temp_src, nullptr);
-    temp_mask = tier1::transpose_xz_func(device, temp_mask, nullptr);
-    tier0::create_xy(temp_src, dst_src);
-    tier0::create_xy(temp_mask, dst_mask);
-    tier1::minimum_of_masked_pixels_reduction_func(device, temp_src, temp_mask, dst_src, dst_mask);
-    temp_src = dst_src;
-    temp_mask = dst_mask;
+    tmp_src = tier1::transpose_yz_func(device, tmp_src, nullptr);
+    tmp_mask = tier1::transpose_yz_func(device, tmp_mask, nullptr);
+    tier0::create_vector(tmp_src, dst_src, tmp_src->width());
+    tier0::create_vector(tmp_mask, dst_mask, tmp_mask->width());
+    tier1::minimum_of_masked_pixels_reduction_func(device, tmp_src, tmp_mask, dst_src, dst_mask);
+    tmp_src = dst_src;
+    tmp_mask = dst_mask;
   }
   dst_src = nullptr;
   dst_mask = nullptr;
-  temp_src = tier1::transpose_yz_func(device, temp_src, nullptr);
-  temp_mask = tier1::transpose_yz_func(device, temp_mask, nullptr);
-  tier0::create_one(temp_src, dst_src);
-  tier0::create_one(temp_mask, dst_mask);
-  tier1::minimum_of_masked_pixels_reduction_func(device, temp_src, temp_mask, dst_src, dst_mask);
+  tmp_src = tier1::transpose_xz_func(device, tmp_src, nullptr);
+  tmp_mask = tier1::transpose_xz_func(device, tmp_mask, nullptr);
+  tier0::create_one(tmp_src, dst_src, dType::FLOAT);
+  tier0::create_one(tmp_mask, dst_mask, dType::FLOAT);
+  tier1::minimum_of_masked_pixels_reduction_func(device, tmp_src, tmp_mask, dst_src, dst_mask);
 
   float res;
   dst_src->read(&res);
