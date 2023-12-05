@@ -222,7 +222,7 @@ OpenCLBackend::allocateImage(const Device::Pointer &       device,
 #if USE_OPENCL
   auto            opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
   cl_image_format image_format = { 0 };
-  image_format.image_channel_order = CL_INTENSITY;
+  image_format.image_channel_order = CL_A;
   cl_image_desc image_description = { 0 };
   image_description.image_type = CL_MEM_OBJECT_IMAGE1D;
   image_description.image_width = region[0];
