@@ -1501,11 +1501,12 @@ read_values_from_coordinates_func(const Device::Pointer & device,
                                   const Array::Pointer &  list,
                                   Array::Pointer          dst) -> Array::Pointer
 {
-  // if (list->dim() == 2)
-  // {
-  //   throw std::runtime_error("The list input is expected to be 2D, where rows are coordinates (x,y,z)");
-  // }
-  tier0::create_vector(src, dst, list->width());
+  if (list->width() < src->dim())
+  {
+    throw std::runtime_error("The list width is expected to be " + std::to_string(src->dim()) + ", but it is " +
+                             std::to_string(list->width()));
+  }
+  tier0::create_vector(src, dst, list->height());
   const KernelInfo    kernel = { "read_values_from_coordinates", kernel::read_values_from_coordinates };
   const ParameterList params = { { "src0", src }, { "src1", list }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
