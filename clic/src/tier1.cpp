@@ -1501,9 +1501,9 @@ read_values_from_coordinates_func(const Device::Pointer & device,
                                   const Array::Pointer &  list,
                                   Array::Pointer          dst) -> Array::Pointer
 {
-  if (list->dim() != 2)
+  if (list->dim() == src->dim())
   {
-    throw std::runtime_error("The list input is expected to be 2D, where rows are coordinates (x,y,z) and values v.");
+    throw std::runtime_error("The list input is expected to be 3D, where rows are coordinates (x,y,z)");
   }
   tier0::create_vector(src, dst, src->width());
   const KernelInfo    kernel = { "read_values_from_coordinates", kernel::read_values_from_coordinates };
