@@ -26,10 +26,7 @@ TEST_P(TestCoordReadWrite, executeReadFromCoord1)
   auto gpu_list = cle::Array::create(2, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_list->write(list.data());
 
-  std::cout << gpu_list << std::endl;
-
   auto gpu_output = cle::tier1::read_values_from_coordinates_func(device, gpu_input, gpu_list, nullptr);
-  std::cout << gpu_output << std::endl;
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
@@ -55,11 +52,7 @@ TEST_P(TestCoordReadWrite, executeReadFromCoord2)
   auto gpu_list = cle::Array::create(2, 3, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_list->write(list.data());
 
-  std::cout << gpu_input << std::endl;
-  std::cout << gpu_list << std::endl;
-
   auto gpu_output = cle::tier1::read_values_from_coordinates_func(device, gpu_input, gpu_list, nullptr);
-  std::cout << gpu_output << std::endl;
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
