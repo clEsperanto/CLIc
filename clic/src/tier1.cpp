@@ -1501,12 +1501,12 @@ read_values_from_coordinates_func(const Device::Pointer & device,
                                   const Array::Pointer &  list,
                                   Array::Pointer          dst) -> Array::Pointer
 {
-  if (list->width() < src->dim())
+  if (list->height() < src->dim())
   {
-    throw std::runtime_error("The list width is expected to be " + std::to_string(src->dim()) + ", but it is " +
+    throw std::runtime_error("The list height is expected to be " + std::to_string(src->dim()) + ", but it is " +
                              std::to_string(list->width()));
   }
-  tier0::create_vector(src, dst, list->height());
+  tier0::create_vector(src, dst, list->width());
   const KernelInfo    kernel = { "read_values_from_coordinates", kernel::read_values_from_coordinates };
   const ParameterList params = { { "src0", src }, { "src1", list }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };

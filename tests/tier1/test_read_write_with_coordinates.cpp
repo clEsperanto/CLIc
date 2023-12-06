@@ -12,7 +12,7 @@ protected:
 TEST_P(TestCoordReadWrite, executeReadFromCoord1)
 {
   std::array<float, 1 * 1 * 1> output;
-  std::array<float, 2 * 1 * 1> list = { 1, 2 };
+  std::array<float, 1 * 2 * 1> list = { 1, 2 };
   std::array<float, 1 * 1 * 1> valid = { 8 };
 
   std::string param = GetParam();
@@ -23,7 +23,7 @@ TEST_P(TestCoordReadWrite, executeReadFromCoord1)
 
   auto gpu_input = cle::Array::create(3, 3, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
-  auto gpu_list = cle::Array::create(2, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_list = cle::Array::create(1, 2, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_list->write(list.data());
 
   auto gpu_output = cle::tier1::read_values_from_coordinates_func(device, gpu_input, gpu_list, nullptr);
@@ -38,7 +38,7 @@ TEST_P(TestCoordReadWrite, executeReadFromCoord1)
 TEST_P(TestCoordReadWrite, executeReadFromCoord2)
 {
   std::array<float, 3 * 1 * 1> output;
-  std::array<float, 2 * 3 * 1> list = { 0, 0, 1, 2, 0, 2 };
+  std::array<float, 3 * 2 * 1> list = { 0, 1, 0, 0, 2, 2 };
   std::array<float, 3 * 1 * 1> valid = { 1, 8, 7 };
 
   std::string param = GetParam();
@@ -49,7 +49,7 @@ TEST_P(TestCoordReadWrite, executeReadFromCoord2)
 
   auto gpu_input = cle::Array::create(3, 3, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
-  auto gpu_list = cle::Array::create(2, 3, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_list = cle::Array::create(3, 2, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_list->write(list.data());
 
   auto gpu_output = cle::tier1::read_values_from_coordinates_func(device, gpu_input, gpu_list, nullptr);
