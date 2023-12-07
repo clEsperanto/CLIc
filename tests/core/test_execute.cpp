@@ -15,7 +15,7 @@ TEST_P(TestExecution, parameterType)
   device->setWaitToFinish(true);
 
   // Test assignment of cle::Array::Pointer
-  auto               ap = cle::Array::create(10, 5, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto               ap = cle::Array::create(10, 5, 3,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
   cle::ParameterType pt1 = ap;
   ASSERT_TRUE(std::holds_alternative<cle::Array::Pointer>(pt1));
 
@@ -37,8 +37,8 @@ TEST_P(TestExecution, parameterList)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto  src = cle::Array::create(10, 5, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  auto  dst = cle::Array::create(3, 5, 10, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto  src = cle::Array::create(10, 5, 3,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto  dst = cle::Array::create(3, 5, 10,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
   int   slice = 2;
   float scalar = 5.0f;
 
@@ -61,7 +61,7 @@ TEST_P(TestExecution, rangeArray)
   device->setWaitToFinish(true);
 
   size_t width = 5, height = 10, depth = 15;
-  auto   dst = cle::Array::create(width, height, depth, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto   dst = cle::Array::create(width, height, depth,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
 
   const cle::RangeArray range = { dst->width(), dst->height(), dst->depth() };
 

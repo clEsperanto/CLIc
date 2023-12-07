@@ -202,7 +202,7 @@ extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Po
   auto flop = Array::create(dst);
   tier1::copy_func(device, src, flip);
 
-  auto flag = Array::create(1, 1, 1, dType::INT32, mType::BUFFER, device);
+  auto flag = Array::create(1, 1, 1, 1, dType::INT32, mType::BUFFER, device);
   flag->fill(0);
   int flag_value = 1;
   int iteration_count = 0;
@@ -327,7 +327,7 @@ minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Point
 
   Array::Pointer tmp_src = src;
   Array::Pointer tmp_mask = mask;
-  if (tmp_src->dim() == 3)
+  if (tmp_src->depth() > 1)
   {
     dst_src = nullptr;
     dst_mask = nullptr;
@@ -337,7 +337,7 @@ minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Point
     tmp_src = dst_src;
     tmp_mask = dst_mask;
   }
-  if (tmp_src->dim() == 2)
+  if (tmp_src->height() > 1)
   {
     dst_src = nullptr;
     dst_mask = nullptr;

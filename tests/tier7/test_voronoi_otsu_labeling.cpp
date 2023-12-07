@@ -28,7 +28,7 @@ TEST_P(TestVoronoiOtsuLabeling, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(7, 7, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(7, 7, 3,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier7::voronoi_otsu_labeling_func(device, gpu_input, nullptr, 0, 1);

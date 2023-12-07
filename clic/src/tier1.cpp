@@ -336,7 +336,7 @@ copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Arra
   const ParameterList params = { { "src", src }, { "dst", dst }, { "index", slice } };
   KernelInfo          kernel;
   RangeArray          range;
-  if (dst->dim() == 3)
+  if (dst->depth() > 1)
   {
     kernel = { "copy_slice_to", kernel::copy_slice_to };
     range = { src->width(), src->height(), 1 };
@@ -358,7 +358,7 @@ copy_horizontal_slice_func(const Device::Pointer & device, const Array::Pointer 
   const ParameterList params = { { "src", src }, { "dst", dst }, { "index", slice } };
   KernelInfo          kernel;
   RangeArray          range;
-  if (dst->dim() == 3)
+  if (dst->depth() > 1)
   {
     kernel = { "copy_horizontal_slice_to", kernel::copy_horizontal_slice_to };
     range = { dst->width(), dst->height(), dst->depth() };
@@ -380,7 +380,7 @@ copy_vertical_slice_func(const Device::Pointer & device, const Array::Pointer & 
   const ParameterList params = { { "src", src }, { "dst", dst }, { "index", slice } };
   KernelInfo          kernel;
   RangeArray          range;
-  if (dst->dim() == 3)
+  if (dst->depth() > 1)
   {
     kernel = { "copy_vertical_slice_to", kernel::copy_vertical_slice_to };
     range = { src->width(), src->height(), 1 };
@@ -737,9 +737,10 @@ hessian_eigenvalues_func(const Device::Pointer & device,
                          Array::Pointer          middle_eigenvalue,
                          Array::Pointer          large_eigenvalue) -> std::vector<Array::Pointer>
 {
+  // TODO: check when src is 1D
   tier0::create_like(src, small_eigenvalue, dType::FLOAT);
   tier0::create_like(src, large_eigenvalue, dType::FLOAT);
-  if (src->dim() == 3)
+  if (src->depth() > 1)
   {
     tier0::create_like(src, middle_eigenvalue, dType::FLOAT);
   }
@@ -755,7 +756,7 @@ hessian_eigenvalues_func(const Device::Pointer & device,
                                  { "large_eigenvalue", large_eigenvalue } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
   execute(device, kernel, params, range);
-  if (src->dim() == 2)
+  if (src->depth() == 1)
   {
     return { small_eigenvalue, large_eigenvalue };
   }
@@ -1457,22 +1458,6 @@ range_func(const Device::Pointer & device,
            int                     stop_z,
            int                     step_z) -> Array::Pointer
 {
-  // start_x = (start_x < 0) ? 0 : start_x;
-  // start_y = (start_y < 0) ? 0 : start_y;
-  // start_z = (start_z < 0) ? 0 : start_z;
-
-  // start_x = (start_x > src->width()) ? src->width() : start_x;
-  // start_y = (start_y > src->height()) ? src->height() : start_y;
-  // start_z = (start_z > src->depth()) ? src->depth() : start_z;
-
-  // stop_x = (stop_x < 0) ? 0 : stop_x;
-  // stop_y = (stop_y < 0) ? 0 : stop_y;
-  // stop_z = (stop_z < 0) ? 0 : stop_z;
-
-  // stop_x = (stop_x > src->width()) ? src->width() : stop_x;
-  // stop_y = (stop_y > src->height()) ? src->height() : stop_y;
-  // stop_z = (stop_z > src->depth()) ? src->depth() : stop_z;
-
   tier0::create_dst(src,
                     dst,
                     abs(stop_x - start_x) / std::max(std::abs(step_x), 1),
@@ -1501,11 +1486,12 @@ read_values_from_coordinates_func(const Device::Pointer & device,
                                   const Array::Pointer &  list,
                                   Array::Pointer          dst) -> Array::Pointer
 {
-  if (list->height() < src->dim())
-  {
-    throw std::runtime_error("The list height is expected to be " + std::to_string(src->dim()) + ", but it is " +
-                             std::to_string(list->width()));
-  }
+  // TODO: check list shape
+  // if (list->height() < src->dim())
+  // {
+  //   throw std::runtime_error("The list height is expected to be " + std::to_string(src->dim()) + ", but it is " +
+  //                            std::to_string(list->width()));
+  // }
   tier0::create_vector(src, dst, list->width());
   const KernelInfo    kernel = { "read_values_from_coordinates", kernel::read_values_from_coordinates };
   const ParameterList params = { { "src0", src }, { "src1", list }, { "dst", dst } };
@@ -1853,12 +1839,14 @@ auto
 sum_reduction_x_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int blocksize)
   -> Array::Pointer
 {
+  // WARNING: function is not tested for 2D and 3D data. exepecting 1D only for now.
   if (dst == nullptr)
   {
     size_t dst_width = src->width();
     size_t dst_height = src->height();
     size_t dst_depth = src->depth();
-    switch (src->dim())
+    auto   dim = shape_to_dimension(dst_width, dst_height, dst_depth);
+    switch (dim)
     {
       case 1:
         dst_width = static_cast<size_t>(src->width() / blocksize);
@@ -1870,7 +1858,7 @@ sum_reduction_x_func(const Device::Pointer & device, const Array::Pointer & src,
         dst_depth = static_cast<size_t>(src->depth() / blocksize);
         break;
     }
-    dst = Array::create(dst_width, dst_height, dst_depth, src->dtype(), src->mtype(), src->device());
+    dst = Array::create(dst_width, dst_height, dst_depth, 1, src->dtype(), src->mtype(), src->device());
   }
   const KernelInfo    kernel = { "sum_reduction_x", kernel::sum_reduction_x };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "index", blocksize } };
@@ -1932,7 +1920,8 @@ transpose_xy_func(const Device::Pointer & device, const Array::Pointer & src, Ar
 {
   if (dst == nullptr)
   {
-    dst = Array::create(src->height(), src->width(), src->depth(), src->dtype(), src->mtype(), src->device());
+    auto dim = shape_to_dimension(src->height(), src->width(), src->depth());
+    dst = Array::create(src->height(), src->width(), src->depth(), dim, src->dtype(), src->mtype(), src->device());
   }
   const KernelInfo    kernel = { "transpose_xy", kernel::transpose_xy };
   const ParameterList params = { { "src", src }, { "dst", dst } };
@@ -1946,7 +1935,8 @@ transpose_xz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
 {
   if (dst == nullptr)
   {
-    dst = Array::create(src->depth(), src->height(), src->width(), src->dtype(), src->mtype(), src->device());
+    auto dim = shape_to_dimension(src->depth(), src->height(), src->width());
+    dst = Array::create(src->depth(), src->height(), src->width(), dim, src->dtype(), src->mtype(), src->device());
   }
   const KernelInfo    kernel = { "transpose_xz", kernel::transpose_xz };
   const ParameterList params = { { "src", src }, { "dst", dst } };
@@ -1960,7 +1950,8 @@ transpose_yz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
 {
   if (dst == nullptr)
   {
-    dst = Array::create(src->width(), src->depth(), src->height(), src->dtype(), src->mtype(), src->device());
+    auto dim = shape_to_dimension(src->width(), src->depth(), src->height());
+    dst = Array::create(src->width(), src->depth(), src->height(), 3, src->dtype(), src->mtype(), src->device());
   }
   const KernelInfo    kernel = { "transpose_yz", kernel::transpose_yz };
   const ParameterList params = { { "src", src }, { "dst", dst } };
@@ -2024,23 +2015,25 @@ auto
 write_values_to_coordinates_func(const Device::Pointer & device, const Array::Pointer & list, Array::Pointer dst)
   -> Array::Pointer
 {
-  if (list->dim() != 2)
-  {
-    throw std::runtime_error(
-      "The Coordinate list is expected to be 2D, where rows are coordinates (x,y,z) and values v.");
-  }
+  // TODO: check list shape
+  // if (list->dim() != 2)
+  // {
+  //   throw std::runtime_error(
+  //     "The Coordinate list is expected to be 2D, where rows are coordinates (x,y,z) and values v.");
+  // }
   if (dst == nullptr)
   {
     // flatten the coords to get the max coordinate value in x,y,z
     // as well as the number of rows (2->1D, 3->2D, 4->3D)
-    auto temp = Array::create(1, list->height(), 1, dType::INT32, list->mtype(), list->device());
+    auto temp = Array::create(1, list->height(), 1, 2, dType::INT32, list->mtype(), list->device());
     maximum_x_projection_func(device, list, temp);
     std::vector<int> max_position(temp->size());
     temp->read(max_position.data());
     size_t max_pos_x = max_position[0] + 1;
     size_t max_pos_y = (list->height() > 2) ? max_position[1] + 1 : 1;
     size_t max_pos_z = (list->height() > 3) ? max_position[2] + 1 : 1;
-    dst = Array::create(max_pos_x, max_pos_y, max_pos_z, list->dtype(), list->mtype(), list->device());
+    auto   dim = shape_to_dimension(max_pos_x, max_pos_y, max_pos_z);
+    dst = Array::create(max_pos_x, max_pos_y, max_pos_z, dim, list->dtype(), list->mtype(), list->device());
     dst->fill(0);
   }
   const KernelInfo    kernel = { "write_values_to_coordinates", kernel::write_values_to_coordinates };

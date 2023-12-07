@@ -77,7 +77,7 @@ exclude_labels_func(const Device::Pointer & device,
     }
   }
 
-  auto index_list = Array::create(list->size(), 1, 1, dType::UINT32, mType::BUFFER, src->device());
+  auto index_list = Array::create(list->size(), 1, 1, 1, dType::UINT32, mType::BUFFER, src->device());
   index_list->write(labels_list.data());
   tier1::replace_values_func(device, src, index_list, dst);
   return dst;
@@ -93,7 +93,7 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
 {
   tier0::create_like(src, dst, dType::UINT32);
   auto num_labels = static_cast<int>(tier2::maximum_of_all_pixels_func(device, src));
-  auto label_map = Array::create(num_labels + 1, 1, 1, dType::UINT32, mType::BUFFER, src->device());
+  auto label_map = Array::create(num_labels + 1, 1, 1, 1, dType::UINT32, mType::BUFFER, src->device());
   tier1::set_ramp_x_func(device, label_map);
 
   const ParameterList params = { { "src", src }, { "dst", label_map } };
@@ -212,7 +212,8 @@ histogram_func(const Device::Pointer & device,
 {
   tier0::create_vector(src, dst, nbins);
   size_t number_of_partial_histograms = src->height();
-  auto partial_hist = Array::create(nbins, 1, number_of_partial_histograms, dType::UINT32, src->mtype(), src->device());
+  auto   partial_hist =
+    Array::create(nbins, 1, number_of_partial_histograms, 3, dType::UINT32, src->mtype(), src->device());
   if (std::isnan(max) || std::isnan(max))
   {
     min = tier2::minimum_of_all_pixels_func(device, src);
@@ -240,7 +241,7 @@ labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Po
   -> Array::Pointer
 {
   auto max_label = tier2::maximum_of_all_pixels_func(device, src);
-  auto dim = src->dim();
+  auto dim = shape_to_dimension(src->width(), src->height(), src->depth());
   tier0::create_dst(src, dst, max_label, dim, 1, dType::UINT32);
   dst->fill(0);
 

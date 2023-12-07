@@ -19,7 +19,7 @@ TEST_P(TestRadDeg, radToDeg)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(4, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(4, 1, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input_deg.data());
 
   auto gpu_output = cle::tier2::degrees_to_radians_func(device, gpu_input, nullptr);
@@ -38,7 +38,7 @@ TEST_P(TestRadDeg, degToRad)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(4, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(4, 1, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input_rad.data());
 
   auto gpu_output = cle::tier2::radians_to_degrees_func(device, gpu_input, nullptr);

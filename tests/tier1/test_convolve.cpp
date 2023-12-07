@@ -19,9 +19,9 @@ TEST_P(TestConvolve, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(4, 4, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(4, 4, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
-  auto gpu_kernel = cle::Array::create(3, 3, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_kernel = cle::Array::create(3, 3, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_kernel->write(kernel.data());
 
   auto gpu_output = cle::tier1::convolve_func(device, gpu_input, gpu_kernel, nullptr);

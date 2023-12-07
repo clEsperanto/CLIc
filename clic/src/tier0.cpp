@@ -16,7 +16,8 @@ create_dst(const Array::Pointer & src, Array::Pointer & dst, size_t width, size_
   {
     type = src->dtype();
   }
-  dst = Array::create(width, height, depth, type, src->mtype(), src->device());
+  auto dim = shape_to_dimension(width, height, depth);
+  dst = Array::create(width, height, depth, dim, type, src->mtype(), src->device());
 }
 
 auto
@@ -30,7 +31,7 @@ create_like(const Array::Pointer & src, Array::Pointer & dst, dType type) -> voi
   {
     type = src->dtype();
   }
-  dst = Array::create(src->width(), src->height(), src->depth(), type, src->mtype(), src->device());
+  dst = Array::create(src->width(), src->height(), src->depth(), src->dimension(), type, src->mtype(), src->device());
 }
 
 auto
@@ -44,7 +45,7 @@ create_one(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
   {
     type = src->dtype();
   }
-  dst = Array::create(1, 1, 1, type, mType::BUFFER, src->device());
+  dst = Array::create(1, 1, 1, 1, type, mType::BUFFER, src->device());
 }
 
 auto
@@ -58,7 +59,7 @@ create_vector(const Array::Pointer & src, Array::Pointer & dst, const size_t & s
   {
     type = src->dtype();
   }
-  dst = Array::create(size, 1, 1, type, mType::BUFFER, src->device());
+  dst = Array::create(size, 1, 1, 1, type, mType::BUFFER, src->device());
 }
 
 auto
@@ -72,7 +73,7 @@ create_xy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
   {
     type = src->dtype();
   }
-  dst = Array::create(src->width(), src->height(), 1, type, src->mtype(), src->device());
+  dst = Array::create(src->width(), src->height(), 1, 2, type, src->mtype(), src->device());
 }
 
 auto
@@ -86,7 +87,7 @@ create_zy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
   {
     type = src->dtype();
   }
-  dst = Array::create(src->depth(), src->height(), 1, type, src->mtype(), src->device());
+  dst = Array::create(src->depth(), src->height(), 1, 2, type, src->mtype(), src->device());
 }
 
 auto
@@ -100,7 +101,7 @@ create_xz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
   {
     type = src->dtype();
   }
-  dst = Array::create(src->width(), src->depth(), 1, type, src->mtype(), src->device());
+  dst = Array::create(src->width(), src->depth(), 1, 2, type, src->mtype(), src->device());
 }
 
 auto

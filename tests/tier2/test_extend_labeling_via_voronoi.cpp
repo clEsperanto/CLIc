@@ -22,7 +22,7 @@ TEST_P(TestExtLabelVoronoi, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(6, 3, 2, cle::dType::INT32, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(6, 3, 2,3 , cle::dType::INT32, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier2::extend_labeling_via_voronoi_func(device, gpu_input, nullptr);

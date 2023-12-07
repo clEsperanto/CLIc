@@ -21,9 +21,9 @@ TEST_P(TestCoordReadWrite, executeReadFromCoord1)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(3, 3, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
-  auto gpu_list = cle::Array::create(1, 2, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_list = cle::Array::create(1, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_list->write(list.data());
 
   auto gpu_output = cle::tier1::read_values_from_coordinates_func(device, gpu_input, gpu_list, nullptr);
@@ -47,9 +47,9 @@ TEST_P(TestCoordReadWrite, executeReadFromCoord2)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(3, 3, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
-  auto gpu_list = cle::Array::create(3, 2, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_list = cle::Array::create(3, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_list->write(list.data());
 
   auto gpu_output = cle::tier1::read_values_from_coordinates_func(device, gpu_input, gpu_list, nullptr);

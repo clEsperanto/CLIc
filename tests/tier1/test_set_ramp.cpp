@@ -27,7 +27,7 @@ TEST_P(TestRamp, executeRampX)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(3, 3, 2, cle::dType::INT32, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(3, 3, 2,3 , cle::dType::INT32, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   cle::tier1::set_ramp_x_func(device, gpu_input);
@@ -46,7 +46,7 @@ TEST_P(TestRamp, executeRampY)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(3, 3, 2, cle::dType::INT32, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(3, 3, 2,3 , cle::dType::INT32, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   cle::tier1::set_ramp_y_func(device, gpu_input);
@@ -65,7 +65,7 @@ TEST_P(TestRamp, executeRampZ)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(3, 3, 2, cle::dType::INT32, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(3, 3, 2,3 , cle::dType::INT32, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   cle::tier1::set_ramp_z_func(device, gpu_input);

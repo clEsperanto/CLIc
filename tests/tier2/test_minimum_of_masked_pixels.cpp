@@ -30,7 +30,7 @@ TEST_P(TestMinMaskPixel, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(5, 3, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(5, 3, 2,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_mask = cle::Array::create(gpu_input);
   gpu_input->write(input.data());
   gpu_mask->write(mask.data());

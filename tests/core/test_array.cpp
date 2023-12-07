@@ -14,7 +14,7 @@ TEST_P(TestArray, allocate)
   device->setWaitToFinish(true);
 
   // Create a new Array
-  auto array = cle::Array::create(10, 20, 30, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto array = cle::Array::create(10, 20, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
 
   // Allocate memory for the array
   array->allocate();
@@ -25,12 +25,13 @@ TEST_P(TestArray, allocate)
   // Check that the dimensions are correct
   EXPECT_EQ(array->width(), 10);
   EXPECT_EQ(array->height(), 20);
-  EXPECT_EQ(array->depth(), 30);
-  EXPECT_EQ(array->dim(), 3);
+  EXPECT_EQ(array->depth(), 1);
+  EXPECT_EQ(array->dim(), 2);
+  EXPECT_EQ(array->dimension(), 3);
   EXPECT_EQ(array->itemSize(), sizeof(float));
   EXPECT_EQ(array->shortType(), "f");
 
-  auto array_other = cle::Array::create(10, 20, 30, cle::dType::UINT8, cle::mType::BUFFER, device);
+  auto array_other = cle::Array::create(10, 20, 30, 3, cle::dType::UINT8, cle::mType::BUFFER, device);
   EXPECT_EQ(array_other->shortType(), "uc");
   EXPECT_EQ(array_other->itemSize(), sizeof(uint8_t));
 }
@@ -43,7 +44,7 @@ TEST_P(TestArray, typeDataMemory)
   device->setWaitToFinish(true);
 
   // Create a new Array
-  auto array = cle::Array::create(10, 20, 30, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
 
   // Check that the data type is correct
   EXPECT_EQ(array->dtype(), cle::dType::FLOAT);
@@ -67,7 +68,7 @@ TEST_P(TestArray, allocateWrite)
   }
 
   // Create a new Array
-  auto array = cle::Array::create(10, 20, 30, cle::dType::FLOAT, cle::mType::BUFFER, data.data(), device);
+  auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::BUFFER, data.data(), device);
 
   // Read the data back from the array
   std::array<float, 10 * 20 * 30> read_data;
@@ -88,7 +89,7 @@ TEST_P(TestArray, readWrite)
   device->setWaitToFinish(true);
 
   // Create a new Array
-  auto array = cle::Array::create(10, 20, 30, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
 
   // Allocate memory for the array
   array->allocate();
@@ -120,7 +121,7 @@ TEST_P(TestArray, copyFill)
   device->setWaitToFinish(true);
 
   // Create a new Array
-  auto array = cle::Array::create(10, 20, 30, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
 
   // Allocate memory for the array
   array->allocate();
@@ -165,7 +166,7 @@ TEST_P(TestArray, stringCout)
   device->setWaitToFinish(true);
 
   // Create a new Array
-  auto array = cle::Array::create(10, 20, 30, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
 
   // Capture the output of the << operator
   testing::internal::CaptureStdout();
@@ -174,7 +175,7 @@ TEST_P(TestArray, stringCout)
 
   // Check that the output is correct
   std::stringstream expected_output;
-  expected_output << "Array ([10,20,30], dtype=float, mtype=Buffer)";
+  expected_output << "3dArray ([10,20,30], dtype=float, mtype=Buffer)";
   EXPECT_EQ(output, expected_output.str());
 }
 
@@ -186,7 +187,7 @@ TEST_P(TestArray, regionOperation)
   device->setWaitToFinish(true);
 
   // Create a new Array
-  auto array = cle::Array::create(7, 7, 1, cle::toType<float>(), cle::mType::BUFFER, device);
+  auto array = cle::Array::create(7, 7, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
 
   // Write data to the array
   std::array<float, 7 * 7 * 1> input;
@@ -261,7 +262,7 @@ TEST_P(TestArray, throwErrors)
   device->setWaitToFinish(true);
 
   // Create a new Array
-  auto array = cle::Array::create(10, 20, 30, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
 
   EXPECT_THROW(array->write(nullptr), std::runtime_error);
   EXPECT_THROW(array->write(nullptr, { 10, 10, 10 }, { 0, 0, 0 }), std::runtime_error);
@@ -288,7 +289,7 @@ TEST_P(TestArray, throwErrors)
   EXPECT_THROW(test_empty->read(nullptr, { 10, 10, 10 }, { 0, 0, 0 }), std::runtime_error);
   EXPECT_THROW(test_empty->read(nullptr, 10, 5, 6), std::runtime_error);
 
-  auto array_other = cle::Array::create(30, 20, 10, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto array_other = cle::Array::create(30, 20, 10, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   EXPECT_THROW(array->copy(array_other), std::runtime_error);
 }
 

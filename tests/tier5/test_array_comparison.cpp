@@ -19,11 +19,11 @@ TEST_P(TestArrayComparisons, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input1 = cle::Array::create(3, 1, 1, cle::dType::INT32, cle::mType::BUFFER, device);
-  auto gpu_input2 = cle::Array::create(3, 1, 1, cle::dType::INT16, cle::mType::BUFFER, device);
-  auto gpu_input3 = cle::Array::create(4, 1, 1, cle::dType::INT8, cle::mType::BUFFER, device);
-  auto gpu_input4 = cle::Array::create(3, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  auto gpu_input5 = cle::Array::create(1, 3, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input1 = cle::Array::create(3, 1, 1,3 , cle::dType::INT32, cle::mType::BUFFER, device);
+  auto gpu_input2 = cle::Array::create(3, 1, 1,3 , cle::dType::INT16, cle::mType::BUFFER, device);
+  auto gpu_input3 = cle::Array::create(4, 1, 1,3 , cle::dType::INT8, cle::mType::BUFFER, device);
+  auto gpu_input4 = cle::Array::create(3, 1, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input5 = cle::Array::create(1, 3, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
 
   gpu_input1->write(input1.data());
   gpu_input2->write(input2.data());

@@ -19,7 +19,7 @@ TEST_P(TestBottomHat, executeBox)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(5, 5, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(5, 5, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier2::bottom_hat_box_func(device, gpu_input, nullptr, 1, 1, 0);
@@ -36,7 +36,7 @@ TEST_P(TestBottomHat, executeSphere)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(5, 5, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(5, 5, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier2::bottom_hat_sphere_func(device, gpu_input, nullptr, 1, 1, 0);

@@ -19,7 +19,7 @@ TEST_P(TestUndefinedToZero, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_intput1 = cle::Array::create(5, 5, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_intput1 = cle::Array::create(5, 5, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_intput2 = cle::Array::create(gpu_intput1);
   gpu_intput1->write(input1.data());
   gpu_intput2->write(input2.data());

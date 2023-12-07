@@ -36,7 +36,7 @@ TEST_P(TestGaussianBlur, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(5, 5, 1, cle::dType::INT32, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(5, 5, 1,3 , cle::dType::INT32, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier1::gaussian_blur_func(device, gpu_input, nullptr, 1, 1, 1);

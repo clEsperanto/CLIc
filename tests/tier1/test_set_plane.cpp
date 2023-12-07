@@ -20,7 +20,7 @@ TEST_P(TestSetPlane, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(5, 5, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(5, 5, 2,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   cle::tier1::set_plane_func(device, gpu_input, 1, 4);
