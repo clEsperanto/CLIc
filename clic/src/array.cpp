@@ -8,12 +8,14 @@ namespace cle
 Array::Array(const size_t            width,
              const size_t            height,
              const size_t            depth,
+             const size_t            dimension,
              const dType &           data_type,
              const mType &           mem_type,
              const Device::Pointer & device_ptr)
   : width_((width > 1) ? width : 1)
   , height_((height > 1) ? height : 1)
   , depth_((depth > 1) ? depth : 1)
+  , dim_(dimension)
   , dataType_(data_type)
   , memType_(mem_type)
   , device_(device_ptr)
@@ -32,11 +34,12 @@ auto
 Array::create(const size_t            width,
               const size_t            height,
               const size_t            depth,
+              const size_t            dimension,
               const dType &           data_type,
               const mType &           mem_type,
               const Device::Pointer & device_ptr) -> Array::Pointer
 {
-  auto ptr = std::shared_ptr<Array>(new Array(width, height, depth, data_type, mem_type, device_ptr));
+  auto ptr = std::shared_ptr<Array>(new Array(width, height, depth, dimension, data_type, mem_type, device_ptr));
   ptr->allocate();
   return ptr;
 }
@@ -45,12 +48,13 @@ auto
 Array::create(const size_t            width,
               const size_t            height,
               const size_t            depth,
+              const size_t            dimension,
               const dType &           data_type,
               const mType &           mem_type,
               const void *            host_data,
               const Device::Pointer & device_ptr) -> Array::Pointer
 {
-  auto ptr = create(width, height, depth, data_type, mem_type, device_ptr);
+  auto ptr = create(width, height, depth, dimension, data_type, mem_type, device_ptr);
   ptr->write(host_data);
   return ptr;
 }
@@ -58,14 +62,20 @@ Array::create(const size_t            width,
 auto
 Array::create(const Array::Pointer & array) -> Array::Pointer
 {
-  auto ptr = create(array->width(), array->height(), array->depth(), array->dtype(), array->mtype(), array->device());
+  auto ptr = create(array->width(),
+                    array->height(),
+                    array->depth(),
+                    array->dimension(),
+                    array->dtype(),
+                    array->mtype(),
+                    array->device());
   return ptr;
 }
 
 auto
 operator<<(std::ostream & out, const Array::Pointer & array) -> std::ostream &
 {
-  out << "Array ([" << array->width() << "," << array->height() << "," << array->depth()
+  out << array->dimension() << "dArray ([" << array->width() << "," << array->height() << "," << array->depth()
       << "], dtype=" << array->dtype() << ", mtype=" << array->mtype() << ")";
   return out;
 }
@@ -309,6 +319,11 @@ auto
 Array::dim() const -> unsigned int
 {
   return (depth_ > 1) ? 3 : (height_ > 1) ? 2 : 1;
+}
+auto
+Array::dimension() const -> unsigned int
+{
+  return dim_;
 }
 auto
 Array::initialized() const -> bool

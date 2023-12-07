@@ -232,6 +232,23 @@ saveFile(const std::string & file_path, const std::string & source) -> void
 }
 
 inline auto
+shape_to_dimension(const size_t & width, const size_t & height, const size_t & depth) -> size_t
+{
+  if (depth > 1)
+  {
+    return 3;
+  }
+  else if (height > 1)
+  {
+    return 2;
+  }
+  else
+  {
+    return 1;
+  }
+}
+
+inline auto
 correct_range(int * start, int * stop, int * step, int size) -> void
 {
   // # set in case not set (passed None)

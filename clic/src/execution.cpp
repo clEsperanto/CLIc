@@ -122,7 +122,8 @@ arrayDefines(const ParameterList & parameter_list, const Device::Type & device) 
     const auto & key = param.first;
 
     // manage array dimension
-    const size_t      dimIndex = arr->dim() - 1;
+    auto              dim = shape_to_dimension(arr->width(), arr->height(), arr->depth());
+    const size_t      dimIndex = dim - 1;
     const std::string ndim = ndimMap[dimIndex];
     const std::string pos_type = posTypeMap[dimIndex];
     const std::string pos = posMap[dimIndex];
