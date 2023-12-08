@@ -180,7 +180,7 @@ add_images_weighted_func(const Device::Pointer & device,
                          float                   factor0,
                          float                   factor1) -> Array::Pointer
 {
-  tier0::create_like(src0, dst);
+  tier0::create_like(src0, dst, dType::FLOAT);
   const KernelInfo    kernel = { "add_images_weighted", kernel::add_images_weighted };
   const ParameterList params = {
     { "src0", src0 }, { "src1", src1 }, { "dst", dst }, { "scalar0", factor0 }, { "scalar1", factor1 }
