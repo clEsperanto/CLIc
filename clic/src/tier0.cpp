@@ -73,7 +73,8 @@ create_xy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
   {
     type = src->dtype();
   }
-  dst = Array::create(src->width(), src->height(), 1, 2, type, src->mtype(), src->device());
+  auto dim = shape_to_dimension(src->width(), src->height(), 1);
+  dst = Array::create(src->width(), src->height(), 1, dim, type, src->mtype(), src->device());
 }
 
 auto
@@ -87,7 +88,8 @@ create_zy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
   {
     type = src->dtype();
   }
-  dst = Array::create(src->depth(), src->height(), 1, 2, type, src->mtype(), src->device());
+  auto dim = shape_to_dimension(src->width(), src->height(), 1);
+  dst = Array::create(src->depth(), src->height(), 1, dim, type, src->mtype(), src->device());
 }
 
 auto
@@ -101,7 +103,8 @@ create_xz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
   {
     type = src->dtype();
   }
-  dst = Array::create(src->width(), src->depth(), 1, 2, type, src->mtype(), src->device());
+  auto dim = shape_to_dimension(src->width(), src->height(), 1);
+  dst = Array::create(src->width(), src->depth(), 1, dim, type, src->mtype(), src->device());
 }
 
 auto
