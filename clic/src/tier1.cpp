@@ -1473,7 +1473,7 @@ range_func(const Device::Pointer & device,
   const ParameterList params = { { "src", src },         { "dst", dst },         { "start_x", start_x },
                                  { "step_x", step_x },   { "start_y", start_y }, { "step_y", step_y },
                                  { "start_z", start_z }, { "step_z", step_z } };
-  const RangeArray    range = { src->width(), src->height(), src->depth() };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
 }
