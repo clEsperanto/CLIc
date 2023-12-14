@@ -41,6 +41,8 @@ public:
   getInfo() const -> std::string = 0;
   [[nodiscard]] virtual auto
   getType() const -> Device::Type = 0;
+  [[nodiscard]] virtual auto
+  getPlatform() const -> const std::string = 0;
 
   friend auto
   operator<<(std::ostream & out, const Device::Type & device_type) -> std::ostream &
@@ -80,6 +82,9 @@ public:
   finish() const -> void override;
   auto
   setWaitToFinish(bool flag) -> void override;
+
+  [[nodiscard]] auto
+  getPlatform() const -> const std::string override;
 
   [[nodiscard]] auto
   getType() const -> Device::Type override;
@@ -123,6 +128,9 @@ public:
   finish() const -> void override;
   auto
   setWaitToFinish(bool flag) -> void override;
+
+  [[nodiscard]] auto
+  getPlatform() const -> const std::string override;
 
   [[nodiscard]] auto
   getType() const -> Device::Type override;

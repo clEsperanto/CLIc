@@ -89,6 +89,12 @@ CUDADevice::setWaitToFinish(bool flag) -> void
   this->waitFinish = flag;
 }
 
+[[nodiscard]] auto
+CUDADevice::getPlatform() const -> const std::string
+{
+  return "NVIDIA";
+}
+
 auto
 CUDADevice::isInitialized() const -> bool
 {
