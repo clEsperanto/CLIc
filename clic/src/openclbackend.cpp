@@ -130,16 +130,18 @@ OpenCLBackend::getDevice(const std::string & name, const std::string & type) con
 {
 #if USE_OPENCL
   auto devices = getDevices(type);
-  auto ite = std::find_if(devices.begin(), devices.end(), [&name](const Device::Pointer & dev) {
-    return dev->getName().find(name) != std::string::npos;
-  });
-  if (ite != devices.end())
+  if (!name.empty())
   {
-    return std::move(*ite);
+    auto ite = std::find_if(devices.begin(), devices.end(), [&name](const Device::Pointer & dev) {
+      return dev->getName().find(name) != std::string::npos;
+    });
+    if (ite != devices.end())
+    {
+      return std::move(*ite);
+    }
   }
   if (!devices.empty())
   {
-    std::cerr << "Warning: Device with name '" << name << "' not found. Using default device instead." << std::endl;
     return std::move(devices.back());
   }
   return nullptr;
