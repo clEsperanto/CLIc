@@ -78,6 +78,21 @@ create_xy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 }
 
 auto
+create_yx(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
+{
+  if (dst != nullptr)
+  {
+    return;
+  }
+  if (type == dType::UNKNOWN)
+  {
+    type = src->dtype();
+  }
+  auto dim = shape_to_dimension(src->height(), src->width(), 1);
+  dst = Array::create(src->height(), src->width(), 1, dim, type, src->mtype(), src->device());
+}
+
+auto
 create_zy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
   if (dst != nullptr)
@@ -93,6 +108,21 @@ create_zy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 }
 
 auto
+create_yz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
+{
+  if (dst != nullptr)
+  {
+    return;
+  }
+  if (type == dType::UNKNOWN)
+  {
+    type = src->dtype();
+  }
+  auto dim = shape_to_dimension(src->height(), src->depth(), 1);
+  dst = Array::create(src->height(), src->depth(), 1, dim, type, src->mtype(), src->device());
+}
+
+auto
 create_xz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
   if (dst != nullptr)
@@ -105,6 +135,21 @@ create_xz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
   }
   auto dim = shape_to_dimension(src->width(), src->depth(), 1);
   dst = Array::create(src->width(), src->depth(), 1, dim, type, src->mtype(), src->device());
+}
+
+auto
+create_zx(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
+{
+  if (dst != nullptr)
+  {
+    return;
+  }
+  if (type == dType::UNKNOWN)
+  {
+    type = src->dtype();
+  }
+  auto dim = shape_to_dimension(src->depth(), src->width(), 1);
+  dst = Array::create(src->depth(), src->width(), 1, dim, type, src->mtype(), src->device());
 }
 
 auto
