@@ -18,20 +18,12 @@ TEST_P(TestLabelSpotToPointList, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(5, 5, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier3::labelled_spots_to_pointlist_func(device, gpu_input, nullptr);
 
-  std::cout << gpu_output << std::endl;
   gpu_output->read(output.data());
-  for (auto && i : output)
-  {
-    std::cout << i << " ";
-  }
-  std::cout << std::endl;
-
-
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);
