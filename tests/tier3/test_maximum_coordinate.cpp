@@ -3,7 +3,7 @@
 #include <array>
 #include <gtest/gtest.h>
 
-class TestMaximumPosition : public ::testing::TestWithParam<std::string>
+class TestMaximumcoordinate : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<float, 4 * 3 * 2> input = {
@@ -12,7 +12,7 @@ protected:
   std::array<size_t, 3 * 1 * 1> valid = { 1, 1, 0 };
 };
 
-TEST_P(TestMaximumPosition, execute)
+TEST_P(TestMaximumcoordinate, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -22,7 +22,7 @@ TEST_P(TestMaximumPosition, execute)
   auto gpu_input = cle::Array::create(4, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
-  auto output = cle::tier3::maximum_position_func(device, gpu_input);
+  auto output = cle::tier3::maximum_coordinate_func(device, gpu_input);
 
   for (auto && i : output)
   {
@@ -50,4 +50,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestMaximumPosition, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestMaximumcoordinate, ::testing::ValuesIn(getParameters()));

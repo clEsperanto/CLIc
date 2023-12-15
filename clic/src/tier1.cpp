@@ -156,12 +156,12 @@
 #include "cle_variance_box.h"
 #include "cle_variance_sphere.h"
 #include "cle_write_values_to_coordinates.h"
-#include "cle_x_position_of_maximum_x_projection.h"
-#include "cle_x_position_of_minimum_x_projection.h"
-#include "cle_y_position_of_maximum_y_projection.h"
-#include "cle_y_position_of_minimum_y_projection.h"
-#include "cle_z_position_of_maximum_z_projection.h"
-#include "cle_z_position_of_minimum_z_projection.h"
+#include "cle_x_coordinate_of_maximum_x_projection.h"
+#include "cle_x_coordinate_of_minimum_x_projection.h"
+#include "cle_y_coordinate_of_maximum_y_projection.h"
+#include "cle_y_coordinate_of_minimum_y_projection.h"
+#include "cle_z_coordinate_of_maximum_z_projection.h"
+#include "cle_z_coordinate_of_minimum_z_projection.h"
 
 
 namespace cle::tier1
@@ -2033,11 +2033,11 @@ write_values_to_coordinates_func(const Device::Pointer & device, const Array::Po
     // as well as the number of rows (2->1D, 3->2D, 4->3D)
     auto temp = Array::create(1, list->height(), 1, 2, dType::INT32, list->mtype(), list->device());
     maximum_x_projection_func(device, list, temp);
-    std::vector<int> max_position(temp->size());
-    temp->read(max_position.data());
-    size_t max_pos_x = max_position[0] + 1;
-    size_t max_pos_y = (list->height() > 2) ? max_position[1] + 1 : 1;
-    size_t max_pos_z = (list->height() > 3) ? max_position[2] + 1 : 1;
+    std::vector<int> max_coordinate(temp->size());
+    temp->read(max_coordinate.data());
+    size_t max_pos_x = max_coordinate[0] + 1;
+    size_t max_pos_y = (list->height() > 2) ? max_coordinate[1] + 1 : 1;
+    size_t max_pos_z = (list->height() > 3) ? max_coordinate[2] + 1 : 1;
     auto   dim = shape_to_dimension(max_pos_x, max_pos_y, max_pos_z);
     dst = Array::create(max_pos_x, max_pos_y, max_pos_z, dim, list->dtype(), list->mtype(), list->device());
     dst->fill(0);
@@ -2050,11 +2050,12 @@ write_values_to_coordinates_func(const Device::Pointer & device, const Array::Po
 }
 
 auto
-x_position_of_maximum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+x_coordinate_of_maximum_x_projection_func(const Device::Pointer & device,
+                                          const Array::Pointer &  src,
+                                          Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_zy(src, dst, dType::UINT32);
-  const KernelInfo    kernel = { "x_position_of_maximum_x_projection", kernel::x_position_of_maximum_x_projection };
+  const KernelInfo    kernel = { "x_coordinate_of_maximum_x_projection", kernel::x_coordinate_of_maximum_x_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
@@ -2062,11 +2063,12 @@ x_position_of_maximum_x_projection_func(const Device::Pointer & device, const Ar
 }
 
 auto
-x_position_of_minimum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+x_coordinate_of_minimum_x_projection_func(const Device::Pointer & device,
+                                          const Array::Pointer &  src,
+                                          Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_zy(src, dst, dType::UINT32);
-  const KernelInfo    kernel = { "x_position_of_minimum_x_projection", kernel::x_position_of_minimum_x_projection };
+  const KernelInfo    kernel = { "x_coordinate_of_minimum_x_projection", kernel::x_coordinate_of_minimum_x_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
@@ -2074,11 +2076,12 @@ x_position_of_minimum_x_projection_func(const Device::Pointer & device, const Ar
 }
 
 auto
-y_position_of_maximum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+y_coordinate_of_maximum_y_projection_func(const Device::Pointer & device,
+                                          const Array::Pointer &  src,
+                                          Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_xz(src, dst, dType::UINT32);
-  const KernelInfo    kernel = { "y_position_of_maximum_y_projection", kernel::y_position_of_maximum_y_projection };
+  const KernelInfo    kernel = { "y_coordinate_of_maximum_y_projection", kernel::y_coordinate_of_maximum_y_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
@@ -2086,11 +2089,12 @@ y_position_of_maximum_y_projection_func(const Device::Pointer & device, const Ar
 }
 
 auto
-y_position_of_minimum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+y_coordinate_of_minimum_y_projection_func(const Device::Pointer & device,
+                                          const Array::Pointer &  src,
+                                          Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_xz(src, dst, dType::UINT32);
-  const KernelInfo    kernel = { "y_position_of_minimum_y_projection", kernel::y_position_of_minimum_y_projection };
+  const KernelInfo    kernel = { "y_coordinate_of_minimum_y_projection", kernel::y_coordinate_of_minimum_y_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
@@ -2098,11 +2102,12 @@ y_position_of_minimum_y_projection_func(const Device::Pointer & device, const Ar
 }
 
 auto
-z_position_of_maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+z_coordinate_of_maximum_z_projection_func(const Device::Pointer & device,
+                                          const Array::Pointer &  src,
+                                          Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_xy(src, dst, dType::UINT32);
-  const KernelInfo    kernel = { "z_position_of_maximum_z_projection", kernel::z_position_of_maximum_z_projection };
+  const KernelInfo    kernel = { "z_coordinate_of_maximum_z_projection", kernel::z_coordinate_of_maximum_z_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
@@ -2110,11 +2115,12 @@ z_position_of_maximum_z_projection_func(const Device::Pointer & device, const Ar
 }
 
 auto
-z_position_of_minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+z_coordinate_of_minimum_z_projection_func(const Device::Pointer & device,
+                                          const Array::Pointer &  src,
+                                          Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_xy(src, dst, dType::UINT32);
-  const KernelInfo    kernel = { "z_position_of_minimum_z_projection", kernel::z_position_of_minimum_z_projection };
+  const KernelInfo    kernel = { "z_coordinate_of_minimum_z_projection", kernel::z_coordinate_of_minimum_z_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);

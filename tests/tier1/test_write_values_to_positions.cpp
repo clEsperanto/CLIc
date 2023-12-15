@@ -3,7 +3,7 @@
 #include <array>
 #include <gtest/gtest.h>
 
-class TestWriteValuesToPositions : public ::testing::TestWithParam<std::string>
+class TestWriteValuesTocoordinates : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<float, 6 * 7 * 1> output_2d;
@@ -18,7 +18,7 @@ protected:
                                             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4 };
 };
 
-TEST_P(TestWriteValuesToPositions, execute2D)
+TEST_P(TestWriteValuesTocoordinates, execute2D)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -37,7 +37,7 @@ TEST_P(TestWriteValuesToPositions, execute2D)
   }
 }
 
-TEST_P(TestWriteValuesToPositions, execute3D)
+TEST_P(TestWriteValuesTocoordinates, execute3D)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -69,4 +69,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestWriteValuesToPositions, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestWriteValuesTocoordinates, ::testing::ValuesIn(getParameters()));

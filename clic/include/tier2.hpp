@@ -251,7 +251,7 @@ top_hat_sphere_func(const Device::Pointer & device,
 
 // @StRigaud TODO: auto touch_matrix_to_adjacency_matrix_func
 
-// @StRigaud TODO: auto z_position_projection_func
+// @StRigaud TODO: auto z_coordinate_projection_func
 
 } // namespace cle::tier2
 

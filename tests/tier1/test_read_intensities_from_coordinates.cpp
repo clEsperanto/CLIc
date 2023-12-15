@@ -3,7 +3,7 @@
 #include <array>
 #include <gtest/gtest.h>
 
-class TestReadIntensityFromPositions : public ::testing::TestWithParam<std::string>
+class TestReadIntensityFromCoordinates : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<float, 3 * 1 * 1> output;
@@ -12,15 +12,15 @@ protected:
   std::array<float, 3 * 1 * 1> valid = { 1, 8, 7 };
 };
 
-TEST_P(TestReadIntensityFromPositions, execute)
+TEST_P(TestReadIntensityFromCoordinates, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input1 = cle::Array::create(3, 3, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
-  auto gpu_input2 = cle::Array::create(3, 2, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input1 = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input2 = cle::Array::create(3, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input1->write(input.data());
   gpu_input2->write(list.data());
 
@@ -46,4 +46,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestReadIntensityFromPositions, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestReadIntensityFromCoordinates, ::testing::ValuesIn(getParameters()));
