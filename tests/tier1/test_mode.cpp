@@ -23,7 +23,7 @@ TEST_P(TestMode, executeBox)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(6, 6, 1,3 , cle::dType::UINT8, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(6, 6, 1, 3, cle::dType::UINT8, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier1::mode_box_func(device, gpu_input, nullptr, 1, 1, 1);
@@ -42,7 +42,7 @@ TEST_P(TestMode, executeSphere)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(6, 6, 1,3 , cle::dType::UINT8, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(6, 6, 1, 3, cle::dType::UINT8, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier1::mode_sphere_func(device, gpu_input, nullptr, 1, 1, 1);

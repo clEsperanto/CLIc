@@ -28,7 +28,7 @@ TEST_P(TestNotEqualConstant, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(10, 5, 3,3 , cle::dType::INT8, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(10, 5, 3, 3, cle::dType::INT8, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier1::not_equal_constant_func(device, gpu_input, nullptr, 5);

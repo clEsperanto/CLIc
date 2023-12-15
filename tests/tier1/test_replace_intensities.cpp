@@ -36,8 +36,8 @@ TEST_P(TestReplaceIntensities, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input1 = cle::Array::create(10, 5, 3,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
-  auto gpu_input2 = cle::Array::create(10, 1, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input1 = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input2 = cle::Array::create(10, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input1->write(input.data());
   gpu_input2->write(intmap.data());
 

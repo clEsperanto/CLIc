@@ -38,11 +38,11 @@ TEST_P(TestBlockEnumerate, execute)
   device->setWaitToFinish(true);
 
   int  blocksize = 4;
-  auto gpu_input = cle::Array::create(5, 1, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(5, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   size_t block_value = static_cast<size_t>((static_cast<size_t>(5 - 1) + 1) / blocksize) + 1;
-  auto   gpu_temp = cle::Array::create(block_value, 1, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto   gpu_temp = cle::Array::create(block_value, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
 
   cle::tier1::sum_reduction_x_func(device, gpu_input, gpu_temp, blocksize);
   auto gpu_output = cle::tier1::block_enumerate_func(device, gpu_input, gpu_temp, nullptr, blocksize);

@@ -25,7 +25,7 @@ TEST_P(TestSumAllPixel, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto array = cle::Array::create(10, 20, 30,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   array->write(input.data());
 
   auto output = cle::tier2::sum_of_all_pixels_func(device, array);

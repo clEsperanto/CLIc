@@ -20,9 +20,9 @@ TEST_P(TestOnlyzeroOverwriteMaximumDiamond, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(5, 5, 2,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(5, 5, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
-  auto flag = cle::Array::create(1, 1, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto flag = cle::Array::create(1, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   flag->fill(0);
 
   auto gpu_output = cle::tier1::onlyzero_overwrite_maximum_diamond_func(device, gpu_input, flag, nullptr);

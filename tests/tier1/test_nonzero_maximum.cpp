@@ -24,9 +24,9 @@ TEST_P(TestNonzeroMaximum, executeBox)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(5, 5, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
-  auto flag = cle::Array::create(1, 1, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto flag = cle::Array::create(1, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   flag->fill(1);
   auto gpu_output = cle::tier1::nonzero_maximum_box_func(device, gpu_input, flag, nullptr);
 
@@ -44,9 +44,9 @@ TEST_P(TestNonzeroMaximum, executeSphere)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(5, 5, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
-  auto flag = cle::Array::create(1, 1, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto flag = cle::Array::create(1, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   flag->fill(1);
 
   auto gpu_output = cle::tier1::nonzero_maximum_diamond_func(device, gpu_input, flag, nullptr);

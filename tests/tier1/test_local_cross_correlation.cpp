@@ -20,7 +20,7 @@ TEST_P(TestLocalCrossCorrelation, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(3, 3, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_kernel = cle::Array::create(gpu_input);
   gpu_input->write(input.data());
   gpu_kernel->write(kernel.data());

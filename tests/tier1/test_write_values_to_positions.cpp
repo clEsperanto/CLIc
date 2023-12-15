@@ -25,7 +25,7 @@ TEST_P(TestWriteValuesTopositions, execute2D)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_coord = cle::Array::create(5, 3, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_coord = cle::Array::create(5, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_coord->write(list_2d.data());
 
   auto gpu_output = cle::tier1::write_values_to_positions_func(device, gpu_coord, nullptr);
@@ -44,7 +44,7 @@ TEST_P(TestWriteValuesTopositions, execute3D)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_coord = cle::Array::create(5, 4, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_coord = cle::Array::create(5, 4, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_coord->write(list_3d.data());
 
   auto gpu_output = cle::tier1::write_values_to_positions_func(device, gpu_coord, nullptr);

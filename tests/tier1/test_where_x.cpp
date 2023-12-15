@@ -27,7 +27,7 @@ TEST_P(TestWhereX, executeSmallerY)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(4, 4, 1,3 , cle::dType::INT32, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(4, 4, 1, 3, cle::dType::INT32, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   cle::tier1::set_where_x_smaller_than_y_func(device, gpu_input, 3);
@@ -46,7 +46,7 @@ TEST_P(TestWhereX, executeEqualY)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(4, 4, 1,3 , cle::dType::INT32, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(4, 4, 1, 3, cle::dType::INT32, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   cle::tier1::set_where_x_equals_y_func(device, gpu_input, 3);
@@ -65,7 +65,7 @@ TEST_P(TestWhereX, executeGreaterY)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(4, 4, 1,3 , cle::dType::INT32, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(4, 4, 1, 3, cle::dType::INT32, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   cle::tier1::set_where_x_greater_than_y_func(device, gpu_input, 3);

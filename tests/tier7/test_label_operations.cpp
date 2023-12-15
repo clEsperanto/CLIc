@@ -23,7 +23,7 @@ TEST_P(TestLabelOperations, executeDilate)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(6, 6, 2,3 , cle::dType::UINT32, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(6, 6, 2, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier6::dilate_labels_func(device, gpu_input, nullptr, 1);
@@ -57,7 +57,7 @@ TEST_P(TestLabelOperations, executeErode)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(6, 6, 2,3 , cle::dType::UINT32, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(6, 6, 2, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier6::erode_labels_func(device, gpu_input, nullptr, 1, true);
@@ -91,7 +91,7 @@ TEST_P(TestLabelOperations, executeOpening)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(6, 6, 2,3 , cle::dType::UINT32, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(6, 6, 2, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier7::opening_labels_func(device, gpu_input, nullptr, 1);
@@ -125,7 +125,7 @@ TEST_P(TestLabelOperations, executeClosing)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(6, 6, 2,3 , cle::dType::UINT32, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(6, 6, 2, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier7::closing_labels_func(device, gpu_input, nullptr, 1);
