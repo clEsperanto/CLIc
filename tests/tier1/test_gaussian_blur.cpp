@@ -8,17 +8,11 @@ class TestGaussianBlur : public ::testing::TestWithParam<std::string>
 protected:
   std::array<int32_t, 5 * 5 * 1> input;
   std::array<float, 5 * 5 * 1>   output;
-  std::array<float, 5 * 5 * 1>   valid = {
-      static_cast<float>(0.2915041745), static_cast<float>(1.306431174),  static_cast<float>(2.153940439),
-      static_cast<float>(1.306431174),  static_cast<float>(0.2915041745), static_cast<float>(1.306431055),
-      static_cast<float>(5.855018139),  static_cast<float>(9.653291702),  static_cast<float>(5.855018139),
-      static_cast<float>(1.306431055),  static_cast<float>(2.153940678),  static_cast<float>(9.653292656),
-      static_cast<float>(15.91558743),  static_cast<float>(9.653292656),  static_cast<float>(2.153940678),
-      static_cast<float>(1.306431055),  static_cast<float>(5.855018139),  static_cast<float>(9.653291702),
-      static_cast<float>(5.855018139),  static_cast<float>(1.306431055),  static_cast<float>(0.2915041745),
-      static_cast<float>(1.306431174),  static_cast<float>(2.153940439),  static_cast<float>(1.306431174),
-      static_cast<float>(0.2915041745)
-  };
+  std::array<float, 5 * 5 * 1>   valid = { 0.2915041745F, 1.306431174F, 2.153940439F, 1.306431174F, 0.2915041745F,
+                                           1.306431055F,  5.855018139F, 9.653291702F, 5.855018139F, 1.306431055F,
+                                           2.153940678F,  9.653292656F, 15.91558743F, 9.653292656F, 2.153940678F,
+                                           1.306431055F,  5.855018139F, 9.653291702F, 5.855018139F, 1.306431055F,
+                                           0.2915041745F, 1.306431174F, 2.153940439F, 1.306431174F, 0.2915041745F };
 
   virtual void
   SetUp()
