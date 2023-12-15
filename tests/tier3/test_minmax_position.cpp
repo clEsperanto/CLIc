@@ -3,7 +3,7 @@
 #include <array>
 #include <gtest/gtest.h>
 
-class TestMinMaxCoordinate : public ::testing::TestWithParam<std::string>
+class TestMinMaxPosition : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<float, 4 * 3 * 2> input = {
@@ -11,7 +11,7 @@ protected:
   };
 };
 
-TEST_P(TestMinMaxCoordinate, maxCoordinate)
+TEST_P(TestMinMaxPosition, maxPosition)
 {
   std::array<size_t, 3 * 1 * 1> valid = { 1, 1, 0 };
 
@@ -23,7 +23,7 @@ TEST_P(TestMinMaxCoordinate, maxCoordinate)
   auto gpu_input = cle::Array::create(4, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
-  auto output = cle::tier3::maximum_coordinate_func(device, gpu_input);
+  auto output = cle::tier3::maximum_position_func(device, gpu_input);
 
   for (int i = 0; i < output.size(); i++)
   {
@@ -31,7 +31,7 @@ TEST_P(TestMinMaxCoordinate, maxCoordinate)
   }
 }
 
-TEST_P(TestMinMaxCoordinate, minCoordinate)
+TEST_P(TestMinMaxPosition, minPosition)
 {
   std::array<size_t, 3 * 1 * 1> valid = { 1, 1, 1 };
 
@@ -43,7 +43,7 @@ TEST_P(TestMinMaxCoordinate, minCoordinate)
   auto gpu_input = cle::Array::create(4, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
-  auto output = cle::tier3::minimum_coordinate_func(device, gpu_input);
+  auto output = cle::tier3::minimum_position_func(device, gpu_input);
 
   for (int i = 0; i < output.size(); i++)
   {
@@ -64,4 +64,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestMinMaxCoordinate, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestMinMaxPosition, ::testing::ValuesIn(getParameters()));

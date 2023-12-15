@@ -397,7 +397,7 @@ modulo_images_func(const Device::Pointer & device,
                    Array::Pointer          dst) -> Array::Pointer;
 
 auto
-multiply_image_and_coordinate_func(const Device::Pointer & device,
+multiply_image_and_position_func(const Device::Pointer & device,
                                    const Array::Pointer &  src,
                                    Array::Pointer          dst,
                                    int                     dimension) -> Array::Pointer;
@@ -508,7 +508,7 @@ range_func(const Device::Pointer & device,
 // @StRigaud TODO : read_values_from_map_func
 
 auto
-read_values_from_coordinates_func(const Device::Pointer & device,
+read_values_from_positions_func(const Device::Pointer & device,
                                   const Array::Pointer &  src,
                                   const Array::Pointer &  list,
                                   Array::Pointer          dst) -> Array::Pointer;
@@ -680,37 +680,37 @@ variance_sphere_func(const Device::Pointer & device,
                      int                     radius_z) -> Array::Pointer;
 
 auto
-write_values_to_coordinates_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+write_values_to_positions_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer;
 
 
 auto
-x_coordinate_of_maximum_x_projection_func(const Device::Pointer & device,
+x_position_of_maximum_x_projection_func(const Device::Pointer & device,
                                           const Array::Pointer &  src,
                                           Array::Pointer          dst) -> Array::Pointer;
 
 auto
-x_coordinate_of_minimum_x_projection_func(const Device::Pointer & device,
+x_position_of_minimum_x_projection_func(const Device::Pointer & device,
                                           const Array::Pointer &  src,
                                           Array::Pointer          dst) -> Array::Pointer;
 
 auto
-y_coordinate_of_maximum_y_projection_func(const Device::Pointer & device,
+y_position_of_maximum_y_projection_func(const Device::Pointer & device,
                                           const Array::Pointer &  src,
                                           Array::Pointer          dst) -> Array::Pointer;
 
 auto
-y_coordinate_of_minimum_y_projection_func(const Device::Pointer & device,
+y_position_of_minimum_y_projection_func(const Device::Pointer & device,
                                           const Array::Pointer &  src,
                                           Array::Pointer          dst) -> Array::Pointer;
 
 auto
-z_coordinate_of_maximum_z_projection_func(const Device::Pointer & device,
+z_position_of_maximum_z_projection_func(const Device::Pointer & device,
                                           const Array::Pointer &  src,
                                           Array::Pointer          dst) -> Array::Pointer;
 
 auto
-z_coordinate_of_minimum_z_projection_func(const Device::Pointer & device,
+z_position_of_minimum_z_projection_func(const Device::Pointer & device,
                                           const Array::Pointer &  src,
                                           Array::Pointer          dst) -> Array::Pointer;
 

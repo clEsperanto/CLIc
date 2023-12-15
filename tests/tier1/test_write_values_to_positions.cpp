@@ -3,7 +3,7 @@
 #include <array>
 #include <gtest/gtest.h>
 
-class TestWriteValuesTocoordinates : public ::testing::TestWithParam<std::string>
+class TestWriteValuesTopositions : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<float, 6 * 7 * 1> output_2d;
@@ -18,7 +18,7 @@ protected:
                                             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4 };
 };
 
-TEST_P(TestWriteValuesTocoordinates, execute2D)
+TEST_P(TestWriteValuesTopositions, execute2D)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -28,7 +28,7 @@ TEST_P(TestWriteValuesTocoordinates, execute2D)
   auto gpu_coord = cle::Array::create(5, 3, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_coord->write(list_2d.data());
 
-  auto gpu_output = cle::tier1::write_values_to_coordinates_func(device, gpu_coord, nullptr);
+  auto gpu_output = cle::tier1::write_values_to_positions_func(device, gpu_coord, nullptr);
 
   gpu_output->read(output_2d.data());
   for (int i = 0; i < output_2d.size(); i++)
@@ -37,7 +37,7 @@ TEST_P(TestWriteValuesTocoordinates, execute2D)
   }
 }
 
-TEST_P(TestWriteValuesTocoordinates, execute3D)
+TEST_P(TestWriteValuesTopositions, execute3D)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -47,7 +47,7 @@ TEST_P(TestWriteValuesTocoordinates, execute3D)
   auto gpu_coord = cle::Array::create(5, 4, 1,3 , cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_coord->write(list_3d.data());
 
-  auto gpu_output = cle::tier1::write_values_to_coordinates_func(device, gpu_coord, nullptr);
+  auto gpu_output = cle::tier1::write_values_to_positions_func(device, gpu_coord, nullptr);
 
   gpu_output->read(output_3d.data());
   for (int i = 0; i < output_3d.size(); i++)
@@ -69,4 +69,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestWriteValuesTocoordinates, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestWriteValuesTopositions, ::testing::ValuesIn(getParameters()));

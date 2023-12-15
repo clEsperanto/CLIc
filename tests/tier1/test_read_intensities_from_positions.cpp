@@ -3,7 +3,7 @@
 #include <array>
 #include <gtest/gtest.h>
 
-class TestReadIntensityFromCoordinates : public ::testing::TestWithParam<std::string>
+class TestReadIntensityFromPositions : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<float, 3 * 1 * 1> output;
@@ -12,7 +12,7 @@ protected:
   std::array<float, 3 * 1 * 1> valid = { 1, 8, 7 };
 };
 
-TEST_P(TestReadIntensityFromCoordinates, execute)
+TEST_P(TestReadIntensityFromPositions, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -24,7 +24,7 @@ TEST_P(TestReadIntensityFromCoordinates, execute)
   gpu_input1->write(input.data());
   gpu_input2->write(list.data());
 
-  auto gpu_output = cle::tier1::read_values_from_coordinates_func(device, gpu_input1, gpu_input2, nullptr);
+  auto gpu_output = cle::tier1::read_values_from_positions_func(device, gpu_input1, gpu_input2, nullptr);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
@@ -46,4 +46,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestReadIntensityFromCoordinates, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestReadIntensityFromPositions, ::testing::ValuesIn(getParameters()));
