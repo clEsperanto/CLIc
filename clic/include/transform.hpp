@@ -4,6 +4,7 @@
 #include <array>
 
 #include "Eigen/Dense"
+#include "array.hpp"
 
 namespace cle
 {
@@ -11,9 +12,11 @@ namespace cle
 class AffineTransform
 {
 public:
+  using matrix = Eigen::Matrix4f;
+
   AffineTransform()
   {
-    m_matrix = Eigen::Matrix4f::Identity();
+    m_matrix = matrix::Identity();
     update();
   }
   ~AffineTransform() = default;
@@ -32,7 +35,7 @@ public:
   rotate(int axis, float angle_deg) -> void
   {
     // create a rotation matrix
-    Eigen::Matrix4f rotation_matrix = Eigen::Matrix4f::Identity();
+    matrix rotation_matrix = matrix::Identity();
 
     // compute rotation values
     const float angle_rad = deg_to_rad(angle_deg);
@@ -94,7 +97,7 @@ public:
   translate(float translate_x, float translate_y, float translate_z) -> void
   {
     // add a translation to the matrix
-    Eigen::Matrix4f translation_matrix = Eigen::Matrix4f::Identity();
+    matrix translation_matrix = matrix::Identity();
     translation_matrix(0, 3) = translate_x;
     translation_matrix(1, 3) = translate_y;
     translation_matrix(2, 3) = translate_z;
@@ -129,7 +132,7 @@ public:
     const float shear_yz = shear_angle_to_shear_factor(shear_y_deg);
 
     // add a shear in the z plane to the matrix
-    Eigen::Matrix4f shear_matrix = Eigen::Matrix4f::Identity();
+    matrix shear_matrix = matrix::Identity();
     shear_matrix(0, 1) = shear_xz;
     shear_matrix(1, 0) = shear_yz;
     m_matrix = shear_matrix * m_matrix;
@@ -153,7 +156,7 @@ public:
     const float shear_zy = shear_angle_to_shear_factor(shear_z_deg);
 
     // add a shear in the y plane to the matrix
-    Eigen::Matrix4f shear_matrix = Eigen::Matrix4f::Identity();
+    matrix shear_matrix = matrix::Identity();
     shear_matrix(0, 2) = shear_xy;
     shear_matrix(2, 0) = shear_zy;
     m_matrix = shear_matrix * m_matrix;
@@ -177,7 +180,7 @@ public:
     const float shear_zx = shear_angle_to_shear_factor(shear_z_deg);
 
     // add a shear in the x plane to the matrix
-    Eigen::Matrix4f shear_matrix = Eigen::Matrix4f::Identity();
+    matrix shear_matrix = matrix::Identity();
     shear_matrix(1, 2) = shear_yx;
     shear_matrix(2, 1) = shear_zx;
     m_matrix = shear_matrix * m_matrix;
@@ -262,10 +265,10 @@ protected:
   }
 
 private:
-  Eigen::Matrix4f m_matrix;
-  Eigen::Matrix4f m_inverse;
-  Eigen::Matrix4f m_inverse_transpose;
-  Eigen::Matrix4f m_transpose;
+  matrix m_matrix;
+  matrix m_inverse;
+  matrix m_inverse_transpose;
+  matrix m_transpose;
 
   auto
   update() -> void
@@ -275,6 +278,53 @@ private:
     m_transpose = m_matrix.transpose();
   }
 };
+
+
+auto
+prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::AffineTransform & transform)
+  -> std::tuple<size_t, size_t, size_t, cle::AffineTransform>
+{
+  using point = Eigen::Vector4f;
+  using bounding_box = std::array<point, 8>;
+
+  bounding_box bbox = {
+    point{ 0.0F, 0.0F, 0.0F, 1.0F },
+    point{ 0.0F, 0.0F, static_cast<float>(src->width()), 1.0F },
+    point{ 0.0F, static_cast<float>(src->height()), 0.0F, 1.0F },
+    point{ 0.0F, static_cast<float>(src->height()), static_cast<float>(src->width()), 1.0F },
+    point{ static_cast<float>(src->depth()), 0.0F, 0.0F, 1.0F },
+    point{ static_cast<float>(src->depth()), 0.0F, static_cast<float>(src->width()), 1.0F },
+    point{ static_cast<float>(src->depth()), static_cast<float>(src->height()), 0.0F, 1.0F },
+    point{ static_cast<float>(src->depth()), static_cast<float>(src->height()), static_cast<float>(src->width()), 1.0F }
+  };
+
+  // apply the transform matrix to all the point of the bounding box
+  bounding_box updated_bbox;
+  for (size_t i = 0; i < 8; i++)
+  {
+    updated_bbox[i] = transform.getMatrix() * bbox[i];
+  }
+
+  // find the min and max values for each axis
+  point min = updated_bbox[0];
+  point max = updated_bbox[0];
+  for (size_t i = 1; i < 8; i++)
+  {
+    min = min.cwiseMin(updated_bbox[i]);
+    max = max.cwiseMax(updated_bbox[i]);
+  }
+
+  cle::AffineTransform update_transform(transform);
+  update_transform.translate(-min[0], -min[1], -min[2]);
+
+  // compute a new width heigth and depth from the min and max point
+  const size_t width = static_cast<size_t>(std::ceil(max[0] - min[0]));
+  const size_t height = static_cast<size_t>(std::ceil(max[1] - min[1]));
+  const size_t depth = static_cast<size_t>(std::ceil(max[2] - min[2]));
+
+  // return the new width, height, depth and the updated transform
+  return std::make_tuple(width, height, depth, update_transform);
+}
 
 } // namespace cle
 
