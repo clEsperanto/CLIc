@@ -5,6 +5,10 @@
 
 #include "Eigen/Dense"
 #include "array.hpp"
+#include "execution.hpp"
+
+#include "cle_affine_transform.h"
+#include "cle_affine_transform_interpolate.h"
 
 namespace cle
 {
@@ -106,7 +110,7 @@ public:
   }
 
   auto
-  center(std::array<size_t, 3> shape, bool undo)
+  center(const std::array<size_t, 3> & shape, bool undo)
   {
     int presign = (undo) ? -1 : 1;
     m_matrix(0, 3) += (shape[0] != 1) ? presign * (shape[0] / 2.0) : 0;
@@ -238,16 +242,22 @@ public:
   }
 
   auto
+  getTranspose() const -> const Eigen::Matrix4f &
+  {
+    return m_transpose;
+  }
+
+  auto
   getInverseTranspose() const -> const Eigen::Matrix4f &
   {
     return m_inverse_transpose;
   }
 
-  auto
-  toArray() const -> std::array<float, 16>
+  static auto
+  toArray(const matrix & mat) -> std::array<float, 16>
   {
     std::array<float, 16> array;
-    std::copy(m_transpose.data(), m_transpose.data() + 16, array.begin());
+    std::copy(mat.data(), mat.data() + 16, array.begin());
     return array;
   }
 
@@ -261,7 +271,7 @@ protected:
   static auto
   shear_angle_to_shear_factor(float angle_deg) -> float
   {
-    return 1.0 / std::tan((90 - angle_deg) * M_PI / 180);
+    return 1.0F / std::tan((90 - angle_deg) * M_PI / 180);
   }
 
 private:
@@ -278,7 +288,6 @@ private:
     m_transpose = m_matrix.transpose();
   }
 };
-
 
 auto
 prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::AffineTransform & transform)
@@ -324,6 +333,48 @@ prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::A
 
   // return the new width, height, depth and the updated transform
   return std::make_tuple(width, height, depth, update_transform);
+}
+
+auto
+apply_affine_transform(const cle::Array::Pointer &  src,
+                       cle::Array::Pointer          dst,
+                       const cle::AffineTransform & transform,
+                       const bool                   interpolate,
+                       const bool                   auto_resize) -> cle::Array::Pointer
+{
+  // initialize shape and transform from args
+  size_t               width = src->width();
+  size_t               height = src->height();
+  size_t               depth = src->depth();
+  cle::AffineTransform new_transform(transform);
+
+  // update shape and transform if auto_resize is true
+  if (auto_resize)
+  {
+    std::tie(width, height, depth, new_transform) = prepare_output_shape_and_transform(src, transform);
+  }
+  // prepare output if dst is nullptr
+  if (dst == nullptr)
+  {
+    dst = cle::Array::create(width, height, depth, src->dimension(), src->dtype(), src->mtype(), src->device());
+  }
+
+  // push the matrix on gpu as the inverse transposed transform matrix
+  // - we want the inverse because we go from target to source for reading pixel values
+  // - we want the transpose because Eigen uses column major and OpenCL uses row major
+  auto mat = cle::Array::create(4, 4, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, src->device());
+  mat->write(cle::AffineTransform::toArray(new_transform.getInverseTranspose()).data());
+
+  // execute the kernel
+  KernelInfo kernel = { "affine_transform", kernel::affine_transform };
+  if (interpolate)
+  {
+    kernel = { "affine_transform_interpolate", kernel::affine_transform_interpolate };
+  }
+  const ParameterList params = { { "src", src }, { "dst", dst }, { "mat", mat } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(src->device(), kernel, params, range);
+  return dst;
 }
 
 } // namespace cle

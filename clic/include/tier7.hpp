@@ -13,9 +13,37 @@ namespace cle::tier7
 // deskew_y
 // deskew_x
 // rigid_transform
-// rotate
-// scale
-// translate
+
+auto
+rotate_func(const Device::Pointer & device,
+            const Array::Pointer &  src,
+            Array::Pointer          dst,
+            float                   angle_x,
+            float                   angle_y,
+            float                   angle_z,
+            bool                    centered,
+            bool                    interpolate,
+            bool                    resize) -> Array::Pointer;
+
+auto
+scale_func(const Device::Pointer & device,
+           const Array::Pointer &  src,
+           Array::Pointer          dst,
+           float                   factor_x,
+           float                   factor_y,
+           float                   factor_z,
+           bool                    centered,
+           bool                    interpolate,
+           bool                    resize) -> Array::Pointer;
+
+auto
+translate_func(const Device::Pointer & device,
+               const Array::Pointer &  src,
+               Array::Pointer          dst,
+               float                   translate_x,
+               float                   translate_y,
+               float                   translate_z,
+               bool                    interpolate) -> Array::Pointer;
 
 auto
 closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)

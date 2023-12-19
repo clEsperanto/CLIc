@@ -19,7 +19,7 @@ protected:
 TEST_P(TestTransform, toArray)
 {
   transform.rotate(2, 90);
-  auto                  array = transform.toArray();
+  auto                  array = cle::AffineTransform::toArray(transform.getTranspose());
   std::array<float, 16> valid = { 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
   for (int i = 0; i < array.size(); i++)
   {

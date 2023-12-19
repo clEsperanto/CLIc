@@ -8,8 +8,88 @@
 #include "tier5.hpp"
 #include "tier6.hpp"
 
+#include "transform.hpp"
+
 namespace cle::tier7
 {
+
+auto
+rotate_func(const Device::Pointer & device,
+            const Array::Pointer &  src,
+            Array::Pointer          dst,
+            float                   angle_x,
+            float                   angle_y,
+            float                   angle_z,
+            bool                    centered,
+            bool                    interpolate,
+            bool                    resize) -> Array::Pointer
+{
+  auto transform = AffineTransform();
+  if (centered)
+  {
+    transform.center({ src->width(), src->height(), src->depth() }, false);
+  }
+  if (angle_x != 0)
+  {
+    transform.rotate(0, angle_x);
+  }
+  if (angle_y != 0)
+  {
+    transform.rotate(1, angle_y);
+  }
+  if (angle_z != 0)
+  {
+    transform.rotate(2, angle_z);
+  }
+  if (centered)
+  {
+    transform.center({ src->width(), src->height(), src->depth() }, true);
+  }
+  return apply_affine_transform(src, dst, transform, interpolate, resize);
+}
+
+auto
+scale_func(const Device::Pointer & device,
+           const Array::Pointer &  src,
+           Array::Pointer          dst,
+           float                   factor_x,
+           float                   factor_y,
+           float                   factor_z,
+           bool                    centered,
+           bool                    interpolate,
+           bool                    resize) -> Array::Pointer
+{
+  auto transform = AffineTransform();
+  if (dst == nullptr && !resize)
+  {
+    tier0::create_like(src, dst);
+  }
+  if (centered && !resize)
+  {
+    transform.center({ src->width(), src->height(), src->depth() }, false);
+  }
+  transform.scale(factor_x, factor_y, factor_z);
+  if (centered && !resize)
+  {
+    transform.center({ dst->width(), dst->height(), dst->depth() }, true);
+  }
+  return apply_affine_transform(src, dst, transform, interpolate, resize);
+}
+
+
+auto
+translate_func(const Device::Pointer & device,
+               const Array::Pointer &  src,
+               Array::Pointer          dst,
+               float                   translate_x,
+               float                   translate_y,
+               float                   translate_z,
+               bool                    interpolate) -> Array::Pointer
+{
+  auto transform = AffineTransform();
+  transform.translate(translate_x, translate_y, translate_z);
+  return apply_affine_transform(src, dst, transform, interpolate, false);
+}
 
 auto
 closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
