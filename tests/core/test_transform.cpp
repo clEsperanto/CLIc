@@ -116,6 +116,25 @@ TEST_P(TestTransform, centerNoUndo)
   ASSERT_EQ(transform.getMatrix(), expected);
 }
 
+TEST_P(TestTransform, centerRotate)
+{
+  std::array<size_t, 3> shape = { 30, 20, 10 };
+
+  transform.center(shape, false);
+  transform.rotate(2, 90);
+  transform.center(shape, true);
+
+  Eigen::Matrix4f expected = Eigen::Matrix4f::Identity();
+  expected(0, 0) = 0;
+  expected(0, 1) = -1;
+  expected(1, 0) = 1;
+  expected(1, 1) = 0;
+  expected(0, 3) = 25.0;
+  expected(1, 3) = -5.0;
+  expected(2, 3) = 0.0;
+  ASSERT_EQ(transform.getMatrix(), expected);
+}
+
 // TODO: test shear and deskew
 
 std::vector<std::string>
