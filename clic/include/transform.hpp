@@ -299,13 +299,13 @@ prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::A
 
   bounding_box bbox = {
     point{ 0.0F, 0.0F, 0.0F, 1.0F },
-    point{ 0.0F, 0.0F, static_cast<float>(src->width()), 1.0F },
+    point{ 0.0F, 0.0F, static_cast<float>(src->depth()), 1.0F },
     point{ 0.0F, static_cast<float>(src->height()), 0.0F, 1.0F },
-    point{ 0.0F, static_cast<float>(src->height()), static_cast<float>(src->width()), 1.0F },
-    point{ static_cast<float>(src->depth()), 0.0F, 0.0F, 1.0F },
-    point{ static_cast<float>(src->depth()), 0.0F, static_cast<float>(src->width()), 1.0F },
-    point{ static_cast<float>(src->depth()), static_cast<float>(src->height()), 0.0F, 1.0F },
-    point{ static_cast<float>(src->depth()), static_cast<float>(src->height()), static_cast<float>(src->width()), 1.0F }
+    point{ 0.0F, static_cast<float>(src->height()), static_cast<float>(src->depth()), 1.0F },
+    point{ static_cast<float>(src->width()), 0.0F, 0.0F, 1.0F },
+    point{ static_cast<float>(src->width()), 0.0F, static_cast<float>(src->depth()), 1.0F },
+    point{ static_cast<float>(src->width()), static_cast<float>(src->height()), 0.0F, 1.0F },
+    point{ static_cast<float>(src->width()), static_cast<float>(src->height()), static_cast<float>(src->depth()), 1.0F }
   };
 
   // apply the transform matrix to all the point of the bounding box
@@ -324,13 +324,13 @@ prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::A
     max = max.cwiseMax(updated_bbox[i]);
   }
 
-  cle::AffineTransform update_transform(transform);
-  update_transform.translate(-min[0], -min[1], -min[2]);
-
   // compute a new width heigth and depth from the min and max point
   const size_t width = static_cast<size_t>(std::ceil(max[0] - min[0]));
   const size_t height = static_cast<size_t>(std::ceil(max[1] - min[1]));
   const size_t depth = static_cast<size_t>(std::ceil(max[2] - min[2]));
+
+  cle::AffineTransform update_transform(transform);
+  update_transform.translate(-min[0], -min[1], -min[2]);
 
   // return the new width, height, depth and the updated transform
   return std::make_tuple(width, height, depth, update_transform);
