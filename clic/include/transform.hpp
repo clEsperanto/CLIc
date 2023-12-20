@@ -112,10 +112,11 @@ public:
   auto
   center(const std::array<size_t, 3> & shape, bool undo)
   {
-    int presign = (undo) ? -1 : 1;
-    m_matrix(0, 3) += (shape[0] != 1) ? presign * (shape[0] / 2.0) : 0;
-    m_matrix(1, 3) += (shape[1] != 1) ? presign * (shape[1] / 2.0) : 0;
-    m_matrix(2, 3) += (shape[2] != 1) ? presign * (shape[2] / 2.0) : 0;
+    int        presign = (undo) ? -1 : 1;
+    const auto centering_x = (shape[0] != 1) ? presign * (shape[0] / 2.0) : 0;
+    const auto centering_y = (shape[1] != 1) ? presign * (shape[1] / 2.0) : 0;
+    const auto centering_z = (shape[2] != 1) ? presign * (shape[2] / 2.0) : 0;
+    translate(centering_x, centering_y, centering_z);
     update();
   }
 
