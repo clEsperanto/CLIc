@@ -99,9 +99,9 @@ TEST_P(TestTransform, centerUndo)
   std::array<size_t, 3> shape = { 10, 20, 30 };
   transform.center(shape, true);
   Eigen::Matrix4f expected = Eigen::Matrix4f::Identity();
-  expected(0, 3) = -5.0;
-  expected(1, 3) = -10.0;
-  expected(2, 3) = -15.0;
+  expected(0, 3) = 5.0;
+  expected(1, 3) = 10.0;
+  expected(2, 3) = 15.0;
   ASSERT_EQ(transform.getMatrix(), expected);
 }
 
@@ -110,9 +110,9 @@ TEST_P(TestTransform, centerNoUndo)
   std::array<size_t, 3> shape = { 10, 20, 30 };
   transform.center(shape, false);
   Eigen::Matrix4f expected = Eigen::Matrix4f::Identity();
-  expected(0, 3) = 5.0;
-  expected(1, 3) = 10.0;
-  expected(2, 3) = 15.0;
+  expected(0, 3) = -5.0;
+  expected(1, 3) = -10.0;
+  expected(2, 3) = -15.0;
   ASSERT_EQ(transform.getMatrix(), expected);
 }
 
