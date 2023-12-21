@@ -71,7 +71,7 @@ scale_func(const Device::Pointer & device,
   transform.scale(factor_x, factor_y, factor_z);
   if (centered && !resize)
   {
-    transform.center({ src->width(), src->height(), src->depth() }, true);
+    transform.center({ dst->width(), dst->height(), dst->depth() }, true);
   }
   return apply_affine_transform(src, dst, transform, interpolate, resize);
 }

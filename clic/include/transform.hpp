@@ -28,11 +28,11 @@ public:
   auto
   scale(float scale_x, float scale_y, float scale_z) -> void
   {
-    // add a scaling factor to the matrix (on the diagonal)
-    m_matrix(0, 0) *= scale_x;
-    m_matrix(1, 1) *= scale_y;
-    m_matrix(2, 2) *= scale_z;
-    update();
+    matrix scale_matrix = matrix::Identity();
+    scale_matrix(0, 0) = scale_x;
+    scale_matrix(1, 1) = scale_y;
+    scale_matrix(2, 2) = scale_z;
+    concats(scale_matrix);
   }
 
   auto
@@ -75,8 +75,7 @@ public:
     }
 
     // add the rotation to the transform matrix
-    m_matrix *= rotation_matrix;
-    update();
+    concats(rotation_matrix);
   }
 
   auto
@@ -100,24 +99,21 @@ public:
   auto
   translate(float translate_x, float translate_y, float translate_z) -> void
   {
-    // add a translation to the matrix
     matrix translation_matrix = matrix::Identity();
     translation_matrix(0, 3) = translate_x;
     translation_matrix(1, 3) = translate_y;
     translation_matrix(2, 3) = translate_z;
-    m_matrix *= translation_matrix;
-    update();
+    concats(translation_matrix);
   }
 
   auto
   center(const std::array<size_t, 3> & shape, bool undo)
   {
-    int        presign = (undo) ? -1 : 1;
-    const auto centering_x = (shape[0] != 1) ? presign * (shape[0] / 2.0) : 0;
-    const auto centering_y = (shape[1] != 1) ? presign * (shape[1] / 2.0) : 0;
-    const auto centering_z = (shape[2] != 1) ? presign * (shape[2] / 2.0) : 0;
+    int         presign = (undo) ? 1 : -1;
+    const float centering_x = (shape[0] != 1) ? presign * (shape[0] / 2.0) : 0;
+    const float centering_y = (shape[1] != 1) ? presign * (shape[1] / 2.0) : 0;
+    const float centering_z = (shape[2] != 1) ? presign * (shape[2] / 2.0) : 0;
     translate(centering_x, centering_y, centering_z);
-    update();
   }
 
   auto
@@ -140,8 +136,7 @@ public:
     matrix shear_matrix = matrix::Identity();
     shear_matrix(0, 1) = shear_xz;
     shear_matrix(1, 0) = shear_yz;
-    m_matrix = shear_matrix * m_matrix;
-    update();
+    pre_concats(shear_matrix);
   }
 
   auto
@@ -164,8 +159,7 @@ public:
     matrix shear_matrix = matrix::Identity();
     shear_matrix(0, 2) = shear_xy;
     shear_matrix(2, 0) = shear_zy;
-    m_matrix = shear_matrix * m_matrix;
-    update();
+    pre_concats(shear_matrix);
   }
 
   auto
@@ -188,8 +182,7 @@ public:
     matrix shear_matrix = matrix::Identity();
     shear_matrix(1, 2) = shear_yx;
     shear_matrix(2, 1) = shear_zx;
-    m_matrix = shear_matrix * m_matrix;
-    update();
+    pre_concats(shear_matrix);
   }
 
   auto
@@ -208,7 +201,6 @@ public:
 
     // correct orientation so that the new Z-plane goes proximal-distal from the objective.
     rotate(2, -angle_deg);
-    update();
   }
 
   auto
@@ -227,7 +219,6 @@ public:
 
     // correct orientation so that the new Z-plane goes proximal-distal from the objective.
     rotate(1, angle_deg);
-    update();
   }
 
   auto
@@ -273,6 +264,20 @@ protected:
   shear_angle_to_shear_factor(float angle_deg) -> float
   {
     return 1.0F / std::tan((90 - angle_deg) * M_PI / 180);
+  }
+
+  auto
+  concats(const matrix & mat) -> void
+  {
+    m_matrix = mat * m_matrix;
+    update();
+  }
+
+  auto
+  pre_concats(const matrix & mat) -> void
+  {
+    m_matrix = m_matrix * mat;
+    update();
   }
 
 private:
@@ -325,9 +330,9 @@ prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::A
   }
 
   // compute a new width heigth and depth from the min and max point
-  const size_t width = static_cast<size_t>(std::ceil(max[0] - min[0]));
-  const size_t height = static_cast<size_t>(std::ceil(max[1] - min[1]));
-  const size_t depth = static_cast<size_t>(std::ceil(max[2] - min[2]));
+  const size_t width = static_cast<size_t>(std::round(max[0] - min[0]));
+  const size_t height = static_cast<size_t>(std::round(max[1] - min[1]));
+  const size_t depth = static_cast<size_t>(std::round(max[2] - min[2]));
 
   cle::AffineTransform update_transform(transform);
   update_transform.translate(-min[0], -min[1], -min[2]);

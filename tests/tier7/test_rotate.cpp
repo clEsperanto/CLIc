@@ -60,32 +60,32 @@ TEST_P(TestRotate, rotateCentered)
   }
 }
 
-// TEST_P(TestRotate, rotateResized)
-// {
-//   const std::array<float, 5 * 5 * 1> input = {
-//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-//   };
-//   const std::array<float, 7 * 7 * 1> valid = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//                                                0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0,
-//                                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-//   std::array<float, 7 * 7 * 1>       output;
+TEST_P(TestRotate, rotateResized)
+{
+  const std::array<float, 5 * 5 * 1> input = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  };
+  const std::array<float, 7 * 7 * 1> valid = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                               0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+                                               0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  std::array<float, 7 * 7 * 1>       output;
 
-//   std::string param = GetParam();
-//   cle::BackendManager::getInstance().setBackend(param);
-//   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
-//   device->setWaitToFinish(true);
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
 
-//   auto gpu_input = cle::Array::create(5, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
-//   gpu_input->write(input.data());
+  auto gpu_input = cle::Array::create(5, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  gpu_input->write(input.data());
 
-//   auto gpu_output = cle::tier7::rotate_func(device, gpu_input, nullptr, 0, 0, 45, true, false, true);
+  auto gpu_output = cle::tier7::rotate_func(device, gpu_input, nullptr, 0, 0, 45, true, false, true);
 
-//   gpu_output->read(output.data());
-//   for (int i = 0; i < output.size(); i++)
-//   {
-//     EXPECT_EQ(output[i], valid[i]);
-//   }
-// }
+  gpu_output->read(output.data());
+  for (int i = 0; i < output.size(); i++)
+  {
+    EXPECT_EQ(output[i], valid[i]);
+  }
+}
 
 std::vector<std::string>
 getParameters()
