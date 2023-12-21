@@ -23,6 +23,11 @@ public:
     m_matrix = matrix::Identity();
     update();
   }
+  AffineTransform(const std::array<float, 16> & array)
+  {
+    m_matrix = matrix::Map(array.data());
+    update();
+  }
   ~AffineTransform() = default;
 
   auto
