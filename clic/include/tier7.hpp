@@ -7,12 +7,40 @@
 
 namespace cle::tier7
 {
-// affine_transform
-// AffineTransform3D
+// auto
+// affine_transform_func(const Device::Pointer & device,
+//                       const Array::Pointer &  src,
+//                       Array::Pointer          dst,
+//                       float                   translate_x,
+//                       float                   translate_y,
+//                       float                   translate_z,
+//                       float                   angle_x,
+//                       float                   angle_y,
+//                       float                   angle_z,
+//                       float                   factor_x,
+//                       float                   factor_y,
+//                       float                   factor_z,
+//                       bool                    centered,
+//                       bool                    interpolate,
+//                       bool                    resize) -> Array::Pointer;
+
 // apply_vector_field
 // deskew_y
 // deskew_x
-// rigid_transform
+
+auto
+rigid_transform_func(const Device::Pointer & device,
+                     const Array::Pointer &  src,
+                     Array::Pointer          dst,
+                     float                   translate_x,
+                     float                   translate_y,
+                     float                   translate_z,
+                     float                   angle_x,
+                     float                   angle_y,
+                     float                   angle_z,
+                     bool                    centered,
+                     bool                    interpolate,
+                     bool                    resize) -> Array::Pointer;
 
 auto
 rotate_func(const Device::Pointer & device,
