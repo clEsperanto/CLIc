@@ -1,28 +1,26 @@
 #include "array.hpp"
+
 #include <array>
 
 namespace cle
 {
 
-Array::Array(const size_t &          width,
-             const size_t &          height,
-             const size_t &          depth,
+Array::Array(const size_t            width,
+             const size_t            height,
+             const size_t            depth,
+             const size_t            dimension,
              const dType &           data_type,
              const mType &           mem_type,
              const Device::Pointer & device_ptr)
-  : width_(width)
-  , height_(height)
-  , depth_(depth)
+  : width_((width > 1) ? width : 1)
+  , height_((height > 1) ? height : 1)
+  , depth_((depth > 1) ? depth : 1)
+  , dim_(dimension)
   , dataType_(data_type)
   , memType_(mem_type)
   , device_(device_ptr)
   , data_(std::make_shared<void *>(nullptr))
-  , initialized_(false)
-{
-  width_ = (width_ > 1) ? width_ : 1;
-  height_ = (height_ > 1) ? height_ : 1;
-  depth_ = (depth_ > 1) ? depth_ : 1;
-}
+{}
 
 Array::~Array()
 {
@@ -33,44 +31,51 @@ Array::~Array()
 }
 
 auto
-Array::create(const size_t &          width,
-              const size_t &          height,
-              const size_t &          depth,
+Array::create(const size_t            width,
+              const size_t            height,
+              const size_t            depth,
+              const size_t            dimension,
               const dType &           data_type,
               const mType &           mem_type,
               const Device::Pointer & device_ptr) -> Array::Pointer
 {
-  auto ptr = std::shared_ptr<Array>(new Array(width, height, depth, data_type, mem_type, device_ptr));
+  auto ptr = std::shared_ptr<Array>(new Array(width, height, depth, dimension, data_type, mem_type, device_ptr));
   ptr->allocate();
   return ptr;
 }
 
 auto
-Array::create(const size_t &          width,
-              const size_t &          height,
-              const size_t &          depth,
+Array::create(const size_t            width,
+              const size_t            height,
+              const size_t            depth,
+              const size_t            dimension,
               const dType &           data_type,
               const mType &           mem_type,
               const void *            host_data,
               const Device::Pointer & device_ptr) -> Array::Pointer
 {
-  auto ptr = create(width, height, depth, data_type, mem_type, device_ptr);
+  auto ptr = create(width, height, depth, dimension, data_type, mem_type, device_ptr);
   ptr->write(host_data);
   return ptr;
 }
 
 auto
-Array::create(Array::Pointer array) -> Array::Pointer
+Array::create(const Array::Pointer & array) -> Array::Pointer
 {
-  auto ptr = create(array->width(), array->height(), array->depth(), array->dtype(), array->mtype(), array->device());
-  array->copy(ptr);
+  auto ptr = create(array->width(),
+                    array->height(),
+                    array->depth(),
+                    array->dimension(),
+                    array->dtype(),
+                    array->mtype(),
+                    array->device());
   return ptr;
 }
 
 auto
 operator<<(std::ostream & out, const Array::Pointer & array) -> std::ostream &
 {
-  out << "Array ([" << array->width() << "," << array->height() << "," << array->depth()
+  out << array->dimension() << "dArray ([" << array->width() << "," << array->height() << "," << array->depth()
       << "], dtype=" << array->dtype() << ", mtype=" << array->mtype() << ")";
   return out;
 }
@@ -80,7 +85,6 @@ Array::allocate() -> void
 {
   if (initialized())
   {
-    std::cerr << "Warning: Array is already initialized" << std::endl;
     return;
   }
   backend_.allocateMemory(device(), { this->width(), this->height(), this->depth() }, dtype(), mtype(), get());
@@ -90,22 +94,83 @@ Array::allocate() -> void
 auto
 Array::write(const void * host_data) -> void
 {
+  if (host_data == nullptr)
+  {
+    throw std::runtime_error("Error: Host data is null");
+  }
   if (!initialized())
   {
     allocate();
   }
-  backend_.writeMemory(
-    device(), get(), { this->width(), this->height(), this->depth() }, { 0, 0, 0 }, dtype(), mtype(), host_data);
+  std::array<size_t, 3> _origin = { 0, 0, 0 };
+  std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
+  std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
+  backend_.writeMemory(device(), get(), _shape, _origin, _region, dtype(), mtype(), host_data);
+}
+
+auto
+Array::write(const void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin)
+  -> void
+{
+  if (host_data == nullptr)
+  {
+    throw std::runtime_error("Error: Host data is null");
+  }
+  if (!initialized())
+  {
+    allocate();
+  }
+  std::array<size_t, 3> _origin = buffer_origin;
+  std::array<size_t, 3> _region = region;
+  std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
+  backend_.writeMemory(device(), get(), _shape, _origin, _region, dtype(), mtype(), host_data);
+}
+
+auto
+Array::write(const void * host_data, const size_t x_coord, const size_t y_coord, const size_t z_coord) -> void
+{
+  write(host_data, { 1, 1, 1 }, { x_coord, y_coord, z_coord });
 }
 
 auto
 Array::read(void * host_data) const -> void
 {
+  if (host_data == nullptr)
+  {
+    throw std::runtime_error("Error: Host data is null");
+  }
   if (!initialized())
   {
     throw std::runtime_error("Error: Array is not initialized, it cannot be read");
   }
-  backend_.readMemory(device(), c_get(), { width(), height(), depth() }, { 0, 0, 0 }, dtype(), mtype(), host_data);
+  std::array<size_t, 3> _origin = { 0, 0, 0 };
+  std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
+  std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
+  backend_.readMemory(device(), c_get(), _shape, _origin, _region, dtype(), mtype(), host_data);
+}
+
+auto
+Array::read(void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin) const
+  -> void
+{
+  if (host_data == nullptr)
+  {
+    throw std::runtime_error("Error: Host data is null");
+  }
+  if (!initialized())
+  {
+    throw std::runtime_error("Error: Array is not initialized, it cannot be read");
+  }
+  std::array<size_t, 3> _origin = buffer_origin;
+  std::array<size_t, 3> _region = region;
+  std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
+  backend_.readMemory(device(), c_get(), _shape, _origin, _region, dtype(), mtype(), host_data);
+}
+
+auto
+Array::read(void * host_data, const size_t x_coord, const size_t y_coord, const size_t z_coord) const -> void
+{
+  read(host_data, { 1, 1, 1 }, { x_coord, y_coord, z_coord });
 }
 
 auto
@@ -113,52 +178,105 @@ Array::copy(const Array::Pointer & dst) const -> void
 {
   if (!initialized() || !dst->initialized())
   {
-    std::cerr << "Error: Arrays are not initialized_" << std::endl;
+    throw std::runtime_error("Error: Arrays are not initialized_");
   }
   if (device() != dst->device())
   {
-    std::cerr << "Error: copying Arrays from different devices" << std::endl;
+    throw std::runtime_error("Error: Copying Arrays from different devices");
   }
-  if (width() != dst->width() || height() != dst->height() || depth() != dst->depth() ||
-      bytesPerElements() != dst->bytesPerElements())
+  if (width() != dst->width() || height() != dst->height() || depth() != dst->depth() || itemSize() != dst->itemSize())
   {
-    std::cerr << "Error: Arrays dimensions do not match" << std::endl;
+    throw std::runtime_error("Error: Arrays dimensions do not match");
   }
+  std::array<size_t, 3> _src_origin = { 0, 0, 0 };
+  std::array<size_t, 3> _dst_origin = { 0, 0, 0 };
+  std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
+  std::array<size_t, 3> _src_shape = { this->width(), this->height(), this->depth() };
+  std::array<size_t, 3> _dst_shape = { dst->width(), dst->height(), dst->depth() };
   if (mtype() == mType::BUFFER && dst->mtype() == mType::BUFFER)
   {
-    // backend_.copyMemoryBufferToBuffer(device(), c_get(), nbElements() * bytesPerElements(), dst->get());
+    backend_.copyMemoryBufferToBuffer(
+      device(), c_get(), _src_origin, _src_shape, dst->get(), _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::IMAGE)
   {
-    // backend_.copyMemoryImageToImage(device(), c_get(), width(), height(), depth(), toBytes(dtype()), dst->get());
+    backend_.copyMemoryImageToImage(
+      device(), c_get(), _src_origin, _src_shape, dst->get(), _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::BUFFER && dst->mtype() == mType::IMAGE)
   {
-    // backend_.copyMemoryBufferToImage(
-    //   device(), c_get(), dst->width(), dst->height(), dst->depth(), toBytes(dst->dtype()), dst->get());
+    backend_.copyMemoryBufferToImage(
+      device(), c_get(), _src_origin, _src_shape, dst->get(), _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::BUFFER)
   {
-    // backend_.copyMemoryImageToBuffer(device(), c_get(), width(), height(), depth(), toBytes(dtype()), dst->get());
+    backend_.copyMemoryImageToBuffer(
+      device(), c_get(), _src_origin, _src_shape, dst->get(), _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else
   {
-    std::cerr << "Error: copying Arrays from different memory types" << std::endl;
+    throw std::runtime_error("Error: Copying Arrays from different memory types");
   }
 }
 
 auto
-Array::fill(const float & value) const -> void
+Array::copy(const Array::Pointer &        dst,
+            const std::array<size_t, 3> & region,
+            const std::array<size_t, 3> & src_origin,
+            const std::array<size_t, 3> & dst_origin) const -> void
+{
+  if (!initialized() || !dst->initialized())
+  {
+    throw std::runtime_error("Error: Arrays are not initialized_");
+  }
+  if (device() != dst->device())
+  {
+    throw std::runtime_error("Error: Copying Arrays from different devices");
+  }
+
+  std::array<size_t, 3> _src_origin = src_origin;
+  std::array<size_t, 3> _dst_origin = dst_origin;
+  std::array<size_t, 3> _region = region;
+  std::array<size_t, 3> _src_shape = { this->width(), this->height(), this->depth() };
+  std::array<size_t, 3> _dst_shape = { dst->width(), dst->height(), dst->depth() };
+
+  if (mtype() == mType::BUFFER && dst->mtype() == mType::BUFFER)
+  {
+    backend_.copyMemoryBufferToBuffer(
+      device(), c_get(), _src_origin, _src_shape, dst->get(), _dst_origin, _dst_shape, _region, toBytes(dtype()));
+  }
+  else if (mtype() == mType::IMAGE && dst->mtype() == mType::IMAGE)
+  {
+    backend_.copyMemoryImageToImage(
+      device(), c_get(), _src_origin, _src_shape, dst->get(), _dst_origin, _dst_shape, _region, toBytes(dtype()));
+  }
+  else if (mtype() == mType::BUFFER && dst->mtype() == mType::IMAGE)
+  {
+    backend_.copyMemoryBufferToImage(
+      device(), c_get(), _src_origin, _src_shape, dst->get(), _dst_origin, _dst_shape, _region, toBytes(dtype()));
+  }
+  else if (mtype() == mType::IMAGE && dst->mtype() == mType::BUFFER)
+  {
+    backend_.copyMemoryImageToBuffer(
+      device(), c_get(), _src_origin, _src_shape, dst->get(), _dst_origin, _dst_shape, _region, toBytes(dtype()));
+  }
+}
+
+auto
+Array::fill(const float value) const -> void
 {
   if (!initialized())
   {
-    std::cerr << "Error: Arrays are not initialized_" << std::endl;
+    throw std::runtime_error("Error: Array it is not initialized.");
   }
-  backend_.setMemory(device(), get(), { width(), height(), depth() }, { 0, 0, 0 }, dtype(), mtype(), value);
+  std::array<size_t, 3> _origin = { 0, 0, 0 };
+  std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
+  std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
+  backend_.setMemory(device(), get(), _shape, _origin, _region, dtype(), mtype(), value);
 }
 
 auto
-Array::nbElements() const -> size_t
+Array::size() const -> size_t
 {
   return width_ * height_ * depth_;
 }
@@ -178,7 +296,7 @@ Array::depth() const -> size_t
   return depth_;
 }
 auto
-Array::bytesPerElements() const -> size_t
+Array::itemSize() const -> size_t
 {
   return toBytes(dataType_);
 }
@@ -203,6 +321,11 @@ Array::dim() const -> unsigned int
   return (depth_ > 1) ? 3 : (height_ > 1) ? 2 : 1;
 }
 auto
+Array::dimension() const -> unsigned int
+{
+  return dim_;
+}
+auto
 Array::initialized() const -> bool
 {
   return initialized_;
@@ -221,29 +344,9 @@ Array::c_get() const -> const void **
 auto
 Array::shortType() const -> std::string
 {
-  switch (this->dataType_)
-  {
-    case dType::FLOAT:
-      return "f";
-    case dType::INT32:
-      return "i";
-    case dType::UINT32:
-      return "ui";
-    case dType::INT8:
-      return "c";
-    case dType::UINT8:
-      return "uc";
-    case dType::INT16:
-      return "s";
-    case dType::UINT16:
-      return "us";
-    case dType::INT64:
-      return "l";
-    case dType::UINT64:
-      return "ul";
-    default:
-      throw std::invalid_argument("Invalid Array::Type value");
-  }
+  const auto str_type = toString(dtype());
+  return (str_type[0] == 'u') ? str_type.substr(0, 2) : str_type.substr(0, 1);
 }
+
 
 } // namespace cle

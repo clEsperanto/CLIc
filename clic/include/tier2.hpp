@@ -65,25 +65,42 @@ closing_sphere_func(const Device::Pointer & device,
                     float                   radius_z) -> Array::Pointer;
 
 auto
-combine_horizontally_func(const Device::Pointer & device,
-                          const Array::Pointer &  src0,
-                          const Array::Pointer &  src1,
-                          Array::Pointer          dst) -> Array::Pointer;
+concatenate_along_x_func(const Device::Pointer & device,
+                         const Array::Pointer &  src0,
+                         const Array::Pointer &  src1,
+                         Array::Pointer          dst) -> Array::Pointer;
 
 auto
-combine_vertically_func(const Device::Pointer & device,
-                        const Array::Pointer &  src0,
-                        const Array::Pointer &  src1,
-                        Array::Pointer          dst) -> Array::Pointer;
+concatenate_along_y_func(const Device::Pointer & device,
+                         const Array::Pointer &  src0,
+                         const Array::Pointer &  src1,
+                         Array::Pointer          dst) -> Array::Pointer;
 
 auto
-concatenate_stacks_func(const Device::Pointer & device,
-                        const Array::Pointer &  src0,
-                        const Array::Pointer &  src1,
-                        Array::Pointer          dst) -> Array::Pointer;
+concatenate_along_z_func(const Device::Pointer & device,
+                         const Array::Pointer &  src0,
+                         const Array::Pointer &  src1,
+                         Array::Pointer          dst) -> Array::Pointer;
 
-// @StRigaud TODO: auto crop_border_func
+auto
+count_touching_neighbors_func(const Device::Pointer & device,
+                              const Array::Pointer &  src,
+                              Array::Pointer          dst,
+                              bool                    ignore_background) -> Array::Pointer;
+
+auto
+crop_border_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int border_size)
+  -> Array::Pointer;
+
 // @StRigaud TODO: auto distance_matrix_to_mesh_func
+
+auto
+divide_by_gaussian_background_func(const Device::Pointer & device,
+                                   const Array::Pointer &  src,
+                                   Array::Pointer          dst,
+                                   float                   sigma_x,
+                                   float                   sigma_y,
+                                   float                   sigma_z) -> Array::Pointer;
 
 auto
 degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -116,7 +133,9 @@ invert_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
 auto
 label_spots_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
-// @StRigaud TODO: auto large_hessian_eigenvalue_func
+auto
+large_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 auto
 maximum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
@@ -160,7 +179,10 @@ radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & s
   -> Array::Pointer;
 
 // @StRigaud TODO: auto reduce_stack_func
-// @StRigaud TODO: auto small_hessian_eigenvalue_func
+
+auto
+small_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 auto
 square_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -191,6 +213,14 @@ standard_deviation_sphere_func(const Device::Pointer & device,
                                int                     radius_z) -> Array::Pointer;
 
 // @StRigaud TODO: auto sub_stack_func
+
+auto
+subtract_gaussian_background_func(const Device::Pointer & device,
+                                  const Array::Pointer &  src,
+                                  Array::Pointer          dst,
+                                  float                   sigma_x,
+                                  float                   sigma_y,
+                                  float                   sigma_z) -> Array::Pointer;
 
 auto
 subtract_images_func(const Device::Pointer & device,
@@ -224,12 +254,7 @@ top_hat_sphere_func(const Device::Pointer & device,
                     float                   radius_z) -> Array::Pointer;
 
 // @StRigaud TODO: auto touch_matrix_to_adjacency_matrix_func
-// @StRigaud TODO: auto x_position_of_maximum_x_projection_func
-// @StRigaud TODO: auto x_position_of_minimum_x_projection_func
-// @StRigaud TODO: auto y_position_of_maximum_y_projection_func
-// @StRigaud TODO: auto y_position_of_minimum_y_projection_func
-// @StRigaud TODO: auto z_position_of_maximum_z_projection_func
-// @StRigaud TODO: auto z_position_of_minimum_z_projection_func
+
 // @StRigaud TODO: auto z_position_projection_func
 
 } // namespace cle::tier2

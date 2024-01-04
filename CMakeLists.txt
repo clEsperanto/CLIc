@@ -12,6 +12,9 @@ include(${PROJECT_SOURCE_DIR}/cmake/CMakeDependencies.cmake)
 # managed third party libraries
 add_subdirectory(thirdparty)
 
+# include eigen library but exclude it from build
+include_directories(${EIGEN_SOURCE_DIR} EXCLUDE_FROM_ALL)
+
 # manage configuration files
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_NAME_LOWERCASE}/${LIBRARY_NAME_LOWERCASE}.hpp.in"
@@ -76,6 +79,3 @@ endif(BUILD_TESTING)
 if (BUILD_DOCUMENTATION)
     include(${PROJECT_SOURCE_DIR}/cmake/CMakeDoxygen.cmake)
 endif()
-
-
-

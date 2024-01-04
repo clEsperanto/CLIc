@@ -135,8 +135,6 @@ auto
 copy_vertical_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
   -> Array::Pointer;
 
-// @StRigaud TODO : count_touching_neighbors_func
-
 auto
 crop_func(const Device::Pointer & device,
           const Array::Pointer &  src,
@@ -189,6 +187,7 @@ divide_image_and_scalar_func(const Device::Pointer & device,
 // @StRigaud TODO : draw_box_func
 // @StRigaud TODO : draw_sphere_func
 // @StRigaud TODO : draw_line_func
+
 // @StRigaud TODO : downsample_slice_by_slice_half_median_func
 
 auto
@@ -229,9 +228,12 @@ gaussian_blur_func(const Device::Pointer & device,
                    float                   sigma_z) -> Array::Pointer;
 
 // @StRigaud TODO : generate_angle_matrix_func
-// @StRigaud TODO : generate_binary_overlap_matrix_func
-// @StRigaud TODO : generate_distance_matrix_func
-// @StRigaud TODO : generate_touch_matrix_func
+
+auto
+generate_distance_matrix_func(const Device::Pointer & device,
+                              const Array::Pointer &  src0,
+                              const Array::Pointer &  src1,
+                              Array::Pointer          dst) -> Array::Pointer;
 
 auto
 gradient_x_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -264,13 +266,27 @@ greater_or_equal_constant_func(const Device::Pointer & device,
                                Array::Pointer          dst,
                                float                   scalar) -> Array::Pointer;
 
-// @StRigaud TODO : hessian_eigenvalues_func
+auto
+hessian_eigenvalues_func(const Device::Pointer & device,
+                         const Array::Pointer &  src,
+                         Array::Pointer          small_eigenvalue,
+                         Array::Pointer          middle_eigenvalue,
+                         Array::Pointer          large_eigenvalue) -> std::vector<Array::Pointer>;
+
+// auto
+// inferior_superior(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 auto
 laplace_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 auto
 laplace_diamond_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+auto
+local_cross_correlation_func(const Device::Pointer & device,
+                             const Array::Pointer &  src0,
+                             const Array::Pointer &  src1,
+                             Array::Pointer          dst) -> Array::Pointer;
 
 auto
 logarithm_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -429,10 +445,10 @@ modulo_images_func(const Device::Pointer & device,
                    Array::Pointer          dst) -> Array::Pointer;
 
 auto
-multiply_image_and_coordinate_func(const Device::Pointer & device,
-                                   const Array::Pointer &  src,
-                                   Array::Pointer          dst,
-                                   int                     dimension) -> Array::Pointer;
+multiply_image_and_position_func(const Device::Pointer & device,
+                                 const Array::Pointer &  src,
+                                 Array::Pointer          dst,
+                                 int                     dimension) -> Array::Pointer;
 
 auto
 multiply_image_and_scalar_func(const Device::Pointer & device,
@@ -537,26 +553,26 @@ range_func(const Device::Pointer & device,
            int                     stop_z,
            int                     step_z) -> Array::Pointer;
 
-// @StRigaud TODO : read_intensities_from_map_func
+// @StRigaud TODO : read_values_from_map_func
 
 auto
-read_intensities_from_positions_func(const Device::Pointer & device,
-                                     const Array::Pointer &  src,
-                                     const Array::Pointer &  list,
-                                     Array::Pointer          dst) -> Array::Pointer;
+read_values_from_positions_func(const Device::Pointer & device,
+                                const Array::Pointer &  src,
+                                const Array::Pointer &  list,
+                                Array::Pointer          dst) -> Array::Pointer;
 
 auto
-replace_intensities_func(const Device::Pointer & device,
-                         const Array::Pointer &  src0,
-                         const Array::Pointer &  src1,
-                         Array::Pointer          dst) -> Array::Pointer;
+replace_values_func(const Device::Pointer & device,
+                    const Array::Pointer &  src0,
+                    const Array::Pointer &  src1,
+                    Array::Pointer          dst) -> Array::Pointer;
 
 auto
-replace_intensity_func(const Device::Pointer & device,
-                       const Array::Pointer &  src,
-                       Array::Pointer          dst,
-                       float                   scalar0,
-                       float                   scalar1) -> Array::Pointer;
+replace_value_func(const Device::Pointer & device,
+                   const Array::Pointer &  src,
+                   Array::Pointer          dst,
+                   float                   scalar0,
+                   float                   scalar1) -> Array::Pointer;
 
 // @StRigaud TODO : resample_func
 // @StRigaud TODO : touch_matrix_to_mesh_func
@@ -565,17 +581,17 @@ auto
 maximum_sphere_func(const Device::Pointer & device,
                     const Array::Pointer &  src,
                     Array::Pointer          dst,
-                    int                     radius_x,
-                    int                     radius_y,
-                    int                     radius_z) -> Array::Pointer;
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z) -> Array::Pointer;
 
 auto
 minimum_sphere_func(const Device::Pointer & device,
                     const Array::Pointer &  src,
                     Array::Pointer          dst,
-                    int                     radius_x,
-                    int                     radius_y,
-                    int                     radius_z) -> Array::Pointer;
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z) -> Array::Pointer;
 
 auto
 multiply_matrix_func(const Device::Pointer & device,
@@ -657,7 +673,8 @@ sobel_func(const Device::Pointer & device, const Array::Pointer & src, Array::Po
 auto
 square_root_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
-// @StRigaud TODO : standard_deviation_z_projection_func
+auto
+std_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 auto
 subtract_image_from_scalar_func(const Device::Pointer & device,
@@ -677,6 +694,9 @@ sum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src
 
 auto
 sum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+// auto
+// superior_inferior(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 auto
 transpose_xy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -709,6 +729,31 @@ variance_sphere_func(const Device::Pointer & device,
 
 auto
 write_values_to_positions_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
+
+
+auto
+x_position_of_maximum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
+
+auto
+x_position_of_minimum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
+
+auto
+y_position_of_maximum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
+
+auto
+y_position_of_minimum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
+
+auto
+z_position_of_maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
+
+auto
+z_position_of_minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer;
 
 } // namespace cle::tier1

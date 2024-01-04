@@ -13,9 +13,9 @@
 namespace cle::tier4
 {
 
-// auto local_cross_correlation_func
+
 // auto proximal_other_labels_count_map_func
-// auto erode_labels_func
+
 // auto erode_connected_labels_func
 // auto exclude_labels_with_average_values_out_of_range_func
 // auto exclude_labels_with_average_values_within_range_func
@@ -26,7 +26,7 @@ namespace cle::tier4
 // auto exclude_large_labels_func
 // auto exclude_small_labels_func
 // auto extend_labeling_via_voronoi_func
-// auto dilate_labels_func
+
 // auto extended_depth_of_focus_variance_projection_func
 // auto generate_n_most_touching_neighbors_matrix_func
 // auto generate_touch_portion_matrix_func
@@ -48,7 +48,11 @@ mean_squared_error_func(const Device::Pointer & device, const Array::Pointer & s
 // auto proximal_neighbor_count_func
 // auto proximal_neighbor_count_map_func
 // auto sorensen_dice_coefficient_func
-// auto spots_to_pointlist_func
+
+auto
+spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
+
 // auto subtract_labels_func
 // auto touch_portion_within_range_neighbor_count_func
 // auto touch_portion_within_range_neighbor_count_map_func

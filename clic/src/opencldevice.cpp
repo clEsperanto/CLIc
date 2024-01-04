@@ -20,6 +20,15 @@ OpenCLDevice::~OpenCLDevice()
   }
 }
 
+[[nodiscard]] auto
+OpenCLDevice::getPlatform() const -> const std::string
+{
+  // from cl_platform_id to std::string
+  char platform_name[256];
+  clGetPlatformInfo(clPlatform, CL_PLATFORM_NAME, sizeof(char) * 256, &platform_name, nullptr);
+  return std::string(platform_name);
+}
+
 auto
 OpenCLDevice::getType() const -> Device::Type
 {
@@ -31,7 +40,6 @@ OpenCLDevice::initialize() -> void
 {
   if (isInitialized())
   {
-    // std::cerr << "OpenCL device already initialized" << std::endl;
     return;
   }
   cl_int err = CL_SUCCESS;
@@ -162,11 +170,6 @@ OpenCLDevice::getInfo() const -> std::string
   return result.str();
 }
 
-auto
-OpenCLDevice::getCache() -> std::map<std::string, cl_program> &
-{
-  return this->cache;
-}
 
 #endif // USE_OPENCL
 

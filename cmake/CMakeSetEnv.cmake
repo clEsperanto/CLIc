@@ -52,8 +52,11 @@ endif()
 option(BUILD_COVERAGE "Enable coverage reporting" OFF)
 message(STATUS "Build project code coverage: ${BUILD_COVERAGE}")
 if (BUILD_COVERAGE)
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}  " --coverage -g -O0")
-  set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} " --coverage -g -O0")
+  # set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}  " --coverage -g -O0")
+  # set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} " --coverage -g -O0")
+  SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -g -O0 -fprofile-arcs -ftest-coverage")
+  SET(CMAKE_CXX_FLAGS ${CMAKE_C_FLAGS} " -g -O0 -fprofile-arcs -ftest-coverage")
+  set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
 endif()
 
 # set Test compilation (default: ON)
@@ -67,6 +70,34 @@ message(STATUS "Build documentation: ${BUILD_DOCUMENTATION} (WIP)")
 # set Benchmark compilation (default: ON)
 option(BUILD_BENCHMARK "build benchmarks tests" OFF)
 message(STATUS "Build benchmark: ${BUILD_BENCHMARK}")
+
+
+## Manage cache folder and cache files
+# delete folder and all its content (sub folder and files)
+function(delete_folder folder)
+    if(EXISTS ${folder})
+        file(GLOB children RELATIVE ${folder} ${folder}/*)
+        foreach(child ${children})
+            if(IS_DIRECTORY ${folder}/${child})
+                delete_folder(${folder}/${child})
+            else()
+                message(STATUS "Deleting file: ${folder}/${child}")
+                file(REMOVE ${folder}/${child})
+            endif()
+        endforeach()
+        message(STATUS "Deleting folder: ${folder}")
+        file(REMOVE_RECURSE ${folder})
+    endif()
+endfunction()
+# on windows, find the path for AppLocal
+if(WIN32)
+    set(CACHE_PATH "$ENV{LOCALAPPDATA}/clesperanto")
+else()
+    set(CACHE_PATH "$ENV{HOME}/.cache/clesperanto")
+endif()
+# clear cache folder
+delete_folder(${CACHE_PATH})
+
 
 ## Define install options and presets
 

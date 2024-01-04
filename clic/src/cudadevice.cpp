@@ -30,7 +30,6 @@ CUDADevice::initialize() -> void
 {
   if (isInitialized())
   {
-    // std::cerr << "CUDA device already initialized" << std::endl;
     return;
   }
   auto err = cuDeviceGet(&cudaDevice, 0);
@@ -90,6 +89,12 @@ CUDADevice::setWaitToFinish(bool flag) -> void
   this->waitFinish = flag;
 }
 
+[[nodiscard]] auto
+CUDADevice::getPlatform() const -> const std::string
+{
+  return "NVIDIA";
+}
+
 auto
 CUDADevice::isInitialized() const -> bool
 {
@@ -129,6 +134,15 @@ CUDADevice::getName() const -> std::string
 }
 
 auto
+CUDADevice::getArch() const -> std::string
+{
+  int major = 0, minor = 0;
+  cuDeviceGetAttribute(&major, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, this->getCUDADevice());
+  cuDeviceGetAttribute(&minor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, this->getCUDADevice());
+  return std::to_string(major) + std::to_string(minor);
+}
+
+auto
 CUDADevice::getInfo() const -> std::string
 {
   int    numMultiprocessors;
@@ -149,12 +163,6 @@ CUDADevice::getInfo() const -> std::string
   result << "\tCompute Units: " << numMultiprocessors << '\n';
   result << "\tGlobal Memory Size: " << (totalMemory / (1000 * 1000)) << " MB\n";
   return result.str();
-}
-
-auto
-CUDADevice::getCache() -> std::map<std::string, CUmodule> &
-{
-  return this->cache;
 }
 
 #endif // USE_CUDA

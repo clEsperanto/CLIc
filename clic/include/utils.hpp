@@ -1,14 +1,9 @@
 #ifndef __INCLUDE_UTILS_HPP
 #define __INCLUDE_UTILS_HPP
 
-#include <cstdint>
-#include <fstream>
-#include <iostream>
-#include <istream>
-#include <limits>
-#include <string>
-
 #include <cmath>
+#include <fstream>
+#include <limits>
 #ifndef M_PI
 #  define M_PI 3.14159265358979323846 /* pi */
 #endif
@@ -41,57 +36,57 @@ enum class dType
 };
 
 inline auto
-operator<<(std::ostream & out, const dType & dtype) -> std::ostream &
+toString(const dType & dtype) -> std::string
 {
   switch (dtype)
   {
     case dType::FLOAT:
-      out << "float";
-      break;
+      return "float";
     case dType::INT32:
-      out << "int";
-      break;
+      return "int";
     case dType::UINT32:
-      out << "uint";
-      break;
+      return "uint";
     case dType::INT8:
-      out << "char";
-      break;
+      return "char";
     case dType::UINT8:
-      out << "uchar";
-      break;
+      return "uchar";
     case dType::INT16:
-      out << "short";
-      break;
+      return "short";
     case dType::UINT16:
-      out << "ushort";
-      break;
+      return "ushort";
     case dType::INT64:
-      out << "long";
-      break;
+      return "long";
     case dType::UINT64:
-      out << "ulong";
-      break;
+      return "ulong";
     default:
-      out << "unknown";
-      break;
+      return "unknown";
   }
-  return out;
+}
+
+inline auto
+operator<<(std::ostream & out, const dType & dtype) -> std::ostream &
+{
+  return out << toString(dtype);
+}
+
+inline auto
+toString(const mType & mtype) -> std::string
+{
+  switch (mtype)
+  {
+    case mType::BUFFER:
+      return "Buffer";
+    case mType::IMAGE:
+      return "Image";
+    default:
+      return "unknown";
+  }
 }
 
 inline auto
 operator<<(std::ostream & out, const mType & mtype) -> std::ostream &
 {
-  switch (mtype)
-  {
-    case mType::BUFFER:
-      out << "Buffer";
-      break;
-    case mType::IMAGE:
-      out << "Image";
-      break;
-  }
-  return out;
+  return out << toString(mtype);
 }
 
 template <typename T>
@@ -206,7 +201,7 @@ sigma2kernelsize(const float & sigma) -> int
 }
 
 inline auto
-radius2kernelsize(const int & radius) -> int
+radius2kernelsize(const float & radius) -> int
 {
   return static_cast<int>(radius * 2 + 1);
 }
@@ -225,7 +220,7 @@ loadFile(const std::string & file_path) -> std::string
 }
 
 inline auto
-saveFile(std::string & file_path, std::string & source) -> void
+saveFile(const std::string & file_path, const std::string & source) -> void
 {
   std::ofstream ofs(file_path);
   if (!ofs.is_open())
@@ -237,28 +232,63 @@ saveFile(std::string & file_path, std::string & source) -> void
 }
 
 inline auto
+shape_to_dimension(const size_t & width, const size_t & height, const size_t & depth) -> size_t
+{
+  if (depth > 1)
+  {
+    return 3;
+  }
+  else if (height > 1)
+  {
+    return 2;
+  }
+  else
+  {
+    return 1;
+  }
+}
+
+inline auto
 correct_range(int * start, int * stop, int * step, int size) -> void
 {
   // # set in case not set (passed None)
   if (step == nullptr)
+  {
     *step = 1;
+  }
   if (start == nullptr)
+  {
     *start = (*step >= 0) ? 0 : size - 1;
+  }
   if (stop == nullptr)
+  {
     *stop = (*step >= 0) ? size : -1;
+  }
   // # Check if ranges make sense
   if (*start >= size)
+  {
     *start = (*step >= 0) ? size : size - 1;
+  }
   if (*start < -size + 1)
+  {
     *start = -size + 1;
+  }
   if (*stop > size)
+  {
     *stop = size;
+  }
   if (*stop < -size)
+  {
     *stop = (*start > 0) ? 0 - 1 : -size;
+  }
   if (*start < 0)
+  {
     *start = size - *start;
+  }
   if ((*start > *stop && *step > 0) || (*start < *stop && *step < 0))
+  {
     *stop = *start;
+  }
 }
 
 
