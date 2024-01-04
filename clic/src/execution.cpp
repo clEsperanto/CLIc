@@ -101,6 +101,16 @@ imageDefines(std::ostringstream & defines,
   defines << "\n#define WRITE_" << key << "_IMAGE(a,b,c) write_image" << prefix << "(a,b,c)";
 }
 
+static auto
+platform_options(const Device::Pointer & device, std::string * source) -> void
+{
+  auto platform = device->getPlatform();
+  if (platform.find("AMD") != std::string::npos)
+  {
+    // append at the begining of the source code the following string "#pragma OPENCL EXTENSION cl_amd_printf : enable"
+    *source = "#pragma OPENCL EXTENSION cl_amd_printf : enable\n" + *source;
+  }
+}
 
 // Function for creating defines for each array parameters
 static auto
@@ -122,7 +132,8 @@ arrayDefines(const ParameterList & parameter_list, const Device::Type & device) 
     const auto & key = param.first;
 
     // manage array dimension
-    const size_t      dimIndex = arr->dim() - 1;
+    auto              dim = shape_to_dimension(arr->width(), arr->height(), arr->depth());
+    const size_t      dimIndex = dim - 1;
     const std::string ndim = ndimMap[dimIndex];
     const std::string pos_type = posTypeMap[dimIndex];
     const std::string pos = posMap[dimIndex];
@@ -186,14 +197,15 @@ execute(const Device::Pointer & device,
         const ConstantList &    constants) -> void
 {
   // prepare kernel source for compilation and execution
-  auto       kernel_source = kernel_func.second;
-  const auto kernel_name = kernel_func.first;
-  const auto kernel_preamble = cle::BackendManager::getInstance().getBackend().getPreamble();
-  const auto defines = generateDefines(parameters, constants, device->getType());
+  auto kernel_source = kernel_func.second;
+  auto kernel_name = kernel_func.first;
+  auto kernel_preamble = cle::BackendManager::getInstance().getBackend().getPreamble();
+  auto defines = generateDefines(parameters, constants, device->getType());
   if (device->getType() == Device::Type::CUDA)
   {
     cle::translateOpenclToCuda(kernel_source);
   }
+  platform_options(device, &kernel_preamble);
   const std::string program_source = defines + kernel_preamble + kernel_source;
 
   // prepare parameters to be passed to the backend

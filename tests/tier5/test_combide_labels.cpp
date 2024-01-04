@@ -19,7 +19,7 @@ TEST_P(TestCombineLabels, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input1 = cle::Array::create(6, 2, 1, cle::dType::UINT32, cle::mType::BUFFER, device);
+  auto gpu_input1 = cle::Array::create(6, 2, 1, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(gpu_input1);
   gpu_input1->write(input1.data());
   gpu_input2->write(input2.data());

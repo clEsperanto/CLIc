@@ -19,12 +19,12 @@ TEST_P(TestReadIntensityFromPositions, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input1 = cle::Array::create(3, 3, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  auto gpu_input2 = cle::Array::create(3, 2, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input1 = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input2 = cle::Array::create(3, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input1->write(input.data());
   gpu_input2->write(list.data());
 
-  auto gpu_output = cle::tier1::read_values_from_coordinates_func(device, gpu_input1, gpu_input2, nullptr);
+  auto gpu_output = cle::tier1::read_values_from_positions_func(device, gpu_input1, gpu_input2, nullptr);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)

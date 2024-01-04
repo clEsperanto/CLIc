@@ -17,8 +17,8 @@ TEST_P(TestCopySlice, executeCopySliceFrom)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(2, 2, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  auto gpu_output = cle::Array::create(2, 2, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(2, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_output = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
   gpu_output->fill(0);
 
@@ -40,8 +40,8 @@ TEST_P(TestCopySlice, executeCopySliceTo)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(2, 2, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  auto gpu_output = cle::Array::create(2, 2, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_output = cle::Array::create(2, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
   gpu_output->fill(0);
 
@@ -63,8 +63,8 @@ TEST_P(TestCopySlice, executeCopySliceToWithOneSlice)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(3, 2, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  auto gpu_output = cle::Array::create(3, 2, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(3, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_output = cle::Array::create(3, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
   gpu_output->fill(0);
 
@@ -86,8 +86,8 @@ TEST_P(TestCopySlice, executeCopySliceMinX)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(4, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  auto gpu_output = cle::Array::create(4, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(4, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_output = cle::Array::create(4, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
   gpu_output->fill(0);
 
@@ -109,8 +109,8 @@ TEST_P(TestCopySlice, executeCopySliceMinY)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(1, 4, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  auto gpu_output = cle::Array::create(1, 4, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(1, 4, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_output = cle::Array::create(1, 4, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
   gpu_output->fill(0);
 

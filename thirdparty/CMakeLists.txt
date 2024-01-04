@@ -26,3 +26,15 @@ add_custom_target(
     BYPRODUCTS ${KERNELS_HEADER_DIR}
     COMMENT "Generating headers from clesperanto kernels files."
 )
+
+
+FetchContent_Declare(eigen
+    GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+    GIT_TAG        3.4.0
+    BUILD_ALWAYS   OFF
+)
+if(NOT Eigen_POPULATED)
+    FetchContent_Populate(eigen)
+endif()
+set(EIGEN_SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/eigen-src CACHE PATH "Path to eigen lib" FORCE)
+mark_as_advanced(EIGEN_SOURCE_DIR)

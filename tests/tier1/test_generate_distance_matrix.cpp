@@ -20,7 +20,7 @@ TEST_P(TestGenerateDistanceMatrix, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(5, 5, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto pts_list = cle::tier3::labelled_spots_to_pointlist_func(device, gpu_input, nullptr);

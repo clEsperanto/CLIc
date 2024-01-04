@@ -22,6 +22,7 @@ public:
   create(size_t                  width,
          size_t                  height,
          size_t                  depth,
+         size_t                  dimension,
          const dType &           data_type,
          const mType &           mem_type,
          const Device::Pointer & device_ptr) -> Array::Pointer;
@@ -29,6 +30,7 @@ public:
   create(size_t                  width,
          size_t                  height,
          size_t                  depth,
+         size_t                  dimension,
          const dType &           data_type,
          const mType &           mem_type,
          const void *            host_data,
@@ -89,6 +91,8 @@ public:
   [[nodiscard]] auto
   dim() const -> unsigned int;
   [[nodiscard]] auto
+  dimension() const -> unsigned int;
+  [[nodiscard]] auto
   initialized() const -> bool;
   [[nodiscard]] auto
   shortType() const -> std::string;
@@ -107,10 +111,12 @@ private:
   Array(size_t                  width,
         size_t                  height,
         size_t                  depth,
+        size_t                  dimension,
         const dType &           data_type,
         const mType &           mem_type,
         const Device::Pointer & device_ptr);
 
+  size_t          dim_ = 1;
   size_t          width_ = 1;
   size_t          height_ = 1;
   size_t          depth_ = 1;

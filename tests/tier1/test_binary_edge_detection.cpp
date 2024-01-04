@@ -24,7 +24,7 @@ TEST_P(TestBinaryEdgeDetection, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(6, 5, 3, cle::dType::UINT8, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(6, 5, 3, 3, cle::dType::UINT8, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier1::binary_edge_detection_func(device, gpu_input, nullptr);

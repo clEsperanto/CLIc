@@ -30,10 +30,19 @@ auto
 create_xy(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::UNKNOWN) -> void;
 
 auto
+create_yx(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::UNKNOWN) -> void;
+
+auto
 create_zy(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::UNKNOWN) -> void;
 
 auto
+create_yz(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::UNKNOWN) -> void;
+
+auto
 create_xz(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::UNKNOWN) -> void;
+
+auto
+create_zx(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::UNKNOWN) -> void;
 
 auto
 execute_separable_func(const Device::Pointer &      device,

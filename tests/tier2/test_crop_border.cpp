@@ -27,7 +27,7 @@ TEST_P(TestCropBorder, execute2D)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(4, 4, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(4, 4, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input_2d.data());
 
   auto gpu_output = cle::tier2::crop_border_func(device, gpu_input, nullptr, 1);
@@ -49,7 +49,7 @@ TEST_P(TestCropBorder, execute3D)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(4, 4, 4, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(4, 4, 4, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input_3d.data());
 
   auto gpu_output = cle::tier2::crop_border_func(device, gpu_input, nullptr, 1);

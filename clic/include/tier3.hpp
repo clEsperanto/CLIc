@@ -81,7 +81,9 @@ labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Po
 // maximum_of_touch_portion_within_range_neighbors_map
 // maximum_of_touching_neighbors_map
 // maximum_of_proximal_neighbors_map
-// maximum_position
+
+auto
+maximum_position_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<size_t, 3>;
 
 auto
 mean_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
@@ -97,7 +99,10 @@ mean_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & s
 // minimum_of_proximal_neighbors_map
 // minimum_of_touch_portion_within_range_neighbors_map
 // minimum_of_touching_neighbors_map
-// minimum_position
+
+auto
+minimum_position_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<size_t, 3>;
+
 // mode_of_n_most_touching_neighbors_map
 // mode_of_n_nearest_neighbors_map
 // mode_of_proximal_neighbors_map

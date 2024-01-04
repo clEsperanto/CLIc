@@ -23,7 +23,7 @@ dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
   auto flip = tier1::copy_func(device, src, nullptr);
   auto flog = Array::create(flip);
 
-  auto flag = Array::create(1, 1, 1, dType::FLOAT, mType::BUFFER, device);
+  auto flag = Array::create(1, 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
   flag->fill(0);
 
   int   iteration_count = 0;
@@ -127,7 +127,7 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
   tier1::add_image_and_scalar_func(device, mask, flup, -1);
   tier5::connected_components_labeling_func(device, src, flop, "box");
   tier1::add_images_weighted_func(device, flop, flup, flip, 1, 1);
-  auto flag = Array::create(1, 1, 1, dType::INT32, mType::BUFFER, device);
+  auto flag = Array::create(1, 1, 1, 1, dType::INT32, mType::BUFFER, device);
   flag->fill(1);
   int flag_value = 1;
   int iteration_count = 0;

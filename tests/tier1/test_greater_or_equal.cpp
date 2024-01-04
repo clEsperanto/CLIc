@@ -32,7 +32,7 @@ TEST_P(TestGreaterEqual, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input1 = cle::Array::create(10, 5, 3, cle::dType::INT8, cle::mType::BUFFER, device);
+  auto gpu_input1 = cle::Array::create(10, 5, 3, 3, cle::dType::INT8, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(gpu_input1);
   gpu_input1->write(input1.data());
   gpu_input2->write(input2.data());

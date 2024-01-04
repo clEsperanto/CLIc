@@ -70,7 +70,7 @@ connected_components_labeling_func(const Device::Pointer & device,
   auto temp2 = Array::create(temp1);
   temp2->fill(0);
 
-  auto flag = Array::create(1, 1, 1, dType::INT32, mType::BUFFER, device);
+  auto flag = Array::create(1, 1, 1, 1, dType::INT32, mType::BUFFER, device);
   flag->fill(0);
 
   int flag_value = 1;

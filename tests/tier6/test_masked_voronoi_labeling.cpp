@@ -27,7 +27,7 @@ TEST_P(TestMaskedVoronoiLabeling, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input1 = cle::Array::create(6, 4, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input1 = cle::Array::create(6, 4, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(gpu_input1);
   gpu_input1->write(input1.data());
   gpu_input2->write(input2.data());

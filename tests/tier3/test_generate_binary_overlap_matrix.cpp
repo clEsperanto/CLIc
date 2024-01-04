@@ -19,9 +19,9 @@ TEST_P(TestGenerateTouchMatrix, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input1 = cle::Array::create(5, 2, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input1 = cle::Array::create(5, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input1->write(input1.data());
-  auto gpu_input2 = cle::Array::create(5, 2, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input2 = cle::Array::create(5, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input2->write(input2.data());
 
   auto gpu_output = cle::tier3::generate_binary_overlap_matrix_func(device, gpu_input1, gpu_input2, nullptr);

@@ -27,7 +27,7 @@ TEST_P(TestOpening, executeBox)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(6, 6, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(6, 6, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier2::opening_box_func(device, gpu_input, nullptr, 1, 1, 0);
@@ -46,7 +46,7 @@ TEST_P(TestOpening, executeSphere)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(6, 6, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(6, 6, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier2::opening_sphere_func(device, gpu_input, nullptr, 1, 1, 0);

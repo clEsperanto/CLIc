@@ -18,7 +18,7 @@ TEST_P(TestDetectLabelEdge, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(5, 5, 1, cle::dType::UINT8, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::UINT8, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier1::detect_label_edges_func(device, gpu_input, nullptr);

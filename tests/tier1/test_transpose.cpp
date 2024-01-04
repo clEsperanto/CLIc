@@ -25,7 +25,7 @@ TEST_P(TestTranspose, executeXY)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(4, 3, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(4, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(inputXYZ.data());
 
   auto gpu_output = cle::tier1::transpose_xy_func(device, gpu_input, nullptr);
@@ -47,7 +47,7 @@ TEST_P(TestTranspose, executeXZ)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(4, 3, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(4, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(inputXYZ.data());
 
   auto gpu_output = cle::tier1::transpose_xz_func(device, gpu_input, nullptr);
@@ -69,7 +69,7 @@ TEST_P(TestTranspose, executeYZ)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(4, 3, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(4, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(inputXYZ.data());
 
   auto gpu_output = cle::tier1::transpose_yz_func(device, gpu_input, nullptr);

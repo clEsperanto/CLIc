@@ -20,6 +20,15 @@ OpenCLDevice::~OpenCLDevice()
   }
 }
 
+[[nodiscard]] auto
+OpenCLDevice::getPlatform() const -> const std::string
+{
+  // from cl_platform_id to std::string
+  char platform_name[256];
+  clGetPlatformInfo(clPlatform, CL_PLATFORM_NAME, sizeof(char) * 256, &platform_name, nullptr);
+  return std::string(platform_name);
+}
+
 auto
 OpenCLDevice::getType() const -> Device::Type
 {

@@ -26,7 +26,7 @@ TEST_P(TestHessianEigenvalues, execute2D)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(2, 2, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input_2d.data());
 
   auto gpu_output = cle::tier1::hessian_eigenvalues_func(device, gpu_input, nullptr, nullptr, nullptr);
@@ -54,7 +54,7 @@ TEST_P(TestHessianEigenvalues, executeLarge2D)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(2, 2, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input_2d.data());
 
   auto gpu_output = cle::tier2::large_hessian_eigenvalue_func(device, gpu_input, nullptr);
@@ -76,7 +76,7 @@ TEST_P(TestHessianEigenvalues, executeSmall2D)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(2, 2, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input_2d.data());
 
   auto gpu_output = cle::tier2::small_hessian_eigenvalue_func(device, gpu_input, nullptr);

@@ -17,15 +17,15 @@ auto
 bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<float, 6>
 {
   float min_x, min_y, min_z, max_x, max_y, max_z = 1;
-  auto  temp = tier1::multiply_image_and_coordinate_func(device, src, nullptr, 0);
+  auto  temp = tier1::multiply_image_and_position_func(device, src, nullptr, 0);
   max_x = tier2::maximum_of_all_pixels_func(device, temp);
   min_x = tier2::minimum_of_masked_pixels_func(device, temp, src);
-  temp = tier1::multiply_image_and_coordinate_func(device, src, nullptr, 1);
+  temp = tier1::multiply_image_and_position_func(device, src, nullptr, 1);
   max_y = tier2::maximum_of_all_pixels_func(device, temp);
   min_y = tier2::minimum_of_masked_pixels_func(device, temp, src);
   if (src->depth() > 1)
   {
-    temp = tier1::multiply_image_and_coordinate_func(device, src, nullptr, 2);
+    temp = tier1::multiply_image_and_position_func(device, src, nullptr, 2);
     max_z = tier2::maximum_of_all_pixels_func(device, temp);
     min_z = tier2::minimum_of_masked_pixels_func(device, temp, src);
   }
@@ -36,11 +36,11 @@ auto
 center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<float, 3>
 {
   auto sum = tier2::sum_of_all_pixels_func(device, src);
-  auto temp = tier1::multiply_image_and_coordinate_func(device, src, nullptr, 0);
+  auto temp = tier1::multiply_image_and_position_func(device, src, nullptr, 0);
   auto sum_x = tier2::sum_of_all_pixels_func(device, temp);
-  temp = tier1::multiply_image_and_coordinate_func(device, src, nullptr, 1);
+  temp = tier1::multiply_image_and_position_func(device, src, nullptr, 1);
   auto sum_y = tier2::sum_of_all_pixels_func(device, temp);
-  temp = tier1::multiply_image_and_coordinate_func(device, src, nullptr, 2);
+  temp = tier1::multiply_image_and_position_func(device, src, nullptr, 2);
   auto sum_z = tier2::sum_of_all_pixels_func(device, temp);
   return std::array<float, 3>{ sum_x / sum, sum_y / sum, sum_z / sum };
 }
@@ -77,7 +77,7 @@ exclude_labels_func(const Device::Pointer & device,
     }
   }
 
-  auto index_list = Array::create(list->size(), 1, 1, dType::UINT32, mType::BUFFER, src->device());
+  auto index_list = Array::create(list->size(), 1, 1, 1, dType::UINT32, mType::BUFFER, src->device());
   index_list->write(labels_list.data());
   tier1::replace_values_func(device, src, index_list, dst);
   return dst;
@@ -93,7 +93,7 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
 {
   tier0::create_like(src, dst, dType::UINT32);
   auto num_labels = static_cast<int>(tier2::maximum_of_all_pixels_func(device, src));
-  auto label_map = Array::create(num_labels + 1, 1, 1, dType::UINT32, mType::BUFFER, src->device());
+  auto label_map = Array::create(num_labels + 1, 1, 1, 1, dType::UINT32, mType::BUFFER, src->device());
   tier1::set_ramp_x_func(device, label_map);
 
   const ParameterList params = { { "src", src }, { "dst", label_map } };
@@ -212,7 +212,8 @@ histogram_func(const Device::Pointer & device,
 {
   tier0::create_vector(src, dst, nbins);
   size_t number_of_partial_histograms = src->height();
-  auto partial_hist = Array::create(nbins, 1, number_of_partial_histograms, dType::UINT32, src->mtype(), src->device());
+  auto   partial_hist =
+    Array::create(nbins, 1, number_of_partial_histograms, 3, dType::UINT32, src->mtype(), src->device());
   if (std::isnan(max) || std::isnan(max))
   {
     min = tier2::minimum_of_all_pixels_func(device, src);
@@ -240,7 +241,7 @@ labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Po
   -> Array::Pointer
 {
   auto max_label = tier2::maximum_of_all_pixels_func(device, src);
-  auto dim = src->dim();
+  auto dim = shape_to_dimension(src->width(), src->height(), src->depth());
   tier0::create_dst(src, dst, max_label, dim, 1, dType::UINT32);
   dst->fill(0);
 
@@ -257,7 +258,51 @@ labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Po
 // auto maximum_of_touch_portion_within_range_neighbors_map_func
 // auto maximum_of_touching_neighbors_map_func
 // auto maximum_of_proximal_neighbors_map_func
-// auto maximum_position_func
+
+auto
+maximum_position_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<size_t, 3>
+{
+  size_t                z_coord = 0;
+  size_t                y_coord = 0;
+  size_t                x_coord = 0;
+  std::array<size_t, 3> coord = { 0, 0, 0 };
+
+  Array::Pointer pos_x;
+  Array::Pointer pos_y;
+  Array::Pointer pos_z;
+  Array::Pointer temp = src;
+
+  if (src->depth() > 1)
+  {
+    pos_z = tier1::z_position_of_maximum_z_projection_func(device, temp, nullptr);
+    temp = tier1::maximum_z_projection_func(device, temp, nullptr);
+  }
+  if (src->height() > 1)
+  {
+    pos_y = tier1::y_position_of_maximum_y_projection_func(device, temp, nullptr);
+    temp = tier1::maximum_y_projection_func(device, temp, nullptr);
+  }
+  pos_x = tier1::x_position_of_maximum_x_projection_func(device, temp, nullptr);
+  temp = tier1::maximum_x_projection_func(device, temp, nullptr);
+
+
+  if (pos_x != nullptr)
+  {
+    pos_x->read(&x_coord, { 1, 1, 1 }, { 0, 0, 0 });
+    coord[0] = x_coord;
+  }
+  if (pos_y != nullptr)
+  {
+    pos_y->read(&y_coord, { 1, 1, 1 }, { x_coord, 0, 0 });
+    coord[1] = y_coord;
+  }
+  if (pos_z != nullptr)
+  {
+    pos_z->read(&z_coord, { 1, 1, 1 }, { x_coord, y_coord, 0 });
+    coord[2] = z_coord;
+  }
+  return coord;
+}
 
 auto
 mean_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float
@@ -278,7 +323,53 @@ mean_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & s
 // auto minimum_of_proximal_neighbors_map_func
 // auto minimum_of_touch_portion_within_range_neighbors_map_func
 // auto minimum_of_touching_neighbors_map_func
-// auto minimum_position_func
+
+auto
+minimum_position_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<size_t, 3>
+{
+  size_t                z_coord = 0;
+  size_t                y_coord = 0;
+  size_t                x_coord = 0;
+  std::array<size_t, 3> coord = { 0, 0, 0 };
+
+  Array::Pointer pos_x;
+  Array::Pointer pos_y;
+  Array::Pointer pos_z;
+  Array::Pointer temp = src;
+
+  if (src->depth() > 1)
+  {
+    pos_z = tier1::z_position_of_minimum_z_projection_func(device, temp, nullptr);
+    temp = tier1::minimum_z_projection_func(device, temp, nullptr);
+  }
+  if (src->height() > 1)
+  {
+    pos_y = tier1::y_position_of_minimum_y_projection_func(device, temp, nullptr);
+    temp = tier1::minimum_y_projection_func(device, temp, nullptr);
+  }
+  pos_x = tier1::x_position_of_minimum_x_projection_func(device, temp, nullptr);
+  temp = tier1::minimum_x_projection_func(device, temp, nullptr);
+
+
+  if (pos_x != nullptr)
+  {
+    pos_x->read(&x_coord, { 1, 1, 1 }, { 0, 0, 0 });
+    coord[0] = x_coord;
+  }
+  if (pos_y != nullptr)
+  {
+    pos_y->read(&y_coord, { 1, 1, 1 }, { x_coord, 0, 0 });
+    coord[1] = y_coord;
+  }
+  if (pos_z != nullptr)
+  {
+    pos_z->read(&z_coord, { 1, 1, 1 }, { x_coord, y_coord, 0 });
+    coord[2] = z_coord;
+  }
+  return coord;
+}
+
+
 // auto mode_of_n_most_touching_neighbors_map_func
 // auto mode_of_n_nearest_neighbors_map_func
 // auto mode_of_proximal_neighbors_map_func

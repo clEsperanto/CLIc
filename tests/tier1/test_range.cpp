@@ -21,7 +21,7 @@ TEST_P(TestRange, executeVertical)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(6, 6, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(6, 6, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier1::range_func(device, gpu_input, nullptr, 0, 6, 1, 0, 6, 2, 1, 1, 1);
@@ -43,7 +43,7 @@ TEST_P(TestRange, executeDiag)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(6, 6, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(6, 6, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier1::range_func(device, gpu_input, nullptr, 0, 6, 2, 0, 6, 2, 1, 1, 1);
@@ -65,7 +65,7 @@ TEST_P(TestRange, executeNegative)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(6, 6, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(6, 6, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier1::range_func(device, gpu_input, nullptr, 0, 6, 1, 6, 0, -2, 1, 1, 1);

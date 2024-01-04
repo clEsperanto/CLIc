@@ -43,7 +43,11 @@ mean_squared_error_func(const Device::Pointer & device, const Array::Pointer & s
 // auto proximal_neighbor_count_func
 // auto proximal_neighbor_count_map_func
 // auto sorensen_dice_coefficient_func
-// auto spots_to_pointlist_func
+
+auto
+spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
+
 // auto subtract_labels_func
 // auto touch_portion_within_range_neighbor_count_func
 // auto touch_portion_within_range_neighbor_count_map_func
