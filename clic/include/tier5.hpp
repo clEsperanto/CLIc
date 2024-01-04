@@ -5,6 +5,11 @@
 #include "device.hpp"
 #include "execution.hpp"
 
+/**
+ * @namespace cle::tier5
+ * @brief Contains all the functions of the tier 5 category.
+ *
+ */
 namespace cle::tier5
 {
 

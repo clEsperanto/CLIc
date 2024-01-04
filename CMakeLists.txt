@@ -74,3 +74,8 @@ if(BUILD_TESTING)
     include(CTest)
     add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
 endif(BUILD_TESTING)
+
+# Build documentation
+if (BUILD_DOCUMENTATION)
+    include(${PROJECT_SOURCE_DIR}/cmake/CMakeDoxygen.cmake)
+endif()

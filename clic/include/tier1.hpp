@@ -3,12 +3,47 @@
 
 #include "tier0.hpp"
 
+/**
+ * @namespace cle::tier1
+ * @brief Contains all the functions of the tier 1 category.
+ *
+ */
 namespace cle::tier1
 {
 
+
+/**
+ * @name absolute
+ * @brief Compute the absolute value of each pixel value x in a given image.
+ * @category 'filter', 'in assistant'
+ *
+ * @param device Device::Pointer
+ * @param src Array::Pointer
+ * @param dst Array::Pointer (=nullptr)
+ *
+ * @return Array::Pointer
+ *
+ * @link https://clij.github.io/clij2-docs/reference_absolute
+ */
 auto
 absolute_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
+/**
+ * @name add_images_weighted
+ * @brief Computes the sum of pairs of pixels x and y from images X and Y weighted with factors a and b.
+ * @category 'combine', 'in assistant'
+ *
+ * @param device Device::Pointer
+ * @param src0 Array::Pointer
+ * @param src1 Array::Pointer
+ * @param dst Array::Pointer (=nullptr)
+ * @param factor0 float (=1.0)
+ * @param factor1 float (=1.0)
+ *
+ * @return Array::Pointer
+ *
+ * @link https://clij.github.io/clij2-docs/reference_addImagesWeighted
+ */
 auto
 add_images_weighted_func(const Device::Pointer & device,
                          const Array::Pointer &  src0,
@@ -17,6 +52,19 @@ add_images_weighted_func(const Device::Pointer & device,
                          float                   factor0,
                          float                   factor1) -> Array::Pointer;
 
+/**
+ * @name add_images_and_scalar
+ * @brief Add a scalar value s to all pixels x of a given image X.
+ * @category 'filter', 'in assistant'
+ *
+ * @param device Device::Pointer
+ * @param src Array::Pointer
+ * @param dst Array::Pointer (=nullptr)
+ * @param scalar float (=1.0)
+ * @return Array::Pointer
+ *
+ * @link https://clij.github.io/clij2-docs/reference_addImages
+ */
 auto
 add_image_and_scalar_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
   -> Array::Pointer;

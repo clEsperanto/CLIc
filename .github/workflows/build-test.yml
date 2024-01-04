@@ -105,22 +105,21 @@ jobs:
       - name: compile CLIc - linux
         if: matrix.os == 'ubuntu-latest'
         run : |
-          pwd
-          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARIES:FILEPATH="/usr/local/lib/libOpenCL.so" -DOpenCL_INCLUDE_DIRS:PATH="/usr/local/include/"
+          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_DOCUMENTATION=OFF -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARIES:FILEPATH="/usr/local/lib/libOpenCL.so" -DOpenCL_INCLUDE_DIRS:PATH="/usr/local/include/"
           cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
         shell: bash -l {0}    
 
       - name: compile CLIc - windows
         if: matrix.os == 'windows-latest'
         run : |
-          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARIES:FILEPATH="C:/Program Files/OpenCL-ICD-Loader/lib/OpenCL.lib" -DOpenCL_INCLUDE_DIRS:PATH="C:/Program Files (x86)/OpenCLHeaders/include/"
+          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_DOCUMENTATION=OFF -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARIES:FILEPATH="C:/Program Files/OpenCL-ICD-Loader/lib/OpenCL.lib" -DOpenCL_INCLUDE_DIRS:PATH="C:/Program Files (x86)/OpenCLHeaders/include/"
           cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
         shell: bash -l {0}
 
       - name: compile CLIc - macos
         if: matrix.os == 'macos-latest'
         run : |
-          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_BENCHMARK=OFF
+          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_DOCUMENTATION=OFF -DBUILD_BENCHMARK=OFF
           cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
         shell: bash -l {0}
 
