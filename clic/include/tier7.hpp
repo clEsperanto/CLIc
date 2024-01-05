@@ -10,12 +10,12 @@
  */
 namespace cle::tier7
 {
+
 /**
  * @name rigid_transform
  * @brief Translate the image by a given vector and rotate it by given angles.  Angles are given in degrees. To convert
  radians to degrees, use this formula:  angle_in_degrees = angle_in_radians / numpy.pi * 180.0
  * @category 'transform', 'in assistant', 'bia-bob-suggestion'
-
  */
 auto
 rigid_transform_func(const Device::Pointer & device,
@@ -37,7 +37,6 @@ rigid_transform_func(const Device::Pointer & device,
  * @brief Rotate the image by given angles.  Angles are given in degrees. To convert radians to degrees, use this
  formula:  angle_in_degrees = angle_in_radians / numpy.pi * 180.0
  * @category 'transform', 'in assistant'
-
  */
 auto
 rotate_func(const Device::Pointer & device,
@@ -55,7 +54,6 @@ rotate_func(const Device::Pointer & device,
  * @name scale
  * @brief Scale the image by given factors.
  * @category 'transform', 'in assistant'
-
  */
 auto
 scale_func(const Device::Pointer & device,
@@ -73,7 +71,6 @@ scale_func(const Device::Pointer & device,
  * @name translate
  * @brief Translate the image by a given vector.
  * @category 'transform', 'in assistant'
-
  */
 auto
 translate_func(const Device::Pointer & device,
@@ -91,7 +88,6 @@ translate_func(const Device::Pointer & device,
  erosion of the labels. With every iteration, box and diamond/sphere structuring elements are used and thus, the
  operation has an octagon as structuring element.  Notes ----- * This operation assumes input images are isotropic.
  * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
-
  */
 auto
 closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
@@ -104,7 +100,6 @@ closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
  dilation of the labels. With every iteration, box and diamond/sphere structuring elements are used and thus, the
  operation has an octagon as structuring element.  Notes ----- * This operation assumes input images are isotropic.
  * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
-
  */
 auto
 opening_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)

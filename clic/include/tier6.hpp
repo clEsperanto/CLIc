@@ -10,6 +10,7 @@
  */
 namespace cle::tier6
 {
+
 /**
  * @name dilate_labels
  * @brief Dilates labels to a larger size. No label overwrites another label. Similar to the implementation in

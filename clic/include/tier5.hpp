@@ -10,6 +10,7 @@
  */
 namespace cle::tier5
 {
+
 /**
  * @name array_equal
  * @brief Compares if all pixels of two images are identical. If shape of the images or any pixel are different, returns
@@ -26,7 +27,6 @@ array_equal_func(const Device::Pointer & device, const Array::Pointer & src0, co
  * @brief Combines two label images by adding labels of a given label image to another. Labels in the second image
  overwrite labels in the first passed image. Afterwards, labels are relabeled sequentially.
  * @category 'label processing', 'combine labels', 'in assistant', 'bia-bob-suggestion'
-
  */
 auto
 combine_labels_func(const Device::Pointer & device,

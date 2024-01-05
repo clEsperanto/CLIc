@@ -10,6 +10,7 @@
  */
 namespace cle::tier3
 {
+
 /**
  * @name bounding_box
  * @brief Determines the bounding box of all non-zero pixels in a binary image.  If called from macro, the positions
@@ -67,7 +68,6 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
  * @brief Given a label map this function will generate a binary vector where all pixels are set to 1 if label with
  given x-coordinate in the vector exists. For example a label image such as ``` 0 1 3 5 ```  will produce a flag_vector
  like this: ``` 1 1 0 1 0 1 ```
-
  */
 auto
 flag_existing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -172,7 +172,6 @@ labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Po
 /**
  * @name maximum_position
  * @brief Determines the position of the maximum of all pixels in a given image.
-
  */
 auto
 maximum_position_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<size_t, 3>;
@@ -190,7 +189,6 @@ mean_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & s
 /**
  * @name minimum_position
  * @brief Determines the position of the minimum of all pixels in a given image.
-
  */
 auto
 minimum_position_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<size_t, 3>;

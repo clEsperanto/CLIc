@@ -10,6 +10,7 @@
  */
 namespace cle::tier4
 {
+
 /**
  * @name mean_squared_error
  * @brief Determines the mean squared error (MSE) between two images.  The MSE will be stored in a new row of ImageJs

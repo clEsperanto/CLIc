@@ -86,7 +86,6 @@ clip_func(const Device::Pointer & device,
  * @brief Closing operator, box-shaped  Applies morphological closing to intensity images using a box-shaped footprint.
  This operator also works with binary images.
  * @category 'filter', 'in assistant'
-
  */
 auto
 closing_box_func(const Device::Pointer & device,
@@ -102,7 +101,6 @@ closing_box_func(const Device::Pointer & device,
  * @brief Closing operator, sphere-shaped  Applies morphological closing to intensity images using a sphere-shaped
  footprint. This operator also works with binary images.
  * @category 'filter', 'in assistant', 'bia-bob-suggestion'
-
  */
 auto
 closing_sphere_func(const Device::Pointer & device,
@@ -150,7 +148,6 @@ count_touching_neighbors_func(const Device::Pointer & device,
  * @name crop_border
  * @brief Crops an image by removing the outer pixels, per default 1.  Notes ----- * To make sure the output image has
  the right size, provide destination_image=None.
-
  */
 auto
 crop_border_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int border_size)
@@ -175,7 +172,6 @@ divide_by_gaussian_background_func(const Device::Pointer & device,
 /**
  * @name degrees_to_radians
  * @brief Converts radians to degrees
-
  */
 auto
 degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -240,7 +236,6 @@ label_spots_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  * @name large_hessian_eigenvalue
  * @brief Determines the Hessian eigenvalues and returns the large eigenvalue image.
  * @category 'filter', 'in assistant'
-
  */
 auto
 large_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -283,7 +278,6 @@ minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Point
  * @brief Opening operator, box-shaped  Applies morphological opening to intensity images using a box-shaped footprint.
  This operator also works with binary images.
  * @category 'filter', 'in assistant'
-
  */
 auto
 opening_box_func(const Device::Pointer & device,
@@ -313,7 +307,6 @@ opening_sphere_func(const Device::Pointer & device,
 /**
  * @name radians_to_degrees
  * @brief Converts radians to degrees
-
  */
 auto
 radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -324,7 +317,6 @@ radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & s
  * @name small_hessian_eigenvalue
  * @brief Determines the Hessian eigenvalues and returns the small eigenvalue image.
  * @category 'filter', 'in assistant'
-
  */
 auto
 small_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)

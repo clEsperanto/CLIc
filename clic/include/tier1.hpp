@@ -847,7 +847,6 @@ minimum_of_masked_pixels_reduction_func(const Device::Pointer & device,
  reasons, the intensities must lie within a range from 0 to 255. In case multiple values have maximum frequency, the
  smallest one is returned.
  * @category 'label processing', 'in assistant'
-
  */
 auto
 mode_box_func(const Device::Pointer & device,
@@ -865,7 +864,6 @@ mode_box_func(const Device::Pointer & device,
  technical reasons, the intensities must lie within a range from 0 to 255. In case multiple values have maximum
  frequency, the smallest one is returned.
  * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
-
  */
 auto
 mode_sphere_func(const Device::Pointer & device,
@@ -880,7 +878,6 @@ mode_sphere_func(const Device::Pointer & device,
  * @name modulo_images
  * @brief Computes the remainder of a division of pairwise pixel values in two images
  * @category 'combine', 'bia-bob-suggestion'
-
  */
 auto
 modulo_images_func(const Device::Pointer & device,
@@ -1378,7 +1375,6 @@ sobel_func(const Device::Pointer & device, const Array::Pointer & src, Array::Po
  * @name square_root
  * @brief Computes the square root of each pixel.
  * @category 'filter', 'in assistant'
-
  */
 auto
 square_root_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
