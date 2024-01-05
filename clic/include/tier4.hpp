@@ -1,66 +1,50 @@
 #ifndef __INCLUDE_TIER4_HPP
 #define __INCLUDE_TIER4_HPP
 
-#include "array.hpp"
-#include "device.hpp"
-#include "execution.hpp"
+#include "tier0.hpp"
 
 /**
  * @namespace cle::tier4
- * @brief Contains all the functions of the tier 4 category.
- *
+ * @brief Namespace container for all functions of tier 2 category
+ *        Tier 4 functions are advanced functions that may rely on previous tier functions
  */
 namespace cle::tier4
 {
-
-
-// auto proximal_other_labels_count_map_func
-
-// auto erode_connected_labels_func
-// auto exclude_labels_with_average_values_out_of_range_func
-// auto exclude_labels_with_average_values_within_range_func
-// auto exclude_labels_with_map_values_equal_to_constant_func
-// auto exclude_labels_with_map_values_not_equal_to_constant_func
-// auto exclude_labels_with_map_values_out_of_range_func
-// auto exclude_labels_with_map_values_within_range_func
-// auto exclude_large_labels_func
-// auto exclude_small_labels_func
-// auto extend_labeling_via_voronoi_func
-
-// auto extended_depth_of_focus_variance_projection_func
-// auto generate_n_most_touching_neighbors_matrix_func
-// auto generate_touch_portion_matrix_func
-// auto generate_touch_portion_within_range_neighbors_matrix_func
-
+/**
+ * @name mean_squared_error
+ * @brief Determines the mean squared error (MSE) between two images.  The MSE will be stored in a new row of ImageJs
+ * Results table in the column 'MSE'.
+ * @category 'in assistant', 'combine', 'bia-bob-suggestion'
+ * @link https://clij.github.io/clij2-docs/reference_meanSquaredError
+ */
 auto
 mean_squared_error_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1)
   -> float;
 
-// auto label_nonzero_pixel_count_map_func
-// auto label_nonzero_pixel_count_ratio_map_func
-// auto label_overlap_count_map_func
-// auto local_maximum_touching_neighbor_count_map_func
-// auto local_mean_touching_neighbor_count_map_func
-// auto local_median_touching_neighbor_count_map_func
-// auto local_minimum_touching_neighbor_count_map_func
-// auto local_standard_deviation_touching_neighbor_count_map_func
-// auto merge_touching_labels_func
-// auto proximal_neighbor_count_func
-// auto proximal_neighbor_count_map_func
-// auto sorensen_dice_coefficient_func
 
+/**
+ * @name spots_to_pointlist
+ * @brief Transforms a spots image as resulting from maximum/minimum detection in an image where every column contains d
+ * pixels (with d = dimensionality of the original image) with the coordinates of the maxima/minima.
+ * @link https://clij.github.io/clij2-docs/reference_spotsToPointList
+ */
 auto
 spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer;
 
-// auto subtract_labels_func
-// auto touch_portion_within_range_neighbor_count_func
-// auto touch_portion_within_range_neighbor_count_map_func
-// auto touching_neighbor_count_map_func
 
+/**
+ * @name relabel_sequential
+ * @brief Analyses a label map and if there are gaps in the indexing (e.g. label 5 is not present) all subsequent labels
+ * will be relabelled.  Thus, afterwards number of labels and maximum label index are equal. This operation is mostly
+ * performed on the CPU.
+ * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @link https://clij.github.io/clij2-docs/reference_closeIndexGapsInLabelMap
+ */
 auto
 relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int blocksize)
   -> Array::Pointer;
+
 
 auto
 threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
