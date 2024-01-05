@@ -152,7 +152,6 @@ convolve_func(const Device::Pointer & device,
 /**
  * @name copy
  * @brief Copies an image.  <pre>f(x) = x</pre>
- * @category
  * @link https://clij.github.io/clij2-docs/reference_copy
  */
 auto
@@ -165,7 +164,6 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
  * copies a given slice at position z in an image stack to a 2D image.  The first case is only available via ImageJ
  * macro. If you are using it, it is recommended that the target 3D image already pre-exists in GPU memory before
  * calling this method. Otherwise, CLIJ create the image stack with z planes.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_copySlice
  */
 auto
@@ -177,7 +175,6 @@ copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @name copy_horizontal_slice
  * @brief This method has two purposes: It copies a 2D image to a given slice y position in a 3D image stack or It
  * copies a given slice at position y in an image stack to a 2D image.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_copySlice
  */
 auto
@@ -189,7 +186,6 @@ copy_horizontal_slice_func(const Device::Pointer & device, const Array::Pointer 
  * @name copy_vertical_slice
  * @brief This method has two purposes: It copies a 2D image to a given slice x position in a 3D image stack or It
  * copies a given slice at position x in an image stack to a 2D image.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_copySlice
  */
 auto
@@ -201,7 +197,6 @@ copy_vertical_slice_func(const Device::Pointer & device, const Array::Pointer & 
  * @name crop
  * @brief Crops a given sub-stack out of a given image stack.  Note: If the destination image pre-exists already, it
  * will be overwritten and keep it's dimensions.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_crop3D
  */
 auto
@@ -367,7 +362,6 @@ exponential_func(const Device::Pointer & device, const Array::Pointer & src, Arr
 /**
  * @name flip
  * @brief Flips an image in X, Y and/or Z direction depending on boolean flags.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_flip3D
  */
 auto
@@ -924,7 +918,6 @@ multiply_images_func(const Device::Pointer & device,
  * by a defined new value, default 0.  This function aims to work similarly as its counterpart in numpy [1]. Default
  * values for posinf and neginf may differ from numpy and even differ depending on compute hardware. It is recommended
  * to specify those values.
- * @category
  * @link https://numpy.org/doc/stable/reference/generated/numpy.nan_to_num.html
  */
 auto
@@ -941,7 +934,6 @@ nan_to_num_func(const Device::Pointer & device,
  * @brief Apply a maximum filter (box shape) to the input image.  The radius is fixed to 1 and pixels with value 0 are
  * ignored. Note: Pixels with 0 value in the input image will not be overwritten in the output image. Thus, the result
  * image should be initialized by copying the original image in advance.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_nonzeroMaximumBox
  */
 auto
@@ -956,7 +948,6 @@ nonzero_maximum_box_func(const Device::Pointer & device,
  * @brief Apply a maximum filter (diamond shape) to the input image.  The radius is fixed to 1 and pixels with value 0
  * are ignored. Note: Pixels with 0 value in the input image will not be overwritten in the output image. Thus, the
  * result image should be initialized by copying the original image in advance.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_nonzeroMaximumDiamond
  */
 auto
@@ -971,7 +962,6 @@ nonzero_maximum_diamond_func(const Device::Pointer & device,
  * @brief Apply a minimum filter (box shape) to the input image.  The radius is fixed to 1 and pixels with value 0 are
  * ignored. Note: Pixels with 0 value in the input image will not be overwritten in the output image. Thus, the result
  * image should be initialized by copying the original image in advance.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_nonzeroMinimumBox
  */
 auto
@@ -986,7 +976,6 @@ nonzero_minimum_box_func(const Device::Pointer & device,
  * @brief Apply a minimum filter (diamond shape) to the input image.  The radius is fixed to 1 and pixels with value 0
  * are ignored.Note: Pixels with 0 value in the input image will not be overwritten in the output image. Thus, the
  * result image should be initialized by copying the original image in advance.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_nonzeroMinimumDiamond
  */
 auto
@@ -1043,7 +1032,6 @@ paste_func(const Device::Pointer & device,
 /**
  * @name onlyzero_overwrite_maximum_box
  * @brief Apply a local maximum filter to an image which only overwrites pixels with value 0.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_onlyzeroOverwriteMaximumBox
  */
 auto
@@ -1056,7 +1044,6 @@ onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
 /**
  * @name onlyzero_overwrite_maximum_diamond
  * @brief Apply a local maximum filter to an image which only overwrites pixels with value 0.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_onlyzeroOverwriteMaximumDiamond
  */
 auto
@@ -1158,7 +1145,6 @@ minimum_sphere_func(const Device::Pointer & device,
 /**
  * @name multiply_matrix
  * @brief Multiplies two matrices with each other.  Shape of matrix1 should be equal to shape of matrix2 transposed.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_multiplyMatrix
  */
 auto
@@ -1182,7 +1168,6 @@ reciprocal_func(const Device::Pointer & device, const Array::Pointer & src, Arra
 /**
  * @name set
  * @brief Sets all pixel values x of a given image X to a constant value v.  <pre>f(x) = v</pre>
- * @category
  * @link https://clij.github.io/clij2-docs/reference_set
  */
 auto
@@ -1192,7 +1177,6 @@ set_func(const Device::Pointer & device, const Array::Pointer & src, float scala
 /**
  * @name set_column
  * @brief Sets all pixel values x of a given column in X to a constant value v.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_setColumn
  */
 auto
@@ -1202,7 +1186,6 @@ set_column_func(const Device::Pointer & device, const Array::Pointer & src, int 
 /**
  * @name set_image_borders
  * @brief Sets all pixel values at the image border to a given value.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_setImageBorders
  */
 auto
@@ -1212,7 +1195,6 @@ set_image_borders_func(const Device::Pointer & device, const Array::Pointer & sr
 /**
  * @name set_plane
  * @brief Sets all pixel values x of a given plane in X to a constant value v.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_setPlane
  */
 auto
@@ -1222,7 +1204,6 @@ set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int p
 /**
  * @name set_ramp_x
  * @brief Sets all pixel values to their X coordinate
- * @category
  * @link https://clij.github.io/clij2-docs/reference_setRampX
  */
 auto
@@ -1232,7 +1213,6 @@ set_ramp_x_func(const Device::Pointer & device, const Array::Pointer & src) -> A
 /**
  * @name set_ramp_y
  * @brief Sets all pixel values to their Y coordinate
- * @category
  * @link https://clij.github.io/clij2-docs/reference_setRampY
  */
 auto
@@ -1242,7 +1222,6 @@ set_ramp_y_func(const Device::Pointer & device, const Array::Pointer & src) -> A
 /**
  * @name set_ramp_z
  * @brief Sets all pixel values to their Z coordinate
- * @category
  * @link https://clij.github.io/clij2-docs/reference_setRampZ
  */
 auto
@@ -1252,7 +1231,6 @@ set_ramp_z_func(const Device::Pointer & device, const Array::Pointer & src) -> A
 /**
  * @name set_row
  * @brief Sets all pixel values x of a given row in X to a constant value v.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_setRow
  */
 auto
@@ -1269,7 +1247,6 @@ set_nonzero_pixels_to_pixelindex_func(const Device::Pointer & device,
  * @name set_where_x_equals_y
  * @brief Sets all pixel values a of a given image A to a constant value v in case its coordinates x == y.  Otherwise
  * the pixel is not overwritten. If you want to initialize an identity transfrom matrix, set all pixels to 0 first.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_setWhereXequalsY
  */
 auto
@@ -1280,7 +1257,6 @@ set_where_x_equals_y_func(const Device::Pointer & device, const Array::Pointer &
  * @name set_where_x_greater_than_y
  * @brief Sets all pixel values a of a given image A to a constant value v in case its coordinates x > y.  Otherwise the
  * pixel is not overwritten. If you want to initialize an identity transfrom matrix, set all pixels to 0 first.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_setWhereXgreaterThanY
  */
 auto
@@ -1292,7 +1268,6 @@ set_where_x_greater_than_y_func(const Device::Pointer & device, const Array::Poi
  * @name set_where_x_smaller_than_y
  * @brief Sets all pixel values a of a given image A to a constant value v in case its coordinates x < y.  Otherwise the
  * pixel is not overwritten. If you want to initialize an identity transfrom matrix, set all pixels to 0 first.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_setWhereXsmallerThanY
  */
 auto
@@ -1304,7 +1279,6 @@ set_where_x_smaller_than_y_func(const Device::Pointer & device, const Array::Poi
  * @name sign
  * @brief Extracts the sign of pixels. If a pixel value < 0, resulting pixel value will be -1. If it was > 0, it will
  * be 1. Otherwise it will be 0.  This function aims to work similarly as its counterpart in numpy [1].
- * @category
  * @link https://numpy.org/doc/stable/reference/generated/numpy.sign.html
  */
 auto
@@ -1463,7 +1437,6 @@ transpose_yz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
 /**
  * @name undefined_to_zero
  * @brief Copies all pixels instead those which are not a number (NaN) or infinity (inf), which are replaced by 0.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_undefinedToZero
  */
 auto
@@ -1507,7 +1480,6 @@ variance_sphere_func(const Device::Pointer & device,
  * @name write_values_to_positions
  * @brief Takes an image with three/four rows (2D: height = 3; 3D: height = 4): x, y [, z] and v and target image.  The
  * value v will be written at position x/y[/z] in the target image.
- * @category
  * @link https://clij.github.io/clij2-docs/reference_writeValuesToPositions
  */
 auto
