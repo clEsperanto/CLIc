@@ -12,7 +12,8 @@ namespace cle::tier5
 {
 /**
  * @name array_equal
- * @brief Compares if all pixels of two images are identical. If shape of the images or any pixel are different, returns False. True otherwise  This function is supposed to work similarly like its counterpart in numpy [1].
+ * @brief Compares if all pixels of two images are identical. If shape of the images or any pixel are different, returns
+ * False. True otherwise  This function is supposed to work similarly like its counterpart in numpy [1].
  * @category 'combine'
  * @link https://numpy.org/doc/stable/reference/generated/numpy.array_equal.html
  */
@@ -22,7 +23,8 @@ array_equal_func(const Device::Pointer & device, const Array::Pointer & src0, co
 
 /**
  * @name combine_labels
- * @brief Combines two label images by adding labels of a given label image to another. Labels in the second image overwrite labels in the first passed image. Afterwards, labels are relabeled sequentially.
+ * @brief Combines two label images by adding labels of a given label image to another. Labels in the second image
+ overwrite labels in the first passed image. Afterwards, labels are relabeled sequentially.
  * @category 'label processing', 'combine labels', 'in assistant', 'bia-bob-suggestion'
 
  */

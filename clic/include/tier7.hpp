@@ -12,7 +12,8 @@ namespace cle::tier7
 {
 /**
  * @name rigid_transform
- * @brief Translate the image by a given vector and rotate it by given angles.  Angles are given in degrees. To convert radians to degrees, use this formula:  angle_in_degrees = angle_in_radians / numpy.pi * 180.0
+ * @brief Translate the image by a given vector and rotate it by given angles.  Angles are given in degrees. To convert
+ radians to degrees, use this formula:  angle_in_degrees = angle_in_radians / numpy.pi * 180.0
  * @category 'transform', 'in assistant', 'bia-bob-suggestion'
 
  */
@@ -33,7 +34,8 @@ rigid_transform_func(const Device::Pointer & device,
 
 /**
  * @name rotate
- * @brief Rotate the image by given angles.  Angles are given in degrees. To convert radians to degrees, use this formula:  angle_in_degrees = angle_in_radians / numpy.pi * 180.0
+ * @brief Rotate the image by given angles.  Angles are given in degrees. To convert radians to degrees, use this
+ formula:  angle_in_degrees = angle_in_radians / numpy.pi * 180.0
  * @category 'transform', 'in assistant'
 
  */
@@ -85,7 +87,9 @@ translate_func(const Device::Pointer & device,
 
 /**
  * @name closing_labels
- * @brief Apply a morphological closing operation to a label image.  The operation consists of iterative dilation and erosion of the labels. With every iteration, box and diamond/sphere structuring elements are used and thus, the operation has an octagon as structuring element.  Notes ----- * This operation assumes input images are isotropic.
+ * @brief Apply a morphological closing operation to a label image.  The operation consists of iterative dilation and
+ erosion of the labels. With every iteration, box and diamond/sphere structuring elements are used and thus, the
+ operation has an octagon as structuring element.  Notes ----- * This operation assumes input images are isotropic.
  * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
 
  */
@@ -96,7 +100,9 @@ closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
 
 /**
  * @name opening_labels
- * @brief Apply a morphological opening operation to a label image.  The operation consists of iterative erosion and dilation of the labels. With every iteration, box and diamond/sphere structuring elements are used and thus, the operation has an octagon as structuring element.  Notes ----- * This operation assumes input images are isotropic.
+ * @brief Apply a morphological opening operation to a label image.  The operation consists of iterative erosion and
+ dilation of the labels. With every iteration, box and diamond/sphere structuring elements are used and thus, the
+ operation has an octagon as structuring element.  Notes ----- * This operation assumes input images are isotropic.
  * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
 
  */
@@ -107,7 +113,10 @@ opening_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
 
 /**
  * @name voronoi_otsu_labeling
- * @brief Labels objects directly from grey-value images.  The two sigma parameters allow tuning the segmentation result. Under the hood, this filter applies two Gaussian blurs, spot detection, Otsu-thresholding [2] and Voronoi-labeling [3]. The thresholded binary image is flooded using the Voronoi tesselation approach starting from the found local maxima.  Notes ----- * This operation assumes input images are isotropic.
+ * @brief Labels objects directly from grey-value images.  The two sigma parameters allow tuning the segmentation
+ * result. Under the hood, this filter applies two Gaussian blurs, spot detection, Otsu-thresholding [2] and
+ * Voronoi-labeling [3]. The thresholded binary image is flooded using the Voronoi tesselation approach starting from
+ * the found local maxima.  Notes ----- * This operation assumes input images are isotropic.
  * @category 'label', 'in assistant', 'bia-bob-suggestion'
  * @link https://clij.github.io/clij2-docs/reference_voronoiOtsuLabeling
  * @link https://ieeexplore.ieee.org/document/4310076

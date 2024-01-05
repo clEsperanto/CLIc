@@ -12,7 +12,9 @@ namespace cle::tier3
 {
 /**
  * @name bounding_box
- * @brief Determines the bounding box of all non-zero pixels in a binary image.  If called from macro, the positions will be stored in a new row of ImageJs Results table in the columns 'BoundingBoxX', 'BoundingBoxY', 'BoundingBoxZ', 'BoundingBoxWidth', 'BoundingBoxHeight' 'BoundingBoxDepth'.In case of 2D images Z and depth will be zero.
+ * @brief Determines the bounding box of all non-zero pixels in a binary image.  If called from macro, the positions
+ * will be stored in a new row of ImageJs Results table in the columns 'BoundingBoxX', 'BoundingBoxY', 'BoundingBoxZ',
+ * 'BoundingBoxWidth', 'BoundingBoxHeight' 'BoundingBoxDepth'.In case of 2D images Z and depth will be zero.
  * @link https://clij.github.io/clij2-docs/reference_boundingBox
  */
 auto
@@ -21,7 +23,8 @@ bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) ->
 
 /**
  * @name center_of_mass
- * @brief Determines the center of mass of an image or image stack.  It writes the result in the results table in the columns MassX, MassY and MassZ.
+ * @brief Determines the center of mass of an image or image stack.  It writes the result in the results table in the
+ * columns MassX, MassY and MassZ.
  * @link https://clij.github.io/clij2-docs/reference_centerOfMass
  */
 auto
@@ -30,7 +33,10 @@ center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) 
 
 /**
  * @name exclude_labels
- * @brief This operation removes labels from a labelmap and renumbers the remaining labels.  Hand over a binary flag list vector starting with a flag for the background, continuing with label1, label2, ...  For example if you pass 0,1,0,0,1: Labels 1 and 4 will be removed (those with a 1 in the vector will be excluded). Labels 2 and 3 will be kept and renumbered to 1 and 2.
+ * @brief This operation removes labels from a labelmap and renumbers the remaining labels.  Hand over a binary flag
+ * list vector starting with a flag for the background, continuing with label1, label2, ...  For example if you pass
+ * 0,1,0,0,1: Labels 1 and 4 will be removed (those with a 1 in the vector will be excluded). Labels 2 and 3 will be
+ * kept and renumbered to 1 and 2.
  * @link https://clij.github.io/clij2-docs/reference_excludeLabels
  */
 auto
@@ -42,7 +48,8 @@ exclude_labels_func(const Device::Pointer & device,
 
 /**
  * @name exclude_labels_on_edges
- * @brief Removes all labels from a label map which touch the edges of the image (in X, Y and Z if the image is 3D).  Remaining label elements are renumbered afterwards.
+ * @brief Removes all labels from a label map which touch the edges of the image (in X, Y and Z if the image is 3D).
+ * Remaining label elements are renumbered afterwards.
  * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @link https://clij.github.io/clij2-docs/reference_excludeLabelsOnEdges
  */
@@ -57,7 +64,9 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
 
 /**
  * @name flag_existing_labels
- * @brief Given a label map this function will generate a binary vector where all pixels are set to 1 if label with given x-coordinate in the vector exists. For example a label image such as ``` 0 1 3 5 ```  will produce a flag_vector like this: ``` 1 1 0 1 0 1 ```
+ * @brief Given a label map this function will generate a binary vector where all pixels are set to 1 if label with
+ given x-coordinate in the vector exists. For example a label image such as ``` 0 1 3 5 ```  will produce a flag_vector
+ like this: ``` 1 1 0 1 0 1 ```
 
  */
 auto
@@ -67,7 +76,9 @@ flag_existing_labels_func(const Device::Pointer & device, const Array::Pointer &
 
 /**
  * @name gamma_correction
- * @brief Applies a gamma correction to an image.  Therefore, all pixels x of the Image X are normalized and the power to gamma g is computed, before normlization is reversed (^ is the power operator):f(x) = (x / max(X)) ^ gamma * max(X)
+ * @brief Applies a gamma correction to an image.  Therefore, all pixels x of the Image X are normalized and the power
+ * to gamma g is computed, before normlization is reversed (^ is the power operator):f(x) = (x / max(X)) ^ gamma *
+ * max(X)
  * @category 'filter', 'in assistant'
  * @link https://clij.github.io/clij2-docs/reference_gammaCorrection
  */
@@ -78,7 +89,9 @@ gamma_correction_func(const Device::Pointer & device, const Array::Pointer & src
 
 /**
  * @name generate_binary_overlap_matrix
- * @brief Takes two labelmaps with n and m labels and generates a (n+1)*(m+1) matrix where all pixels are set to 0 exept those where labels overlap between the label maps.  For example, if labels 3 in labelmap1 and 4 in labelmap2 are touching then the pixel (3,4) in the matrix will be set to 1.
+ * @brief Takes two labelmaps with n and m labels and generates a (n+1)*(m+1) matrix where all pixels are set to 0 exept
+ * those where labels overlap between the label maps.  For example, if labels 3 in labelmap1 and 4 in labelmap2 are
+ * touching then the pixel (3,4) in the matrix will be set to 1.
  * @link https://clij.github.io/clij2-docs/reference_generateBinaryOverlapMatrix
  */
 auto
@@ -90,7 +103,10 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
 
 /**
  * @name generate_touch_matrix
- * @brief Takes a labelmap with n labels and generates a (n+1)*(n+1) matrix where all pixels are set to 0 exept those where labels are touching.  Only half of the matrix is filled (with x < y). For example, if labels 3 and 4 are touching then the pixel (3,4) in the matrix will be set to 1. The touch matrix is a representation of a region adjacency graph
+ * @brief Takes a labelmap with n labels and generates a (n+1)*(n+1) matrix where all pixels are set to 0 exept those
+ * where labels are touching.  Only half of the matrix is filled (with x < y). For example, if labels 3 and 4 are
+ * touching then the pixel (3,4) in the matrix will be set to 1. The touch matrix is a representation of a region
+ * adjacency graph
  * @category 'bia-bob-suggestion'
  * @link https://clij.github.io/clij2-docs/reference_generateTouchMatrix
  */
@@ -101,7 +117,18 @@ generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer 
 
 /**
  * @name histogram
- * @brief Determines the histogram of a given image.  The histogram image is of dimensions number_of_bins/1/1; a 3D image with height=1 and depth=1. Histogram bins contain the number of pixels with intensity in this corresponding bin. The histogram bins are uniformly distributed between given minimum and maximum grey value intensity. If the flag determine_min_max is set, minimum and maximum intensity will be determined. When calling this operation many times, it is recommended to determine minimum and maximum intensity once at the beginning and handing over these values.  Author(s): Robert Haase adapted work from Aaftab Munshi, Benedict Gaster, Timothy Mattson, James Fung, Dan Ginsburg  License: // adapted code from // https://github.com/bgaster/opencl-book-samples/blob/master/src/Chapter_14/histogram/histogram_image.cl // // It was published unter BSD license according to // https://code.google.com/archive/p/opencl-book-samples/ // // Book:      OpenCL(R) Programming Guide // Authors:   Aaftab Munshi, Benedict Gaster, Timothy Mattson, James Fung, Dan Ginsburg // ISBN-10:   0-321-74964-2 // ISBN-13:   978-0-321-74964-2 // Publisher: Addison-Wesley Professional // URLs:      http://safari.informit.com/9780132488006/ //            http://www.openclprogrammingguide.com
+ * @brief Determines the histogram of a given image.  The histogram image is of dimensions number_of_bins/1/1; a 3D
+ * image with height=1 and depth=1. Histogram bins contain the number of pixels with intensity in this corresponding
+ * bin. The histogram bins are uniformly distributed between given minimum and maximum grey value intensity. If the flag
+ * determine_min_max is set, minimum and maximum intensity will be determined. When calling this operation many times,
+ * it is recommended to determine minimum and maximum intensity once at the beginning and handing over these values.
+ * Author(s): Robert Haase adapted work from Aaftab Munshi, Benedict Gaster, Timothy Mattson, James Fung, Dan Ginsburg
+ * License: // adapted code from //
+ * https://github.com/bgaster/opencl-book-samples/blob/master/src/Chapter_14/histogram/histogram_image.cl // // It was
+ * published unter BSD license according to // https://code.google.com/archive/p/opencl-book-samples/ // // Book:
+ * OpenCL(R) Programming Guide // Authors:   Aaftab Munshi, Benedict Gaster, Timothy Mattson, James Fung, Dan Ginsburg
+ * // ISBN-10:   0-321-74964-2 // ISBN-13:   978-0-321-74964-2 // Publisher: Addison-Wesley Professional // URLs:
+ * http://safari.informit.com/9780132488006/ //            http://www.openclprogrammingguide.com
  * @link https://github.com/bgaster/opencl-book-samples/blob/master/src/Chapter_14/histogram/histogram_image.cl
  * @link https://code.google.com/archive/p/opencl-book-samples/
  * @link http://safari.informit.com/9780132488006/
@@ -119,7 +146,10 @@ histogram_func(const Device::Pointer & device,
 
 /**
  * @name jaccard_index
- * @brief Determines the overlap of two binary images using the Jaccard index.  A value of 0 suggests no overlap, 1 means perfect overlap. The resulting Jaccard index is saved to the results table in the 'Jaccard_Index' column. Note that the Sorensen-Dice coefficient can be calculated from the Jaccard index j using this formula: <pre>s = f(j) = 2 j / (j + 1)</pre>
+ * @brief Determines the overlap of two binary images using the Jaccard index.  A value of 0 suggests no overlap, 1
+ * means perfect overlap. The resulting Jaccard index is saved to the results table in the 'Jaccard_Index' column. Note
+ * that the Sorensen-Dice coefficient can be calculated from the Jaccard index j using this formula: <pre>s = f(j) = 2 j
+ * / (j + 1)</pre>
  * @link https://clij.github.io/clij2-docs/reference_jaccardIndex
  */
 auto
@@ -128,7 +158,9 @@ jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src1, 
 
 /**
  * @name labelled_spots_to_pointlist
- * @brief Generates a coordinate list of points in a labelled spot image.  Transforms a labelmap of spots (single pixels with values 1, 2, ..., n for n spots) as resulting from connected components analysis in an image where every column contains d pixels (with d = dimensionality of the original image) with the coordinates of the maxima/minima.
+ * @brief Generates a coordinate list of points in a labelled spot image.  Transforms a labelmap of spots (single pixels
+ * with values 1, 2, ..., n for n spots) as resulting from connected components analysis in an image where every column
+ * contains d pixels (with d = dimensionality of the original image) with the coordinates of the maxima/minima.
  * @category 'bia-bob-suggestion'
  * @link https://clij.github.io/clij2-docs/reference_labelledSpotsToPointList
  */

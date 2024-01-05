@@ -12,7 +12,8 @@ namespace cle::tier6
 {
 /**
  * @name dilate_labels
- * @brief Dilates labels to a larger size. No label overwrites another label. Similar to the implementation in scikit-image [2] and MorpholibJ[3]  Notes ----- * This operation assumes input images are isotropic.
+ * @brief Dilates labels to a larger size. No label overwrites another label. Similar to the implementation in
+ * scikit-image [2] and MorpholibJ[3]  Notes ----- * This operation assumes input images are isotropic.
  * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @link https://clij.github.io/clij2-docs/reference_dilateLabels
  * @link https://scikit-image.org/docs/dev/auto_examples/segmentation/plot_expand_labels.html?highlight=expand%20labels
@@ -25,7 +26,9 @@ dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
 
 /**
  * @name erode_labels
- * @brief Erodes labels to a smaller size. Note: Depending on the label image and the radius, labels may disappear and labels may split into multiple islands. Thus, overlapping labels of input and output may not have the same identifier.  Notes ----- * This operation assumes input images are isotropic.
+ * @brief Erodes labels to a smaller size. Note: Depending on the label image and the radius, labels may disappear and
+ * labels may split into multiple islands. Thus, overlapping labels of input and output may not have the same
+ * identifier.  Notes ----- * This operation assumes input images are isotropic.
  * @category 'label processing', 'in assistant'
  * @link https://clij.github.io/clij2-docs/reference_erodeLabels
  */
@@ -39,7 +42,8 @@ erode_labels_func(const Device::Pointer & device,
 
 /**
  * @name masked_voronoi_labeling
- * @brief Takes a binary image, labels connected components and dilates the regions using a octagon shape until they touch. The region growing is limited to a masked area.  The resulting label map is written to the output.
+ * @brief Takes a binary image, labels connected components and dilates the regions using a octagon shape until they
+ * touch. The region growing is limited to a masked area.  The resulting label map is written to the output.
  * @category 'label', 'bia-bob-suggestion'
  * @link https://clij.github.io/clij2-docs/reference_maskedVoronoiLabeling
  */
@@ -52,7 +56,8 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
 
 /**
  * @name voronoi_labeling
- * @brief Takes a binary image, labels connected components and dilates the regions using a octagon shape until they touch.  The resulting label map is written to the output.
+ * @brief Takes a binary image, labels connected components and dilates the regions using a octagon shape until they
+ * touch.  The resulting label map is written to the output.
  * @category 'label', 'in assistant', 'bia-bob-suggestion'
  * @link https://clij.github.io/clij2-docs/reference_voronoiLabeling
  */
