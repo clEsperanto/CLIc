@@ -67,15 +67,15 @@ exclude_labels_func(const Device::Pointer & device,
  * @name exclude_labels_on_edges
  * @priority 1
  * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
- * @brief Removes all labels from a label map which touch the edges of the image (in X, Y and Z if the image is 3D).
- * Remaining label elements are renumbered afterwards.
+ * @brief Removes all labels from a label map which touch the edges of the image. Remaining label elements are
+ * renumbered afterwards.
  *
  * @param device Device to perform the operation on. [const Device::Pointer & ( = None )]
- * @param src [const Array::Pointer & ( = True )]
- * @param dst [Array::Pointer ( = True )]
- * @param exclude_x Exclude labels along min and max x (default is True) [bool ( = True )]
- * @param exclude_y Exclude labels along min and max y (default is True) [bool ( = None )]
- * @param exclude_z Exclude labels along min and max z (default is True) [bool ( = None )]
+ * @param src [const Array::Pointer &]
+ * @param dst [Array::Pointer ( = None )]
+ * @param exclude_x Exclude labels along min and max x [bool ( = True )]
+ * @param exclude_y Exclude labels along min and max y [bool ( = True )]
+ * @param exclude_z Exclude labels along min and max z [bool ( = True )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_excludeLabelsOnEdges

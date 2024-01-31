@@ -1917,6 +1917,7 @@ set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int p
  * @name set_ramp_x
  * @brief Sets all pixel values to their X coordinate.
  *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @return Array::Pointer
  *
@@ -1930,6 +1931,7 @@ set_ramp_x_func(const Device::Pointer & device, const Array::Pointer & src) -> A
  * @name set_ramp_y
  * @brief Sets all pixel values to their Y coordinate.
  *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @return Array::Pointer
  *
@@ -1943,6 +1945,7 @@ set_ramp_y_func(const Device::Pointer & device, const Array::Pointer & src) -> A
  * @name set_ramp_z
  * @brief Sets all pixel values to their Z coordinate.
  *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @return Array::Pointer
  *
@@ -1974,7 +1977,7 @@ set_row_func(const Device::Pointer & device, const Array::Pointer & src, int row
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param dst [const Array::Pointer & ( = None)]
+ * @param dst [Array::Pointer ( = None )]
  * @param offset [int ( = 1 )]
  * @return Array::Pointer
  *
