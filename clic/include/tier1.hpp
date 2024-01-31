@@ -1690,6 +1690,26 @@ power_images_func(const Device::Pointer & device,
                   Array::Pointer          dst) -> Array::Pointer;
 
 
+/**
+ * @name range
+ * @category 'transform', 'in assistant'
+ * @brief Crops an image according to a defined range and step size.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src First input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param start_x [int ( = None )]
+ * @param stop_x [int ( = None )]
+ * @param step_x [int ( = None )]
+ * @param start_y [int ( = None )]
+ * @param stop_y [int ( = None )]
+ * @param step_y [int ( = None )]
+ * @param start_z [int ( = None )]
+ * @param stop_z [int ( = None )]
+ * @param step_z [int ( = None )]
+ * @return Array::Pointer
+ *
+ */
 auto
 range_func(const Device::Pointer & device,
            const Array::Pointer &  src,
