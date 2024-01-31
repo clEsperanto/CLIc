@@ -3,7 +3,7 @@
 #include <array>
 #include <gtest/gtest.h>
 
-class TestDivideImageAndScalar : public ::testing::TestWithParam<std::string>
+class TestDivideScalarAndImage : public ::testing::TestWithParam<std::string>
 {
 protected:
   const float                   value = 10;
@@ -16,11 +16,11 @@ protected:
   SetUp()
   {
     std::fill(input.begin(), input.end(), static_cast<float>(value));
-    std::fill(valid.begin(), valid.end(), static_cast<float>(value / scalar));
+    std::fill(valid.begin(), valid.end(), static_cast<float>(scalar / value));
   }
 };
 
-TEST_P(TestDivideImageAndScalar, execute)
+TEST_P(TestDivideScalarAndImage, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -30,7 +30,7 @@ TEST_P(TestDivideImageAndScalar, execute)
   auto gpu_input = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
-  auto gpu_output = cle::tier1::divide_image_and_scalar_func(device, gpu_input, nullptr, scalar);
+  auto gpu_output = cle::tier1::divide_scalar_by_image_func(device, gpu_input, nullptr, scalar);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
@@ -52,4 +52,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDivideImageAndScalar, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDivideScalarAndImage, ::testing::ValuesIn(getParameters()));
