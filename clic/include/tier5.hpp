@@ -36,7 +36,7 @@ array_equal_func(const Device::Pointer & device, const Array::Pointer & src0, co
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src0 label image to add labels to. [const Array::Pointer &]
  * @param src1 label image to add labels from. [const Array::Pointer &]
- * @param dst  Output label image. [Array::Pointer ( = None )]
+ * @param dst Output label image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  */
@@ -57,7 +57,7 @@ combine_labels_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Binary image to label. [const Array::Pointer &]
  * @param dst Output label image. [Array::Pointer ( = None )]
- * @param connectivity Defines which pixel intensities contribute to a neighbor relationship. [string ( = 'box' )]
+ * @param connectivity Defines pixel neighborhood relationship. [const std::string & ( = 'box' )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_connectedComponentsLabelingBox

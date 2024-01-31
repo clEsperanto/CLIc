@@ -189,11 +189,11 @@ generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer 
  * http://www.openclprogrammingguide.com
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer & ( = None )]
- * @param dst [Array::Pointer ( = 256 )]
- * @param nbins [int ( = None )]
- * @param NaN [float          min ( = None )]
- * @param NaN [float          max ( = True )]
+ * @param src [const Array::Pointer &]
+ * @param dst [Array::Pointer ( = None )]
+ * @param nbins [int ( = 256 )]
+ * @param min [float ( = None )]
+ * @param max [float ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_histogram

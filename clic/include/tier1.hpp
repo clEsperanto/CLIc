@@ -36,10 +36,8 @@ absolute_func(const Device::Pointer & device, const Array::Pointer & src, Array:
  * @param src0 The first input image to added. [const Array::Pointer &]
  * @param src1 The second image to be added. [const Array::Pointer &]
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
- * @param factor0 The constant number which will be multiplied with each pixel of summand1 before adding it. [float ( =
- * 1 )]
- * @param factor1 The constant number which will be multiplied with each pixel of summand2 before adding it. [float ( =
- * 1 )]
+ * @param factor0 Multiplication factor of each pixel of src0 before adding it. [float ( = 1 )]
+ * @param factor1 Multiplication factor of each pixel of src1 before adding it. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_addImagesWeighted
@@ -224,9 +222,9 @@ block_enumerate_func(const Device::Pointer & device,
  * and Z.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image to process. [const Array::Pointer &]
+ * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_convolve
@@ -243,8 +241,8 @@ convolve_func(const Device::Pointer & device,
  * @brief Copies an image. <pre>f(x) = x</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_copy
@@ -261,8 +259,8 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
  * this method. Otherwise, CLIJ create the image stack with z planes.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param slice [int ( = 0 )]
  * @return Array::Pointer
  *
@@ -279,8 +277,8 @@ copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * copies a given slice at position y in an image stack to a 2D image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param slice [int ( = 0 )]
  * @return Array::Pointer
  *
@@ -297,8 +295,8 @@ copy_horizontal_slice_func(const Device::Pointer & device, const Array::Pointer 
  * copies a given slice at position x in an image stack to a 2D image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param slice [int ( = 0 )]
  * @return Array::Pointer
  *
@@ -315,8 +313,8 @@ copy_vertical_slice_func(const Device::Pointer & device, const Array::Pointer & 
  * be overwritten and keep it's dimensions.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param start_x [int ( = 0 )]
  * @param start_y [int ( = 0 )]
  * @param start_z [int ( = 0 )]
@@ -346,8 +344,8 @@ crop_func(const Device::Pointer & device,
  * @brief Computes the cubic root of each pixel.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  */
@@ -361,8 +359,8 @@ cubic_root_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @brief Takes a labelmap and returns an image where all pixels on label edges are set to 1 and all other pixels to 0.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_detectLabelEdges
@@ -418,8 +416,8 @@ detect_minima_box_func(const Device::Pointer & device, const Array::Pointer & sr
  * and 255.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_dilateBox
@@ -436,8 +434,8 @@ dilate_box_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * image with pixel value not equal to 0 will be interpreted as 1.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_dilateSphere
@@ -453,9 +451,9 @@ dilate_sphere_func(const Device::Pointer & device, const Array::Pointer & src, A
  * @brief Divides two images X and Y by each other pixel wise. <pre>f(x, y) = x / y</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image to process. [const Array::Pointer &]
+ * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_divideImages
@@ -473,8 +471,8 @@ divide_images_func(const Device::Pointer & device,
  * @brief Divides a scalar by an image pixel by pixel. <pre>f(x, s) = s / x</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param scalar [float ( = 0 )]
  * @return Array::Pointer
  *
@@ -531,8 +529,8 @@ equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, 
  * and 255.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_erodeBox
@@ -549,8 +547,8 @@ erode_box_func(const Device::Pointer & device, const Array::Pointer & src, Array
  * image with pixel value not equal to 0 will be interpreted as 1.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_erodeSphere
@@ -566,8 +564,8 @@ erode_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  * @brief Computes base exponential of all pixels values. f(x) = exp(x) Author(s): Peter Haub, Robert Haase
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_exponential
@@ -581,8 +579,8 @@ exponential_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  * @brief Flips an image in X, Y and/or Z direction depending on boolean flags.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param flip_x [bool ( = True )]
  * @param flip_y [bool ( = True )]
  * @param flip_z [bool ( = True )]
@@ -608,8 +606,8 @@ flip_func(const Device::Pointer & device,
  * blurred.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param sigma_x [float ( = 0 )]
  * @param sigma_y [float ( = 0 )]
  * @param sigma_z [float ( = 0 )]
@@ -638,9 +636,9 @@ gaussian_blur_func(const Device::Pointer & device,
  * meshes.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image to process. [const Array::Pointer &]
+ * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_generateDistanceMatrix
@@ -659,8 +657,8 @@ generate_distance_matrix_func(const Device::Pointer & device,
  * the target image will be saved as: <pre>b' = c a;</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_gradientX
@@ -676,8 +674,8 @@ gradient_x_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * the target image will be saved as: <pre>b' = c a;</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_gradientY
@@ -693,8 +691,8 @@ gradient_y_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * the target image will be saved as: <pre>b' = c a;</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_gradientZ
@@ -709,9 +707,9 @@ gradient_z_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @brief Determines if two images A and B greater pixel wise. f(a, b) = 1 if a > b; 0 otherwise.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image to process. [const Array::Pointer &]
+ * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_greater
@@ -729,8 +727,8 @@ greater_func(const Device::Pointer & device,
  * @brief Determines if two images A and B greater pixel wise. f(a, b) = 1 if a > b; 0 otherwise.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param scalar [float ( = 0 )]
  * @return Array::Pointer
  *
@@ -747,9 +745,9 @@ greater_constant_func(const Device::Pointer & device, const Array::Pointer & src
  * @brief Determines if two images A and B greater or equal pixel wise. f(a, b) = 1 if a >= b; 0 otherwise.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image to process. [const Array::Pointer &]
+ * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_greaterOrEqual
@@ -767,8 +765,8 @@ greater_or_equal_func(const Device::Pointer & device,
  * @brief Determines if two images A and B greater or equal pixel wise. f(a, b) = 1 if a >= b; 0 otherwise.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param scalar [float ( = 0 )]
  * @return Array::Pointer
  *
@@ -791,7 +789,7 @@ greater_or_equal_constant_func(const Device::Pointer & device,
  * small_hessian_eigenvalue() and/or large_hessian_eigenvalue() instead which return only one image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @param small_eigenvalue [Array::Pointer ( = None )]
  * @param middle_eigenvalue [Array::Pointer ( = None )]
  * @param large_eigenvalue [Array::Pointer ( = None )]
@@ -812,8 +810,8 @@ hessian_eigenvalues_func(const Device::Pointer & device,
  * @brief Applies the Laplace operator (Box neighborhood) to an image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_laplaceBox
@@ -828,8 +826,8 @@ laplace_box_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  * @brief Applies the Laplace operator (Diamond neighborhood) to an image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_laplaceDiamond
@@ -844,9 +842,9 @@ laplace_diamond_func(const Device::Pointer & device, const Array::Pointer & src,
  * @brief Compute the cross correlation of an image to a given kernel.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image to process. [const Array::Pointer &]
+ * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  */
@@ -864,8 +862,8 @@ local_cross_correlation_func(const Device::Pointer & device,
  * @brief Computes base e logarithm of all pixels values. f(x) = log(x) Author(s): Peter Haub, Robert Haase
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_logarithm
@@ -882,9 +880,9 @@ logarithm_func(const Device::Pointer & device, const Array::Pointer & src, Array
  * = (x if (m != 0); (0 otherwise))</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @param mask [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_mask
@@ -903,9 +901,9 @@ mask_func(const Device::Pointer & device, const Array::Pointer & src, const Arra
  * == i); (0 otherwise))
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image to process. [const Array::Pointer &]
+ * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param label [float ( = 1 )]
  * @return Array::Pointer
  *
@@ -926,8 +924,8 @@ mask_label_func(const Device::Pointer & device,
  * s)</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param scalar [float ( = 0 )]
  * @return Array::Pointer
  *
@@ -947,9 +945,9 @@ maximum_image_and_scalar_func(const Device::Pointer & device,
  * y)</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image to process. [const Array::Pointer &]
+ * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_maximumImages
@@ -968,11 +966,11 @@ maximum_images_func(const Device::Pointer & device,
  * halfheight and halfdepth (radius).
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [int ( = 1 )]
- * @param radius_y [int ( = 1 )]
- * @param radius_z [int ( = 1 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [int ( = 1 )]
+ * @param radius_y Radius size along y axis. [int ( = 1 )]
+ * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_maximum3DBox
@@ -992,8 +990,8 @@ maximum_box_func(const Device::Pointer & device,
  * @brief Determines the maximum intensity projection of an image along X.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_maximumXProjection
@@ -1009,8 +1007,8 @@ maximum_x_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @brief Determines the maximum intensity projection of an image along X.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_maximumYProjection
@@ -1026,8 +1024,8 @@ maximum_y_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @brief Determines the maximum intensity projection of an image along Z.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_maximumZProjection
@@ -1044,11 +1042,11 @@ maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer &
  * halfwidth, halfheight and halfdepth (radius).
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [int ( = 1 )]
- * @param radius_y [int ( = 1 )]
- * @param radius_z [int ( = 1 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [int ( = 1 )]
+ * @param radius_y Radius size along y axis. [int ( = 1 )]
+ * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_mean3DBox
@@ -1069,11 +1067,11 @@ mean_box_func(const Device::Pointer & device,
  * halfwidth, halfheight and halfdepth (radius).
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [int ( = 1 )]
- * @param radius_y [int ( = 1 )]
- * @param radius_z [int ( = 1 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [int ( = 1 )]
+ * @param radius_y Radius size along y axis. [int ( = 1 )]
+ * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_mean3DSphere
@@ -1093,8 +1091,8 @@ mean_sphere_func(const Device::Pointer & device,
  * @brief Determines the mean average intensity projection of an image along X.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_meanXProjection
@@ -1110,8 +1108,8 @@ mean_x_projection_func(const Device::Pointer & device, const Array::Pointer & sr
  * @brief Determines the mean average intensity projection of an image along Y.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_meanYProjection
@@ -1127,8 +1125,8 @@ mean_y_projection_func(const Device::Pointer & device, const Array::Pointer & sr
  * @brief Determines the mean average intensity projection of an image along Z.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_meanZProjection
@@ -1145,11 +1143,11 @@ mean_z_projection_func(const Device::Pointer & device, const Array::Pointer & sr
  * halfheight (radius). For technical reasons, the area of the box must have less than 1000 pixels.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [int ( = 1 )]
- * @param radius_y [int ( = 1 )]
- * @param radius_z [int ( = 1 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [int ( = 1 )]
+ * @param radius_y Radius size along y axis. [int ( = 1 )]
+ * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_median3DBox
@@ -1170,11 +1168,11 @@ median_box_func(const Device::Pointer & device,
  * halfheight (radius). For technical reasons, the area of the box must have less than 1000 pixels.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [int ( = 1 )]
- * @param radius_y [int ( = 1 )]
- * @param radius_z [int ( = 1 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [int ( = 1 )]
+ * @param radius_y Radius size along y axis. [int ( = 1 )]
+ * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_median3DSphere
@@ -1195,11 +1193,11 @@ median_sphere_func(const Device::Pointer & device,
  * halfheight and halfdepth (radius).
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [int ( = 0 )]
- * @param radius_y [int ( = 0 )]
- * @param radius_z [int ( = 0 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [int ( = 0 )]
+ * @param radius_y Radius size along y axis. [int ( = 0 )]
+ * @param radius_z Radius size along z axis. [int ( = 0 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_minimum3DBox
@@ -1220,8 +1218,8 @@ minimum_box_func(const Device::Pointer & device,
  * s)</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param scalar [float ( = 0 )]
  * @return Array::Pointer
  *
@@ -1241,9 +1239,9 @@ minimum_image_and_scalar_func(const Device::Pointer & device,
  * y)</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image to process. [const Array::Pointer &]
+ * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_minimumImages
@@ -1261,8 +1259,8 @@ minimum_images_func(const Device::Pointer & device,
  * @brief Determines the minimum intensity projection of an image along Y.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_minimumXProjection
@@ -1278,8 +1276,8 @@ minimum_x_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @brief Determines the minimum intensity projection of an image along Y.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_minimumYProjection
@@ -1295,8 +1293,8 @@ minimum_y_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @brief Determines the minimum intensity projection of an image along Z.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_minimumZProjection
@@ -1322,11 +1320,11 @@ minimum_of_masked_pixels_reduction_func(const Device::Pointer & device,
  * smallest one is returned.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [int ( = 1 )]
- * @param radius_y [int ( = 1 )]
- * @param radius_z [int ( = 1 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [int ( = 1 )]
+ * @param radius_y Radius size along y axis. [int ( = 1 )]
+ * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
  */
@@ -1348,11 +1346,11 @@ mode_box_func(const Device::Pointer & device,
  * frequency, the smallest one is returned.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [int ( = 1 )]
- * @param radius_y [int ( = 1 )]
- * @param radius_z [int ( = 1 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [int ( = 1 )]
+ * @param radius_y Radius size along y axis. [int ( = 1 )]
+ * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
  */
@@ -1371,9 +1369,9 @@ mode_sphere_func(const Device::Pointer & device,
  * @brief Computes the remainder of a division of pairwise pixel values in two images
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image to process. [const Array::Pointer &]
+ * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  */
@@ -1384,6 +1382,18 @@ modulo_images_func(const Device::Pointer & device,
                    Array::Pointer          dst) -> Array::Pointer;
 
 
+/**
+ * @name multiply_image_and_position
+ * @brief Multiplies all pixel intensities with the x, y or z coordinate, depending on specified dimension.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param dimension Dimension (0,1,2) to use in the operation. [int ( = 0 )]
+ * @return Array::Pointer
+ *
+ * @link https://clij.github.io/clij2-docs/reference_multiplyImageAndCoordinate
+ */
 auto
 multiply_image_and_position_func(const Device::Pointer & device,
                                  const Array::Pointer &  src,
@@ -1438,19 +1448,20 @@ multiply_images_func(const Device::Pointer & device,
  * to specify those values.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst default 0 [Array::Pointer ( = None )]
- * @param NaN [float          nan ( = 0 )]
- * @param pINF [float          posinf ( = np.nan_to_num(np.inf) )]
- * @param nINF default a very small number [float          neginf ( = np.nan_to_num(-np.inf) )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param nan Value to replace nan with. [float ( = 0 )]
+ * @param posinf Value to replace +inf with. [float ( = np.nan_to_num(np.inf) )]
+ * @param neginf Value to replace -inf with. [float ( = np.nan_to_num(-np.inf) )]
  * @return Array::Pointer
  *
+ * @link https://numpy.org/doc/stable/reference/generated/numpy.nan_to_num.html
  */
 auto
 nan_to_num_func(const Device::Pointer & device,
                 const Array::Pointer &  src,
                 Array::Pointer          dst,
-                float                   nan = NaN,
+                float                   nan = 0,
                 float                   posinf = pINF,
                 float                   neginf = nINF) -> Array::Pointer;
 
@@ -1462,9 +1473,9 @@ nan_to_num_func(const Device::Pointer & device,
  * image should be initialized by copying the original image in advance.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst0 [Array::Pointer]
- * @param dst1 [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst0 Output flag (0 or 1). [Array::Pointer]
+ * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_nonzeroMaximumBox
@@ -1483,9 +1494,9 @@ nonzero_maximum_box_func(const Device::Pointer & device,
  * result image should be initialized by copying the original image in advance.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst0 [Array::Pointer]
- * @param dst1 [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst0 Output flag (0 or 1). [Array::Pointer]
+ * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_nonzeroMaximumDiamond
@@ -1504,9 +1515,9 @@ nonzero_maximum_diamond_func(const Device::Pointer & device,
  * image should be initialized by copying the original image in advance.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst0 [Array::Pointer]
- * @param dst1 [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst0 Output flag (0 or 1). [Array::Pointer]
+ * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_nonzeroMinimumBox
@@ -1525,9 +1536,9 @@ nonzero_minimum_box_func(const Device::Pointer & device,
  * result image should be initialized by copying the original image in advance.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst0 [Array::Pointer]
- * @param dst1 [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst0 Output flag (0 or 1). [Array::Pointer]
+ * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_nonzeroMinimumDiamond
@@ -1583,8 +1594,8 @@ not_equal_constant_func(const Device::Pointer & device, const Array::Pointer & s
  * @brief Pastes an image into another image at a given position.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param index_x [int ( = 0 )]
  * @param index_y [int ( = 0 )]
  * @param index_z [int ( = 0 )]
@@ -1606,7 +1617,7 @@ paste_func(const Device::Pointer & device,
  * @brief Apply a local maximum filter to an image which only overwrites pixels with value 0.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @param dst0 [Array::Pointer]
  * @param dst1 [Array::Pointer ( = None )]
  * @return Array::Pointer
@@ -1625,7 +1636,7 @@ onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
  * @brief Apply a local maximum filter to an image which only overwrites pixels with value 0.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @param dst0 [Array::Pointer]
  * @param dst1 [Array::Pointer ( = None )]
  * @return Array::Pointer
@@ -1646,8 +1657,8 @@ onlyzero_overwrite_maximum_diamond_func(const Device::Pointer & device,
  * @brief Computes all pixels value x to the power of a given exponent a. <pre>f(x, a) = x ^ a</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param scalar [float ( = 1 )]
  * @return Array::Pointer
  *
@@ -1665,9 +1676,9 @@ power_func(const Device::Pointer & device, const Array::Pointer & src, Array::Po
  * @brief Calculates x to the power of y pixel wise of two images X and Y.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image to process. [const Array::Pointer &]
+ * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_powerImages
@@ -1701,9 +1712,9 @@ range_func(const Device::Pointer & device,
  * intensities are stored in a new vector.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @param list [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  */
@@ -1720,9 +1731,9 @@ read_values_from_positions_func(const Device::Pointer & device,
  * @brief Replaces integer intensities specified in a vector image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image to process. [const Array::Pointer &]
+ * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_replaceIntensities
@@ -1739,8 +1750,8 @@ replace_values_func(const Device::Pointer & device,
  * @brief Replaces a specific intensity in an image with a given new value.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param scalar0 [float ( = 0 )]
  * @param scalar1 [float ( = 1 )]
  * @return Array::Pointer
@@ -1761,11 +1772,11 @@ replace_value_func(const Device::Pointer & device,
  * halfheight and halfdepth (radius).
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [float ( = 1 )]
- * @param radius_y [float ( = 1 )]
- * @param radius_z [float ( = 0 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 0 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_maximum3DSphere
@@ -1786,11 +1797,11 @@ maximum_sphere_func(const Device::Pointer & device,
  * halfheight and halfdepth (radius).
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [float ( = 1 )]
- * @param radius_y [float ( = 1 )]
- * @param radius_z [float ( = 1 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_minimum3DSphere
@@ -1809,9 +1820,9 @@ minimum_sphere_func(const Device::Pointer & device,
  * @brief Multiplies two matrices with each other. Shape of matrix1 should be equal to shape of matrix2 transposed.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image to process. [const Array::Pointer &]
+ * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_multiplyMatrix
@@ -1830,8 +1841,8 @@ multiply_matrix_func(const Device::Pointer & device,
  * [1]
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://numpy.org/doc/stable/reference/generated/numpy.reciprocal.html
@@ -1845,7 +1856,7 @@ reciprocal_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @brief Sets all pixel values x of a given image X to a constant value v. <pre>f(x) = v</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @param scalar [float ( = 0 )]
  * @return Array::Pointer
  *
@@ -1860,7 +1871,7 @@ set_func(const Device::Pointer & device, const Array::Pointer & src, float scala
  * @brief Sets all pixel values x of a given column in X to a constant value v.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @param column [int ( = 0 )]
  * @param value [float ( = 0 )]
  * @return Array::Pointer
@@ -1876,7 +1887,7 @@ set_column_func(const Device::Pointer & device, const Array::Pointer & src, int 
  * @brief Sets all pixel values at the image border to a given value.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @param value [float ( = 0 )]
  * @return Array::Pointer
  *
@@ -1891,7 +1902,7 @@ set_image_borders_func(const Device::Pointer & device, const Array::Pointer & sr
  * @brief Sets all pixel values x of a given plane in X to a constant value v.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @param plane [int ( = 0 )]
  * @param value [float ( = 0 )]
  * @return Array::Pointer
@@ -1906,7 +1917,7 @@ set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int p
  * @name set_ramp_x
  * @brief Sets all pixel values to their X coordinate.
  *
- * @param src [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_setRampX
@@ -1919,7 +1930,7 @@ set_ramp_x_func(const Device::Pointer & device, const Array::Pointer & src) -> A
  * @name set_ramp_y
  * @brief Sets all pixel values to their Y coordinate.
  *
- * @param src [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_setRampY
@@ -1932,7 +1943,7 @@ set_ramp_y_func(const Device::Pointer & device, const Array::Pointer & src) -> A
  * @name set_ramp_z
  * @brief Sets all pixel values to their Z coordinate.
  *
- * @param src [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_setRampZ
@@ -1946,7 +1957,7 @@ set_ramp_z_func(const Device::Pointer & device, const Array::Pointer & src) -> A
  * @brief Sets all pixel values x of a given row in X to a constant value v.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @param row [int ( = 0 )]
  * @param value [float ( = 0 )]
  * @return Array::Pointer
@@ -1962,7 +1973,7 @@ set_row_func(const Device::Pointer & device, const Array::Pointer & src, int row
  * @brief Replaces all 0 value pixels in an image with the index of a pixel.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @param dst [const Array::Pointer & ( = None)]
  * @param offset [int ( = 1 )]
  * @return Array::Pointer
@@ -1980,7 +1991,7 @@ set_nonzero_pixels_to_pixelindex_func(const Device::Pointer & device,
  * pixel is not overwritten. If you want to initialize an identity transfrom matrix, set all pixels to 0 first.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @param value [float ( = 0 )]
  * @return Array::Pointer
  *
@@ -1996,7 +2007,7 @@ set_where_x_equals_y_func(const Device::Pointer & device, const Array::Pointer &
  * pixel is not overwritten. If you want to initialize an identity transfrom matrix, set all pixels to 0 first.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @param value [float ( = 0 )]
  * @return Array::Pointer
  *
@@ -2013,7 +2024,7 @@ set_where_x_greater_than_y_func(const Device::Pointer & device, const Array::Poi
  * pixel is not overwritten. If you want to initialize an identity transfrom matrix, set all pixels to 0 first.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @param value [float ( = 0 )]
  * @return Array::Pointer
  *
@@ -2030,8 +2041,8 @@ set_where_x_smaller_than_y_func(const Device::Pointer & device, const Array::Poi
  * be 1. Otherwise it will be 0. This function aims to work similarly as its counterpart in numpy [1].
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  */
@@ -2045,9 +2056,9 @@ sign_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
  * @brief Determines if two images A and B smaller pixel wise. f(a, b) = 1 if a < b; 0 otherwise.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image to process. [const Array::Pointer &]
+ * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_smaller
@@ -2065,8 +2076,8 @@ smaller_func(const Device::Pointer & device,
  * @brief Determines if two images A and B smaller pixel wise. f(a, b) = 1 if a < b; 0 otherwise.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param scalar [float ( = 0 )]
  * @return Array::Pointer
  *
@@ -2083,9 +2094,9 @@ smaller_constant_func(const Device::Pointer & device, const Array::Pointer & src
  * @brief Determines if two images A and B smaller or equal pixel wise. f(a, b) = 1 if a <= b; 0 otherwise.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image to process. [const Array::Pointer &]
+ * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_smallerOrEqual
@@ -2103,8 +2114,8 @@ smaller_or_equal_func(const Device::Pointer & device,
  * @brief Determines if two images A and B smaller or equal pixel wise. f(a, b) = 1 if a <= b; 0 otherwise.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param scalar [float ( = 0 )]
  * @return Array::Pointer
  *
@@ -2123,8 +2134,8 @@ smaller_or_equal_constant_func(const Device::Pointer & device,
  * @brief Convolve the image with the Sobel kernel. Author(s): Ruth WhelanJeans, Robert Haase
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_sobel
@@ -2140,8 +2151,8 @@ sobel_func(const Device::Pointer & device, const Array::Pointer & src, Array::Po
  * @brief Computes the square root of each pixel.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  */
@@ -2155,8 +2166,8 @@ square_root_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  * @brief Determines the standard deviation intensity projection of an image stack along Z.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_standardDeviationZProjection
@@ -2171,8 +2182,8 @@ std_z_projection_func(const Device::Pointer & device, const Array::Pointer & src
  * @brief Subtracts one image X from a scalar s pixel wise. <pre>f(x, s) = s x</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param scalar [float ( = 0 )]
  * @return Array::Pointer
  *
@@ -2192,8 +2203,8 @@ subtract_image_from_scalar_func(const Device::Pointer & device,
  * 3]
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param blocksize [int ( = 256 )]
  * @return Array::Pointer
  *
@@ -2209,8 +2220,8 @@ sum_reduction_x_func(const Device::Pointer & device, const Array::Pointer & src,
  * @brief Determines the sum intensity projection of an image along Z.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_sumXProjection
@@ -2225,8 +2236,8 @@ sum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src
  * @brief Determines the sum intensity projection of an image along Z.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_sumYProjection
@@ -2241,8 +2252,8 @@ sum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src
  * @brief Determines the sum intensity projection of an image along Z.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_sumZProjection
@@ -2304,8 +2315,8 @@ transpose_yz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  * @brief Copies all pixels instead those which are not a number (NaN) or infinity (inf), which are replaced by 0.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_undefinedToZero
@@ -2322,11 +2333,11 @@ undefined_to_zero_func(const Device::Pointer & device, const Array::Pointer & sr
  * halfheight and halfdepth (radius). If 2D images are given, radius_z will be ignored.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [int ( = 1 )]
- * @param radius_y [int ( = 1 )]
- * @param radius_z [int ( = 1 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [int ( = 1 )]
+ * @param radius_y Radius size along y axis. [int ( = 1 )]
+ * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_varianceBox
@@ -2347,11 +2358,11 @@ variance_box_func(const Device::Pointer & device,
  * halfheight and halfdepth (radius). If 2D images are given, radius_z will be ignored.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [int ( = 1 )]
- * @param radius_y [int ( = 1 )]
- * @param radius_z [int ( = 1 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [int ( = 1 )]
+ * @param radius_y Radius size along y axis. [int ( = 1 )]
+ * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_varianceSphere
@@ -2371,8 +2382,8 @@ variance_sphere_func(const Device::Pointer & device,
  * value v will be written at position x/y[/z] in the target image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2docs/reference_writeValuesToPositions
