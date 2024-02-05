@@ -21,6 +21,11 @@ static const std::string CACHE_FOLDER = "clesperanto";
 static const std::string CACHE_DIR_WIN = "AppData\\Local";
 static const std::string CACHE_DIR_UNIX = ".cache";
 
+/**
+ * @brief Get the path to the cache folder
+ * @param base_path the home directory of the user
+ * @return the path to the cache folder
+ */
 static auto
 get_path_with_cache_folder(const std::filesystem::path & base_path) -> std::filesystem::path
 {
@@ -28,6 +33,11 @@ get_path_with_cache_folder(const std::filesystem::path & base_path) -> std::file
 }
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+
+/**
+ * @brief Get the path to the cache folder
+ * @return the path to the cache folder
+ */
 static auto
 get_cache_directory_path() -> std::filesystem::path
 {
@@ -40,6 +50,11 @@ get_cache_directory_path() -> std::filesystem::path
   return get_path_with_cache_folder(std::filesystem::path(path));
 }
 #else
+
+/**
+ * @brief Get the path to the cache folder
+ * @return the path to the cache folder
+ */
 static auto
 get_cache_directory_path() -> std::filesystem::path
 {
@@ -53,6 +68,11 @@ get_cache_directory_path() -> std::filesystem::path
 }
 #endif
 
+/**
+ * @brief Check if the cache is enabled
+ *        The cache can be disabled by setting the environment variable CLESPERANTO_NO_CACHE
+ * @return true if the cache is enabled, false otherwise
+ */
 static auto
 is_cache_enabled() -> bool
 {
@@ -60,7 +80,6 @@ is_cache_enabled() -> bool
   bool         cache_disabled = (env_var != nullptr);
   return !cache_disabled;
 }
-
 
 static const auto CACHE_FOLDER_PATH = get_cache_directory_path();
 

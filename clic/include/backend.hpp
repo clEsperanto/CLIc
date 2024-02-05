@@ -12,6 +12,12 @@
 
 namespace cle
 {
+/**
+ * @brief Backend class
+ *
+ * This class holds low-level device operations. It is used to allocate memory, copy data, execute kernels, etc.
+ * It is standardized to operate with different hardware API (CUDA, OpenCL, etc).
+ */
 class Backend
 {
 public:

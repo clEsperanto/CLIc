@@ -24,24 +24,23 @@ It is a preliminary projet and mainly focussed on running a kernel using the [Op
 int main( int argc, char** argv)
 {
     // Initialisation of clEsperanto with default device
-    cle::Clesperanto cle;
+    cle::BackendManager::getInstance().setBackend();
+    auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
 
     // store data to process in vector
-    std::array<size_t,3> dimensions = {width, height, depth};
-    std::vector<float> data (width * height * depth); 
+    std::vector<float> input (width * height * depth); 
+    std::vector<float> output (input.size()); 
 
     /*
      * ... fill input with data to process  
      */
 
     // push data from host to device
-    auto gpu_src = cle.Push<float>(data, dimensions);
-    // allocate space on device
-    auto gpu_dst = cle.Create<float>(dimensions);
+    auto gpu_src = cle::Push<float>(input.data(), width, height, depth, device);
     // apply filter with parameters
-    cle.AddImageAndScalar(gpu_src, gpu_dst, 10);
+    auto gpu_dst = cle::tier1::AddImageAndScalar(device, gpu_src, nullptr, 10);
     // pull output from device to host
-    auto output = cle.Pull<float>(gpu_dst); 
+    cle::Pull<float>(gpu_dst, output.data()); 
 
     return EXIT_SUCCESS;
 }

@@ -13,6 +13,7 @@ namespace cle
 
 /**
  * @brief Device class
+ *        This class is used to manage devices
  */
 class Device
 {
@@ -130,6 +131,7 @@ public:
 
 /**
  * @brief OpenCLDevice class
+ *        This class is used to manage OpenCL devices
  */
 class OpenCLDevice : public Device
 {
@@ -248,6 +250,7 @@ private:
 
 /**
  * @brief CUDADevice class
+ *        This class is used to manage CUDA devices
  */
 class CUDADevice : public Device
 {
