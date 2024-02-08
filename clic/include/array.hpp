@@ -170,7 +170,7 @@ public:
    * @param value value to fill the array with
    */
   auto
-  fill(float value) const -> void;
+  fill(float value) -> void;
 
   /**
    * @brief Get the size of the Array (number of elements)

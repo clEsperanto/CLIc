@@ -263,16 +263,63 @@ Array::copy(const Array::Pointer &        dst,
 }
 
 auto
-Array::fill(const float value) const -> void
+Array::fill(const float value) -> void
 {
   if (!initialized())
   {
     throw std::runtime_error("Error: Array it is not initialized.");
   }
+
+// to test with __arm64__ also
+#ifdef __APPLE__
+  auto data_type = dtype();
+  switch (data_type)
+  {
+    case dType::FLOAT: {
+      std::vector<float> data(this->size(), value);
+      write(data.data());
+      return;
+    }
+    case dType::INT8: {
+      std::vector<int8_t> data(this->size(), static_cast<int8_t>(value));
+      write(data.data());
+      return;
+    }
+    case dType::INT16: {
+      std::vector<int16_t> data(this->size(), static_cast<int16_t>(value));
+      write(data.data());
+      return;
+    }
+    case dType::INT32: {
+      std::vector<int32_t> data(this->size(), static_cast<int32_t>(value));
+      write(data.data());
+      return;
+    }
+    case dType::UINT8: {
+      std::vector<uint8_t> data(this->size(), static_cast<uint8_t>(value));
+      write(data.data());
+      return;
+    }
+    case dType::UINT16: {
+      std::vector<uint16_t> data(this->size(), static_cast<uint16_t>(value));
+      write(data.data());
+      return;
+    }
+    case dType::UINT32: {
+      std::vector<uint32_t> data(this->size(), static_cast<uint32_t>(value));
+      write(data.data());
+      return;
+    }
+    default: {
+      throw std::runtime_error("Error: Unsupported data type");
+    }
+  }
+#else
   std::array<size_t, 3> _origin = { 0, 0, 0 };
   std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
   std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
   backend_.setMemory(device(), get(), _shape, _origin, _region, dtype(), mtype(), value);
+#endif
 }
 
 auto
