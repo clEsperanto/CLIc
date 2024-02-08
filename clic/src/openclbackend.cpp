@@ -154,7 +154,7 @@ OpenCLBackend::getDevice(const std::string & name, const std::string & type) con
 }
 
 auto
-OpenCLBackend::getDevice(size_t index, const std::string & type) const -> Device::Pointer
+OpenCLBackend::getDeviceFromIndex(size_t index, const std::string & type) const -> Device::Pointer
 {
 #if USE_OPENCL
   auto devices = getDevices(type);

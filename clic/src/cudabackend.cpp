@@ -82,7 +82,7 @@ CUDABackend::getDevice(const std::string & name, const std::string & type) const
 }
 
 auto
-CUDABackend::getDevice(size_t index, const std::string & type) const -> Device::Pointer
+CUDABackend::getDeviceFromIndex(size_t index, const std::string & type) const -> Device::Pointer
 {
 #if USE_CUDA
   auto devices = getDevices(type);
