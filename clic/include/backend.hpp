@@ -44,6 +44,8 @@ public:
   getDevices(const std::string & type) const -> std::vector<Device::Pointer> = 0;
   [[nodiscard]] virtual auto
   getDevice(const std::string & name, const std::string & type) const -> Device::Pointer = 0;
+  [[nodiscard]] virtual auto
+  getDevice(size_t index, const std::string & type) const -> Device::Pointer = 0;
 
   [[nodiscard]] virtual auto
   getPreamble() const -> std::string = 0;
@@ -183,6 +185,8 @@ public:
   getDevices(const std::string & type) const -> std::vector<Device::Pointer> override;
   [[nodiscard]] auto
   getDevice(const std::string & name, const std::string & type) const -> Device::Pointer override;
+  [[nodiscard]] auto
+  getDevice(size_t index, const std::string & type) const -> Device::Pointer override;
   [[nodiscard]] auto
   getDevicesList(const std::string & type) const -> std::vector<std::string> override;
   [[nodiscard]] auto
@@ -332,6 +336,8 @@ public:
   getDevices(const std::string & type) const -> std::vector<Device::Pointer> override;
   [[nodiscard]] auto
   getDevice(const std::string & name, const std::string & type) const -> Device::Pointer override;
+  [[nodiscard]] auto
+  getDevice(size_t index, const std::string & type) const -> Device::Pointer override;
   [[nodiscard]] auto
   getDevicesList(const std::string & type) const -> std::vector<std::string> override;
   [[nodiscard]] auto

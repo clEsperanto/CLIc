@@ -142,8 +142,34 @@ OpenCLBackend::getDevice(const std::string & name, const std::string & type) con
   }
   if (!devices.empty())
   {
+    std::cerr << "Warning: Fail to find device with name '" << name << "'. Default: using the last device found."
+              << std::endl;
     return std::move(devices.back());
   }
+  std::cerr << "Warning: Fail to find any OpenCL compatible devices." << std::endl;
+  return nullptr;
+#else
+  throw std::runtime_error("Error: OpenCL is not enabled");
+#endif
+}
+
+auto
+OpenCLBackend::getDevice(size_t index, const std::string & type) const -> Device::Pointer
+{
+#if USE_OPENCL
+  auto devices = getDevices(type);
+  if (index < devices.size())
+  {
+    return std::move(devices[index]);
+  }
+  if (!devices.empty())
+  {
+    std::cerr << "Warning: Fail to find device at index " << index << ". Default: using the last device found."
+              << std::endl;
+    return std::move(devices.back());
+  }
+
+  std::cerr << "Warning: Fail to find any OpenCL compatible devices." << std::endl;
   return nullptr;
 #else
   throw std::runtime_error("Error: OpenCL is not enabled");
