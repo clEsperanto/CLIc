@@ -271,7 +271,7 @@ Array::fill(const float value) -> void
   }
 
 // to test with __arm64__ also
-#ifdef __APPLE__
+#ifdef __APPLE__ && __arm64__
   auto data_type = dtype();
   switch (data_type)
   {
