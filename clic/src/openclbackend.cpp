@@ -142,8 +142,6 @@ OpenCLBackend::getDevice(const std::string & name, const std::string & type) con
   }
   if (!devices.empty())
   {
-    std::cerr << "Warning: Fail to find device with name '" << name << "'. Default: using the last device found."
-              << std::endl;
     return std::move(devices.back());
   }
   std::cerr << "Warning: Fail to find any OpenCL compatible devices." << std::endl;
@@ -164,11 +162,8 @@ OpenCLBackend::getDeviceFromIndex(size_t index, const std::string & type) const 
   }
   if (!devices.empty())
   {
-    std::cerr << "Warning: Fail to find device at index " << index << ". Default: using the last device found."
-              << std::endl;
     return std::move(devices.back());
   }
-
   std::cerr << "Warning: Fail to find any OpenCL compatible devices." << std::endl;
   return nullptr;
 #else

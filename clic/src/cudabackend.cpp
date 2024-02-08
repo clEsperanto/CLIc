@@ -71,7 +71,6 @@ CUDABackend::getDevice(const std::string & name, const std::string & type) const
   }
   if (!devices.empty())
   {
-    std::cerr << "Warning: Device with name '" << name << "' not found. Using default device instead." << std::endl;
     return std::move(devices.back());
   }
   std::cerr << "Warning: No CUDA compatible devices found." << std::endl;
@@ -92,7 +91,6 @@ CUDABackend::getDeviceFromIndex(size_t index, const std::string & type) const ->
   }
   if (!devices.empty())
   {
-    std::cerr << "Warning: Device with index '" << index << "' not found. Using default device instead." << std::endl;
     return std::move(devices.back());
   }
   std::cerr << "Warning: No CUDA compatible devices found." << std::endl;
