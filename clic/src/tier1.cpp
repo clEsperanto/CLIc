@@ -34,8 +34,8 @@
 // #include "cle_dilate_box_slice_by_slice.h"
 #include "cle_dilate_sphere.h"
 // #include "cle_dilate_sphere_slice_by_slice.h"
-#include "cle_divide_image_and_scalar.h"
 #include "cle_divide_images.h"
+#include "cle_divide_scalar_by_image.h"
 // #include "cle_draw_box.h"
 // #include "cle_draw_line.h"
 // #include "cle_draw_sphere.h"
@@ -479,8 +479,6 @@ dilate_box_func(const Device::Pointer & device, const Array::Pointer & src, Arra
   return dst;
 }
 
-// dilate_box_slice_by_slice_func
-
 auto
 dilate_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
@@ -509,13 +507,13 @@ divide_images_func(const Device::Pointer & device,
 }
 
 auto
-divide_image_and_scalar_func(const Device::Pointer & device,
-                             const Array::Pointer &  src,
-                             Array::Pointer          dst,
-                             float                   scalar) -> Array::Pointer
+divide_scalar_by_image_func(const Device::Pointer & device,
+                            const Array::Pointer &  src,
+                            Array::Pointer          dst,
+                            float                   scalar) -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  const KernelInfo    kernel = { "divide_image_and_scalar", kernel::divide_image_and_scalar };
+  const KernelInfo    kernel = { "divide_scalar_by_image", kernel::divide_scalar_by_image };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar", scalar } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);

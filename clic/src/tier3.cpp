@@ -229,10 +229,10 @@ histogram_func(const Device::Pointer & device,
 }
 
 auto
-jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src1, const Array::Pointer & src2) -> float
+jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1) -> float
 {
-  auto intersection_ = tier1::binary_and_func(device, src1, src2, nullptr);
-  auto union_ = tier1::binary_or_func(device, src1, src2, nullptr);
+  auto intersection_ = tier1::binary_and_func(device, src0, src1, nullptr);
+  auto union_ = tier1::binary_or_func(device, src0, src1, nullptr);
   return tier2::sum_of_all_pixels_func(device, intersection_) / tier2::sum_of_all_pixels_func(device, union_);
 }
 

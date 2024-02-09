@@ -13,23 +13,50 @@
 namespace cle
 {
 
+/**
+ * @brief Affine transformation class
+ *      This class is used to create an affine transformation matrix by applying different transformations
+ *      such as scaling, rotation, translation, shearing, deskewing, etc. to the AffineTransform matrix.
+ *      The computed matrix is meant to be used to transform an image or a volume using the affine_transform kernel.
+ *      The class rely on the Eigen library [1] to perform the matrix operations.
+ *
+ * @link https://eigen.tuxfamily.org
+ */
 class AffineTransform
 {
 public:
   using matrix = Eigen::Matrix4f;
 
+  /**
+   * @brief Construct a new Affine Transform object
+   */
   AffineTransform()
   {
     m_matrix = matrix::Identity();
     update();
   }
+
+  /**
+   * @brief Construct a new Affine Transform object from a 4x4 matrix
+   * @param array Array of 16 floats representing a 4x4 matrix
+   */
   AffineTransform(const std::array<float, 16> & array)
   {
     m_matrix = matrix::Map(array.data());
     update();
   }
+
+  /**
+   * @brief Destructor
+   */
   ~AffineTransform() = default;
 
+  /**
+   * @brief Scaling transformation
+   * @param scale_x Scaling factor for the x axis
+   * @param scale_y Scaling factor for the y axis
+   * @param scale_z Scaling factor for the z axis
+   */
   auto
   scale(float scale_x, float scale_y, float scale_z) -> void
   {
@@ -40,6 +67,11 @@ public:
     concats(scale_matrix);
   }
 
+  /**
+   * @brief Rotation transformation
+   * @param axis Axis of rotation (0: x, 1: y, 2: z)
+   * @param angle_deg Angle of rotation (in degrees)
+   */
   auto
   rotate(int axis, float angle_deg) -> void
   {
@@ -83,24 +115,42 @@ public:
     concats(rotation_matrix);
   }
 
+  /**
+   * @brief Rotation transformation around the x axis
+   * @param angle_deg Angle of rotation (in degrees)
+   */
   auto
   rotate_around_x_axis(float angle_deg) -> void
   {
     rotate(0, angle_deg);
   }
 
+  /**
+   * @brief Rotation transformation around the y axis
+   * @param angle_deg Angle of rotation (in degrees)
+   */
   auto
   rotate_around_y_axis(float angle_deg) -> void
   {
     rotate(1, angle_deg);
   }
 
+  /**
+   * @brief Rotation transformation around the z axis
+   * @param angle_deg Angle of rotation (in degrees)
+   */
   auto
   rotate_around_z_axis(float angle_deg) -> void
   {
     rotate(2, angle_deg);
   }
 
+  /**
+   * @brief Translation transformation
+   * @param translate_x Translation value for the x axis
+   * @param translate_y Translation value for the y axis
+   * @param translate_z Translation value for the z axis
+   */
   auto
   translate(float translate_x, float translate_y, float translate_z) -> void
   {
@@ -111,6 +161,11 @@ public:
     concats(translation_matrix);
   }
 
+  /**
+   * @brief Centering transformation
+   * @param shape Shape of the array to center
+   * @param undo Undo flag to apply the reverse transformation
+   */
   auto
   center(const std::array<size_t, 3> & shape, bool undo)
   {
@@ -121,6 +176,11 @@ public:
     translate(centering_x, centering_y, centering_z);
   }
 
+  /**
+   * @brief Shearing transformation in the z plane
+   * @param shear_x_deg Shear angle in the x axis (in degrees)
+   * @param shear_y_deg Shear angle in the y axis (in degrees)
+   */
   auto
   shear_in_z_plane(float shear_x_deg, float shear_y_deg) -> void
   {
@@ -144,6 +204,11 @@ public:
     pre_concats(shear_matrix);
   }
 
+  /**
+   * @brief Shearing transformation in the y plane
+   * @param shear_x_deg Shear angle in the x axis (in degrees)
+   * @param shear_z_deg Shear angle in the z axis (in degrees)
+   */
   auto
   shear_in_y_plane(float shear_x_deg, float shear_z_deg) -> void
   {
@@ -167,6 +232,11 @@ public:
     pre_concats(shear_matrix);
   }
 
+  /**
+   * @brief Shearing transformation in the x plane
+   * @param shear_y_deg Shear angle in the y axis (in degrees)
+   * @param shear_z_deg Shear angle in the z axis (in degrees)
+   */
   auto
   shear_in_x_plane(float shear_y_deg, float shear_z_deg) -> void
   {
@@ -190,6 +260,14 @@ public:
     pre_concats(shear_matrix);
   }
 
+  /**
+   * @brief Deskewing transformation in the x plane
+   * @param angle_deg Angle of deskewing (in degrees)
+   * @param voxel_size_x Voxel size in the x axis
+   * @param voxel_size_y Voxel size in the y axis
+   * @param voxel_size_z Voxel size in the z axis
+   * @param scale_factor Scaling factor
+   */
   auto
   deskew_x(float angle_deg, float voxel_size_x, float voxel_size_y, float voxel_size_z, float scale_factor) -> void
   {
@@ -208,6 +286,14 @@ public:
     rotate(2, -angle_deg);
   }
 
+  /**
+   * @brief Deskewing transformation in the y plane
+   * @param angle_deg Angle of deskewing (in degrees)
+   * @param voxel_size_x Voxel size in the x axis
+   * @param voxel_size_y Voxel size in the y axis
+   * @param voxel_size_z Voxel size in the z axis
+   * @param scale_factor Scaling factor
+   */
   auto
   deskew_y(float angle_deg, float voxel_size_x, float voxel_size_y, float voxel_size_z, float scale_factor) -> void
   {
@@ -226,30 +312,45 @@ public:
     rotate(1, angle_deg);
   }
 
+  /**
+   * @brief return the transformation matrix
+   */
   auto
   getMatrix() const -> const Eigen::Matrix4f &
   {
     return m_matrix;
   }
 
+  /**
+   * @brief return the inverted transformation matrix
+   */
   auto
   getInverse() const -> const Eigen::Matrix4f &
   {
     return m_inverse;
   }
 
+  /**
+   * @brief return the transposed transformation matrix
+   */
   auto
   getTranspose() const -> const Eigen::Matrix4f &
   {
     return m_transpose;
   }
 
+  /**
+   * @brief return the inverse transposed transformation matrix
+   */
   auto
   getInverseTranspose() const -> const Eigen::Matrix4f &
   {
     return m_inverse_transpose;
   }
 
+  /**
+   * @brief Convert the transformation matrix to an array of 16 floats
+   */
   static auto
   toArray(const matrix & mat) -> std::array<float, 16>
   {
@@ -259,18 +360,27 @@ public:
   }
 
 protected:
+  /**
+   * @brief Convert degrees to radians
+   */
   static auto
   deg_to_rad(float angle_deg) -> float
   {
     return angle_deg * static_cast<float>(M_PI / 180.0);
   }
 
+  /**
+   * @brief Convert shear angle to shear factor
+   */
   static auto
   shear_angle_to_shear_factor(float angle_deg) -> float
   {
     return 1.0F / std::tan((90 - angle_deg) * M_PI / 180);
   }
 
+  /**
+   * @brief Concatenate a matrix to the transformation matrix
+   */
   auto
   concats(const matrix & mat) -> void
   {
@@ -278,6 +388,9 @@ protected:
     update();
   }
 
+  /**
+   * @brief Concatenate the transformation matrix to a matrix
+   */
   auto
   pre_concats(const matrix & mat) -> void
   {
@@ -291,6 +404,9 @@ private:
   matrix m_inverse_transpose;
   matrix m_transpose;
 
+  /**
+   * @brief Update the matrix and its derived matrices
+   */
   auto
   update() -> void
   {
@@ -300,6 +416,12 @@ private:
   }
 };
 
+/**
+ * @brief Prepare the output shape and transform for the given transformation matrix and array shape
+ * @param src Source array
+ * @param transform Affine transform
+ * @return std::tuple<size_t, size_t, size_t, cle::AffineTransform>
+ */
 auto
 prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::AffineTransform & transform)
   -> std::tuple<size_t, size_t, size_t, cle::AffineTransform>
@@ -346,6 +468,15 @@ prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::A
   return std::make_tuple(width, height, depth, update_transform);
 }
 
+/**
+ * @brief Apply the transform matrix to an array
+ * @param src Source array
+ * @param dst Destination array
+ * @param transform Affine transform
+ * @param interpolate Interpolation flag
+ * @param auto_resize Auto resize flag
+ * @return cle::Array::Pointer
+ */
 auto
 apply_affine_transform(const cle::Array::Pointer &  src,
                        cle::Array::Pointer          dst,

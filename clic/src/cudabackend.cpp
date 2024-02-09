@@ -71,9 +71,29 @@ CUDABackend::getDevice(const std::string & name, const std::string & type) const
   }
   if (!devices.empty())
   {
-    std::cerr << "Warning: Device with name '" << name << "' not found. Using default device instead." << std::endl;
     return std::move(devices.back());
   }
+  std::cerr << "Warning: No CUDA compatible devices found." << std::endl;
+  return nullptr;
+#else
+  throw std::runtime_error("Error: CUDA is not enabled");
+#endif
+}
+
+auto
+CUDABackend::getDeviceFromIndex(size_t index, const std::string & type) const -> Device::Pointer
+{
+#if USE_CUDA
+  auto devices = getDevices(type);
+  if (index < devices.size())
+  {
+    return std::move(devices[index]);
+  }
+  if (!devices.empty())
+  {
+    return std::move(devices.back());
+  }
+  std::cerr << "Warning: No CUDA compatible devices found." << std::endl;
   return nullptr;
 #else
   throw std::runtime_error("Error: CUDA is not enabled");

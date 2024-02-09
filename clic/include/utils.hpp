@@ -15,12 +15,18 @@ constexpr float NaN = std::numeric_limits<float>::quiet_NaN();
 constexpr float pINF = std::numeric_limits<float>::infinity();
 constexpr float nINF = -std::numeric_limits<float>::infinity();
 
+/**
+ * @brief mType is an enum class to represent the type of memory
+ */
 enum class mType
 {
   BUFFER,
   IMAGE
 };
 
+/**
+ * @brief dType is an enum class to represent the type of data
+ */
 enum class dType
 {
   FLOAT,
@@ -35,6 +41,9 @@ enum class dType
   UNKNOWN
 };
 
+/**
+ * @brief Convert a cle::dType to a string
+ */
 inline auto
 toString(const dType & dtype) -> std::string
 {
@@ -63,12 +72,18 @@ toString(const dType & dtype) -> std::string
   }
 }
 
+/**
+ * @brief Operator << for cle::dType
+ */
 inline auto
 operator<<(std::ostream & out, const dType & dtype) -> std::ostream &
 {
   return out << toString(dtype);
 }
 
+/**
+ * @brief Convert a cle::mType to a string
+ */
 inline auto
 toString(const mType & mtype) -> std::string
 {
@@ -83,12 +98,19 @@ toString(const mType & mtype) -> std::string
   }
 }
 
+/**
+ * @brief Operator << for cle::mType
+ */
 inline auto
 operator<<(std::ostream & out, const mType & mtype) -> std::ostream &
 {
   return out << toString(mtype);
 }
 
+
+/**
+ * @brief Convert a template type T to a cle::dType
+ */
 template <typename T>
 inline auto
 toType() -> dType
@@ -135,6 +157,9 @@ toType() -> dType
   }
 }
 
+/**
+ * @brief return the size in bytes of a cle::dType
+ */
 inline auto
 toBytes(const dType & dtype) -> size_t
 {
@@ -163,6 +188,9 @@ toBytes(const dType & dtype) -> size_t
   }
 }
 
+/**
+ * @brief cast a value to a cle::dType value
+ */
 template <typename T>
 inline auto
 castTo(const T & value, const dType & dtype) ->
@@ -193,6 +221,9 @@ castTo(const T & value, const dType & dtype) ->
   }
 }
 
+/**
+ * @brief compute a kernel size from a sigma value
+ */
 inline auto
 sigma2kernelsize(const float & sigma) -> int
 {
@@ -200,12 +231,18 @@ sigma2kernelsize(const float & sigma) -> int
   return (rad % 2 == 0) ? rad + 1 : rad;
 }
 
+/**
+ * @brief compute a kernel size from a radius value
+ */
 inline auto
 radius2kernelsize(const float & radius) -> int
 {
   return static_cast<int>(radius * 2 + 1);
 }
 
+/**
+ * @brief load a file into a string
+ */
 inline auto
 loadFile(const std::string & file_path) -> std::string
 {
@@ -219,6 +256,9 @@ loadFile(const std::string & file_path) -> std::string
   return source;
 }
 
+/**
+ * @brief save a string into a file
+ */
 inline auto
 saveFile(const std::string & file_path, const std::string & source) -> void
 {
@@ -231,6 +271,9 @@ saveFile(const std::string & file_path, const std::string & source) -> void
   ofs.close();
 }
 
+/**
+ * @brief compute the dimension from a shape (width, height, depth)
+ */
 inline auto
 shape_to_dimension(const size_t & width, const size_t & height, const size_t & depth) -> size_t
 {
@@ -248,6 +291,9 @@ shape_to_dimension(const size_t & width, const size_t & height, const size_t & d
   }
 }
 
+/**
+ * @brief correct the range of a start, stop and step based on the size of an array
+ */
 inline auto
 correct_range(int * start, int * stop, int * step, int size) -> void
 {

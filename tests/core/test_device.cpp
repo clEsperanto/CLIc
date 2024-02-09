@@ -65,6 +65,17 @@ TEST_P(TestDevice, name)
   EXPECT_FALSE(device->getName().empty());
 }
 
+TEST_P(TestDevice, index)
+{
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDeviceFromIndex(0, "all");
+  device->setWaitToFinish(true);
+
+  // Check that the device name is not empty
+  EXPECT_FALSE(device->getName().empty());
+}
+
 TEST_P(TestDevice, info)
 {
   std::string param = GetParam();
