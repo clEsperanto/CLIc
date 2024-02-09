@@ -27,29 +27,101 @@ public:
     OPENCL
   };
 
+  /**
+   * @brief Construct a new Backend object
+   */
   Backend() = default;
+
+  /**
+   * @brief Construct by copy a new Backend object
+   */
   Backend(const Backend &) = default;
+
+  /**
+   * @brief Construct by move a new Backend object
+   */
   Backend(Backend &&) = default;
+
+  /**
+   * @brief Destroy the Backend object
+   */
   virtual ~Backend() = default;
+
+  /**
+   * @brief Copy assignment operator
+   */
   auto
   operator=(const Backend &) -> Backend & = default;
+
+  /**
+   * @brief Move assignment operator
+   */
   auto
   operator=(Backend &&) -> Backend & = default;
 
+  /**
+   * @brief Get the type of the backend
+   *
+   * @return Backend::Type
+   */
   [[nodiscard]] virtual auto
   getType() const -> Backend::Type = 0;
+
+  /**
+   * @brief Get the list of devices names of a specific type
+   *
+   * @param type
+   * @return std::vector<std::string>
+   */
   [[nodiscard]] virtual auto
   getDevicesList(const std::string & type) const -> std::vector<std::string> = 0;
+
+  /**
+   * @brief Get the list of devices of a specific type
+   *
+   * @param type
+   * @return std::vector<Device::Pointer>
+   */
   [[nodiscard]] virtual auto
   getDevices(const std::string & type) const -> std::vector<Device::Pointer> = 0;
+
+  /**
+   * @brief Get a device by name and type
+   *
+   * @param name
+   * @param type
+   * @return Device::Pointer
+   */
   [[nodiscard]] virtual auto
   getDevice(const std::string & name, const std::string & type) const -> Device::Pointer = 0;
+
+  /**
+   * @brief Get a device by index and type
+   *
+   * @param index
+   * @param type
+   * @return Device::Pointer
+   */
   [[nodiscard]] virtual auto
   getDeviceFromIndex(size_t index, const std::string & type) const -> Device::Pointer = 0;
 
+  /**
+   * @brief Get the preamble of the backend
+   *        The preamble is a string that contains the necessary code to be included in
+   *        the kernel source code before compiling it.
+   *
+   * @return std::string
+   */
   [[nodiscard]] virtual auto
   getPreamble() const -> std::string = 0;
 
+  /**
+   * @brief Allocate a memory space in the device
+   *
+   * @param device
+   * @param size
+   * @param data_ptr
+   */
   virtual auto
   allocateMemory(const Device::Pointer &       device,
                  const std::array<size_t, 3> & region,
@@ -57,9 +129,26 @@ public:
                  const mType &                 mtype,
                  void **                       data_ptr) const -> void = 0;
 
+  /**
+   * @brief Free a memory space in the device
+   *
+   * @param device
+   * @param mtype
+   * @param data_ptr
+   */
   virtual auto
   freeMemory(const Device::Pointer & device, const mType & mtype, void ** data_ptr) const -> void = 0;
 
+  /**
+   * @brief Write data from host to device buffer
+   *
+   * @param device
+   * @param buffer_ptr
+   * @param buffer_shape
+   * @param buffer_origin
+   * @param region
+   * @param host_ptr
+   */
   virtual auto
   writeMemory(const Device::Pointer & device,
               void **                 buffer_ptr,
@@ -70,6 +159,16 @@ public:
               const mType &           mtype,
               const void *            host_ptr) const -> void = 0;
 
+  /**
+   * @brief Read data from device buffer to host
+   *
+   * @param device
+   * @param buffer_ptr
+   * @param buffer_shape
+   * @param buffer_origin
+   * @param region
+   * @param host_ptr
+   */
   virtual auto
   readMemory(const Device::Pointer & device,
              const void **           buffer_ptr,
@@ -81,6 +180,19 @@ public:
              void *                  host_ptr) const -> void = 0;
 
 
+  /**
+   * @brief Copy data from device buffer to device buffer
+   *
+   * @param device
+   * @param src_ptr
+   * @param src_origin
+   * @param src_shape
+   * @param dst_ptr
+   * @param dst_origin
+   * @param dst_shape
+   * @param region
+   * @param bytes
+   */
   virtual auto
   copyMemoryBufferToBuffer(const Device::Pointer & device,
                            const void **           src_ptr,
@@ -91,6 +203,20 @@ public:
                            std::array<size_t, 3> & dst_shape,
                            std::array<size_t, 3> & region,
                            const size_t &          bytes) const -> void = 0;
+
+  /**
+   * @brief Copy data from device image to device buffer
+   *
+   * @param device
+   * @param src_ptr
+   * @param src_origin
+   * @param src_shape
+   * @param dst_ptr
+   * @param dst_origin
+   * @param dst_shape
+   * @param region
+   * @param bytes
+   */
   virtual auto
   copyMemoryImageToBuffer(const Device::Pointer & device,
                           const void **           src_ptr,
@@ -101,6 +227,20 @@ public:
                           std::array<size_t, 3> & dst_shape,
                           std::array<size_t, 3> & region,
                           const size_t &          bytes) const -> void = 0;
+
+  /**
+   * @brief Copy data from device buffer to device image
+   *
+   * @param device
+   * @param src_ptr
+   * @param src_origin
+   * @param src_shape
+   * @param dst_ptr
+   * @param dst_origin
+   * @param dst_shape
+   * @param region
+   * @param bytes
+   */
   virtual auto
   copyMemoryBufferToImage(const Device::Pointer & device,
                           const void **           src_ptr,
@@ -111,6 +251,20 @@ public:
                           std::array<size_t, 3> & dst_shape,
                           std::array<size_t, 3> & region,
                           const size_t &          bytes) const -> void = 0;
+
+  /**
+   * @brief Copy data from device image to device image
+   *
+   * @param device
+   * @param src_ptr
+   * @param src_origin
+   * @param src_shape
+   * @param dst_ptr
+   * @param dst_origin
+   * @param dst_shape
+   * @param region
+   * @param bytes
+   */
   virtual auto
   copyMemoryImageToImage(const Device::Pointer & device,
                          const void **           src_ptr,
@@ -122,6 +276,18 @@ public:
                          std::array<size_t, 3> & region,
                          const size_t &          bytes) const -> void = 0;
 
+  /**
+   * @brief Set a memory space to a specific value
+   *
+   * @param device
+   * @param buffer_ptr
+   * @param buffer_shape
+   * @param buffer_origin
+   * @param region
+   * @param dtype
+   * @param mtype
+   * @param value
+   */
   virtual auto
   setMemory(const Device::Pointer & device,
             void **                 buffer_ptr,
@@ -132,12 +298,30 @@ public:
             const mType &           mtype,
             const float &           value) const -> void = 0;
 
+  /**
+   * @brief Build a kernel from source code
+   *
+   * @param device
+   * @param kernel_source
+   * @param kernel_name
+   * @param kernel
+   */
   virtual auto
   buildKernel(const Device::Pointer & device,
               const std::string &     kernel_source,
               const std::string &     kernel_name,
               void *                  kernel) const -> void = 0;
 
+  /**
+   * @brief Execute a kernel
+   *
+   * @param device
+   * @param kernel_source
+   * @param kernel_name
+   * @param global_size
+   * @param args
+   * @param sizes
+   */
   virtual auto
   executeKernel(const Device::Pointer &       device,
                 const std::string &           kernel_source,
@@ -146,6 +330,9 @@ public:
                 const std::vector<void *> &   args,
                 const std::vector<size_t> &   sizes) const -> void = 0;
 
+  /**
+   * @brief Operator << to print the backend type
+   */
   friend auto
   operator<<(std::ostream & out, const Backend::Type & backend_type) -> std::ostream &
   {
@@ -161,6 +348,9 @@ public:
     return out;
   }
 
+  /**
+   * @brief Operator << to print the backend
+   */
   friend auto
   operator<<(std::ostream & out, const Backend & backend) -> std::ostream &
   {
@@ -169,6 +359,10 @@ public:
   }
 };
 
+/**
+ * @brief CUDA backend class
+ *       This class holds low-level device operations for CUDA devices.
+ */
 class CUDABackend : public Backend
 {
 public:
@@ -320,6 +514,11 @@ public:
   getPreamble() const -> std::string override;
 };
 
+
+/**
+ * @brief OpenCL backend class
+ *       This class holds low-level device operations for OpenCL devices.
+ */
 class OpenCLBackend : public Backend
 {
 public:
@@ -498,6 +697,11 @@ public:
   getPreamble() const -> std::string override;
 };
 
+
+/**
+ * @brief BackendManager class
+ *       This class is a singleton that holds the current backend and provides a way to change it.
+ */
 class BackendManager
 {
 public:
