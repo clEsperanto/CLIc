@@ -27,7 +27,7 @@ int main( int argc, char** argv)
     cle::BackendManager::getInstance().setBackend();
     auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
 
-    // store data to process in vector
+    // host vector to hold input and output
     std::vector<float> input (width * height * depth); 
     std::vector<float> output (input.size()); 
 
@@ -80,7 +80,7 @@ cmake --build ./build --target uninstall
 CLIc filters rely on the clEsperanto branch of [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels). They are managed as a submodule of this repository.
 
 # __Contributing__
-Contributions are very welcome. Before spending effort on coding and filing a pull-request, please get in touch, [file an issue](https://github.com/clEsperanto/CLIc_prototype/issues), and let's discuss your potential contribution. 
+Contributions are very welcome. Before spending effort on coding and filing a pull-request, please get in touch with us, [file an issue](https://github.com/clEsperanto/CLIc_prototype/issues), and let's discuss your potential contribution. 
 More information on how to add new kernels to the library can be found in the [documentation](./docs/add_new_kernel/add_new_kernel.md).
 
 # __Feedback welcome!__
