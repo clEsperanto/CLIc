@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+# This script is used to convert OpenCL and CUDA kernel files to C++ header files.
+# The header files are used to embed the kernel source code into the library.
+# The script is called and managed at build time by CMake.
+
 import sys
 import os
 import glob
