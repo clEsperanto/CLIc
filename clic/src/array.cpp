@@ -270,8 +270,10 @@ Array::fill(const float value) -> void
     throw std::runtime_error("Error: Array it is not initialized.");
   }
 
-// to test with __arm64__ also
 #ifdef __APPLE__ && __arm64__
+  // clEnqueueFillBuffer not behaving as expected on Apple Silicon
+  // FIX: Filling buffer with host data
+  // TODO: Find a better solution
   auto data_type = dtype();
   switch (data_type)
   {
