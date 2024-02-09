@@ -367,32 +367,43 @@ class CUDABackend : public Backend
 {
 public:
   CUDABackend();
+
   CUDABackend(const CUDABackend &) = default;
+
   CUDABackend(CUDABackend &&) = default;
+
   ~CUDABackend() override = default;
+
   auto
   operator=(const CUDABackend &) -> CUDABackend & = default;
+
   auto
   operator=(CUDABackend &&) -> CUDABackend & = default;
 
   [[nodiscard]] auto
   getDevices(const std::string & type) const -> std::vector<Device::Pointer> override;
+
   [[nodiscard]] auto
   getDevice(const std::string & name, const std::string & type) const -> Device::Pointer override;
+
   [[nodiscard]] auto
   getDeviceFromIndex(size_t index, const std::string & type) const -> Device::Pointer override;
+
   [[nodiscard]] auto
   getDevicesList(const std::string & type) const -> std::vector<std::string> override;
+
   [[nodiscard]] auto
   getType() const -> Backend::Type override;
 
   static auto
   allocateBuffer(const Device::Pointer & device, const size_t & size, void ** data_ptr) -> void;
+
   static auto
   allocateImage(const Device::Pointer &       device,
                 const std::array<size_t, 3> & region,
                 const dType &                 dtype,
                 void **                       data_ptr) -> void;
+
   auto
   allocateMemory(const Device::Pointer &       device,
                  const std::array<size_t, 3> & region,
@@ -448,6 +459,7 @@ public:
                            std::array<size_t, 3> & dst_shape,
                            std::array<size_t, 3> & region,
                            const size_t &          bytes) const -> void override;
+
   auto
   copyMemoryImageToBuffer(const Device::Pointer & device,
                           const void **           src_ptr,
@@ -458,6 +470,7 @@ public:
                           std::array<size_t, 3> & dst_shape,
                           std::array<size_t, 3> & region,
                           const size_t &          bytes) const -> void override;
+
   auto
   copyMemoryBufferToImage(const Device::Pointer & device,
                           const void **           src_ptr,
@@ -468,6 +481,7 @@ public:
                           std::array<size_t, 3> & dst_shape,
                           std::array<size_t, 3> & region,
                           const size_t &          bytes) const -> void override;
+
   auto
   copyMemoryImageToImage(const Device::Pointer & device,
                          const void **           src_ptr,
@@ -503,6 +517,7 @@ public:
               const std::string &     kernel_source,
               const std::string &     kernel_name,
               void *                  kernel) const -> void override;
+
   auto
   executeKernel(const Device::Pointer &       device,
                 const std::string &           kernel_source,
@@ -510,6 +525,7 @@ public:
                 const std::array<size_t, 3> & global_size,
                 const std::vector<void *> &   args,
                 const std::vector<size_t> &   sizes) const -> void override;
+
   [[nodiscard]] auto
   getPreamble() const -> std::string override;
 };
@@ -523,22 +539,31 @@ class OpenCLBackend : public Backend
 {
 public:
   OpenCLBackend() = default;
+
   OpenCLBackend(const OpenCLBackend &) = default;
+
   OpenCLBackend(OpenCLBackend &&) = default;
+
   ~OpenCLBackend() override = default;
+
   auto
   operator=(const OpenCLBackend &) -> OpenCLBackend & = default;
+
   auto
   operator=(OpenCLBackend &&) -> OpenCLBackend & = default;
 
   [[nodiscard]] auto
   getDevices(const std::string & type) const -> std::vector<Device::Pointer> override;
+
   [[nodiscard]] auto
   getDevice(const std::string & name, const std::string & type) const -> Device::Pointer override;
+
   [[nodiscard]] auto
   getDeviceFromIndex(size_t index, const std::string & type) const -> Device::Pointer override;
+
   [[nodiscard]] auto
   getDevicesList(const std::string & type) const -> std::vector<std::string> override;
+
   [[nodiscard]] auto
   getType() const -> Backend::Type override;
 
@@ -622,6 +647,7 @@ public:
                            std::array<size_t, 3> & dst_shape,
                            std::array<size_t, 3> & region,
                            const size_t &          bytes) const -> void override;
+
   auto
   copyMemoryImageToBuffer(const Device::Pointer & device,
                           const void **           src_ptr,
@@ -632,6 +658,7 @@ public:
                           std::array<size_t, 3> & dst_shape,
                           std::array<size_t, 3> & region,
                           const size_t &          bytes) const -> void override;
+
   auto
   copyMemoryBufferToImage(const Device::Pointer & device,
                           const void **           src_ptr,
@@ -642,6 +669,7 @@ public:
                           std::array<size_t, 3> & dst_shape,
                           std::array<size_t, 3> & region,
                           const size_t &          bytes) const -> void override;
+
   auto
   copyMemoryImageToImage(const Device::Pointer & device,
                          const void **           src_ptr,
@@ -705,24 +733,53 @@ public:
 class BackendManager
 {
 public:
+  /**
+   * @brief Get the singleton instance of the BackendManager
+   */
   static auto
   getInstance() -> BackendManager &;
 
+  /**
+   * @brief Get the list of available backends
+   */
   [[nodiscard]] static auto
   getBackendsList() -> std::vector<std::string>;
 
+  /**
+   * @brief Check if CUDA is enabled
+   *
+   * @return bool True if CUDA is enabled, False otherwise
+   */
   [[nodiscard]] static auto
   cudaEnabled() -> bool;
 
+  /**
+   * @brief Check if OpenCL is enabled
+   *
+   * @return bool True if OpenCL is enabled, False otherwise
+   */
   [[nodiscard]] static auto
   openCLEnabled() -> bool;
 
+  /**
+   * @brief Set the backend
+   *
+   * @param backend The backend to be set, default is "opencl"
+   */
   auto
   setBackend(const std::string & backend = "opencl") -> void;
 
+  /**
+   * @brief Get the backend
+   *
+   * @return const Backend&
+   */
   [[nodiscard]] auto
   getBackend() const -> const Backend &;
 
+  /**
+   * @brief Operator << to print the backend manager
+   */
   friend auto
   operator<<(std::ostream & out, const BackendManager & backend_manager) -> std::ostream &
   {
@@ -730,9 +787,20 @@ public:
     return out;
   }
 
+  /**
+   * @brief Destroy the BackendManager object
+   */
   ~BackendManager() = default;
+
+  /**
+   * @brief Copy constructor (delete)
+   */
   BackendManager(const BackendManager &) = delete;
   auto
+
+  /**
+   * @brief Copy assignment operator (delete)
+   */
   operator=(const BackendManager &) -> BackendManager & = delete;
 
 
