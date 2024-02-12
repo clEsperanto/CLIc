@@ -21,7 +21,7 @@ namespace cle::tier4
  * @param src1 [const Array::Pointer &]
  * @return float
  *
- * @link https://clij.github.io/clij2docs/reference_meanSquaredError
+ * @link https://clij.github.io/clij2-docs/reference_meanSquaredError
  */
 auto
 mean_squared_error_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1)
@@ -38,7 +38,7 @@ mean_squared_error_func(const Device::Pointer & device, const Array::Pointer & s
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_spotsToPointList
+ * @link https://clij.github.io/clij2-docs/reference_spotsToPointList
  */
 auto
 spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -58,7 +58,7 @@ spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & s
  * @param blocksize Renumbering is done in blocks for performance reasons. [int ( = 4096 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_closeIndexGapsInLabelMap
+ * @link https://clij.github.io/clij2-docs/reference_closeIndexGapsInLabelMap
  */
 auto
 relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int blocksize)
