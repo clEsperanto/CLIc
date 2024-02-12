@@ -21,7 +21,7 @@ namespace cle::tier2
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_absoluteDifference
+ * @link https://clij.github.io/clij2-docs/reference_absoluteDifference
  */
 auto
 absolute_difference_func(const Device::Pointer & device,
@@ -42,7 +42,7 @@ absolute_difference_func(const Device::Pointer & device,
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_addImages
+ * @link https://clij.github.io/clij2-docs/reference_addImages
  */
 auto
 add_images_func(const Device::Pointer & device,
@@ -65,7 +65,7 @@ add_images_func(const Device::Pointer & device,
  * @param radius_z Radius of the background determination region in Z. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_bottomHatBox
+ * @link https://clij.github.io/clij2-docs/reference_bottomHatBox
  */
 auto
 bottom_hat_box_func(const Device::Pointer & device,
@@ -90,7 +90,7 @@ bottom_hat_box_func(const Device::Pointer & device,
  * @param radius_z Radius of the background determination region in Z. [float ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_bottomHatSphere
+ * @link https://clij.github.io/clij2-docs/reference_bottomHatSphere
  */
 auto
 bottom_hat_sphere_func(const Device::Pointer & device,
@@ -243,7 +243,7 @@ concatenate_along_z_func(const Device::Pointer & device,
  * @param ignore_background [bool ( = True )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_countTouchingNeighbors
+ * @link https://clij.github.io/clij2-docs/reference_countTouchingNeighbors
  */
 auto
 count_touching_neighbors_func(const Device::Pointer & device,
@@ -282,7 +282,7 @@ crop_border_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  * @param sigma_z [float ( = 2 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_divideByGaussianBackground
+ * @link https://clij.github.io/clij2-docs/reference_divideByGaussianBackground
  */
 auto
 divide_by_gaussian_background_func(const Device::Pointer & device,
@@ -326,7 +326,7 @@ degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & s
  * @param sigma2_z Sigma of the second Gaussian filter in z [float ( = 2 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_differenceOfGaussian3D
+ * @link https://clij.github.io/clij2-docs/reference_differenceOfGaussian3D
  */
 auto
 difference_of_gaussian_func(const Device::Pointer & device,
@@ -351,7 +351,7 @@ difference_of_gaussian_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_extendLabelingViaVoronoi
+ * @link https://clij.github.io/clij2-docs/reference_extendLabelingViaVoronoi
  */
 auto
 extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -369,7 +369,7 @@ extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Po
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_invert
+ * @link https://clij.github.io/clij2-docs/reference_invert
  */
 auto
 invert_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -386,7 +386,7 @@ invert_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_labelSpots
+ * @link https://clij.github.io/clij2-docs/reference_labelSpots
  */
 auto
 label_spots_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -418,7 +418,7 @@ large_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Point
  * @param src [const Array::Pointer & ( = None )]
  * @return float
  *
- * @link https://clij.github.io/clij2docs/reference_maximumOfAllPixels
+ * @link https://clij.github.io/clij2-docs/reference_maximumOfAllPixels
  */
 auto
 maximum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
@@ -433,7 +433,7 @@ maximum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer 
  * @param src [const Array::Pointer & ( = None )]
  * @return float
  *
- * @link https://clij.github.io/clij2docs/reference_minimumOfAllPixels
+ * @link https://clij.github.io/clij2-docs/reference_minimumOfAllPixels
  */
 auto
 minimum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
@@ -449,7 +449,7 @@ minimum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer 
  * @param mask [const Array::Pointer & ( = 1 )]
  * @return float
  *
- * @link https://clij.github.io/clij2docs/reference_minimumOfMaskedPixels
+ * @link https://clij.github.io/clij2-docs/reference_minimumOfMaskedPixels
  */
 auto
 minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask)
@@ -564,7 +564,7 @@ square_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_squaredDifference
+ * @link https://clij.github.io/clij2-docs/reference_squaredDifference
  */
 auto
 squared_difference_func(const Device::Pointer & device,
@@ -587,7 +587,7 @@ squared_difference_func(const Device::Pointer & device,
  * @param radius_z [int ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_standardDeviationBox
+ * @link https://clij.github.io/clij2-docs/reference_standardDeviationBox
  */
 auto
 standard_deviation_box_func(const Device::Pointer & device,
@@ -612,7 +612,7 @@ standard_deviation_box_func(const Device::Pointer & device,
  * @param radius_z [int ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_standardDeviationSphere
+ * @link https://clij.github.io/clij2-docs/reference_standardDeviationSphere
  */
 auto
 standard_deviation_sphere_func(const Device::Pointer & device,
@@ -636,7 +636,7 @@ standard_deviation_sphere_func(const Device::Pointer & device,
  * @param sigma_z [float ( = 2 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_subtractGaussianBackground
+ * @link https://clij.github.io/clij2-docs/reference_subtractGaussianBackground
  */
 auto
 subtract_gaussian_background_func(const Device::Pointer & device,
@@ -659,7 +659,7 @@ subtract_gaussian_background_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_subtractImages
+ * @link https://clij.github.io/clij2-docs/reference_subtractImages
  */
 auto
 subtract_images_func(const Device::Pointer & device,
@@ -677,7 +677,7 @@ subtract_images_func(const Device::Pointer & device,
  * @param src [const Array::Pointer & ( = None )]
  * @return float
  *
- * @link https://clij.github.io/clij2docs/reference_sumOfAllPixels
+ * @link https://clij.github.io/clij2-docs/reference_sumOfAllPixels
  */
 auto
 sum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
@@ -697,7 +697,7 @@ sum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param radius_z Radius of the background determination region in Z. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_topHatBox
+ * @link https://clij.github.io/clij2-docs/reference_topHatBox
  */
 auto
 top_hat_box_func(const Device::Pointer & device,
@@ -721,7 +721,7 @@ top_hat_box_func(const Device::Pointer & device,
  * @param radius_z Radius of the background determination region in Z. [float ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_topHatSphere
+ * @link https://clij.github.io/clij2-docs/reference_topHatSphere
  */
 auto
 top_hat_sphere_func(const Device::Pointer & device,

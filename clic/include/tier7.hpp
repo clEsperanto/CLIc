@@ -184,7 +184,7 @@ opening_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
  * @param outline_sigma controls how precise segmented objects are outlined. [float ( = 2 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_voronoiOtsuLabeling
+ * @link https://clij.github.io/clij2-docs/reference_voronoiOtsuLabeling
  * @link https://ieeexplore.ieee.org/document/4310076
  * @link https://en.wikipedia.org/wiki/Voronoi_diagram
  */

@@ -20,7 +20,7 @@ namespace cle::tier1
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_absolute
+ * @link https://clij.github.io/clij2-docs/reference_absolute
  */
 auto
 absolute_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -40,7 +40,7 @@ absolute_func(const Device::Pointer & device, const Array::Pointer & src, Array:
  * @param factor1 Multiplication factor of each pixel of src1 before adding it. [float ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_addImagesWeighted
+ * @link https://clij.github.io/clij2-docs/reference_addImagesWeighted
  */
 auto
 add_images_weighted_func(const Device::Pointer & device,
@@ -62,7 +62,7 @@ add_images_weighted_func(const Device::Pointer & device,
  * @param scalar The constant number which will be added to all pixels. [float ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_addImageAndScalar
+ * @link https://clij.github.io/clij2-docs/reference_addImageAndScalar
  */
 auto
 add_image_and_scalar_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
@@ -83,7 +83,7 @@ add_image_and_scalar_func(const Device::Pointer & device, const Array::Pointer &
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_binaryAnd
+ * @link https://clij.github.io/clij2-docs/reference_binaryAnd
  */
 auto
 binary_and_func(const Device::Pointer & device,
@@ -103,7 +103,7 @@ binary_and_func(const Device::Pointer & device,
  * @param dst The output image where edge pixels will be 1. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_binaryEdgeDetection
+ * @link https://clij.github.io/clij2-docs/reference_binaryEdgeDetection
  */
 auto
 binary_edge_detection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -121,7 +121,7 @@ binary_edge_detection_func(const Device::Pointer & device, const Array::Pointer 
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_binaryNot
+ * @link https://clij.github.io/clij2-docs/reference_binaryNot
  */
 auto
 binary_not_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -140,7 +140,7 @@ binary_not_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_binaryOr
+ * @link https://clij.github.io/clij2-docs/reference_binaryOr
  */
 auto
 binary_or_func(const Device::Pointer & device,
@@ -160,7 +160,7 @@ binary_or_func(const Device::Pointer & device,
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_binarySubtract
+ * @link https://clij.github.io/clij2-docs/reference_binarySubtract
  */
 auto
 binary_subtract_func(const Device::Pointer & device,
@@ -182,7 +182,7 @@ binary_subtract_func(const Device::Pointer & device,
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_binaryXOr
+ * @link https://clij.github.io/clij2-docs/reference_binaryXOr
  */
 auto
 binary_xor_func(const Device::Pointer & device,
@@ -227,7 +227,7 @@ block_enumerate_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_convolve
+ * @link https://clij.github.io/clij2-docs/reference_convolve
  */
 auto
 convolve_func(const Device::Pointer & device,
@@ -245,7 +245,7 @@ convolve_func(const Device::Pointer & device,
  * @param dst Output copy image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_copy
+ * @link https://clij.github.io/clij2-docs/reference_copy
  */
 auto
 copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -264,7 +264,7 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
  * @param slice [int ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_copySlice
+ * @link https://clij.github.io/clij2-docs/reference_copySlice
  */
 auto
 copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
@@ -282,7 +282,7 @@ copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param slice [int ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_copySlice
+ * @link https://clij.github.io/clij2-docs/reference_copySlice
  */
 auto
 copy_horizontal_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
@@ -300,7 +300,7 @@ copy_horizontal_slice_func(const Device::Pointer & device, const Array::Pointer 
  * @param slice [int ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_copySlice
+ * @link https://clij.github.io/clij2-docs/reference_copySlice
  */
 auto
 copy_vertical_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
@@ -323,7 +323,7 @@ copy_vertical_slice_func(const Device::Pointer & device, const Array::Pointer & 
  * @param depth Depth size of the region to crop. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_crop3D
+ * @link https://clij.github.io/clij2-docs/reference_crop3D
  */
 auto
 crop_func(const Device::Pointer & device,
@@ -363,7 +363,7 @@ cubic_root_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_detectLabelEdges
+ * @link https://clij.github.io/clij2-docs/reference_detectLabelEdges
  */
 auto
 detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -381,7 +381,7 @@ detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & s
  * @param dst Output result image. [Array::Pointer ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_detectMaximaBox
+ * @link https://clij.github.io/clij2-docs/reference_detectMaximaBox
  */
 auto
 detect_maxima_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -399,7 +399,7 @@ detect_maxima_box_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param dst Output result image. [Array::Pointer ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_detectMaximaBox
+ * @link https://clij.github.io/clij2-docs/reference_detectMaximaBox
  */
 auto
 detect_minima_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -420,7 +420,7 @@ detect_minima_box_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param dst Output result image. Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_dilateBox
+ * @link https://clij.github.io/clij2-docs/reference_dilateBox
  */
 auto
 dilate_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -438,7 +438,7 @@ dilate_box_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param dst Output result image. Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_dilateSphere
+ * @link https://clij.github.io/clij2-docs/reference_dilateSphere
  */
 auto
 dilate_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -456,7 +456,7 @@ dilate_sphere_func(const Device::Pointer & device, const Array::Pointer & src, A
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_divideImages
+ * @link https://clij.github.io/clij2-docs/reference_divideImages
  */
 auto
 divide_images_func(const Device::Pointer & device,
@@ -494,7 +494,7 @@ divide_scalar_by_image_func(const Device::Pointer & device,
  * @param dst The resulting binary image where pixels will be 1 only if source1 [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_equal
+ * @link https://clij.github.io/clij2-docs/reference_equal
  */
 auto
 equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
@@ -512,7 +512,7 @@ equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Ar
  * @param scalar The constant where every pixel is compared to. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_equalConstant
+ * @link https://clij.github.io/clij2-docs/reference_equalConstant
  */
 auto
 equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
@@ -533,7 +533,7 @@ equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, 
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_erodeBox
+ * @link https://clij.github.io/clij2-docs/reference_erodeBox
  */
 auto
 erode_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -551,7 +551,7 @@ erode_box_func(const Device::Pointer & device, const Array::Pointer & src, Array
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_erodeSphere
+ * @link https://clij.github.io/clij2-docs/reference_erodeSphere
  */
 auto
 erode_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -568,7 +568,7 @@ erode_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_exponential
+ * @link https://clij.github.io/clij2-docs/reference_exponential
  */
 auto
 exponential_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -586,7 +586,7 @@ exponential_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  * @param flip_z Flip along the z axis if true. [bool ( = True )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_flip3D
+ * @link https://clij.github.io/clij2-docs/reference_flip3D
  */
 auto
 flip_func(const Device::Pointer & device,
@@ -613,7 +613,7 @@ flip_func(const Device::Pointer & device,
  * @param sigma_z Sigma value along the z axis. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_gaussianBlur3D
+ * @link https://clij.github.io/clij2-docs/reference_gaussianBlur3D
  */
 auto
 gaussian_blur_func(const Device::Pointer & device,
@@ -641,7 +641,7 @@ gaussian_blur_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_generateDistanceMatrix
+ * @link https://clij.github.io/clij2-docs/reference_generateDistanceMatrix
  */
 auto
 generate_distance_matrix_func(const Device::Pointer & device,
@@ -661,7 +661,7 @@ generate_distance_matrix_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_gradientX
+ * @link https://clij.github.io/clij2-docs/reference_gradientX
  */
 auto
 gradient_x_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -678,7 +678,7 @@ gradient_x_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_gradientY
+ * @link https://clij.github.io/clij2-docs/reference_gradientY
  */
 auto
 gradient_y_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -695,7 +695,7 @@ gradient_y_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_gradientZ
+ * @link https://clij.github.io/clij2-docs/reference_gradientZ
  */
 auto
 gradient_z_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -712,7 +712,7 @@ gradient_z_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_greater
+ * @link https://clij.github.io/clij2-docs/reference_greater
  */
 auto
 greater_func(const Device::Pointer & device,
@@ -732,7 +732,7 @@ greater_func(const Device::Pointer & device,
  * @param scalar [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_greaterConstant
+ * @link https://clij.github.io/clij2-docs/reference_greaterConstant
  */
 auto
 greater_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
@@ -750,7 +750,7 @@ greater_constant_func(const Device::Pointer & device, const Array::Pointer & src
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_greaterOrEqual
+ * @link https://clij.github.io/clij2-docs/reference_greaterOrEqual
  */
 auto
 greater_or_equal_func(const Device::Pointer & device,
@@ -770,7 +770,7 @@ greater_or_equal_func(const Device::Pointer & device,
  * @param scalar Scalar value used in the comparison. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_greaterOrEqualConstant
+ * @link https://clij.github.io/clij2-docs/reference_greaterOrEqualConstant
  */
 auto
 greater_or_equal_constant_func(const Device::Pointer & device,
@@ -814,7 +814,7 @@ hessian_eigenvalues_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_laplaceBox
+ * @link https://clij.github.io/clij2-docs/reference_laplaceBox
  */
 auto
 laplace_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -830,7 +830,7 @@ laplace_box_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_laplaceDiamond
+ * @link https://clij.github.io/clij2-docs/reference_laplaceDiamond
  */
 auto
 laplace_diamond_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -866,7 +866,7 @@ local_cross_correlation_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_logarithm
+ * @link https://clij.github.io/clij2-docs/reference_logarithm
  */
 auto
 logarithm_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -885,7 +885,7 @@ logarithm_func(const Device::Pointer & device, const Array::Pointer & src, Array
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_mask
+ * @link https://clij.github.io/clij2-docs/reference_mask
  */
 auto
 mask_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask, Array::Pointer dst)
@@ -907,7 +907,7 @@ mask_func(const Device::Pointer & device, const Array::Pointer & src, const Arra
  * @param label Label value to use. [float ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_maskLabel
+ * @link https://clij.github.io/clij2-docs/reference_maskLabel
  */
 auto
 mask_label_func(const Device::Pointer & device,
@@ -929,7 +929,7 @@ mask_label_func(const Device::Pointer & device,
  * @param scalar Scalar value used in the comparison. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_maximumImageAndScalar
+ * @link https://clij.github.io/clij2-docs/reference_maximumImageAndScalar
  */
 auto
 maximum_image_and_scalar_func(const Device::Pointer & device,
@@ -950,7 +950,7 @@ maximum_image_and_scalar_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_maximumImages
+ * @link https://clij.github.io/clij2-docs/reference_maximumImages
  */
 auto
 maximum_images_func(const Device::Pointer & device,
@@ -973,7 +973,7 @@ maximum_images_func(const Device::Pointer & device,
  * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_maximum3DBox
+ * @link https://clij.github.io/clij2-docs/reference_maximum3DBox
  */
 auto
 maximum_box_func(const Device::Pointer & device,
@@ -994,7 +994,7 @@ maximum_box_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_maximumXProjection
+ * @link https://clij.github.io/clij2-docs/reference_maximumXProjection
  */
 auto
 maximum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -1011,7 +1011,7 @@ maximum_x_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_maximumYProjection
+ * @link https://clij.github.io/clij2-docs/reference_maximumYProjection
  */
 auto
 maximum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -1028,7 +1028,7 @@ maximum_y_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_maximumZProjection
+ * @link https://clij.github.io/clij2-docs/reference_maximumZProjection
  */
 auto
 maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -1049,7 +1049,7 @@ maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_mean3DBox
+ * @link https://clij.github.io/clij2-docs/reference_mean3DBox
  */
 auto
 mean_box_func(const Device::Pointer & device,
@@ -1074,7 +1074,7 @@ mean_box_func(const Device::Pointer & device,
  * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_mean3DSphere
+ * @link https://clij.github.io/clij2-docs/reference_mean3DSphere
  */
 auto
 mean_sphere_func(const Device::Pointer & device,
@@ -1095,7 +1095,7 @@ mean_sphere_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_meanXProjection
+ * @link https://clij.github.io/clij2-docs/reference_meanXProjection
  */
 auto
 mean_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -1112,7 +1112,7 @@ mean_x_projection_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_meanYProjection
+ * @link https://clij.github.io/clij2-docs/reference_meanYProjection
  */
 auto
 mean_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -1129,7 +1129,7 @@ mean_y_projection_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_meanZProjection
+ * @link https://clij.github.io/clij2-docs/reference_meanZProjection
  */
 auto
 mean_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -1150,7 +1150,7 @@ mean_z_projection_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_median3DBox
+ * @link https://clij.github.io/clij2-docs/reference_median3DBox
  */
 auto
 median_box_func(const Device::Pointer & device,
@@ -1175,7 +1175,7 @@ median_box_func(const Device::Pointer & device,
  * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_median3DSphere
+ * @link https://clij.github.io/clij2-docs/reference_median3DSphere
  */
 auto
 median_sphere_func(const Device::Pointer & device,
@@ -1200,7 +1200,7 @@ median_sphere_func(const Device::Pointer & device,
  * @param radius_z Radius size along z axis. [int ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_minimum3DBox
+ * @link https://clij.github.io/clij2-docs/reference_minimum3DBox
  */
 auto
 minimum_box_func(const Device::Pointer & device,
@@ -1223,7 +1223,7 @@ minimum_box_func(const Device::Pointer & device,
  * @param scalar Scalar value used in the comparison. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_minimumImageAndScalar
+ * @link https://clij.github.io/clij2-docs/reference_minimumImageAndScalar
  */
 auto
 minimum_image_and_scalar_func(const Device::Pointer & device,
@@ -1244,7 +1244,7 @@ minimum_image_and_scalar_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_minimumImages
+ * @link https://clij.github.io/clij2-docs/reference_minimumImages
  */
 auto
 minimum_images_func(const Device::Pointer & device,
@@ -1263,7 +1263,7 @@ minimum_images_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_minimumXProjection
+ * @link https://clij.github.io/clij2-docs/reference_minimumXProjection
  */
 auto
 minimum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -1280,7 +1280,7 @@ minimum_x_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_minimumYProjection
+ * @link https://clij.github.io/clij2-docs/reference_minimumYProjection
  */
 auto
 minimum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -1297,7 +1297,7 @@ minimum_y_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_minimumZProjection
+ * @link https://clij.github.io/clij2-docs/reference_minimumZProjection
  */
 auto
 minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -1411,7 +1411,7 @@ multiply_image_and_position_func(const Device::Pointer & device,
  * @param scalar The number with which every pixel will be multiplied with. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_multiplyImageAndScalar
+ * @link https://clij.github.io/clij2-docs/reference_multiplyImageAndScalar
  */
 auto
 multiply_image_and_scalar_func(const Device::Pointer & device,
@@ -1431,7 +1431,7 @@ multiply_image_and_scalar_func(const Device::Pointer & device,
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_multiplyImages
+ * @link https://clij.github.io/clij2-docs/reference_multiplyImages
  */
 auto
 multiply_images_func(const Device::Pointer & device,
@@ -1451,8 +1451,8 @@ multiply_images_func(const Device::Pointer & device,
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @param nan Value to replace nan with. [float ( = 0 )]
- * @param posinf Value to replace +inf with. [float ( = np.nan_to_num(np.inf) )]
- * @param neginf Value to replace -inf with. [float ( = np.nan_to_num(-np.inf) )]
+ * @param posinf Value to replace +inf with. [float ( = np.nan_to_num(float('inf')) )]
+ * @param neginf Value to replace -inf with. [float ( = np.nan_to_num(float('-inf')) )]
  * @return Array::Pointer
  *
  * @link https://numpy.org/doc/stable/reference/generated/numpy.nan_to_num.html
@@ -1478,7 +1478,7 @@ nan_to_num_func(const Device::Pointer & device,
  * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_nonzeroMaximumBox
+ * @link https://clij.github.io/clij2-docs/reference_nonzeroMaximumBox
  */
 auto
 nonzero_maximum_box_func(const Device::Pointer & device,
@@ -1499,7 +1499,7 @@ nonzero_maximum_box_func(const Device::Pointer & device,
  * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_nonzeroMaximumDiamond
+ * @link https://clij.github.io/clij2-docs/reference_nonzeroMaximumDiamond
  */
 auto
 nonzero_maximum_diamond_func(const Device::Pointer & device,
@@ -1520,7 +1520,7 @@ nonzero_maximum_diamond_func(const Device::Pointer & device,
  * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_nonzeroMinimumBox
+ * @link https://clij.github.io/clij2-docs/reference_nonzeroMinimumBox
  */
 auto
 nonzero_minimum_box_func(const Device::Pointer & device,
@@ -1541,7 +1541,7 @@ nonzero_minimum_box_func(const Device::Pointer & device,
  * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_nonzeroMinimumDiamond
+ * @link https://clij.github.io/clij2-docs/reference_nonzeroMinimumDiamond
  */
 auto
 nonzero_minimum_diamond_func(const Device::Pointer & device,
@@ -1561,7 +1561,7 @@ nonzero_minimum_diamond_func(const Device::Pointer & device,
  * @param dst The resulting binary image where pixels will be 1 only if source1 [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_notEqual
+ * @link https://clij.github.io/clij2-docs/reference_notEqual
  */
 auto
 not_equal_func(const Device::Pointer & device,
@@ -1581,7 +1581,7 @@ not_equal_func(const Device::Pointer & device,
  * @param scalar The constant where every pixel is compared to. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_notEqualConstant
+ * @link https://clij.github.io/clij2-docs/reference_notEqualConstant
  */
 auto
 not_equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
@@ -1601,7 +1601,7 @@ not_equal_constant_func(const Device::Pointer & device, const Array::Pointer & s
  * @param index_z Origin pixel coodinate in z to paste. [int ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_paste3D
+ * @link https://clij.github.io/clij2-docs/reference_paste3D
  */
 auto
 paste_func(const Device::Pointer & device,
@@ -1622,7 +1622,7 @@ paste_func(const Device::Pointer & device,
  * @param dst1 Output image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_onlyzeroOverwriteMaximumBox
+ * @link https://clij.github.io/clij2-docs/reference_onlyzeroOverwriteMaximumBox
  */
 auto
 onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
@@ -1641,7 +1641,7 @@ onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
  * @param dst1 Output image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_onlyzeroOverwriteMaximumDiamond
+ * @link https://clij.github.io/clij2-docs/reference_onlyzeroOverwriteMaximumDiamond
  */
 auto
 onlyzero_overwrite_maximum_diamond_func(const Device::Pointer & device,
@@ -1662,7 +1662,7 @@ onlyzero_overwrite_maximum_diamond_func(const Device::Pointer & device,
  * @param scalar Power value. [float ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_power
+ * @link https://clij.github.io/clij2-docs/reference_power
  */
 auto
 power_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
@@ -1681,7 +1681,7 @@ power_func(const Device::Pointer & device, const Array::Pointer & src, Array::Po
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_powerImages
+ * @link https://clij.github.io/clij2-docs/reference_powerImages
  */
 auto
 power_images_func(const Device::Pointer & device,
@@ -1800,7 +1800,7 @@ replace_value_func(const Device::Pointer & device,
  * @param radius_z Radius size along z axis. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_maximum3DSphere
+ * @link https://clij.github.io/clij2-docs/reference_maximum3DSphere
  */
 auto
 maximum_sphere_func(const Device::Pointer & device,
@@ -1825,7 +1825,7 @@ maximum_sphere_func(const Device::Pointer & device,
  * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_minimum3DSphere
+ * @link https://clij.github.io/clij2-docs/reference_minimum3DSphere
  */
 auto
 minimum_sphere_func(const Device::Pointer & device,
@@ -1846,7 +1846,7 @@ minimum_sphere_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_multiplyMatrix
+ * @link https://clij.github.io/clij2-docs/reference_multiplyMatrix
  */
 auto
 multiply_matrix_func(const Device::Pointer & device,
@@ -1881,7 +1881,7 @@ reciprocal_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param scalar Value to set. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_set
+ * @link https://clij.github.io/clij2-docs/reference_set
  */
 auto
 set_func(const Device::Pointer & device, const Array::Pointer & src, float scalar) -> Array::Pointer;
@@ -1897,7 +1897,7 @@ set_func(const Device::Pointer & device, const Array::Pointer & src, float scala
  * @param value Value to set. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_setColumn
+ * @link https://clij.github.io/clij2-docs/reference_setColumn
  */
 auto
 set_column_func(const Device::Pointer & device, const Array::Pointer & src, int column, float value) -> Array::Pointer;
@@ -1912,7 +1912,7 @@ set_column_func(const Device::Pointer & device, const Array::Pointer & src, int 
  * @param value Value to set. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_setImageBorders
+ * @link https://clij.github.io/clij2-docs/reference_setImageBorders
  */
 auto
 set_image_borders_func(const Device::Pointer & device, const Array::Pointer & src, float value) -> Array::Pointer;
@@ -1928,7 +1928,7 @@ set_image_borders_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param value Value to set. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_setPlane
+ * @link https://clij.github.io/clij2-docs/reference_setPlane
  */
 auto
 set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int plane, float value) -> Array::Pointer;
@@ -1942,7 +1942,7 @@ set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int p
  * @param src Input image to process. [const Array::Pointer &]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_setRampX
+ * @link https://clij.github.io/clij2-docs/reference_setRampX
  */
 auto
 set_ramp_x_func(const Device::Pointer & device, const Array::Pointer & src) -> Array::Pointer;
@@ -1956,7 +1956,7 @@ set_ramp_x_func(const Device::Pointer & device, const Array::Pointer & src) -> A
  * @param src Input image to process. [const Array::Pointer &]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_setRampY
+ * @link https://clij.github.io/clij2-docs/reference_setRampY
  */
 auto
 set_ramp_y_func(const Device::Pointer & device, const Array::Pointer & src) -> Array::Pointer;
@@ -1970,7 +1970,7 @@ set_ramp_y_func(const Device::Pointer & device, const Array::Pointer & src) -> A
  * @param src Input image to process. [const Array::Pointer &]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_setRampZ
+ * @link https://clij.github.io/clij2-docs/reference_setRampZ
  */
 auto
 set_ramp_z_func(const Device::Pointer & device, const Array::Pointer & src) -> Array::Pointer;
@@ -1986,7 +1986,7 @@ set_ramp_z_func(const Device::Pointer & device, const Array::Pointer & src) -> A
  * @param value [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_setRow
+ * @link https://clij.github.io/clij2-docs/reference_setRow
  */
 auto
 set_row_func(const Device::Pointer & device, const Array::Pointer & src, int row, float value) -> Array::Pointer;
@@ -2019,7 +2019,7 @@ set_nonzero_pixels_to_pixelindex_func(const Device::Pointer & device,
  * @param value Value to set. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_setWhereXequalsY
+ * @link https://clij.github.io/clij2-docs/reference_setWhereXequalsY
  */
 auto
 set_where_x_equals_y_func(const Device::Pointer & device, const Array::Pointer & src, float value) -> Array::Pointer;
@@ -2035,7 +2035,7 @@ set_where_x_equals_y_func(const Device::Pointer & device, const Array::Pointer &
  * @param value Value to set. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_setWhereXgreaterThanY
+ * @link https://clij.github.io/clij2-docs/reference_setWhereXgreaterThanY
  */
 auto
 set_where_x_greater_than_y_func(const Device::Pointer & device, const Array::Pointer & src, float value)
@@ -2052,7 +2052,7 @@ set_where_x_greater_than_y_func(const Device::Pointer & device, const Array::Poi
  * @param value Value to set. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_setWhereXsmallerThanY
+ * @link https://clij.github.io/clij2-docs/reference_setWhereXsmallerThanY
  */
 auto
 set_where_x_smaller_than_y_func(const Device::Pointer & device, const Array::Pointer & src, float value)
@@ -2085,7 +2085,7 @@ sign_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_smaller
+ * @link https://clij.github.io/clij2-docs/reference_smaller
  */
 auto
 smaller_func(const Device::Pointer & device,
@@ -2105,7 +2105,7 @@ smaller_func(const Device::Pointer & device,
  * @param scalar Scalar used in the comparison. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_smallerConstant
+ * @link https://clij.github.io/clij2-docs/reference_smallerConstant
  */
 auto
 smaller_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
@@ -2123,7 +2123,7 @@ smaller_constant_func(const Device::Pointer & device, const Array::Pointer & src
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_smallerOrEqual
+ * @link https://clij.github.io/clij2-docs/reference_smallerOrEqual
  */
 auto
 smaller_or_equal_func(const Device::Pointer & device,
@@ -2143,7 +2143,7 @@ smaller_or_equal_func(const Device::Pointer & device,
  * @param scalar Scalar used in the comparison. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_smallerOrEqualConstant
+ * @link https://clij.github.io/clij2-docs/reference_smallerOrEqualConstant
  */
 auto
 smaller_or_equal_constant_func(const Device::Pointer & device,
@@ -2162,7 +2162,7 @@ smaller_or_equal_constant_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_sobel
+ * @link https://clij.github.io/clij2-docs/reference_sobel
  */
 auto
 sobel_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -2211,7 +2211,7 @@ std_z_projection_func(const Device::Pointer & device, const Array::Pointer & src
  * @param scalar Scalar used in the subtraction. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_subtractImageFromScalar
+ * @link https://clij.github.io/clij2-docs/reference_subtractImageFromScalar
  */
 auto
 subtract_image_from_scalar_func(const Device::Pointer & device,
@@ -2248,7 +2248,7 @@ sum_reduction_x_func(const Device::Pointer & device, const Array::Pointer & src,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_sumXProjection
+ * @link https://clij.github.io/clij2-docs/reference_sumXProjection
  */
 auto
 sum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -2264,7 +2264,7 @@ sum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_sumYProjection
+ * @link https://clij.github.io/clij2-docs/reference_sumYProjection
  */
 auto
 sum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -2280,7 +2280,7 @@ sum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_sumZProjection
+ * @link https://clij.github.io/clij2-docs/reference_sumZProjection
  */
 auto
 sum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -2296,7 +2296,7 @@ sum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_transposeXY
+ * @link https://clij.github.io/clij2-docs/reference_transposeXY
  */
 auto
 transpose_xy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -2312,7 +2312,7 @@ transpose_xy_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_transposeXZ
+ * @link https://clij.github.io/clij2-docs/reference_transposeXZ
  */
 auto
 transpose_xz_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -2328,7 +2328,7 @@ transpose_xz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_transposeYZ
+ * @link https://clij.github.io/clij2-docs/reference_transposeYZ
  */
 auto
 transpose_yz_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -2343,7 +2343,7 @@ transpose_yz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_undefinedToZero
+ * @link https://clij.github.io/clij2-docs/reference_undefinedToZero
  */
 auto
 undefined_to_zero_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -2364,7 +2364,7 @@ undefined_to_zero_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_varianceBox
+ * @link https://clij.github.io/clij2-docs/reference_varianceBox
  */
 auto
 variance_box_func(const Device::Pointer & device,
@@ -2389,7 +2389,7 @@ variance_box_func(const Device::Pointer & device,
  * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_varianceSphere
+ * @link https://clij.github.io/clij2-docs/reference_varianceSphere
  */
 auto
 variance_sphere_func(const Device::Pointer & device,
@@ -2410,7 +2410,7 @@ variance_sphere_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_writeValuesToPositions
+ * @link https://clij.github.io/clij2-docs/reference_writeValuesToPositions
  */
 auto
 write_values_to_positions_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)

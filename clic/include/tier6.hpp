@@ -63,7 +63,7 @@ erode_labels_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_maskedVoronoiLabeling
+ * @link https://clij.github.io/clij2-docs/reference_maskedVoronoiLabeling
  */
 auto
 masked_voronoi_labeling_func(const Device::Pointer & device,
@@ -83,7 +83,7 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2docs/reference_voronoiLabeling
+ * @link https://clij.github.io/clij2-docs/reference_voronoiLabeling
  */
 auto
 voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
