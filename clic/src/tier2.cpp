@@ -2,9 +2,9 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
 
-#include "cle_label_spots_in_x.h"
 #include "cle_detect_maxima.h"
 #include "cle_detect_minima.h"
+#include "cle_label_spots_in_x.h"
 
 namespace cle::tier2
 {
@@ -179,7 +179,12 @@ degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & s
 }
 
 auto
-detect_maxima_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius_x, int radius_y, int radius_z) -> Array::Pointer
+detect_maxima_box_func(const Device::Pointer & device,
+                       const Array::Pointer &  src,
+                       Array::Pointer          dst,
+                       int                     radius_x,
+                       int                     radius_y,
+                       int                     radius_z) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::UINT8);
   tier1::mean_box_func(device, src, dst, radius_x, radius_y, radius_z);
@@ -191,7 +196,12 @@ detect_maxima_box_func(const Device::Pointer & device, const Array::Pointer & sr
 }
 
 auto
-detect_minima_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius_x, int radius_y, int radius_z) -> Array::Pointer
+detect_minima_box_func(const Device::Pointer & device,
+                       const Array::Pointer &  src,
+                       Array::Pointer          dst,
+                       int                     radius_x,
+                       int                     radius_y,
+                       int                     radius_z) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::UINT8);
   tier1::mean_box_func(device, src, dst, radius_x, radius_y, radius_z);

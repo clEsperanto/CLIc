@@ -324,8 +324,12 @@ degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & s
  * @link https://clij.github.io/clij2-docs/reference_detectMaximaBox
  */
 auto
-detect_maxima_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius_x, int radius_y, int radius_z)
-  -> Array::Pointer;
+detect_maxima_box_func(const Device::Pointer & device,
+                       const Array::Pointer &  src,
+                       Array::Pointer          dst,
+                       int                     radius_x,
+                       int                     radius_y,
+                       int                     radius_z) -> Array::Pointer;
 
 
 /**
@@ -345,8 +349,12 @@ detect_maxima_box_func(const Device::Pointer & device, const Array::Pointer & sr
  * @link https://clij.github.io/clij2-docs/reference_detectMaximaBox
  */
 auto
-detect_minima_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius_x, int radius_y, int radius_z)
-  -> Array::Pointer;
+detect_minima_box_func(const Device::Pointer & device,
+                       const Array::Pointer &  src,
+                       Array::Pointer          dst,
+                       int                     radius_x,
+                       int                     radius_y,
+                       int                     radius_z) -> Array::Pointer;
 
 /**
  * @name difference_of_gaussian
