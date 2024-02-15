@@ -1,5 +1,5 @@
 #include "device.hpp"
-
+#include "utils.hpp"
 namespace cle
 {
 
@@ -125,11 +125,15 @@ OpenCLDevice::getCLCommandQueue() const -> const cl_command_queue &
 }
 
 auto
-OpenCLDevice::getName() const -> std::string
+OpenCLDevice::getName(bool lowercase) const -> std::string
 {
-  char vendor_name[256];
-  clGetDeviceInfo(clDevice, CL_DEVICE_NAME, sizeof(char) * 256, &vendor_name, nullptr);
-  return std::string(vendor_name);
+  char device_name[256];
+  clGetDeviceInfo(clDevice, CL_DEVICE_NAME, sizeof(char) * 256, &device_name, nullptr);
+  if (lowercase)
+  {
+    return to_lower(std::string(device_name));
+  }
+  return std::string(device_name);
 }
 
 auto

@@ -75,7 +75,7 @@ public:
    * @return std::string
    */
   [[nodiscard]] virtual auto
-  getName() const -> std::string = 0;
+  getName(bool lowercase = false) const -> std::string = 0;
 
   /**
    * @brief Get device info
@@ -224,10 +224,11 @@ public:
 
   /**
    * @brief Get device name
+   * @param lowercase return the name in lowercase ( = False )
    * @return std::string
    */
   [[nodiscard]] auto
-  getName() const -> std::string override;
+  getName(bool lowercase = false) const -> std::string override;
 
   /**
    * @brief Get device info
@@ -340,10 +341,11 @@ public:
 
   /**
    * @brief Get device name
+   * @param lowercase return the name in lowercase ( = False )
    * @return std::string
    */
   [[nodiscard]] auto
-  getName() const -> std::string override;
+  getName(bool lowercase = false) const -> std::string override;
 
   /**
    * @brief Get device info
