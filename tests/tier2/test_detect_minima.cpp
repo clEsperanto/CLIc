@@ -3,7 +3,7 @@
 #include <array>
 #include <gtest/gtest.h>
 
-class TestDetectMaxima : public ::testing::TestWithParam<std::string>
+class TestDetectMinima : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<uint8_t, 10 * 5 * 3> output;
@@ -13,15 +13,15 @@ protected:
   virtual void
   SetUp()
   {
-    std::fill(input.begin(), input.end(), static_cast<uint8_t>(0));
+    std::fill(input.begin(), input.end(), static_cast<uint8_t>(100));
     std::fill(valid.begin(), valid.end(), static_cast<uint8_t>(0));
     const size_t center = (10 / 2) + (5 / 2) * 10 + (3 / 2) * 10 * 5;
-    input[center] = static_cast<uint8_t>(100);
+    input[center] = static_cast<uint8_t>(42);
     valid[center] = static_cast<uint8_t>(1);
   }
 };
 
-TEST_P(TestDetectMaxima, execute)
+TEST_P(TestDetectMinima, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -31,7 +31,7 @@ TEST_P(TestDetectMaxima, execute)
   auto gpu_input = cle::Array::create(10, 5, 3, 3, cle::dType::UINT8, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
-  auto gpu_output = cle::tier1::detect_maxima_box_func(device, gpu_input, nullptr);
+  auto gpu_output = cle::tier2::detect_minima_box_func(device, gpu_input, nullptr, 0, 0, 0);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
@@ -53,4 +53,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDetectMaxima, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDetectMinima, ::testing::ValuesIn(getParameters()));

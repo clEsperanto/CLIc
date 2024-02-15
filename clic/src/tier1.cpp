@@ -28,8 +28,6 @@
 #include "cle_crop.h"
 #include "cle_cubic_root.h"
 #include "cle_detect_label_edges.h"
-#include "cle_detect_maxima.h"
-#include "cle_detect_minima.h"
 #include "cle_dilate_box.h"
 // #include "cle_dilate_box_slice_by_slice.h"
 #include "cle_dilate_sphere.h"
@@ -440,28 +438,6 @@ detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & s
 {
   tier0::create_like(src, dst, dType::UINT8);
   const KernelInfo    kernel = { "detect_label_edges", kernel::detect_label_edges };
-  const ParameterList params = { { "src", src }, { "dst", dst } };
-  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
-  return dst;
-}
-
-auto
-detect_maxima_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
-{
-  tier0::create_like(src, dst, dType::UINT8);
-  const KernelInfo    kernel = { "detect_maxima", kernel::detect_maxima };
-  const ParameterList params = { { "src", src }, { "dst", dst } };
-  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
-  return dst;
-}
-
-auto
-detect_minima_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
-{
-  tier0::create_like(src, dst, dType::UINT8);
-  const KernelInfo    kernel = { "detect_minima", kernel::detect_minima };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
