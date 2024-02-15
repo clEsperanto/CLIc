@@ -187,9 +187,9 @@ detect_maxima_box_func(const Device::Pointer & device,
                        int                     radius_z) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::UINT8);
-  tier1::mean_box_func(device, src, dst, radius_x, radius_y, radius_z);
+  auto                temp = tier1::mean_box_func(device, src, nullptr, radius_x, radius_y, radius_z);
   const KernelInfo    kernel = { "detect_maxima", kernel::detect_maxima };
-  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const ParameterList params = { { "src", temp }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
@@ -204,9 +204,9 @@ detect_minima_box_func(const Device::Pointer & device,
                        int                     radius_z) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::UINT8);
-  tier1::mean_box_func(device, src, dst, radius_x, radius_y, radius_z);
+  auto                temp = tier1::mean_box_func(device, src, nullptr, radius_x, radius_y, radius_z);
   const KernelInfo    kernel = { "detect_minima", kernel::detect_minima };
-  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const ParameterList params = { { "src", temp }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
