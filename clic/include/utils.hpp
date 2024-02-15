@@ -1,6 +1,7 @@
 #ifndef __INCLUDE_UTILS_HPP
 #define __INCLUDE_UTILS_HPP
 
+#include <algorithm>
 #include <cmath>
 #include <fstream>
 #include <limits>
