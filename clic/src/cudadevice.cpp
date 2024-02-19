@@ -1,4 +1,5 @@
 #include "device.hpp"
+#include "utils.hpp"
 
 namespace cle
 {
@@ -126,10 +127,14 @@ CUDADevice::getCUDAStream() const -> const CUstream &
 }
 
 auto
-CUDADevice::getName() const -> std::string
+CUDADevice::getName(bool lowercase) const -> std::string
 {
   char device_name[256];
   cuDeviceGetName(device_name, sizeof(device_name), cudaDevice);
+  if (lowercase)
+  {
+    return to_lower(std::string(device_name));
+  }
   return std::string(device_name);
 }
 

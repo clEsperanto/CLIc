@@ -52,8 +52,7 @@ connected_components_labeling_func(const Device::Pointer & device,
                                    Array::Pointer          dst,
                                    const std::string &     connectivity) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT32);
-
+  // type definition of connectivity processing function
   using nonzero_minimum_type = cle::Array::Pointer (*)(
     const cle::Device::Pointer &, const cle::Array::Pointer &, cle::Array::Pointer, cle::Array::Pointer);
   nonzero_minimum_type nonzero_minimum_func = nullptr;
@@ -65,6 +64,8 @@ connected_components_labeling_func(const Device::Pointer & device,
   {
     nonzero_minimum_func = tier1::nonzero_minimum_box_func;
   }
+
+  tier0::create_like(src, dst, dType::UINT32);
 
   auto temp1 = tier1::set_nonzero_pixels_to_pixelindex_func(device, src, nullptr, 1);
   auto temp2 = Array::create(temp1);

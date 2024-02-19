@@ -1,6 +1,7 @@
 #ifndef __INCLUDE_UTILS_HPP
 #define __INCLUDE_UTILS_HPP
 
+#include <algorithm>
 #include <cmath>
 #include <fstream>
 #include <limits>
@@ -337,6 +338,16 @@ correct_range(int * start, int * stop, int * step, int size) -> void
   }
 }
 
+/**
+ * @brief convert a string to lower case
+ */
+inline auto
+to_lower(const std::string & str) -> std::string
+{
+  std::string result = str;
+  std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+  return result;
+}
 
 } // namespace cle
 

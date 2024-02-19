@@ -130,10 +130,11 @@ OpenCLBackend::getDevice(const std::string & name, const std::string & type) con
 {
 #if USE_OPENCL
   auto devices = getDevices(type);
+  auto lower_case_name = to_lower(name);
   if (!name.empty())
   {
-    auto ite = std::find_if(devices.begin(), devices.end(), [&name](const Device::Pointer & dev) {
-      return dev->getName().find(name) != std::string::npos;
+    auto ite = std::find_if(devices.begin(), devices.end(), [&lower_case_name](const Device::Pointer & dev) {
+      return dev->getName(true).find(lower_case_name) != std::string::npos;
     });
     if (ite != devices.end())
     {
