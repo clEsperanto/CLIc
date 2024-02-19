@@ -307,6 +307,54 @@ auto
 degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer;
 
+/**
+ * @name detect_maxima_box
+ * @category 'binarize', 'in assistant'
+ * @brief Detects local maxima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
+ * is no other pixel in a given radius which has a higher intensity, and to 0 otherwise.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer & ( = None )]
+ * @param src Input image to process. [const Array::Pointer & ( = 0 )]
+ * @param dst Output result image. [Array::Pointer ( = 0 )]
+ * @param radius_x Radius of the region in X. [int ( = 0 )]
+ * @param radius_y Radius of the region in Y. [int ( = 0 )]
+ * @param radius_z Radius of the region in Z. [int ( = 0 )]
+ * @return Array::Pointer
+ *
+ * @link https://clij.github.io/clij2-docs/reference_detectMaximaBox
+ */
+auto
+detect_maxima_box_func(const Device::Pointer & device,
+                       const Array::Pointer &  src,
+                       Array::Pointer          dst,
+                       int                     radius_x,
+                       int                     radius_y,
+                       int                     radius_z) -> Array::Pointer;
+
+
+/**
+ * @name detect_minima_box
+ * @category 'binarize', 'in assistant'
+ * @brief Detects local maxima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
+ * is no other pixel in a given radius which has a lower intensity, and to 0 otherwise.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer & ( = None )]
+ * @param src Input image to process. [const Array::Pointer & ( = 0 )]
+ * @param dst Output result image. [Array::Pointer ( = 0 )]
+ * @param radius_x Radius of the region in X. [int ( = 0 )]
+ * @param radius_y Radius of the region in Y. [int ( = 0 )]
+ * @param radius_z Radius of the region in Z. [int ( = 0 )]
+ * @return Array::Pointer
+ *
+ * @link https://clij.github.io/clij2-docs/reference_detectMaximaBox
+ */
+auto
+detect_minima_box_func(const Device::Pointer & device,
+                       const Array::Pointer &  src,
+                       Array::Pointer          dst,
+                       int                     radius_x,
+                       int                     radius_y,
+                       int                     radius_z) -> Array::Pointer;
 
 /**
  * @name difference_of_gaussian

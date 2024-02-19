@@ -369,43 +369,6 @@ auto
 detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer;
 
-
-/**
- * @name detect_maxima_box
- * @category 'binarize', 'in assistant'
- * @brief Detects local maxima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
- * is no other pixel in a given radius which has a higher intensity, and to 0 otherwise.
- *
- * @param device Device to perform the operation on. [const Device::Pointer & ( = None )]
- * @param src Input image to process. [const Array::Pointer & ( = 0 )]
- * @param dst Output result image. [Array::Pointer ( = 0 )]
- * @return Array::Pointer
- *
- * @link https://clij.github.io/clij2-docs/reference_detectMaximaBox
- */
-auto
-detect_maxima_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
-
-
-/**
- * @name detect_minima_box
- * @category 'binarize', 'in assistant'
- * @brief Detects local maxima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
- * is no other pixel in a given radius which has a lower intensity, and to 0 otherwise.
- *
- * @param device Device to perform the operation on. [const Device::Pointer & ( = None )]
- * @param src Input image to process. [const Array::Pointer & ( = 0 )]
- * @param dst Output result image. [Array::Pointer ( = 0 )]
- * @return Array::Pointer
- *
- * @link https://clij.github.io/clij2-docs/reference_detectMaximaBox
- */
-auto
-detect_minima_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
-
-
 /**
  * @name dilate_box
  * @category 'binary processing'
