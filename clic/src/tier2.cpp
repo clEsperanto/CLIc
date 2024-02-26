@@ -438,7 +438,7 @@ radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & s
 }
 
 auto
-reduce_labels_to_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) 
+reduce_labels_to_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
   auto binary = tier1::detect_label_edges_func(device, src, nullptr);

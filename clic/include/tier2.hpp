@@ -571,7 +571,7 @@ radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & s
  * @name reduce_labels_to_label_edges_func
  * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @brief Takes a label map and reduces all labels to their edges. Label IDs stay and background will be zero.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src [const Array::Pointer &]
  * @param dst [Array::Pointer ( = None )]
@@ -580,7 +580,8 @@ radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & s
  * @link https://clij.github.io/clij2-docs/reference_reduceLabelsToLabelEdges
  */
 auto
-reduce_labels_to_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+reduce_labels_to_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
