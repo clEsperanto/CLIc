@@ -1013,9 +1013,22 @@ buildProgram(const Device::Pointer & device, const cl_program & program) -> void
 static auto
 saveBinaryToCache(const std::string & device_hash, const std::string & source_hash, const cl_program & program) -> void
 {
+  size_t nb_devices = 1;
+  // auto   err =
+  //   clGetProgramInfo(program, CL_PROGRAM_NUM_DEVICES, sizeof(size_t), &nb_devices, nullptr); // Return 1 devices
+  // if (err != CL_SUCCESS)
+  // {
+  //   throw std::runtime_error("Error: Fail to fetch number of devices. OpenCL error : " + getErrorString(err) + " (" +
+  //                            std::to_string(err) + ").");
+  // }
+
+  size_t * np = new size_t[nb_devices]; // Create the size array
+
   std::cout << "Hello E1.0" << std::endl;
-  size_t binary_size;
-  auto   err = clGetProgramInfo(program, CL_PROGRAM_BINARY_SIZES, sizeof(size_t), &binary_size, nullptr);
+  // size_t binary_size;
+  // auto   err = clGetProgramInfo(program, CL_PROGRAM_BINARY_SIZES, sizeof(size_t), &binary_size, nullptr);
+  auto err = clGetProgramInfo(
+    program, CL_PROGRAM_BINARY_SIZES, sizeof(size_t) * nb_devices, np, nullptr); // Load in np the size of my binary
   if (err != CL_SUCCESS)
   {
     throw std::runtime_error("Error: Fail to fetch program binary size. OpenCL error : " + getErrorString(err) + " (" +
@@ -1024,14 +1037,29 @@ saveBinaryToCache(const std::string & device_hash, const std::string & source_ha
 
   std::cout << "Hello E1.1" << std::endl;
 
+  // create an array of pointers and set each pointer to the corresponding binary size
+  char ** bn = new char *[nb_devices]; // Create the binary array
+  for (int i = 0; i < nb_devices; i++)
+  {
+    bn[i] = new char[np[i]];
+  }
+
   // std::vector<unsigned char> binary_vec(binary_size);
   // auto                       pointer_to_binary_vec = binary_vec.data();
-  unsigned char* binary_arr = new unsigned char[binary_size];
+  // unsigned char* binary_arr = new unsigned char[binary_size];
+
+  // char ** bn = new char *[nb_devices]; // Create the binary array
+  // for (int i = 0; i < nb_devices; i++)
+  // {
+  //   bn = new char *[70000];
+  // }
 
   std::cout << "Hello E1.2" << std::endl;
 
   // err = clGetProgramInfo(program, CL_PROGRAM_BINARIES, binary_vec.size(), &pointer_to_binary_vec, nullptr);
-  err = clGetProgramInfo(program, CL_PROGRAM_BINARIES, binary_size, &binary_arr, nullptr);
+  // err = clGetProgramInfo(program, CL_PROGRAM_BINARIES, binary_size, &binary_arr, nullptr);
+  err = clGetProgramInfo(
+    program, CL_PROGRAM_BINARIES, sizeof(unsigned char *) * nb_devices, bn, nullptr); // Load the binary itself
 
   std::cout << "Hello E1.3" << std::endl;
 
@@ -1056,7 +1084,7 @@ saveBinaryToCache(const std::string & device_hash, const std::string & source_ha
 
   std::cout << "Hello E1.6" << std::endl;
 
-  outfile.write(reinterpret_cast<char *>(binary_arr), binary_size);
+  outfile.write(reinterpret_cast<char *>(bn[nb_devices-1]), np[nb_devices-1]);
 
   std::cout << "Hello E1.7" << std::endl;
 
@@ -1067,7 +1095,15 @@ saveBinaryToCache(const std::string & device_hash, const std::string & source_ha
   std::cout << "Hello E1.8" << std::endl;
 
   // Remember to delete the dynamically allocated array after use
-  delete[] binary_arr;
+  // delete[] binary_arr;
+
+  // properly deallocate the memory np, and bn
+  delete[] np;
+  for (int i = 0; i < nb_devices; i++)
+  {
+    delete[] bn[i];
+  }
+  delete[] bn;
 }
 
 static auto
