@@ -20,7 +20,6 @@ namespace cle::tier4
 // auto exclude_labels_with_map_values_within_range_func
 // auto exclude_large_labels_func
 // auto exclude_small_labels_func
-// auto extend_labeling_via_voronoi_func
 
 // auto extended_depth_of_focus_variance_projection_func
 // auto generate_n_most_touching_neighbors_matrix_func
