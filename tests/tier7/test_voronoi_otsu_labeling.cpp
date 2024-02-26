@@ -2,6 +2,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include <stdio.h>
 
 class TestVoronoiOtsuLabeling : public ::testing::TestWithParam<std::string>
 {
@@ -23,13 +24,21 @@ protected:
 
 TEST_P(TestVoronoiOtsuLabeling, execute)
 {
+  std::cout << "hello world" << std::endl;
+
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("gfx1035", "all");
+
+  std::cout << device << std::endl;
+  std::cout << device->getInfo() << std::endl;
+
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(7, 7, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
+
+  std::cout << gpu_input << std::endl;
 
   auto gpu_output = cle::tier7::voronoi_otsu_labeling_func(device, gpu_input, nullptr, 0, 1);
 

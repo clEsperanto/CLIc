@@ -208,6 +208,9 @@ execute(const Device::Pointer & device,
   platform_options(device, &kernel_preamble);
   const std::string program_source = defines + kernel_preamble + kernel_source;
 
+  std::cout << "Hello B" << std::endl;
+  
+
   // prepare parameters to be passed to the backend
   std::vector<void *> args_ptr;
   std::vector<size_t> args_size;
@@ -236,9 +239,15 @@ execute(const Device::Pointer & device,
     }
   }
 
+  std::cout << "Hello C" << std::endl;
+  
+
   // execute kernel
   cle::BackendManager::getInstance().getBackend().executeKernel(
     device, program_source, kernel_name, global_range, args_ptr, args_size);
+
+  std::cout << "Hello Y" << std::endl;
+  
 }
 
 
