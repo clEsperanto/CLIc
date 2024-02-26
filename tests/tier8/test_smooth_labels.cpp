@@ -21,7 +21,7 @@ TEST_P(TestSmoothLabels, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("RTX", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(8, 9, 1, 2, cle::dType::UINT32, cle::mType::BUFFER, device);
