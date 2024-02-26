@@ -1024,12 +1024,14 @@ saveBinaryToCache(const std::string & device_hash, const std::string & source_ha
 
   std::cout << "Hello E1.1" << std::endl;
 
-  std::vector<unsigned char> binary_vec(binary_size);
-  auto                       pointer_to_binary_vec = binary_vec.data();
+  // std::vector<unsigned char> binary_vec(binary_size);
+  // auto                       pointer_to_binary_vec = binary_vec.data();
+  unsigned char* binary_arr = new unsigned char[binary_size];
 
   std::cout << "Hello E1.2" << std::endl;
 
-  err = clGetProgramInfo(program, CL_PROGRAM_BINARIES, binary_vec.size(), &pointer_to_binary_vec, nullptr);
+  // err = clGetProgramInfo(program, CL_PROGRAM_BINARIES, binary_vec.size(), &pointer_to_binary_vec, nullptr);
+  err = clGetProgramInfo(program, CL_PROGRAM_BINARIES, binary_size, &binary_arr, nullptr);
 
   std::cout << "Hello E1.3" << std::endl;
 
@@ -1054,7 +1056,7 @@ saveBinaryToCache(const std::string & device_hash, const std::string & source_ha
 
   std::cout << "Hello E1.6" << std::endl;
 
-  outfile.write(reinterpret_cast<char *>(binary_vec.data()), binary_size);
+  outfile.write(reinterpret_cast<char *>(binary_arr), binary_size);
 
   std::cout << "Hello E1.7" << std::endl;
 
@@ -1063,6 +1065,9 @@ saveBinaryToCache(const std::string & device_hash, const std::string & source_ha
     throw std::runtime_error("Error: Fail to write binary cache file.");
   }
   std::cout << "Hello E1.8" << std::endl;
+
+  // Remember to delete the dynamically allocated array after use
+  delete[] binary_arr;
 }
 
 static auto
@@ -1201,13 +1206,13 @@ OpenCLBackend::executeKernel(const Device::Pointer &       device,
   auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
 
   std::cout << "Hello E" << std::endl;
-  
+
 
   cl_kernel ocl_kernel;
   buildKernel(device, kernel_source, kernel_name, &ocl_kernel);
 
   std::cout << "Hello F" << std::endl;
-  
+
 
   for (size_t i = 0; i < args.size(); i++)
   {
@@ -1220,7 +1225,7 @@ OpenCLBackend::executeKernel(const Device::Pointer &       device,
   }
 
   std::cout << "Hello G" << std::endl;
-  
+
 
   auto err = clEnqueueNDRangeKernel(
     opencl_device->getCLCommandQueue(), ocl_kernel, 3, nullptr, global_size.data(), nullptr, 0, nullptr, nullptr);
@@ -1235,7 +1240,7 @@ OpenCLBackend::executeKernel(const Device::Pointer &       device,
   opencl_device->finish();
 
   std::cout << "Hello I" << std::endl;
-  
+
 #else
   throw std::runtime_error("Error: OpenCL is not enabled");
 #endif
