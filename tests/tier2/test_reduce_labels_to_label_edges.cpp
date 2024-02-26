@@ -7,7 +7,7 @@ class TestReduceLabelsToLabelEdges : public ::testing::TestWithParam<std::string
 {
 protected:
   std::array<uint32_t, 8 * 8 * 1> output;
-
+s
   std::array<float, 8 * 8 * 1> valid = { 
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 1, 1, 1, 0,
@@ -34,7 +34,7 @@ TEST_P(TestReduceLabelsToLabelEdges, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("RTX", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 4, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
