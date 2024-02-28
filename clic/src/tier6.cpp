@@ -110,6 +110,21 @@ erode_labels_func(const Device::Pointer & device,
   return dst;
 }
 
+
+auto
+gauss_otsu_labeling_func(const Device::Pointer & device,
+                         const Array::Pointer &  src,
+                         Array::Pointer          dst,
+                         float                   outline_sigma) -> Array::Pointer
+{
+  tier0::create_like(src, dst, dType::UINT32);
+  auto temp = tier1::gaussian_blur_func(device, src, nullptr, outline_sigma, outline_sigma, outline_sigma);
+  auto binary = tier4::threshold_otsu_func(device, temp, nullptr);
+  tier5::connected_components_labeling_func(device, binary, dst, "box");
+  return dst;
+}
+
+
 auto
 masked_voronoi_labeling_func(const Device::Pointer & device,
                              const Array::Pointer &  src,
