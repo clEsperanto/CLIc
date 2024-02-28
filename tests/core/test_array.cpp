@@ -10,7 +10,7 @@ TEST_P(TestArray, allocate)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("gfx1035", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
   // Create a new Array
