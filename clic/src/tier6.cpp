@@ -120,7 +120,9 @@ auto gauss_otsu_labeling_func(const Device::Pointer & device,
 
   auto temp = tier1::gaussian_blur_func(device, src, nullptr, outline_sigma, outline_sigma, outline_sigma);
 
-  tier5::connected_components_labeling_func(device, temp, dst, "box");
+  auto binary = tier4::threshold_otsu_func(device, temp, nullptr);
+
+  tier5::connected_components_labeling_func(device, binary, dst, "box");
 
   return dst;
 }
