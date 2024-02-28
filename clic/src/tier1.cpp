@@ -172,9 +172,7 @@ absolute_func(const Device::Pointer & device, const Array::Pointer & src, Array:
   const KernelInfo    kernel = { "absolute", kernel::absolute };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  std::cout << "Hello A" << std::endl;
   execute(device, kernel, params, range);
-  std::cout << "Hello Z" << std::endl;
   return dst;
 }
 

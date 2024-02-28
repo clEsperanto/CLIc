@@ -24,8 +24,6 @@ protected:
 
 TEST_P(TestVoronoiOtsuLabeling, execute)
 {
-  std::cout << "hello world" << std::endl;
-
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("gfx1035", "all");
