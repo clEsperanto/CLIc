@@ -23,7 +23,7 @@ TEST_P(TestReduceLabelsToLabelEdges, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(5, 4, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(8, 8, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier2::reduce_labels_to_label_edges_func(device, gpu_input, nullptr);
