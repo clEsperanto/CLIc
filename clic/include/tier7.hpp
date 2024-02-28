@@ -88,7 +88,7 @@ rotate_func(const Device::Pointer & device,
  * @param factor_y Scaling along y [float ( = 1 )]
  * @param factor_z Scaling along z [float ( = 1 )]
  * @param centered If true, the image will be scaled to the center of the image. [bool ( = True )]
- * @param interpolate If true, bi/trilinear interplation will be applied. [bool ( = True )]
+ * @param interpolate If true, bi/trilinear interplation will be applied. [bool ( = False )]
  * @param resize Automatically determines output size image. [bool ( = False )]
  * @return Array::Pointer
  *
@@ -140,7 +140,7 @@ translate_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input label image [const Array::Pointer &]
  * @param dst Output label image [Array::Pointer ( = None )]
- * @param radius Element radius size for the closing [int ( = 0 )]
+ * @param radius Radius size for the closing [int ( = 0 )]
  * @return Array::Pointer
  *
  */
@@ -159,7 +159,7 @@ closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input label image [const Array::Pointer &]
  * @param dst Output label image [Array::Pointer ( = None )]
- * @param radius Element radius size for the opening [int ( = 0 )]
+ * @param radius Radius size for the opening [int ( = 0 )]
  * @return Array::Pointer
  *
  */
