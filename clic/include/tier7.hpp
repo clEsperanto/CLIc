@@ -113,9 +113,9 @@ scale_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Image to be translated [const Array::Pointer &]
  * @param dst Output image [Array::Pointer ( = None )]
- * @param translate_x Tanslation along x axis in pixels [float ( = 0 )]
- * @param translate_y Tanslation along y axis in pixels [float ( = 0 )]
- * @param translate_z Tanslation along z axis in pixels [float ( = 0 )]
+ * @param translate_x Translation along x axis in pixels [float ( = 0 )]
+ * @param translate_y Translation along y axis in pixels [float ( = 0 )]
+ * @param translate_z Translation along z axis in pixels [float ( = 0 )]
  * @param interpolate If true, bi/trilinear interplation will be applied. [bool ( = False )]
  * @return Array::Pointer
  *
