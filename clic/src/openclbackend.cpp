@@ -1013,16 +1013,21 @@ buildProgram(const Device::Pointer & device, const cl_program & program) -> void
 static auto
 saveBinaryToCache(const std::string & device_hash, const std::string & source_hash, const cl_program & program) -> void
 {
-  size_t binary_size;
-  auto   err = clGetProgramInfo(program, CL_PROGRAM_BINARY_SIZES, sizeof(size_t), &binary_size, nullptr);
+  size_t   nb_devices = 1;
+  size_t * np = new size_t[nb_devices];
+  auto     err = clGetProgramInfo(program, CL_PROGRAM_BINARY_SIZES, sizeof(size_t) * nb_devices, np, nullptr);
   if (err != CL_SUCCESS)
   {
     throw std::runtime_error("Error: Fail to fetch program binary size. OpenCL error : " + getErrorString(err) + " (" +
                              std::to_string(err) + ").");
   }
-  std::vector<unsigned char> binary_vec(binary_size);
-  auto                       pointer_to_binary_vec = binary_vec.data();
-  err = clGetProgramInfo(program, CL_PROGRAM_BINARIES, binary_vec.size(), &pointer_to_binary_vec, nullptr);
+
+  char ** bn = new char *[nb_devices];
+  for (int i = 0; i < nb_devices; i++)
+  {
+    bn[i] = new char[np[i]];
+  }
+  err = clGetProgramInfo(program, CL_PROGRAM_BINARIES, sizeof(unsigned char *) * nb_devices, bn, nullptr);
   if (err != CL_SUCCESS)
   {
     throw std::runtime_error("Error: Fail to fetch program binary. OpenCL error : " + getErrorString(err) + " (" +
@@ -1032,17 +1037,25 @@ saveBinaryToCache(const std::string & device_hash, const std::string & source_ha
   std::filesystem::path binary_path =
     CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".bin");
   std::filesystem::create_directories(binary_path.parent_path());
-
   std::ofstream outfile(binary_path, std::ios::binary);
   if (!outfile)
   {
     throw std::runtime_error("Error: Fail to open binary cache file.");
   }
-  outfile.write(reinterpret_cast<char *>(binary_vec.data()), binary_size);
+
+  outfile.write(reinterpret_cast<char *>(bn[nb_devices - 1]), np[nb_devices - 1]);
   if (!outfile.good())
   {
     throw std::runtime_error("Error: Fail to write binary cache file.");
   }
+
+  // properly deallocate the memory
+  delete[] np;
+  for (int i = 0; i < nb_devices; i++)
+  {
+    delete[] bn[i];
+  }
+  delete[] bn;
 }
 
 static auto
@@ -1139,6 +1152,7 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
   {
     program = loadProgramFromCache(device, device_hash, source_hash);
   }
+
   if (program == nullptr)
   {
     program = CreateProgramFromSource(device, kernel_source);
@@ -1154,6 +1168,7 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
     throw std::runtime_error("Error: Fail to create kernel. OpenCL error : " + getErrorString(err) + " (" +
                              std::to_string(err) + ").");
   }
+
   *reinterpret_cast<cl_kernel *>(kernel) = ocl_kernel;
 #else
   throw std::runtime_error("Error: OpenCL is not enabled");
@@ -1183,6 +1198,7 @@ OpenCLBackend::executeKernel(const Device::Pointer &       device,
                                ". OpenCL error : " + getErrorString(err) + " (" + std::to_string(err) + ").");
     }
   }
+
   auto err = clEnqueueNDRangeKernel(
     opencl_device->getCLCommandQueue(), ocl_kernel, 3, nullptr, global_size.data(), nullptr, 0, nullptr, nullptr);
   if (err != CL_SUCCESS)
