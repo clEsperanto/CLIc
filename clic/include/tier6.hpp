@@ -67,6 +67,7 @@ erode_labels_func(const Device::Pointer & device,
  * @param dst Output label image. [Array::Pointer ( = None )]
  * @param outline_sigma Gaussian blur sigma along all axes [float ( = 0 )]
  * @return Array::Pointer
+
  * @link https://ieeexplore.ieee.org/document/4310076
  * @link https://en.wikipedia.org/wiki/Connected-component_labeling
  *
