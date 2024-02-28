@@ -34,7 +34,7 @@ TEST_P(TestExecution, parameterList)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("gfx1035", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
   auto  src = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
