@@ -25,11 +25,7 @@ TEST_P(TestVoronoiOtsuLabeling, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("gfx1035", "all");
-
-  std::cout << device << std::endl;
-  std::cout << device->getInfo() << std::endl;
-
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(7, 7, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
