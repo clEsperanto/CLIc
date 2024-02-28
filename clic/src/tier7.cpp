@@ -17,7 +17,7 @@ auto
 eroded_otsu_labeling_func(const Device::Pointer & device,
                           const Array::Pointer &  src,
                           Array::Pointer          dst,
-                          int                     number_of_erosion,
+                          int                     number_of_erosions,
                           float                   outline_sigma) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::UINT32);
@@ -28,7 +28,7 @@ eroded_otsu_labeling_func(const Device::Pointer & device,
   tier0::create_like(binary, eroded1);
   tier0::create_like(binary, eroded2);
   binary->copy(eroded1);
-  for (int i = 0; i < number_of_erosion; i++)
+  for (int i = 0; i < number_of_erosions; i++)
   {
     tier1::erode_box_func(device, eroded1, eroded2);
     std::swap(eroded1, eroded2);

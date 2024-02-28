@@ -30,7 +30,7 @@ namespace cle::tier7
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Image to be transformed [const Array::Pointer &]
  * @param dst Output image [Array::Pointer ( = None )]
- * @param number_of_erosion Number of iteration of erosion [int ( = 5 )]
+ * @param number_of_erosions Number of iteration of erosion [int ( = 5 )]
  * @param outline_sigma Gaussian blur sigma applied before Otsu thresholding [float ( = 2 )]
  * @return Array::Pointer
  *
@@ -41,7 +41,7 @@ auto
 eroded_otsu_labeling_func(const Device::Pointer & device,
                           const Array::Pointer &  src,
                           Array::Pointer          dst,
-                          int                     number_of_erosion,
+                          int                     number_of_erosions,
                           float                   outline_sigma) -> Array::Pointer;
 
 
