@@ -17,17 +17,17 @@ namespace cle::tier7
  * radians to degrees, use this formula: angle_in_degrees = angle_in_radians / numpy.pi * 180.0
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src target image [const Array::Pointer &]
- * @param dst translation along x axis in pixels [Array::Pointer ( = None )]
- * @param translate_x translation along y axis in pixels [float ( = 0 )]
- * @param translate_y translation along z axis in pixels [float ( = 0 )]
- * @param translate_z rotation around x axis in radians [float ( = 0 )]
- * @param angle_x rotation around y axis in radians [float ( = 0 )]
- * @param angle_y rotation around z axis in radians [float ( = 0 )]
- * @param angle_z [float ( = 0 )]
- * @param centered [bool ( = True )]
- * @param interpolate [bool ( = False )]
- * @param resize If true, bi/trilinear interpolation will be applied, if hardware allows. [bool ( = False )]
+ * @param src image to be transformed [const Array::Pointer &]
+ * @param dst output image [Array::Pointer ( = None )]
+ * @param translate_x translation along x axis in pixels [Array::Pointer ( = None )]
+ * @param translate_y translation along y axis in pixels [float ( = 0 )]
+ * @param translate_z translation along z axis in pixels [float ( = 0 )]
+ * @param angle_x rotation around x axis in radians [float ( = 0 )]
+ * @param angle_y rotation around y axis in radians [float ( = 0 )]
+ * @param angle_z rotation around z axis in radians [float ( = 0 )]
+ * @param centered if true, rotate image around center, else around the origin [bool ( = True )]
+ * @param interpolate If true, bi/trilinear interpolation will be applied, if hardware allows. [bool ( = False )]
+ * @param resize Automatically determines the size of the output depending on the rotation angles. [bool ( = False )]
  * @return Array::Pointer
  *
  */
@@ -53,14 +53,14 @@ rigid_transform_func(const Device::Pointer & device,
  * formula: angle_in_degrees = angle_in_radians / numpy.pi * 180.0
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src target image [const Array::Pointer &]
- * @param dst rotation around x axis in degrees [Array::Pointer ( = None )]
- * @param angle_x rotation around y axis in degrees [float ( = 0 )]
- * @param angle_y rotation around z axis in degrees [float ( = 0 )]
- * @param angle_z [float ( = 0 )]
- * @param centered [bool ( = True )]
- * @param interpolate [bool ( = False )]
- * @param resize If true, bi/trilinear interpolation will be applied, if hardware supports it. [bool ( = False )]
+ * @param src image to be rotated [const Array::Pointer &]
+ * @param dst output image [Array::Pointer ( = None )]
+ * @param angle_x rotation around x axis in degrees [Array::Pointer ( = None )]
+ * @param angle_y rotation around y axis in degrees [float ( = 0 )]
+ * @param angle_z rotation around z axis in degrees [float ( = 0 )]
+ * @param centered if true, rotate image around center, else around the origin [bool ( = True )]
+ * @param interpolate If true, bi/trilinear interpolation will be applied, if hardware allows. [bool ( = False )]
+ * @param resize Automatically determines the size of the output depending on the rotation angles. [bool ( = False )]
  * @return Array::Pointer
  *
  */
@@ -82,14 +82,14 @@ rotate_func(const Device::Pointer & device,
  * @brief Scale the image by given factors.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src target image [const Array::Pointer &]
- * @param dst scaling along x [Array::Pointer ( = None )]
- * @param factor_x scaling along y [float ( = 1 )]
- * @param factor_y scaling along z [float ( = 1 )]
- * @param factor_z If true, the image will be scaled to the center of the image. [float ( = 1 )]
- * @param centered If true, bi/trilinear interplation will be applied. [bool ( = True )]
- * @param interpolate Automatically determines output size image. [bool ( = False )]
- * @param resize [bool ( = False )]
+ * @param src image to be scaleded [const Array::Pointer &]
+ * @param dst output image [Array::Pointer ( = None )]
+ * @param factor_x scaling along x [Array::Pointer ( = None )]
+ * @param factor_y scaling along y [float ( = 1 )]
+ * @param factor_z scaling along z [float ( = 1 )]
+ * @param centered If true, the image will be scaled to the center of the image. [float ( = 1 )]
+ * @param interpolate If true, bi/trilinear interplation will be applied. [bool ( = True )]
+ * @param resize Automatically determines output size image. [bool ( = False )]
  * @return Array::Pointer
  *
  */
@@ -112,7 +112,7 @@ scale_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src image to be translated [const Array::Pointer &]
- * @param dst target image [Array::Pointer ( = None )]
+ * @param dst output image [Array::Pointer ( = None )]
  * @param translate_x translation along x axis in pixels [float ( = 0 )]
  * @param translate_y translation along y axis in pixels [float ( = 0 )]
  * @param translate_z translation along z axis in pixels [float ( = 0 )]
