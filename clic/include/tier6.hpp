@@ -51,6 +51,33 @@ erode_labels_func(const Device::Pointer & device,
                   bool                    relabel) -> Array::Pointer;
 
 
+
+
+/**
+ * @name gauss_otsu_labeling
+ * @category 'label', 'in assistant', 'bia-bob-suggestion'
+ * @brief Labels objects directly from grey-value images.
+ *
+ *  The outline_sigma parameter allows tuning the segmentation result. Under the hood,
+ *  this filter applies a Gaussian blur, Otsu-thresholding [1] and connected component labeling [2]. The
+ *  thresholded binary image is flooded using the Voronoi tesselation approach starting from the found local maxima.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src0 intensity image to add labels [const Array::Pointer &]
+ * @param dst Output label image. [Array::Pointer ( = None )]
+ * @param outline_sigma Gaussian blur sigma along all axes [float ( = 0 )]
+ * @return Array::Pointer
+ * @link https://ieeexplore.ieee.org/document/4310076
+ * @link https://en.wikipedia.org/wiki/Connected-component_labeling
+ *
+ */
+auto
+gauss_otsu_labeling_func(const Device::Pointer & device,
+                    const Array::Pointer &  src,
+                    Array::Pointer          dst,
+                    float outline_sigma ) -> Array::Pointer;
+
+
 /**
  * @name masked_voronoi_labeling
  * @category 'label', 'bia-bob-suggestion'
