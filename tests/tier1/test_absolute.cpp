@@ -24,9 +24,6 @@ TEST_P(TestAbsolute, execute)
   cle::BackendManager::getInstance().setBackend(param);
 
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
-
-  std::cout << device << std::endl;
-
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
