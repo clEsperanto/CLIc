@@ -87,7 +87,7 @@ rotate_func(const Device::Pointer & device,
  * @param factor_x Scaling along x [float ( = 1 )]
  * @param factor_y Scaling along y [float ( = 1 )]
  * @param factor_z Scaling along z [float ( = 1 )]
- * @param centered If true, the image will be scaled to the center of the image. [float ( = 1 )]
+ * @param centered If true, the image will be scaled to the center of the image. [bool ( = True )]
  * @param interpolate If true, bi/trilinear interplation will be applied. [bool ( = True )]
  * @param resize Automatically determines output size image. [bool ( = False )]
  * @return Array::Pointer
