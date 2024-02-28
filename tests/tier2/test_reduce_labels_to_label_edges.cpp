@@ -8,10 +8,10 @@ class TestReduceLabelsToLabelEdges : public ::testing::TestWithParam<std::string
 protected:
   std::array<uint32_t, 8 * 8 * 1> output;
 
-  std::array<float, 8 * 8 * 1> valid = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 2, 0, 1, 0,
+  std::array<uint32_t, 8 * 8 * 1> valid = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 2, 0, 1, 0,
                                          1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 3, 3, 3, 4, 4, 4, 0, 0, 3, 0, 3,
                                          4, 0, 4, 0, 0, 3, 3, 3, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-  std::array<float, 8 * 8 * 1> input = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 2, 0, 1, 1,
+  std::array<uint32_t, 8 * 8 * 1> input = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 2, 0, 1, 1,
                                          1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 3, 3, 3, 4, 4, 4, 0, 0, 3, 3, 3,
                                          4, 4, 4, 0, 0, 3, 3, 3, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 };
@@ -23,7 +23,7 @@ TEST_P(TestReduceLabelsToLabelEdges, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(8, 8, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(8, 8, 1, 2, cle::dType::UINT32, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier2::reduce_labels_to_label_edges_func(device, gpu_input, nullptr);
