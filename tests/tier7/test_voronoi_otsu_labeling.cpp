@@ -2,7 +2,6 @@
 
 #include <array>
 #include <gtest/gtest.h>
-#include <stdio.h>
 
 class TestVoronoiOtsuLabeling : public ::testing::TestWithParam<std::string>
 {
