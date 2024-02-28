@@ -10,6 +10,41 @@
  */
 namespace cle::tier7
 {
+
+/**
+ * @name eroded_otsu_labeling
+ * @category 'label', 'in assistant', 'bia-bob-suggestion'
+ * @brief Segments and labels an image using blurring, Otsu-thresholding, binary erosion and
+ *  masked Voronoi-labeling.
+ *
+ *  After bluring and Otsu-thresholding the image, iterative binary erosion is applied.
+ *  Objects in the eroded image are labeled and the labels are extended to fit again into
+ *  the initial binary image using masked-Voronoi labeling.
+ *
+ *  This function is similar to voronoi_otsu_labeling. It is intended to deal better in
+ *  case labels of objects swapping into each other if objects are dense. Like when using
+ *  Voronoi-Otsu-labeling, small objects may disappear when applying this operation.
+ *
+ *  This function is inspired by a similar implementation in Java by Jan Brocher (Biovoxxel) [0] [1]
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Image to be transformed [const Array::Pointer &]
+ * @param dst Output image [Array::Pointer ( = None )]
+ * @param number_of_erosions Number of iteration of erosion [int ( = 5 )]
+ * @param outline_sigma Gaussian blur sigma applied before Otsu thresholding [float ( = 2 )]
+ * @return Array::Pointer
+ *
+ * @link [0] https://github.com/biovoxxel/bv3dbox (BV_LabelSplitter.java#L83)
+ * @link [1] https://zenodo.org/badge/latestdoi/434949702
+ */
+auto
+eroded_otsu_labeling_func(const Device::Pointer & device,
+                          const Array::Pointer &  src,
+                          Array::Pointer          dst,
+                          int                     number_of_erosions,
+                          float                   outline_sigma) -> Array::Pointer;
+
+
 /**
  * @name rigid_transform
  * @category 'transform', 'in assistant', 'bia-bob-suggestion'
