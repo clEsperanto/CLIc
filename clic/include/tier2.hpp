@@ -568,7 +568,7 @@ radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & s
 
 
 /**
- * @name reduce_labels_to_label_edges_func
+ * @name reduce_labels_to_label_edges
  * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @brief Takes a label map and reduces all labels to their edges. Label IDs stay and background will be zero.
  *
