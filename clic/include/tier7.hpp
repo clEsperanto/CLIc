@@ -17,15 +17,15 @@ namespace cle::tier7
  * radians to degrees, use this formula: angle_in_degrees = angle_in_radians / numpy.pi * 180.0
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src image to be transformed [const Array::Pointer &]
- * @param dst output image [Array::Pointer ( = None )]
- * @param translate_x translation along x axis in pixels [Array::Pointer ( = None )]
- * @param translate_y translation along y axis in pixels [float ( = 0 )]
- * @param translate_z translation along z axis in pixels [float ( = 0 )]
- * @param angle_x rotation around x axis in radians [float ( = 0 )]
- * @param angle_y rotation around y axis in radians [float ( = 0 )]
- * @param angle_z rotation around z axis in radians [float ( = 0 )]
- * @param centered if true, rotate image around center, else around the origin [bool ( = True )]
+ * @param src Image to be transformed [const Array::Pointer &]
+ * @param dst Output image [Array::Pointer ( = None )]
+ * @param translate_x Translation along x axis in pixels [Array::Pointer ( = None )]
+ * @param translate_y Translation along y axis in pixels [float ( = 0 )]
+ * @param translate_z Translation along z axis in pixels [float ( = 0 )]
+ * @param angle_x Rotation around x axis in radians [float ( = 0 )]
+ * @param angle_y Rotation around y axis in radians [float ( = 0 )]
+ * @param angle_z Rotation around z axis in radians [float ( = 0 )]
+ * @param centered If true, rotate image around center, else around the origin [bool ( = True )]
  * @param interpolate If true, bi/trilinear interpolation will be applied, if hardware allows. [bool ( = False )]
  * @param resize Automatically determines the size of the output depending on the rotation angles. [bool ( = False )]
  * @return Array::Pointer
@@ -53,12 +53,12 @@ rigid_transform_func(const Device::Pointer & device,
  * formula: angle_in_degrees = angle_in_radians / numpy.pi * 180.0
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src image to be rotated [const Array::Pointer &]
- * @param dst output image [Array::Pointer ( = None )]
- * @param angle_x rotation around x axis in degrees [Array::Pointer ( = None )]
- * @param angle_y rotation around y axis in degrees [float ( = 0 )]
- * @param angle_z rotation around z axis in degrees [float ( = 0 )]
- * @param centered if true, rotate image around center, else around the origin [bool ( = True )]
+ * @param src Image to be rotated [const Array::Pointer &]
+ * @param dst Output image [Array::Pointer ( = None )]
+ * @param angle_x Rotation around x axis in degrees [Array::Pointer ( = None )]
+ * @param angle_y Rotation around y axis in degrees [float ( = 0 )]
+ * @param angle_z Rotation around z axis in degrees [float ( = 0 )]
+ * @param centered If true, rotate image around center, else around the origin [bool ( = True )]
  * @param interpolate If true, bi/trilinear interpolation will be applied, if hardware allows. [bool ( = False )]
  * @param resize Automatically determines the size of the output depending on the rotation angles. [bool ( = False )]
  * @return Array::Pointer
@@ -82,11 +82,11 @@ rotate_func(const Device::Pointer & device,
  * @brief Scale the image by given factors.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src image to be scaleded [const Array::Pointer &]
- * @param dst output image [Array::Pointer ( = None )]
- * @param factor_x scaling along x [Array::Pointer ( = None )]
- * @param factor_y scaling along y [float ( = 1 )]
- * @param factor_z scaling along z [float ( = 1 )]
+ * @param src Image to be scaleded [const Array::Pointer &]
+ * @param dst Output image [Array::Pointer ( = None )]
+ * @param factor_x Scaling along x [Array::Pointer ( = None )]
+ * @param factor_y Scaling along y [float ( = 1 )]
+ * @param factor_z Scaling along z [float ( = 1 )]
  * @param centered If true, the image will be scaled to the center of the image. [float ( = 1 )]
  * @param interpolate If true, bi/trilinear interplation will be applied. [bool ( = True )]
  * @param resize Automatically determines output size image. [bool ( = False )]
@@ -111,11 +111,11 @@ scale_func(const Device::Pointer & device,
  * @brief Translate the image by a given vector.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src image to be translated [const Array::Pointer &]
- * @param dst output image [Array::Pointer ( = None )]
- * @param translate_x translation along x axis in pixels [float ( = 0 )]
- * @param translate_y translation along y axis in pixels [float ( = 0 )]
- * @param translate_z translation along z axis in pixels [float ( = 0 )]
+ * @param src Image to be translated [const Array::Pointer &]
+ * @param dst Output image [Array::Pointer ( = None )]
+ * @param translate_x Tanslation along x axis in pixels [float ( = 0 )]
+ * @param translate_y Tanslation along y axis in pixels [float ( = 0 )]
+ * @param translate_z Tanslation along z axis in pixels [float ( = 0 )]
  * @param interpolate If true, bi/trilinear interplation will be applied. [bool ( = False )]
  * @return Array::Pointer
  *
@@ -138,9 +138,9 @@ translate_func(const Device::Pointer & device,
  * operation has an octagon as structuring element. Notes * This operation assumes input images are isotropic.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius [int ( = 0 )]
+ * @param src Input label image [const Array::Pointer &]
+ * @param dst Output label image [Array::Pointer ( = None )]
+ * @param radius Element radius size for the closing [int ( = 0 )]
  * @return Array::Pointer
  *
  */
@@ -157,9 +157,9 @@ closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
  * operation has an octagon as structuring element. Notes * This operation assumes input images are isotropic.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius [int ( = 0 )]
+ * @param src Input label image [const Array::Pointer &]
+ * @param dst Output label image [Array::Pointer ( = None )]
+ * @param radius Element radius size for the opening [int ( = 0 )]
  * @return Array::Pointer
  *
  */
@@ -180,8 +180,8 @@ opening_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input greyvalue image [const Array::Pointer &]
  * @param dst Output image [Array::Pointer ( = None )]
- * @param spot_sigma controls how close detected cells can be [float ( = 2 )]
- * @param outline_sigma controls how precise segmented objects are outlined. [float ( = 2 )]
+ * @param spot_sigma Controls how close detected cells can be [float ( = 2 )]
+ * @param outline_sigma Controls how precise segmented objects are outlined. [float ( = 2 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_voronoiOtsuLabeling
