@@ -57,7 +57,7 @@ TEST_P(TestExecution, rangeArray)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("gfx1035", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
   size_t width = 5, height = 10, depth = 15;
