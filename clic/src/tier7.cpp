@@ -177,7 +177,7 @@ opening_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
   -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::UINT32);
-  auto temp = tier6::erode_labels_func(device, src, nullptr, radius, true);
+  auto temp = tier6::erode_labels_func(device, src, nullptr, radius, false);
   return tier6::dilate_labels_func(device, temp, dst, radius);
 }
 

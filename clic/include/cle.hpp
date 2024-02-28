@@ -13,6 +13,6 @@
 #include "tier5.hpp"
 #include "tier6.hpp"
 #include "tier7.hpp"
-// #include "tier8.hpp"
+#include "tier8.hpp"
 
 #endif // __INCLUDE_CLE_HPP
