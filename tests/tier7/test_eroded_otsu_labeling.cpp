@@ -25,7 +25,7 @@ TEST_P(TestErodedOtsuLabeling, execute)
   auto gpu_input = cle::Array::create(6, 7, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
-  auto gpu_output = cle::tier7::erode_otsu_labeling_func(device, gpu_input, nullptr, 1, 1);
+  auto gpu_output = cle::tier7::eroded_otsu_labeling_func(device, gpu_input, nullptr, 1, 1);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)

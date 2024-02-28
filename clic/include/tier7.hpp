@@ -12,7 +12,7 @@ namespace cle::tier7
 {
 
 /**
- * @name erode_otsu_labeling
+ * @name eroded_otsu_labeling
  * @category 'label', 'in assistant', 'bia-bob-suggestion'
  * @brief Segments and labels an image using blurring, Otsu-thresholding, binary erosion and
  *  masked Voronoi-labeling.
@@ -38,11 +38,11 @@ namespace cle::tier7
  * @link [1] https://zenodo.org/badge/latestdoi/434949702
  */
 auto
-erode_otsu_labeling_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
-                         Array::Pointer          dst,
-                         int                     number_of_erosion,
-                         float                   outline_sigma) -> Array::Pointer;
+eroded_otsu_labeling_func(const Device::Pointer & device,
+                          const Array::Pointer &  src,
+                          Array::Pointer          dst,
+                          int                     number_of_erosion,
+                          float                   outline_sigma) -> Array::Pointer;
 
 
 /**
