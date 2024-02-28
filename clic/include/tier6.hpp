@@ -51,8 +51,6 @@ erode_labels_func(const Device::Pointer & device,
                   bool                    relabel) -> Array::Pointer;
 
 
-
-
 /**
  * @name gauss_otsu_labeling
  * @category 'label', 'in assistant', 'bia-bob-suggestion'
@@ -74,9 +72,9 @@ erode_labels_func(const Device::Pointer & device,
  */
 auto
 gauss_otsu_labeling_func(const Device::Pointer & device,
-                    const Array::Pointer &  src,
-                    Array::Pointer          dst,
-                    float outline_sigma ) -> Array::Pointer;
+                         const Array::Pointer &  src,
+                         Array::Pointer          dst,
+                         float                   outline_sigma) -> Array::Pointer;
 
 
 /**
