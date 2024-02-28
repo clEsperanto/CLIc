@@ -437,6 +437,14 @@ radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & s
   return tier1::multiply_image_and_scalar_func(device, src, dst, 180.0 / static_cast<float>(M_PI));
 }
 
+auto
+reduce_labels_to_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer
+{
+  auto binary = tier1::detect_label_edges_func(device, src, nullptr);
+  return tier1::mask_func(device, src, binary, dst);
+}
+
 // @StRigaud TODO: auto reduce_stack_func;
 
 auto
