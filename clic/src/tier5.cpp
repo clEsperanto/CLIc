@@ -37,7 +37,7 @@ combine_labels_func(const Device::Pointer & device,
                     const Array::Pointer &  src1,
                     Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src0, dst, dType::UINT32);
+  tier0::create_like(src0, dst, dType::LABEL);
   auto max_label = tier2::maximum_of_all_pixels_func(device, src0);
   auto temp1 = tier1::add_image_and_scalar_func(device, src1, nullptr, max_label);
   auto temp2 = tier1::greater_constant_func(device, src1, nullptr, 0);
@@ -65,7 +65,7 @@ connected_components_labeling_func(const Device::Pointer & device,
     nonzero_minimum_func = tier1::nonzero_minimum_box_func;
   }
 
-  tier0::create_like(src, dst, dType::UINT32);
+  tier0::create_like(src, dst, dType::LABEL);
 
   auto temp1 = tier1::set_nonzero_pixels_to_pixelindex_func(device, src, nullptr, 1);
   auto temp2 = Array::create(temp1);
@@ -106,7 +106,7 @@ connected_components_labeling_func(const Device::Pointer & device,
 // dst)
 //   -> Array::Pointer
 // {
-//   tier0::create_like(src, dst, dType::UINT32);
+//   tier0::create_like(src, dst, dType::LABEL);
 
 //   auto temp1 = tier1::set_nonzero_pixels_to_pixelindex_func(device, src, nullptr, 1);
 //   auto temp2 = Array::create(temp1);
@@ -145,7 +145,7 @@ connected_components_labeling_func(const Device::Pointer & device,
 //                                            const Array::Pointer &  src,
 //                                            Array::Pointer          dst) -> Array::Pointer
 // {
-//   tier0::create_like(src, dst, dType::UINT32);
+//   tier0::create_like(src, dst, dType::LABEL);
 
 //   auto temp1 = tier1::set_nonzero_pixels_to_pixelindex_func(device, src, nullptr, 1);
 //   auto temp2 = Array::create(temp1);

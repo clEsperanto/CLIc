@@ -55,7 +55,7 @@ exclude_labels_func(const Device::Pointer & device,
                     Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  if (list->dtype() != dType::UINT32)
+  if (list->dtype() != dType::LABEL)
   {
     throw std::runtime_error("exclude_labels: label list must be of type uint32");
   }
@@ -91,9 +91,9 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
                              bool                    exclude_y,
                              bool                    exclude_z) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT32);
-  auto num_labels = static_cast<int>(tier2::maximum_of_all_pixels_func(device, src));
-  auto label_map = Array::create(num_labels + 1, 1, 1, 1, dType::UINT32, mType::BUFFER, src->device());
+  tier0::create_like(src, dst, dType::LABEL);
+  auto num_labels = static_cast<uint32_t>(tier2::maximum_of_all_pixels_func(device, src));
+  auto label_map = Array::create(num_labels + 1, 1, 1, 1, dType::LABEL, mType::BUFFER, src->device());
   tier1::set_ramp_x_func(device, label_map);
 
   const ParameterList params = { { "src", src }, { "dst", label_map } };
@@ -115,7 +115,7 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
     const RangeArray range = { src->width(), src->height(), 1 };
     execute(device, kernel, params, range);
   }
-  std::vector<int> label_map_vector(label_map->size());
+  std::vector<uint32_t> label_map_vector(label_map->size());
   label_map->read(label_map_vector.data());
   int count = 1;
   for (auto & i : label_map_vector)
@@ -141,7 +141,7 @@ flag_existing_labels_func(const Device::Pointer & device, const Array::Pointer &
   -> Array::Pointer
 {
   auto max = tier2::maximum_of_all_pixels_func(device, src);
-  tier0::create_vector(src, dst, max + 1, dType::UINT32);
+  tier0::create_vector(src, dst, max + 1, dType::LABEL);
   dst->fill(0);
   const KernelInfo    kernel = { "flag_existing_labels", kernel::flag_existing_labels };
   const ParameterList params = { { "src", src }, { "dst", dst } };
@@ -242,7 +242,7 @@ labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Po
 {
   auto max_label = tier2::maximum_of_all_pixels_func(device, src);
   auto dim = shape_to_dimension(src->width(), src->height(), src->depth());
-  tier0::create_dst(src, dst, max_label, dim, 1, dType::UINT32);
+  tier0::create_dst(src, dst, max_label, dim, 1, dType::LABEL);
   dst->fill(0);
 
   const KernelInfo    kernel = { "labelled_spots_to_point_list", kernel::labelled_spots_to_point_list };

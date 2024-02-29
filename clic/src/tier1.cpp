@@ -219,7 +219,7 @@ binary_and_func(const Device::Pointer & device,
                 const Array::Pointer &  src1,
                 Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src0, dst, dType::UINT8);
+  tier0::create_like(src0, dst, dType::BINARY);
   const KernelInfo    kernel = { "binary_and", kernel::binary_and };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -231,7 +231,7 @@ auto
 binary_edge_detection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT8);
+  tier0::create_like(src, dst, dType::BINARY);
   const KernelInfo    kernel = { "binary_edge_detection", kernel::binary_edge_detection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -242,7 +242,7 @@ binary_edge_detection_func(const Device::Pointer & device, const Array::Pointer 
 auto
 binary_not_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT8);
+  tier0::create_like(src, dst, dType::BINARY);
   const KernelInfo    kernel = { "binary_not", kernel::binary_not };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -256,7 +256,7 @@ binary_or_func(const Device::Pointer & device,
                const Array::Pointer &  src1,
                Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src0, dst, dType::UINT8);
+  tier0::create_like(src0, dst, dType::BINARY);
   const KernelInfo    kernel = { "binary_or", kernel::binary_or };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -270,7 +270,7 @@ binary_subtract_func(const Device::Pointer & device,
                      const Array::Pointer &  src1,
                      Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src0, dst, dType::UINT8);
+  tier0::create_like(src0, dst, dType::BINARY);
   const KernelInfo    kernel = { "binary_subtract", kernel::binary_subtract };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -284,7 +284,7 @@ binary_xor_func(const Device::Pointer & device,
                 const Array::Pointer &  src1,
                 Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src0, dst, dType::UINT8);
+  tier0::create_like(src0, dst, dType::BINARY);
   const KernelInfo    kernel = { "binary_xor", kernel::binary_xor };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
