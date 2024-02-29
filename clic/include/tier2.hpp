@@ -109,8 +109,8 @@ bottom_hat_sphere_func(const Device::Pointer & device,
  * numpy [1].
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param min_intensity new, lower limit of the intensity range [float ( = None )]
  * @param max_intensity new, upper limit of the intensity range [float ( = None )]
  * @return Array::Pointer
@@ -132,11 +132,11 @@ clip_func(const Device::Pointer & device,
  * This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [int ( = 0 )]
- * @param radius_y [int ( = 0 )]
- * @param radius_z [int ( = 0 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius along the x axis. [int ( = 0 )]
+ * @param radius_y Radius along the y axis. [int ( = 0 )]
+ * @param radius_z Radius along the z axis. [int ( = 0 )]
  * @return Array::Pointer
  *
  */
@@ -156,11 +156,11 @@ closing_box_func(const Device::Pointer & device,
  * footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [float ( = 1 )]
- * @param radius_y [float ( = 1 )]
- * @param radius_z [float ( = 0 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius along the x axis. [int ( = 1 )]
+ * @param radius_y Radius along the y axis. [int ( = 1 )]
+ * @param radius_z Radius along the z axis. [int ( = 0 )]
  * @return Array::Pointer
  *
  */
@@ -179,9 +179,9 @@ closing_sphere_func(const Device::Pointer & device,
  * @brief Concatenate two images or stacks along the X axis.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image. [const Array::Pointer &]
+ * @param src1 Second input image. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_combineHorizontally
@@ -198,9 +198,9 @@ concatenate_along_x_func(const Device::Pointer & device,
  * @brief Concatenate two images or stacks along the Y axis.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image. [const Array::Pointer &]
+ * @param src1 Second input image. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_combineVertically
@@ -217,9 +217,9 @@ concatenate_along_y_func(const Device::Pointer & device,
  * @brief Concatenate two images or stacks along the Z axis.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image. [const Array::Pointer &]
+ * @param src1 Second input image. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_concatenateStacks
@@ -238,8 +238,8 @@ concatenate_along_z_func(const Device::Pointer & device,
  * matrix where the first column (index = 0) has been set to 0. Use set_column for that.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @param ignore_background [bool ( = True )]
  * @return Array::Pointer
  *
@@ -258,9 +258,9 @@ count_touching_neighbors_func(const Device::Pointer & device,
  * right size, provide destination_image=None.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param border_size [int ( = 1 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param border_size Border size to crop. [int ( = 1 )]
  * @return Array::Pointer
  *
  */
@@ -275,11 +275,11 @@ crop_border_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  * @brief Applies Gaussian blur to the input image and divides the original by the result.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param sigma_x [float ( = 2 )]
- * @param sigma_y [float ( = 2 )]
- * @param sigma_z [float ( = 2 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param sigma_x Gaussian sigma value along x. [float ( = 2 )]
+ * @param sigma_y Gaussian sigma value along y. [float ( = 2 )]
+ * @param sigma_z Gaussian sigma value along z. [float ( = 2 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_divideByGaussianBackground
@@ -298,8 +298,8 @@ divide_by_gaussian_background_func(const Device::Pointer & device,
  * @brief Converts radians to degrees.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  */
@@ -313,12 +313,12 @@ degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & s
  * @brief Detects local maxima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
  * is no other pixel in a given radius which has a higher intensity, and to 0 otherwise.
  *
- * @param device Device to perform the operation on. [const Device::Pointer & ( = None )]
- * @param src Input image to process. [const Array::Pointer & ( = 0 )]
- * @param dst Output result image. [Array::Pointer ( = 0 )]
- * @param radius_x Radius of the region in X. [int ( = 0 )]
- * @param radius_y Radius of the region in Y. [int ( = 0 )]
- * @param radius_z Radius of the region in Z. [int ( = 0 )]
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius along the x axis. [int ( = 0 )]
+ * @param radius_y Radius along the y axis. [int ( = 0 )]
+ * @param radius_z Radius along the z axis. [int ( = 0 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_detectMaximaBox
@@ -338,12 +338,12 @@ detect_maxima_box_func(const Device::Pointer & device,
  * @brief Detects local maxima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
  * is no other pixel in a given radius which has a lower intensity, and to 0 otherwise.
  *
- * @param device Device to perform the operation on. [const Device::Pointer & ( = None )]
- * @param src Input image to process. [const Array::Pointer & ( = 0 )]
- * @param dst Output result image. [Array::Pointer ( = 0 )]
- * @param radius_x Radius of the region in X. [int ( = 0 )]
- * @param radius_y Radius of the region in Y. [int ( = 0 )]
- * @param radius_z Radius of the region in Z. [int ( = 0 )]
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius along the x axis. [int ( = 0 )]
+ * @param radius_y Radius along the y axis. [int ( = 0 )]
+ * @param radius_z Radius along the z axis. [int ( = 0 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_detectMaximaBox
@@ -395,8 +395,8 @@ difference_of_gaussian_func(const Device::Pointer & device,
  * map is written to the output.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_extendLabelingViaVoronoi
@@ -413,8 +413,8 @@ extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Po
  * before applying this operation. <pre>f(x) = x</pre> For binary images, use binaryNot.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_invert
@@ -430,8 +430,8 @@ invert_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
  * resulting from maximum/minimum detection in an image of the same size where every spot has a number 1, 2,... n.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_labelSpots
@@ -447,8 +447,8 @@ label_spots_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  * @brief Determines the Hessian eigenvalues and returns the large eigenvalue image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  */
@@ -463,7 +463,7 @@ large_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Point
  * in the column 'Max'.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer & ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
  * @return float
  *
  * @link https://clij.github.io/clij2-docs/reference_maximumOfAllPixels
@@ -478,7 +478,7 @@ maximum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer 
  * in the column 'Min'.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer & ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
  * @return float
  *
  * @link https://clij.github.io/clij2-docs/reference_minimumOfAllPixels
@@ -493,8 +493,8 @@ minimum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer 
  * mask image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer & ( = None )]
- * @param mask [const Array::Pointer & ( = 1 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param mask Input mask. [const Array::Pointer &]
  * @return float
  *
  * @link https://clij.github.io/clij2-docs/reference_minimumOfMaskedPixels
@@ -511,11 +511,11 @@ minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Point
  * This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [int ( = 0 )]
- * @param radius_y [int ( = 0 )]
- * @param radius_z [int ( = 0 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius along the x axis. [int ( = 0 )]
+ * @param radius_y Radius along the y axis. [int ( = 0 )]
+ * @param radius_z Radius along the z axis. [int ( = 0 )]
  * @return Array::Pointer
  *
  */
@@ -535,11 +535,11 @@ opening_box_func(const Device::Pointer & device,
  * footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [float ( = 1 )]
- * @param radius_y [float ( = 1 )]
- * @param radius_z [float ( = 0 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius along the x axis. [float ( = 1 )]
+ * @param radius_y Radius along the y axis. [float ( = 1 )]
+ * @param radius_z Radius along the z axis. [float ( = 0 )]
  * @return Array::Pointer
  *
  */
@@ -557,8 +557,8 @@ opening_sphere_func(const Device::Pointer & device,
  * @brief Converts radians to degrees
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  */
@@ -573,8 +573,8 @@ radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & s
  * @brief Takes a label map and reduces all labels to their edges. Label IDs stay and background will be zero.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_reduceLabelsToLabelEdges
@@ -591,8 +591,8 @@ reduce_labels_to_label_edges_func(const Device::Pointer & device, const Array::P
  * @brief Determines the Hessian eigenvalues and returns the small eigenvalue image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  */
@@ -608,8 +608,8 @@ small_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Point
  * numpy [1]
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://numpy.org/doc/stable/reference/generated/numpy.square.html
@@ -624,9 +624,9 @@ square_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
  * @brief Determines the squared difference pixel by pixel between two images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image. [const Array::Pointer &]
+ * @param src1 Second input image. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_squaredDifference
@@ -645,11 +645,11 @@ squared_difference_func(const Device::Pointer & device,
  * halfwidth, halfheight and halfdepth (radius). If 2D images are given, radius_z will be ignored.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [int ( = 1 )]
- * @param radius_y [int ( = 1 )]
- * @param radius_z [int ( = 1 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius along the x axis. [int ( = 1 )]
+ * @param radius_y Radius along the y axis. [int ( = 1 )]
+ * @param radius_z Radius along the z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_standardDeviationBox
@@ -670,11 +670,11 @@ standard_deviation_box_func(const Device::Pointer & device,
  * halfwidth, halfheight and halfdepth (radius). If 2D images are given, radius_z will be ignored.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius_x [int ( = 1 )]
- * @param radius_y [int ( = 1 )]
- * @param radius_z [int ( = 1 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius along the x axis. [int ( = 1 )]
+ * @param radius_y Radius along the y axis. [int ( = 1 )]
+ * @param radius_z Radius along the z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_standardDeviationSphere
@@ -694,11 +694,11 @@ standard_deviation_sphere_func(const Device::Pointer & device,
  * @brief Applies Gaussian blur to the input image and subtracts the result from the original.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param sigma_x [float ( = 2 )]
- * @param sigma_y [float ( = 2 )]
- * @param sigma_z [float ( = 2 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param sigma_x Radius along the x axis. [float ( = 2 )]
+ * @param sigma_y Radius along the y axis. [float ( = 2 )]
+ * @param sigma_z Radius along the z axis. [float ( = 2 )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_subtractGaussianBackground
@@ -719,9 +719,9 @@ subtract_gaussian_background_func(const Device::Pointer & device,
  * @brief Subtracts one image X from another image Y pixel wise. <pre>f(x, y) = x y</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input image. [const Array::Pointer &]
+ * @param src1 Second input image. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @link https://clij.github.io/clij2-docs/reference_subtractImages
@@ -739,7 +739,7 @@ subtract_images_func(const Device::Pointer & device,
  * the column 'Sum'.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer & ( = None )]
+ * @param src Input image to process. [const Array::Pointer & ( = None )]
  * @return float
  *
  * @link https://clij.github.io/clij2-docs/reference_sumOfAllPixels
