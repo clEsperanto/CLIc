@@ -27,4 +27,23 @@ smooth_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
   return tier1::multiply_images_func(device, binary, extended, dst);
 }
 
+
+auto
+smooth_labels_edge_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
+  -> Array::Pointer
+{
+  tier0::create_like(src, dst, dType::UINT32);
+  if (radius < 1)
+  {
+    return tier1::copy_func(device, src, dst);
+  }
+
+  auto binary = tier1::greater_constant_func(device, src, nullptr, 0);
+  auto temp = tier2::closing_box_func(device, binary, nullptr, radius, radius, radius);
+  tier2::opening_box_func(device, temp, binary, radius, radius, radius);
+
+  auto extended = tier2::extend_labeling_via_voronoi_func(device, src, nullptr);
+  return tier1::multiply_images_func(device, binary, extended, dst);
+}
+
 } // namespace cle::tier8

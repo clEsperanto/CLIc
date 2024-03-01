@@ -21,14 +21,34 @@ namespace cle::tier8
  *   Note: It is recommended to process isotropic label images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
- * @param radius [int ( = 0 )]
+ * @param src Input label image [const Array::Pointer &]
+ * @param dst Output label image [Array::Pointer ( = None )]
+ * @param radius Smoothing radius.[int ( = 0 )]
  * @return Array::Pointer
  *
  */
 auto
 smooth_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
+  -> Array::Pointer;
+
+
+/**
+ * @name smooth_labels_edge
+ * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @brief Apply a morphological closing and opening operation to the binary shape of the input
+ *   label image. Finally, the result label image is extended to the edges of the binary shape.
+ *
+ *   Note: It is recommended to process isotropic label images.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input label image [const Array::Pointer &]
+ * @param dst Output label image [Array::Pointer ( = None )]
+ * @param radius Smoothing radius. [int ( = 0 )]
+ * @return Array::Pointer
+ *
+ */
+auto
+smooth_labels_edge_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
   -> Array::Pointer;
 
 

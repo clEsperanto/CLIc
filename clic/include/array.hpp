@@ -280,6 +280,13 @@ public:
    */
   Array(const Array &) = default;
 
+  /**
+   * @brief Print the Array as a matrix for debugging
+   */
+  template <typename T>
+  friend auto
+  print(const Array::Pointer & array) -> void;
+
 private:
   using MemoryPointer = std::shared_ptr<void *>;
 
@@ -303,6 +310,27 @@ private:
   bool            initialized_ = false;
   const Backend & backend_ = cle::BackendManager::getInstance().getBackend();
 };
+
+template <typename T>
+auto
+print(const Array::Pointer & array) -> void
+{
+  std::vector<T> host_data(array->size());
+  array->read(host_data.data());
+
+  for (int i = 0; i < array->depth(); i++)
+  {
+    std::cout << "z = " << i << std::endl;
+    for (int j = 0; j < array->height(); j++)
+    {
+      for (int k = 0; k < array->width(); k++)
+      {
+        std::cout << (float)host_data[i * array->height() * array->width() + j * array->width() + k] << " ";
+      }
+      std::cout << std::endl;
+    }
+  }
+}
 
 } // namespace cle
 
