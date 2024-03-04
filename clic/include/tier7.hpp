@@ -185,6 +185,27 @@ closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
 
 
 /**
+ * @name erode_connected_labels
+ * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @brief Erodes labels to a smaller size. Note: Depending on the label image and the radius,
+ *  labels may disappear and labels may split into multiple islands. Thus, overlapping labels of input and output may
+ *  not have the same identifier.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src result [const Array::Pointer &]
+ * @param dst [Array::Pointer ( = None )]
+ * @param radius [int ( = 1 )]
+ * @return Array::Pointer
+ *
+ */
+auto
+erode_connected_labels_func(const Device::Pointer & device,
+                            const Array::Pointer &  src,
+                            Array::Pointer          dst,
+                            int                     radius,
+                            bool                    relabel) -> Array::Pointer;
+
+/**
  * @name opening_labels
  * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @brief Apply a morphological opening operation to a label image. The operation consists of iterative erosion and
