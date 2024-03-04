@@ -199,11 +199,8 @@ closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
  *
  */
 auto
-erode_connected_labels_func(const Device::Pointer & device,
-                            const Array::Pointer &  src,
-                            Array::Pointer          dst,
-                            int                     radius,
-                            bool                    relabel) -> Array::Pointer;
+erode_connected_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
+  -> Array::Pointer;
 
 /**
  * @name opening_labels
