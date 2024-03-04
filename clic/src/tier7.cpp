@@ -194,7 +194,7 @@ erode_connected_labels_func(const Device::Pointer & device, const Array::Pointer
   }
   auto temp = tier1::greater_constant_func(device, src, nullptr, 0);
   auto eroded = tier6::erode_labels_func(device, temp, nullptr, radius);
-  auto temp = tier1::multiply_images_func(device, src, eroded, nullptr);
+  temp = tier1::multiply_images_func(device, src, eroded, nullptr);
   return tier4::relabel_sequential_func(device, temp, dst, 4096);
 }
 
