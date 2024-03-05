@@ -33,10 +33,10 @@ smooth_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
 
 
 /**
- * @name smooth_labels_edge
+ * @name smooth_connected_labels
  * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
- * @brief Apply a morphological closing and opening operation to the binary shape of the input
- *   label image. Finally, the result label image is extended to the edges of the binary shape.
+ * @brief Apply a morphological erosion and dilation of the label image with respect to
+ *     the connectivity of the labels.
  *
  *   Note: It is recommended to process isotropic label images.
  *
@@ -48,7 +48,7 @@ smooth_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
  *
  */
 auto
-smooth_labels_edge_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
+smooth_connected_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
   -> Array::Pointer;
 
 
