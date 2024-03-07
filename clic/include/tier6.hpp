@@ -66,8 +66,8 @@ erode_labels_func(const Device::Pointer & device,
  * @param outline_sigma Gaussian blur sigma along all axes [float ( = 0 )]
  * @return Array::Pointer
 
- * @link https://ieeexplore.ieee.org/document/4310076
- * @link https://en.wikipedia.org/wiki/Connected-component_labeling
+ * @see https://ieeexplore.ieee.org/document/4310076
+ * @see https://en.wikipedia.org/wiki/Connected-component_labeling
  *
  */
 auto
@@ -89,7 +89,7 @@ gauss_otsu_labeling_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2-docs/reference_maskedVoronoiLabeling
+ * @see https://clij.github.io/clij2-docs/reference_maskedVoronoiLabeling
  */
 auto
 masked_voronoi_labeling_func(const Device::Pointer & device,
@@ -109,7 +109,7 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2-docs/reference_voronoiLabeling
+ * @see https://clij.github.io/clij2-docs/reference_voronoiLabeling
  */
 auto
 voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;

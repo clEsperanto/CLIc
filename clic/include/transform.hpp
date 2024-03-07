@@ -20,7 +20,7 @@ namespace cle
  *      The computed matrix is meant to be used to transform an image or a volume using the affine_transform kernel.
  *      The class rely on the Eigen library [1] to perform the matrix operations.
  *
- * @link https://eigen.tuxfamily.org
+ * @see https://eigen.tuxfamily.org
  */
 class AffineTransform
 {
