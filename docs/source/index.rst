@@ -10,10 +10,12 @@ CLIc is a C++ library for image processing on GPU. Is is a backend code for the 
 
 
 .. toctree::
-    compilation
-    contribute
-    core
-    tiers
-    genindex
+   :maxdepth: 2
+
+   compilation
+   contribute
+   core
+   tiers
+   genindex
 
 

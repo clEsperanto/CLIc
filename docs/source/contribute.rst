@@ -38,8 +38,6 @@ later on.
 
     /**
      * @name my_operation
-     * @priority 0
-     * @category 'cat1', 'cat2'   
      * @brief This function does something
      *     And the brief can be on several lines
      *     if needed
@@ -51,6 +49,7 @@ later on.
      * @param param2 The second parameter [int ( = 1 )]
      * @return Array::Pointer
      *
+     * @note category 'cat1', 'cat2'   
      * @see https://reference_to_the_function_documentation_or_other_link_1
      * @see https://reference_to_the_function_documentation_or_other_link_2
      */
@@ -58,8 +57,8 @@ later on.
     my_operation_func(const Device::Pointer &device, const Array::Pointer &src, Array::Pointer &dst, float param1, int param2) -> Array::Pointer;
 
 `name` is the name of the operation minus the `_func` suffix. `brief` is a short description of the function. We will then add a `param` tag for each parameter of the function. The `return` tag is used to specify the return type of the function.
-The `param` tag should be specified as follows: `@param {name_of_the_parameter} Description oftheparameter [{type_of_the_parameter} ( = {default_value} )]`. The tags `category`, `priority`, and `link` are optional. 
-The `category` tag is used later on to sort the functions in menus, inferences, or other similar operations. The `link` tag is used to add links and reference to the documentation. Multiple links can be added.  
+The `param` tag should be specified as follows: `@param {name_of_the_parameter} Description oftheparameter [{type_of_the_parameter} ( = {default_value} )]`. The tags `note` and `see` are optional. 
+The `note` tag is used to pass additionnal information for later. Mainly used to pass `categories` used to sort the functions in menus, inferences, or other similar operations. The `see` tag is used to add links and reference to the documentation. Multiple links can be added.  
 
 .. warning:: 
 
