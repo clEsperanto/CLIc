@@ -77,5 +77,6 @@ endif(BUILD_TESTING)
 
 # Build documentation
 if (BUILD_DOCUMENTATION)
-    include(${PROJECT_SOURCE_DIR}/cmake/CMakeDoxygen.cmake)
+    # include(${PROJECT_SOURCE_DIR}/cmake/CMakeDoxygen.cmake)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/docs)
 endif()

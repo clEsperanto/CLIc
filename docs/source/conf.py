@@ -20,7 +20,7 @@ release = '0.8.2'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = ['breathe' ]
-breathe_projects = {'CLIc': '../../xml'}
+breathe_projects = {'CLIc': os.environ.get('CLIC_DOCS', './xml')}
 breathe_default_project = 'CLIc'
 
 templates_path = ['_templates']
