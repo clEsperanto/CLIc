@@ -12,7 +12,6 @@ namespace cle::tier6
 {
 /**
  * @name dilate_labels
- * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @brief Dilates labels to a larger size. No label overwrites another label. Similar to the implementation in
  * scikitimage [2] and MorpholibJ[3] Notes * This operation assumes input images are isotropic.
  *
@@ -22,6 +21,7 @@ namespace cle::tier6
  * @param radius [int ( = 2 )]
  * @return Array::Pointer
  *
+ * @note category 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
@@ -30,7 +30,6 @@ dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
 
 /**
  * @name erode_labels
- * @category 'label processing', 'in assistant'
  * @brief Erodes labels to a smaller size. Note: Depending on the label image and the radius, labels may disappear and
  * labels may split into multiple islands. Thus, overlapping labels of input and output may not have the same
  * identifier. Notes * This operation assumes input images are isotropic.
@@ -42,6 +41,7 @@ dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
  * @param relabel and all label indices exist. [bool ( = False )]
  * @return Array::Pointer
  *
+ * @note category 'label processing', 'in assistant'
  */
 auto
 erode_labels_func(const Device::Pointer & device,
@@ -53,7 +53,6 @@ erode_labels_func(const Device::Pointer & device,
 
 /**
  * @name gauss_otsu_labeling
- * @category 'label', 'in assistant', 'bia-bob-suggestion'
  * @brief Labels objects directly from grey-value images.
  *
  *  The outline_sigma parameter allows tuning the segmentation result. Under the hood,
@@ -66,6 +65,7 @@ erode_labels_func(const Device::Pointer & device,
  * @param outline_sigma Gaussian blur sigma along all axes [float ( = 0 )]
  * @return Array::Pointer
 
+ * @note category 'label', 'in assistant', 'bia-bob-suggestion'
  * @see https://ieeexplore.ieee.org/document/4310076
  * @see https://en.wikipedia.org/wiki/Connected-component_labeling
  *
@@ -79,7 +79,6 @@ gauss_otsu_labeling_func(const Device::Pointer & device,
 
 /**
  * @name masked_voronoi_labeling
- * @category 'label', 'bia-bob-suggestion'
  * @brief Takes a binary image, labels connected components and dilates the regions using a octagon shape until they
  * touch. The region growing is limited to a masked area. The resulting label map is written to the output.
  *
@@ -89,6 +88,7 @@ gauss_otsu_labeling_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'label', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_maskedVoronoiLabeling
  */
 auto
@@ -100,7 +100,6 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
 
 /**
  * @name voronoi_labeling
- * @category 'label', 'in assistant', 'bia-bob-suggestion'
  * @brief Takes a binary image, labels connected components and dilates the regions using a octagon shape until they
  * touch. The resulting label map is written to the output.
  *
@@ -109,6 +108,7 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'label', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_voronoiLabeling
  */
 auto

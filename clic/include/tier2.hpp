@@ -12,7 +12,6 @@ namespace cle::tier2
 {
 /**
  * @name absolute_difference
- * @category 'combine', 'in assistant', 'bia-bob-suggestion'
  * @brief Determines the absolute difference pixel by pixel between two images. <pre>f(x, y) = |x y| </pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -21,6 +20,7 @@ namespace cle::tier2
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'combine', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_absoluteDifference
  */
 auto
@@ -32,8 +32,6 @@ absolute_difference_func(const Device::Pointer & device,
 
 /**
  * @name add_images
- * @priority -1
- * @category 'combine', 'in assistant'
  * @brief Calculates the sum of pairs of pixels x and y of two images X and Y. <pre>f(x, y) = x + y</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -42,6 +40,7 @@ absolute_difference_func(const Device::Pointer & device,
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'combine', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_addImages
  */
 auto
@@ -53,8 +52,6 @@ add_images_func(const Device::Pointer & device,
 
 /**
  * @name bottom_hat_box
- * @priority -1
- * @category 'filter', 'background removal', 'in assistant'
  * @brief Apply a bottomhat filter for background subtraction to the input image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -65,6 +62,7 @@ add_images_func(const Device::Pointer & device,
  * @param radius_z Radius of the background determination region in Z. [int ( = 1 )]
  * @return Array::Pointer
  *
+ * @note category 'filter', 'background removal', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_bottomHatBox
  */
 auto
@@ -78,8 +76,6 @@ bottom_hat_box_func(const Device::Pointer & device,
 
 /**
  * @name bottom_hat_sphere
- * @priority -1
- * @category 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  * @brief Applies a bottomhat filter for background subtraction to the input image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -90,6 +86,7 @@ bottom_hat_box_func(const Device::Pointer & device,
  * @param radius_z Radius of the background determination region in Z. [float ( = 1 )]
  * @return Array::Pointer
  *
+ * @note category 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_bottomHatSphere
  */
 auto
@@ -103,8 +100,6 @@ bottom_hat_sphere_func(const Device::Pointer & device,
 
 /**
  * @name clip
- * @priority -1
- * @category 'combine', 'in assistant'
  * @brief Limits the range of values in an image. This function is supposed to work similarly as its counter part in
  * numpy [1].
  *
@@ -115,6 +110,7 @@ bottom_hat_sphere_func(const Device::Pointer & device,
  * @param max_intensity new, upper limit of the intensity range [float ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'combine', 'in assistant'
  * @see https://numpy.org/doc/stable/reference/generated/numpy.clip.html
  */
 auto
@@ -127,7 +123,6 @@ clip_func(const Device::Pointer & device,
 
 /**
  * @name closing_box
- * @category 'filter', 'in assistant'
  * @brief Closing operator, boxshaped Applies morphological closing to intensity images using a boxshaped footprint.
  * This operator also works with binary images.
  *
@@ -139,6 +134,7 @@ clip_func(const Device::Pointer & device,
  * @param radius_z [int ( = 0 )]
  * @return Array::Pointer
  *
+ * @note category 'filter', 'in assistant'
  */
 auto
 closing_box_func(const Device::Pointer & device,
@@ -151,7 +147,6 @@ closing_box_func(const Device::Pointer & device,
 
 /**
  * @name closing_sphere
- * @category 'filter', 'in assistant', 'bia-bob-suggestion'
  * @brief Closing operator, sphereshaped Applies morphological closing to intensity images using a sphereshaped
  * footprint. This operator also works with binary images.
  *
@@ -163,6 +158,7 @@ closing_box_func(const Device::Pointer & device,
  * @param radius_z [float ( = 0 )]
  * @return Array::Pointer
  *
+ * @note category 'filter', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 closing_sphere_func(const Device::Pointer & device,
@@ -175,7 +171,6 @@ closing_sphere_func(const Device::Pointer & device,
 
 /**
  * @name concatenate_along_x
- * @category 'combine', 'transform', 'in assistant', 'bia-bob-suggestion'
  * @brief Concatenate two images or stacks along the X axis.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -184,6 +179,7 @@ closing_sphere_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'combine', 'transform', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_combineHorizontally
  */
 auto
@@ -194,7 +190,6 @@ concatenate_along_x_func(const Device::Pointer & device,
 
 /**
  * @name concatenate_along_y
- * @category 'combine', 'transform', 'in assistant', 'bia-bob-suggestion'
  * @brief Concatenate two images or stacks along the Y axis.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -203,6 +198,7 @@ concatenate_along_x_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'combine', 'transform', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_combineVertically
  */
 auto
@@ -213,7 +209,6 @@ concatenate_along_y_func(const Device::Pointer & device,
 
 /**
  * @name concatenate_along_z
- * @category 'combine', 'transform', 'in assistant', 'bia-bob-suggestion'
  * @brief Concatenate two images or stacks along the Z axis.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -222,6 +217,7 @@ concatenate_along_y_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'combine', 'transform', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_concatenateStacks
  */
 auto
@@ -232,7 +228,6 @@ concatenate_along_z_func(const Device::Pointer & device,
 
 /**
  * @name count_touching_neighbors
- * @category 'bia-bob-suggestion'
  * @brief Takes a touch matrix as input and delivers a vector with number of touching neighbors per label as a vector.
  * Note: Background is considered as something that can touch. To ignore touches with background, hand over a touch
  * matrix where the first column (index = 0) has been set to 0. Use set_column for that.
@@ -243,6 +238,7 @@ concatenate_along_z_func(const Device::Pointer & device,
  * @param ignore_background [bool ( = True )]
  * @return Array::Pointer
  *
+ * @note category 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_countTouchingNeighbors
  */
 auto
@@ -271,7 +267,6 @@ crop_border_func(const Device::Pointer & device, const Array::Pointer & src, Arr
 
 /**
  * @name divide_by_gaussian_background
- * @category 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  * @brief Applies Gaussian blur to the input image and divides the original by the result.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -282,6 +277,7 @@ crop_border_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  * @param sigma_z [float ( = 2 )]
  * @return Array::Pointer
  *
+ * @note category 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_divideByGaussianBackground
  */
 auto
@@ -309,7 +305,6 @@ degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & s
 
 /**
  * @name detect_maxima_box
- * @category 'binarize', 'in assistant'
  * @brief Detects local maxima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
  * is no other pixel in a given radius which has a higher intensity, and to 0 otherwise.
  *
@@ -321,6 +316,7 @@ degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & s
  * @param radius_z Radius of the region in Z. [int ( = 0 )]
  * @return Array::Pointer
  *
+ * @note category 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_detectMaximaBox
  */
 auto
@@ -334,7 +330,6 @@ detect_maxima_box_func(const Device::Pointer & device,
 
 /**
  * @name detect_minima_box
- * @category 'binarize', 'in assistant'
  * @brief Detects local maxima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
  * is no other pixel in a given radius which has a lower intensity, and to 0 otherwise.
  *
@@ -346,6 +341,7 @@ detect_maxima_box_func(const Device::Pointer & device,
  * @param radius_z Radius of the region in Z. [int ( = 0 )]
  * @return Array::Pointer
  *
+ * @note category 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_detectMaximaBox
  */
 auto
@@ -358,7 +354,6 @@ detect_minima_box_func(const Device::Pointer & device,
 
 /**
  * @name difference_of_gaussian
- * @category 'filter', 'background removal', 'bia-bob-suggestion'
  * @brief Applies Gaussian blur to the input image twice with different sigma values resulting in two images which are
  * then subtracted from each other. It is recommended to apply this operation to images of type Float (32 bit) as
  * results might be negative.
@@ -374,6 +369,7 @@ detect_minima_box_func(const Device::Pointer & device,
  * @param sigma2_z Sigma of the second Gaussian filter in z [float ( = 2 )]
  * @return Array::Pointer
  *
+ * @note category 'filter', 'background removal', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_differenceOfGaussian3D
  */
 auto
@@ -390,7 +386,6 @@ difference_of_gaussian_func(const Device::Pointer & device,
 
 /**
  * @name extend_labeling_via_voronoi
- * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @brief Takes a label map image and dilates the regions using a octagon shape until they touch. The resulting label
  * map is written to the output.
  *
@@ -399,6 +394,7 @@ difference_of_gaussian_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_extendLabelingViaVoronoi
  */
 auto
@@ -408,7 +404,6 @@ extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Po
 
 /**
  * @name invert
- * @category 'filter'
  * @brief Computes the negative value of all pixels in a given image. It is recommended to convert images to 32bit float
  * before applying this operation. <pre>f(x) = x</pre> For binary images, use binaryNot.
  *
@@ -417,6 +412,7 @@ extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Po
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'filter'
  * @see https://clij.github.io/clij2-docs/reference_invert
  */
 auto
@@ -425,7 +421,6 @@ invert_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
 
 /**
  * @name label_spots
- * @category 'label', 'in assistant', 'bia-bob-suggestion'
  * @brief Transforms a binary image with single pixles set to 1 to a labelled spots image. Transforms a spots image as
  * resulting from maximum/minimum detection in an image of the same size where every spot has a number 1, 2,... n.
  *
@@ -434,6 +429,7 @@ invert_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'label', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_labelSpots
  */
 auto
@@ -442,8 +438,6 @@ label_spots_func(const Device::Pointer & device, const Array::Pointer & src, Arr
 
 /**
  * @name large_hessian_eigenvalue
- * @priority -1
- * @category 'filter', 'in assistant'
  * @brief Determines the Hessian eigenvalues and returns the large eigenvalue image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -451,6 +445,7 @@ label_spots_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'filter', 'in assistant'
  */
 auto
 large_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -506,7 +501,6 @@ minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Point
 
 /**
  * @name opening_box
- * @category 'filter', 'in assistant'
  * @brief Opening operator, boxshaped Applies morphological opening to intensity images using a boxshaped footprint.
  * This operator also works with binary images.
  *
@@ -518,6 +512,7 @@ minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Point
  * @param radius_z [int ( = 0 )]
  * @return Array::Pointer
  *
+ * @note category 'filter', 'in assistant'
  */
 auto
 opening_box_func(const Device::Pointer & device,
@@ -530,7 +525,6 @@ opening_box_func(const Device::Pointer & device,
 
 /**
  * @name opening_sphere
- * @category 'filter', 'in assistant', 'bia-bob-suggestion'
  * @brief Opening operator, sphereshaped Applies morphological opening to intensity images using a sphereshaped
  * footprint. This operator also works with binary images.
  *
@@ -542,6 +536,7 @@ opening_box_func(const Device::Pointer & device,
  * @param radius_z [float ( = 0 )]
  * @return Array::Pointer
  *
+ * @note category 'filter', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 opening_sphere_func(const Device::Pointer & device,
@@ -569,7 +564,6 @@ radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & s
 
 /**
  * @name reduce_labels_to_label_edges
- * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @brief Takes a label map and reduces all labels to their edges. Label IDs stay and background will be zero.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -577,6 +571,7 @@ radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & s
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_reduceLabelsToLabelEdges
  */
 auto
@@ -586,8 +581,6 @@ reduce_labels_to_label_edges_func(const Device::Pointer & device, const Array::P
 
 /**
  * @name small_hessian_eigenvalue
- * @priority -1
- * @category 'filter', 'in assistant'
  * @brief Determines the Hessian eigenvalues and returns the small eigenvalue image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -595,6 +588,7 @@ reduce_labels_to_label_edges_func(const Device::Pointer & device, const Array::P
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'filter', 'in assistant'
  */
 auto
 small_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -603,7 +597,6 @@ small_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Point
 
 /**
  * @name square
- * @category 'filter'
  * @brief Return the elementwise square of the input. This function is supposed to be similar to its counterpart in
  * numpy [1]
  *
@@ -612,6 +605,7 @@ small_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Point
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'filter'
  * @see https://numpy.org/doc/stable/reference/generated/numpy.square.html
  */
 auto
@@ -620,7 +614,6 @@ square_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
 
 /**
  * @name squared_difference
- * @category 'combine', 'in assistant', 'bia-bob-suggestion'
  * @brief Determines the squared difference pixel by pixel between two images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -629,6 +622,7 @@ square_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'combine', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_squaredDifference
  */
 auto
@@ -640,7 +634,6 @@ squared_difference_func(const Device::Pointer & device,
 
 /**
  * @name standard_deviation_box
- * @category 'filter', 'edge detection', 'in assistant'
  * @brief Computes the local standard deviation of a pixels box neighborhood. The box size is specified by its
  * halfwidth, halfheight and halfdepth (radius). If 2D images are given, radius_z will be ignored.
  *
@@ -652,6 +645,7 @@ squared_difference_func(const Device::Pointer & device,
  * @param radius_z [int ( = 1 )]
  * @return Array::Pointer
  *
+ * @note category 'filter', 'edge detection', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_standardDeviationBox
  */
 auto
@@ -665,7 +659,6 @@ standard_deviation_box_func(const Device::Pointer & device,
 
 /**
  * @name standard_deviation_sphere
- * @category 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
  * @brief Computes the local standard deviation of a pixels sphere neighborhood. The box size is specified by its
  * halfwidth, halfheight and halfdepth (radius). If 2D images are given, radius_z will be ignored.
  *
@@ -677,6 +670,7 @@ standard_deviation_box_func(const Device::Pointer & device,
  * @param radius_z [int ( = 1 )]
  * @return Array::Pointer
  *
+ * @note category 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_standardDeviationSphere
  */
 auto
@@ -690,7 +684,6 @@ standard_deviation_sphere_func(const Device::Pointer & device,
 
 /**
  * @name subtract_gaussian_background
- * @category 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  * @brief Applies Gaussian blur to the input image and subtracts the result from the original.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -701,6 +694,7 @@ standard_deviation_sphere_func(const Device::Pointer & device,
  * @param sigma_z [float ( = 2 )]
  * @return Array::Pointer
  *
+ * @note category 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_subtractGaussianBackground
  */
 auto
@@ -714,8 +708,6 @@ subtract_gaussian_background_func(const Device::Pointer & device,
 
 /**
  * @name subtract_images
- * @priority -1
- * @category 'combine', 'in assistant'
  * @brief Subtracts one image X from another image Y pixel wise. <pre>f(x, y) = x y</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -724,6 +716,7 @@ subtract_gaussian_background_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'combine', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_subtractImages
  */
 auto
@@ -750,8 +743,6 @@ sum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & sr
 
 /**
  * @name top_hat_box
- * @priority 1
- * @category 'filter', 'background removal', 'in assistant'
  * @brief Applies a tophat filter for background subtraction to the input image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -762,6 +753,7 @@ sum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param radius_z Radius of the background determination region in Z. [int ( = 1 )]
  * @return Array::Pointer
  *
+ * @note category 'filter', 'background removal', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_topHatBox
  */
 auto
@@ -775,7 +767,6 @@ top_hat_box_func(const Device::Pointer & device,
 
 /**
  * @name top_hat_sphere
- * @category 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  * @brief Applies a tophat filter for background subtraction to the input image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -786,6 +777,7 @@ top_hat_box_func(const Device::Pointer & device,
  * @param radius_z Radius of the background determination region in Z. [float ( = 1 )]
  * @return Array::Pointer
  *
+ * @note category 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_topHatSphere
  */
 auto

@@ -65,8 +65,6 @@ exclude_labels_func(const Device::Pointer & device,
 
 /**
  * @name exclude_labels_on_edges
- * @priority 1
- * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @brief Removes all labels from a label map which touch the edges of the image. Remaining label elements are
  * renumbered afterwards.
  *
@@ -78,6 +76,7 @@ exclude_labels_func(const Device::Pointer & device,
  * @param exclude_z Exclude labels along min and max z [bool ( = True )]
  * @return Array::Pointer
  *
+ * @note category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOnEdges
  */
 auto
@@ -108,7 +107,6 @@ flag_existing_labels_func(const Device::Pointer & device, const Array::Pointer &
 
 /**
  * @name gamma_correction
- * @category 'filter', 'in assistant'
  * @brief Applies a gamma correction to an image. Therefore, all pixels x of the Image X are normalized and the power to
  * gamma g is computed, before normlization is reversed (^ is the power operator):f(x) = (x / max(X)) ^ gamma * max(X)
  *
@@ -118,6 +116,7 @@ flag_existing_labels_func(const Device::Pointer & device, const Array::Pointer &
  * @param gamma [float ( = 1 )]
  * @return Array::Pointer
  *
+ * @note category 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_gammaCorrection
  */
 auto
@@ -148,7 +147,6 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
 
 /**
  * @name generate_touch_matrix
- * @category 'bia-bob-suggestion'
  * @brief Takes a labelmap with n labels and generates a (n+1)*(n+1) matrix where all pixels are set to 0 exept those
  * where labels are touching. Only half of the matrix is filled (with x < y). For example, if labels 3 and 4 are
  * touching then the pixel (3,4) in the matrix will be set to 1. The touch matrix is a representation of a region
@@ -159,6 +157,7 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_generateTouchMatrix
  */
 auto
@@ -227,7 +226,6 @@ jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, 
 
 /**
  * @name labelled_spots_to_pointlist
- * @category 'bia-bob-suggestion'
  * @brief Generates a coordinate list of points in a labelled spot image. Transforms a labelmap of spots (single pixels
  * with values 1, 2,..., n for n spots) as resulting from connected components analysis in an image where every column
  * contains d pixels (with d = dimensionality of the original image) with the coordinates of the maxima/minima.
@@ -237,6 +235,7 @@ jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, 
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @note category 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_labelledSpotsToPointList
  */
 auto
