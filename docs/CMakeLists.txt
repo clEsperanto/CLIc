@@ -23,7 +23,6 @@ set(SOURCE_FOLDER ${CMAKE_SOURCE_DIR}/clic/)
 configure_file(Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
 set(DOXYGEN_INPUT "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile")  # Path to the generated Doxyfile
 
-
 # Add a custom target to run Doxygen when building the documentation
 add_custom_target(
     documentation
@@ -33,10 +32,6 @@ add_custom_target(
     VERBATIM
 )
 
-# Add the 'documentation' target as a dependency for 'all' (build all by default)
-add_dependencies(${LIBRARY_NAME} documentation)
-
-
 # Add a custom target to run Sphinx when building the documentation
 add_custom_target(
     sphinx-doc
@@ -44,6 +39,10 @@ add_custom_target(
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Generating Sphinx documentation"
     VERBATIM
+    DEPENDS documentation
 )
 
-add_dependencies(documentation sphinx-doc)
+# Add the 'documentation' target as a dependency for 'all' (build all by default)
+add_dependencies(${LIBRARY_NAME} sphinx-doc)
+    
+    
