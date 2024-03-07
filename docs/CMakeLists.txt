@@ -40,7 +40,7 @@ add_dependencies(${LIBRARY_NAME} documentation)
 # Add a custom target to run Sphinx when building the documentation
 add_custom_target(
     sphinx-doc
-    COMMAND ${CMAKE_COMMAND} -E env CLIC_DOCS=${CMAKE_CURRENT_BINARY_DIR} ${SPHINX} -b html ${CMAKE_CURRENT_SOURCE_DIR}/source ${CMAKE_CURRENT_SOURCE_DIR}/build
+    COMMAND ${CMAKE_COMMAND} -E env CLIC_DOCS=${CMAKE_CURRENT_BINARY_DIR}/xml ${SPHINX} -b html ${CMAKE_CURRENT_SOURCE_DIR}/source ${CMAKE_CURRENT_SOURCE_DIR}/build
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Generating Sphinx documentation"
     VERBATIM
