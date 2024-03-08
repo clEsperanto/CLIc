@@ -21,7 +21,7 @@ namespace cle::tier4
  * @return float
  *
  * @see https://clij.github.io/clij2-docs/reference_meanSquaredError
- * @note category 'in assistant', 'combine', 'bia-bob-suggestion'
+ * @note 'in assistant', 'combine', 'bia-bob-suggestion'
  */
 auto
 mean_squared_error_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1)
@@ -59,7 +59,7 @@ spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & s
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_closeIndexGapsInLabelMap
- * @note category 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int blocksize)
@@ -79,7 +79,7 @@ relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & s
  * @see https://clij.github.io/clij2-docs/reference_thresholdOtsu
  * @see https://scikit-image.org/docs/dev/api/skimage.filters.html#skimage.filters.threshold_otsu
  * @see https://ieeexplore.ieee.org/document/4310076
- * @note category 'binarize', 'in assistant', 'bia-bob-suggestion'
+ * @note 'binarize', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;

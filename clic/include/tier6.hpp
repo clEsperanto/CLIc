@@ -21,7 +21,7 @@ namespace cle::tier6
  * @param radius [int ( = 2 )]
  * @return Array::Pointer
  *
- * @note category 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
@@ -41,7 +41,7 @@ dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
  * @param relabel and all label indices exist. [bool ( = False )]
  * @return Array::Pointer
  *
- * @note category 'label processing', 'in assistant'
+ * @note 'label processing', 'in assistant'
  */
 auto
 erode_labels_func(const Device::Pointer & device,
@@ -67,7 +67,7 @@ erode_labels_func(const Device::Pointer & device,
 
  * @see https://ieeexplore.ieee.org/document/4310076
  * @see https://en.wikipedia.org/wiki/Connected-component_labeling
- * @note category 'label', 'in assistant', 'bia-bob-suggestion'
+  * @note 'label', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 gauss_otsu_labeling_func(const Device::Pointer & device,
@@ -88,7 +88,7 @@ gauss_otsu_labeling_func(const Device::Pointer & device,
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_maskedVoronoiLabeling
- * @note category 'label', 'bia-bob-suggestion'
+ * @note 'label', 'bia-bob-suggestion'
  */
 auto
 masked_voronoi_labeling_func(const Device::Pointer & device,
@@ -108,7 +108,7 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_voronoiLabeling
- * @note category 'label', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;

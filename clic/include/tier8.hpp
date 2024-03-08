@@ -25,7 +25,7 @@ namespace cle::tier8
  * @param radius Smoothing radius.[int ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 smooth_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)

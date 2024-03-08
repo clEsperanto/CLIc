@@ -21,7 +21,7 @@ namespace cle::tier5
  * @return bool
  *
  * @see https://numpy.org/doc/stable/reference/generated/numpy.array_equal.html
- * @note category 'combine'
+ * @note 'combine'
  */
 auto
 array_equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1) -> bool;
@@ -38,7 +38,7 @@ array_equal_func(const Device::Pointer & device, const Array::Pointer & src0, co
  * @param dst Output label image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'label processing', 'combine labels', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label processing', 'combine labels', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 combine_labels_func(const Device::Pointer & device,
@@ -59,7 +59,7 @@ combine_labels_func(const Device::Pointer & device,
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_connectedComponentsLabelingBox
- * @note category 'label', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 connected_components_labeling_func(const Device::Pointer & device,

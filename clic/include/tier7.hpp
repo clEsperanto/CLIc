@@ -35,7 +35,7 @@ namespace cle::tier7
  *
  * @see https://github.com/biovoxxel/bv3dbox (BV_LabelSplitter.java#L83)
  * @see https://zenodo.org/badge/latestdoi/434949702
- * @note category 'label', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 eroded_otsu_labeling_func(const Device::Pointer & device,
@@ -64,7 +64,7 @@ eroded_otsu_labeling_func(const Device::Pointer & device,
  * @param resize Automatically determines the size of the output depending on the rotation angles. [bool ( = False )]
  * @return Array::Pointer
  *
- * @note category 'transform', 'in assistant', 'bia-bob-suggestion'
+ * @note 'transform', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 rigid_transform_func(const Device::Pointer & device,
@@ -97,7 +97,7 @@ rigid_transform_func(const Device::Pointer & device,
  * @param resize Automatically determines the size of the output depending on the rotation angles. [bool ( = False )]
  * @return Array::Pointer
  *
- * @note category 'transform', 'in assistant'
+ * @note 'transform', 'in assistant'
  */
 auto
 rotate_func(const Device::Pointer & device,
@@ -126,7 +126,7 @@ rotate_func(const Device::Pointer & device,
  * @param resize Automatically determines output size image. [bool ( = False )]
  * @return Array::Pointer
  *
- * @note category 'transform', 'in assistant'
+ * @note 'transform', 'in assistant'
  */
 auto
 scale_func(const Device::Pointer & device,
@@ -153,7 +153,7 @@ scale_func(const Device::Pointer & device,
  * @param interpolate If true, bi/trilinear interplation will be applied. [bool ( = False )]
  * @return Array::Pointer
  *
- * @note category 'transform', 'in assistant'
+ * @note 'transform', 'in assistant'
  */
 auto
 translate_func(const Device::Pointer & device,
@@ -177,7 +177,7 @@ translate_func(const Device::Pointer & device,
  * @param radius Radius size for the closing. [int ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
@@ -196,7 +196,7 @@ closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
  * @param radius Radius size for the opening. [int ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 opening_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
@@ -220,7 +220,7 @@ opening_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
  * @see https://clij.github.io/clij2-docs/reference_voronoiOtsuLabeling
  * @see https://ieeexplore.ieee.org/document/4310076
  * @see https://en.wikipedia.org/wiki/Voronoi_diagram
- * @note category 'label', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 voronoi_otsu_labeling_func(const Device::Pointer & device,
