@@ -21,6 +21,7 @@ namespace cle::tier3
  * @return std::array<float, 6>
  *
  * @see https://clij.github.io/clij2-docs/reference_boundingBox
+ *
  */
 auto
 bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<float, 6>;
@@ -34,8 +35,8 @@ bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) ->
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src [const Array::Pointer &]
  * @return std::array<float, 3>
- *
  * @see https://clij.github.io/clij2-docs/reference_centerOfMass
+ *
  */
 auto
 center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<float, 3>;
@@ -55,6 +56,7 @@ center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) 
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_excludeLabels
+ *
  */
 auto
 exclude_labels_func(const Device::Pointer & device,
@@ -76,8 +78,8 @@ exclude_labels_func(const Device::Pointer & device,
  * @param exclude_z Exclude labels along min and max z [bool ( = True )]
  * @return Array::Pointer
  *
- * @note category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOnEdges
+ * @note category 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 exclude_labels_on_edges_func(const Device::Pointer & device,
@@ -116,8 +118,8 @@ flag_existing_labels_func(const Device::Pointer & device, const Array::Pointer &
  * @param gamma [float ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_gammaCorrection
+ * @note category 'filter', 'in assistant'
  */
 auto
 gamma_correction_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float gamma)
@@ -137,6 +139,7 @@ gamma_correction_func(const Device::Pointer & device, const Array::Pointer & src
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_generateBinaryOverlapMatrix
+ *
  */
 auto
 generate_binary_overlap_matrix_func(const Device::Pointer & device,
@@ -157,8 +160,8 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_generateTouchMatrix
+ * @note category 'bia-bob-suggestion'
  */
 auto
 generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -196,6 +199,7 @@ generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer 
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_histogram
+ *
  */
 auto
 histogram_func(const Device::Pointer & device,
@@ -219,6 +223,7 @@ histogram_func(const Device::Pointer & device,
  * @return float
  *
  * @see https://clij.github.io/clij2-docs/reference_jaccardIndex
+ *
  */
 auto
 jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1) -> float;
@@ -235,8 +240,8 @@ jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, 
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_labelledSpotsToPointList
+ * @note category 'bia-bob-suggestion'
  */
 auto
 labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -263,8 +268,8 @@ maximum_position_func(const Device::Pointer & device, const Array::Pointer & src
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The image of which the mean average of all pixels will be determined. [const Array::Pointer &]
  * @return float
- *
  * @see https://clij.github.io/clij2-docs/reference_meanOfAllPixels
+ *
  */
 auto
 mean_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;

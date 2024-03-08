@@ -19,8 +19,8 @@ namespace cle::tier1
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_absolute
+ * @note category 'filter', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 absolute_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -39,8 +39,8 @@ absolute_func(const Device::Pointer & device, const Array::Pointer & src, Array:
  * @param factor1 Multiplication factor of each pixel of src1 before adding it. [float ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_addImagesWeighted
+ * @note category 'combine', 'in assistant'
  */
 auto
 add_images_weighted_func(const Device::Pointer & device,
@@ -61,8 +61,8 @@ add_images_weighted_func(const Device::Pointer & device,
  * @param scalar The constant number which will be added to all pixels. [float ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_addImageAndScalar
+ * @note category 'filter', 'in assistant'
  */
 auto
 add_image_and_scalar_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
@@ -81,9 +81,9 @@ add_image_and_scalar_func(const Device::Pointer & device, const Array::Pointer &
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
+ * @see https://clij.github.io/clij2-docs/reference_binaryAnd
  * @note category 'combine', 'binary processing', 'in assistant', 'combine labels', 'label processing',
  * 'bia-bob-suggestion'
- * @see https://clij.github.io/clij2-docs/reference_binaryAnd
  */
 auto
 binary_and_func(const Device::Pointer & device,
@@ -102,8 +102,8 @@ binary_and_func(const Device::Pointer & device,
  * @param dst The output image where edge pixels will be 1. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'binary processing', 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_binaryEdgeDetection
+ * @note category 'binary processing', 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 binary_edge_detection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -120,8 +120,8 @@ binary_edge_detection_func(const Device::Pointer & device, const Array::Pointer 
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'binary processing', 'filter', 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_binaryNot
+ * @note category 'binary processing', 'filter', 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 binary_not_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -198,8 +198,8 @@ binary_xor_func(const Device::Pointer & device,
  * @name block_enumerate
  * @brief Enumerates pixels with value 1 in a onedimensional image For example handing over the image [0, 1, 1, 0, 1, 0,
  * 1, 1] would be processed to an image [0, 1, 2, 0, 3, 0, 4, 5] This functionality is important in connected component
- * labeling. Processing is accelerated by paralellization in blocks. Therefore, handing over precomputed block sums is
  * neccessary (see also sum_reduction_x). In the above example, with blocksize 4, that would be the sum array: [2, 3]
+ * labeling. Processing is accelerated by paralellization in blocks. Therefore, handing over precomputed block sums is
  * Note that the block size when calling this function and sum_reduction must be identical
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -229,8 +229,8 @@ block_enumerate_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'combine', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_convolve
+ * @note category 'filter', 'combine', 'in assistant'
  */
 auto
 convolve_func(const Device::Pointer & device,
@@ -247,8 +247,8 @@ convolve_func(const Device::Pointer & device,
  * @param src Input image to copy. [const Array::Pointer &]
  * @param dst Output copy image. [Array::Pointer ( = None )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_copy
+ *
  */
 auto
 copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -266,8 +266,8 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
  * @param dst Output copy image slice. [Array::Pointer ( = None )]
  * @param slice [int ( = 0 )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_copySlice
+ *
  */
 auto
 copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
@@ -284,8 +284,8 @@ copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param dst Output copy image slice. [Array::Pointer ( = None )]
  * @param slice [int ( = 0 )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_copySlice
+ *
  */
 auto
 copy_horizontal_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
@@ -302,8 +302,8 @@ copy_horizontal_slice_func(const Device::Pointer & device, const Array::Pointer 
  * @param dst Output copy image slice. [Array::Pointer ( = None )]
  * @param slice [int ( = 0 )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_copySlice
+ *
  */
 auto
 copy_vertical_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
@@ -325,8 +325,8 @@ copy_vertical_slice_func(const Device::Pointer & device, const Array::Pointer & 
  * @param height Height size of the region to crop. [int ( = 1 )]
  * @param depth Depth size of the region to crop. [int ( = 1 )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_crop3D
+ *
  */
 auto
 crop_func(const Device::Pointer & device,
@@ -364,8 +364,8 @@ cubic_root_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'binarize', 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_detectLabelEdges
+ * @note category 'binarize', 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -384,8 +384,8 @@ detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & s
  * @param dst Output result image. Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'binary processing'
  * @see https://clij.github.io/clij2-docs/reference_dilateBox
+ * @note category 'binary processing'
  */
 auto
 dilate_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -402,8 +402,8 @@ dilate_box_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param dst Output result image. Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'binary processing', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_dilateSphere
+ * @note category 'binary processing', 'bia-bob-suggestion'
  */
 auto
 dilate_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -419,8 +419,8 @@ dilate_sphere_func(const Device::Pointer & device, const Array::Pointer & src, A
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_divideImages
+ * @note category 'combine', 'in assistant'
  */
 auto
 divide_images_func(const Device::Pointer & device,
@@ -457,8 +457,8 @@ divide_scalar_by_image_func(const Device::Pointer & device,
  * @param dst The resulting binary image where pixels will be 1 only if source1 [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_equal
+ * @note category 'combine', 'binarize', 'in assistant'
  */
 auto
 equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
@@ -475,8 +475,8 @@ equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Ar
  * @param scalar The constant where every pixel is compared to. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_equalConstant
+ * @note category 'binarize', 'in assistant'
  */
 auto
 equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
@@ -496,8 +496,8 @@ equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, 
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'binary processing'
  * @see https://clij.github.io/clij2-docs/reference_erodeBox
+ * @note category 'binary processing'
  */
 auto
 erode_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -514,8 +514,8 @@ erode_box_func(const Device::Pointer & device, const Array::Pointer & src, Array
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'binary processing', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_erodeSphere
+ * @note category 'binary processing', 'bia-bob-suggestion'
  */
 auto
 erode_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -530,8 +530,8 @@ erode_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_exponential
+ * @note category 'filter', 'in assistant'
  */
 auto
 exponential_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -548,8 +548,8 @@ exponential_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  * @param flip_y Flip along the y axis if true. [bool ( = True )]
  * @param flip_z Flip along the z axis if true. [bool ( = True )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_flip3D
+ *
  */
 auto
 flip_func(const Device::Pointer & device,
@@ -574,8 +574,8 @@ flip_func(const Device::Pointer & device,
  * @param sigma_z Sigma value along the z axis. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'denoise', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_gaussianBlur3D
+ * @note category 'filter', 'denoise', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 gaussian_blur_func(const Device::Pointer & device,
@@ -592,8 +592,8 @@ gaussian_blur_func(const Device::Pointer & device,
  * pointlists (dimensionality n * d, n: number of points and d: dimensionality) and builds up a matrix containing the
  * distances between these points. Convention: Given two point lists with dimensionality n * d and m * d, the distance
  * matrix will be of size(n + 1) * (m + 1). The first row and column contain zeros. They represent the distance of the
- * objects to a theoretical background object. In that way, distance matrices are of the same size as touch matrices
  * (see generateTouchMatrix). Thus, one can threshold a distance matrix to generate a touch matrix out of it for drawing
+ * objects to a theoretical background object. In that way, distance matrices are of the same size as touch matrices
  * meshes.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -602,8 +602,8 @@ gaussian_blur_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_generateDistanceMatrix
+ * @note category 'bia-bob-suggestion'
  */
 auto
 generate_distance_matrix_func(const Device::Pointer & device,
@@ -622,8 +622,8 @@ generate_distance_matrix_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'edge detection', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_gradientX
+ * @note category 'filter', 'edge detection', 'in assistant'
  */
 auto
 gradient_x_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -639,8 +639,8 @@ gradient_x_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'edge detection', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_gradientY
+ * @note category 'filter', 'edge detection', 'in assistant'
  */
 auto
 gradient_y_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -656,8 +656,8 @@ gradient_y_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'edge detection', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_gradientZ
+ * @note category 'filter', 'edge detection', 'in assistant'
  */
 auto
 gradient_z_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -673,8 +673,8 @@ gradient_z_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_greater
+ * @note category 'combine', 'binarize', 'in assistant'
  */
 auto
 greater_func(const Device::Pointer & device,
@@ -693,8 +693,8 @@ greater_func(const Device::Pointer & device,
  * @param scalar [float ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_greaterConstant
+ * @note category 'binarize', 'in assistant'
  */
 auto
 greater_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
@@ -711,8 +711,8 @@ greater_constant_func(const Device::Pointer & device, const Array::Pointer & src
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_greaterOrEqual
+ * @note category 'combine', 'binarize', 'in assistant'
  */
 auto
 greater_or_equal_func(const Device::Pointer & device,
@@ -731,8 +731,8 @@ greater_or_equal_func(const Device::Pointer & device,
  * @param scalar Scalar value used in the comparison. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_greaterOrEqualConstant
+ * @note category 'binarize', 'in assistant'
  */
 auto
 greater_or_equal_constant_func(const Device::Pointer & device,
@@ -775,8 +775,8 @@ hessian_eigenvalues_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_laplaceBox
+ * @note category 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 laplace_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -791,8 +791,8 @@ laplace_box_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'edge detection', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_laplaceDiamond
+ * @note category 'filter', 'edge detection', 'bia-bob-suggestion'
  */
 auto
 laplace_diamond_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -826,8 +826,8 @@ local_cross_correlation_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_logarithm
+ * @note category 'filter', 'in assistant'
  */
 auto
 logarithm_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -845,8 +845,8 @@ logarithm_func(const Device::Pointer & device, const Array::Pointer & src, Array
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_mask
+ * @note category 'bia-bob-suggestion'
  */
 auto
 mask_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask, Array::Pointer dst)
@@ -867,8 +867,8 @@ mask_func(const Device::Pointer & device, const Array::Pointer & src, const Arra
  * @param label Label value to use. [float ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_maskLabel
+ * @note category 'bia-bob-suggestion'
  */
 auto
 mask_label_func(const Device::Pointer & device,
@@ -889,8 +889,8 @@ mask_label_func(const Device::Pointer & device,
  * @param scalar Scalar value used in the comparison. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_maximumImageAndScalar
+ * @note category 'filter', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 maximum_image_and_scalar_func(const Device::Pointer & device,
@@ -910,8 +910,8 @@ maximum_image_and_scalar_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_maximumImages
+ * @note category 'combine', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 maximum_images_func(const Device::Pointer & device,
@@ -933,8 +933,8 @@ maximum_images_func(const Device::Pointer & device,
  * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_maximum3DBox
+ * @note category 'filter', 'in assistant'
  */
 auto
 maximum_box_func(const Device::Pointer & device,
@@ -954,8 +954,8 @@ maximum_box_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'projection'
  * @see https://clij.github.io/clij2-docs/reference_maximumXProjection
+ * @note category 'projection'
  */
 auto
 maximum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -971,8 +971,8 @@ maximum_x_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'projection'
  * @see https://clij.github.io/clij2-docs/reference_maximumYProjection
+ * @note category 'projection'
  */
 auto
 maximum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -988,8 +988,8 @@ maximum_y_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'projection', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_maximumZProjection
+ * @note category 'projection', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -1009,8 +1009,8 @@ maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'denoise', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_mean3DBox
+ * @note category 'filter', 'denoise', 'in assistant'
  */
 auto
 mean_box_func(const Device::Pointer & device,
@@ -1034,8 +1034,8 @@ mean_box_func(const Device::Pointer & device,
  * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'denoise', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_mean3DSphere
+ * @note category 'filter', 'denoise', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 mean_sphere_func(const Device::Pointer & device,
@@ -1055,8 +1055,8 @@ mean_sphere_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'projection'
  * @see https://clij.github.io/clij2-docs/reference_meanXProjection
+ * @note category 'projection'
  */
 auto
 mean_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -1072,8 +1072,8 @@ mean_x_projection_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'projection'
  * @see https://clij.github.io/clij2-docs/reference_meanYProjection
+ * @note category 'projection'
  */
 auto
 mean_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -1089,8 +1089,8 @@ mean_y_projection_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'projection', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_meanZProjection
+ * @note category 'projection', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 mean_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -1110,8 +1110,8 @@ mean_z_projection_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'denoise', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_median3DBox
+ * @note category 'filter', 'denoise', 'in assistant'
  */
 auto
 median_box_func(const Device::Pointer & device,
@@ -1135,8 +1135,8 @@ median_box_func(const Device::Pointer & device,
  * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'denoise', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_median3DSphere
+ * @note category 'filter', 'denoise', 'in assistant'
  */
 auto
 median_sphere_func(const Device::Pointer & device,
@@ -1160,8 +1160,8 @@ median_sphere_func(const Device::Pointer & device,
  * @param radius_z Radius size along z axis. [int ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_minimum3DBox
+ * @note category 'filter', 'in assistant'
  */
 auto
 minimum_box_func(const Device::Pointer & device,
@@ -1183,8 +1183,8 @@ minimum_box_func(const Device::Pointer & device,
  * @param scalar Scalar value used in the comparison. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_minimumImageAndScalar
+ * @note category 'filter', 'in assistant'
  */
 auto
 minimum_image_and_scalar_func(const Device::Pointer & device,
@@ -1204,8 +1204,8 @@ minimum_image_and_scalar_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_minimumImages
+ * @note category 'combine', 'in assistant'
  */
 auto
 minimum_images_func(const Device::Pointer & device,
@@ -1223,8 +1223,8 @@ minimum_images_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'projection'
  * @see https://clij.github.io/clij2-docs/reference_minimumXProjection
+ * @note category 'projection'
  */
 auto
 minimum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -1240,8 +1240,8 @@ minimum_x_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'projection'
  * @see https://clij.github.io/clij2-docs/reference_minimumYProjection
+ * @note category 'projection'
  */
 auto
 minimum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -1257,8 +1257,8 @@ minimum_y_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'projection', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_minimumZProjection
+ * @note category 'projection', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -1352,8 +1352,8 @@ modulo_images_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @param dimension Dimension (0,1,2) to use in the operation. [int ( = 0 )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_multiplyImageAndCoordinate
+ *
  */
 auto
 multiply_image_and_position_func(const Device::Pointer & device,
@@ -1371,8 +1371,8 @@ multiply_image_and_position_func(const Device::Pointer & device,
  * @param scalar The number with which every pixel will be multiplied with. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_multiplyImageAndScalar
+ * @note category 'filter', 'in assistant'
  */
 auto
 multiply_image_and_scalar_func(const Device::Pointer & device,
@@ -1391,8 +1391,8 @@ multiply_image_and_scalar_func(const Device::Pointer & device,
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_multiplyImages
+ * @note category 'combine', 'in assistant'
  */
 auto
 multiply_images_func(const Device::Pointer & device,
@@ -1415,8 +1415,8 @@ multiply_images_func(const Device::Pointer & device,
  * @param posinf Value to replace +inf with. [float ( = np.nan_to_num(float('inf')) )]
  * @param neginf Value to replace -inf with. [float ( = np.nan_to_num(float('-inf')) )]
  * @return Array::Pointer
- *
  * @see https://numpy.org/doc/stable/reference/generated/numpy.nan_to_num.html
+ *
  */
 auto
 nan_to_num_func(const Device::Pointer & device,
@@ -1438,8 +1438,8 @@ nan_to_num_func(const Device::Pointer & device,
  * @param dst0 Output flag (0 or 1). [Array::Pointer]
  * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_nonzeroMaximumBox
+ *
  */
 auto
 nonzero_maximum_box_func(const Device::Pointer & device,
@@ -1459,8 +1459,8 @@ nonzero_maximum_box_func(const Device::Pointer & device,
  * @param dst0 Output flag (0 or 1). [Array::Pointer]
  * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_nonzeroMaximumDiamond
+ *
  */
 auto
 nonzero_maximum_diamond_func(const Device::Pointer & device,
@@ -1480,8 +1480,8 @@ nonzero_maximum_diamond_func(const Device::Pointer & device,
  * @param dst0 Output flag (0 or 1). [Array::Pointer]
  * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_nonzeroMinimumBox
+ *
  */
 auto
 nonzero_minimum_box_func(const Device::Pointer & device,
@@ -1501,8 +1501,8 @@ nonzero_minimum_box_func(const Device::Pointer & device,
  * @param dst0 Output flag (0 or 1). [Array::Pointer]
  * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_nonzeroMinimumDiamond
+ *
  */
 auto
 nonzero_minimum_diamond_func(const Device::Pointer & device,
@@ -1521,8 +1521,8 @@ nonzero_minimum_diamond_func(const Device::Pointer & device,
  * @param dst The resulting binary image where pixels will be 1 only if source1 [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_notEqual
+ * @note category 'combine', 'binarize', 'in assistant'
  */
 auto
 not_equal_func(const Device::Pointer & device,
@@ -1541,8 +1541,8 @@ not_equal_func(const Device::Pointer & device,
  * @param scalar The constant where every pixel is compared to. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_notEqualConstant
+ * @note category 'binarize', 'in assistant'
  */
 auto
 not_equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
@@ -1561,8 +1561,8 @@ not_equal_constant_func(const Device::Pointer & device, const Array::Pointer & s
  * @param index_z Origin pixel coodinate in z to paste. [int ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_paste3D
+ * @note category 'combine', 'in assistant'
  */
 auto
 paste_func(const Device::Pointer & device,
@@ -1582,8 +1582,8 @@ paste_func(const Device::Pointer & device,
  * @param dst0 Output flag value, 0 or 1. [Array::Pointer]
  * @param dst1 Output image. [Array::Pointer ( = None )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_onlyzeroOverwriteMaximumBox
+ *
  */
 auto
 onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
@@ -1601,8 +1601,8 @@ onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
  * @param dst0 Output flag value, 0 or 1. [Array::Pointer]
  * @param dst1 Output image. [Array::Pointer ( = None )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_onlyzeroOverwriteMaximumDiamond
+ *
  */
 auto
 onlyzero_overwrite_maximum_diamond_func(const Device::Pointer & device,
@@ -1621,8 +1621,8 @@ onlyzero_overwrite_maximum_diamond_func(const Device::Pointer & device,
  * @param scalar Power value. [float ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_power
+ * @note category 'filter', 'in assistant'
  */
 auto
 power_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
@@ -1639,8 +1639,8 @@ power_func(const Device::Pointer & device, const Array::Pointer & src, Array::Po
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_powerImages
+ * @note category 'combine', 'in assistant'
  */
 auto
 power_images_func(const Device::Pointer & device,
@@ -1715,8 +1715,8 @@ read_values_from_positions_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_replaceIntensities
+ * @note category 'bia-bob-suggestion'
  */
 auto
 replace_values_func(const Device::Pointer & device,
@@ -1735,8 +1735,8 @@ replace_values_func(const Device::Pointer & device,
  * @param scalar0 Old value. [float ( = 0 )]
  * @param scalar1 New value. [float ( = 1 )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_replaceIntensity
+ *
  */
 auto
 replace_value_func(const Device::Pointer & device,
@@ -1758,8 +1758,8 @@ replace_value_func(const Device::Pointer & device,
  * @param radius_z Radius size along z axis. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_maximum3DSphere
+ * @note category 'filter', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 maximum_sphere_func(const Device::Pointer & device,
@@ -1783,8 +1783,8 @@ maximum_sphere_func(const Device::Pointer & device,
  * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_minimum3DSphere
+ * @note category 'filter', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 minimum_sphere_func(const Device::Pointer & device,
@@ -1804,8 +1804,8 @@ minimum_sphere_func(const Device::Pointer & device,
  * @param src1 Second input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_multiplyMatrix
+ *
  */
 auto
 multiply_matrix_func(const Device::Pointer & device,
@@ -1824,8 +1824,8 @@ multiply_matrix_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'in assistant'
  * @see https://numpy.org/doc/stable/reference/generated/numpy.reciprocal.html
+ * @note category 'filter', 'in assistant'
  */
 auto
 reciprocal_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -1839,8 +1839,8 @@ reciprocal_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param src Input image to process. [const Array::Pointer &]
  * @param scalar Value to set. [float ( = 0 )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_set
+ *
  */
 auto
 set_func(const Device::Pointer & device, const Array::Pointer & src, float scalar) -> Array::Pointer;
@@ -1855,8 +1855,8 @@ set_func(const Device::Pointer & device, const Array::Pointer & src, float scala
  * @param column Column index. [int ( = 0 )]
  * @param value Value to set. [float ( = 0 )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_setColumn
+ *
  */
 auto
 set_column_func(const Device::Pointer & device, const Array::Pointer & src, int column, float value) -> Array::Pointer;
@@ -1870,8 +1870,8 @@ set_column_func(const Device::Pointer & device, const Array::Pointer & src, int 
  * @param src Input image to process. [const Array::Pointer &]
  * @param value Value to set. [float ( = 0 )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_setImageBorders
+ *
  */
 auto
 set_image_borders_func(const Device::Pointer & device, const Array::Pointer & src, float value) -> Array::Pointer;
@@ -1886,8 +1886,8 @@ set_image_borders_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param plane Plane index. [int ( = 0 )]
  * @param value Value to set. [float ( = 0 )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_setPlane
+ *
  */
 auto
 set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int plane, float value) -> Array::Pointer;
@@ -1900,8 +1900,8 @@ set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int p
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_setRampX
+ *
  */
 auto
 set_ramp_x_func(const Device::Pointer & device, const Array::Pointer & src) -> Array::Pointer;
@@ -1914,8 +1914,8 @@ set_ramp_x_func(const Device::Pointer & device, const Array::Pointer & src) -> A
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_setRampY
+ *
  */
 auto
 set_ramp_y_func(const Device::Pointer & device, const Array::Pointer & src) -> Array::Pointer;
@@ -1928,8 +1928,8 @@ set_ramp_y_func(const Device::Pointer & device, const Array::Pointer & src) -> A
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_setRampZ
+ *
  */
 auto
 set_ramp_z_func(const Device::Pointer & device, const Array::Pointer & src) -> Array::Pointer;
@@ -1944,8 +1944,8 @@ set_ramp_z_func(const Device::Pointer & device, const Array::Pointer & src) -> A
  * @param row [int ( = 0 )]
  * @param value [float ( = 0 )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_setRow
+ *
  */
 auto
 set_row_func(const Device::Pointer & device, const Array::Pointer & src, int row, float value) -> Array::Pointer;
@@ -1977,8 +1977,8 @@ set_nonzero_pixels_to_pixelindex_func(const Device::Pointer & device,
  * @param src Input image to process. [const Array::Pointer &]
  * @param value Value to set. [float ( = 0 )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_setWhereXequalsY
+ *
  */
 auto
 set_where_x_equals_y_func(const Device::Pointer & device, const Array::Pointer & src, float value) -> Array::Pointer;
@@ -1993,8 +1993,8 @@ set_where_x_equals_y_func(const Device::Pointer & device, const Array::Pointer &
  * @param src Input image to process. [const Array::Pointer &]
  * @param value Value to set. [float ( = 0 )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_setWhereXgreaterThanY
+ *
  */
 auto
 set_where_x_greater_than_y_func(const Device::Pointer & device, const Array::Pointer & src, float value)
@@ -2010,8 +2010,8 @@ set_where_x_greater_than_y_func(const Device::Pointer & device, const Array::Poi
  * @param src Input image to process. [const Array::Pointer &]
  * @param value Value to set. [float ( = 0 )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_setWhereXsmallerThanY
+ *
  */
 auto
 set_where_x_smaller_than_y_func(const Device::Pointer & device, const Array::Pointer & src, float value)
@@ -2043,8 +2043,8 @@ sign_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_smaller
+ * @note category 'combine', 'binarize', 'in assistant'
  */
 auto
 smaller_func(const Device::Pointer & device,
@@ -2063,8 +2063,8 @@ smaller_func(const Device::Pointer & device,
  * @param scalar Scalar used in the comparison. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_smallerConstant
+ * @note category 'binarize', 'in assistant'
  */
 auto
 smaller_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
@@ -2081,8 +2081,8 @@ smaller_constant_func(const Device::Pointer & device, const Array::Pointer & src
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_smallerOrEqual
+ * @note category 'combine', 'binarize', 'in assistant'
  */
 auto
 smaller_or_equal_func(const Device::Pointer & device,
@@ -2101,8 +2101,8 @@ smaller_or_equal_func(const Device::Pointer & device,
  * @param scalar Scalar used in the comparison. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_smallerOrEqualConstant
+ * @note category 'binarize', 'in assistant'
  */
 auto
 smaller_or_equal_constant_func(const Device::Pointer & device,
@@ -2120,8 +2120,8 @@ smaller_or_equal_constant_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_sobel
+ * @note category 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 sobel_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -2151,8 +2151,8 @@ square_root_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'projection', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_standardDeviationZProjection
+ * @note category 'projection', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 std_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -2168,8 +2168,8 @@ std_z_projection_func(const Device::Pointer & device, const Array::Pointer & src
  * @param scalar Scalar used in the subtraction. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_subtractImageFromScalar
+ * @note category 'filter', 'in assistant'
  */
 auto
 subtract_image_from_scalar_func(const Device::Pointer & device,
@@ -2205,8 +2205,8 @@ sum_reduction_x_func(const Device::Pointer & device, const Array::Pointer & src,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'projection'
  * @see https://clij.github.io/clij2-docs/reference_sumXProjection
+ * @note category 'projection'
  */
 auto
 sum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -2221,8 +2221,8 @@ sum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'projection'
  * @see https://clij.github.io/clij2-docs/reference_sumYProjection
+ * @note category 'projection'
  */
 auto
 sum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -2237,8 +2237,8 @@ sum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'projection', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_sumZProjection
+ * @note category 'projection', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 sum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -2253,8 +2253,8 @@ sum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'transform'
  * @see https://clij.github.io/clij2-docs/reference_transposeXY
+ * @note category 'transform'
  */
 auto
 transpose_xy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -2269,8 +2269,8 @@ transpose_xy_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'transform'
  * @see https://clij.github.io/clij2-docs/reference_transposeXZ
+ * @note category 'transform'
  */
 auto
 transpose_xz_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -2285,8 +2285,8 @@ transpose_xz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'transform'
  * @see https://clij.github.io/clij2-docs/reference_transposeYZ
+ * @note category 'transform'
  */
 auto
 transpose_yz_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -2300,8 +2300,8 @@ transpose_yz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_undefinedToZero
+ *
  */
 auto
 undefined_to_zero_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -2321,8 +2321,8 @@ undefined_to_zero_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'edge detection', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_varianceBox
+ * @note category 'filter', 'edge detection', 'in assistant'
  */
 auto
 variance_box_func(const Device::Pointer & device,
@@ -2346,8 +2346,8 @@ variance_box_func(const Device::Pointer & device,
  * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_varianceSphere
+ * @note category 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 variance_sphere_func(const Device::Pointer & device,
@@ -2367,8 +2367,8 @@ variance_sphere_func(const Device::Pointer & device,
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
- *
  * @see https://clij.github.io/clij2-docs/reference_writeValuesToPositions
+ *
  */
 auto
 write_values_to_positions_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)

@@ -20,8 +20,8 @@ namespace cle::tier2
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_absoluteDifference
+ * @note category 'combine', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 absolute_difference_func(const Device::Pointer & device,
@@ -40,8 +40,8 @@ absolute_difference_func(const Device::Pointer & device,
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_addImages
+ * @note category 'combine', 'in assistant'
  */
 auto
 add_images_func(const Device::Pointer & device,
@@ -62,8 +62,8 @@ add_images_func(const Device::Pointer & device,
  * @param radius_z Radius of the background determination region in Z. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'background removal', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_bottomHatBox
+ * @note category 'filter', 'background removal', 'in assistant'
  */
 auto
 bottom_hat_box_func(const Device::Pointer & device,
@@ -86,8 +86,8 @@ bottom_hat_box_func(const Device::Pointer & device,
  * @param radius_z Radius of the background determination region in Z. [float ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_bottomHatSphere
+ * @note category 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 bottom_hat_sphere_func(const Device::Pointer & device,
@@ -110,8 +110,8 @@ bottom_hat_sphere_func(const Device::Pointer & device,
  * @param max_intensity new, upper limit of the intensity range [float ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'in assistant'
  * @see https://numpy.org/doc/stable/reference/generated/numpy.clip.html
+ * @note category 'combine', 'in assistant'
  */
 auto
 clip_func(const Device::Pointer & device,
@@ -179,8 +179,8 @@ closing_sphere_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'transform', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_combineHorizontally
+ * @note category 'combine', 'transform', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 concatenate_along_x_func(const Device::Pointer & device,
@@ -198,8 +198,8 @@ concatenate_along_x_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'transform', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_combineVertically
+ * @note category 'combine', 'transform', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 concatenate_along_y_func(const Device::Pointer & device,
@@ -217,8 +217,8 @@ concatenate_along_y_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'transform', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_concatenateStacks
+ * @note category 'combine', 'transform', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 concatenate_along_z_func(const Device::Pointer & device,
@@ -238,8 +238,8 @@ concatenate_along_z_func(const Device::Pointer & device,
  * @param ignore_background [bool ( = True )]
  * @return Array::Pointer
  *
- * @note category 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_countTouchingNeighbors
+ * @note category 'bia-bob-suggestion'
  */
 auto
 count_touching_neighbors_func(const Device::Pointer & device,
@@ -277,8 +277,8 @@ crop_border_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  * @param sigma_z [float ( = 2 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_divideByGaussianBackground
+ * @note category 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 divide_by_gaussian_background_func(const Device::Pointer & device,
@@ -316,8 +316,8 @@ degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & s
  * @param radius_z Radius of the region in Z. [int ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_detectMaximaBox
+ * @note category 'binarize', 'in assistant'
  */
 auto
 detect_maxima_box_func(const Device::Pointer & device,
@@ -341,8 +341,8 @@ detect_maxima_box_func(const Device::Pointer & device,
  * @param radius_z Radius of the region in Z. [int ( = 0 )]
  * @return Array::Pointer
  *
- * @note category 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_detectMaximaBox
+ * @note category 'binarize', 'in assistant'
  */
 auto
 detect_minima_box_func(const Device::Pointer & device,
@@ -369,8 +369,8 @@ detect_minima_box_func(const Device::Pointer & device,
  * @param sigma2_z Sigma of the second Gaussian filter in z [float ( = 2 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'background removal', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_differenceOfGaussian3D
+ * @note category 'filter', 'background removal', 'bia-bob-suggestion'
  */
 auto
 difference_of_gaussian_func(const Device::Pointer & device,
@@ -394,8 +394,8 @@ difference_of_gaussian_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_extendLabelingViaVoronoi
+ * @note category 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -412,8 +412,8 @@ extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Po
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'filter'
  * @see https://clij.github.io/clij2-docs/reference_invert
+ * @note category 'filter'
  */
 auto
 invert_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -429,8 +429,8 @@ invert_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'label', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_labelSpots
+ * @note category 'label', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 label_spots_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -462,6 +462,7 @@ large_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Point
  * @return float
  *
  * @see https://clij.github.io/clij2-docs/reference_maximumOfAllPixels
+ *
  */
 auto
 maximum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
@@ -477,6 +478,7 @@ maximum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer 
  * @return float
  *
  * @see https://clij.github.io/clij2-docs/reference_minimumOfAllPixels
+ *
  */
 auto
 minimum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
@@ -493,6 +495,7 @@ minimum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer 
  * @return float
  *
  * @see https://clij.github.io/clij2-docs/reference_minimumOfMaskedPixels
+ *
  */
 auto
 minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask)
@@ -571,8 +574,8 @@ radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & s
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_reduceLabelsToLabelEdges
+ * @note category 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 reduce_labels_to_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -605,8 +608,8 @@ small_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Point
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'filter'
  * @see https://numpy.org/doc/stable/reference/generated/numpy.square.html
+ * @note category 'filter'
  */
 auto
 square_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -622,8 +625,8 @@ square_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_squaredDifference
+ * @note category 'combine', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 squared_difference_func(const Device::Pointer & device,
@@ -645,8 +648,8 @@ squared_difference_func(const Device::Pointer & device,
  * @param radius_z [int ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'edge detection', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_standardDeviationBox
+ * @note category 'filter', 'edge detection', 'in assistant'
  */
 auto
 standard_deviation_box_func(const Device::Pointer & device,
@@ -670,8 +673,8 @@ standard_deviation_box_func(const Device::Pointer & device,
  * @param radius_z [int ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_standardDeviationSphere
+ * @note category 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 standard_deviation_sphere_func(const Device::Pointer & device,
@@ -694,8 +697,8 @@ standard_deviation_sphere_func(const Device::Pointer & device,
  * @param sigma_z [float ( = 2 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_subtractGaussianBackground
+ * @note category 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 subtract_gaussian_background_func(const Device::Pointer & device,
@@ -716,8 +719,8 @@ subtract_gaussian_background_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'combine', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_subtractImages
+ * @note category 'combine', 'in assistant'
  */
 auto
 subtract_images_func(const Device::Pointer & device,
@@ -734,8 +737,8 @@ subtract_images_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src [const Array::Pointer & ( = None )]
  * @return float
- *
  * @see https://clij.github.io/clij2-docs/reference_sumOfAllPixels
+ *
  */
 auto
 sum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
@@ -753,8 +756,8 @@ sum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param radius_z Radius of the background determination region in Z. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'background removal', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_topHatBox
+ * @note category 'filter', 'background removal', 'in assistant'
  */
 auto
 top_hat_box_func(const Device::Pointer & device,
@@ -777,8 +780,8 @@ top_hat_box_func(const Device::Pointer & device,
  * @param radius_z Radius of the background determination region in Z. [float ( = 1 )]
  * @return Array::Pointer
  *
- * @note category 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_topHatSphere
+ * @note category 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 top_hat_sphere_func(const Device::Pointer & device,

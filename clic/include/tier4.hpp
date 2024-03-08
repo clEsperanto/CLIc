@@ -20,8 +20,8 @@ namespace cle::tier4
  * @param src1 [const Array::Pointer &]
  * @return float
  *
- * @note category 'in assistant', 'combine', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_meanSquaredError
+ * @note category 'in assistant', 'combine', 'bia-bob-suggestion'
  */
 auto
 mean_squared_error_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1)
@@ -39,6 +39,7 @@ mean_squared_error_func(const Device::Pointer & device, const Array::Pointer & s
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_spotsToPointList
+ *
  */
 auto
 spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -57,8 +58,8 @@ spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & s
  * @param blocksize Renumbering is done in blocks for performance reasons. [int ( = 4096 )]
  * @return Array::Pointer
  *
- * @note category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_closeIndexGapsInLabelMap
+ * @note category 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int blocksize)
@@ -75,10 +76,10 @@ relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & s
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note category 'binarize', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_thresholdOtsu
  * @see https://scikit-image.org/docs/dev/api/skimage.filters.html#skimage.filters.threshold_otsu
  * @see https://ieeexplore.ieee.org/document/4310076
+ * @note category 'binarize', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
