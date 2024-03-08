@@ -30,6 +30,7 @@ add_custom_target(
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Generating Doxygen documentation"
     VERBATIM
+    BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/docs/xml
 )
 
 # Add a custom target to run Sphinx when building the documentation
@@ -40,6 +41,7 @@ add_custom_target(
     COMMENT "Generating Sphinx documentation"
     VERBATIM
     DEPENDS documentation
+    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/build
 )
 
 # Add the 'documentation' target as a dependency for 'all' (build all by default)
