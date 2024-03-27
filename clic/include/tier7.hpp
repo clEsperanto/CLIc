@@ -33,9 +33,9 @@ namespace cle::tier7
  * @param outline_sigma Gaussian blur sigma applied before Otsu thresholding. [float ( = 2 )]
  * @return Array::Pointer
  *
+ * @note 'label', 'in assistant', 'bia-bob-suggestion'
  * @see https://github.com/biovoxxel/bv3dbox (BV_LabelSplitter.java#L83)
  * @see https://zenodo.org/badge/latestdoi/434949702
- * @note 'label', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 eroded_otsu_labeling_func(const Device::Pointer & device,
@@ -217,10 +217,10 @@ opening_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
  * @param outline_sigma Controls how precise segmented objects are outlined. [float ( = 2 )]
  * @return Array::Pointer
  *
+ * @note 'label', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_voronoiOtsuLabeling
  * @see https://ieeexplore.ieee.org/document/4310076
  * @see https://en.wikipedia.org/wiki/Voronoi_diagram
- * @note 'label', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 voronoi_otsu_labeling_func(const Device::Pointer & device,

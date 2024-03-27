@@ -20,8 +20,8 @@ namespace cle::tier5
  * @param src1 [const Array::Pointer &]
  * @return bool
  *
- * @see https://numpy.org/doc/stable/reference/generated/numpy.array_equal.html
  * @note 'combine'
+ * @see https://numpy.org/doc/stable/reference/generated/numpy.array_equal.html
  */
 auto
 array_equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1) -> bool;
@@ -37,8 +37,8 @@ array_equal_func(const Device::Pointer & device, const Array::Pointer & src0, co
  * @param src1 label image to add labels from. [const Array::Pointer &]
  * @param dst Output label image. [Array::Pointer ( = None )]
  * @return Array::Pointer
- *
  * @note 'label processing', 'combine labels', 'in assistant', 'bia-bob-suggestion'
+ *
  */
 auto
 combine_labels_func(const Device::Pointer & device,
@@ -58,8 +58,8 @@ combine_labels_func(const Device::Pointer & device,
  * @param connectivity Defines pixel neighborhood relationship. [const std::string & ( = 'box' )]
  * @return Array::Pointer
  *
- * @see https://clij.github.io/clij2-docs/reference_connectedComponentsLabelingBox
  * @note 'label', 'in assistant', 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_connectedComponentsLabelingBox
  */
 auto
 connected_components_labeling_func(const Device::Pointer & device,
