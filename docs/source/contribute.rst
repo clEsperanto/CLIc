@@ -49,9 +49,9 @@ later on.
      * @param param2 The second parameter [int ( = 1 )]
      * @return Array::Pointer
      *
+     * @note category 'cat1', 'cat2'   
      * @see https://reference_to_the_function_documentation_or_other_link_1
      * @see https://reference_to_the_function_documentation_or_other_link_2
-     * @note category 'cat1', 'cat2'   
      */
     auto
     my_operation_func(const Device::Pointer &device, const Array::Pointer &src, Array::Pointer &dst, float param1, int param2) -> Array::Pointer;
@@ -63,7 +63,7 @@ The `note` tag is used to pass additionnal information for later. Mainly used to
 .. note:: 
 
     The order of the tags as an impact on the documentation looks. We advise to keep the same order as in the example:
-    `@name`, `@brief`, `@param`, `@return`, `@see`, and finally `@note`
+    `@name`, `@brief`, `@param`, `@return`, `@snote`, and finally `@see`
 
 .. warning:: 
 
