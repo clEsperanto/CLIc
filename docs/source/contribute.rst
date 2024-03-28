@@ -7,12 +7,12 @@ The library is organized into tiers. Each tier consists of functions that rely o
 ``Tier0`` is a special tier containing functions that span multiple tiers and are used by all others for managing specific operations such as output management.
 
 Add a New Function
-==================
+-------------------
 
 Adding a new function to the library involves several steps. To add a new function, define it in a header file (``.hpp``) and instantiate it in a source file (``.cpp``), located respectively in the ``include`` and ``src`` directories of the ``clic`` folder.
 
 Function Definition
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 The definition holds the signature of the function. In the correct tier's header file, add the function's signature.
 
@@ -79,7 +79,7 @@ The ``@see`` tag is used to add links and references to the documentation. Multi
 
 
 Function Instantiation
-----------------------
+~~~~~~~~~~~~~~~~~~~~~~
 
 Once defined and documented, we can proceed to the corresponding source file to instantiate the function.
 
@@ -114,8 +114,8 @@ The first step in the function implementation is managing the return value. In `
 
 The rest of the code should correspond to the algorithm of the function. It is highly advised to rely on pre-existing functions from previous tiers to avoid code duplication and ensure the consistency of the library. We recommend examining other functions to see how they are implemented and using them as a template for your own function, especially for similar operations.
 
-Using Tier Functions
-====================
+Relying on Tier Functions
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Once the shell of the function is implemented, with the return variable managed, we can proceed to implement the function itself. 
 We simply use C++ code to implement the function and rely on already existing functions from previous tiers to perform the operations.
@@ -193,8 +193,8 @@ This function is a good example of how to create temporary Arrays in a memory-ef
 The ``flip`` and ``flop`` Arrays are created using the ``Array::create()`` function, which creates an Array of the same size and type as the ``dst`` Array. 
 We then alternate the Arrays depending on the iteration count, hence the Arrays' names ``flip`` and ``flop``.
 
-Executing a Kernel
-==================
+Call a Kernel file
+------------------
 
 In the previous examples, we haven't directly called a GPU kernel, yet we've managed to fully accelerate a ``difference of Gaussians`` operation on the GPU. This is mainly because we relied on blocks of the algorithm already implemented on the GPU, such as `gaussian_blur_func` and `add_images_weighted_func` from `tier1`. If we inspect their implementation, we can see that they don't contain algorithmic code but rather calls for GPU kernel execution.
 
@@ -319,7 +319,7 @@ In the majority of the cases, the output will be the ``dst`` Array.
 
 
 Add Function Tests
-==================
+------------------
 
 The final step is to add tests for the function. The tests are located in the ``tests`` directory at the root of the repository. They are organized in the same way as the library, in tiers. The tests for the function should be added in the correct tier folder.
 
