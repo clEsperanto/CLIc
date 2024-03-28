@@ -20,8 +20,8 @@ namespace cle::tier8
  *   Note: It is recommended to process isotropic label images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input label Array. [const Array::Pointer &]
- * @param dst Ouput label Array. [Array::Pointer ( = None )]
+ * @param src Input label image [const Array::Pointer &]
+ * @param dst Output label image [Array::Pointer ( = None )]
  * @param radius Smoothing radius.[int ( = 0 )]
  * @return Array::Pointer
  *
@@ -29,6 +29,26 @@ namespace cle::tier8
  */
 auto
 smooth_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
+  -> Array::Pointer;
+
+
+/**
+ * @name smooth_connected_labels
+ * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @brief Apply a morphological erosion and dilation of the label image with respect to
+ *     the connectivity of the labels.
+ *
+ *   Note: It is recommended to process isotropic label images.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input label image [const Array::Pointer &]
+ * @param dst Output label image [Array::Pointer ( = None )]
+ * @param radius Smoothing radius. [int ( = 0 )]
+ * @return Array::Pointer
+ *
+ */
+auto
+smooth_connected_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
   -> Array::Pointer;
 
 
