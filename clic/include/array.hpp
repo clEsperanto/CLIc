@@ -287,6 +287,13 @@ public:
    */
   Array(const Array &) = default;
 
+  /**
+   * @brief Print the Array as a matrix for debugging
+   */
+  template <typename T>
+  friend auto
+  print(const Array::Pointer & array) -> void;
+
 private:
   using MemoryPointer = std::shared_ptr<void *>;
 
@@ -325,7 +332,7 @@ print(const Array::Pointer & array) -> void
     {
       for (int k = 0; k < array->width(); k++)
       {
-        std::cout << host_data[i * array->height() * array->width() + j * array->width() + k] << " ";
+        std::cout << (float)host_data[i * array->height() * array->width() + j * array->width() + k] << " ";
       }
       std::cout << std::endl;
     }

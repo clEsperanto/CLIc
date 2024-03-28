@@ -27,4 +27,18 @@ smooth_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
   return tier1::multiply_images_func(device, binary, extended, dst);
 }
 
+
+auto
+smooth_connected_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
+  -> Array::Pointer
+{
+  tier0::create_like(src, dst, dType::LABEL);
+  if (radius < 1)
+  {
+    return tier1::copy_func(device, src, dst);
+  }
+  auto binary = tier7::erode_connected_labels_func(device, src, nullptr, radius);
+  return tier6::dilate_labels_func(device, binary, dst, radius);
+}
+
 } // namespace cle::tier8
