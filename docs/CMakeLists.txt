@@ -1,24 +1,25 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(clic-docs VERSION 0.8.2)
+project(clic-docs)
 
+# Find Doxygen and Sphinx executables to build the documentation
 find_package(Doxygen)
-# find_package(Sphinx)
 find_program(SPHINX
   NAMES sphinx-build
   DOC "Path to sphinx-build executable"
 )
 
+# If Doxygen or Sphinx are not found, the documentation target will not be available
 if (NOT DOXYGEN_FOUND)
     message(STATUS "Doxygen not found, documentation target will not be available.")
     return()
 endif()
-
 if (NOT SPHINX)
     message(STATUS "Sphinx not found, documentation target will not be available.")
     return()
 endif()
 
+# Configure the Doxyfile with the correct input folder
 set(SOURCE_FOLDER ${CMAKE_CURRENT_SOURCE_DIR}/../clic/)
 configure_file(Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
 set(DOXYGEN_INPUT "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile")  # Path to the generated Doxyfile
@@ -43,8 +44,5 @@ add_custom_target(
     DEPENDS doxygen
     BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/build
 )
-
-# Add the 'documentation' target as a dependency for 'all' (build all by default)
-# add_dependencies(${LIBRARY_NAME} documentation)
-    
+  
     
