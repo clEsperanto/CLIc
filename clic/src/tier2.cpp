@@ -186,7 +186,7 @@ detect_maxima_box_func(const Device::Pointer & device,
                        int                     radius_y,
                        int                     radius_z) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT8);
+  tier0::create_like(src, dst, dType::BINARY);
   auto                temp = tier1::mean_box_func(device, src, nullptr, radius_x, radius_y, radius_z);
   const KernelInfo    kernel = { "detect_maxima", kernel::detect_maxima };
   const ParameterList params = { { "src", temp }, { "dst", dst } };
@@ -203,7 +203,7 @@ detect_minima_box_func(const Device::Pointer & device,
                        int                     radius_y,
                        int                     radius_z) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT8);
+  tier0::create_like(src, dst, dType::BINARY);
   auto                temp = tier1::mean_box_func(device, src, nullptr, radius_x, radius_y, radius_z);
   const KernelInfo    kernel = { "detect_minima", kernel::detect_minima };
   const ParameterList params = { { "src", temp }, { "dst", dst } };
@@ -233,7 +233,7 @@ auto
 extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT32);
+  tier0::create_like(src, dst, dType::LABEL);
   auto flip = Array::create(dst);
   auto flop = Array::create(dst);
   tier1::copy_func(device, src, flip);
@@ -282,7 +282,7 @@ invert_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
 auto
 label_spots_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT32);
+  tier0::create_like(src, dst, dType::LABEL);
   dst->fill(0);
 
   auto spot_count_in_x = tier1::sum_x_projection_func(device, src, nullptr);

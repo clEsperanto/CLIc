@@ -39,6 +39,8 @@ enum class dType
   UINT16,
   INT64,
   UINT64,
+  LABEL = UINT32,
+  BINARY = UINT8,
   UNKNOWN
 };
 
