@@ -52,7 +52,7 @@ See more complete example on usage by looking at the kernels [tests](./tests/).
 ## Requirements
 
 CLIc rely on OpenCL language for parallelisation and CMake for configuration and build.  
-Follow the [installation guide](./docs/guidelines.md) for helps on compilation and installation. 
+Follow the [compilation guideline](https://clesperanto.github.io/CLIc/compilation.html) for helps on building the library. 
 
 ## Quick install
 
@@ -81,7 +81,7 @@ CLIc filters rely on the clEsperanto branch of [CLIj OpenCL kernels](https://git
 
 # __Contributing__
 Contributions are very welcome. Before spending effort on coding and filing a pull-request, please get in touch with us, [file an issue](https://github.com/clEsperanto/CLIc/issues), and let's discuss your potential contribution. 
-More information on how to add new kernels to the library can be found in the [documentation](./docs/add_new_kernel/add_new_kernel.md).
+More information on how to add new kernels to the library can be found in the [documentation](https://clesperanto.github.io/CLIc/contribute.html).
 
 # __Feedback welcome!__
 clEsperanto is developed in the open because we believe in the [open source community](https://clij.github.io/clij2-docs/community_guidelines). 
