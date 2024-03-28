@@ -20,7 +20,8 @@ namespace cle::tier3
  * @param src [const Array::Pointer &]
  * @return std::array<float, 6>
  *
- * @link https://clij.github.io/clij2-docs/reference_boundingBox
+ * @see https://clij.github.io/clij2-docs/reference_boundingBox
+ *
  */
 auto
 bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<float, 6>;
@@ -34,8 +35,8 @@ bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) ->
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src [const Array::Pointer &]
  * @return std::array<float, 3>
+ * @see https://clij.github.io/clij2-docs/reference_centerOfMass
  *
- * @link https://clij.github.io/clij2-docs/reference_centerOfMass
  */
 auto
 center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<float, 3>;
@@ -54,7 +55,8 @@ center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) 
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2-docs/reference_excludeLabels
+ * @see https://clij.github.io/clij2-docs/reference_excludeLabels
+ *
  */
 auto
 exclude_labels_func(const Device::Pointer & device,
@@ -65,8 +67,6 @@ exclude_labels_func(const Device::Pointer & device,
 
 /**
  * @name exclude_labels_on_edges
- * @priority 1
- * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @brief Removes all labels from a label map which touch the edges of the image. Remaining label elements are
  * renumbered afterwards.
  *
@@ -78,7 +78,8 @@ exclude_labels_func(const Device::Pointer & device,
  * @param exclude_z Exclude labels along min and max z [bool ( = True )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2-docs/reference_excludeLabelsOnEdges
+ * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOnEdges
  */
 auto
 exclude_labels_on_edges_func(const Device::Pointer & device,
@@ -108,7 +109,6 @@ flag_existing_labels_func(const Device::Pointer & device, const Array::Pointer &
 
 /**
  * @name gamma_correction
- * @category 'filter', 'in assistant'
  * @brief Applies a gamma correction to an image. Therefore, all pixels x of the Image X are normalized and the power to
  * gamma g is computed, before normlization is reversed (^ is the power operator):f(x) = (x / max(X)) ^ gamma * max(X)
  *
@@ -118,7 +118,8 @@ flag_existing_labels_func(const Device::Pointer & device, const Array::Pointer &
  * @param gamma [float ( = 1 )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2-docs/reference_gammaCorrection
+ * @note 'filter', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_gammaCorrection
  */
 auto
 gamma_correction_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float gamma)
@@ -137,7 +138,8 @@ gamma_correction_func(const Device::Pointer & device, const Array::Pointer & src
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2-docs/reference_generateBinaryOverlapMatrix
+ * @see https://clij.github.io/clij2-docs/reference_generateBinaryOverlapMatrix
+ *
  */
 auto
 generate_binary_overlap_matrix_func(const Device::Pointer & device,
@@ -148,7 +150,6 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
 
 /**
  * @name generate_touch_matrix
- * @category 'bia-bob-suggestion'
  * @brief Takes a labelmap with n labels and generates a (n+1)*(n+1) matrix where all pixels are set to 0 exept those
  * where labels are touching. Only half of the matrix is filled (with x < y). For example, if labels 3 and 4 are
  * touching then the pixel (3,4) in the matrix will be set to 1. The touch matrix is a representation of a region
@@ -159,7 +160,8 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2-docs/reference_generateTouchMatrix
+ * @note 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_generateTouchMatrix
  */
 auto
 generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -196,7 +198,8 @@ generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer 
  * @param max [float ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2-docs/reference_histogram
+ * @see https://clij.github.io/clij2-docs/reference_histogram
+ *
  */
 auto
 histogram_func(const Device::Pointer & device,
@@ -219,7 +222,8 @@ histogram_func(const Device::Pointer & device,
  * @param src1 [const Array::Pointer &]
  * @return float
  *
- * @link https://clij.github.io/clij2-docs/reference_jaccardIndex
+ * @see https://clij.github.io/clij2-docs/reference_jaccardIndex
+ *
  */
 auto
 jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1) -> float;
@@ -227,7 +231,6 @@ jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, 
 
 /**
  * @name labelled_spots_to_pointlist
- * @category 'bia-bob-suggestion'
  * @brief Generates a coordinate list of points in a labelled spot image. Transforms a labelmap of spots (single pixels
  * with values 1, 2,..., n for n spots) as resulting from connected components analysis in an image where every column
  * contains d pixels (with d = dimensionality of the original image) with the coordinates of the maxima/minima.
@@ -237,7 +240,8 @@ jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, 
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2-docs/reference_labelledSpotsToPointList
+ * @note 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_labelledSpotsToPointList
  */
 auto
 labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
@@ -264,8 +268,8 @@ maximum_position_func(const Device::Pointer & device, const Array::Pointer & src
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The image of which the mean average of all pixels will be determined. [const Array::Pointer &]
  * @return float
+ * @see https://clij.github.io/clij2-docs/reference_meanOfAllPixels
  *
- * @link https://clij.github.io/clij2-docs/reference_meanOfAllPixels
  */
 auto
 mean_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
