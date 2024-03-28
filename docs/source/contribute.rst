@@ -49,7 +49,7 @@ later on.
      * @param param2 The second parameter [int ( = 1 )]
      * @return Array::Pointer
      *
-     * @note category 'cat1', 'cat2'   
+     * @note 'category1', 'category2'   
      * @see https://reference_to_the_function_documentation_or_other_link_1
      * @see https://reference_to_the_function_documentation_or_other_link_2
      */
@@ -67,7 +67,7 @@ The `note` tag is used to pass additionnal information for later. Mainly used to
 
 .. warning:: 
 
-    If wrongly or not documented, a function will either fail to be added to the library or will have undefined behaviour when used in the library API.
+    If wrongly or undocumented, a function will either fail to be added to the library or will have undefined behaviour when used in the library API.
 
 .. warning:: 
 
@@ -206,6 +206,8 @@ In this case, the `gaussian_blur_func` and `add_images_weighted_func` from the `
 
     // clic/src/tier1.cpp
 
+    #include "cle_add_images_weighted.h
+
     auto
     add_images_weighted_func(const Device::Pointer & device,
                             const Array::Pointer &  src0,
@@ -229,12 +231,92 @@ We are relying on what is called a JIT compilation, for `Just In Time`. This mea
 but requires a bit of preparation for execution. It will also add up a compilation time to the process which can be a bit long for the first execution of a kernel but dratisclly reduced for the next calls due to a cache system.
 
 The first thing to ensure is that the kernel code we will call is available in the [CLIJ kernel repository]() and respect the CLIJ convention. If this is the case, we will be able to include the kernel as a header file 
-in the `clic` library as such `#include "cle_add_images_weighted.h"`. This header will contained a sringified version of the kernel code and will be pass to the execute function as a `KernelInfo` structure with the name of the kernel and the code of the kernel.
-The next step is to prepare the parameters for the kernel. The parameters are passed as a `ParameterList` structure with the name of the parameter and the value of the parameter. The last step is to prepare the range of the kernel execution. 
-Here the range is the computational dimension of the kernel. By default it is the dimension of the output memory but it can be changed and must be optimised for the computation.
+in the `clic` library. This header will contained a stringified version of the kernel code and will be pass to the execute function as a `KernelInfo` structure with the name of the kernel and the code of the kernel. By default, the `KernelInfo` should math the pattern `{ "kernel_name", kernel::kernel_name }`.
 
+.. code-block:: cpp
+    :emphasize-lines: 3, 14
+
+    // clic/src/tier1.cpp
+
+    #include "cle_add_images_weighted.h
+
+    auto
+    add_images_weighted_func(const Device::Pointer & device,
+                            const Array::Pointer &  src0,
+                            const Array::Pointer &  src1,
+                            Array::Pointer          dst,
+                            float                   factor0,
+                            float                   factor1) -> Array::Pointer
+    {
+    tier0::create_like(src0, dst, dType::FLOAT);
+    const KernelInfo    kernel = { "add_images_weighted", kernel::add_images_weighted };
+    const ParameterList params = {
+        { "src0", src0 }, { "src1", src1 }, { "dst", dst }, { "scalar0", factor0 }, { "scalar1", factor1 }
+    };
+    const RangeArray range = { dst->width(), dst->height(), dst->depth() };
+    execute(device, kernel, params, range);
+    return dst;
+    }
+
+
+The next step is to prepare the parameters for the kernel. The parameters are passed as a `ParameterList` structure with the name of the parameter and the value of the parameter. The `ParameterList` is a list of parameters defined by a `tag` and a `value`.
+Here the `tag` is the parameter name defined in the kernel code and the `value` is an `Array::Pointer` or a native type. The order of the parameters is important and should match the order of the parameters in the kernel code.
+
+.. code-block:: cpp
+    :emphasize-lines: 15, 16, 17
+
+    // clic/src/tier1.cpp
+
+    #include "cle_add_images_weighted.h
+
+    auto
+    add_images_weighted_func(const Device::Pointer & device,
+                            const Array::Pointer &  src0,
+                            const Array::Pointer &  src1,
+                            Array::Pointer          dst,
+                            float                   factor0,
+                            float                   factor1) -> Array::Pointer
+    {
+    tier0::create_like(src0, dst, dType::FLOAT);
+    const KernelInfo    kernel = { "add_images_weighted", kernel::add_images_weighted };
+    const ParameterList params = {
+        { "src0", src0 }, { "src1", src1 }, { "dst", dst }, { "scalar0", factor0 }, { "scalar1", factor1 }
+    };
+    const RangeArray range = { dst->width(), dst->height(), dst->depth() };
+    execute(device, kernel, params, range);
+    return dst;
+    }
+
+
+The last step is to prepare the range of the kernel execution. For that we need to define a range of processing. Here the range is the computational dimension of the kernel. By default it is the dimension of the output memory but it can be changed and must be optimised for the computation.
 Once the `KernelInfo`, `ParameterList`, and `RangeArray` are prepared, we can call the `execute` function. This function will take care of the kernel compilation and execution. The output of the computation should be stored as one of the parameter of the `ParameterList`.
 In the majority of the cases, the output will be the `dst` Array.
+
+.. code-block:: cpp
+    :emphasize-lines: 18, 19, 20
+
+    // clic/src/tier1.cpp
+
+    #include "cle_add_images_weighted.h
+
+    auto
+    add_images_weighted_func(const Device::Pointer & device,
+                            const Array::Pointer &  src0,
+                            const Array::Pointer &  src1,
+                            Array::Pointer          dst,
+                            float                   factor0,
+                            float                   factor1) -> Array::Pointer
+    {
+    tier0::create_like(src0, dst, dType::FLOAT);
+    const KernelInfo    kernel = { "add_images_weighted", kernel::add_images_weighted };
+    const ParameterList params = {
+        { "src0", src0 }, { "src1", src1 }, { "dst", dst }, { "scalar0", factor0 }, { "scalar1", factor1 }
+    };
+    const RangeArray range = { dst->width(), dst->height(), dst->depth() };
+    execute(device, kernel, params, range);
+    return dst;
+    }
+
 
 .. note:: 
 

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(clic-docs)
+project(clic-docs VERSION 0.8.2)
 
 find_package(Doxygen)
 # find_package(Sphinx)
