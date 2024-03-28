@@ -12,7 +12,6 @@ namespace cle::tier5
 {
 /**
  * @name array_equal
- * @category 'combine'
  * @brief Compares if all pixels of two images are identical. If shape of the images or any pixel are different, returns
  * False. True otherwise This function is supposed to work similarly like its counterpart in numpy [1].
  *
@@ -21,7 +20,8 @@ namespace cle::tier5
  * @param src1 [const Array::Pointer &]
  * @return bool
  *
- * @link https://numpy.org/doc/stable/reference/generated/numpy.array_equal.html
+ * @note 'combine'
+ * @see https://numpy.org/doc/stable/reference/generated/numpy.array_equal.html
  */
 auto
 array_equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1) -> bool;
@@ -29,7 +29,6 @@ array_equal_func(const Device::Pointer & device, const Array::Pointer & src0, co
 
 /**
  * @name combine_labels
- * @category 'label processing', 'combine labels', 'in assistant', 'bia-bob-suggestion'
  * @brief Combines two label images by adding labels of a given label image to another. Labels in the second image
  * overwrite labels in the first passed image. Afterwards, labels are relabeled sequentially.
  *
@@ -38,6 +37,7 @@ array_equal_func(const Device::Pointer & device, const Array::Pointer & src0, co
  * @param src1 label image to add labels from. [const Array::Pointer &]
  * @param dst Output label image. [Array::Pointer ( = None )]
  * @return Array::Pointer
+ * @note 'label processing', 'combine labels', 'in assistant', 'bia-bob-suggestion'
  *
  */
 auto
@@ -49,8 +49,6 @@ combine_labels_func(const Device::Pointer & device,
 
 /**
  * @name connected_components_labeling
- * @priority 1
- * @category 'label', 'in assistant', 'bia-bob-suggestion'
  * @brief Performs connected components analysis inspecting the box neighborhood of every pixel to a binary image and
  * generates a label map.
  *
@@ -60,7 +58,8 @@ combine_labels_func(const Device::Pointer & device,
  * @param connectivity Defines pixel neighborhood relationship. [const std::string & ( = 'box' )]
  * @return Array::Pointer
  *
- * @link https://clij.github.io/clij2-docs/reference_connectedComponentsLabelingBox
+ * @note 'label', 'in assistant', 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_connectedComponentsLabelingBox
  */
 auto
 connected_components_labeling_func(const Device::Pointer & device,
