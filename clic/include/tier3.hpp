@@ -12,9 +12,8 @@ namespace cle::tier3
 {
 /**
  * @name bounding_box
- * @brief Determines the bounding box of all nonzero pixels in a binary image. If called from macro, the positions will
- * be stored in a new row of ImageJs Results table in the columns 'BoundingBoxX', 'BoundingBoxY', 'BoundingBoxZ',
- * 'BoundingBoxWidth', 'BoundingBoxHeight' 'BoundingBoxDepth'.In case of 2D images Z and depth will be zero.
+ * @brief Determines the bounding box of all nonzero pixels in a binary image. The positions are returned in
+ *  an array of 6 values as follows: minX, minY, minZ, maxX, maxY, maxZ.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src [const Array::Pointer &]
