@@ -20,7 +20,7 @@ eroded_otsu_labeling_func(const Device::Pointer & device,
                           int                     number_of_erosions,
                           float                   outline_sigma) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT32);
+  tier0::create_like(src, dst, dType::LABEL);
   auto           blurred = tier1::gaussian_blur_func(device, src, nullptr, outline_sigma, outline_sigma, outline_sigma);
   auto           binary = tier4::threshold_otsu_func(device, blurred, nullptr);
   Array::Pointer eroded1 = nullptr;
@@ -154,7 +154,7 @@ auto
 closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
   -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT32);
+  tier0::create_like(src, dst, dType::LABEL);
   if (radius == 0)
   {
     return tier1::copy_func(device, src, dst);
@@ -202,7 +202,7 @@ auto
 opening_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
   -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT32);
+  tier0::create_like(src, dst, dType::LABEL);
   auto temp = tier6::erode_labels_func(device, src, nullptr, radius, false);
   return tier6::dilate_labels_func(device, temp, dst, radius);
 }
@@ -214,7 +214,7 @@ voronoi_otsu_labeling_func(const Device::Pointer & device,
                            float                   spot_sigma,
                            float                   outline_sigma) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT32);
+  tier0::create_like(src, dst, dType::LABEL);
   auto temp = tier1::gaussian_blur_func(device, src, nullptr, spot_sigma, spot_sigma, spot_sigma);
   auto spot = tier2::detect_maxima_box_func(device, temp, nullptr, 0, 0, 0);
   temp = tier1::gaussian_blur_func(device, src, nullptr, outline_sigma, outline_sigma, outline_sigma);
