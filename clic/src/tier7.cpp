@@ -21,6 +21,10 @@ affine_transform_func(const Device::Pointer & device,
                       bool                    interpolate,
                       bool                    resize) -> Array::Pointer
 {
+  if (transform_matrix.empty())
+  {
+    transform_matrix = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
+  }
   if (transform_matrix.size() != 16 && transform_matrix.size() != 9)
   {
     throw std::runtime_error("Error: Transformation matrix size must be 9 or 16.");
