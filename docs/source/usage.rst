@@ -73,7 +73,7 @@ To create an array, we need to provide the device, the size of the array and the
     auto gpu_array = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
 
 Here we create a 3D array of size 10x5x3 of type ``float`` on the device. 
-``cle::mType::BUFFER`` is the memory type of the array, here a BUFFER (see the `Array class <https://clesperanto.github.io/CLIc/array.html>__` for more information on the memory types and methods).
+``cle::mType::BUFFER`` is the memory type of the array, here a BUFFER (see the `Array class <https://clesperanto.github.io/CLIc/array.html>`__ for more information on the memory types and methods).
 
 Here, we only created a memory space on the device, similarly as a ``malloc()`` in `C`.
 We need now to write data into the device array.

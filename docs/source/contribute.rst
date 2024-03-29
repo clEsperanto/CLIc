@@ -22,7 +22,7 @@ The definition holds the signature of the function. In the correct tier's header
 
     auto my_operation_func(const Device::Pointer &device, const Array::Pointer &src, Array::Pointer &dst, float param1, int param2) -> Array::Pointer;
 
-The function must follow several rules. First, the function name should be suffixed with ``_func`` and use the `trailing return <https://en.wikipedia.org/wiki/Trailing_return_type>__` syntax. 
+The function must follow several rules. First, the function name should be suffixed with ``_func`` and use the `trailing return <https://en.wikipedia.org/wiki/Trailing_return_type>`__ syntax. 
 The first parameter should always be a ``const Device::Pointer& device``, followed by all the inputs and outputs required by the function. 
 We require that the inputs are passed as ``const Array::Pointer&`` and named ``src``. The output must be an ``Array::Pointer&`` and named ``dst``. 
 If multiple inputs or outputs are needed, an index is added to the name, e.g., ``src0``, ``src1``, ``dst0``, ``dst1``. 
@@ -226,7 +226,7 @@ This means that the kernels are compiled and run at runtime.
 This is a very powerful feature as it allows writing GPU code in a flexible way, adapted to your data size and time requirements, but it requires a bit of preparation for execution. 
 It will also add compilation time to the process, which can be a bit long for the first execution of a kernel but is drastically reduced for subsequent calls due to a caching system.
 
-The first thing to ensure is that the kernel code we will call is available in the `CLIJ kernel repository <https://github.com/clEsperanto/clij-opencl-kernels/tree/clesperanto_kernels>__` and respects the CLIJ convention. If this is the case, we will be able to include the kernel as a header file in the ``clic`` library. This header will contain a stringified version of the kernel code and will be passed to the ``execute`` function as a ``KernelInfo`` structure with the name of the kernel and the code of the kernel. By default, the `KernelInfo` should match the pattern `{ "kernel_name", kernel::kernel_name }`.
+The first thing to ensure is that the kernel code we will call is available in the `CLIJ kernel repository <https://github.com/clEsperanto/clij-opencl-kernels/tree/clesperanto_kernels>`__ and respects the CLIJ convention. If this is the case, we will be able to include the kernel as a header file in the ``clic`` library. This header will contain a stringified version of the kernel code and will be passed to the ``execute`` function as a ``KernelInfo`` structure with the name of the kernel and the code of the kernel. By default, the `KernelInfo` should match the pattern `{ "kernel_name", kernel::kernel_name }`.
 
 .. code-block:: cpp
     :emphasize-lines: 3, 14
