@@ -21,6 +21,7 @@ For usage documentation, please refer to one of the following links:
    requirements
    compilation
    tests
+   usage
    contribute
 
 .. toctree::
