@@ -212,10 +212,10 @@ histogram_func(const Device::Pointer & device,
                float                   min,
                float                   max) -> Array::Pointer
 {
-  tier0::create_vector(src, dst, nbins);
+  tier0::create_vector(src, dst, nbins, dType::UINT64);
   size_t number_of_partial_histograms = src->height();
   auto   partial_hist =
-    Array::create(nbins, 1, number_of_partial_histograms, 3, dType::UINT32, src->mtype(), src->device());
+    Array::create(nbins, 1, number_of_partial_histograms, 3, dType::UINT64, src->mtype(), src->device());
   if (std::isnan(max) || std::isnan(max))
   {
     min = tier2::minimum_of_all_pixels_func(device, src);
