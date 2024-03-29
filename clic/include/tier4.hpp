@@ -10,6 +10,23 @@
  */
 namespace cle::tier4
 {
+
+/**
+ * @name label_bounding_box
+ * @brief Determines the bounding box of the specified label from a label image. The positions are returned in
+ *  an array of 6 values as follows: minX, minY, minZ, maxX, maxY, maxZ.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src [const Array::Pointer &]
+ * @return std::array<float, 6>
+ *
+ * @see https://clij.github.io/clij2-docs/reference_boundingBox
+ *
+ */
+auto
+label_bounding_box_func(const Device::Pointer & device, const Array::Pointer & src, int label_id)
+  -> std::array<float, 6>;
+
 /**
  * @name mean_squared_error
  * @brief Determines the mean squared error (MSE) between two images. The MSE will be stored in a new row of ImageJs

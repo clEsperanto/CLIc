@@ -28,7 +28,6 @@ TEST_P(TestBoundingBox, execute2d)
   std::vector<float> valid = { 1, 1, 0, 2, 2, 0 };
   for (int i = 0; i < output.size(); i++)
   {
-    // std::cout << output[i] << " ";
     EXPECT_EQ(output[i], valid[i]);
   }
 }
@@ -49,7 +48,6 @@ TEST_P(TestBoundingBox, execute3d)
   std::vector<float> valid = { 1, 1, 0, 2, 2, 1 };
   for (int i = 0; i < output.size(); i++)
   {
-    // std::cout << output[i] << " ";
     EXPECT_EQ(output[i], valid[i]);
   }
 }
