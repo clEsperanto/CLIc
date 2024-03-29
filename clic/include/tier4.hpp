@@ -18,6 +18,7 @@ namespace cle::tier4
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src [const Array::Pointer &]
+ * @param label_id [int]
  * @return std::array<float, 6>
  *
  * @see https://clij.github.io/clij2-docs/reference_boundingBox
