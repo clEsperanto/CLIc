@@ -8,7 +8,7 @@ class TestHistogram : public ::testing::TestWithParam<std::string>
 protected:
   std::array<float, 10 * 5 * 3> input;
   std::array<float, 10>         valid;
-  std::array<float, 10>         output;
+  std::array<uint64_t, 10>      output;
 
   virtual void
   SetUp()
