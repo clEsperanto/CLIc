@@ -21,7 +21,7 @@ namespace cle::tier7
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input Array to be transformed. [const Array::Pointer &]
  * @param dst Output Array. [Array::Pointer ( = None )]
- * @param transform_matrix Affine transformation matrix (3x3 or 4x4). [std::vector<float> & ( = [] )]
+ * @param transform_matrix Affine transformation matrix (3x3 or 4x4). [std::vector<float> * ( = None )]
  * @param interpolate If true, bi/trilinear interpolation will be applied, if hardware allows. [bool ( = False )]
  * @param resize Automatically determines the size of the output depending on the rotation angles. [bool ( = False )]
  * @return Array::Pointer
@@ -31,7 +31,7 @@ auto
 affine_transform_func(const Device::Pointer & device,
                       const Array::Pointer &  src,
                       Array::Pointer          dst,
-                      std::vector<float> &    transform_matrix,
+                      std::vector<float> *    transform_matrix,
                       bool                    interpolate,
                       bool                    resize) -> Array::Pointer;
 

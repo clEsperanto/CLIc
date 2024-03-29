@@ -25,7 +25,7 @@ TEST_P(TestAffineTransform, affineTransform)
   gpu_input->write(input.data());
 
   std::vector<float> matrix = { 1, 0, -1, 0, 1, -1, 0, 0, 1 };
-  auto               gpu_output = cle::tier7::affine_transform_func(device, gpu_input, nullptr, matrix, false, false);
+  auto               gpu_output = cle::tier7::affine_transform_func(device, gpu_input, nullptr, &matrix, false, false);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
