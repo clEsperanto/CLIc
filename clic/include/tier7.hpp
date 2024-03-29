@@ -12,6 +12,29 @@ namespace cle::tier7
 {
 
 /**
+ * @name affine_transform
+ * @brief Apply an affine transformation matrix to an array and return the result.
+ *  The transformation matrix must be 3x3 or 4x4 stored as a 1D array.
+ *  The matrix should be row-major, i.e. the first 3 elements are the first row of the matrix.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input Array to be transformed. [const Array::Pointer &]
+ * @param dst Output Array. [Array::Pointer ( = None )]
+ * @param transform_matrix Affine transformation matrix (3x3 or 4x4). [std::vector<float> &]
+ * @param interpolate If true, bi/trilinear interpolation will be applied, if hardware allows. [bool ( = False )]
+ * @param resize Automatically determines the size of the output depending on the rotation angles. [bool ( = False )]
+ * @return Array::Pointer
+ *
+ */
+auto
+affine_transform_func(const Device::Pointer & device,
+                      const Array::Pointer &  src,
+                      Array::Pointer          dst,
+                      std::vector<float> &    transform_matrix,
+                      bool                    interpolate,
+                      bool                    resize) -> Array::Pointer;
+
+/**
  * @name eroded_otsu_labeling
  * @brief Segments and labels an image using blurring, Otsu-thresholding, binary erosion and
  *  masked Voronoi-labeling.

@@ -42,7 +42,7 @@ public:
    */
   AffineTransform(const std::array<float, 16> & array)
   {
-    m_matrix = matrix::Map(array.data());
+    m_matrix = matrix::Map(array.data()).transpose();
     update();
   }
 
