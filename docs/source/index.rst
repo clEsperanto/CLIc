@@ -23,6 +23,7 @@ For usage documentation, please refer to one of the following links:
    tests
    usage
    contribute
+   versioning
 
 .. toctree::
    :caption: API Documentation
