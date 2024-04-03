@@ -1,17 +1,17 @@
-How to Contribute
-=================
+Functions
+=========
 
 The library is organized into tiers. Each tier consists of functions that rely on one or more functions from the previous tier. 
 ``Tier1`` is the lowest, primarily composed of basic operations in pure ``OpenCL`` code. 
 ``Tier2`` relies on one or more calls to Tier1 functions. ``Tier3`` relies on one or more calls to Tier2 functions, and so forth. 
 ``Tier0`` is a special tier containing functions that span multiple tiers and are used by all others for managing specific operations such as output management.
 
-Add a New Function
--------------------
+Create a new function
+---------------------
 
 Adding a new function to the library involves several steps. To add a new function, define it in a header file (``.hpp``) and instantiate it in a source file (``.cpp``), located respectively in the ``include`` and ``src`` directories of the ``clic`` folder.
 
-Function Definition
+Function definition
 ~~~~~~~~~~~~~~~~~~~
 
 The definition holds the signature of the function. In the correct tier's header file, add the function's signature.
@@ -22,17 +22,19 @@ The definition holds the signature of the function. In the correct tier's header
 
     auto my_operation_func(const Device::Pointer &device, const Array::Pointer &src, Array::Pointer &dst, float param1, int param2) -> Array::Pointer;
 
-The function must follow several rules. First, the function name should be suffixed with ``_func`` and use the `trailing return <https://en.wikipedia.org/wiki/Trailing_return_type>`__ syntax. 
+The function to create must follow several rules to properly be integrated inside the library. 
+First, the function name should be suffixed with ``_func`` and use the `trailing return <https://en.wikipedia.org/wiki/Trailing_return_type>`__ syntax. 
 The first parameter should always be a ``const Device::Pointer& device``, followed by all the inputs and outputs required by the function. 
 We require that the inputs are passed as ``const Array::Pointer&`` and named ``src``. The output must be an ``Array::Pointer&`` and named ``dst``. 
 If multiple inputs or outputs are needed, an index is added to the name, e.g., ``src0``, ``src1``, ``dst0``, ``dst1``. 
 The function should return a type corresponding to the ``dst`` parameter, usually ``Array::Pointer``. 
 Finally, we can add other parameters required by the function as native types. 
 We do not use default values for parameters as this code is not intended to be used directly by the user. 
-Default values should be set in the documentation block of the function.
+Default values should be set in the documentation block of the function to be propagate to the front-end layers.
 
 The function definition must also come with a Doxygen documentation block. 
-This documentation block should be placed just before the function definition and should respect the following format to be used in the code autogeneration process later on.
+This documentation block should be placed just before the function definition and should respect the following format.
+This is important as the block will be used in the code autogeneration process to create the front-end layers of the library.
 
 .. code-block:: cpp
 
@@ -78,7 +80,7 @@ The ``@see`` tag is used to add links and references to the documentation. Multi
     Auto-format tools will add line returns to the documentation block. This can be a problem for the autogeneration process. Until better integration, we advise keeping the documentation line length to a minimum. This is particularly important for `@param`, `@see`, and `@note` tags.
 
 
-Function Instantiation
+Function instantiation
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Once defined and documented, we can proceed to the corresponding source file to instantiate the function.
@@ -114,7 +116,8 @@ The first step in the function implementation is managing the return value. In `
 
 The rest of the code should correspond to the algorithm of the function. It is highly advised to rely on pre-existing functions from previous tiers to avoid code duplication and ensure the consistency of the library. We recommend examining other functions to see how they are implemented and using them as a template for your own function, especially for similar operations.
 
-Relying on Tier Functions
+
+Call lower-tier functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Once the shell of the function is implemented, with the return variable managed, we can proceed to implement the function itself. 
@@ -144,6 +147,7 @@ An easy example would be the ``difference_of_gaussian_func`` in ``tier2``, which
 
 The ``gaussian_blur_func`` computes two temporary Arrays ``gauss1`` and ``gauss2`` on the device. 
 The ``add_images_weighted_func`` then applies the difference between the two Gaussians and stores the result in ``dst``, as well as returning it.
+Here, only relying on pre-existing functions is enough to implement a more advance function in a few lines of code without the need to write more complex `OpenCL` code.
 
 A more advanced function implementation could be the ``extend_labeling_via_voronoi_func`` also in ``tier2``, which also relies on pre-existing functions but implements them in a loop.
 
@@ -193,15 +197,25 @@ This function is a good example of how to create temporary Arrays in a memory-ef
 The ``flip`` and ``flop`` Arrays are created using the ``Array::create()`` function, which creates an Array of the same size and type as the ``dst`` Array. 
 We then alternate the Arrays depending on the iteration count, hence the Arrays' names ``flip`` and ``flop``.
 
-Call a Kernel file
-------------------
+Call an OpenCL kernel file
+--------------------------
 
-In the previous examples, we haven't directly called a GPU kernel, yet we've managed to fully accelerate a ``difference of Gaussians`` operation on the GPU. This is mainly because we relied on blocks of the algorithm already implemented on the GPU, such as `gaussian_blur_func` and `add_images_weighted_func` from `tier1`. If we inspect their implementation, we can see that they don't contain algorithmic code but rather calls for GPU kernel execution.
+In the previous examples, we haven't directly called a GPU kernel, yet we've managed to fully accelerate a ``difference of Gaussians`` operation on the GPU. 
+This is mainly because we relied on blocks of the algorithm already implemented on the GPU, such as `gaussian_blur_func` and `add_images_weighted_func` from `tier1`. 
+If we inspect their implementation, we can see that they don't contain algorithmic code but rather calls for GPU kernel execution.
+Indeed, the lower in the tiers we go, the more we rely on GPU kernels to perform the operations.
+Inversement, the higher in the tiers we go, the more we rely on pre-existing functions to perform the operations.
+
+In this section, we will see how to call a GPU kernel directly from a function.
+This will require that the kernel already exist and is compatible with the CLIJ convention.
+More on this can be found in the `CLIJ kernel repository <https://github.com/clEsperanto/clij-opencl-kernels>`__.
+Kernels in the CLIJ repository are automatically stringify and stored in a header file that can be ``include``d in the library.
 
 .. code-block:: cpp
 
     // clic/src/tier1.cpp
 
+    // Include the kernel header file containing the kernel code
     #include "cle_add_images_weighted.h
 
     auto add_images_weighted_func(const Device::Pointer& device,
@@ -321,14 +335,30 @@ In the majority of the cases, the output will be the ``dst`` Array.
 Add Function Tests
 ------------------
 
-The final step is to add tests for the function. The tests are located in the ``tests`` directory at the root of the repository. They are organized in the same way as the library, in tiers. The tests for the function should be added in the correct tier folder.
+The final step is to add tests for the function. 
+The tests are located in the ``tests`` directory at the root of the repository. 
+They are organized in the same way as the library, in tiers.
+The tests for the function should be added in the correct tier folder.
 
-Tests are written in ``cpp`` and utilize the Google Test framework. Their objective is to ensure that both the kernel and the functions work correctly in the library and that the output is as expected.
+Tests are written in ``cpp`` and utilize the Google Test framework. 
+Their objective is to ensure that both the kernel and the functions work correctly in the library and that the output is as expected.
 
-The test file should be located in the appropriate tier and named as ``test_{function_name}.cpp``. It should include the ``gtest/gtest.h`` header and the ``cle.hpp`` header. We recommend copying an existing test file and adapting it to the new function.
+The test file should be located in the appropriate tier and named as ``test_{function_name}.cpp``. 
+It should include the ``gtest/gtest.h`` header and the ``cle.hpp`` header. 
+We recommend copying an existing test file and adapting it to the new function.
 
-After adding a test, it may be necessary to reconfigure and rebuild the library for CMake to incorporate the new tests. Tests can be executed using the ``ctest`` command. Additionally, the CI/CD pipeline runs tests on each pull request.
+After adding a test, it may be necessary to reconfigure and rebuild the library for CMake to incorporate the new tests. 
+Tests can be executed using the ``ctest`` command. 
+Additionally, the CI/CD pipeline runs tests on each pull request.
 
 .. note:: 
 
     To run a specific test, use the ``ctest -C Debug -R {test_name}`` command.
+
+
+Code formatting
+---------------
+
+The code formatting is managed by the `clang-format` tool.
+The configuration file is located at the root of the repository and is named `.clang-format`.
+For more information on how to use `clang-format`, please refer to the `official documentation <https://clang.llvm.org/docs/ClangFormat.html>`__.

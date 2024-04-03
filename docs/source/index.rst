@@ -22,7 +22,7 @@ For usage documentation, please refer to one of the following links:
    compilation
    tests
    usage
-   contribute
+   functions
    versioning
 
 .. toctree::
