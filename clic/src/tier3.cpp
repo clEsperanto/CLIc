@@ -139,8 +139,9 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
 // auto exclude_labels_with_values_within_range_func
 
 auto
-flag_existing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+flag_existing_labels_func(const Device::Pointer & device,
+                          const Array::Pointer &  src,
+                          Array::Pointer          dst) -> Array::Pointer
 {
   auto max = tier2::maximum_of_all_pixels_func(device, src);
   tier0::create_vector(src, dst, max + 1, dType::LABEL);
@@ -183,8 +184,9 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
 }
 
 auto
-generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+generate_touch_matrix_func(const Device::Pointer & device,
+                           const Array::Pointer &  src,
+                           Array::Pointer          dst) -> Array::Pointer
 {
   if (dst == nullptr)
   {
@@ -212,10 +214,10 @@ histogram_func(const Device::Pointer & device,
                float                   min,
                float                   max) -> Array::Pointer
 {
-  tier0::create_vector(src, dst, nbins, dType::UINT64);
+  tier0::create_vector(src, dst, nbins, dType::UINT32);
   size_t number_of_partial_histograms = src->height();
   auto   partial_hist =
-    Array::create(nbins, 1, number_of_partial_histograms, 3, dType::UINT64, src->mtype(), src->device());
+    Array::create(nbins, 1, number_of_partial_histograms, 3, dType::UINT32, src->mtype(), src->device());
   if (std::isnan(max) || std::isnan(max))
   {
     min = tier2::minimum_of_all_pixels_func(device, src);
@@ -239,8 +241,9 @@ jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, 
 }
 
 auto
-labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+labelled_spots_to_pointlist_func(const Device::Pointer & device,
+                                 const Array::Pointer &  src,
+                                 Array::Pointer          dst) -> Array::Pointer
 {
   auto max_label = tier2::maximum_of_all_pixels_func(device, src);
   auto dim = shape_to_dimension(src->width(), src->height(), src->depth());
