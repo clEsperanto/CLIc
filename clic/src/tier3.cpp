@@ -18,7 +18,7 @@ bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) ->
 {
   float min_x = 0, min_y = 0, min_z = 0, max_x = 0, max_y = 0, max_z = 0;
   auto  temp = Array::create(
-    src->width(), src->height(), src->depth(), src->dimension(), dType::UINT64, mType::BUFFER, src->device());
+    src->width(), src->height(), src->depth(), src->dimension(), dType::INDEX, mType::BUFFER, src->device());
   tier1::multiply_image_and_position_func(device, src, temp, 0);
   max_x = tier2::maximum_of_all_pixels_func(device, temp);
   min_x = tier2::minimum_of_masked_pixels_func(device, temp, src);
@@ -61,12 +61,12 @@ exclude_labels_func(const Device::Pointer & device,
   {
     throw std::runtime_error("exclude_labels: label list must be of type uint32");
   }
-  std::vector<unsigned int> labels_list(list->size());
+  std::vector<uint32_t> labels_list(list->size());
   list->read(labels_list.data());
 
   labels_list.front() = 0;
-  unsigned int count = 1;
-  for (int i = 1; i < labels_list.size(); i++)
+  uint32_t count = 1;
+  for (int32_t i = 1; i < labels_list.size(); i++)
   {
     if (labels_list[i] == 0)
     {
@@ -79,7 +79,7 @@ exclude_labels_func(const Device::Pointer & device,
     }
   }
 
-  auto index_list = Array::create(list->size(), 1, 1, 1, dType::UINT32, mType::BUFFER, src->device());
+  auto index_list = Array::create(list->size(), 1, 1, 1, dType::LABEL, mType::BUFFER, src->device());
   index_list->write(labels_list.data());
   tier1::replace_values_func(device, src, index_list, dst);
   return dst;
@@ -119,7 +119,7 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
   }
   std::vector<uint32_t> label_map_vector(label_map->size());
   label_map->read(label_map_vector.data());
-  int count = 1;
+  int32_t count = 1;
   for (auto & i : label_map_vector)
   {
     if (i > 0)
@@ -172,7 +172,7 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
   {
     auto max_label_0 = tier2::maximum_of_all_pixels_func(device, src0) + 1;
     auto max_label_1 = tier2::maximum_of_all_pixels_func(device, src1) + 1;
-    tier0::create_dst(src0, dst, max_label_0, max_label_1, 1, dType::UINT32);
+    tier0::create_dst(src0, dst, max_label_0, max_label_1, 1, dType::INDEX);
   }
   dst->fill(0);
   const KernelInfo    kernel = { "generate_binary_overlap_matrix", kernel::generate_binary_overlap_matrix };
@@ -189,7 +189,7 @@ generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer 
   if (dst == nullptr)
   {
     auto max_label = tier2::maximum_of_all_pixels_func(device, src) + 1;
-    tier0::create_dst(src, dst, max_label, max_label, 1, dType::UINT32);
+    tier0::create_dst(src, dst, max_label, max_label, 1, dType::INDEX);
   }
   dst->fill(0);
   const KernelInfo    kernel = { "generate_touch_matrix", kernel::generate_touch_matrix };
@@ -212,10 +212,10 @@ histogram_func(const Device::Pointer & device,
                float                   min,
                float                   max) -> Array::Pointer
 {
-  tier0::create_vector(src, dst, nbins, dType::UINT32);
+  tier0::create_vector(src, dst, nbins, dType::INDEX);
   size_t number_of_partial_histograms = src->height();
   auto   partial_hist =
-    Array::create(nbins, 1, number_of_partial_histograms, 3, dType::UINT32, src->mtype(), src->device());
+    Array::create(nbins, 1, number_of_partial_histograms, 3, dType::INDEX, src->mtype(), src->device());
   if (std::isnan(max) || std::isnan(max))
   {
     min = tier2::minimum_of_all_pixels_func(device, src);
