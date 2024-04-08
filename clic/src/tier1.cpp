@@ -299,7 +299,7 @@ block_enumerate_func(const Device::Pointer & device,
                      Array::Pointer          dst,
                      int                     blocksize) -> Array::Pointer
 {
-  tier0::create_like(src0, dst);
+  tier0::create_like(src0, dst, dType::FLOAT);
   const KernelInfo    kernel = { "block_enumerate", kernel::block_enumerate };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst }, { "index", blocksize } };
   const RangeArray    range = { src1->width(), src1->height(), src1->depth() };
@@ -313,7 +313,7 @@ convolve_func(const Device::Pointer & device,
               const Array::Pointer &  src1,
               Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src0, dst);
+  tier0::create_like(src0, dst, dType::FLOAT);
   const KernelInfo    kernel = { "convolve", kernel::convolve };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -424,7 +424,7 @@ crop_func(const Device::Pointer & device,
 auto
 cubic_root_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "cubic_root", kernel::cubic_root };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -436,7 +436,7 @@ auto
 detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT8);
+  tier0::create_like(src, dst, dType::BINARY);
   const KernelInfo    kernel = { "detect_label_edges", kernel::detect_label_edges };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -460,6 +460,22 @@ dilate_sphere_func(const Device::Pointer & device, const Array::Pointer & src, A
 {
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "dilate_sphere", kernel::dilate_sphere };
+  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
+auto
+dilate_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, std::string connectivity)
+  -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  KernelInfo kernel = { "dilate_box", kernel::dilate_box };
+  if (connectivity == "sphere")
+  {
+    kernel = { "dilate_sphere", kernel::dilate_sphere };
+  }
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
@@ -505,7 +521,7 @@ auto
 equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_like(src0, dst, dType::UINT8);
+  tier0::create_like(src0, dst, dType::BINARY);
   const KernelInfo    kernel = { "equal", kernel::equal };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -517,7 +533,7 @@ auto
 equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
   -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT8);
+  tier0::create_like(src, dst, dType::BINARY);
   const KernelInfo    kernel = { "equal_constant", kernel::equal_constant };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar", scalar } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -528,6 +544,7 @@ equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, 
 auto
 erode_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use erode() instead\n";
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "erode_box", kernel::erode_box };
   const ParameterList params = { { "src", src }, { "dst", dst } };
@@ -541,8 +558,25 @@ erode_box_func(const Device::Pointer & device, const Array::Pointer & src, Array
 auto
 erode_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use erode() instead\n";
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "erode_sphere", kernel::erode_sphere };
+  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
+auto
+erode_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, std::string connectivity)
+  -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  KernelInfo kernel = { "erode_box", kernel::erode_box };
+  if (connectivity == "sphere")
+  {
+    kernel = { "erode_sphere", kernel::erode_sphere };
+  }
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
@@ -554,7 +588,7 @@ erode_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Ar
 auto
 exponential_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "exponential", kernel::exponential };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -626,7 +660,7 @@ generate_distance_matrix_func(const Device::Pointer & device,
 auto
 gradient_x_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "gradient_x", kernel::gradient_x };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -637,7 +671,7 @@ gradient_x_func(const Device::Pointer & device, const Array::Pointer & src, Arra
 auto
 gradient_y_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "gradient_y", kernel::gradient_y };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -648,7 +682,7 @@ gradient_y_func(const Device::Pointer & device, const Array::Pointer & src, Arra
 auto
 gradient_z_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "gradient_z", kernel::gradient_z };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -662,7 +696,7 @@ greater_func(const Device::Pointer & device,
              const Array::Pointer &  src1,
              Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src0, dst, dType::UINT8);
+  tier0::create_like(src0, dst, dType::BINARY);
   const KernelInfo    kernel = { "greater", kernel::greater };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -674,7 +708,7 @@ auto
 greater_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
   -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT8);
+  tier0::create_like(src, dst, dType::BINARY);
   const KernelInfo    kernel = { "greater_constant", kernel::greater_constant };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar", scalar } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -688,7 +722,7 @@ greater_or_equal_func(const Device::Pointer & device,
                       const Array::Pointer &  src1,
                       Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src0, dst, dType::UINT8);
+  tier0::create_like(src0, dst, dType::BINARY);
   const KernelInfo    kernel = { "greater_or_equal", kernel::greater_or_equal };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -702,7 +736,7 @@ greater_or_equal_constant_func(const Device::Pointer & device,
                                Array::Pointer          dst,
                                float                   scalar) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT8);
+  tier0::create_like(src, dst, dType::BINARY);
   const KernelInfo    kernel = { "greater_or_equal_constant", kernel::greater_or_equal_constant };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar", scalar } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -746,10 +780,10 @@ hessian_eigenvalues_func(const Device::Pointer & device,
 // auto
 // inferior_superior(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 // {
-//   tier0::create_like(src, dst, dType::UINT8);
-//   if (src->dtype() != dType::UINT8)
+//   tier0::create_like(src, dst, dType::BINARY);
+//   if (src->dtype() != dType::BINARY)
 //   {
-//     throw std::runtime_error("inferior_superior only supports UINT8 images");
+//     throw std::runtime_error("inferior_superior only supports BINARY (uint8) images");
 //   }
 //   const KernelInfo    kernel = { "inferior_superior", kernel::inferior_superior };
 //   const ParameterList params = { { "src", src }, { "dst", dst } };
@@ -761,7 +795,8 @@ hessian_eigenvalues_func(const Device::Pointer & device,
 auto
 laplace_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  std::cerr << "Deprecated: Please use laplace() instead\n";
+  tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "laplace_box", kernel::laplace_box };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -772,8 +807,25 @@ laplace_box_func(const Device::Pointer & device, const Array::Pointer & src, Arr
 auto
 laplace_diamond_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  std::cerr << "Deprecated: Please use laplace() instead\n";
+  tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "laplace_diamond", kernel::laplace_diamond };
+  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
+auto
+laplace_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, std::string connectivity)
+  -> Array::Pointer
+{
+  tier0::create_like(src, dst, dType::FLOAT);
+  KernelInfo kernel = { "laplace_box", kernel::laplace_box };
+  if (connectivity == "sphere")
+  {
+    kernel = { "laplace_diamond", kernel::laplace_diamond };
+  }
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
@@ -786,7 +838,7 @@ local_cross_correlation_func(const Device::Pointer & device,
                              const Array::Pointer &  src1,
                              Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src0, dst);
+  tier0::create_like(src0, dst, dType::FLOAT);
   const KernelInfo    kernel = { "local_cross_correlation", kernel::local_cross_correlation };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -797,7 +849,7 @@ local_cross_correlation_func(const Device::Pointer & device,
 auto
 logarithm_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "logarithm", kernel::logarithm };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -868,6 +920,7 @@ maximum_box_func(const Device::Pointer & device,
                  int                     radius_y,
                  int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use maximum() instead\n";
   tier0::create_like(src, dst);
   const KernelInfo kernel = { "maximum_separable", kernel::maximum_separable };
   tier0::execute_separable_func(
@@ -887,7 +940,7 @@ auto
 maximum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_zy(src, dst, dType::FLOAT);
+  tier0::create_zy(src, dst);
   const KernelInfo    kernel = { "maximum_x_projection", kernel::maximum_x_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -899,7 +952,7 @@ auto
 maximum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_xz(src, dst, dType::FLOAT);
+  tier0::create_xz(src, dst);
   const KernelInfo    kernel = { "maximum_y_projection", kernel::maximum_y_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -911,7 +964,7 @@ auto
 maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_xy(src, dst, dType::FLOAT);
+  tier0::create_xy(src, dst);
   const KernelInfo    kernel = { "maximum_z_projection", kernel::maximum_z_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -927,6 +980,7 @@ mean_box_func(const Device::Pointer & device,
               int                     radius_y,
               int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use mean() instead\n";
   tier0::create_like(src, dst);
   const KernelInfo kernel = { "mean_separable", kernel::mean_separable };
   tier0::execute_separable_func(
@@ -947,6 +1001,7 @@ mean_sphere_func(const Device::Pointer & device,
                  int                     radius_y,
                  int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use mean() instead\n";
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "mean_sphere", kernel::mean_sphere };
   const ParameterList params = { { "src", src },
@@ -956,6 +1011,42 @@ mean_sphere_func(const Device::Pointer & device,
                                  { "scalar2", radius2kernelsize(radius_z) } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
+  return dst;
+}
+
+auto
+mean_func(const Device::Pointer & device,
+          const Array::Pointer &  src,
+          Array::Pointer          dst,
+          int                     radius_x,
+          int                     radius_y,
+          int                     radius_z,
+          std::string             connectivity) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  auto r_x = radius2kernelsize(radius_x);
+  auto r_y = radius2kernelsize(radius_y);
+  auto r_z = radius2kernelsize(radius_z);
+  if (connectivity == "sphere")
+  {
+    const KernelInfo    kernel = { "mean_sphere", kernel::mean_sphere };
+    const ParameterList params = {
+      { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z }
+    };
+    const RangeArray range = { dst->width(), dst->height(), dst->depth() };
+    execute(device, kernel, params, range);
+  }
+  else
+  {
+    const KernelInfo kernel = { "mean_separable", kernel::mean_separable };
+    tier0::execute_separable_func(
+      device,
+      kernel,
+      src,
+      dst,
+      { static_cast<float>(radius_x), static_cast<float>(radius_y), static_cast<float>(radius_z) },
+      { r_x, r_y, r_z });
+  }
   return dst;
 }
 
@@ -1000,6 +1091,7 @@ median_box_func(const Device::Pointer & device,
                 int                     radius_y,
                 int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use median() instead\n";
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "median_box", kernel::median_box };
   const ParameterList params = { { "src", src },
@@ -1023,6 +1115,7 @@ median_sphere_func(const Device::Pointer & device,
                    int                     radius_y,
                    int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use median() instead\n";
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "median_sphere", kernel::median_sphere };
   const ParameterList params = { { "src", src },
@@ -1039,6 +1132,33 @@ median_sphere_func(const Device::Pointer & device,
 }
 
 auto
+median_func(const Device::Pointer & device,
+            const Array::Pointer &  src,
+            Array::Pointer          dst,
+            int                     radius_x,
+            int                     radius_y,
+            int                     radius_z,
+            std::string             connectivity) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  auto       r_x = radius2kernelsize(radius_x);
+  auto       r_y = radius2kernelsize(radius_y);
+  auto       r_z = radius2kernelsize(radius_z);
+  KernelInfo kernel = { "median_box", kernel::median_box };
+  if (connectivity == "sphere")
+  {
+    kernel = { "median_sphere", kernel::median_sphere };
+  }
+  const ParameterList params = {
+    { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z }
+  };
+  const ConstantList constants = { { "MAX_ARRAY_SIZE", r_x * r_y * r_z } };
+  const RangeArray   range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range, constants);
+  return dst;
+}
+
+auto
 minimum_box_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
@@ -1046,6 +1166,7 @@ minimum_box_func(const Device::Pointer & device,
                  int                     radius_y,
                  int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use minimum() instead\n";
   tier0::create_like(src, dst);
   const KernelInfo kernel = { "minimum_separable", kernel::minimum_separable };
   tier0::execute_separable_func(
@@ -1151,9 +1272,10 @@ mode_box_func(const Device::Pointer & device,
               int                     radius_y,
               int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use mode() instead\n";
   if (src->dtype() != dType::UINT8)
   {
-    std::cerr << "Warning: mode only support uint8 pixel type." << std::endl;
+    std::cerr << "Warning: mode only support uint8 pixel input type." << std::endl;
   }
   tier0::create_like(src, dst, dType::UINT8);
   const KernelInfo    kernel = { "mode_box", kernel::mode_box };
@@ -1175,6 +1297,7 @@ mode_sphere_func(const Device::Pointer & device,
                  int                     radius_y,
                  int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use mode() instead\n";
   if (src->dtype() != dType::UINT8)
   {
     std::cerr << "Warning: mode only support uint8 pixel type." << std::endl;
@@ -1187,6 +1310,36 @@ mode_sphere_func(const Device::Pointer & device,
                                  { "scalar1", radius2kernelsize(radius_y) },
                                  { "scalar2", radius2kernelsize(radius_z) } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
+auto
+mode_func(const Device::Pointer & device,
+          const Array::Pointer &  src,
+          Array::Pointer          dst,
+          int                     radius_x,
+          int                     radius_y,
+          int                     radius_z,
+          std::string             connectivity) -> Array::Pointer
+{
+  if (src->dtype() != dType::UINT8)
+  {
+    std::cerr << "Warning: mode only support uint8 pixel type." << std::endl;
+  }
+  tier0::create_like(src, dst, dType::UINT8);
+  auto       r_x = radius2kernelsize(radius_x);
+  auto       r_y = radius2kernelsize(radius_y);
+  auto       r_z = radius2kernelsize(radius_z);
+  KernelInfo kernel = { "mode_box", kernel::mode_box };
+  if (connectivity == "sphere")
+  {
+    kernel = { "mode_sphere", kernel::mode_sphere };
+  }
+  const ParameterList params = {
+    { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z }
+  };
+  const RangeArray range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
 }
@@ -1273,6 +1426,7 @@ nonzero_maximum_box_func(const Device::Pointer & device,
                          Array::Pointer          dst0,
                          Array::Pointer          dst1) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use nonzero_maximum() instead\n";
   tier0::create_like(src, dst1);
   dst1->fill(0);
   const KernelInfo    kernel = { "nonzero_maximum_box", kernel::nonzero_maximum_box };
@@ -1288,9 +1442,31 @@ nonzero_maximum_diamond_func(const Device::Pointer & device,
                              Array::Pointer          dst0,
                              Array::Pointer          dst1) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use nonzero_maximum() instead\n";
   tier0::create_like(src, dst1);
   dst1->fill(0);
   const KernelInfo    kernel = { "nonzero_maximum_diamond", kernel::nonzero_maximum_diamond };
+  const ParameterList params = { { "src", src }, { "dst0", dst0 }, { "dst1", dst1 } };
+  const RangeArray    range = { dst1->width(), dst1->height(), dst1->depth() };
+  execute(device, kernel, params, range);
+  return dst1;
+}
+
+auto
+nonzero_maximum_func(const Device::Pointer & device,
+                     const Array::Pointer &  src,
+                     Array::Pointer          dst0,
+                     Array::Pointer          dst1,
+                     std::string             connectivity) -> Array::Pointer
+
+{
+  tier0::create_like(src, dst1);
+  // dst1->fill(0);
+  KernelInfo kernel = { "nonzero_maximum_box", kernel::nonzero_maximum_box };
+  if (connectivity == "sphere")
+  {
+    kernel = { "nonzero_maximum_diamond", kernel::nonzero_maximum_diamond };
+  }
   const ParameterList params = { { "src", src }, { "dst0", dst0 }, { "dst1", dst1 } };
   const RangeArray    range = { dst1->width(), dst1->height(), dst1->depth() };
   execute(device, kernel, params, range);
@@ -1303,6 +1479,7 @@ nonzero_minimum_box_func(const Device::Pointer & device,
                          Array::Pointer          dst0,
                          Array::Pointer          dst1) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use nonzero_minimum() instead\n";
   tier0::create_like(src, dst1);
   dst1->fill(0);
   const KernelInfo    kernel = { "nonzero_minimum_box", kernel::nonzero_minimum_box };
@@ -1318,9 +1495,29 @@ nonzero_minimum_diamond_func(const Device::Pointer & device,
                              Array::Pointer          dst0,
                              Array::Pointer          dst1) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use nonzero_minimum() instead\n";
   tier0::create_like(src, dst1);
   dst1->fill(0);
   const KernelInfo    kernel = { "nonzero_minimum_diamond", kernel::nonzero_minimum_diamond };
+  const ParameterList params = { { "src", src }, { "dst0", dst0 }, { "dst1", dst1 } };
+  const RangeArray    range = { dst1->width(), dst1->height(), dst1->depth() };
+  execute(device, kernel, params, range);
+  return dst1;
+}
+
+auto
+nonzero_minimum_func(const Device::Pointer & device,
+                     const Array::Pointer &  src,
+                     Array::Pointer          dst0,
+                     Array::Pointer          dst1,
+                     std::string             connectivity) -> Array::Pointer
+{
+  tier0::create_like(src, dst1);
+  KernelInfo kernel = { "nonzero_minimum_box", kernel::nonzero_minimum_box };
+  if (connectivity == "sphere")
+  {
+    kernel = { "nonzero_minimum_diamond", kernel::nonzero_minimum_diamond };
+  }
   const ParameterList params = { { "src", src }, { "dst0", dst0 }, { "dst1", dst1 } };
   const RangeArray    range = { dst1->width(), dst1->height(), dst1->depth() };
   execute(device, kernel, params, range);
@@ -1333,7 +1530,7 @@ not_equal_func(const Device::Pointer & device,
                const Array::Pointer &  src1,
                Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src0, dst, dType::UINT8);
+  tier0::create_like(src0, dst, dType::BINARY);
   const KernelInfo    kernel = { "not_equal", kernel::not_equal };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1345,7 +1542,7 @@ auto
 not_equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
   -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT8);
+  tier0::create_like(src, dst, dType::BINARY);
   const KernelInfo    kernel = { "not_equal_constant", kernel::not_equal_constant };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar", scalar } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1377,6 +1574,7 @@ onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
                                     Array::Pointer          dst0,
                                     Array::Pointer          dst1) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use onlyzero_overwrite_maximum() instead\n";
   tier0::create_like(src, dst1);
   const KernelInfo    kernel = { "onlyzero_overwrite_maximum_box", kernel::onlyzero_overwrite_maximum_box };
   const ParameterList params = { { "src", src }, { "dst0", dst0 }, { "dst1", dst1 } };
@@ -1391,8 +1589,28 @@ onlyzero_overwrite_maximum_diamond_func(const Device::Pointer & device,
                                         Array::Pointer          dst0,
                                         Array::Pointer          dst1) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use onlyzero_overwrite_maximum() instead\n";
   tier0::create_like(src, dst1);
   const KernelInfo    kernel = { "onlyzero_overwrite_maximum_diamond", kernel::onlyzero_overwrite_maximum_diamond };
+  const ParameterList params = { { "src", src }, { "dst0", dst0 }, { "dst1", dst1 } };
+  const RangeArray    range = { dst1->width(), dst1->height(), dst1->depth() };
+  execute(device, kernel, params, range);
+  return dst1;
+}
+
+auto
+onlyzero_overwrite_maximum_func(const Device::Pointer & device,
+                                const Array::Pointer &  src,
+                                Array::Pointer          dst0,
+                                Array::Pointer          dst1,
+                                std::string             connectivity) -> Array::Pointer
+{
+  tier0::create_like(src, dst1);
+  KernelInfo kernel = { "onlyzero_overwrite_maximum_box", kernel::onlyzero_overwrite_maximum_box };
+  if (connectivity == "sphere")
+  {
+    kernel = { "onlyzero_overwrite_maximum_diamond", kernel::onlyzero_overwrite_maximum_diamond };
+  }
   const ParameterList params = { { "src", src }, { "dst0", dst0 }, { "dst1", dst1 } };
   const RangeArray    range = { dst1->width(), dst1->height(), dst1->depth() };
   execute(device, kernel, params, range);
@@ -1406,7 +1624,7 @@ auto
 power_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
   -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "power", kernel::power };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar", scalar } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1420,7 +1638,7 @@ power_images_func(const Device::Pointer & device,
                   const Array::Pointer &  src1,
                   Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src0, dst);
+  tier0::create_like(src0, dst, dType::FLOAT);
   const KernelInfo    kernel = { "power_images", kernel::power_images };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1524,6 +1742,7 @@ maximum_sphere_func(const Device::Pointer & device,
                     float                   radius_y,
                     float                   radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use maximum() instead\n";
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "maximum_sphere", kernel::maximum_sphere };
   const ParameterList params = { { "src", src },
@@ -1544,6 +1763,7 @@ minimum_sphere_func(const Device::Pointer & device,
                     float                   radius_y,
                     float                   radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: Please use minimum() instead\n";
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "minimum_sphere", kernel::minimum_sphere };
   const ParameterList params = { { "src", src },
@@ -1557,12 +1777,84 @@ minimum_sphere_func(const Device::Pointer & device,
 }
 
 auto
+minimum_func(const Device::Pointer & device,
+             const Array::Pointer &  src,
+             Array::Pointer          dst,
+             float                   radius_x,
+             float                   radius_y,
+             float                   radius_z,
+             std::string             connectivity) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  auto r_x = radius2kernelsize(radius_x);
+  auto r_y = radius2kernelsize(radius_y);
+  auto r_z = radius2kernelsize(radius_z);
+  if (connectivity == "sphere")
+  {
+    const KernelInfo    kernel = { "minimum_sphere", kernel::minimum_sphere };
+    const ParameterList params = {
+      { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z }
+    };
+    const RangeArray range = { dst->width(), dst->height(), dst->depth() };
+    execute(device, kernel, params, range);
+  }
+  else
+  {
+    const KernelInfo kernel = { "minimum_separable", kernel::minimum_separable };
+    tier0::execute_separable_func(
+      device,
+      kernel,
+      src,
+      dst,
+      { static_cast<float>(radius_x), static_cast<float>(radius_y), static_cast<float>(radius_z) },
+      { r_x, r_y, r_z });
+  }
+  return dst;
+}
+
+auto
+maximum_func(const Device::Pointer & device,
+             const Array::Pointer &  src,
+             Array::Pointer          dst,
+             float                   radius_x,
+             float                   radius_y,
+             float                   radius_z,
+             std::string             connectivity) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  auto r_x = radius2kernelsize(radius_x);
+  auto r_y = radius2kernelsize(radius_y);
+  auto r_z = radius2kernelsize(radius_z);
+  if (connectivity == "sphere")
+  {
+    const KernelInfo    kernel = { "maximum_sphere", kernel::maximum_sphere };
+    const ParameterList params = {
+      { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z }
+    };
+    const RangeArray range = { dst->width(), dst->height(), dst->depth() };
+    execute(device, kernel, params, range);
+  }
+  else
+  {
+    const KernelInfo kernel = { "maximum_separable", kernel::maximum_separable };
+    tier0::execute_separable_func(
+      device,
+      kernel,
+      src,
+      dst,
+      { static_cast<float>(radius_x), static_cast<float>(radius_y), static_cast<float>(radius_z) },
+      { r_x, r_y, r_z });
+  }
+  return dst;
+}
+
+auto
 multiply_matrix_func(const Device::Pointer & device,
                      const Array::Pointer &  src0,
                      const Array::Pointer &  src1,
                      Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_dst(src0, dst, src1->width(), src0->height(), src0->depth(), src0->dtype());
+  tier0::create_dst(src0, dst, src1->width(), src0->height(), src0->depth(), dType::FLOAT);
   const KernelInfo    kernel = { "multiply_matrix", kernel::multiply_matrix };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1667,7 +1959,7 @@ set_nonzero_pixels_to_pixelindex_func(const Device::Pointer & device,
                                       Array::Pointer          dst,
                                       int                     offset) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::FLOAT);
+  tier0::create_like(src, dst, dType::INDEX);
   const KernelInfo    kernel = { "set_nonzero_pixels_to_pixelindex", kernel::set_nonzero_pixels_to_pixelindex };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "offset", offset } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1725,7 +2017,7 @@ smaller_func(const Device::Pointer & device,
              const Array::Pointer &  src1,
              Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src0, dst, dType::UINT8);
+  tier0::create_like(src0, dst, dType::BINARY);
   const KernelInfo    kernel = { "smaller", kernel::smaller };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1737,7 +2029,7 @@ auto
 smaller_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
   -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT8);
+  tier0::create_like(src, dst, dType::BINARY);
   const KernelInfo    kernel = { "smaller_constant", kernel::smaller_constant };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar", scalar } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1751,7 +2043,7 @@ smaller_or_equal_func(const Device::Pointer & device,
                       const Array::Pointer &  src1,
                       Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src0, dst, dType::UINT8);
+  tier0::create_like(src0, dst, dType::BINARY);
   const KernelInfo    kernel = { "smaller_or_equal", kernel::smaller_or_equal };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1765,7 +2057,7 @@ smaller_or_equal_constant_func(const Device::Pointer & device,
                                Array::Pointer          dst,
                                float                   scalar) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::UINT8);
+  tier0::create_like(src, dst, dType::BINARY);
   const KernelInfo    kernel = { "smaller_or_equal_constant", kernel::smaller_or_equal_constant };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar", scalar } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1776,7 +2068,7 @@ smaller_or_equal_constant_func(const Device::Pointer & device,
 auto
 sobel_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "sobel", kernel::sobel };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1787,7 +2079,7 @@ sobel_func(const Device::Pointer & device, const Array::Pointer & src, Array::Po
 auto
 square_root_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "square_root", kernel::square_root };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1798,7 +2090,7 @@ square_root_func(const Device::Pointer & device, const Array::Pointer & src, Arr
 auto
 std_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_xy(src, dst);
+  tier0::create_xy(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "std_z_projection", kernel::std_z_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1855,7 +2147,7 @@ sum_reduction_x_func(const Device::Pointer & device, const Array::Pointer & src,
 auto
 sum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_zy(src, dst);
+  tier0::create_zy(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "sum_x_projection", kernel::sum_x_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1866,7 +2158,7 @@ sum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src
 auto
 sum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_xz(src, dst);
+  tier0::create_xz(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "sum_y_projection", kernel::sum_y_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1877,7 +2169,7 @@ sum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src
 auto
 sum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_xy(src, dst);
+  tier0::create_xy(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "sum_z_projection", kernel::sum_z_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -1964,6 +2256,7 @@ variance_box_func(const Device::Pointer & device,
                   int                     radius_y,
                   int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: please use variance() instead\n";
   tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "variance_box", kernel::variance_box };
   const ParameterList params = { { "src", src },
@@ -1984,6 +2277,7 @@ variance_sphere_func(const Device::Pointer & device,
                      int                     radius_y,
                      int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: please use variance() instead\n";
   tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "variance_sphere", kernel::variance_sphere };
   const ParameterList params = { { "src", src },
@@ -1992,6 +2286,32 @@ variance_sphere_func(const Device::Pointer & device,
                                  { "scalar1", radius2kernelsize(radius_y) },
                                  { "scalar2", radius2kernelsize(radius_z) } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
+auto
+variance_func(const Device::Pointer & device,
+              const Array::Pointer &  src,
+              Array::Pointer          dst,
+              int                     radius_x,
+              int                     radius_y,
+              int                     radius_z,
+              std::string             connectivity) -> Array::Pointer
+{
+  tier0::create_like(src, dst, dType::FLOAT);
+  auto       r_x = radius2kernelsize(radius_x);
+  auto       r_y = radius2kernelsize(radius_y);
+  auto       r_z = radius2kernelsize(radius_z);
+  KernelInfo kernel = { "variance_box", kernel::variance_box };
+  if (connectivity == "sphere")
+  {
+    kernel = { "variance_sphere", kernel::variance_sphere };
+  }
+  const ParameterList params = {
+    { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z }
+  };
+  const RangeArray range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
 }
@@ -2032,7 +2352,7 @@ auto
 x_position_of_maximum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_zy(src, dst, dType::UINT32);
+  tier0::create_zy(src, dst, dType::INDEX);
   const KernelInfo    kernel = { "x_position_of_maximum_x_projection", kernel::x_position_of_maximum_x_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -2044,7 +2364,7 @@ auto
 x_position_of_minimum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_zy(src, dst, dType::UINT32);
+  tier0::create_zy(src, dst, dType::INDEX);
   const KernelInfo    kernel = { "x_position_of_minimum_x_projection", kernel::x_position_of_minimum_x_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -2056,7 +2376,7 @@ auto
 y_position_of_maximum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_xz(src, dst, dType::UINT32);
+  tier0::create_xz(src, dst, dType::INDEX);
   const KernelInfo    kernel = { "y_position_of_maximum_y_projection", kernel::y_position_of_maximum_y_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -2068,7 +2388,7 @@ auto
 y_position_of_minimum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_xz(src, dst, dType::UINT32);
+  tier0::create_xz(src, dst, dType::INDEX);
   const KernelInfo    kernel = { "y_position_of_minimum_y_projection", kernel::y_position_of_minimum_y_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -2080,7 +2400,7 @@ auto
 z_position_of_maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_xy(src, dst, dType::UINT32);
+  tier0::create_xy(src, dst, dType::INDEX);
   const KernelInfo    kernel = { "z_position_of_maximum_z_projection", kernel::z_position_of_maximum_z_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -2092,7 +2412,7 @@ auto
 z_position_of_minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_xy(src, dst, dType::UINT32);
+  tier0::create_xy(src, dst, dType::INDEX);
   const KernelInfo    kernel = { "z_position_of_minimum_z_projection", kernel::z_position_of_minimum_z_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };

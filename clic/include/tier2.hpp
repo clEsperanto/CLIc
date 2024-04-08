@@ -64,6 +64,7 @@ add_images_func(const Device::Pointer & device,
  *
  * @note 'filter', 'background removal', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_bottomHatBox
+ * @deprecated This method is deprecated. Consider using bottom_hat() instead.
  */
 auto
 bottom_hat_box_func(const Device::Pointer & device,
@@ -88,6 +89,7 @@ bottom_hat_box_func(const Device::Pointer & device,
  *
  * @note 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_bottomHatSphere
+ * @deprecated This method is deprecated. Consider using bottom_hat() instead.
  */
 auto
 bottom_hat_sphere_func(const Device::Pointer & device,
@@ -97,6 +99,31 @@ bottom_hat_sphere_func(const Device::Pointer & device,
                        float                   radius_y,
                        float                   radius_z) -> Array::Pointer;
 
+/**
+ * @name bottom_hat
+ * @brief Applies a bottomhat filter for background subtraction to the input image.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src The input image where the background is subtracted from. [const Array::Pointer &]
+ * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param radius_x Radius of the background determination region in X. [float ( = 1 )]
+ * @param radius_y Radius of the background determination region in Y. [float ( = 1 )]
+ * @param radius_z Radius of the background determination region in Z. [float ( = 1 )]
+ * @param connectivity Element shape, "box" or "sphere" [string ( = "box" )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_bottomHatBox
+ * @see https://clij.github.io/clij2-docs/reference_bottomHatSphere
+ */
+auto
+bottom_hat_func(const Device::Pointer & device,
+                const Array::Pointer &  src,
+                Array::Pointer          dst,
+                float                   radius_x,
+                float                   radius_y,
+                float                   radius_z,
+                std::string             connectivity) -> Array::Pointer;
 
 /**
  * @name clip
@@ -134,7 +161,7 @@ clip_func(const Device::Pointer & device,
  * @param radius_z Radius along the z axis. [int ( = 0 )]
  * @return Array::Pointer
  * @note 'filter', 'in assistant'
- *
+ * @deprecated This method is deprecated. Consider using closing() instead.
  */
 auto
 closing_box_func(const Device::Pointer & device,
@@ -158,7 +185,7 @@ closing_box_func(const Device::Pointer & device,
  * @param radius_z Radius along the z axis. [int ( = 0 )]
  * @return Array::Pointer
  * @note 'filter', 'in assistant', 'bia-bob-suggestion'
- *
+ * @deprecated This method is deprecated. Consider using closing() instead.
  */
 auto
 closing_sphere_func(const Device::Pointer & device,
@@ -168,6 +195,29 @@ closing_sphere_func(const Device::Pointer & device,
                     float                   radius_y,
                     float                   radius_z) -> Array::Pointer;
 
+/**
+ * @name closing
+ * @brief Closing operator, sphereshaped Applies morphological closing to intensity images using a sphereshaped
+ * footprint. This operator also works with binary images.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius along the x axis. [int ( = 1 )]
+ * @param radius_y Radius along the y axis. [int ( = 1 )]
+ * @param radius_z Radius along the z axis. [int ( = 0 )]
+ * @param connectivity Element shape, "box" or "sphere" [string ( = "box" )]
+ * @return Array::Pointer
+ * @note 'filter', 'in assistant', 'bia-bob-suggestion'
+ */
+auto
+closing_func(const Device::Pointer & device,
+             const Array::Pointer &  src,
+             Array::Pointer          dst,
+             float                   radius_x,
+             float                   radius_y,
+             float                   radius_z,
+             std::string             connectivity) -> Array::Pointer;
 
 /**
  * @name concatenate_along_x
@@ -318,6 +368,7 @@ degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & s
  *
  * @note 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_detectMaximaBox
+ * @deprecated This method is deprecated. Consider using detect_minima() instead.
  */
 auto
 detect_maxima_box_func(const Device::Pointer & device,
@@ -342,7 +393,8 @@ detect_maxima_box_func(const Device::Pointer & device,
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
- * @see https://clij.github.io/clij2-docs/reference_detectMaximaBox
+ * @see https://clij.github.io/clij2-docs/reference_detectMaximaSphere
+ * @deprecated This method is deprecated. Consider using detect_minima() instead.
  */
 auto
 detect_minima_box_func(const Device::Pointer & device,
@@ -351,6 +403,33 @@ detect_minima_box_func(const Device::Pointer & device,
                        int                     radius_x,
                        int                     radius_y,
                        int                     radius_z) -> Array::Pointer;
+
+/**
+ * @name detect_minima
+ * @brief Detects local maxima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
+ * is no other pixel in a given radius which has a lower intensity, and to 0 otherwise.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius along the x axis. [int ( = 0 )]
+ * @param radius_y Radius along the y axis. [int ( = 0 )]
+ * @param radius_z Radius along the z axis. [int ( = 0 )]
+ * @param connectivity Element shape, "box" or "sphere" [string ( = "box" )]
+ * @return Array::Pointer
+ *
+ * @note 'binarize', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_detectMaximaBox
+ * @see https://clij.github.io/clij2-docs/reference_detectMaximaSphere
+ */
+auto
+detect_minima_func(const Device::Pointer & device,
+                   const Array::Pointer &  src,
+                   Array::Pointer          dst,
+                   int                     radius_x,
+                   int                     radius_y,
+                   int                     radius_z,
+                   std::string             connectivity) -> Array::Pointer;
 
 /**
  * @name difference_of_gaussian
@@ -515,7 +594,7 @@ minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Point
  * @param radius_z Radius along the z axis. [int ( = 0 )]
  * @return Array::Pointer
  * @note 'filter', 'in assistant'
- *
+ * @deprecated This method is deprecated. Consider using opening() instead.
  */
 auto
 opening_box_func(const Device::Pointer & device,
@@ -539,7 +618,7 @@ opening_box_func(const Device::Pointer & device,
  * @param radius_z Radius along the z axis. [float ( = 0 )]
  * @return Array::Pointer
  * @note 'filter', 'in assistant', 'bia-bob-suggestion'
- *
+ * @deprecated This method is deprecated. Consider using opening() instead.
  */
 auto
 opening_sphere_func(const Device::Pointer & device,
@@ -548,6 +627,32 @@ opening_sphere_func(const Device::Pointer & device,
                     float                   radius_x,
                     float                   radius_y,
                     float                   radius_z) -> Array::Pointer;
+
+
+/**
+ * @name opening
+ * @brief Opening operator, sphereshaped Applies morphological opening to intensity images using a sphereshaped
+ * footprint. This operator also works with binary images.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius along the x axis. [float ( = 1 )]
+ * @param radius_y Radius along the y axis. [float ( = 1 )]
+ * @param radius_z Radius along the z axis. [float ( = 0 )]
+ * @param connectivity Element shape, "box" or "sphere" [string ( = "box" )]
+ * @return Array::Pointer
+ * @note 'filter', 'in assistant', 'bia-bob-suggestion'
+ *
+ */
+auto
+opening_func(const Device::Pointer & device,
+             const Array::Pointer &  src,
+             Array::Pointer          dst,
+             float                   radius_x,
+             float                   radius_y,
+             float                   radius_z,
+             std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -650,6 +755,7 @@ squared_difference_func(const Device::Pointer & device,
  *
  * @note 'filter', 'edge detection', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_standardDeviationBox
+ * @deprecated This method is deprecated. Consider using standard_deviation() instead.
  */
 auto
 standard_deviation_box_func(const Device::Pointer & device,
@@ -675,6 +781,7 @@ standard_deviation_box_func(const Device::Pointer & device,
  *
  * @note 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_standardDeviationSphere
+ * @deprecated This method is deprecated. Consider using standard_deviation() instead.
  */
 auto
 standard_deviation_sphere_func(const Device::Pointer & device,
@@ -684,6 +791,32 @@ standard_deviation_sphere_func(const Device::Pointer & device,
                                int                     radius_y,
                                int                     radius_z) -> Array::Pointer;
 
+/**
+ * @name standard_deviation
+ * @brief Computes the local standard deviation of a pixels sphere neighborhood. The box size is specified by its
+ * halfwidth, halfheight and halfdepth (radius). If 2D images are given, radius_z will be ignored.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius along the x axis. [int ( = 1 )]
+ * @param radius_y Radius along the y axis. [int ( = 1 )]
+ * @param radius_z Radius along the z axis. [int ( = 1 )]
+ * @param connectivity Neigborhood shape, "box" or "sphere" [string ( = "box" )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_standardDeviationBox
+ * @see https://clij.github.io/clij2-docs/reference_standardDeviationSphere
+ */
+auto
+standard_deviation_func(const Device::Pointer & device,
+                        const Array::Pointer &  src,
+                        Array::Pointer          dst,
+                        int                     radius_x,
+                        int                     radius_y,
+                        int                     radius_z,
+                        std::string             connectivity) -> Array::Pointer;
 
 /**
  * @name subtract_gaussian_background
@@ -758,6 +891,7 @@ sum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & sr
  *
  * @note 'filter', 'background removal', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_topHatBox
+ * @deprecated This method is deprecated. Consider using top_hat() instead.
  */
 auto
 top_hat_box_func(const Device::Pointer & device,
@@ -782,6 +916,7 @@ top_hat_box_func(const Device::Pointer & device,
  *
  * @note 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_topHatSphere
+ * @deprecated This method is deprecated. Consider using top_hat() instead.
  */
 auto
 top_hat_sphere_func(const Device::Pointer & device,
@@ -791,6 +926,31 @@ top_hat_sphere_func(const Device::Pointer & device,
                     float                   radius_y,
                     float                   radius_z) -> Array::Pointer;
 
+/**
+ * @name top_hat
+ * @brief Applies a tophat filter for background subtraction to the input image.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src The input image where the background is subtracted from. [const Array::Pointer &]
+ * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param radius_x Radius of the background determination region in X. [float ( = 1 )]
+ * @param radius_y Radius of the background determination region in Y. [float ( = 1 )]
+ * @param radius_z Radius of the background determination region in Z. [float ( = 1 )]
+ * @param connectivity Element shape, "box" or "sphere" [string ( = "box" )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_topHatBox
+ * @see https://clij.github.io/clij2-docs/reference_topHatSphere
+ */
+auto
+top_hat_func(const Device::Pointer & device,
+             const Array::Pointer &  src,
+             Array::Pointer          dst,
+             float                   radius_x,
+             float                   radius_y,
+             float                   radius_z,
+             std::string             connectivity) -> Array::Pointer;
 
 } // namespace cle::tier2
 

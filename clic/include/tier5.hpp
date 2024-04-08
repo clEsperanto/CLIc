@@ -55,7 +55,7 @@ combine_labels_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Binary image to label. [const Array::Pointer &]
  * @param dst Output label image. [Array::Pointer ( = None )]
- * @param connectivity Defines pixel neighborhood relationship. [const std::string & ( = 'box' )]
+ * @param connectivity Defines pixel neighborhood relationship, "box" or "sphere". [const std::string & ( = 'box' )]
  * @return Array::Pointer
  *
  * @note 'label', 'in assistant', 'bia-bob-suggestion'

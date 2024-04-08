@@ -32,11 +32,11 @@ dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
   {
     if (iteration_count % 2 == 0)
     {
-      tier1::onlyzero_overwrite_maximum_box_func(device, flip, flag, flog);
+      tier1::onlyzero_overwrite_maximum_func(device, flip, flag, flog, "box");
     }
     else
     {
-      tier1::onlyzero_overwrite_maximum_diamond_func(device, flog, flag, flip);
+      tier1::onlyzero_overwrite_maximum_func(device, flog, flag, flip, "sphere");
     }
     flag->read(&flag_value);
     flag->fill(0);
@@ -82,11 +82,11 @@ erode_labels_func(const Device::Pointer & device,
     {
       if (i % 2 == 0)
       {
-        tier1::minimum_sphere_func(device, temp, dst, 1, 1, 1);
+        tier1::minimum_func(device, temp, dst, 1, 1, 1, "sphere");
       }
       else
       {
-        tier1::minimum_box_func(device, dst, temp, 1, 1, 1);
+        tier1::minimum_func(device, dst, temp, 1, 1, 1, "box");
       }
     }
   }
@@ -97,7 +97,7 @@ erode_labels_func(const Device::Pointer & device,
       tier1::copy_func(device, temp, dst);
     }
     tier1::not_equal_constant_func(device, dst, temp, 0);
-    tier5::connected_components_labeling_func(device, temp, dst, "diamond");
+    tier5::connected_components_labeling_func(device, temp, dst, "sphere");
   }
   else
   {
@@ -150,11 +150,11 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
   {
     if (iteration_count % 2 == 0)
     {
-      tier1::onlyzero_overwrite_maximum_box_func(device, flip, flag, flop);
+      tier1::onlyzero_overwrite_maximum_func(device, flip, flag, flop, "box");
     }
     else
     {
-      tier1::onlyzero_overwrite_maximum_diamond_func(device, flop, flag, flip);
+      tier1::onlyzero_overwrite_maximum_func(device, flop, flag, flip, "sphere");
     }
     flag->read(&flag_value);
     flag->fill(0);

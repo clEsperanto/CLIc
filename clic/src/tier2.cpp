@@ -37,6 +37,7 @@ bottom_hat_box_func(const Device::Pointer & device,
                     int                     radius_y,
                     int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: this function is deprecated, use bottom_hat instead\n";
   auto temp1 = tier1::maximum_box_func(device, src, nullptr, radius_x, radius_y, radius_z);
   auto temp2 = tier1::minimum_box_func(device, temp1, nullptr, radius_x, radius_y, radius_z);
   return tier1::add_images_weighted_func(device, temp2, src, dst, 1, -1);
@@ -50,8 +51,23 @@ bottom_hat_sphere_func(const Device::Pointer & device,
                        float                   radius_y,
                        float                   radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: this function is deprecated, use bottom_hat instead\n";
   auto temp1 = tier1::maximum_sphere_func(device, src, nullptr, radius_x, radius_y, radius_z);
   auto temp2 = tier1::minimum_sphere_func(device, temp1, nullptr, radius_x, radius_y, radius_z);
+  return tier1::add_images_weighted_func(device, temp2, src, dst, 1, -1);
+}
+
+auto
+bottom_hat_func(const Device::Pointer & device,
+                const Array::Pointer &  src,
+                Array::Pointer          dst,
+                float                   radius_x,
+                float                   radius_y,
+                float                   radius_z,
+                std::string             connectivity) -> Array::Pointer
+{
+  auto temp1 = tier1::maximum_func(device, src, nullptr, radius_x, radius_y, radius_z, connectivity);
+  auto temp2 = tier1::minimum_func(device, temp1, nullptr, radius_x, radius_y, radius_z, connectivity);
   return tier1::add_images_weighted_func(device, temp2, src, dst, 1, -1);
 }
 
@@ -74,6 +90,7 @@ closing_box_func(const Device::Pointer & device,
                  int                     radius_y,
                  int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: this function is deprecated, use closing instead\n";
   auto temp = tier1::maximum_box_func(device, src, nullptr, radius_x, radius_y, radius_z);
   return tier1::minimum_box_func(device, temp, dst, radius_x, radius_y, radius_z);
 }
@@ -86,10 +103,23 @@ closing_sphere_func(const Device::Pointer & device,
                     float                   radius_y,
                     float                   radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: this function is deprecated, use closing instead\n";
   auto temp = tier1::maximum_sphere_func(device, src, nullptr, radius_x, radius_y, radius_z);
   return tier1::minimum_sphere_func(device, temp, dst, radius_x, radius_y, radius_z);
 }
 
+auto
+closing_func(const Device::Pointer & device,
+             const Array::Pointer &  src,
+             Array::Pointer          dst,
+             float                   radius_x,
+             float                   radius_y,
+             float                   radius_z,
+             std::string             connectivity) -> Array::Pointer
+{
+  auto temp = tier1::maximum_func(device, src, nullptr, radius_x, radius_y, radius_z, connectivity);
+  return tier1::minimum_func(device, temp, dst, radius_x, radius_y, radius_z, connectivity);
+}
 
 auto
 concatenate_along_x_func(const Device::Pointer & device,
@@ -186,6 +216,7 @@ detect_maxima_box_func(const Device::Pointer & device,
                        int                     radius_y,
                        int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: this function is deprecated, use detect_minima instead\n";
   tier0::create_like(src, dst, dType::BINARY);
   auto                temp = tier1::mean_box_func(device, src, nullptr, radius_x, radius_y, radius_z);
   const KernelInfo    kernel = { "detect_maxima", kernel::detect_maxima };
@@ -203,8 +234,27 @@ detect_minima_box_func(const Device::Pointer & device,
                        int                     radius_y,
                        int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: this function is deprecated, use detect_minima instead\n";
   tier0::create_like(src, dst, dType::BINARY);
   auto                temp = tier1::mean_box_func(device, src, nullptr, radius_x, radius_y, radius_z);
+  const KernelInfo    kernel = { "detect_minima", kernel::detect_minima };
+  const ParameterList params = { { "src", temp }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
+}
+
+auto
+detect_minima_func(const Device::Pointer & device,
+                   const Array::Pointer &  src,
+                   Array::Pointer          dst,
+                   int                     radius_x,
+                   int                     radius_y,
+                   int                     radius_z,
+                   std::string             connectivity) -> Array::Pointer
+{
+  tier0::create_like(src, dst, dType::BINARY);
+  auto                temp = tier1::mean_func(device, src, nullptr, radius_x, radius_y, radius_z, connectivity);
   const KernelInfo    kernel = { "detect_minima", kernel::detect_minima };
   const ParameterList params = { { "src", temp }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -246,11 +296,11 @@ extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Po
   {
     if (iteration_count % 2 == 0)
     {
-      tier1::onlyzero_overwrite_maximum_box_func(device, flip, flag, flop);
+      tier1::onlyzero_overwrite_maximum_func(device, flip, flag, flop, "box");
     }
     else
     {
-      tier1::onlyzero_overwrite_maximum_box_func(device, flop, flag, flip);
+      tier1::onlyzero_overwrite_maximum_func(device, flop, flag, flip, "box");
     }
     flag->read(&flag_value);
     flag->fill(0);
@@ -410,6 +460,7 @@ opening_box_func(const Device::Pointer & device,
                  int                     radius_y,
                  int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: this function is deprecated, use opening instead\n";
   auto temp = tier1::minimum_box_func(device, src, nullptr, radius_x, radius_y, radius_z);
   return tier1::maximum_box_func(device, temp, dst, radius_x, radius_y, radius_z);
 }
@@ -422,8 +473,22 @@ opening_sphere_func(const Device::Pointer & device,
                     float                   radius_y,
                     float                   radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: this function is deprecated, use opening instead\n";
   auto temp = tier1::minimum_sphere_func(device, src, nullptr, radius_x, radius_y, radius_z);
   return tier1::maximum_sphere_func(device, temp, dst, radius_x, radius_y, radius_z);
+}
+
+auto
+opening_func(const Device::Pointer & device,
+             const Array::Pointer &  src,
+             Array::Pointer          dst,
+             float                   radius_x,
+             float                   radius_y,
+             float                   radius_z,
+             std::string             connectivity) -> Array::Pointer
+{
+  auto temp = tier1::minimum_func(device, src, nullptr, radius_x, radius_y, radius_z, connectivity);
+  return tier1::maximum_func(device, temp, dst, radius_x, radius_y, radius_z, connectivity);
 }
 
 // @StRigaud TODO: auto pointlist_to_labelled_spots_func;
@@ -481,6 +546,7 @@ standard_deviation_box_func(const Device::Pointer & device,
                             int                     radius_y,
                             int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: this function is deprecated, use standard_deviation instead\n";
   auto temp = tier1::variance_box_func(device, src, nullptr, radius_x, radius_y, radius_z);
   return tier1::power_func(device, temp, dst, 0.5);
 }
@@ -495,7 +561,21 @@ standard_deviation_sphere_func(const Device::Pointer & device,
                                int                     radius_y,
                                int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: this function is deprecated, use standard_deviation instead\n";
   auto temp = tier1::variance_sphere_func(device, src, nullptr, radius_x, radius_y, radius_z);
+  return tier1::power_func(device, temp, dst, 0.5);
+}
+
+auto
+standard_deviation_func(const Device::Pointer & device,
+                        const Array::Pointer &  src,
+                        Array::Pointer          dst,
+                        int                     radius_x,
+                        int                     radius_y,
+                        int                     radius_z,
+                        std::string             connectivity) -> Array::Pointer
+{
+  auto temp = tier1::variance_func(device, src, nullptr, radius_x, radius_y, radius_z, connectivity);
   return tier1::power_func(device, temp, dst, 0.5);
 }
 
@@ -557,6 +637,7 @@ top_hat_box_func(const Device::Pointer & device,
                  int                     radius_y,
                  int                     radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: this function is deprecated, use top_hat instead\n";
   auto temp1 = tier1::minimum_box_func(device, src, nullptr, radius_x, radius_y, radius_z);
   auto temp2 = tier1::maximum_box_func(device, temp1, nullptr, radius_x, radius_y, radius_z);
   return tier1::add_images_weighted_func(device, src, temp2, dst, 1, -1);
@@ -570,8 +651,23 @@ top_hat_sphere_func(const Device::Pointer & device,
                     float                   radius_y,
                     float                   radius_z) -> Array::Pointer
 {
+  std::cerr << "Deprecated: this function is deprecated, use top_hat instead\n";
   auto temp1 = tier1::minimum_sphere_func(device, src, nullptr, radius_x, radius_y, radius_z);
   auto temp2 = tier1::maximum_sphere_func(device, temp1, nullptr, radius_x, radius_y, radius_z);
+  return tier1::add_images_weighted_func(device, src, temp2, dst, 1, -1);
+}
+
+auto
+top_hat_func(const Device::Pointer & device,
+             const Array::Pointer &  src,
+             Array::Pointer          dst,
+             float                   radius_x,
+             float                   radius_y,
+             float                   radius_z,
+             std::string             connectivity) -> Array::Pointer
+{
+  auto temp1 = tier1::minimum_func(device, src, nullptr, radius_x, radius_y, radius_z, connectivity);
+  auto temp2 = tier1::maximum_func(device, temp1, nullptr, radius_x, radius_y, radius_z, connectivity);
   return tier1::add_images_weighted_func(device, src, temp2, dst, 1, -1);
 }
 

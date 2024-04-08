@@ -216,11 +216,11 @@ closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
   {
     if (i % 2 == 0)
     {
-      tier1::erode_sphere_func(device, flip, flop);
+      tier1::erode_func(device, flip, flop, "sphere");
     }
     else
     {
-      tier1::erode_box_func(device, flip, flop);
+      tier1::erode_func(device, flip, flop, "box");
     }
   }
   if (radius % 2 == 0)
