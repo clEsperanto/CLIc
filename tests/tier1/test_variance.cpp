@@ -15,7 +15,7 @@ protected:
                                                 0.16, 0, 0, 0, 0.16, 0, 0, 0,    0, 0, 0, 0 };
 };
 
-TEST_P(TestVariance, executeBox)
+TEST_P(TestVariance, executeDeprecatedBox)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -34,7 +34,7 @@ TEST_P(TestVariance, executeBox)
   }
 }
 
-TEST_P(TestVariance, executeSphere)
+TEST_P(TestVariance, executeDeprecatedSphere)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -45,6 +45,44 @@ TEST_P(TestVariance, executeSphere)
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier1::variance_sphere_func(device, gpu_input, nullptr, 1, 1, 0);
+
+  gpu_output->read(output.data());
+  for (int i = 0; i < output.size(); i++)
+  {
+    EXPECT_NEAR(output[i], valid_sphere[i], 0.001);
+  }
+}
+
+TEST_P(TestVariance, executeBox)
+{
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
+
+  auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  gpu_input->write(input.data());
+
+  auto gpu_output = cle::tier1::variance_func(device, gpu_input, nullptr, 1, 1, 0, "box");
+
+  gpu_output->read(output.data());
+  for (int i = 0; i < output.size(); i++)
+  {
+    EXPECT_NEAR(output[i], valid_box[i], 0.001);
+  }
+}
+
+TEST_P(TestVariance, executeSphere)
+{
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
+
+  auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  gpu_input->write(input.data());
+
+  auto gpu_output = cle::tier1::variance_func(device, gpu_input, nullptr, 1, 1, 0, "sphere");
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
