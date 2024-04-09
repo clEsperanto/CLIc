@@ -1,0 +1,30 @@
+#include "tier0.hpp"
+#include "tier1.hpp"
+#include "tier2.hpp" 
+
+#include "utils.hpp"
+
+namespace cle::tier2 
+{
+
+auto
+top_hat_func(const Device::Pointer & device,
+             const Array::Pointer &  src,
+             Array::Pointer          dst,
+             float                   radius_x,
+             float                   radius_y,
+             float                   radius_z,
+             std::string             connectivity) -> Array::Pointer
+{
+  auto temp1 = tier1::minimum_func(device, src, nullptr, radius_x, radius_y, radius_z, connectivity);
+  auto temp2 = tier1::maximum_func(device, temp1, nullptr, radius_x, radius_y, radius_z, connectivity);
+  return tier1::add_images_weighted_func(device, src, temp2, dst, 1, -1);
+}
+
+// @StRigaud TODO: auto touch_matrix_to_adjacency_matrix_func;
+
+
+// @StRigaud TODO: auto z_position_projection_func;  
+
+}
+
