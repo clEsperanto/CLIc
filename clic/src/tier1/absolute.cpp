@@ -12,7 +12,11 @@ auto
 absolute_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  const KernelInfo    kernel = { "absolute", kernel::absolute };
+
+  std::string      name = "absolute";
+  std::string      source = kernel::absolute;
+  const KernelInfo kernel = { name, source };
+
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
