@@ -14,7 +14,12 @@
   if ((ptr) == nullptr)              \
   {                                  \
     throw std::runtime_error((msg)); \
+  }                                  \
+  else                               \
+  {                                  \
+    return;                          \
   }
+
 
 namespace cle
 {
