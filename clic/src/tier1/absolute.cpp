@@ -17,8 +17,15 @@ absolute_func(const Device::Pointer & device, const Array::Pointer & src, Array:
   std::string      source = kernel::absolute;
   const KernelInfo kernel = { name, source };
 
-  const ParameterList params = { { "src", src }, { "dst", dst } };
-  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  std::pair<std::string, Array::Pointer> src_arg = { "src", src };
+  std::pair<std::string, Array::Pointer> dst_arg = { "dst", dst };
+  const ParameterList                    params = { src_arg, dst_arg };
+
+  auto             width = src->width();
+  auto             height = src->height();
+  auto             depth = src->depth();
+  const RangeArray range = { width, height, depth };
+
   execute(device, kernel, params, range);
   return dst;
 }
