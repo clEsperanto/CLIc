@@ -2,11 +2,11 @@
 #include "tier1.hpp"
 #include "tier2.hpp"
 #include "tier3.hpp"
-#include "tier4.hpp" 
+#include "tier4.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier4 
+namespace cle::tier4
 {
 
 auto
@@ -26,7 +26,6 @@ relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & s
   tier1::block_enumerate_func(device, flagged, block_sums, new_indices, blocksize);
   tier1::replace_values_func(device, src, new_indices, dst);
   return dst;
-}  
-
 }
 
+} // namespace cle::tier4

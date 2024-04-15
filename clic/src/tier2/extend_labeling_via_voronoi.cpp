@@ -1,10 +1,10 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
-#include "tier2.hpp" 
+#include "tier2.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier2 
+namespace cle::tier2
 {
 
 auto
@@ -45,11 +45,4 @@ extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Po
   return dst;
 }
 
-// @StRigaud TODO: auto generate_maximum_intensity_between_points_matrix_func;
-// @StRigaud TODO: auto generate_mean_intensity_between_points_matrix_func;
-// @StRigaud TODO: auto generate_minimum_intensity_between_points_matrix_func;
-// @StRigaud TODO: auto generate_standard_deviation_intensity_between_points_matrix_func;
-// @StRigaud TODO: auto generate_should_touch_matrix_func;  
-
-}
-
+} // namespace cle::tier2

@@ -1,10 +1,10 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
-#include "tier2.hpp" 
+#include "tier2.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier2 
+namespace cle::tier2
 {
 
 auto
@@ -18,7 +18,6 @@ crop_border_func(const Device::Pointer & device, const Array::Pointer & src, Arr
   return tier1::crop_func(device, src, dst, border_size, border_size, border_size, region[0], region[1], region[2]);
 }
 
-// @StRigaud TODO: auto distance_matrix_to_mesh_func;  
+// @StRigaud TODO: auto distance_matrix_to_mesh_func;
 
-}
-
+} // namespace cle::tier2

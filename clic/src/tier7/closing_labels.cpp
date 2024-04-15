@@ -5,11 +5,11 @@
 #include "tier4.hpp"
 #include "tier5.hpp"
 #include "tier6.hpp"
-#include "tier7.hpp" 
+#include "tier7.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier7 
+namespace cle::tier7
 {
 
 auto
@@ -43,7 +43,6 @@ closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
     return tier1::multiply_images_func(device, flip, temp, dst);
   }
   return tier1::multiply_images_func(device, flop, temp, dst);
-}  
-
 }
 
+} // namespace cle::tier7

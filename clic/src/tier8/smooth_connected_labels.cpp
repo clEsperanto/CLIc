@@ -6,11 +6,11 @@
 #include "tier5.hpp"
 #include "tier6.hpp"
 #include "tier7.hpp"
-#include "tier8.hpp" 
+#include "tier8.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier8 
+namespace cle::tier8
 {
 
 auto
@@ -24,7 +24,6 @@ smooth_connected_labels_func(const Device::Pointer & device, const Array::Pointe
   }
   auto binary = tier7::erode_connected_labels_func(device, src, nullptr, radius);
   return tier6::dilate_labels_func(device, binary, dst, radius);
-}  
-
 }
 
+} // namespace cle::tier8

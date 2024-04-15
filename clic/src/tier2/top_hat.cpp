@@ -1,10 +1,10 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
-#include "tier2.hpp" 
+#include "tier2.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier2 
+namespace cle::tier2
 {
 
 auto
@@ -21,10 +21,4 @@ top_hat_func(const Device::Pointer & device,
   return tier1::add_images_weighted_func(device, src, temp2, dst, 1, -1);
 }
 
-// @StRigaud TODO: auto touch_matrix_to_adjacency_matrix_func;
-
-
-// @StRigaud TODO: auto z_position_projection_func;  
-
-}
-
+} // namespace cle::tier2

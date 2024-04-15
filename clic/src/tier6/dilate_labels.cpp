@@ -4,11 +4,11 @@
 #include "tier3.hpp"
 #include "tier4.hpp"
 #include "tier5.hpp"
-#include "tier6.hpp" 
+#include "tier6.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier6 
+namespace cle::tier6
 {
 
 auto
@@ -53,7 +53,6 @@ dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
     tier1::copy_func(device, flog, dst);
   }
   return dst;
-}  
-
 }
 
+} // namespace cle::tier6

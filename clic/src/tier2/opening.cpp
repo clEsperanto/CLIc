@@ -1,10 +1,10 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
-#include "tier2.hpp" 
+#include "tier2.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier2 
+namespace cle::tier2
 {
 
 auto
@@ -20,8 +20,4 @@ opening_func(const Device::Pointer & device,
   return tier1::maximum_func(device, temp, dst, radius_x, radius_y, radius_z, connectivity);
 }
 
-// @StRigaud TODO: auto pointlist_to_labelled_spots_func;
-// @StRigaud TODO: auto prefix_in_x_func;  
-
-}
-
+} // namespace cle::tier2

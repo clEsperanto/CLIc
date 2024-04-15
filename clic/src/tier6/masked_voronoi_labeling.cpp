@@ -4,11 +4,11 @@
 #include "tier3.hpp"
 #include "tier4.hpp"
 #include "tier5.hpp"
-#include "tier6.hpp" 
+#include "tier6.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier6 
+namespace cle::tier6
 {
 
 auto
@@ -55,7 +55,6 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
     tier1::mask_func(device, flop, mask, dst);
   }
   return dst;
-}  
-
 }
 
+} // namespace cle::tier6

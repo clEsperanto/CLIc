@@ -1,10 +1,10 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
-#include "tier2.hpp" 
+#include "tier2.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier2 
+namespace cle::tier2
 {
 
 auto
@@ -22,7 +22,6 @@ difference_of_gaussian_func(const Device::Pointer & device,
   auto gauss1 = tier1::gaussian_blur_func(device, src, nullptr, sigma1_x, sigma1_y, sigma1_z);
   auto gauss2 = tier1::gaussian_blur_func(device, src, nullptr, sigma2_x, sigma2_y, sigma2_z);
   return tier1::add_images_weighted_func(device, gauss1, gauss2, dst, 1, -1);
-}  
-
 }
 
+} // namespace cle::tier2

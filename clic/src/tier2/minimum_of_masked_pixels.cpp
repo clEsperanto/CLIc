@@ -1,10 +1,10 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
-#include "tier2.hpp" 
+#include "tier2.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier2 
+namespace cle::tier2
 {
 
 auto
@@ -51,9 +51,4 @@ minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Point
   return res;
 }
 
-// @StRigaud TODO: auto minimum_of_touching_neighbors_func;
-// @StRigaud TODO: auto mode_of_touching_neighbors_func;
-// @StRigaud TODO: auto neighbors_of_neighbors_func;  
-
-}
-
+} // namespace cle::tier2

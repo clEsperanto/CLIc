@@ -1,10 +1,10 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
-#include "tier2.hpp" 
+#include "tier2.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier2 
+namespace cle::tier2
 {
 
 auto
@@ -22,7 +22,6 @@ count_touching_neighbors_func(const Device::Pointer & device,
     tier1::set_where_x_equals_y_func(device, bin_matrix, 0);
   }
   return tier1::sum_y_projection_func(device, bin_matrix, dst);
-}  
-
 }
 
+} // namespace cle::tier2

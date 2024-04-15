@@ -3,11 +3,11 @@
 #include "tier2.hpp"
 #include "tier3.hpp"
 #include "tier4.hpp"
-#include "tier5.hpp" 
+#include "tier5.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier5 
+namespace cle::tier5
 {
 
 auto
@@ -23,7 +23,6 @@ combine_labels_func(const Device::Pointer & device,
   temp1 = tier1::mask_func(device, temp1, temp2, nullptr);
   temp2 = tier1::maximum_images_func(device, src0, temp1, nullptr);
   return tier4::relabel_sequential_func(device, temp2, dst, 4096);
-}  
-
 }
 
+} // namespace cle::tier5

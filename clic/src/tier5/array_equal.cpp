@@ -3,11 +3,11 @@
 #include "tier2.hpp"
 #include "tier3.hpp"
 #include "tier4.hpp"
-#include "tier5.hpp" 
+#include "tier5.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier5 
+namespace cle::tier5
 {
 
 auto
@@ -30,7 +30,6 @@ array_equal_func(const Device::Pointer & device, const Array::Pointer & src0, co
   }
   auto mse = tier4::mean_squared_error_func(device, src0, src1);
   return mse == 0;
-}  
-
 }
 
+} // namespace cle::tier5

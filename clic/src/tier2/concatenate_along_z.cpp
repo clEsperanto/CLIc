@@ -1,10 +1,10 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
-#include "tier2.hpp" 
+#include "tier2.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier2 
+namespace cle::tier2
 {
 
 auto
@@ -17,7 +17,6 @@ concatenate_along_z_func(const Device::Pointer & device,
   tier1::paste_func(device, src0, dst, 0, 0, 0);
   tier1::paste_func(device, src1, dst, 0, 0, src0->depth());
   return dst;
-}  
-
 }
 
+} // namespace cle::tier2

@@ -1,11 +1,11 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
 #include "tier2.hpp"
-#include "tier3.hpp" 
+#include "tier3.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier3 
+namespace cle::tier3
 {
 
 auto
@@ -51,7 +51,6 @@ minimum_position_func(const Device::Pointer & device, const Array::Pointer & src
     coord[2] = z_coord;
   }
   return coord;
-}  
-
 }
 
+} // namespace cle::tier3

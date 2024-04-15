@@ -1,10 +1,10 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
-#include "tier2.hpp" 
+#include "tier2.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier2 
+namespace cle::tier2
 {
 
 auto
@@ -20,7 +20,4 @@ standard_deviation_box_func(const Device::Pointer & device,
   return tier1::power_func(device, temp, dst, 0.5);
 }
 
-// @StRigaud TODO: auto standard_deviation_of_touching_neighbors_func  
-
-}
-
+} // namespace cle::tier2

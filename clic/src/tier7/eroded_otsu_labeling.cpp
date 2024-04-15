@@ -5,11 +5,11 @@
 #include "tier4.hpp"
 #include "tier5.hpp"
 #include "tier6.hpp"
-#include "tier7.hpp" 
+#include "tier7.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier7 
+namespace cle::tier7
 {
 
 auto
@@ -33,7 +33,6 @@ eroded_otsu_labeling_func(const Device::Pointer & device,
     std::swap(eroded1, eroded2);
   }
   return tier6::masked_voronoi_labeling_func(device, eroded1, binary, dst);
-}  
-
 }
 
+} // namespace cle::tier7

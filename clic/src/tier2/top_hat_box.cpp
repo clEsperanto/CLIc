@@ -1,10 +1,10 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
-#include "tier2.hpp" 
+#include "tier2.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier2 
+namespace cle::tier2
 {
 
 auto
@@ -19,7 +19,6 @@ top_hat_box_func(const Device::Pointer & device,
   auto temp1 = tier1::minimum_box_func(device, src, nullptr, radius_x, radius_y, radius_z);
   auto temp2 = tier1::maximum_box_func(device, temp1, nullptr, radius_x, radius_y, radius_z);
   return tier1::add_images_weighted_func(device, src, temp2, dst, 1, -1);
-}  
-
 }
 
+} // namespace cle::tier2

@@ -1,10 +1,10 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
-#include "tier2.hpp" 
+#include "tier2.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier2 
+namespace cle::tier2
 {
 
 auto
@@ -29,10 +29,4 @@ sum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & sr
   return res;
 }
 
-// @StRigaud TODO: auto symmetric_maximum_matrix_func;
-// @StRigaud TODO: auto symmetric_mean_matrix_func;
-// @StRigaud TODO: auto symmetric_minimum_matrix_func;
-// @StRigaud TODO: auto symmetric_sum_matrix_func;  
-
-}
-
+} // namespace cle::tier2

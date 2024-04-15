@@ -1,11 +1,11 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
 #include "tier2.hpp"
-#include "tier3.hpp" 
+#include "tier3.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier3 
+namespace cle::tier3
 {
 
 auto
@@ -27,7 +27,6 @@ bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) ->
     min_z = tier2::minimum_of_masked_pixels_func(device, temp, src);
   }
   return std::array<float, 6>{ min_x, min_y, min_z, max_x, max_y, max_z };
-}  
-
 }
 
+} // namespace cle::tier3

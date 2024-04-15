@@ -1,10 +1,10 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
-#include "tier2.hpp" 
+#include "tier2.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier2 
+namespace cle::tier2
 {
 
 auto
@@ -27,7 +27,6 @@ minimum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer 
   float res;
   dst->read(&res);
   return res;
-}  
-
 }
 
+} // namespace cle::tier2

@@ -5,11 +5,11 @@
 #include "tier4.hpp"
 #include "tier5.hpp"
 #include "tier6.hpp"
-#include "tier7.hpp" 
+#include "tier7.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier7 
+namespace cle::tier7
 {
 
 auto
@@ -25,7 +25,6 @@ erode_connected_labels_func(const Device::Pointer & device, const Array::Pointer
   auto eroded = tier6::erode_labels_func(device, temp, nullptr, radius, false);
   temp = tier1::multiply_images_func(device, src, eroded, nullptr);
   return tier4::relabel_sequential_func(device, temp, dst, 4096);
-}  
-
 }
 
+} // namespace cle::tier7

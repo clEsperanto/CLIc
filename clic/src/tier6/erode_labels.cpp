@@ -4,11 +4,11 @@
 #include "tier3.hpp"
 #include "tier4.hpp"
 #include "tier5.hpp"
-#include "tier6.hpp" 
+#include "tier6.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier6 
+namespace cle::tier6
 {
 
 auto
@@ -65,7 +65,6 @@ erode_labels_func(const Device::Pointer & device,
     tier4::relabel_sequential_func(device, temp, dst, 4096);
   }
   return dst;
-}  
-
 }
 
+} // namespace cle::tier6

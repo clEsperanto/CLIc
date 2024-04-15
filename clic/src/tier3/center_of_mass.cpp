@@ -1,11 +1,11 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
 #include "tier2.hpp"
-#include "tier3.hpp" 
+#include "tier3.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier3 
+namespace cle::tier3
 {
 
 auto
@@ -19,7 +19,6 @@ center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) 
   temp = tier1::multiply_image_and_position_func(device, src, nullptr, 2);
   auto sum_z = tier2::sum_of_all_pixels_func(device, temp);
   return std::array<float, 3>{ sum_x / sum, sum_y / sum, sum_z / sum };
-}  
-
 }
 
+} // namespace cle::tier3

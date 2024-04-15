@@ -3,11 +3,11 @@
 #include "tier2.hpp"
 #include "tier3.hpp"
 #include "tier4.hpp"
-#include "tier5.hpp" 
+#include "tier5.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier5 
+namespace cle::tier5
 {
 
 auto
@@ -63,7 +63,6 @@ connected_components_labeling_func(const Device::Pointer & device,
     tier4::relabel_sequential_func(device, temp2, dst, 4096);
   }
   return dst;
-}  
-
 }
 
+} // namespace cle::tier5

@@ -1,11 +1,11 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
 #include "tier2.hpp"
-#include "tier3.hpp" 
+#include "tier3.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier3 
+namespace cle::tier3
 {
 
 auto
@@ -41,7 +41,6 @@ exclude_labels_func(const Device::Pointer & device,
   index_list->write(labels_list.data());
   tier1::replace_values_func(device, src, index_list, dst);
   return dst;
-}  
-
 }
 
+} // namespace cle::tier3

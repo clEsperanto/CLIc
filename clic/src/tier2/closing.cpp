@@ -1,10 +1,10 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
-#include "tier2.hpp" 
+#include "tier2.hpp"
 
 #include "utils.hpp"
 
-namespace cle::tier2 
+namespace cle::tier2
 {
 
 auto
@@ -18,7 +18,6 @@ closing_func(const Device::Pointer & device,
 {
   auto temp = tier1::maximum_func(device, src, nullptr, radius_x, radius_y, radius_z, connectivity);
   return tier1::minimum_func(device, temp, dst, radius_x, radius_y, radius_z, connectivity);
-}  
-
 }
 
+} // namespace cle::tier2
