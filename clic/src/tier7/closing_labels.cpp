@@ -21,28 +21,14 @@ closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
   {
     return tier1::copy_func(device, src, dst);
   }
-
   auto temp = tier6::dilate_labels_func(device, src, nullptr, radius);
-
   auto flip = tier1::greater_constant_func(device, temp, nullptr, 0);
   auto flop = Array::create(flip);
-
   for (size_t i = 0; i < radius; i++)
   {
-    if (i % 2 == 0)
-    {
-      tier1::erode_func(device, flip, flop, "sphere");
-    }
-    else
-    {
-      tier1::erode_func(device, flip, flop, "box");
-    }
+    tier1::erode_func(device, (i % 2 == 0) ? flip : flop, flop, (i % 2 == 0) ? "sphere" : "box");
   }
-  if (radius % 2 == 0)
-  {
-    return tier1::multiply_images_func(device, flip, temp, dst);
-  }
-  return tier1::multiply_images_func(device, flop, temp, dst);
+  return tier1::multiply_images_func(device, (radius % 2 == 0) ? flip : flop, temp, dst);
 }
 
 } // namespace cle::tier7

@@ -22,37 +22,26 @@ dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
   }
 
   auto flip = tier1::copy_func(device, src, nullptr);
-  auto flog = Array::create(flip);
-
+  auto flop = Array::create(flip);
   auto flag = Array::create(1, 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
   flag->fill(0);
 
-  int   iteration_count = 0;
+  int   iter_count = 0;
   float flag_value = 1;
-  while (flag_value > 0 && iteration_count < radius)
+  while (flag_value > 0 && iter_count < radius)
   {
-    if (iteration_count % 2 == 0)
-    {
-      tier1::onlyzero_overwrite_maximum_func(device, flip, flag, flog, "box");
-    }
-    else
-    {
-      tier1::onlyzero_overwrite_maximum_func(device, flog, flag, flip, "sphere");
-    }
+    auto active = (iter_count % 2 == 0) ? flip : flop;
+    auto passive = (iter_count % 2 == 0) ? flop : flip;
+    tier1::onlyzero_overwrite_maximum_func(device, active, flag, passive, (iter_count % 2 == 0) ? "box" : "sphere");
     flag->read(&flag_value);
-    flag->fill(0);
-    iteration_count++;
+    if (flag_value > 0)
+    {
+      flag->fill(0);
+    }
+    iter_count++;
   }
 
-  if (iteration_count % 2 == 0)
-  {
-    tier1::copy_func(device, flip, dst);
-  }
-  else
-  {
-    tier1::copy_func(device, flog, dst);
-  }
-  return dst;
+  return tier1::copy_func(device, (iter_count % 2 == 0) ? flip : flop, dst);
 }
 
 } // namespace cle::tier6

@@ -33,20 +33,13 @@ erode_labels_func(const Device::Pointer & device,
   {
     tier1::copy_func(device, temp, dst);
   }
-  else
+  for (auto i = 0; i < radius - 1; i++)
   {
-    for (size_t i = 0; i < radius - 1; i++)
-    {
-      if (i % 2 == 0)
-      {
-        tier1::minimum_func(device, temp, dst, 1, 1, 1, "sphere");
-      }
-      else
-      {
-        tier1::minimum_func(device, dst, temp, 1, 1, 1, "box");
-      }
-    }
+    auto active = (i % 2 == 0) ? temp : dst;
+    auto passive = (i % 2 == 0) ? dst : temp;
+    tier1::minimum_func(device, active, passive, 1, 1, 1, (i % 2 == 0) ? "sphere" : "box");
   }
+
   if (relabel)
   {
     if (radius % 2 != 0)
