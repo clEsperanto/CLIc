@@ -19,13 +19,12 @@ minimum_box_func(const Device::Pointer & device,
   std::cerr << "Deprecated: Please use minimum() instead\n";
   tier0::create_like(src, dst);
   const KernelInfo kernel = { "minimum_separable", kernel::minimum_separable };
-  tier0::execute_separable_func(
-    device,
-    kernel,
-    src,
-    dst,
-    { static_cast<float>(radius_x), static_cast<float>(radius_y), static_cast<float>(radius_z) },
-    { radius2kernelsize(radius_x), radius2kernelsize(radius_y), radius2kernelsize(radius_z) });
+  execute_separable(device,
+                    kernel,
+                    src,
+                    dst,
+                    { static_cast<float>(radius_x), static_cast<float>(radius_y), static_cast<float>(radius_z) },
+                    { radius2kernelsize(radius_x), radius2kernelsize(radius_y), radius2kernelsize(radius_z) });
   return dst;
 }
 

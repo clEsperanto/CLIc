@@ -7,6 +7,7 @@
 #include "tier6.hpp"
 #include "tier7.hpp"
 
+#include "transform.hpp"
 #include "utils.hpp"
 
 namespace cle::tier7
@@ -23,7 +24,7 @@ translate_func(const Device::Pointer & device,
 {
   auto transform = AffineTransform();
   transform.translate(translate_x, translate_y, translate_z);
-  return tier0::apply_affine_transform(src, dst, transform, interpolate, false);
+  return cle::apply_affine_transform(src, dst, transform, interpolate, false);
 }
 
 } // namespace cle::tier7

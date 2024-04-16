@@ -37,13 +37,12 @@ mean_func(const Device::Pointer & device,
   else
   {
     const KernelInfo kernel = { "mean_separable", kernel::mean_separable };
-    tier0::execute_separable_func(
-      device,
-      kernel,
-      src,
-      dst,
-      { static_cast<float>(radius_x), static_cast<float>(radius_y), static_cast<float>(radius_z) },
-      { r_x, r_y, r_z });
+    execute_separable(device,
+                      kernel,
+                      src,
+                      dst,
+                      { static_cast<float>(radius_x), static_cast<float>(radius_y), static_cast<float>(radius_z) },
+                      { r_x, r_y, r_z });
   }
   return dst;
 }

@@ -7,6 +7,7 @@
 #include "tier6.hpp"
 #include "tier7.hpp"
 
+#include "transform.hpp"
 #include "utils.hpp"
 
 namespace cle::tier7
@@ -55,7 +56,7 @@ affine_transform_func(const Device::Pointer & device,
     std::copy(transform_matrix->begin(), transform_matrix->end(), transform_matrix_arr.begin());
   }
   auto transform = AffineTransform(transform_matrix_arr);
-  return tier0::apply_affine_transform(src, dst, transform, interpolate, resize);
+  return cle::apply_affine_transform(src, dst, transform, interpolate, resize);
 }
 
 } // namespace cle::tier7

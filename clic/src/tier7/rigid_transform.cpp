@@ -7,6 +7,7 @@
 #include "tier6.hpp"
 #include "tier7.hpp"
 
+#include "transform.hpp"
 #include "utils.hpp"
 
 namespace cle::tier7
@@ -48,7 +49,7 @@ rigid_transform_func(const Device::Pointer & device,
     transform.center({ src->width(), src->height(), src->depth() }, true);
   }
   transform.translate(translate_x, translate_y, translate_z);
-  return tier0::apply_affine_transform(src, dst, transform, interpolate, resize);
+  return cle::apply_affine_transform(src, dst, transform, interpolate, resize);
 }
 
 } // namespace cle::tier7

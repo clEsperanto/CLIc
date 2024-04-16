@@ -24,12 +24,12 @@ gaussian_blur_func(const Device::Pointer & device,
     tier1::copy_func(device, src, temp);
   }
   const KernelInfo kernel = { "gaussian_blur_separable", kernel::gaussian_blur_separable };
-  tier0::execute_separable_func(device,
-                                kernel,
-                                temp,
-                                dst,
-                                { sigma_x, sigma_y, sigma_z },
-                                { sigma2kernelsize(sigma_x), sigma2kernelsize(sigma_y), sigma2kernelsize(sigma_z) });
+  execute_separable(device,
+                    kernel,
+                    temp,
+                    dst,
+                    { sigma_x, sigma_y, sigma_z },
+                    { sigma2kernelsize(sigma_x), sigma2kernelsize(sigma_y), sigma2kernelsize(sigma_z) });
   return dst;
 }
 
