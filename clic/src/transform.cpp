@@ -26,18 +26,16 @@ prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::A
 
   // apply the transform matrix to all the point of the bounding box
   bounding_box updated_bbox;
-  for (size_t i = 0; i < 8; i++)
-  {
-    updated_bbox[i] = transform.getMatrix() * bbox[i];
-  }
+  std::transform(
+    bbox.begin(), bbox.end(), updated_bbox.begin(), [&](const point & p) { return transform.getMatrix() * p; });
 
   // find the min and max values for each axis
   point min = updated_bbox[0];
   point max = updated_bbox[0];
-  for (size_t i = 1; i < 8; i++)
+  for (const auto & point : updated_bbox)
   {
-    min = min.cwiseMin(updated_bbox[i]);
-    max = max.cwiseMax(updated_bbox[i]);
+    min = min.cwiseMin(point);
+    max = max.cwiseMax(point);
   }
 
   // compute a new width heigth and depth from the min and max point
@@ -60,12 +58,10 @@ apply_affine_transform(const cle::Array::Pointer &  src,
                        const bool                   interpolate,
                        const bool                   auto_resize) -> cle::Array::Pointer
 {
-  // initialize shape and transform from args
-  size_t               width = src->width();
-  size_t               height = src->height();
-  size_t               depth = src->depth();
   cle::AffineTransform new_transform(transform);
-
+  auto                 width = src->width();
+  auto                 height = src->height();
+  auto                 depth = src->depth();
   // update shape and transform if auto_resize is true
   if (auto_resize)
   {
@@ -76,19 +72,12 @@ apply_affine_transform(const cle::Array::Pointer &  src,
   {
     dst = cle::Array::create(width, height, depth, src->dimension(), src->dtype(), src->mtype(), src->device());
   }
-
   // push the matrix on gpu as the inverse transposed transform matrix
-  // - we want the inverse because we go from target to source for reading pixel values
-  // - we want the transpose because Eigen uses column major and OpenCL uses row major
   auto mat = cle::Array::create(4, 4, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, src->device());
   mat->write(cle::AffineTransform::toArray(new_transform.getInverseTranspose()).data());
-
   // execute the kernel
-  KernelInfo kernel = { "affine_transform", kernel::affine_transform };
-  if (interpolate)
-  {
-    kernel = { "affine_transform_interpolate", kernel::affine_transform_interpolate };
-  }
+  auto                kernel_name = interpolate ? "affine_transform_interpolate" : "affine_transform";
+  KernelInfo          kernel = { kernel_name, kernel::affine_transform };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "mat", mat } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(src->device(), kernel, params, range);
