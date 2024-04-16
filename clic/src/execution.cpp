@@ -258,39 +258,23 @@ execute_separable(const Device::Pointer &      device,
   auto tmp1 = Array::create(dst);
   auto tmp2 = Array::create(dst);
 
-  if (dst->width() > 1 && sigma[0] > 0)
-  {
-    const ParameterList parameters = {
-      { "src", src }, { "dst", tmp1 }, { "dim", 0 }, { "N", radius[0] }, { "s", sigma[0] }
-    };
-    execute(device, kernel, parameters, global_range);
-  }
-  else
-  {
-    src->copy(tmp1);
-  }
-  if (dst->height() > 1 && sigma[1] > 0)
-  {
-    const ParameterList parameters = {
-      { "src", tmp1 }, { "dst", tmp2 }, { "dim", 1 }, { "N", radius[1] }, { "s", sigma[1] }
-    };
-    execute(device, kernel, parameters, global_range);
-  }
-  else
-  {
-    tmp1->copy(tmp2);
-  }
-  if (dst->depth() > 1 && sigma[2] > 0)
-  {
-    const ParameterList parameters = {
-      { "src", tmp2 }, { "dst", dst }, { "dim", 2 }, { "N", radius[2] }, { "s", sigma[2] }
-    };
-    execute(device, kernel, parameters, global_range);
-  }
-  else
-  {
-    tmp2->copy(dst);
-  }
+  auto execute_if_needed = [&](int dim, int idx, auto & input, auto & output) {
+    if (dim > 1 && sigma[idx] > 0)
+    {
+      const ParameterList parameters = {
+        { "src", input }, { "dst", output }, { "dim", idx }, { "N", radius[idx] }, { "s", sigma[idx] }
+      };
+      execute(device, kernel, parameters, global_range);
+    }
+    else
+    {
+      input->copy(output);
+    }
+  };
+
+  execute_if_needed(dst->width(), 0, src, tmp1);
+  execute_if_needed(dst->height(), 1, tmp1, tmp2);
+  execute_if_needed(dst->depth(), 2, tmp2, dst);
 }
 
 

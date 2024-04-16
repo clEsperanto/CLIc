@@ -13,17 +13,18 @@ sum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & sr
   Array::Pointer dst = nullptr;
   Array::Pointer tmp = src;
   tier0::create_one(src, dst, dType::FLOAT);
-  if (src->depth() > 1)
-  {
-    auto proj_z = tier1::sum_z_projection_func(device, tmp, nullptr);
-    tmp = proj_z;
-  }
-  if (src->height() > 1)
-  {
-    auto proj_y = tier1::sum_y_projection_func(device, tmp, nullptr);
-    tmp = proj_y;
-  }
+
+  auto project_if_needed = [&](auto projection_func, int dimension) {
+    if (dimension > 1)
+    {
+      tmp = projection_func(device, tmp, nullptr);
+    }
+  };
+
+  project_if_needed(tier1::sum_z_projection_func, tmp->depth());
+  project_if_needed(tier1::sum_y_projection_func, tmp->height());
   tier1::sum_x_projection_func(device, tmp, dst);
+
   float res;
   dst->read(&res);
   return res;

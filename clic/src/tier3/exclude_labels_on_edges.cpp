@@ -24,24 +24,22 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
   tier1::set_ramp_x_func(device, label_map);
 
   const ParameterList params = { { "src", src }, { "dst", label_map } };
-  if (exclude_x && src->width() > 1)
-  {
-    const KernelInfo kernel = { "exclude_on_edges_x", kernel::exclude_on_edges };
-    const RangeArray range = { 1, src->height(), src->depth() };
-    execute(device, kernel, params, range);
-  }
-  if (exclude_y && src->height() > 1)
-  {
-    const KernelInfo kernel = { "exclude_on_edges_y", kernel::exclude_on_edges };
-    const RangeArray range = { src->width(), 1, src->depth() };
-    execute(device, kernel, params, range);
-  }
-  if (exclude_z && src->depth() > 1)
-  {
-    const KernelInfo kernel = { "exclude_on_edges_z", kernel::exclude_on_edges };
-    const RangeArray range = { src->width(), src->height(), 1 };
-    execute(device, kernel, params, range);
-  }
+
+  auto execute_if_needed = [&](bool exclude, int dimension, const std::string & kernel_name) {
+    if (exclude && dimension > 1)
+    {
+      const KernelInfo kernel = { kernel_name, kernel::exclude_on_edges };
+      const RangeArray range = { (dimension == 0) ? 1 : src->width(),
+                                 (dimension == 1) ? 1 : src->height(),
+                                 (dimension == 2) ? 1 : src->depth() };
+      execute(device, kernel, params, range);
+    }
+  };
+
+  execute_if_needed(exclude_x, src->width(), "exclude_on_edges_x");
+  execute_if_needed(exclude_y, src->height(), "exclude_on_edges_y");
+  execute_if_needed(exclude_z, src->depth(), "exclude_on_edges_z");
+
   std::vector<uint32_t> label_map_vector(label_map->size());
   label_map->read(label_map_vector.data());
   int32_t count = 1;
