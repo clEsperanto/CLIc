@@ -83,16 +83,32 @@ The ``@see`` tag is used to add links and references to the documentation. Multi
 Function instantiation
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Once defined and documented, we can proceed to the corresponding source file to instantiate the function.
+Once defined and documented, we can proceed the actual function code which will be in a ``.cpp`` file. 
+Start by creating a new source file in the correct tier directory with the name of the operation you are implementing. 
+Here, as my function name is ``my_operation_func``, the file should be named ``my_operation.cpp``.
+If it is a tier2 function, the file should be located in the ``clic/src/tier2`` directory.
+The file will have to include the needed headers and the namespace of the tier as shown below.
+We encourage users to start from an existing function file and adapt it to their needs.
 
 .. code-block:: cpp
 
     // clic/src/tier2.cpp
 
+    #include "tier0.hpp"
+    #include "tier1.hpp"
+    #include "tier2.hpp"
+
+    #include "utils.hpp"
+
+    namespace cle::tier2
+    {
+
     auto my_operation_func(const Device::Pointer &device, const Array::Pointer &src, Array::Pointer &dst, float param1, int param2) -> Array::Pointer
     {
         // Implementation of the function
     }
+
+    } // namespace cle::tier2
 
 The first step in the function implementation is managing the return value. In `CLIc`, if not provided by the user, the functions are responsible for managing the output array creation and allocation. We can rely on a set of `tier0` functions which will create and allocate the output array `dst`. These functions test the existence of a `dst` array, and if not provided, will allocate one. The most common case is to use the `tier0::create_like()` function. This function utilizes the information from `src` (size, dimension, etc.) to create an array of the same size as `src`. Optionally, we can specify a `dType` parameter if the function is supposed to return an array of a specific type. The default behavior is to propagate the `src` data type to the `dst` array.
 
