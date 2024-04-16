@@ -9,18 +9,6 @@
 #  define M_PI 3.14159265358979323846 /* pi */
 #endif
 
-
-#define CHECK_NULLPTR(ptr, msg)      \
-  if ((ptr) == nullptr)              \
-  {                                  \
-    throw std::runtime_error((msg)); \
-  }                                  \
-  else                               \
-  {                                  \
-    return;                          \
-  }
-
-
 namespace cle
 {
 

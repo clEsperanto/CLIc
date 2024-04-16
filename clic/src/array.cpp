@@ -75,6 +75,11 @@ Array::create(const Array::Pointer & array) -> Array::Pointer
 auto
 operator<<(std::ostream & out, const Array::Pointer & array) -> std::ostream &
 {
+  if (array == nullptr)
+  {
+    out << "Null Array";
+    return out;
+  }
   out << array->dimension() << "dArray ([" << array->width() << "," << array->height() << "," << array->depth()
       << "], dtype=" << array->dtype() << ", mtype=" << array->mtype() << ")";
   return out;

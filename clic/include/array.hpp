@@ -288,6 +288,20 @@ public:
   Array(const Array &) = default;
 
   /**
+   * @brief Check if the shared_ptr is null and throw an exception if it is
+   * @param ptr The shared_ptr to check
+   * @param errorMessage The error message to throw
+   */
+  static inline void
+  check_ptr(const Array::Pointer & ptr, const char * errorMessage)
+  {
+    if (!ptr)
+    {
+      throw std::invalid_argument(errorMessage);
+    }
+  }
+
+  /**
    * @brief Print the Array as a matrix for debugging
    */
   template <typename T>
@@ -320,11 +334,18 @@ private:
 
 template <typename T>
 auto
-print(const Array::Pointer & array) -> void
+print(const Array::Pointer & array, const char * name = "Array::Pointer") -> void
 {
+  if (array == nullptr)
+  {
+    std::cout << "Print Array::Pointer (nullptr)" << std::endl;
+    return;
+  }
+
   std::vector<T> host_data(array->size());
   array->read(host_data.data());
 
+  std::cout << "Print (" << name << ")" << std::endl;
   for (int i = 0; i < array->depth(); i++)
   {
     std::cout << "z = " << i << std::endl;
