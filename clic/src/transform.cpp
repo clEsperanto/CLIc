@@ -76,8 +76,9 @@ apply_affine_transform(const cle::Array::Pointer &  src,
   auto mat = cle::Array::create(4, 4, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, src->device());
   mat->write(cle::AffineTransform::toArray(new_transform.getInverseTranspose()).data());
   // execute the kernel
-  auto                kernel_name = interpolate ? "affine_transform_interpolate" : "affine_transform";
-  KernelInfo          kernel = { kernel_name, kernel::affine_transform };
+  const KernelInfo    kernel = interpolate
+                                 ? KernelInfo{ "affine_transform_interpolate", kernel::affine_transform_interpolate }
+                                 : KernelInfo{ "affine_transform", kernel::affine_transform };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "mat", mat } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(src->device(), kernel, params, range);
