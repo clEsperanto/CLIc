@@ -83,6 +83,48 @@ TEST_P(TestExecution, constantList)
   ASSERT_EQ(constants[0].second, bins);
 }
 
+TEST_P(TestExecution, execute)
+{
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
+
+  auto arr_a = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto arr_b = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+
+  arr_a->fill(-1);
+  arr_b->fill(2);
+
+
+  std::string name = "absolute";
+  std::string source =
+    R"(__constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
+	__kernel void absolute( IMAGE_src_TYPE  src, IMAGE_dst_TYPE  dst )	{
+	  const int x = get_global_id(0);
+	  const int y = get_global_id(1);
+	  const int z = get_global_id(2);
+	  IMAGE_src_PIXEL_TYPE value = READ_IMAGE(src, sampler, POS_src_INSTANCE(x,y,z,0)).x;
+	  if ( value < 0 ) {
+	    value = -1 * value;
+	  }
+	  WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(value));
+	})";
+
+  execute(device,
+          { name, source },
+          { { "src", arr_a }, { "dst", arr_b } },
+          { arr_a->width(), arr_a->height(), arr_a->depth() });
+
+
+  std::vector<float> h_c(10);
+  arr_b->read(h_c.data());
+  for (int i = 0; i < h_c.size(); i++)
+  {
+    EXPECT_EQ(h_c[i], 1);
+  }
+}
+
 
 TEST_P(TestExecution, executeNative)
 {
