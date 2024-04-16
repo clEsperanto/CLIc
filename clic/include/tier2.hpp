@@ -368,7 +368,7 @@ degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & s
  *
  * @note 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_detectMaximaBox
- * @deprecated This method is deprecated. Consider using detect_minima() instead.
+ * @deprecated This method is deprecated. Consider using detect_maxima() instead.
  */
 auto
 detect_maxima_box_func(const Device::Pointer & device,
@@ -377,6 +377,33 @@ detect_maxima_box_func(const Device::Pointer & device,
                        int                     radius_x,
                        int                     radius_y,
                        int                     radius_z) -> Array::Pointer;
+
+/**
+ * @name detect_maxima
+ * @brief Detects local maxima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
+ * is no other pixel in a given radius which has a higher intensity, and to 0 otherwise.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius along the x axis. [int ( = 0 )]
+ * @param radius_y Radius along the y axis. [int ( = 0 )]
+ * @param radius_z Radius along the z axis. [int ( = 0 )]
+ * @param connectivity Element shape, "box" or "sphere" [string ( = "box" )]
+ * @return Array::Pointer
+ *
+ * @note 'binarize', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_detectMaximaBox
+ * @see https://clij.github.io/clij2-docs/reference_detectMaximaSphere
+ */
+auto
+detect_maxima_func(const Device::Pointer & device,
+                   const Array::Pointer &  src,
+                   Array::Pointer          dst,
+                   int                     radius_x,
+                   int                     radius_y,
+                   int                     radius_z,
+                   std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -393,7 +420,7 @@ detect_maxima_box_func(const Device::Pointer & device,
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
- * @see https://clij.github.io/clij2-docs/reference_detectMaximaSphere
+ * @see https://clij.github.io/clij2-docs/reference_detectMinimaBox
  * @deprecated This method is deprecated. Consider using detect_minima() instead.
  */
 auto
@@ -419,8 +446,8 @@ detect_minima_box_func(const Device::Pointer & device,
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
- * @see https://clij.github.io/clij2-docs/reference_detectMaximaBox
- * @see https://clij.github.io/clij2-docs/reference_detectMaximaSphere
+ * @see https://clij.github.io/clij2-docs/reference_detectMinimaBox
+ * @see https://clij.github.io/clij2-docs/reference_detectMinimaSphere
  */
 auto
 detect_minima_func(const Device::Pointer & device,

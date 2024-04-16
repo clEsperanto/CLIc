@@ -17,7 +17,7 @@ detect_maxima_box_func(const Device::Pointer & device,
                        int                     radius_y,
                        int                     radius_z) -> Array::Pointer
 {
-  std::cerr << "Deprecated: this function is deprecated, use detect_minima instead\n";
+  std::cerr << "Deprecated: this function is deprecated, use detect_maxima instead\n";
   tier0::create_like(src, dst, dType::BINARY);
   auto                temp = tier1::mean_box_func(device, src, nullptr, radius_x, radius_y, radius_z);
   const KernelInfo    kernel = { "detect_maxima", kernel::detect_maxima };
