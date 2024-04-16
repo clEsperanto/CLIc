@@ -338,26 +338,26 @@ print(const Array::Pointer & array, const char * name = "Array::Pointer") -> voi
 {
   if (array == nullptr)
   {
-    std::cout << "Print Array::Pointer (nullptr)" << std::endl;
+    std::cout << "Print Array::Pointer (nullptr)\n";
     return;
   }
-
   std::vector<T> host_data(array->size());
   array->read(host_data.data());
-
-  std::cout << "Print (" << name << ")" << std::endl;
-  for (int i = 0; i < array->depth(); i++)
+  std::ostringstream oss;
+  oss << "Print (" << name << ")\n";
+  for (auto i = 0; i < array->depth(); ++i)
   {
-    std::cout << "z = " << i << std::endl;
-    for (int j = 0; j < array->height(); j++)
+    oss << "z = " << i << '\n';
+    for (auto j = 0; j < array->height(); ++j)
     {
-      for (int k = 0; k < array->width(); k++)
+      for (auto k = 0; k < array->width(); ++k)
       {
-        std::cout << (float)host_data[i * array->height() * array->width() + j * array->width() + k] << " ";
+        oss << static_cast<float>(host_data[i * array->height() * array->width() + j * array->width() + k]) << ' ';
       }
-      std::cout << std::endl;
+      oss << '\n';
     }
   }
+  std::cout << oss.str();
 }
 
 } // namespace cle
