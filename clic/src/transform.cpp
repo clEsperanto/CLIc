@@ -39,11 +39,10 @@ prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::A
   }
 
   // compute a new width heigth and depth from the min and max point
-  const size_t width = static_cast<size_t>(std::round(max[0] - min[0]));
-  const size_t height = static_cast<size_t>(std::round(max[1] - min[1]));
-  const size_t depth = static_cast<size_t>(std::round(max[2] - min[2]));
-
   cle::AffineTransform update_transform(transform);
+  const auto           width = static_cast<size_t>(std::round(max[0] - min[0]));
+  const auto           height = static_cast<size_t>(std::round(max[1] - min[1]));
+  const auto           depth = static_cast<size_t>(std::round(max[2] - min[2]));
   update_transform.translate(-min[0], -min[1], -min[2]);
 
   // return the new width, height, depth and the updated transform
@@ -62,6 +61,7 @@ apply_affine_transform(const cle::Array::Pointer &  src,
   auto                 width = src->width();
   auto                 height = src->height();
   auto                 depth = src->depth();
+
   // update shape and transform if auto_resize is true
   if (auto_resize)
   {
@@ -72,9 +72,11 @@ apply_affine_transform(const cle::Array::Pointer &  src,
   {
     dst = cle::Array::create(width, height, depth, src->dimension(), src->dtype(), src->mtype(), src->device());
   }
+
   // push the matrix on gpu as the inverse transposed transform matrix
   auto mat = cle::Array::create(4, 4, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, src->device());
   mat->write(cle::AffineTransform::toArray(new_transform.getInverseTranspose()).data());
+
   // execute the kernel
   const KernelInfo    kernel = interpolate
                                  ? KernelInfo{ "affine_transform_interpolate", kernel::affine_transform_interpolate }
