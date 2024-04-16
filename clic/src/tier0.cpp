@@ -10,7 +10,7 @@ auto
 create_dst(const Array::Pointer & src, Array::Pointer & dst, size_t width, size_t height, size_t depth, dType type)
   -> void
 {
-  CHECK_NULLPTR(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.")
+  Array::check_ptr(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.");
   if (dst != nullptr)
   {
     return;
@@ -26,7 +26,7 @@ create_dst(const Array::Pointer & src, Array::Pointer & dst, size_t width, size_
 auto
 create_like(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  CHECK_NULLPTR(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.")
+  Array::check_ptr(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.");
   if (dst != nullptr)
   {
     return;
@@ -41,7 +41,7 @@ create_like(const Array::Pointer & src, Array::Pointer & dst, dType type) -> voi
 auto
 create_one(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  CHECK_NULLPTR(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.")
+  Array::check_ptr(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.");
   if (dst != nullptr)
   {
     return;
@@ -56,7 +56,7 @@ create_one(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 auto
 create_vector(const Array::Pointer & src, Array::Pointer & dst, const size_t & size, dType type) -> void
 {
-  CHECK_NULLPTR(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.")
+  Array::check_ptr(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.");
   if (dst != nullptr)
   {
     return;
@@ -71,7 +71,7 @@ create_vector(const Array::Pointer & src, Array::Pointer & dst, const size_t & s
 auto
 create_xy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  CHECK_NULLPTR(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.")
+  Array::check_ptr(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.");
   if (dst != nullptr)
   {
     return;
@@ -87,7 +87,7 @@ create_xy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 auto
 create_yx(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  CHECK_NULLPTR(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.")
+  Array::check_ptr(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.");
   if (dst != nullptr)
   {
     return;
@@ -103,7 +103,7 @@ create_yx(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 auto
 create_zy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  CHECK_NULLPTR(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.")
+  Array::check_ptr(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.");
   if (dst != nullptr)
   {
     return;
@@ -119,7 +119,7 @@ create_zy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 auto
 create_yz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  CHECK_NULLPTR(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.")
+  Array::check_ptr(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.");
   if (dst != nullptr)
   {
     return;
@@ -135,7 +135,7 @@ create_yz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 auto
 create_xz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  CHECK_NULLPTR(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.")
+  Array::check_ptr(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.");
   if (dst != nullptr)
   {
     return;
@@ -151,7 +151,7 @@ create_xz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 auto
 create_zx(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  CHECK_NULLPTR(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.")
+  Array::check_ptr(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.");
   if (dst != nullptr)
   {
     return;
@@ -172,8 +172,8 @@ execute_separable_func(const Device::Pointer &      device,
                        const std::array<float, 3> & sigma,
                        const std::array<int, 3> &   radius) -> void
 {
-  CHECK_NULLPTR(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.")
-  CHECK_NULLPTR(dst, "Error: 'dst' is null. Please ensure the provided parameters before calling this function.")
+  Array::check_ptr(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.");
+  Array::check_ptr(dst, "Error: 'dst' is null. Please ensure the provided parameters before calling this function.");
 
   const RangeArray global_range = { dst->width(), dst->height(), dst->depth() };
 
