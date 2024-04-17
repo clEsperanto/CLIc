@@ -382,6 +382,7 @@ detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & s
  *
  * @note 'binary processing'
  * @see https://clij.github.io/clij2-docs/reference_dilateBox
+ * @deprecated This function is deprecated. Consider using dilate() instead.
  */
 auto
 dilate_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -400,9 +401,32 @@ dilate_box_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  *
  * @note 'binary processing', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_dilateSphere
+ * @deprecated This function is deprecated. Consider using dilate() instead.
  */
 auto
 dilate_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+
+/**
+ * @name dilate
+ * @brief Computes a binary image with pixel values 0 and 1 containing the binary dilation of a given input image. The
+ * dilation apply the Mooreneighborhood (8 pixels in 2D and 26 pixels in 3d) for the "box" connectivity and
+ * the vonNeumannneighborhood (4 pixels in 2D and 6 pixels in 3d) for a "sphere" connectivity.
+ * The pixels in the input image with pixel value not equal to 0 will be interpreted as 1.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. Output result image. [Array::Pointer ( = None )]
+ * @param connectivity Element shape, "box" or "sphere". [std::string ( = "box" )]
+ * @return Array::Pointer
+ *
+ * @note 'binary processing', 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_dilateBox
+ * @see https://clij.github.io/clij2-docs/reference_dilateSphere
+ */
+auto
+dilate_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, std::string connectivity)
+  -> Array::Pointer;
 
 
 /**
@@ -494,6 +518,7 @@ equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, 
  *
  * @note 'binary processing'
  * @see https://clij.github.io/clij2-docs/reference_erodeBox
+ * @deprecated This function is deprecated. Consider using erode() instead.
  */
 auto
 erode_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -512,9 +537,32 @@ erode_box_func(const Device::Pointer & device, const Array::Pointer & src, Array
  *
  * @note 'binary processing', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_erodeSphere
+ * @deprecated This function is deprecated. Consider using erode() instead.
  */
 auto
 erode_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+
+/**
+ * @name erode
+ * @brief Computes a binary image with pixel values 0 and 1 containing the binary erosion of a given input image. The
+ * erosion apply the Mooreneighborhood (8 pixels in 2D and 26 pixels in 3d) for the "box" connectivity and
+ * the vonNeumannneighborhood (4 pixels in 2D and 6 pixels in 3d) for a "sphere" connectivity. The pixels in the input
+ * image with pixel value not equal to 0 will be interpreted as 1.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param connectivity Element shape, "box" or "sphere". [std::string ( = "box" )]
+ * @return Array::Pointer
+ *
+ * @note 'binary processing', 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_erodeBox
+ * @see https://clij.github.io/clij2-docs/reference_erodeSphere
+ */
+auto
+erode_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, std::string connectivity)
+  -> Array::Pointer;
 
 
 /**
@@ -773,6 +821,7 @@ hessian_eigenvalues_func(const Device::Pointer & device,
  *
  * @note 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_laplaceBox
+ * @deprecated This function is deprecated. Consider using laplace() instead.
  */
 auto
 laplace_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
@@ -789,9 +838,28 @@ laplace_box_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  *
  * @note 'filter', 'edge detection', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_laplaceDiamond
+ * @deprecated This function is deprecated. Consider using laplace() instead.
  */
 auto
 laplace_diamond_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+
+/**
+ * @name laplace
+ * @brief Applies the Laplace operator with a "box" or a "sphere" neighborhood to an image.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'edge detection', 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_laplaceDiamond
+ */
+auto
+laplace_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, std::string connectivity)
+  -> Array::Pointer;
 
 
 /**
@@ -931,6 +999,7 @@ maximum_images_func(const Device::Pointer & device,
  *
  * @note 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_maximum3DBox
+ * @deprecated This function is deprecated. Consider using maximum() instead.
  */
 auto
 maximum_box_func(const Device::Pointer & device,
@@ -939,6 +1008,33 @@ maximum_box_func(const Device::Pointer & device,
                  int                     radius_x,
                  int                     radius_y,
                  int                     radius_z) -> Array::Pointer;
+
+/**
+ * @name maximum
+ * @brief Computes the local maximum of a pixels neighborhood (box or sphere). The neighborhood size is specified by its
+ * halfwidth, halfheight and halfdepth (radius).
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [int ( = 0 )]
+ * @param radius_y Radius size along y axis. [int ( = 0 )]
+ * @param radius_z Radius size along z axis. [int ( = 0 )]
+ * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_maximum3DBox
+ * @see https://clij.github.io/clij2-docs/reference_maximum3DSphere
+ */
+auto
+maximum_func(const Device::Pointer & device,
+             const Array::Pointer &  src,
+             Array::Pointer          dst,
+             float                   radius_x,
+             float                   radius_y,
+             float                   radius_z,
+             std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -1007,6 +1103,7 @@ maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer &
  *
  * @note 'filter', 'denoise', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_mean3DBox
+ * @deprecated This function is deprecated. Consider using mean() instead.
  */
 auto
 mean_box_func(const Device::Pointer & device,
@@ -1032,6 +1129,7 @@ mean_box_func(const Device::Pointer & device,
  *
  * @note 'filter', 'denoise', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_mean3DSphere
+ * @deprecated This function is deprecated. Consider using mean() instead.
  */
 auto
 mean_sphere_func(const Device::Pointer & device,
@@ -1040,6 +1138,32 @@ mean_sphere_func(const Device::Pointer & device,
                  int                     radius_x,
                  int                     radius_y,
                  int                     radius_z) -> Array::Pointer;
+
+/**
+ * @name mean
+ * @brief Computes the local mean average of a pixels neighborhood defined as a boxshaped or a sphereshaped.
+ * The shape size is specified by its halfwidth, halfheight and halfdepth (radius).
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [int ( = 1 )]
+ * @param radius_y Radius size along y axis. [int ( = 1 )]
+ * @param radius_z Radius size along z axis. [int ( = 1 )]
+ * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'denoise', 'in assistant', 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_mean3DSphere
+ */
+auto
+mean_func(const Device::Pointer & device,
+          const Array::Pointer &  src,
+          Array::Pointer          dst,
+          int                     radius_x,
+          int                     radius_y,
+          int                     radius_z,
+          std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -1108,6 +1232,7 @@ mean_z_projection_func(const Device::Pointer & device, const Array::Pointer & sr
  *
  * @note 'filter', 'denoise', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_median3DBox
+ * @deprecated This function is deprecated. Consider using median() instead.
  */
 auto
 median_box_func(const Device::Pointer & device,
@@ -1133,6 +1258,7 @@ median_box_func(const Device::Pointer & device,
  *
  * @note 'filter', 'denoise', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_median3DSphere
+ * @deprecated This function is deprecated. Consider using median() instead.
  */
 auto
 median_sphere_func(const Device::Pointer & device,
@@ -1141,6 +1267,33 @@ median_sphere_func(const Device::Pointer & device,
                    int                     radius_x,
                    int                     radius_y,
                    int                     radius_z) -> Array::Pointer;
+
+/**
+ * @name median
+ * @brief Computes the local median of a pixels neighborhood. The neighborhood is defined as a box or a sphere shape.
+ * Its size is specified by its halfwidth, halfheight, and halfdepth (radius). For technical reasons, the area of the
+ * shpae must have less than 1000 pixels.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [int ( = 1 )]
+ * @param radius_y Radius size along y axis. [int ( = 1 )]
+ * @param radius_z Radius size along z axis. [int ( = 1 )]
+ * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'denoise', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_median3DSphere
+ */
+auto
+median_func(const Device::Pointer & device,
+            const Array::Pointer &  src,
+            Array::Pointer          dst,
+            int                     radius_x,
+            int                     radius_y,
+            int                     radius_z,
+            std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -1158,6 +1311,7 @@ median_sphere_func(const Device::Pointer & device,
  *
  * @note 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_minimum3DBox
+ * @deprecated This function is deprecated. Consider using minimum() instead.
  */
 auto
 minimum_box_func(const Device::Pointer & device,
@@ -1166,6 +1320,34 @@ minimum_box_func(const Device::Pointer & device,
                  int                     radius_x,
                  int                     radius_y,
                  int                     radius_z) -> Array::Pointer;
+
+
+/**
+ * @name minimum
+ * @brief Computes the local minimum of a pixels cube neighborhood. The cubes size is specified by its halfwidth,
+ * halfheight and halfdepth (radius).
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [int ( = 0 )]
+ * @param radius_y Radius size along y axis. [int ( = 0 )]
+ * @param radius_z Radius size along z axis. [int ( = 0 )]
+ * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_minimum3DBox
+ * @see https://clij.github.io/clij2-docs/reference_minimum3DSphere
+ */
+auto
+minimum_func(const Device::Pointer & device,
+             const Array::Pointer &  src,
+             Array::Pointer          dst,
+             float                   radius_x,
+             float                   radius_y,
+             float                   radius_z,
+             std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -1284,6 +1466,7 @@ minimum_of_masked_pixels_reduction_func(const Device::Pointer & device,
  * @return Array::Pointer
  *
  * @note 'label processing', 'in assistant'
+ * @deprecated This function is deprecated. Consider using mode() instead.
  */
 auto
 mode_box_func(const Device::Pointer & device,
@@ -1310,6 +1493,7 @@ mode_box_func(const Device::Pointer & device,
  * @return Array::Pointer
  *
  * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @deprecated This function is deprecated. Consider using mode() instead.
  */
 auto
 mode_sphere_func(const Device::Pointer & device,
@@ -1318,6 +1502,33 @@ mode_sphere_func(const Device::Pointer & device,
                  int                     radius_x,
                  int                     radius_y,
                  int                     radius_z) -> Array::Pointer;
+
+/**
+ * @name mode
+ * @brief Computes the local mode of a pixels neighborhood. This neighborhood can be shaped as a box or a sphere.
+ * This can be used to postprocess and locally correct semantic segmentation results. The shape size is specified by its
+ * halfwidth, halfheight, and halfdepth (radius). For technical reasons, the intensities must lie within a range from 0
+ * to 255 (uint8). In case multiple values have maximum frequency, the smallest one is returned.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [int ( = 1 )]
+ * @param radius_y Radius size along y axis. [int ( = 1 )]
+ * @param radius_z Radius size along z axis. [int ( = 1 )]
+ * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @return Array::Pointer
+ *
+ * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
+ */
+auto
+mode_func(const Device::Pointer & device,
+          const Array::Pointer &  src,
+          Array::Pointer          dst,
+          int                     radius_x,
+          int                     radius_y,
+          int                     radius_z,
+          std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -1435,7 +1646,7 @@ nan_to_num_func(const Device::Pointer & device,
  * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_nonzeroMaximumBox
- *
+ * @deprecated This function is deprecated. Consider using nonzero_maximum() instead.
  */
 auto
 nonzero_maximum_box_func(const Device::Pointer & device,
@@ -1456,7 +1667,7 @@ nonzero_maximum_box_func(const Device::Pointer & device,
  * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_nonzeroMaximumDiamond
- *
+ * @deprecated This function is deprecated. Consider using nonzero_maximum() instead.
  */
 auto
 nonzero_maximum_diamond_func(const Device::Pointer & device,
@@ -1464,6 +1675,29 @@ nonzero_maximum_diamond_func(const Device::Pointer & device,
                              Array::Pointer          dst0,
                              Array::Pointer          dst1) -> Array::Pointer;
 
+/**
+ * @name nonzero_maximum
+ * @brief Apply a maximum filter of a neighborhood to the input image. The neighborhood shape can be a box or a sphere.
+ * The size is fixed to 1 and pixels with value 0 are ignored. Note: Pixels with 0 value in the input image will not
+ * be overwritten in the output image. Thus, the result image should be initialized by copying the original image in
+ * advance.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst0 Output flag (0 or 1). [Array::Pointer]
+ * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
+ * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @return Array::Pointer
+ * @see https://clij.github.io/clij2-docs/reference_nonzeroMaximumBox
+ * @see https://clij.github.io/clij2-docs/reference_nonzeroMaximumDiamond
+ *
+ */
+auto
+nonzero_maximum_func(const Device::Pointer & device,
+                     const Array::Pointer &  src,
+                     Array::Pointer          dst0,
+                     Array::Pointer          dst1,
+                     std::string             connectivity) -> Array::Pointer;
 
 /**
  * @name nonzero_minimum_box
@@ -1477,7 +1711,7 @@ nonzero_maximum_diamond_func(const Device::Pointer & device,
  * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_nonzeroMinimumBox
- *
+ * @deprecated This function is deprecated. Consider using nonzero_minimum() instead.
  */
 auto
 nonzero_minimum_box_func(const Device::Pointer & device,
@@ -1498,13 +1732,36 @@ nonzero_minimum_box_func(const Device::Pointer & device,
  * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_nonzeroMinimumDiamond
- *
+ * @deprecated This function is deprecated. Consider using nonzero_minimum() instead.
  */
 auto
 nonzero_minimum_diamond_func(const Device::Pointer & device,
                              const Array::Pointer &  src,
                              Array::Pointer          dst0,
                              Array::Pointer          dst1) -> Array::Pointer;
+
+/**
+ * @name nonzero_minimum
+ * @brief Apply a minimum filter of a neighborhood to the input image. The neighborhood shape can be a box or a sphere.
+ * The radius is fixed to 1 and pixels with value 0 are ignored.Note: Pixels with 0 value in the input image will not be
+ * overwritten in the output image. Thus, the result image should be initialized by copying the original image in
+ * advance.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst0 Output flag (0 or 1). [Array::Pointer]
+ * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
+ * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @return Array::Pointer
+ * @see https://clij.github.io/clij2-docs/reference_nonzeroMinimumBox
+ * @see https://clij.github.io/clij2-docs/reference_nonzeroMinimumDiamond
+ */
+auto
+nonzero_minimum_func(const Device::Pointer & device,
+                     const Array::Pointer &  src,
+                     Array::Pointer          dst0,
+                     Array::Pointer          dst1,
+                     std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -1579,7 +1836,7 @@ paste_func(const Device::Pointer & device,
  * @param dst1 Output image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_onlyzeroOverwriteMaximumBox
- *
+ * @deprecated This function is deprecated. Consider using onlyzero_overwrite_maximum() instead.
  */
 auto
 onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
@@ -1598,7 +1855,7 @@ onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
  * @param dst1 Output image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_onlyzeroOverwriteMaximumDiamond
- *
+ * @deprecated This function is deprecated. Consider using onlyzero_overwrite_maximum() instead.
  */
 auto
 onlyzero_overwrite_maximum_diamond_func(const Device::Pointer & device,
@@ -1606,6 +1863,26 @@ onlyzero_overwrite_maximum_diamond_func(const Device::Pointer & device,
                                         Array::Pointer          dst0,
                                         Array::Pointer          dst1) -> Array::Pointer;
 
+/**
+ * @name onlyzero_overwrite_maximum
+ * @brief Apply a local maximum filter to an image which only overwrites pixels with value 0.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst0 Output flag value, 0 or 1. [Array::Pointer]
+ * @param dst1 Output image. [Array::Pointer ( = None )]
+ * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @return Array::Pointer
+ * @see https://clij.github.io/clij2-docs/reference_onlyzeroOverwriteMaximumBox
+ * @see https://clij.github.io/clij2-docs/reference_onlyzeroOverwriteMaximumDiamond
+ *
+ */
+auto
+onlyzero_overwrite_maximum_func(const Device::Pointer & device,
+                                const Array::Pointer &  src,
+                                Array::Pointer          dst0,
+                                Array::Pointer          dst1,
+                                std::string             connectivity) -> Array::Pointer;
 
 /**
  * @name power
@@ -1756,6 +2033,7 @@ replace_value_func(const Device::Pointer & device,
  *
  * @note 'filter', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_maximum3DSphere
+ * @deprecated This function is deprecated. Consider using maximum() instead.
  */
 auto
 maximum_sphere_func(const Device::Pointer & device,
@@ -1781,6 +2059,7 @@ maximum_sphere_func(const Device::Pointer & device,
  *
  * @note 'filter', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_minimum3DSphere
+ * @deprecated This function is deprecated. Consider using minimum() instead.
  */
 auto
 minimum_sphere_func(const Device::Pointer & device,
@@ -2319,6 +2598,7 @@ undefined_to_zero_func(const Device::Pointer & device, const Array::Pointer & sr
  *
  * @note 'filter', 'edge detection', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_varianceBox
+ * @deprecated This function is deprecated. Consider using variance() instead.
  */
 auto
 variance_box_func(const Device::Pointer & device,
@@ -2344,6 +2624,7 @@ variance_box_func(const Device::Pointer & device,
  *
  * @note 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_varianceSphere
+ * @deprecated This function is deprecated. Consider using variance() instead.
  */
 auto
 variance_sphere_func(const Device::Pointer & device,
@@ -2352,6 +2633,33 @@ variance_sphere_func(const Device::Pointer & device,
                      int                     radius_x,
                      int                     radius_y,
                      int                     radius_z) -> Array::Pointer;
+
+/**
+ * @name variance
+ * @brief Computes the local variance of a pixels neighborhood (box or sphere). The neighborhood size is specified by
+ * its halfwidth, halfheight and halfdepth (radius). If 2D images are given, radius_z will be ignored.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [int ( = 1 )]
+ * @param radius_y Radius size along y axis. [int ( = 1 )]
+ * @param radius_z Radius size along z axis. [int ( = 1 )]
+ * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'edge detection', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_varianceBox
+ * @see https://clij.github.io/clij2-docs/reference_varianceSphere
+ */
+auto
+variance_func(const Device::Pointer & device,
+              const Array::Pointer &  src,
+              Array::Pointer          dst,
+              int                     radius_x,
+              int                     radius_y,
+              int                     radius_z,
+              std::string             connectivity) -> Array::Pointer;
 
 
 /**

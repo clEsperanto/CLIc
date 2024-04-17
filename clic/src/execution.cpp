@@ -243,15 +243,88 @@ execute(const Device::Pointer & device,
 
 
 auto
+execute_separable(const Device::Pointer &      device,
+                  const KernelInfo &           kernel,
+                  const Array::Pointer &       src,
+                  const Array::Pointer &       dst,
+                  const std::array<float, 3> & sigma,
+                  const std::array<int, 3> &   radius) -> void
+{
+  Array::check_ptr(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.");
+  Array::check_ptr(dst, "Error: 'dst' is null. Please ensure the provided parameters before calling this function.");
+
+  const RangeArray global_range = { dst->width(), dst->height(), dst->depth() };
+
+  auto tmp1 = Array::create(dst);
+  auto tmp2 = Array::create(dst);
+
+  auto execute_if_needed = [&](int dim, int idx, auto & input, auto & output) {
+    if (dim > 1 && sigma[idx] > 0)
+    {
+      const ParameterList parameters = {
+        { "src", input }, { "dst", output }, { "dim", idx }, { "N", radius[idx] }, { "s", sigma[idx] }
+      };
+      execute(device, kernel, parameters, global_range);
+    }
+    else
+    {
+      input->copy(output);
+    }
+  };
+
+  execute_if_needed(dst->width(), 0, src, tmp1);
+  execute_if_needed(dst->height(), 1, tmp1, tmp2);
+  execute_if_needed(dst->depth(), 2, tmp2, dst);
+}
+
+
+auto
 native_execute(const Device::Pointer & device,
                const KernelInfo &      kernel_func,
                const ParameterList &   parameters,
                const RangeArray &      global_range,
                const RangeArray &      local_range) -> void
 {
-  // TODO @StRigaud: Implement native execution for OpenCL and CUDA
-  // allows execution of pure CUDA or OpenCL code without CLIJ syntax
-  throw std::runtime_error("WIP: Native execution is not implemented yet.");
+  // this is very similar to the execute function. However, this function is used for native kernels.
+  // No preamble or code conversion is done here. The kernel source is expected to be in the correct format from the
+  // user. We still however need to rely on the Array class to handle arrays (float * etc.). For now, we only support 1D
+  // arrays and int and float parameters.
+
+  // get raw kernel source and name from user
+  auto kernel_source = kernel_func.second;
+  auto kernel_name = kernel_func.first;
+
+  // prepare parameters to be passed to the backend (CUDA or OpenCL)
+  std::vector<void *> args_ptr;
+  std::vector<size_t> args_size;
+  args_ptr.reserve(parameters.size());
+  args_size.reserve(parameters.size());
+  for (const auto & param : parameters)
+  {
+    if (const auto & arr = std::get_if<Array::Pointer>(&param.second))
+    {
+      args_ptr.push_back(device->getType() == Device::Type::CUDA ? (*arr)->get() : *(*arr)->get());
+      args_size.push_back(GPU_MEM_PTR_SIZE);
+    }
+    else if (const auto & f = std::get_if<float>(&param.second))
+    {
+      args_ptr.push_back(const_cast<float *>(f));
+      args_size.push_back(sizeof(float));
+    }
+    else if (const auto & i = std::get_if<int>(&param.second))
+    {
+      args_ptr.push_back(const_cast<int *>(i));
+      args_size.push_back(sizeof(int));
+    }
+    else
+    {
+      throw std::runtime_error("Error: Invalid parameter type provided.");
+    }
+  }
+
+  // execute kernel
+  cle::BackendManager::getInstance().getBackend().executeKernel(
+    device, kernel_source, kernel_name, global_range, args_ptr, args_size);
 }
 
 } // namespace cle

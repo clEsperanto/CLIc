@@ -1,29 +1,9 @@
 #include "backend.hpp"
+#include <functional>
+#include <map>
 
 namespace cle
 {
-
-auto
-BackendManager::getBackendsList() -> std::vector<std::string>
-{
-  std::vector<std::string> availableBackend;
-  if (cudaEnabled())
-  {
-    availableBackend.push_back("cuda");
-  }
-  if (openCLEnabled())
-  {
-    availableBackend.push_back("opencl");
-  }
-  return availableBackend;
-}
-
-auto
-BackendManager::getInstance() -> BackendManager &
-{
-  static BackendManager instance;
-  return instance;
-}
 
 auto
 BackendManager::cudaEnabled() -> bool
@@ -54,46 +34,70 @@ BackendManager::openCLEnabled() -> bool
 #endif
 }
 
+
+auto
+BackendManager::getBackendsList() -> std::vector<std::string>
+{
+  // Define a map to associate backend names with their check functions
+  static std::map<std::string, std::function<bool()>> backendCheckMap = {
+    { "cuda", [cudaEnabled = cudaEnabled]() { return cudaEnabled(); } },
+    { "opencl", [openCLEnabled = openCLEnabled]() { return openCLEnabled(); } }
+  };
+
+  std::vector<std::string> availableBackends;
+
+  // Iterate over the map and check each backend
+  for (const auto & [backend, checkFunction] : backendCheckMap)
+  {
+    if (checkFunction())
+    {
+      availableBackends.push_back(backend);
+    }
+  }
+
+  return availableBackends;
+}
+
+auto
+BackendManager::getInstance() -> BackendManager &
+{
+  static BackendManager instance;
+  return instance;
+}
+
+
 auto
 BackendManager::setBackend(const std::string & backend) -> void
 {
-  Backend::Type backend_type;
-  if (backend == "cuda")
+  // Define a map to associate backend names with their types and creation functions
+  static std::map<std::string, std::pair<Backend::Type, std::function<std::unique_ptr<Backend>()>>> backendMap = {
+    { "cuda", { Backend::Type::CUDA, []() -> std::unique_ptr<Backend> { return std::make_unique<CUDABackend>(); } } },
+    { "opencl",
+      { Backend::Type::OPENCL, []() -> std::unique_ptr<Backend> { return std::make_unique<OpenCLBackend>(); } } }
+  };
+
+  // Check if the requested backend is known
+  if (backendMap.find(backend) == backendMap.end())
   {
-    if (cudaEnabled())
-    {
-      backend_type = Backend::Type::CUDA;
-    }
-    else
-    {
-      std::cerr << "Warning: 'CUDA' backend not available. Switching to 'OpenCL'." << std::endl;
-      backend_type = Backend::Type::OPENCL;
-    }
+    std::cerr << "Warning: Unknown backend '" << backend << "'. Using 'OpenCL' as default backend." << std::endl;
+    this->backend = std::make_unique<OpenCLBackend>();
+    return;
   }
-  else if (backend == "opencl")
+
+  // Get the type and creation function for the requested backend
+  auto [backend_type, createBackend] = backendMap[backend];
+
+  // Check if the requested backend is enabled
+  bool isEnabled = (backend_type == Backend::Type::CUDA) ? cudaEnabled() : openCLEnabled();
+  if (!isEnabled)
   {
-    if (openCLEnabled())
-    {
-      backend_type = Backend::Type::OPENCL;
-    }
-    else
-    {
-      std::cerr << "Warning: 'OpenCL' backend not available. Switching to 'CUDA'." << std::endl;
-      backend_type = Backend::Type::CUDA;
-    }
+    std::cerr << "Warning: '" << backend << "' backend not available. Switching to 'OpenCL'." << std::endl;
+    this->backend = std::make_unique<OpenCLBackend>();
+    return;
   }
-  switch (backend_type)
-  {
-    case Backend::Type::CUDA:
-      this->backend = std::make_unique<CUDABackend>();
-      break;
-    case Backend::Type::OPENCL:
-      this->backend = std::make_unique<OpenCLBackend>();
-      break;
-    default:
-      this->backend = std::make_unique<OpenCLBackend>();
-      std::cerr << "Warning: Using 'OpenCL' as default backend." << std::endl;
-  }
+
+  // Create the requested backend
+  this->backend = createBackend();
 }
 
 auto

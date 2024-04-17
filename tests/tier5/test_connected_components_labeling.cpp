@@ -44,7 +44,7 @@ TEST_P(TestLabeling, executeDiamond)
   auto gpu_input = cle::Array::create(5, 3, 2, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
-  auto gpu_output = cle::tier5::connected_components_labeling_func(device, gpu_input, nullptr, "diamond");
+  auto gpu_output = cle::tier5::connected_components_labeling_func(device, gpu_input, nullptr, "sphere");
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)

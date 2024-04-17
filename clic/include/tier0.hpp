@@ -113,23 +113,6 @@ create_xz(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::
 auto
 create_zx(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::UNKNOWN) -> void;
 
-/**
- * @brief Execution function for separable kernel operation
- * @param device Device pointer
- * @param kernel Kernel function name and code
- * @param src Source array
- * @param dst Destination array
- * @param sigma Sigma value for the kernel
- * @param radius Radius value for the kernel
- */
-auto
-execute_separable_func(const Device::Pointer &      device,
-                       const KernelInfo &           kernel,
-                       const Array::Pointer &       src,
-                       const Array::Pointer &       dst,
-                       const std::array<float, 3> & sigma,
-                       const std::array<int, 3> &   radius) -> void;
-
 
 } // namespace cle::tier0
 

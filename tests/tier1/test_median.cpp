@@ -18,7 +18,7 @@ protected:
   };
 };
 
-TEST_P(TestMedian, executeBox)
+TEST_P(TestMedian, executeDeprecatedBox)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -37,7 +37,7 @@ TEST_P(TestMedian, executeBox)
   }
 }
 
-TEST_P(TestMedian, executeDiamond)
+TEST_P(TestMedian, executeDeprecatedSphere)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -48,6 +48,44 @@ TEST_P(TestMedian, executeDiamond)
   gpu_input->write(input.data());
 
   auto gpu_output = cle::tier1::median_sphere_func(device, gpu_input, nullptr, 1, 1, 0);
+
+  gpu_output->read(output.data());
+  for (int i = 0; i < output.size(); i++)
+  {
+    EXPECT_EQ(output[i], valid_sphere[i]);
+  }
+}
+
+TEST_P(TestMedian, executeBox)
+{
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
+
+  auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  gpu_input->write(input.data());
+
+  auto gpu_output = cle::tier1::median_func(device, gpu_input, nullptr, 1, 1, 0, "box");
+
+  gpu_output->read(output.data());
+  for (int i = 0; i < output.size(); i++)
+  {
+    EXPECT_EQ(output[i], valid_box[i]);
+  }
+}
+
+TEST_P(TestMedian, executeSphere)
+{
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
+
+  auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  gpu_input->write(input.data());
+
+  auto gpu_output = cle::tier1::median_func(device, gpu_input, nullptr, 1, 1, 0, "sphere");
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)

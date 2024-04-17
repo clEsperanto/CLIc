@@ -33,6 +33,24 @@ execute(const Device::Pointer & device,
         const RangeArray &      global_range = { 1, 1, 1 },
         const ConstantList &    constants = {}) -> void;
 
+
+/**
+ * @brief Execution function for separable kernel operation
+ * @param device Device pointer
+ * @param kernel Kernel function name and code
+ * @param src Source array
+ * @param dst Destination array
+ * @param sigma Sigma value for the kernel
+ * @param radius Radius value for the kernel
+ */
+auto
+execute_separable(const Device::Pointer &      device,
+                  const KernelInfo &           kernel,
+                  const Array::Pointer &       src,
+                  const Array::Pointer &       dst,
+                  const std::array<float, 3> & sigma,
+                  const std::array<int, 3> &   radius) -> void;
+
 /**
  * @brief Execute a kernel using native framework
  * @param device Device pointer

@@ -75,6 +75,11 @@ Array::create(const Array::Pointer & array) -> Array::Pointer
 auto
 operator<<(std::ostream & out, const Array::Pointer & array) -> std::ostream &
 {
+  if (array == nullptr)
+  {
+    out << "Null Array";
+    return out;
+  }
   out << array->dimension() << "dArray ([" << array->width() << "," << array->height() << "," << array->depth()
       << "], dtype=" << array->dtype() << ", mtype=" << array->mtype() << ")";
   return out;
@@ -98,10 +103,6 @@ Array::write(const void * host_data) -> void
   {
     throw std::runtime_error("Error: Host data is null");
   }
-  if (!initialized())
-  {
-    allocate();
-  }
   std::array<size_t, 3> _origin = { 0, 0, 0 };
   std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
   std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
@@ -115,10 +116,6 @@ Array::write(const void * host_data, const std::array<size_t, 3> & region, const
   if (host_data == nullptr)
   {
     throw std::runtime_error("Error: Host data is null");
-  }
-  if (!initialized())
-  {
-    allocate();
   }
   std::array<size_t, 3> _origin = buffer_origin;
   std::array<size_t, 3> _region = region;
@@ -139,10 +136,6 @@ Array::read(void * host_data) const -> void
   {
     throw std::runtime_error("Error: Host data is null");
   }
-  if (!initialized())
-  {
-    throw std::runtime_error("Error: Array is not initialized, it cannot be read");
-  }
   std::array<size_t, 3> _origin = { 0, 0, 0 };
   std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
   std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
@@ -156,10 +149,6 @@ Array::read(void * host_data, const std::array<size_t, 3> & region, const std::a
   if (host_data == nullptr)
   {
     throw std::runtime_error("Error: Host data is null");
-  }
-  if (!initialized())
-  {
-    throw std::runtime_error("Error: Array is not initialized, it cannot be read");
   }
   std::array<size_t, 3> _origin = buffer_origin;
   std::array<size_t, 3> _region = region;
@@ -176,10 +165,7 @@ Array::read(void * host_data, const size_t x_coord, const size_t y_coord, const 
 auto
 Array::copy(const Array::Pointer & dst) const -> void
 {
-  if (!initialized() || !dst->initialized())
-  {
-    throw std::runtime_error("Error: Arrays are not initialized_");
-  }
+  check_ptr(dst, "Error: Destination Array is null");
   if (device() != dst->device())
   {
     throw std::runtime_error("Error: Copying Arrays from different devices");
@@ -225,10 +211,7 @@ Array::copy(const Array::Pointer &        dst,
             const std::array<size_t, 3> & src_origin,
             const std::array<size_t, 3> & dst_origin) const -> void
 {
-  if (!initialized() || !dst->initialized())
-  {
-    throw std::runtime_error("Error: Arrays are not initialized_");
-  }
+  check_ptr(dst, "Error: Destination Array is null");
   if (device() != dst->device())
   {
     throw std::runtime_error("Error: Copying Arrays from different devices");
@@ -265,11 +248,6 @@ Array::copy(const Array::Pointer &        dst,
 auto
 Array::fill(const float value) -> void
 {
-  if (!initialized())
-  {
-    throw std::runtime_error("Error: Array it is not initialized.");
-  }
-
 #if defined(__APPLE__) && defined(__arm64__)
   // clEnqueueFillBuffer not behaving as expected on Apple Silicon
   // FIX: Filling buffer with host data

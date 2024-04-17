@@ -6,9 +6,9 @@
 class TestNonzeroToPixelIndex : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::array<float, 5 * 3 * 2> output;
-  std::array<float, 5 * 3 * 2> input;
-  std::array<float, 5 * 3 * 2> valid;
+  std::array<uint32_t, 5 * 3 * 2> output;
+  std::array<float, 5 * 3 * 2>    input;
+  std::array<uint32_t, 5 * 3 * 2> valid;
 
   virtual void
   SetUp()
@@ -19,12 +19,13 @@ protected:
     {
       *it = static_cast<float>(rand() % 2);
     }
-    for (auto it = input.begin(), it_valid = valid.begin(); (it != input.end()) && (it_valid != valid.end());
-         ++it, ++it_valid)
+    auto it = input.begin();
+    auto it_valid = valid.begin();
+    for (; (it != input.end()) && (it_valid != valid.end()); ++it, ++it_valid)
     {
       if (*it != 0)
       {
-        *it_valid = static_cast<float>((it_valid - valid.begin()) + 1);
+        *it_valid = static_cast<uint32_t>((it_valid - valid.begin()) + 1);
       }
     }
   }
