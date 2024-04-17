@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(CLIc VERSION 0.9.1)
+project(CLIc VERSION 0.10.0)
 
 set(BUILD_CUDA_BACKEND ON CACHE BOOL "Build CUDA backend")
 set(BUILD_OPENCL_BACKEND ON CACHE BOOL "Build OpenCL backend")
