@@ -48,7 +48,7 @@ jobs:
       - name: Install build sphinx
         run: |
           python -m pip install --upgrade pip
-          python -m pip install ninja breathe sphinx_rtd_theme 
+          python -m pip install ninja breathe=4.35.0 sphinx=7.2.6 sphinx_rtd_theme=2.0.0
         shell: bash -l {0}    
 
       - name: generat build folder
