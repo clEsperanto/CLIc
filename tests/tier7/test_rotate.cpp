@@ -24,7 +24,7 @@ TEST_P(TestRotate, rotate)
   auto gpu_input = cle::Array::create(5, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
-  auto gpu_output = cle::tier7::rotate_func(device, gpu_input, nullptr, 0, 0, 45, false, false, false);
+  auto gpu_output = cle::tier7::rotate_func(device, gpu_input, nullptr, 0, 0, 45.0, false, false, false);
 
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)

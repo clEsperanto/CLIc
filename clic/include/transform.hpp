@@ -76,9 +76,12 @@ public:
     matrix rotation_matrix = matrix::Identity();
 
     // compute rotation values
+    const float epsilon = std::numeric_limits<float>::epsilon();
     const float angle_rad = deg_to_rad(angle_deg);
-    const float angle_cos = (std::abs(std::cos(angle_rad)) < 1e-6) ? 0 : std::cos(angle_rad);
-    const float angle_sin = (std::abs(std::sin(angle_rad)) < 1e-6) ? 0 : std::sin(angle_rad);
+    const float angle_cos_temp = std::cos(angle_rad);
+    const float angle_sin_temp = std::sin(angle_rad);
+    const float angle_cos = (std::abs(angle_cos_temp) < epsilon) ? 0 : angle_cos_temp;
+    const float angle_sin = (std::abs(angle_sin_temp) < epsilon) ? 0 : angle_sin_temp;
 
     // populate the rotation matrix based on the axis
     switch (axis)
@@ -372,7 +375,7 @@ protected:
   static auto
   shear_angle_to_shear_factor(float angle_deg) -> float
   {
-    return 1.0F / std::tan((90 - angle_deg) * M_PI / 180);
+    return static_cast<float>(1.0 / std::tan((90.0 - angle_deg) * M_PI / 180.0));
   }
 
   /**
