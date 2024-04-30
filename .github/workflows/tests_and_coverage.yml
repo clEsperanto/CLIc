@@ -17,7 +17,7 @@ jobs:
         os: [ubuntu-latest]
         cxx: [g++]
         cc: [gcc]
-        packages: [ocl-icd-opencl-dev rocm-opencl-runtime lcov gcovr]
+        packages: [ocl-icd-opencl-dev libpocl-dev lcov gcovr]
 
     steps:
       - name: Checkout
