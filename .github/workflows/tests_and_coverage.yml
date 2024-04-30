@@ -17,11 +17,25 @@ jobs:
         os: [ubuntu-latest]
         cxx: [g++]
         cc: [gcc]
-        packages: [ocl-icd-opencl-dev libpocl-dev lcov gcovr]
+        packages: [ocl-icd-opencl-dev lcov gcovr]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+          miniforge-variant: Mambaforge
+          miniforge-version: latest
+          activate-environment: test
+          use-mamba: true
+
+      - name: pocl
+        id: install-dependencies
+        run: |
+          mamba install -y pocl
 
       - name: Install packages
         shell: bash
