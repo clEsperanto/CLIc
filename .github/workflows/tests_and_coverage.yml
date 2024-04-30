@@ -14,10 +14,10 @@ jobs:
       max-parallel: 1
       matrix:
         buildtype: [Debug]
-        os: [macos-latest]
-        cxx: [clang++]
-        cc: [clang]
-        packages: [lcov gcovr]
+        os: [ubuntu-latest]
+        cxx: [g++]
+        cc: [gcc]
+        packages: [ocl-icd-opencl-dev pocl lcov gcovr]
 
     steps:
       - name: Checkout
@@ -26,7 +26,7 @@ jobs:
       - name: Install packages
         shell: bash
         run: |
-          brew install ${{ matrix.packages }}
+          sudo apt install ${{ matrix.packages }}
 
       - name: Cmake configure
         shell: bash
