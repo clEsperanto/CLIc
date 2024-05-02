@@ -52,6 +52,32 @@ TEST_P(TestBoundingBox, execute3d)
   }
 }
 
+TEST_P(TestBoundingBox, largePositionInt8)
+{
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
+
+  std::array<int8_t, 265 * 265 * 1> input_large = {};
+  for (int i = 0; i < input_large.size(); i++)
+  {
+    input_large[i] = 0;
+  }
+  input_large[265 * 265 - 1] = 1;
+
+  auto gpu_input = cle::Array::create(265, 265, 1, 2, cle::dType::INT8, cle::mType::BUFFER, device);
+  gpu_input->write(input_large.data());
+
+  auto output = cle::tier3::bounding_box_func(device, gpu_input);
+
+  std::vector<float> valid = { 264, 264, 0, 264, 264, 0 };
+  for (int i = 0; i < output.size(); i++)
+  {
+    EXPECT_EQ(output[i], valid[i]);
+  }
+}
+
 std::vector<std::string>
 getParameters()
 {
