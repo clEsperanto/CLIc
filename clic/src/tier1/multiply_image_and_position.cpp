@@ -14,7 +14,7 @@ multiply_image_and_position_func(const Device::Pointer & device,
                                  Array::Pointer          dst,
                                  int                     dimension) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "multiply_image_and_position", kernel::multiply_image_and_position };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "index", dimension } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
