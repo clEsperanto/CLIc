@@ -885,32 +885,6 @@ OpenCLBackend::setBuffer(const Device::Pointer &       device,
                                 nullptr);
       break;
     }
-    case dType::INT64: {
-      auto cval = static_cast<int64_t>(value);
-      err = clEnqueueFillBuffer(opencl_device->getCLCommandQueue(),
-                                *static_cast<cl_mem *>(*buffer_ptr),
-                                &cval,
-                                sizeof(cval),
-                                0,
-                                size,
-                                0,
-                                nullptr,
-                                nullptr);
-      break;
-    }
-    case dType::UINT64: {
-      auto cval = static_cast<uint64_t>(value);
-      err = clEnqueueFillBuffer(opencl_device->getCLCommandQueue(),
-                                *static_cast<cl_mem *>(*buffer_ptr),
-                                &cval,
-                                sizeof(cval),
-                                0,
-                                size,
-                                0,
-                                nullptr,
-                                nullptr);
-      break;
-    }
     default:
       throw std::invalid_argument("Invalid Array::Type value");
   }

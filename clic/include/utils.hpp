@@ -5,6 +5,8 @@
 #include <cmath>
 #include <fstream>
 #include <limits>
+#include <type_traits>
+#include <unordered_map>
 #ifndef M_PI
 #  define M_PI 3.14159265358979323846 /* pi */
 #endif
@@ -30,15 +32,16 @@ enum class mType
  */
 enum class dType
 {
-  FLOAT,
-  INT32,
-  UINT32,
   INT8,
   UINT8,
   INT16,
   UINT16,
-  INT64,
-  UINT64,
+  INT32,
+  UINT32,
+  // INT64,    // not supported by Metal
+  // UINT64,   // not supported by Metal
+  FLOAT,
+  // DOUBLE,   // not supported by GPUs
 
   INT = INT32,
   INDEX = UINT32,
@@ -54,66 +57,14 @@ enum class dType
 inline auto
 toString(const dType & dtype) -> std::string
 {
-  switch (dtype)
-  {
-    case dType::FLOAT:
-      return "float";
-    case dType::INT32:
-      return "int";
-    case dType::UINT32:
-      return "uint";
-    case dType::INT8:
-      return "char";
-    case dType::UINT8:
-      return "uchar";
-    case dType::INT16:
-      return "short";
-    case dType::UINT16:
-      return "ushort";
-    case dType::INT64:
-      return "long";
-    case dType::UINT64:
-      return "ulong";
-    default:
-      return "unknown";
-  }
-}
+  static const std::unordered_map<dType, std::string> dtypeToString = {
+    { dType::FLOAT, "float" }, { dType::INT32, "int" },   { dType::UINT32, "uint" },  { dType::INT8, "char" },
+    { dType::UINT8, "uchar" }, { dType::INT16, "short" }, { dType::UINT16, "ushort" }
+  };
 
-/**
- * @brief Operator << for cle::dType
- */
-inline auto
-operator<<(std::ostream & out, const dType & dtype) -> std::ostream &
-{
-  return out << toString(dtype);
+  auto it = dtypeToString.find(dtype);
+  return it != dtypeToString.end() ? it->second : "unknown";
 }
-
-/**
- * @brief Convert a cle::mType to a string
- */
-inline auto
-toString(const mType & mtype) -> std::string
-{
-  switch (mtype)
-  {
-    case mType::BUFFER:
-      return "Buffer";
-    case mType::IMAGE:
-      return "Image";
-    default:
-      return "unknown";
-  }
-}
-
-/**
- * @brief Operator << for cle::mType
- */
-inline auto
-operator<<(std::ostream & out, const mType & mtype) -> std::ostream &
-{
-  return out << toString(mtype);
-}
-
 
 /**
  * @brief Convert a template type T to a cle::dType
@@ -150,14 +101,6 @@ toType() -> dType
   {
     return dType::UINT8;
   }
-  else if constexpr (std::is_same_v<T, int64_t>)
-  {
-    return dType::INT64;
-  }
-  else if constexpr (std::is_same_v<T, uint64_t>)
-  {
-    return dType::UINT64;
-  }
   else
   {
     throw std::invalid_argument("Error: Invalid type");
@@ -170,28 +113,20 @@ toType() -> dType
 inline auto
 toBytes(const dType & dtype) -> size_t
 {
-  switch (dtype)
+  static const std::unordered_map<dType, size_t> dtypeToBytes = {
+    { dType::FLOAT, sizeof(float) },    { dType::INT32, sizeof(int32_t) }, { dType::UINT32, sizeof(uint32_t) },
+    { dType::INT8, sizeof(int8_t) },    { dType::UINT8, sizeof(uint8_t) }, { dType::INT16, sizeof(int16_t) },
+    { dType::UINT16, sizeof(uint16_t) }
+  };
+
+  auto it = dtypeToBytes.find(dtype);
+  if (it != dtypeToBytes.end())
   {
-    case dType::FLOAT:
-      return sizeof(float);
-    case dType::INT32:
-      return sizeof(int32_t);
-    case dType::UINT32:
-      return sizeof(uint32_t);
-    case dType::INT8:
-      return sizeof(int8_t);
-    case dType::UINT8:
-      return sizeof(uint8_t);
-    case dType::INT16:
-      return sizeof(int16_t);
-    case dType::UINT16:
-      return sizeof(uint16_t);
-    case dType::INT64:
-      return sizeof(int64_t);
-    case dType::UINT64:
-      return sizeof(uint64_t);
-    default:
-      throw std::invalid_argument("Invalid Array::Type value");
+    return it->second;
+  }
+  else
+  {
+    throw std::invalid_argument("Invalid Array::Type value");
   }
 }
 
@@ -203,30 +138,43 @@ inline auto
 castTo(const T & value, const dType & dtype) ->
   typename std::common_type<float, uint8_t, uint16_t, uint32_t, uint64_t, int8_t, int16_t, int32_t, int64_t>::type
 {
-  switch (dtype)
+  using CommonType =
+    typename std::common_type<float, uint8_t, uint16_t, uint32_t, uint64_t, int8_t, int16_t, int32_t, int64_t>::type;
+
+  if (dtype == dType::FLOAT)
   {
-    case dType::FLOAT:
-      return static_cast<float>(value);
-    case dType::INT32:
-      return static_cast<int32_t>(value);
-    case dType::UINT32:
-      return static_cast<uint32_t>(value);
-    case dType::INT8:
-      return static_cast<int8_t>(value);
-    case dType::UINT8:
-      return static_cast<uint8_t>(value);
-    case dType::INT16:
-      return static_cast<int16_t>(value);
-    case dType::UINT16:
-      return static_cast<uint16_t>(value);
-    case dType::INT64:
-      return static_cast<int64_t>(value);
-    case dType::UINT64:
-      return static_cast<uint64_t>(value);
-    default:
-      throw std::invalid_argument("Invalid Array::Type value");
+    return static_cast<CommonType>(value);
+  }
+  else if (dtype == dType::INT32)
+  {
+    return static_cast<CommonType>(value);
+  }
+  else if (dtype == dType::UINT32)
+  {
+    return static_cast<CommonType>(value);
+  }
+  else if (dtype == dType::INT8)
+  {
+    return static_cast<CommonType>(value);
+  }
+  else if (dtype == dType::UINT8)
+  {
+    return static_cast<CommonType>(value);
+  }
+  else if (dtype == dType::INT16)
+  {
+    return static_cast<CommonType>(value);
+  }
+  else if (dtype == dType::UINT16)
+  {
+    return static_cast<CommonType>(value);
+  }
+  else
+  {
+    throw std::invalid_argument("Invalid Array::Type value");
   }
 }
+
 
 /**
  * @brief compute a kernel size from a sigma value
@@ -343,6 +291,42 @@ correct_range(int * start, int * stop, int * step, int size) -> void
     *stop = *start;
   }
 }
+
+/**
+ * @brief Convert a cle::mType to a string
+ */
+inline auto
+toString(const mType & mtype) -> std::string
+{
+  switch (mtype)
+  {
+    case mType::BUFFER:
+      return "Buffer";
+    case mType::IMAGE:
+      return "Image";
+    default:
+      return "unknown";
+  }
+}
+
+/**
+ * @brief Operator << for cle::dType
+ */
+inline auto
+operator<<(std::ostream & out, const dType & dtype) -> std::ostream &
+{
+  return out << toString(dtype);
+}
+
+/**
+ * @brief Operator << for cle::mType
+ */
+inline auto
+operator<<(std::ostream & out, const mType & mtype) -> std::ostream &
+{
+  return out << toString(mtype);
+}
+
 
 /**
  * @brief convert a string to lower case
