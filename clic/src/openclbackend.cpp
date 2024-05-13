@@ -885,32 +885,33 @@ OpenCLBackend::setBuffer(const Device::Pointer &       device,
                                 nullptr);
       break;
     }
-    case dType::INT64: {
-      auto cval = static_cast<int64_t>(value);
-      err = clEnqueueFillBuffer(opencl_device->getCLCommandQueue(),
-                                *static_cast<cl_mem *>(*buffer_ptr),
-                                &cval,
-                                sizeof(cval),
-                                0,
-                                size,
-                                0,
-                                nullptr,
-                                nullptr);
-      break;
-    }
-    case dType::UINT64: {
-      auto cval = static_cast<uint64_t>(value);
-      err = clEnqueueFillBuffer(opencl_device->getCLCommandQueue(),
-                                *static_cast<cl_mem *>(*buffer_ptr),
-                                &cval,
-                                sizeof(cval),
-                                0,
-                                size,
-                                0,
-                                nullptr,
-                                nullptr);
-      break;
-    }
+    // Removed due to Metal not supporting 64-bit integers
+    // case dType::INT64: {
+    //   auto cval = static_cast<int64_t>(value);
+    //   err = clEnqueueFillBuffer(opencl_device->getCLCommandQueue(),
+    //                             *static_cast<cl_mem *>(*buffer_ptr),
+    //                             &cval,
+    //                             sizeof(cval),
+    //                             0,
+    //                             size,
+    //                             0,
+    //                             nullptr,
+    //                             nullptr);
+    //   break;
+    // }
+    // case dType::UINT64: {
+    //   auto cval = static_cast<uint64_t>(value);
+    //   err = clEnqueueFillBuffer(opencl_device->getCLCommandQueue(),
+    //                             *static_cast<cl_mem *>(*buffer_ptr),
+    //                             &cval,
+    //                             sizeof(cval),
+    //                             0,
+    //                             size,
+    //                             0,
+    //                             nullptr,
+    //                             nullptr);
+    //   break;
+    // }
     default:
       throw std::invalid_argument("Invalid Array::Type value");
   }
@@ -1059,8 +1060,9 @@ saveBinaryToCache(const std::string & device_hash, const std::string & source_ha
 }
 
 static auto
-loadProgramFromCache(const Device::Pointer & device, const std::string & device_hash, const std::string & source_hash)
-  -> cl_program
+loadProgramFromCache(const Device::Pointer & device,
+                     const std::string &     device_hash,
+                     const std::string &     source_hash) -> cl_program
 {
   cl_int err;
   cl_int status;
