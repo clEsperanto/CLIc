@@ -1033,9 +1033,8 @@ saveBinaryToCache(const std::string & device_hash, const std::string & source_ha
 }
 
 static auto
-loadProgramFromCache(const Device::Pointer & device,
-                     const std::string &     device_hash,
-                     const std::string &     source_hash) -> cl_program
+loadProgramFromCache(const Device::Pointer & device, const std::string & device_hash, const std::string & source_hash)
+  -> cl_program
 {
   cl_int err;
   cl_int status;
