@@ -14,6 +14,6 @@ repos:
     -   id: mixed-line-ending
 
 -   repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: '14.0.6'
+    rev: v14.0.6
     hooks:
     -   id: clang-format
