@@ -30,7 +30,7 @@ add_custom_command(
 )
 # Define the target that depends on the output of the custom command
 add_custom_target(
-    generate_kernels 
+    generate_kernels
     DEPENDS ${KERNELS_HEADER_DIR}
 )
 

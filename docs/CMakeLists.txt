@@ -44,5 +44,3 @@ add_custom_target(
     DEPENDS doxygen
     BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/build
 )
-  
-    

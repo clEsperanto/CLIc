@@ -12,4 +12,3 @@ repos:
     -   id: check-merge-conflict
     -   id: check-symlinks
     -   id: mixed-line-ending
-

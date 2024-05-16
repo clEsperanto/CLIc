@@ -1,7 +1,7 @@
 # CLIc
 
 [![Build & test](https://github.com/clEsperanto/CLIc/actions/workflows/build-test.yml/badge.svg)](https://github.com/clEsperanto/CLIc/actions/workflows/build-test.yml)
-[![CI-Tests](https://github.com/clEsperanto/CLIc/actions/workflows/tests_and_coverage.yml/badge.svg)](https://github.com/clEsperanto/CLIc/actions/workflows/tests_and_coverage.yml) 
+[![CI-Tests](https://github.com/clEsperanto/CLIc/actions/workflows/tests_and_coverage.yml/badge.svg)](https://github.com/clEsperanto/CLIc/actions/workflows/tests_and_coverage.yml)
 [![Codecov](https://codecov.io/gh/clEsperanto/CLIc/branch/master/graph/badge.svg?token=QRSZHYDFIF)](https://codecov.io/gh/clEsperanto/CLIc)
 [![License](https://img.shields.io/badge/license-BSD-informational)](https://github.com/clEsperanto/CLIc/blob/master/LICENSE)
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/clesperanto/CLIc?color=white&include_prereleases)](https://github.com/clEsperanto/CLIc/releases/latest)
@@ -28,11 +28,11 @@ int main( int argc, char** argv)
     auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
 
     // host vector to hold input and output
-    std::vector<float> input (width * height * depth); 
-    std::vector<float> output (input.size()); 
+    std::vector<float> input (width * height * depth);
+    std::vector<float> output (input.size());
 
     /*
-     * ... fill input with data to process  
+     * ... fill input with data to process
      */
 
     // push data from host to device
@@ -40,7 +40,7 @@ int main( int argc, char** argv)
     // apply filter with parameters
     auto gpu_dst = cle::tier1::AddImageAndScalar(device, gpu_src, nullptr, 10);
     // pull output from device to host
-    cle::Pull<float>(gpu_dst, output.data()); 
+    cle::Pull<float>(gpu_dst, output.data());
 
     return EXIT_SUCCESS;
 }
@@ -51,8 +51,8 @@ See more complete example on usage by looking at the kernels [tests](./tests/).
 
 ## Requirements
 
-CLIc rely on OpenCL language for parallelisation and CMake for configuration and build.  
-Follow the [compilation guideline](https://clesperanto.github.io/CLIc/compilation.html) for helps on building the library. 
+CLIc rely on OpenCL language for parallelisation and CMake for configuration and build.
+Follow the [compilation guideline](https://clesperanto.github.io/CLIc/compilation.html) for helps on building the library.
 
 ## Quick install
 
@@ -80,12 +80,12 @@ cmake --build ./build --target uninstall
 CLIc filters rely on the clEsperanto branch of [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels). They are managed as a submodule of this repository.
 
 # __Contributing__
-Contributions are very welcome. Before spending effort on coding and filing a pull-request, please get in touch with us, [file an issue](https://github.com/clEsperanto/CLIc/issues), and let's discuss your potential contribution. 
+Contributions are very welcome. Before spending effort on coding and filing a pull-request, please get in touch with us, [file an issue](https://github.com/clEsperanto/CLIc/issues), and let's discuss your potential contribution.
 More information on how to add new kernels to the library can be found in the [documentation](https://clesperanto.github.io/CLIc/contribute.html).
 
 # __Feedback welcome!__
-clEsperanto is developed in the open because we believe in the [open source community](https://clij.github.io/clij2-docs/community_guidelines). 
-Feel free to drop feedback as [github issue](https://github.com/clEsperanto/CLIc/issues) or via [image.sc](https://image.sc).  
+clEsperanto is developed in the open because we believe in the [open source community](https://clij.github.io/clij2-docs/community_guidelines).
+Feel free to drop feedback as [github issue](https://github.com/clEsperanto/CLIc/issues) or via [image.sc](https://image.sc).
 And if you liked our work, star the repository, share it with your friends, and use it to make cool stuff!
 
 ## Acknowledgements

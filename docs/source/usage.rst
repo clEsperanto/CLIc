@@ -1,7 +1,7 @@
 Usage
 -----
 
-It is not adviced to use this library directly in your project as it does not provide a simple API to use. 
+It is not adviced to use this library directly in your project as it does not provide a simple API to use.
 It is a low-level library on which rely other user oriented libraries (pyclesperanto, clesperantoJ, `etc.`).
 
 However, as a developer, you may have to use this library to implement new operations or to integrate it into your own project.
@@ -19,7 +19,7 @@ First, we need to initialize the ``Backend``. This is done through the singleton
     cle::BackendManager::getInstance().setBackend("opencl");
 
 The ``cle::BackendManager::getInstance()`` function returns the singleton instance of the ``BackendManager``.
-We can then call the ``setBackend()`` function to set the backend we want to use. 
+We can then call the ``setBackend()`` function to set the backend we want to use.
 Here we use the OpenCL backend.
 CUDA is also available.
 
@@ -39,19 +39,19 @@ With the exception of the device initialisation, most operation involving the ba
 Get a device
 ~~~~~~~~~~~~
 
-GPU operation are done on a device. 
+GPU operation are done on a device.
 So before we can do any operation, we need to access a device made available by the backend.
 
 .. code-block:: c++
 
     auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
 
-The ``getDevice()`` function returns a device that is available on the backend. 
+The ``getDevice()`` function returns a device that is available on the backend.
 Here we use the first available device of any type possible (CPU or GPU).
 It is also possible to specify the device we want to use by providing the name of the device as the first argument of the function.
 The second argument is the type of device we want to use (``"gpu"`` or ``"cpu"``), or ``"all"`` to use any available device.
 
-For example: 
+For example:
 
 .. code-block:: c++
 
@@ -72,7 +72,7 @@ To create an array, we need to provide the device, the size of the array and the
 
     auto gpu_array = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
 
-Here we create a 3D array of size 10x5x3 of type ``float`` on the device. 
+Here we create a 3D array of size 10x5x3 of type ``float`` on the device.
 ``cle::mType::BUFFER`` is the memory type of the array, here a BUFFER (see the `Array class <https://clesperanto.github.io/CLIc/array.html>`__ for more information on the memory types and methods).
 
 Here, we only created a memory space on the device, similarly as a ``malloc()`` in `C`.
@@ -91,10 +91,10 @@ We can do the oposite operation and read the ``gpu_array`` into a ``std::vector`
 
 .. note::
 
-    The ``read()`` and ``write()`` functions are blocking functions. 
+    The ``read()`` and ``write()`` functions are blocking functions.
     They will wait for the operation to be done before returning.
 
-.. warning:: 
+.. warning::
 
     As we are operating at a low-level API, no proper verification is done on the size or type of the array.
     We assume here that the developer knows what he is manipulating.
@@ -112,7 +112,7 @@ For this example, we will use the ``AddImageAndScalar`` operation.
 
 ``gpu_result`` is a new array on the device that is the result of the operation.
 
-.. note:: 
+.. note::
 
     The majority of the operations in the library are requiring to have twice the memory space on the device.
     More advance operations may require more memory space depending on the number of intermediate values needed.
