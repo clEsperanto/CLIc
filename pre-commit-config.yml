@@ -13,7 +13,19 @@ repos:
     -   id: check-symlinks
     -   id: mixed-line-ending
 
-  - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v14.0.6
+  # - repo: https://github.com/pre-commit/mirrors-clang-format
+  #   rev: v14.0.6
+  #   hooks:
+  #   -   id: clang-format
+
+  - repo: https://github.com/pocc/pre-commit-hooks
+    rev: master
     hooks:
-    -   id: clang-format
+      - id: clang-format
+        args: [--style=file]
+      - id: clang-tidy
+      - id: oclint
+      - id: uncrustify
+      - id: cppcheck
+      - id: cpplint
+      - id: include-what-you-use
