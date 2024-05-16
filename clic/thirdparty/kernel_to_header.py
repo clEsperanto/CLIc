@@ -8,7 +8,7 @@ import sys
 import os
 import glob
 
-def stringify(input_file: str, output_path: str, prefix: str):  
+def stringify(input_file: str, output_path: str, prefix: str):
     kernel_template = """// This file is auto generated at build time. Do not edit manually.
 
 #ifndef {prefix}_{kernel_upcase}_H
@@ -55,7 +55,7 @@ def main():
     output_folder = sys.argv[2]
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
-    
+
     file_list = glob.glob( os.path.join(input_folder,'**/*.cl'), recursive=True)
     file_list += glob.glob( os.path.join(input_folder,'**/*.cu'), recursive=True)
     for file in file_list:

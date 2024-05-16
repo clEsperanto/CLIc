@@ -15,5 +15,5 @@ files=$(find "$project_directory" -name "*.hpp" -o -name "*.cpp")
 for file in $files; do
     echo "Processing : $file"
     clang-format -i -style=file -- "$file" || echo "Failed to format $file"
-    
+
 done
