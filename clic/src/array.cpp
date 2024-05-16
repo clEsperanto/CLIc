@@ -104,8 +104,10 @@ Array::write(const void * host_data) -> void
     throw std::runtime_error("Error: Host data is null");
   }
   std::array<size_t, 3> _origin = { 0, 0, 0 };
-  std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
-  std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
+  std::array<size_t, 3> _shape        = { this->width(), this->height(), this->depth() };
+  std::array<size_t, 3> _region = { 
+    this->width(), this->height(), this->depth()
+     };
   backend_.writeMemory(device(), get(), _shape, _origin, _region, dtype(), mtype(), host_data);
 }
 
