@@ -112,8 +112,9 @@ public:
    * @param buffer_origin origin of the buffer to write
    */
   auto
-  write(const void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin)
-    -> void;
+  write(const void *                  host_data,
+        const std::array<size_t, 3> & region,
+        const std::array<size_t, 3> & buffer_origin) -> void;
 
   /**
    * @brief Write host data into the Array at a specific position (x, y, z)
@@ -139,8 +140,9 @@ public:
    * @param buffer_origin origin of the buffer to read
    */
   auto
-  read(void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin) const
-    -> void;
+  read(void *                        host_data,
+       const std::array<size_t, 3> & region,
+       const std::array<size_t, 3> & buffer_origin) const -> void;
 
   /**
    * @brief Read the Array data at a specific position (x, y, z) into host memory

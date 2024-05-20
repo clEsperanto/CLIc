@@ -10,8 +10,9 @@ namespace cle::tier1
 {
 
 auto
-maximum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+maximum_y_projection_func(const Device::Pointer & device,
+                          const Array::Pointer &  src,
+                          Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_xz(src, dst);
   const KernelInfo    kernel = { "maximum_y_projection", kernel::maximum_y_projection };

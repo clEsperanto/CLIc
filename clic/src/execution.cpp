@@ -179,8 +179,9 @@ arrayDefines(const ParameterList & parameter_list, const Device::Type & device) 
 
 // Top function for creating defines at runtime
 auto
-generateDefines(const ParameterList & parameter_list, const ConstantList & constant_list, const Device::Type & device)
-  -> std::string
+generateDefines(const ParameterList & parameter_list,
+                const ConstantList &  constant_list,
+                const Device::Type &  device) -> std::string
 {
   std::ostringstream defines;
   defines << commonDefines(constant_list);

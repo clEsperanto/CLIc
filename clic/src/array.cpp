@@ -110,8 +110,9 @@ Array::write(const void * host_data) -> void
 }
 
 auto
-Array::write(const void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin)
-  -> void
+Array::write(const void *                  host_data,
+             const std::array<size_t, 3> & region,
+             const std::array<size_t, 3> & buffer_origin) -> void
 {
   if (host_data == nullptr)
   {
@@ -143,8 +144,9 @@ Array::read(void * host_data) const -> void
 }
 
 auto
-Array::read(void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin) const
-  -> void
+Array::read(void *                        host_data,
+            const std::array<size_t, 3> & region,
+            const std::array<size_t, 3> & buffer_origin) const -> void
 {
   if (host_data == nullptr)
   {
