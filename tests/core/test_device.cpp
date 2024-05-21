@@ -224,13 +224,12 @@ TEST_P(TestDevice, clInfo)
   auto info = device->getInfo();
   std::cout << info << std::endl;
 
-    // Capture the output of the << operator
+  // Capture the output of the << operator
   info = device->getInfoExtended();
   std::cout << info << std::endl;
 
   // // Check that the output is correct
   // EXPECT_FALSE(output.empty());
-
 }
 
 std::vector<std::string>

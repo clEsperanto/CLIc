@@ -1,8 +1,8 @@
 #include "device.hpp"
-#include "utils.hpp"  
+#include "utils.hpp"
+#include <iomanip>  // for std::setw and std::left
 #include <iterator> // Add this line
-#include <iomanip> // for std::setw and std::left
-#include <map> // for std::map
+#include <map>      // for std::map
 
 namespace cle
 {
@@ -140,14 +140,15 @@ OpenCLDevice::getName(bool lowercase) const -> std::string
   return std::string(device_name);
 }
 
-auto OpenCLDevice::getInfo() const -> std::string
+auto
+OpenCLDevice::getInfo() const -> std::string
 {
   std::ostringstream result;
-  char version[256], vendor[256], driver[256], extensions[1024], dev_type[256];
-  cl_device_type type;
-  cl_uint compute_units, max_work_group_size, max_clock_frequency, max_work_item_dimensions, image_support;
-  size_t global_mem_size, max_mem_size;
-  size_t max_work_item_sizes[3];
+  char               version[256], vendor[256], driver[256], extensions[1024], dev_type[256];
+  cl_device_type     type;
+  cl_uint            compute_units, max_work_group_size, max_clock_frequency, max_work_item_dimensions, image_support;
+  size_t             global_mem_size, max_mem_size;
+  size_t             max_work_item_sizes[3];
 
   // Get device information
   const auto & name = getName();
@@ -164,14 +165,14 @@ auto OpenCLDevice::getInfo() const -> std::string
   clGetDeviceInfo(clDevice, CL_DEVICE_IMAGE_SUPPORT, sizeof(cl_uint), &image_support, nullptr);
 
   std::map<cl_device_type, std::string> deviceTypeMap = {
-        {CL_DEVICE_TYPE_CPU, "CPU"},
-        {CL_DEVICE_TYPE_GPU, "GPU"},
-        {CL_DEVICE_TYPE_ACCELERATOR, "Accelerator"},
-        {CL_DEVICE_TYPE_CUSTOM, "Custom"},
-    };
-    std::string dev_type_str = deviceTypeMap.count(type) ? deviceTypeMap[type] : "Unknown";
+    { CL_DEVICE_TYPE_CPU, "CPU" },
+    { CL_DEVICE_TYPE_GPU, "GPU" },
+    { CL_DEVICE_TYPE_ACCELERATOR, "Accelerator" },
+    { CL_DEVICE_TYPE_CUSTOM, "Custom" },
+  };
+  std::string dev_type_str = deviceTypeMap.count(type) ? deviceTypeMap[type] : "Unknown";
   // Print device information to output string
-  result << std::left <<"(" << this->getType() << ") " << name << " (" + std::string(version) << ")\n";
+  result << std::left << "(" << this->getType() << ") " << name << " (" + std::string(version) << ")\n";
   result << std::left << std::setw(30) << "\tVendor: " << std::string(vendor) << "\n";
   result << std::left << std::setw(30) << "\tDriver Version: " << std::string(driver) << "\n";
   result << std::left << std::setw(30) << "\tDevice Type: " << dev_type_str << "\n";
@@ -184,29 +185,33 @@ auto OpenCLDevice::getInfo() const -> std::string
   return result.str();
 }
 
-auto OpenCLDevice::getInfoExtended() const -> std::string
+auto
+OpenCLDevice::getInfoExtended() const -> std::string
 {
   std::ostringstream result;
-  char extensions[1024];
-  cl_uint  max_work_group_size,  max_work_item_dimensions;
-  size_t max_work_item_sizes[3];
+  char               extensions[1024];
+  cl_uint            max_work_group_size, max_work_item_dimensions;
+  size_t             max_work_item_sizes[3];
   clGetDeviceInfo(clDevice, CL_DEVICE_EXTENSIONS, sizeof(char) * 1024, &extensions, nullptr);
   clGetDeviceInfo(clDevice, CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(cl_uint), &max_work_group_size, nullptr);
   clGetDeviceInfo(clDevice, CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS, sizeof(cl_uint), &max_work_item_dimensions, nullptr);
-  clGetDeviceInfo(clDevice, CL_DEVICE_MAX_WORK_ITEM_SIZES, sizeof(size_t)*3, &max_work_item_sizes, nullptr);
+  clGetDeviceInfo(clDevice, CL_DEVICE_MAX_WORK_ITEM_SIZES, sizeof(size_t) * 3, &max_work_item_sizes, nullptr);
 
   // Split extensions string into a vector
-  std::istringstream iss((std::string(extensions)));
-  std::vector<std::string> extensionsVec((std::istream_iterator<std::string>(iss)), std::istream_iterator<std::string>());
+  std::istringstream       iss((std::string(extensions)));
+  std::vector<std::string> extensionsVec((std::istream_iterator<std::string>(iss)),
+                                         std::istream_iterator<std::string>());
 
   result << this->getInfo();
-result << std::left << std::setw(30) << "\tMax Work Group Size: " << max_work_group_size << '\n';
+  result << std::left << std::setw(30) << "\tMax Work Group Size: " << max_work_group_size << '\n';
   result << std::left << std::setw(30) << "\tMax Work Item Dimensions: " << max_work_item_dimensions << '\n';
-  result << std::left << std::setw(30) << "\tMax Work Item Sizes: " << max_work_item_sizes[0] << ", " << max_work_item_sizes[1] << ", " << max_work_item_sizes[2] << '\n';
-result << std::left << std::setw(30) << "\tExtensions:";
-for (const auto& extension : extensionsVec) {
-  result << "\n\t\t" << std::left << std::setw(30) << extension;
-}
+  result << std::left << std::setw(30) << "\tMax Work Item Sizes: " << max_work_item_sizes[0] << ", "
+         << max_work_item_sizes[1] << ", " << max_work_item_sizes[2] << '\n';
+  result << std::left << std::setw(30) << "\tExtensions:";
+  for (const auto & extension : extensionsVec)
+  {
+    result << "\n\t\t" << std::left << std::setw(30) << extension;
+  }
 
   return result.str();
 }

@@ -9,7 +9,7 @@ namespace cle::tier0
  * @param dst destination array pointer
  * @param type data type
  * @return true if dst is not null
-*/
+ */
 auto
 check_and_set(const Array::Pointer & src, Array::Pointer & dst, dType & type) -> bool
 {
@@ -17,7 +17,7 @@ check_and_set(const Array::Pointer & src, Array::Pointer & dst, dType & type) ->
   {
     return true;
   }
-  if(src == nullptr)
+  if (src == nullptr)
   {
     throw std::invalid_argument("Error: Cannot generate output Array because the provided 'src' is null.");
   }
@@ -37,12 +37,15 @@ check_and_set(const Array::Pointer & src, Array::Pointer & dst, dType & type) ->
  * @param depth depth of the array
  * @param type data type
  * @return void
-*/
+ */
 auto
 create_dst(const Array::Pointer & src, Array::Pointer & dst, size_t width, size_t height, size_t depth, dType type)
   -> void
 {
-  if ( check_and_set(src, dst, type) ) { return;  }
+  if (check_and_set(src, dst, type))
+  {
+    return;
+  }
   auto dim = shape_to_dimension(width, height, depth);
   dst = Array::create(width, height, depth, dim, type, src->mtype(), src->device());
 }
@@ -53,11 +56,14 @@ create_dst(const Array::Pointer & src, Array::Pointer & dst, size_t width, size_
  * @param dst destination array pointer
  * @param type data type
  * @return void
-*/
+ */
 auto
 create_like(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  if ( check_and_set(src, dst, type) ) { return;  }
+  if (check_and_set(src, dst, type))
+  {
+    return;
+  }
   dst = Array::create(src->width(), src->height(), src->depth(), src->dimension(), type, src->mtype(), src->device());
 }
 
@@ -67,11 +73,14 @@ create_like(const Array::Pointer & src, Array::Pointer & dst, dType type) -> voi
  * @param dst destination array pointer
  * @param type data type
  * @return void
-*/
+ */
 auto
 create_one(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  if ( check_and_set(src, dst, type) ) { return;  }
+  if (check_and_set(src, dst, type))
+  {
+    return;
+  }
   dst = Array::create(1, 1, 1, 1, type, mType::BUFFER, src->device());
 }
 
@@ -82,11 +91,14 @@ create_one(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
  * @param size size of the array
  * @param type data type
  * @return void
-*/
+ */
 auto
 create_vector(const Array::Pointer & src, Array::Pointer & dst, const size_t & size, dType type) -> void
 {
-  if ( check_and_set(src, dst, type) ) { return;  }
+  if (check_and_set(src, dst, type))
+  {
+    return;
+  }
   dst = Array::create(size, 1, 1, 1, type, mType::BUFFER, src->device());
 }
 
@@ -96,11 +108,14 @@ create_vector(const Array::Pointer & src, Array::Pointer & dst, const size_t & s
  * @param dst destination array pointer
  * @param type data type
  * @return void
-*/
+ */
 auto
 create_xy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  if ( check_and_set(src, dst, type) ) { return;  }
+  if (check_and_set(src, dst, type))
+  {
+    return;
+  }
   auto dim = shape_to_dimension(src->width(), src->height(), 1);
   dst = Array::create(src->width(), src->height(), 1, dim, type, src->mtype(), src->device());
 }
@@ -111,11 +126,14 @@ create_xy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
  * @param dst destination array pointer
  * @param type data type
  * @return void
-*/
+ */
 auto
 create_yx(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  if ( check_and_set(src, dst, type) ) { return;  }
+  if (check_and_set(src, dst, type))
+  {
+    return;
+  }
   auto dim = shape_to_dimension(src->height(), src->width(), 1);
   dst = Array::create(src->height(), src->width(), 1, dim, type, src->mtype(), src->device());
 }
@@ -126,11 +144,14 @@ create_yx(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
  * @param dst destination array pointer
  * @param type data type
  * @return void
-*/
+ */
 auto
 create_zy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  if ( check_and_set(src, dst, type) ) { return;  }
+  if (check_and_set(src, dst, type))
+  {
+    return;
+  }
   auto dim = shape_to_dimension(src->depth(), src->height(), 1);
   dst = Array::create(src->depth(), src->height(), 1, dim, type, src->mtype(), src->device());
 }
@@ -141,11 +162,14 @@ create_zy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
  * @param dst destination array pointer
  * @param type data type
  * @return void
-*/
+ */
 auto
 create_yz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  if ( check_and_set(src, dst, type) ) { return;  }
+  if (check_and_set(src, dst, type))
+  {
+    return;
+  }
   auto dim = shape_to_dimension(src->height(), src->depth(), 1);
   dst = Array::create(src->height(), src->depth(), 1, dim, type, src->mtype(), src->device());
 }
@@ -156,11 +180,14 @@ create_yz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
  * @param dst destination array pointer
  * @param type data type
  * @return void
-*/
+ */
 auto
 create_xz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  if ( check_and_set(src, dst, type) ) { return;  }
+  if (check_and_set(src, dst, type))
+  {
+    return;
+  }
   auto dim = shape_to_dimension(src->width(), src->depth(), 1);
   dst = Array::create(src->width(), src->depth(), 1, dim, type, src->mtype(), src->device());
 }
@@ -171,11 +198,14 @@ create_xz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
  * @param dst destination array pointer
  * @param type data type
  * @return void
-*/
+ */
 auto
 create_zx(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  if ( check_and_set(src, dst, type) ) { return;  }
+  if (check_and_set(src, dst, type))
+  {
+    return;
+  }
   auto dim = shape_to_dimension(src->depth(), src->width(), 1);
   dst = Array::create(src->depth(), src->width(), 1, dim, type, src->mtype(), src->device());
 }

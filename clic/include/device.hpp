@@ -84,7 +84,7 @@ public:
   [[nodiscard]] virtual auto
   getInfo() const -> std::string = 0;
 
-      /**
+  /**
    * @brief Get device with more info
    * @return std::string
    */
@@ -244,7 +244,7 @@ public:
   [[nodiscard]] auto
   getInfo() const -> std::string override;
 
-      /**
+  /**
    * @brief Get device with more info
    * @return std::string
    */
@@ -368,7 +368,7 @@ public:
   [[nodiscard]] auto
   getInfo() const -> std::string override;
 
-    /**
+  /**
    * @brief Get device with more info
    * @return std::string
    */

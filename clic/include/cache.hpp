@@ -63,7 +63,7 @@ get_cache_directory_path() -> std::filesystem::path
     return get_path_with_cache_folder(std::filesystem::u8path(home_dir) / std::filesystem::u8path(CACHE_DIR_UNIX));
   }
   std::cerr << "Failed to get user home directory\n";
-   return get_path_with_cache_folder(std::filesystem::current_path() / std::filesystem::path(CACHE_DIR_UNIX));
+  return get_path_with_cache_folder(std::filesystem::current_path() / std::filesystem::path(CACHE_DIR_UNIX));
 }
 #endif
 
@@ -72,7 +72,8 @@ get_cache_directory_path() -> std::filesystem::path
  *        The cache can be disabled by setting the environment variable CLESPERANTO_NO_CACHE
  * @return true if the cache is enabled, false otherwise
  */
-static auto is_cache_enabled() -> bool
+static auto
+is_cache_enabled() -> bool
 {
   return std::getenv("CLESPERANTO_NO_CACHE") == nullptr;
 }
