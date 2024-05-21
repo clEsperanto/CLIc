@@ -84,6 +84,13 @@ public:
   [[nodiscard]] virtual auto
   getInfo() const -> std::string = 0;
 
+      /**
+   * @brief Get device with more info
+   * @return std::string
+   */
+  [[nodiscard]] virtual auto
+  getInfoExtended() const -> std::string = 0;
+
   /**
    * @brief Get device type
    * @return Device::Type
@@ -237,6 +244,13 @@ public:
   [[nodiscard]] auto
   getInfo() const -> std::string override;
 
+      /**
+   * @brief Get device with more info
+   * @return std::string
+   */
+  [[nodiscard]] auto
+  getInfoExtended() const -> std::string override;
+
 private:
   cl_device_id     clDevice;
   cl_platform_id   clPlatform;
@@ -353,6 +367,13 @@ public:
    */
   [[nodiscard]] auto
   getInfo() const -> std::string override;
+
+    /**
+   * @brief Get device with more info
+   * @return std::string
+   */
+  [[nodiscard]] auto
+  getInfoExtended() const -> std::string override;
 
   /**
    * @brief Get device architecture

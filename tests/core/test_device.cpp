@@ -213,6 +213,26 @@ TEST_P(TestDevice, stringCout)
   EXPECT_EQ(output, expected_output.str());
 }
 
+TEST_P(TestDevice, clInfo)
+{
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
+
+  // Capture the output of the << operator
+  auto info = device->getInfo();
+  std::cout << info << std::endl;
+
+    // Capture the output of the << operator
+  info = device->getInfoExtended();
+  std::cout << info << std::endl;
+
+  // // Check that the output is correct
+  // EXPECT_FALSE(output.empty());
+
+}
+
 std::vector<std::string>
 getParameters()
 {
