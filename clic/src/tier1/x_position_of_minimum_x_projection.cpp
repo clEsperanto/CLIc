@@ -9,8 +9,9 @@ namespace cle::tier1
 {
 
 auto
-x_position_of_minimum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+x_position_of_minimum_x_projection_func(const Device::Pointer & device,
+                                        const Array::Pointer &  src,
+                                        Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_zy(src, dst, dType::INDEX);
   const KernelInfo    kernel = { "x_position_of_minimum_x_projection", kernel::x_position_of_minimum_x_projection };
