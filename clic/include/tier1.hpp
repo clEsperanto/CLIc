@@ -190,6 +190,34 @@ binary_xor_func(const Device::Pointer & device,
                 const Array::Pointer &  src1,
                 Array::Pointer          dst) -> Array::Pointer;
 
+/**
+ * @name binary_supinf
+ * @brief Compute the maximum of the erosion with plannar structuring elements.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src The binary input image to be processed. [const Array::Pointer &]
+ * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'binary processing'
+ */
+auto
+binary_supinf_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+
+/**
+ * @name binary_infsup
+ * @brief Compute the minimum of the dilation with plannar structuring elements.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src The binary input image to be processed. [const Array::Pointer &]
+ * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'binary processing'
+ */
+auto
+binary_infsup_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 /**
  * @name block_enumerate
