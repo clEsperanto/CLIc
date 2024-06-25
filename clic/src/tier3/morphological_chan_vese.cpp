@@ -47,7 +47,7 @@ compute_contour_score(const Device::Pointer & device,
   auto masked = tier1::mask_func(device, image, contour, nullptr);
   auto sum_image_value = tier2::sum_of_all_pixels_func(device, masked);
   auto sum_contour_value = tier2::sum_of_all_pixels_func(device, contour) + 1e-8;
-  c = -(sum_image_value / sum_contour_value);
+  return -(sum_image_value / sum_contour_value);
 }
 
 auto
@@ -115,7 +115,7 @@ apply_contour_evolution(const Device::Pointer & device,
 }
 
 auto
-smooth_contour(const Device::Pointer & device, Array::Pointer dst, int iteration)
+smooth_contour(const Device::Pointer & device, Array::Pointer dst, int iteration) -> void
 {
   if (iteration == 0)
   {
