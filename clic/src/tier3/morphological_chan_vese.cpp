@@ -1,7 +1,6 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
 #include "tier2.hpp"
-#include "tier3.hpp"
 
 #include "utils.hpp"
 
@@ -11,12 +10,6 @@ namespace cle::tier3
 auto
 create_checkerboard_init(const Array::Pointer & src, Array::Pointer dst, int squareSize) -> void
 {
-  if (dst != nullptr)
-  {
-    return;
-  }
-  tier0::create_like(src, dst, dType::BINARY);
-
   auto width = dst->width();
   auto height = dst->height();
   auto depth = dst->depth();
@@ -38,40 +31,43 @@ create_checkerboard_init(const Array::Pointer & src, Array::Pointer dst, int squ
   dst->write(checkerboard.data());
 }
 
+
 auto
 compute_contour_score(const Device::Pointer & device,
                       const Array::Pointer &  image,
                       const Array::Pointer &  contour,
-                      float &                 c) -> float
+                      float &                 c) -> void
 {
   auto masked = tier1::mask_func(device, image, contour, nullptr);
   auto sum_image_value = tier2::sum_of_all_pixels_func(device, masked);
   auto sum_contour_value = tier2::sum_of_all_pixels_func(device, contour) + 1e-8;
-  return -(sum_image_value / sum_contour_value);
+  c = -sum_image_value / sum_contour_value;
 }
 
 auto
-compute_gradient_magnitude(const Device::Pointer & device, const Array::Pointer & contour, Array::Pointer dst) -> void
+compute_gradient_magnitude(const Device::Pointer & device,
+                           const Array::Pointer &  contour,
+                           Array::Pointer          gradient_magnitude) -> void
 {
-  auto temp_1 = Array::create(dst);
-  auto temp_2 = Array::create(dst);
-  dst->fill(0);
+  auto gradient_along_axis = Array::create(gradient_magnitude);
+  auto absolute_gradient_along_axis = Array::create(gradient_magnitude);
+  gradient_magnitude->fill(0);
   for (int d = 0; d < contour->dimension(); d++)
   {
     switch (d)
     {
       case 0:
-        tier1::gradient_x_func(device, contour, temp_1);
+        tier1::gradient_x_func(device, contour, gradient_along_axis);
         break;
       case 1:
-        tier1::gradient_y_func(device, contour, temp_1);
+        tier1::gradient_y_func(device, contour, gradient_along_axis);
         break;
       case 2:
-        tier1::gradient_z_func(device, contour, temp_1);
+        tier1::gradient_z_func(device, contour, gradient_along_axis);
         break;
     }
-    tier1::absolute_func(device, temp_1, temp_2);
-    tier1::add_images_weighted_func(device, temp_2, dst, dst, 1, 1);
+    tier1::absolute_func(device, gradient_along_axis, absolute_gradient_along_axis);
+    tier1::add_images_weighted_func(device, absolute_gradient_along_axis, gradient_magnitude, gradient_magnitude, 1, 1);
   }
 }
 
@@ -84,15 +80,16 @@ compute_contour_evolution(const Device::Pointer & device,
                           float                   lambda1,
                           float                   lambda2) -> void
 {
-  auto temp_1 = Array::create(evolution);
-  auto temp_2 = Array::create(evolution);
-  auto temp_3 = Array::create(evolution);
-  tier1::add_image_and_scalar_func(device, image, temp_1, c1);
-  tier1::add_image_and_scalar_func(device, image, temp_2, c0);
-  tier1::power_func(device, temp_1, temp_1, 2);
-  tier1::power_func(device, temp_2, temp_2, 2);
-  tier1::add_images_weighted_func(device, temp_1, temp_2, temp_3, lambda1, -lambda2);
-  tier1::multiply_images_func(device, temp_3, evolution, evolution);
+  // magnitude * (lambda1 * (image - c1) ** 2 - lambda2 * (image - c0) ** 2)
+  // (image - c1) ** 2 -> inside_evo
+  auto inside_evo = tier1::add_image_and_scalar_func(device, image, nullptr, c1);
+  tier1::power_func(device, inside_evo, inside_evo, 2);
+  // (image - c0) ** 2) -> outside_evo
+  auto outside_evo = tier1::add_image_and_scalar_func(device, image, nullptr, c0);
+  tier1::power_func(device, outside_evo, outside_evo, 2);
+  // magnitude * (lambda1 * inside_evo - lambda2 * outside_evo)
+  auto merged = tier1::add_images_weighted_func(device, inside_evo, outside_evo, nullptr, lambda1, -lambda2);
+  tier1::multiply_images_func(device, merged, evolution, evolution);
 }
 
 auto
@@ -100,18 +97,12 @@ apply_contour_evolution(const Device::Pointer & device,
                         const Array::Pointer &  evolution,
                         Array::Pointer          contour) -> void
 {
-  auto temp_1 = Array::create(contour);
-  auto temp_2 = Array::create(contour);
-  auto temp_3 = Array::create(contour);
-
-  tier1::greater_constant_func(device, evolution, temp_1, 0);
-  tier1::smaller_constant_func(device, evolution, temp_2, 0);
-
-  tier1::binary_or_func(device, temp_1, temp_2, temp_3);
-  tier1::binary_not_func(device, temp_3, temp_1);
-
-  tier1::mask_func(device, contour, temp_1, temp_2);
-  tier1::add_images_weighted_func(device, temp_2, temp_3, contour, 1, 1);
+  auto evolution_pos = tier1::greater_constant_func(device, evolution, nullptr, 0);
+  auto evolution_neg = tier1::smaller_constant_func(device, evolution, nullptr, 0);
+  auto evolution_or = tier1::binary_or_func(device, evolution_pos, evolution_neg, nullptr);
+  auto mask = tier1::binary_not_func(device, evolution_or, nullptr);
+  auto masked_evolution = tier1::mask_func(device, contour, mask, nullptr);
+  tier1::add_images_weighted_func(device, masked_evolution, evolution_neg, contour, 1, 1);
 }
 
 auto
@@ -121,18 +112,18 @@ smooth_contour(const Device::Pointer & device, Array::Pointer dst, int iteration
   {
     return;
   }
-  auto temp_1 = Array::create(dst);
+  auto temp = Array::create(dst);
   for (int i = 0; i < iteration; i++)
   {
     if (i % 2 == 0)
     {
-      tier1::binary_infsup_func(device, dst, temp_1);
-      tier1::binary_supinf_func(device, temp_1, dst);
+      tier1::binary_infsup_func(device, dst, temp);
+      tier1::binary_supinf_func(device, temp, dst);
     }
     else
     {
-      tier1::binary_supinf_func(device, dst, temp_1);
-      tier1::binary_infsup_func(device, temp_1, dst);
+      tier1::binary_supinf_func(device, dst, temp);
+      tier1::binary_infsup_func(device, temp, dst);
     }
   }
 }
@@ -147,39 +138,46 @@ morphological_chan_vese_func(const Device::Pointer & device,
                              float                   lambda1,
                              float                   lambda2) -> Array::Pointer
 {
-  // check if dst is nullptr otherwise create a new array and
-  // initialize it with a checkerboard pattern
-  create_checkerboard_init(src, dst, 5);
-
-  // needed?
+  // WARINING: dst MUST be binary
+  if (dst == nullptr)
+  {
+    // dst is the initialisation contour
+    // if not provided, use a checkerboard pattern as initialisation
+    tier0::create_like(src, dst, dType::BINARY);
+    create_checkerboard_init(src, dst, 5);
+  }
+  // enforce contour (dst) to be binary
   tier1::greater_constant_func(device, dst, dst, 0);
 
   float c0 = 0;
   float c1 = 0;
   auto  outside_contour = Array::create(dst);
-  auto  gradient = Array::create(dst);
+  auto  gradient_magnitude =
+    Array::create(dst->width(), dst->height(), dst->depth(), dst->dimension(), dType::FLOAT, mType::BUFFER, device);
 
   int ite = 0;
   while (ite < number_iteration)
   {
-    // compute of inside (dst) and outside contour (temp_1)
-    tier1::binary_not_func(device, dst, outside_contour);
-    // compute of outside contour score
-    compute_contour_score(device, src, outside_contour, c0);
     // compute of inside contour score
     compute_contour_score(device, src, dst, c1);
+    // compute of outside contour score (on inverted dst)
+    tier1::binary_not_func(device, dst, outside_contour);
+    compute_contour_score(device, src, outside_contour, c0);
+
     // compute gradient magnitude into temp_3
-    compute_gradient_magnitude(device, dst, gradient);
+    compute_gradient_magnitude(device, dst, gradient_magnitude);
+
     // compute contour evolution according to gradient and score on contour
-    compute_contour_evolution(device, src, gradient, c0, c1, lambda1, lambda2);
+    compute_contour_evolution(device, src, gradient_magnitude, c0, c1, lambda1, lambda2);
+
     // apply contour update on contour image
-    apply_contour_evolution(device, gradient, dst);
+    apply_contour_evolution(device, gradient_magnitude, dst);
+
     // smooth contour
     smooth_contour(device, dst, smoothing_iteration);
 
     ite++;
   }
-
   return dst;
 }
 
