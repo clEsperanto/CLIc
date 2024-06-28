@@ -346,10 +346,13 @@ print(const Array::Pointer & array, const char * name = "Array::Pointer") -> voi
   std::vector<T> host_data(array->size());
   array->read(host_data.data());
   std::ostringstream oss;
-  oss << "Print (" << name << ")\n";
+  oss << name << ":\n";
   for (auto i = 0; i < array->depth(); ++i)
   {
-    oss << "z = " << i << '\n';
+    if (array->depth() > 1)
+    {
+      oss << "z = " << i << '\n';
+    }
     for (auto j = 0; j < array->height(); ++j)
     {
       for (auto k = 0; k < array->width(); ++k)
