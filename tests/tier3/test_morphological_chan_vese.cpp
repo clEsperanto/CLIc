@@ -75,7 +75,7 @@ TEST_P(TestChanVese, chanvese2d_with_smoothing)
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
   {
-    EXPECT_EQ(output[i], valid[i]);
+    EXPECT_EQ(output[i], valid_smooth[i]);
   }
 }
 

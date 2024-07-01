@@ -117,13 +117,13 @@ smooth_contour(const Device::Pointer & device, Array::Pointer dst, int iteration
   {
     if (i % 2 == 0)
     {
-      tier1::binary_infsup_func(device, dst, temp);
-      tier1::binary_supinf_func(device, temp, dst);
+      tier1::binary_supinf_func(device, dst, temp);
+      tier1::binary_infsup_func(device, temp, dst);
     }
     else
     {
-      tier1::binary_supinf_func(device, dst, temp);
-      tier1::binary_infsup_func(device, temp, dst);
+      tier1::binary_infsup_func(device, dst, temp);
+      tier1::binary_supinf_func(device, temp, dst);
     }
   }
 }
