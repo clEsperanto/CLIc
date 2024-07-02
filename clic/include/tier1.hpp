@@ -193,6 +193,7 @@ binary_xor_func(const Device::Pointer & device,
 /**
  * @name binary_supinf
  * @brief Compute the maximum of the erosion with plannar structuring elements.
+ * Warning: This operation is only supported BINARY data type images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The binary input image to be processed. [const Array::Pointer &]
@@ -208,6 +209,7 @@ binary_supinf_func(const Device::Pointer & device, const Array::Pointer & src, A
 /**
  * @name binary_infsup
  * @brief Compute the minimum of the dilation with plannar structuring elements.
+ * Warning: This operation is only supported BINARY data type images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The binary input image to be processed. [const Array::Pointer &]

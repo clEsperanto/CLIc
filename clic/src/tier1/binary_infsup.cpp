@@ -12,7 +12,12 @@ namespace cle::tier1
 auto
 binary_infsup_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
+  if (src->dtype() != dType::BINARY)
+  {
+    std::cerr << "Warning: Source image of binary_infsup expected to be binary, " << src->dtype() << " given."
+              << std::endl;
+  }
+  tier0::create_like(src, dst, dType::BINARY);
   const KernelInfo    kernel = src->depth() > 1 ? KernelInfo{ "inferior_superior", kernel::inferior_superior_3d }
                                                 : KernelInfo{ "inferior_superior", kernel::inferior_superior_2d };
   const ParameterList params = { { "src", src }, { "dst", dst } };
