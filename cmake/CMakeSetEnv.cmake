@@ -10,7 +10,10 @@ string(TOUPPER ${LIBRARY_NAME} LIBRARY_NAME_UPPERCASE)
 string(TOLOWER ${LIBRARY_NAME} LIBRARY_NAME_LOWERCASE)
 
 # Enforce only using MPL2/BSD license for Eigen
-# SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -DEIGEN_MPL2_ONLY")
+# test if unix system
+if(UNIX)
+  SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -DEIGEN_MPL2_ONLY")
+endif()
 
 # set folder properties for IDE
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
