@@ -1,5 +1,5 @@
 # Branch or Release tag to retrive the ocl/cu files
-set(CLESPERANTO_KERNEL_TAG e6bc757500d848e3136aa8b9de8770207f5a3e58)
+set(CLESPERANTO_KERNEL_TAG clesperanto_kernels)
 
 include(FetchContent)
 set(FETCHCONTENT_BASE_DIR ${CMAKE_CURRENT_BINARY_DIR})
