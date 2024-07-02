@@ -37,4 +37,3 @@ endfunction()
 foreach(TEST_NAME IN LISTS TEST_NAMES)
     add_test_executable(${TEST_NAME} ${CURRENT_TIER})
 endforeach()
-
