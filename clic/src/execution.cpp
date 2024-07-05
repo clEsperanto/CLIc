@@ -70,14 +70,34 @@ commonDefines(const ConstantList & constant_list) -> std::string
 
 // Function creating buffer specific defines
 static auto
-bufferDefines(std::ostringstream & defines,
-              const std::string &  key,
-              const std::string &  ndim,
-              const std::string &  dtype,
-              const std::string &  stype,
-              const std::string &  ocl) -> void
+bufferDefines(std::ostringstream &   defines,
+              const std::string &    key,
+              const Array::Pointer & arr,
+              const size_t &         dim,
+              const Device::Type &   device) -> void
 {
-  defines << "\n#define IMAGE_" << key << "_TYPE " << ocl << dtype << "*";
+  static constexpr std::array<const char *, 3> ndimMap = { "1", "2", "3" };
+  static constexpr std::array<const char *, 3> posTypeMap = { "int", "int2", "int4" };
+  static constexpr std::array<const char *, 3> posMap = { "(pos0)", "(pos0, pos1)", "(pos0, pos1, pos2, 0)" };
+
+  const size_t        dimIndex = dim - 1;
+  const std::string   ndim = ndimMap[dimIndex];
+  const std::string   pos_type = posTypeMap[dimIndex];
+  const std::string   pos = posMap[dimIndex];
+  const std::string   stype = arr->shortType();
+  const std::string & dtype = toString(arr->dtype());
+
+  std::string access_type = (device == Device::Type::OPENCL) ? "__global " : "";
+
+  defines << "\n#define CONVERT_" << key << "_PIXEL_TYPE clij_convert_" << arr->dtype() << "_sat";
+  defines << "\n#define IMAGE_" << key << "_PIXEL_TYPE " << arr->dtype();
+  defines << "\n#define POS_" << key << "_TYPE " << pos_type;
+  const std::string prefix =
+    (device == Device::Type::OPENCL || pos_type == "int") ? "(" + pos_type + ")" : "make_" + pos_type;
+  defines << "\n#define POS_" << key << "_INSTANCE(pos0,pos1,pos2,pos3) " << prefix << pos;
+  defines << "\n";
+
+  defines << "\n#define IMAGE_" << key << "_TYPE " << access_type << dtype << "*";
   defines << "\n#define READ_" << key << "_IMAGE(a,b,c) read_buffer" << ndim << "d" << stype
           << "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
   defines << "\n#define WRITE_" << key << "_IMAGE(a,b,c) write_buffer" << ndim << "d" << stype
@@ -87,18 +107,47 @@ bufferDefines(std::ostringstream & defines,
 
 // Function creating image specific defines (OpenCL only for now)
 static auto
-imageDefines(std::ostringstream & defines,
-             const std::string &  key,
-             const std::string &  ndim,
-             const std::string &  stype,
-             const std::string &  access_type) -> void
+imageDefines(std::ostringstream &   defines,
+             const std::string &    key,
+             const Array::Pointer & arr,
+             const size_t &         dim,
+             const Device::Type &   device) -> void
 {
+  static constexpr std::array<const char *, 3> ndimMap = { "1", "2", "3" };
+  static constexpr std::array<const char *, 3> posTypeMap = { "float2", "float2", "float4" };
+  static constexpr std::array<const char *, 3> posMap = { "(pos0, pos1)", "(pos0, pos1)", "(pos0, pos1, pos2, 0)" };
+
+  const size_t      dimIndex = dim - 1;
+  const std::string ndim = ndimMap[dimIndex];
+  const std::string pos_type = posTypeMap[dimIndex];
+  const std::string pos = posMap[dimIndex];
+  const std::string stype = arr->shortType();
+
+  std::string access_type;
+  if (key.find("dst") != std::string::npos || key.find("destination") != std::string::npos ||
+      key.find("output") != std::string::npos)
+  {
+    access_type = "__write_only";
+  }
+  else
+  {
+    access_type = "__read_only";
+  }
+
+  defines << "\n#define CONVERT_" << key << "_PIXEL_TYPE clij_convert_" << arr->dtype() << "_sat";
+  defines << "\n#define IMAGE_" << key << "_PIXEL_TYPE " << arr->dtype();
+  defines << "\n#define POS_" << key << "_TYPE " << pos_type;
+  const std::string prefix1 =
+    (device == Device::Type::OPENCL || pos_type == "int") ? "(" + pos_type + ")" : "make_" + pos_type;
+  defines << "\n#define POS_" << key << "_INSTANCE(pos0,pos1,pos2,pos3) " << prefix1 << pos;
+  defines << "\n";
+
   char        front_char = stype.front();
-  std::string prefix = (front_char == 'u') ? "ui" : (front_char == 'f') ? "f" : "i";
+  std::string prefix2 = (front_char == 'u') ? "ui" : (front_char == 'f') ? "f" : "i";
   std::string img_type_name = access_type + " image" + ndim + "d_t";
   defines << "\n#define IMAGE_" << key << "_TYPE " << img_type_name;
-  defines << "\n#define READ_" << key << "_IMAGE(a,b,c) read_image" << prefix << "(a,b,c)";
-  defines << "\n#define WRITE_" << key << "_IMAGE(a,b,c) write_image" << prefix << "(a,b,c)";
+  defines << "\n#define READ_" << key << "_IMAGE(a,b,c) read_image" << prefix2 << "(a,b,c)";
+  defines << "\n#define WRITE_" << key << "_IMAGE(a,b,c) write_image" << prefix2 << "(a,b,c)";
 }
 
 static auto
@@ -116,11 +165,7 @@ platform_options(const Device::Pointer & device, std::string * source) -> void
 static auto
 arrayDefines(const ParameterList & parameter_list, const Device::Type & device) -> std::string
 {
-  std::ostringstream                           defines;
-  static constexpr std::array<const char *, 3> ndimMap = { "1", "2", "3" };
-  static constexpr std::array<const char *, 3> posTypeMap = { "int", "int2", "int4" };
-  static constexpr std::array<const char *, 3> posMap = { "(pos0)", "(pos0, pos1)", "(pos0, pos1, pos2, 0)" };
-
+  std::ostringstream defines;
   // loop over all parameters, skip if parameter is not an array
   for (const auto & param : parameter_list)
   {
@@ -132,38 +177,15 @@ arrayDefines(const ParameterList & parameter_list, const Device::Type & device) 
     const auto & key = param.first;
 
     // manage array dimension
-    auto              dim = shape_to_dimension(arr->width(), arr->height(), arr->depth());
-    const size_t      dimIndex = dim - 1;
-    const std::string ndim = ndimMap[dimIndex];
-    const std::string pos_type = posTypeMap[dimIndex];
-    const std::string pos = posMap[dimIndex];
-    defines << "\n#define CONVERT_" << key << "_PIXEL_TYPE clij_convert_" << arr->dtype() << "_sat";
-    defines << "\n#define IMAGE_" << key << "_PIXEL_TYPE " << arr->dtype();
-    defines << "\n#define POS_" << key << "_TYPE " << pos_type;
-    const std::string prefix =
-      (device == Device::Type::OPENCL || pos_type == "int") ? "(" + pos_type + ")" : "make_" + pos_type;
-    defines << "\n#define POS_" << param.first << "_INSTANCE(pos0,pos1,pos2,pos3) " << prefix << pos;
-    defines << "\n";
-
+    auto dim = shape_to_dimension(arr->width(), arr->height(), arr->depth());
     // manage array type (buffer or image), and read/write macros
     if (arr->mtype() == mType::BUFFER || device == Device::Type::CUDA)
     {
-      std::string ocl_keyword = (device == Device::Type::OPENCL) ? "__global " : "";
-      bufferDefines(defines, key, ndim, toString(arr->dtype()), arr->shortType(), ocl_keyword);
+      bufferDefines(defines, key, arr, dim, device);
     }
     else
     {
-      std::string access_type;
-      if (param.first.find("dst") != std::string::npos || param.first.find("destination") != std::string::npos ||
-          param.first.find("output") != std::string::npos)
-      {
-        access_type = "__write_only";
-      }
-      else
-      {
-        access_type = "__read_only";
-      }
-      imageDefines(defines, key, ndim, arr->shortType(), access_type);
+      imageDefines(defines, key, arr, dim, device);
     }
 
     // manage array size
