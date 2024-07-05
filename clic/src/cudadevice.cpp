@@ -211,7 +211,7 @@ CUDADevice::getInfo() const -> std::string
 auto
 CUDADevice::getInfoExtended() const -> std::string
 {
-  return getInfo()
+  return getInfo();
 }
 
 #endif // USE_CUDA
