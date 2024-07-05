@@ -114,8 +114,8 @@ imageDefines(std::ostringstream &   defines,
              const Device::Type &   device) -> void
 {
   static constexpr std::array<const char *, 3> ndimMap = { "1", "2", "3" };
-  static constexpr std::array<const char *, 3> posTypeMap = { "float2", "float2", "float4" };
-  static constexpr std::array<const char *, 3> posMap = { "(pos0, pos1)", "(pos0, pos1)", "(pos0, pos1, pos2, 0)" };
+  static constexpr std::array<const char *, 3> posTypeMap = { "float", "float2", "float4" };
+  static constexpr std::array<const char *, 3> posMap = { "(pos0)", "(pos0, pos1)", "(pos0, pos1, pos2, 0)" };
 
   const size_t      dimIndex = dim - 1;
   const std::string ndim = ndimMap[dimIndex];
