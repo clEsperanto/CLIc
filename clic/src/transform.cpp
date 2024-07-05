@@ -77,12 +77,29 @@ apply_affine_transform(const cle::Array::Pointer &  src,
   auto mat = cle::Array::create(4, 4, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, src->device());
   mat->write(cle::AffineTransform::toArray(new_transform.getInverseTranspose()).data());
 
-  // execute the kernel
-  const KernelInfo    kernel = interpolate
-                                 ? KernelInfo{ "affine_transform_interpolate", kernel::affine_transform_interpolate }
-                                 : KernelInfo{ "affine_transform", kernel::affine_transform };
-  const ParameterList params = { { "src", src }, { "dst", dst }, { "mat", mat } };
+  cle::Array::Pointer image = src;
+  if (interpolate && src->mtype() != mType::IMAGE)
+  {
+    // interpolate is only available for image type, we copy src into an image if it is not already
+    try
+    {
+      image = cle::Array::create(
+        src->width(), src->height(), src->depth(), src->dimension(), src->dtype(), mType::IMAGE, src->device());
+      src->copy(image);
+    }
+    catch (const std::exception & e)
+    {
+      std::cerr << "Warning: Device does not support Image type, interpolation is not available." << std::endl;
+    }
+  }
+
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  const ParameterList params = { { "src", image }, { "dst", dst }, { "mat", mat } };
+  const KernelInfo    kernel = (interpolate && image->mtype() == mType::IMAGE
+                                  ? KernelInfo{ "affine_transform_interpolate", kernel::affine_transform_interpolate }
+                                  : KernelInfo{ "affine_transform", kernel::affine_transform });
+
+  // execute the kernel
   execute(src->device(), kernel, params, range);
   return dst;
 }
