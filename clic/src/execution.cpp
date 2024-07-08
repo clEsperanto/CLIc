@@ -114,12 +114,13 @@ imageDefines(std::ostringstream &   defines,
              const Device::Type &   device) -> void
 {
   static constexpr std::array<const char *, 3> ndimMap = { "1", "2", "3" };
-  static constexpr std::array<const char *, 3> posTypeMap = { "float", "float2", "float4" };
+  static constexpr std::array<const char *, 3> posIntTypeMap = { "int", "int2", "int4" };
+  static constexpr std::array<const char *, 3> posFloatTypeMap = { "float", "float2", "float4" };
   static constexpr std::array<const char *, 3> posMap = { "(pos0)", "(pos0, pos1)", "(pos0, pos1, pos2, 0)" };
 
   const size_t      dimIndex = dim - 1;
   const std::string ndim = ndimMap[dimIndex];
-  const std::string pos_type = posTypeMap[dimIndex];
+  std::string       pos_type;
   const std::string pos = posMap[dimIndex];
   const std::string stype = arr->shortType();
 
@@ -128,10 +129,12 @@ imageDefines(std::ostringstream &   defines,
       key.find("output") != std::string::npos)
   {
     access_type = "__write_only";
+    pos_type = posIntTypeMap[dimIndex];
   }
   else
   {
     access_type = "__read_only";
+    pos_type = posFloatTypeMap[dimIndex];
   }
 
   defines << "\n#define CONVERT_" << key << "_PIXEL_TYPE clij_convert_" << arr->dtype() << "_sat";
