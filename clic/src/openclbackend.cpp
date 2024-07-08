@@ -651,16 +651,6 @@ OpenCLBackend::copyMemoryBufferToImage(const Device::Pointer & device,
   size_t src_slice_pitch = src_shape[2] > 1 ? src_shape[0] * src_shape[1] : 0;
   size_t bufferOffset = src_origin[0] + src_origin[1] * src_row_pitch + src_origin[2] * src_slice_pitch;
 
-  std::cout << "src_origin: " << src_origin[0] << " " << src_origin[1] << " " << src_origin[2] << std::endl;
-  std::cout << "dst_origin: " << dst_origin[0] << " " << dst_origin[1] << " " << dst_origin[2] << std::endl;
-  std::cout << "shape: " << src_shape[0] << " " << src_shape[1] << " " << src_shape[2] << std::endl;
-  std::cout << "region: " << region[0] << " " << region[1] << " " << region[2] << std::endl;
-
-  std::cout << "bufferOffset: " << bufferOffset << std::endl;
-  std::cout << "src_row_pitch: " << src_row_pitch << std::endl;
-  std::cout << "src_slice_pitch: " << src_slice_pitch << std::endl;
-
-
   auto err = clEnqueueCopyBufferToImage(opencl_device->getCLCommandQueue(),
                                         *static_cast<const cl_mem *>(*src_ptr),
                                         *static_cast<cl_mem *>(*dst_ptr),
