@@ -41,9 +41,11 @@ TEST_P(TestAffineTransform, affineTransformInterpolate)
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   };
   const std::array<float, 10 * 10 * 1> valid = {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0, 0, 0, 0, 0, 0, 0,   0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0,      0,      0,      0,      0, 0, 0, 0, 0, 0, 0,      0,      0,      0,      0, 0, 0,
+    0, 0, 0, 0,      0,      0,      0,      0, 0, 0, 0, 0, 0, 0.0625, 0.1875, 0.1875, 0.0625, 0, 0, 0,
+    0, 0, 0, 0.1875, 0.5625, 0.5625, 0.1875, 0, 0, 0, 0, 0, 0, 0.1875, 0.5625, 0.5625, 0.1875, 0, 0, 0,
+    0, 0, 0, 0.0625, 0.1875, 0.1875, 0.0625, 0, 0, 0, 0, 0, 0, 0,      0,      0,      0,      0, 0, 0,
+    0, 0, 0, 0,      0,      0,      0,      0, 0, 0, 0, 0, 0, 0,      0,      0,      0,      0, 0, 0,
   };
   std::array<float, 10 * 10 * 1> output;
 
@@ -58,14 +60,11 @@ TEST_P(TestAffineTransform, affineTransformInterpolate)
   std::vector<float> matrix = { 2, 0, 0, 0, 2, 0, 0, 0, 1 };
   auto               gpu_output = cle::tier7::affine_transform_func(device, gpu_input, nullptr, &matrix, true, true);
 
-
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);
   }
-  cle::print<float>(gpu_input, "input");
-  cle::print<float>(gpu_output, "output");
 }
 
 std::vector<std::string>
