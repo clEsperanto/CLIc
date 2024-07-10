@@ -54,6 +54,11 @@ TEST_P(TestAffineTransform, affineTransformInterpolate)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
+  if (device->supportImage() == false)
+  {
+    GTEST_SKIP();
+  }
+
   auto gpu_input = cle::Array::create(5, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->write(input.data());
 
