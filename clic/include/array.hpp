@@ -259,13 +259,6 @@ public:
   initialized() const -> bool;
 
   /**
-   * @brief Get the data type as a short string
-   * @return std::string
-   */
-  [[nodiscard]] auto
-  shortType() const -> std::string;
-
-  /**
    * @brief Get the memory pointer of the Array
    * @return void **
    */

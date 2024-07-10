@@ -67,6 +67,21 @@ toString(const dType & dtype) -> std::string
 }
 
 /**
+ * @brief Convert a cle::dType to a short string
+ */
+inline auto
+toShortString(const dType & dtype) -> std::string
+{
+  static const std::unordered_map<dType, std::string> dtypeToString = { { dType::FLOAT, "f" },   { dType::INT32, "i" },
+                                                                        { dType::UINT32, "ui" }, { dType::INT8, "c" },
+                                                                        { dType::UINT8, "uc" },  { dType::INT16, "s" },
+                                                                        { dType::UINT16, "us" } };
+
+  auto it = dtypeToString.find(dtype);
+  return it != dtypeToString.end() ? it->second : "?";
+}
+
+/**
  * @brief Convert a template type T to a cle::dType
  */
 template <typename T>

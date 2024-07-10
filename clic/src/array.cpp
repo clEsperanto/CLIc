@@ -370,12 +370,4 @@ Array::c_get() const -> const void **
   return (const void **)data_.get();
 }
 
-auto
-Array::shortType() const -> std::string
-{
-  const auto str_type = toString(dtype());
-  return (str_type[0] == 'u') ? str_type.substr(0, 2) : str_type.substr(0, 1);
-}
-
-
 } // namespace cle
