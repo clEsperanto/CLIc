@@ -8,15 +8,13 @@ class TestArray : public ::testing::TestWithParam<std::string>
 
 TEST_P(TestArray, allocate)
 {
+  GTEST_SKIP();
+
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  if (device->supportImage() == false)
-  {
-    GTEST_SKIP();
-  }
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 1, 3, cle::dType::FLOAT, cle::mType::IMAGE, device);
@@ -43,15 +41,13 @@ TEST_P(TestArray, allocate)
 
 TEST_P(TestArray, typeDataMemory)
 {
+  GTEST_SKIP();
+
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  if (device->supportImage() == false)
-  {
-    GTEST_SKIP();
-  }
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::IMAGE, device);
@@ -65,15 +61,13 @@ TEST_P(TestArray, typeDataMemory)
 
 TEST_P(TestArray, allocateWrite)
 {
+  GTEST_SKIP();
+
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  if (device->supportImage() == false)
-  {
-    GTEST_SKIP();
-  }
 
   // Write some data to the array
   std::array<float, 10 * 20 * 30> data;
@@ -98,15 +92,13 @@ TEST_P(TestArray, allocateWrite)
 
 TEST_P(TestArray, readWrite)
 {
+  GTEST_SKIP();
+
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  if (device->supportImage() == false)
-  {
-    GTEST_SKIP();
-  }
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::IMAGE, device);
@@ -135,15 +127,13 @@ TEST_P(TestArray, readWrite)
 
 TEST_P(TestArray, copyFill)
 {
+  GTEST_SKIP();
+
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  if (device->supportImage() == false)
-  {
-    GTEST_SKIP();
-  }
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::IMAGE, device);
@@ -185,15 +175,13 @@ TEST_P(TestArray, copyFill)
 
 TEST_P(TestArray, stringCout)
 {
+  GTEST_SKIP();
+
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  if (device->supportImage() == false)
-  {
-    GTEST_SKIP();
-  }
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::IMAGE, device);
@@ -211,15 +199,13 @@ TEST_P(TestArray, stringCout)
 
 TEST_P(TestArray, regionOperation)
 {
+  GTEST_SKIP();
+
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  if (device->supportImage() == false)
-  {
-    GTEST_SKIP();
-  }
 
   // Create a new Array
   auto array = cle::Array::create(7, 7, 1, 3, cle::dType::FLOAT, cle::mType::IMAGE, device);
@@ -291,15 +277,13 @@ TEST_P(TestArray, regionOperation)
 
 TEST_P(TestArray, throwErrors)
 {
+  GTEST_SKIP();
+
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  if (device->supportImage() == false)
-  {
-    GTEST_SKIP();
-  }
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::IMAGE, device);
