@@ -141,6 +141,14 @@ OpenCLDevice::getName(bool lowercase) const -> std::string
 }
 
 auto
+OpenCLDevice::supportImage() const -> const bool
+{
+  cl_bool image_support;
+  clGetDeviceInfo(clDevice, CL_DEVICE_IMAGE_SUPPORT, sizeof(cl_bool), &image_support, nullptr);
+  return image_support == CL_TRUE;
+}
+
+auto
 OpenCLDevice::getInfo() const -> std::string
 {
   std::ostringstream result;

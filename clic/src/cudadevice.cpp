@@ -149,6 +149,12 @@ CUDADevice::getArch() const -> std::string
 }
 
 auto
+CUDADevice::supportImage() const -> const bool
+{
+  return true;
+}
+
+auto
 CUDADevice::getInfo() const -> std::string
 {
   std::ostringstream result;
