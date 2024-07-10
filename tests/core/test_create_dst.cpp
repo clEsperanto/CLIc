@@ -28,7 +28,7 @@ TEST_P(TestCreate, notNullPtr)
   EXPECT_EQ(output->dim(), 3);
   EXPECT_EQ(output->dimension(), 3);
   EXPECT_EQ(output->itemSize(), sizeof(uint16_t));
-  EXPECT_EQ(output->dtype(), cle::dType::UINT8);
+  EXPECT_EQ(output->dtype(), cle::dType::UINT16);
 
   cle::tier0::create_like(input, output, cle::dType::UINT8);
   EXPECT_EQ(output->device(), input->device());
@@ -38,7 +38,7 @@ TEST_P(TestCreate, notNullPtr)
   EXPECT_EQ(output->dim(), 3);
   EXPECT_EQ(output->dimension(), 3);
   EXPECT_EQ(output->itemSize(), sizeof(uint16_t));
-  EXPECT_EQ(output->dtype(), cle::dType::UINT8);
+  EXPECT_EQ(output->dtype(), cle::dType::UINT16);
 
   cle::tier0::create_one(input, output, cle::dType::UINT8);
   EXPECT_EQ(output->device(), input->device());
@@ -48,7 +48,7 @@ TEST_P(TestCreate, notNullPtr)
   EXPECT_EQ(output->dim(), 3);
   EXPECT_EQ(output->dimension(), 3);
   EXPECT_EQ(output->itemSize(), sizeof(uint16_t));
-  EXPECT_EQ(output->dtype(), cle::dType::UINT8);
+  EXPECT_EQ(output->dtype(), cle::dType::UINT16);
 
   cle::tier0::create_vector(input, output, 10, cle::dType::UINT8);
   EXPECT_EQ(output->device(), input->device());
@@ -58,7 +58,7 @@ TEST_P(TestCreate, notNullPtr)
   EXPECT_EQ(output->dim(), 3);
   EXPECT_EQ(output->dimension(), 3);
   EXPECT_EQ(output->itemSize(), sizeof(uint16_t));
-  EXPECT_EQ(output->dtype(), cle::dType::UINT8);
+  EXPECT_EQ(output->dtype(), cle::dType::UINT16);
 
   cle::tier0::create_xy(input, output, cle::dType::UINT8);
   EXPECT_EQ(output->device(), input->device());
@@ -68,7 +68,7 @@ TEST_P(TestCreate, notNullPtr)
   EXPECT_EQ(output->dim(), 3);
   EXPECT_EQ(output->dimension(), 3);
   EXPECT_EQ(output->itemSize(), sizeof(uint16_t));
-  EXPECT_EQ(output->dtype(), cle::dType::UINT8);
+  EXPECT_EQ(output->dtype(), cle::dType::UINT16);
 
   cle::tier0::create_yx(input, output, cle::dType::UINT8);
   EXPECT_EQ(output->device(), input->device());
@@ -78,7 +78,7 @@ TEST_P(TestCreate, notNullPtr)
   EXPECT_EQ(output->dim(), 3);
   EXPECT_EQ(output->dimension(), 3);
   EXPECT_EQ(output->itemSize(), sizeof(uint16_t));
-  EXPECT_EQ(output->dtype(), cle::dType::UINT8);
+  EXPECT_EQ(output->dtype(), cle::dType::UINT16);
 
   cle::tier0::create_zy(input, output, cle::dType::UINT8);
   EXPECT_EQ(output->device(), input->device());
@@ -88,7 +88,7 @@ TEST_P(TestCreate, notNullPtr)
   EXPECT_EQ(output->dim(), 3);
   EXPECT_EQ(output->dimension(), 3);
   EXPECT_EQ(output->itemSize(), sizeof(uint16_t));
-  EXPECT_EQ(output->dtype(), cle::dType::UINT8);
+  EXPECT_EQ(output->dtype(), cle::dType::UINT16);
 
   cle::tier0::create_yz(input, output, cle::dType::UINT8);
   EXPECT_EQ(output->device(), input->device());
@@ -98,7 +98,7 @@ TEST_P(TestCreate, notNullPtr)
   EXPECT_EQ(output->dim(), 3);
   EXPECT_EQ(output->dimension(), 3);
   EXPECT_EQ(output->itemSize(), sizeof(uint16_t));
-  EXPECT_EQ(output->dtype(), cle::dType::UINT8);
+  EXPECT_EQ(output->dtype(), cle::dType::UINT16);
 
   cle::tier0::create_xz(input, output, cle::dType::UINT8);
   EXPECT_EQ(output->device(), input->device());
@@ -108,7 +108,7 @@ TEST_P(TestCreate, notNullPtr)
   EXPECT_EQ(output->dim(), 3);
   EXPECT_EQ(output->dimension(), 3);
   EXPECT_EQ(output->itemSize(), sizeof(uint16_t));
-  EXPECT_EQ(output->dtype(), cle::dType::UINT8);
+  EXPECT_EQ(output->dtype(), cle::dType::UINT16);
 
   cle::tier0::create_zx(input, output, cle::dType::UINT8);
   EXPECT_EQ(output->device(), input->device());
@@ -118,7 +118,7 @@ TEST_P(TestCreate, notNullPtr)
   EXPECT_EQ(output->dim(), 3);
   EXPECT_EQ(output->dimension(), 3);
   EXPECT_EQ(output->itemSize(), sizeof(uint16_t));
-  EXPECT_EQ(output->dtype(), cle::dType::UINT8);
+  EXPECT_EQ(output->dtype(), cle::dType::UINT16);
 }
 
 TEST_P(TestCreate, create_dst)

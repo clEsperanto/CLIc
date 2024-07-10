@@ -32,7 +32,7 @@ TEST_P(TestArray, allocate)
   EXPECT_EQ(array->dtype(), cle::dType::FLOAT);
 
   auto array_other = cle::Array::create(10, 20, 30, 3, cle::dType::UINT8, cle::mType::BUFFER, device);
-  EXPECT_EQ(array->dtype(), cle::dType::UINT8);
+  EXPECT_EQ(array_other->dtype(), cle::dType::UINT8);
   EXPECT_EQ(array_other->itemSize(), sizeof(uint8_t));
 }
 
