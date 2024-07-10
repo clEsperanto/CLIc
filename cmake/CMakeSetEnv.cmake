@@ -11,7 +11,7 @@ string(TOLOWER ${LIBRARY_NAME} LIBRARY_NAME_LOWERCASE)
 
 # Enforce only using MPL2/BSD license for Eigen
 # test if unix system
-if(UNIX)
+if(UNIX AND CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -DEIGEN_MPL2_ONLY")
 endif()
 
