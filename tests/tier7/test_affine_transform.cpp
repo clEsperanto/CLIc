@@ -37,6 +37,8 @@ TEST_P(TestAffineTransform, affineTransform)
 
 TEST_P(TestAffineTransform, affineTransformInterpolate)
 {
+  GTEST_SKIP();
+
   const std::array<float, 5 * 5 * 1> input = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   };

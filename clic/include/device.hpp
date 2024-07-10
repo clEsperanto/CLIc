@@ -106,6 +106,13 @@ public:
   getPlatform() const -> const std::string = 0;
 
   /**
+   * @brief check if device is compatible with cl_image
+   * @return bool
+   */
+  [[nodiscard]] virtual auto
+  supportImage() const -> const bool = 0;
+
+  /**
    * @brief operator << for Device::Type
    */
   friend auto
@@ -251,6 +258,13 @@ public:
   [[nodiscard]] auto
   getInfoExtended() const -> std::string override;
 
+  /**
+   * @brief check if device is compatible with cl_image
+   * @return bool
+   */
+  [[nodiscard]] virtual auto
+  supportImage() const -> const bool override;
+
 private:
   cl_device_id     clDevice;
   cl_platform_id   clPlatform;
@@ -381,6 +395,13 @@ public:
    */
   [[nodiscard]] auto
   getArch() const -> std::string;
+
+  /**
+   * @brief check if device is compatible with cl_image
+   * @return bool
+   */
+  [[nodiscard]] virtual auto
+  supportImage() const -> const bool override;
 
 private:
   int       cudaDeviceIndex;
