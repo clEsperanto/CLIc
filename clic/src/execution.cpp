@@ -84,7 +84,7 @@ bufferDefines(std::ostringstream &   defines,
   const std::string   ndim = ndimMap[dimIndex];
   const std::string   pos_type = posTypeMap[dimIndex];
   const std::string   pos = posMap[dimIndex];
-  const std::string   stype = arr->shortType();
+  const std::string   stype = toShortString(arr->dtype());
   const std::string & dtype = toString(arr->dtype());
 
   std::string access_type = (device == Device::Type::OPENCL) ? "__global " : "";
@@ -122,7 +122,7 @@ imageDefines(std::ostringstream &   defines,
   const std::string ndim = ndimMap[dimIndex];
   std::string       pos_type;
   const std::string pos = posMap[dimIndex];
-  const std::string stype = arr->shortType();
+  const std::string stype = toShortString(arr->dtype());
 
   std::string access_type;
   if (key.find("dst") != std::string::npos || key.find("destination") != std::string::npos ||
