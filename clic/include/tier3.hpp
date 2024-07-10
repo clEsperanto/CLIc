@@ -299,8 +299,8 @@ minimum_position_func(const Device::Pointer & device, const Array::Pointer & src
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output contour, can also be use to provide initialisation. [Array::Pointer ( = None )]
- * @param number_iteration Number of iterations. [int ( = 100 )]
- * @param smoothing_iteration Number of smoothing iterations. [int ( = 1 )]
+ * @param num_iter Number of iterations. [int ( = 100 )]
+ * @param smoothing Number of smoothing iterations. [int ( = 1 )]
  * @param lambda1 Lambda1. [float ( = 1 )]
  * @param lambda2 Lambda2. [float ( = 1 )]
  * @return Array::Pointer
@@ -309,8 +309,8 @@ auto
 morphological_chan_vese_func(const Device::Pointer & device,
                              const Array::Pointer &  src,
                              Array::Pointer          dst,
-                             int                     number_iteration,
-                             int                     smoothing_iteration,
+                             int                     num_iter,
+                             int                     smoothing,
                              float                   lambda1,
                              float                   lambda2) -> Array::Pointer;
 

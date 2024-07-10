@@ -133,8 +133,8 @@ auto
 morphological_chan_vese_func(const Device::Pointer & device,
                              const Array::Pointer &  src,
                              Array::Pointer          dst,
-                             int                     number_iteration,
-                             int                     smoothing_iteration,
+                             int                     num_iter,
+                             int                     smoothing,
                              float                   lambda1,
                              float                   lambda2) -> Array::Pointer
 {
@@ -156,7 +156,7 @@ morphological_chan_vese_func(const Device::Pointer & device,
     Array::create(dst->width(), dst->height(), dst->depth(), dst->dimension(), dType::FLOAT, mType::BUFFER, device);
 
   int ite = 0;
-  while (ite < number_iteration)
+  while (ite < num_iter)
   {
     // compute of inside contour score
     compute_contour_score(device, src, dst, c1);
@@ -174,7 +174,7 @@ morphological_chan_vese_func(const Device::Pointer & device,
     apply_contour_evolution(device, gradient_magnitude, dst);
 
     // smooth contour
-    smooth_contour(device, dst, smoothing_iteration);
+    smooth_contour(device, dst, smoothing);
 
     ite++;
   }
