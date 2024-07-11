@@ -24,7 +24,7 @@ Array::Array(const size_t            width,
 
 Array::~Array()
 {
-  if (initialized() && data_.unique())
+  if (initialized() && data_.use_count() == 1)
   {
     backend_.freeMemory(device(), mtype(), get());
   }
