@@ -103,14 +103,14 @@ public:
    * @return std::string
    */
   [[nodiscard]] virtual auto
-  getPlatform() const -> const std::string = 0;
+  getPlatform() const -> std::string = 0;
 
   /**
    * @brief check if device is compatible with cl_image
    * @return bool
    */
   [[nodiscard]] virtual auto
-  supportImage() const -> const bool = 0;
+  supportImage() const -> bool = 0;
 
   /**
    * @brief operator << for Device::Type
@@ -192,7 +192,7 @@ public:
    * @return std::string
    */
   [[nodiscard]] auto
-  getPlatform() const -> const std::string override;
+  getPlatform() const -> std::string override;
 
   /**
    * @brief Get device type
@@ -262,8 +262,8 @@ public:
    * @brief check if device is compatible with cl_image
    * @return bool
    */
-  [[nodiscard]] virtual auto
-  supportImage() const -> const bool override;
+  [[nodiscard]] auto
+  supportImage() const -> bool override;
 
 private:
   cl_device_id     clDevice;
@@ -323,7 +323,7 @@ public:
    * @return std::string
    */
   [[nodiscard]] auto
-  getPlatform() const -> const std::string override;
+  getPlatform() const -> std::string override;
 
   /**
    * @brief Get device type
@@ -400,8 +400,8 @@ public:
    * @brief check if device is compatible with cl_image
    * @return bool
    */
-  [[nodiscard]] virtual auto
-  supportImage() const -> const bool override;
+  [[nodiscard]] auto
+  supportImage() const -> bool override;
 
 private:
   int       cudaDeviceIndex;

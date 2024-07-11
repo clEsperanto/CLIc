@@ -26,7 +26,7 @@ OpenCLDevice::~OpenCLDevice()
 }
 
 [[nodiscard]] auto
-OpenCLDevice::getPlatform() const -> const std::string
+OpenCLDevice::getPlatform() const -> std::string
 {
   // from cl_platform_id to std::string
   char platform_name[256];
@@ -142,7 +142,7 @@ OpenCLDevice::getName(bool lowercase) const -> std::string
 }
 
 auto
-OpenCLDevice::supportImage() const -> const bool
+OpenCLDevice::supportImage() const -> bool
 {
   cl_bool image_support;
   clGetDeviceInfo(clDevice, CL_DEVICE_IMAGE_SUPPORT, sizeof(cl_bool), &image_support, nullptr);
