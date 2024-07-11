@@ -3,6 +3,7 @@
 #include <iomanip>  // for std::setw and std::left
 #include <iterator> // Add this line
 #include <map>      // for std::map
+#include <vector>   // for std::vector
 
 namespace cle
 {
