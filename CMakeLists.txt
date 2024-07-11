@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(CLIc VERSION 0.10.3)
+project(CLIc VERSION 0.11.0)
 
 # if not set, set the default build type to Release
 if(NOT CLE_BACKEND_TYPE)
