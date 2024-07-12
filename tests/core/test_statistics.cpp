@@ -86,19 +86,19 @@ TEST_P(TestStatisticsOfLabelledPixels3D, execute)
   auto gpu_labels = cle::Array::create(3, 3, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_labels->write(labels.data());
 
-    auto result = cle::statistics_of_labelled_pixels(device, gpu_intensity, gpu_labels, nullptr);
+  auto result = cle::statistics_of_labelled_pixels(device, gpu_intensity, gpu_labels, nullptr);
 
-    // Assuming cle::push_regionprops is implemented
-    /*
-    auto result_image = cle::tier1::push_regionprops_func(device, result, 1, nullptr);
+  // Assuming cle::push_regionprops is implemented
+  /*
+  auto result_image = cle::tier1::push_regionprops_func(device, result, 1, nullptr);
 
-  result_image->read(output.data());
+result_image->read(output.data());
 
-    for (int i = 0; i < output.size(); i++)
-    {
-        EXPECT_NEAR(output[i], reference[i], 0.0001);
-    }
-    */
+  for (int i = 0; i < output.size(); i++)
+  {
+      EXPECT_NEAR(output[i], reference[i], 0.0001);
+  }
+  */
 }
 
 TEST(TestStandardDeviation, execute)
@@ -114,7 +114,7 @@ TEST(TestStandardDeviation, execute)
   auto gpu_labels = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_labels->write(labels.data());
 
-    auto result = cle::statistics_of_labelled_pixels(device, gpu_image, gpu_labels, nullptr);
+  auto result = cle::statistics_of_labelled_pixels(device, gpu_image, gpu_labels, nullptr);
 
   float std_dev;
   result->read(&std_dev, 14 * sizeof(float), sizeof(float)); // Assuming standard deviation is at index 14
