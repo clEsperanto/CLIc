@@ -2,7 +2,7 @@
 Tiers
 =====
 
-The tiers hold the different operations that are available in CLIc. 
+The tiers hold the different operations that are available in CLIc.
 These operations are grouped by their complexity, following the rules that a function in tier N implement a function from tier N-1.
 
 tier1

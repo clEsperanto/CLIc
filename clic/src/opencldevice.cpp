@@ -1,5 +1,10 @@
 #include "device.hpp"
 #include "utils.hpp"
+#include <iomanip>  // for std::setw and std::left
+#include <iterator> // Add this line
+#include <map>      // for std::map
+#include <vector>   // for std::vector
+
 namespace cle
 {
 
@@ -21,7 +26,7 @@ OpenCLDevice::~OpenCLDevice()
 }
 
 [[nodiscard]] auto
-OpenCLDevice::getPlatform() const -> const std::string
+OpenCLDevice::getPlatform() const -> std::string
 {
   // from cl_platform_id to std::string
   char platform_name[256];
@@ -137,40 +142,86 @@ OpenCLDevice::getName(bool lowercase) const -> std::string
 }
 
 auto
+OpenCLDevice::supportImage() const -> bool
+{
+  cl_bool image_support;
+  clGetDeviceInfo(clDevice, CL_DEVICE_IMAGE_SUPPORT, sizeof(cl_bool), &image_support, nullptr);
+  return image_support == CL_TRUE;
+}
+
+auto
 OpenCLDevice::getInfo() const -> std::string
 {
   std::ostringstream result;
-  char               version[256];
+  char               version[256], vendor[256], driver[256], extensions[1024], dev_type[256];
   cl_device_type     type;
-  cl_uint            compute_units;
-  size_t             global_mem_size;
-  size_t             max_mem_size;
+  cl_uint            compute_units, max_work_group_size, max_clock_frequency, max_work_item_dimensions, image_support;
+  size_t             global_mem_size, max_mem_size;
+  size_t             max_work_item_sizes[3];
 
   // Get device information
   const auto & name = getName();
   clGetDeviceInfo(clDevice, CL_DEVICE_VERSION, sizeof(char) * 256, &version, nullptr);
+  clGetDeviceInfo(clDevice, CL_DEVICE_VENDOR, sizeof(char) * 256, &vendor, nullptr);
+  clGetDeviceInfo(clDevice, CL_DRIVER_VERSION, sizeof(char) * 256, &driver, nullptr);
+  clGetDeviceInfo(clDevice, CL_DEVICE_EXTENSIONS, sizeof(char) * 1024, &extensions, nullptr);
   clGetDeviceInfo(clDevice, CL_DEVICE_TYPE, sizeof(cl_device_type), &type, nullptr);
   clGetDeviceInfo(clDevice, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint), &compute_units, nullptr);
   clGetDeviceInfo(clDevice, CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(size_t), &global_mem_size, nullptr);
   clGetDeviceInfo(clDevice, CL_DEVICE_MAX_MEM_ALLOC_SIZE, sizeof(size_t), &max_mem_size, nullptr);
+  clGetDeviceInfo(clDevice, CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(cl_uint), &max_work_group_size, nullptr);
+  clGetDeviceInfo(clDevice, CL_DEVICE_MAX_CLOCK_FREQUENCY, sizeof(cl_uint), &max_clock_frequency, nullptr);
+  clGetDeviceInfo(clDevice, CL_DEVICE_IMAGE_SUPPORT, sizeof(cl_uint), &image_support, nullptr);
 
+  std::map<cl_device_type, std::string> deviceTypeMap = {
+    { CL_DEVICE_TYPE_CPU, "CPU" },
+    { CL_DEVICE_TYPE_GPU, "GPU" },
+    { CL_DEVICE_TYPE_ACCELERATOR, "Accelerator" },
+    { CL_DEVICE_TYPE_CUSTOM, "Custom" },
+  };
+  std::string dev_type_str = deviceTypeMap.count(type) ? deviceTypeMap[type] : "Unknown";
   // Print device information to output string
-  result << "(" << this->getType() << ") " << name << " (" << std::string(version) << ")\n";
-  switch (type)
+  result << std::left << "(" << this->getType() << ") " << name << " (" + std::string(version) << ")\n";
+  result << std::left << std::setw(30) << "\tVendor: " << std::string(vendor) << "\n";
+  result << std::left << std::setw(30) << "\tDriver Version: " << std::string(driver) << "\n";
+  result << std::left << std::setw(30) << "\tDevice Type: " << dev_type_str << "\n";
+  result << std::left << std::setw(30) << "\tCompute Units: " << compute_units << '\n';
+  result << std::left << std::setw(30) << "\tGlobal Memory Size: " << (global_mem_size / (1024 * 1024)) << " MB\n";
+  result << std::left << std::setw(30) << "\tMaximum Object Size: " << (max_mem_size / (1024 * 1024)) << " MB\n";
+  result << std::left << std::setw(30) << "\tMax Clock Frequency: " << max_clock_frequency << " MHz\n";
+  result << std::left << std::setw(30) << "\tImage Support: " << (image_support ? "Yes" : "No") << '\n';
+
+  return result.str();
+}
+
+auto
+OpenCLDevice::getInfoExtended() const -> std::string
+{
+  std::ostringstream result;
+  char               extensions[1024];
+  cl_uint            max_work_group_size, max_work_item_dimensions;
+  size_t             max_work_item_sizes[3];
+  clGetDeviceInfo(clDevice, CL_DEVICE_EXTENSIONS, sizeof(char) * 1024, &extensions, nullptr);
+  clGetDeviceInfo(clDevice, CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(cl_uint), &max_work_group_size, nullptr);
+  clGetDeviceInfo(clDevice, CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS, sizeof(cl_uint), &max_work_item_dimensions, nullptr);
+  clGetDeviceInfo(clDevice, CL_DEVICE_MAX_WORK_ITEM_SIZES, sizeof(size_t) * 3, &max_work_item_sizes, nullptr);
+
+  // Split extensions string into a vector
+  std::istringstream       iss((std::string(extensions)));
+  std::vector<std::string> extensionsVec((std::istream_iterator<std::string>(iss)),
+                                         std::istream_iterator<std::string>());
+
+  result << this->getInfo();
+  result << std::left << std::setw(30) << "\tMax Work Group Size: " << max_work_group_size << '\n';
+  result << std::left << std::setw(30) << "\tMax Work Item Dimensions: " << max_work_item_dimensions << '\n';
+  result << std::left << std::setw(30) << "\tMax Work Item Sizes: " << max_work_item_sizes[0] << ", "
+         << max_work_item_sizes[1] << ", " << max_work_item_sizes[2] << '\n';
+  result << std::left << std::setw(30) << "\tExtensions:";
+  for (const auto & extension : extensionsVec)
   {
-    case CL_DEVICE_TYPE_CPU:
-      result << "\tType: CPU\n";
-      break;
-    case CL_DEVICE_TYPE_GPU:
-      result << "\tType: GPU\n";
-      break;
-    default:
-      result << "\tType: Unknown\n";
-      break;
+    result << "\n\t\t" << std::left << std::setw(30) << extension;
   }
-  result << "\tCompute Units: " << compute_units << '\n';
-  result << "\tGlobal Memory Size: " << (global_mem_size / (1000 * 1000)) << " MB\n";
-  result << "\tMaximum Object Size: " << (max_mem_size / (1000 * 1000)) << " MB\n";
+
   return result.str();
 }
 

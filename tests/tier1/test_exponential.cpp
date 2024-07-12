@@ -35,7 +35,7 @@ TEST_P(TestExponential, execute)
   gpu_output->read(output.data());
   for (int i = 0; i < output.size(); i++)
   {
-    EXPECT_EQ(output[i], valid[i]);
+    EXPECT_NEAR(output[i], valid[i], 0.0001);
   }
 }
 

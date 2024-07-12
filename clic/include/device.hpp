@@ -85,6 +85,13 @@ public:
   getInfo() const -> std::string = 0;
 
   /**
+   * @brief Get device with more info
+   * @return std::string
+   */
+  [[nodiscard]] virtual auto
+  getInfoExtended() const -> std::string = 0;
+
+  /**
    * @brief Get device type
    * @return Device::Type
    */
@@ -96,7 +103,14 @@ public:
    * @return std::string
    */
   [[nodiscard]] virtual auto
-  getPlatform() const -> const std::string = 0;
+  getPlatform() const -> std::string = 0;
+
+  /**
+   * @brief check if device is compatible with cl_image
+   * @return bool
+   */
+  [[nodiscard]] virtual auto
+  supportImage() const -> bool = 0;
 
   /**
    * @brief operator << for Device::Type
@@ -178,7 +192,7 @@ public:
    * @return std::string
    */
   [[nodiscard]] auto
-  getPlatform() const -> const std::string override;
+  getPlatform() const -> std::string override;
 
   /**
    * @brief Get device type
@@ -236,6 +250,20 @@ public:
    */
   [[nodiscard]] auto
   getInfo() const -> std::string override;
+
+  /**
+   * @brief Get device with more info
+   * @return std::string
+   */
+  [[nodiscard]] auto
+  getInfoExtended() const -> std::string override;
+
+  /**
+   * @brief check if device is compatible with cl_image
+   * @return bool
+   */
+  [[nodiscard]] auto
+  supportImage() const -> bool override;
 
 private:
   cl_device_id     clDevice;
@@ -295,7 +323,7 @@ public:
    * @return std::string
    */
   [[nodiscard]] auto
-  getPlatform() const -> const std::string override;
+  getPlatform() const -> std::string override;
 
   /**
    * @brief Get device type
@@ -355,11 +383,25 @@ public:
   getInfo() const -> std::string override;
 
   /**
+   * @brief Get device with more info
+   * @return std::string
+   */
+  [[nodiscard]] auto
+  getInfoExtended() const -> std::string override;
+
+  /**
    * @brief Get device architecture
    * @return std::string
    */
   [[nodiscard]] auto
   getArch() const -> std::string;
+
+  /**
+   * @brief check if device is compatible with cl_image
+   * @return bool
+   */
+  [[nodiscard]] auto
+  supportImage() const -> bool override;
 
 private:
   int       cudaDeviceIndex;

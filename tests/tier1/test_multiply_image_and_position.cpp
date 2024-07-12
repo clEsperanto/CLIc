@@ -30,6 +30,27 @@ TEST_P(TestMultiplyPixelAndCoord, execute)
   }
 }
 
+TEST_P(TestMultiplyPixelAndCoord, returnType)
+{
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
+
+  for (cle::dType type : { cle::dType::UINT8,
+                           cle::dType::INT8,
+                           cle::dType::UINT16,
+                           cle::dType::INT16,
+                           cle::dType::FLOAT,
+                           cle::dType::UINT32,
+                           cle::dType::INT32 })
+  {
+    auto gpu_input = cle::Array::create(5, 3, 1, 3, type, cle::mType::BUFFER, device);
+    auto gpu_output = cle::tier1::multiply_image_and_position_func(device, gpu_input, nullptr, 0);
+    EXPECT_EQ(gpu_output->dtype(), cle::dType::FLOAT);
+  }
+}
+
 std::vector<std::string>
 getParameters()
 {

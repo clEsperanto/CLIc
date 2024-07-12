@@ -246,7 +246,7 @@ OpenCLBackend::allocateImage(const Device::Pointer &       device,
 #if USE_OPENCL
   auto            opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
   cl_image_format image_format = { 0 };
-  image_format.image_channel_order = CL_A;
+  image_format.image_channel_order = CL_R; // WARNING: see https://github.com/clEsperanto/CLIc/issues/317
   cl_image_desc image_description = { 0 };
   image_description.image_type = CL_MEM_OBJECT_IMAGE1D;
   image_description.image_width = region[0];
@@ -641,10 +641,11 @@ OpenCLBackend::copyMemoryBufferToImage(const Device::Pointer & device,
 #if USE_OPENCL
   auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
 
-  region[0] *= bytes;
-  src_origin[0] *= bytes;
-  src_shape[0] *= bytes;
-  dst_origin[0] *= bytes;
+  // not needed when copy from buffer to image
+  // region[0] *= bytes;
+  // src_origin[0] *= bytes;
+  // src_shape[0] *= bytes;
+  // dst_origin[0] *= bytes;
 
   size_t src_row_pitch = src_shape[1] > 1 ? src_shape[0] : 0;
   size_t src_slice_pitch = src_shape[2] > 1 ? src_shape[0] * src_shape[1] : 0;
@@ -683,10 +684,10 @@ OpenCLBackend::copyMemoryImageToBuffer(const Device::Pointer & device,
 #if USE_OPENCL
   auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
 
-  region[0] *= bytes;
-  src_origin[0] *= bytes;
-  dst_shape[0] *= bytes;
-  dst_origin[0] *= bytes;
+  // region[0] *= bytes;
+  // src_origin[0] *= bytes;
+  // dst_shape[0] *= bytes;
+  // dst_origin[0] *= bytes;
 
   size_t dst_row_pitch = dst_shape[1] > 1 ? dst_shape[0] : 0;
   size_t dst_slice_pitch = dst_shape[2] > 1 ? dst_shape[0] * dst_shape[1] : 0;
@@ -726,11 +727,11 @@ OpenCLBackend::copyMemoryImageToImage(const Device::Pointer & device,
 #if USE_OPENCL
   auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
 
-  region[0] *= bytes;
-  src_origin[0] *= bytes;
-  src_shape[0] *= bytes;
-  dst_origin[0] *= bytes;
-  dst_shape[0] *= bytes;
+  // region[0] *= bytes;
+  // src_origin[0] *= bytes;
+  // src_shape[0] *= bytes;
+  // dst_origin[0] *= bytes;
+  // dst_shape[0] *= bytes;
 
   auto err = clEnqueueCopyImage(opencl_device->getCLCommandQueue(),
                                 *static_cast<const cl_mem *>(*src_ptr),
@@ -885,32 +886,6 @@ OpenCLBackend::setBuffer(const Device::Pointer &       device,
                                 nullptr);
       break;
     }
-    case dType::INT64: {
-      auto cval = static_cast<int64_t>(value);
-      err = clEnqueueFillBuffer(opencl_device->getCLCommandQueue(),
-                                *static_cast<cl_mem *>(*buffer_ptr),
-                                &cval,
-                                sizeof(cval),
-                                0,
-                                size,
-                                0,
-                                nullptr,
-                                nullptr);
-      break;
-    }
-    case dType::UINT64: {
-      auto cval = static_cast<uint64_t>(value);
-      err = clEnqueueFillBuffer(opencl_device->getCLCommandQueue(),
-                                *static_cast<cl_mem *>(*buffer_ptr),
-                                &cval,
-                                sizeof(cval),
-                                0,
-                                size,
-                                0,
-                                nullptr,
-                                nullptr);
-      break;
-    }
     default:
       throw std::invalid_argument("Invalid Array::Type value");
   }
@@ -940,10 +915,13 @@ OpenCLBackend::setImage(const Device::Pointer &       device,
   switch (dtype)
   {
     case dType::FLOAT: {
-      auto cval = static_cast<cl_float>(value);
+      float cval[4] = { static_cast<cl_float>(value),
+                        static_cast<cl_float>(value),
+                        static_cast<cl_float>(value),
+                        static_cast<cl_float>(value) };
       err = clEnqueueFillImage(opencl_device->getCLCommandQueue(),
                                *static_cast<cl_mem *>(*buffer_ptr),
-                               &cval,
+                               cval,
                                buffer_origin.data(),
                                region.data(),
                                0,
@@ -954,10 +932,12 @@ OpenCLBackend::setImage(const Device::Pointer &       device,
     case dType::INT32:
     case dType::INT16:
     case dType::INT8: {
-      auto cval = static_cast<cl_int>(value);
+      cl_int cval[4] = {
+        static_cast<cl_int>(value), static_cast<cl_int>(value), static_cast<cl_int>(value), static_cast<cl_int>(value)
+      };
       err = clEnqueueFillImage(opencl_device->getCLCommandQueue(),
                                *static_cast<cl_mem *>(*buffer_ptr),
-                               &cval,
+                               cval,
                                buffer_origin.data(),
                                region.data(),
                                0,
@@ -968,10 +948,13 @@ OpenCLBackend::setImage(const Device::Pointer &       device,
     case dType::UINT32:
     case dType::UINT16:
     case dType::UINT8: {
-      auto cval = static_cast<cl_uint>(value);
+      cl_uint cval[4] = { static_cast<cl_uint>(value),
+                          static_cast<cl_uint>(value),
+                          static_cast<cl_uint>(value),
+                          static_cast<cl_uint>(value) };
       err = clEnqueueFillImage(opencl_device->getCLCommandQueue(),
                                *static_cast<cl_mem *>(*buffer_ptr),
-                               &cval,
+                               cval,
                                buffer_origin.data(),
                                region.data(),
                                0,
@@ -1059,8 +1042,9 @@ saveBinaryToCache(const std::string & device_hash, const std::string & source_ha
 }
 
 static auto
-loadProgramFromCache(const Device::Pointer & device, const std::string & device_hash, const std::string & source_hash)
-  -> cl_program
+loadProgramFromCache(const Device::Pointer & device,
+                     const std::string &     device_hash,
+                     const std::string &     source_hash) -> cl_program
 {
   cl_int err;
   cl_int status;

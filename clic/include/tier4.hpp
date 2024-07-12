@@ -25,8 +25,9 @@ namespace cle::tier4
  *
  */
 auto
-label_bounding_box_func(const Device::Pointer & device, const Array::Pointer & src, int label_id)
-  -> std::array<float, 6>;
+label_bounding_box_func(const Device::Pointer & device,
+                        const Array::Pointer &  src,
+                        int                     label_id) -> std::array<float, 6>;
 
 /**
  * @name mean_squared_error
@@ -42,8 +43,9 @@ label_bounding_box_func(const Device::Pointer & device, const Array::Pointer & s
  * @see https://clij.github.io/clij2-docs/reference_meanSquaredError
  */
 auto
-mean_squared_error_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1)
-  -> float;
+mean_squared_error_func(const Device::Pointer & device,
+                        const Array::Pointer &  src0,
+                        const Array::Pointer &  src1) -> float;
 
 
 /**
@@ -60,8 +62,9 @@ mean_squared_error_func(const Device::Pointer & device, const Array::Pointer & s
  *
  */
 auto
-spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+spots_to_pointlist_func(const Device::Pointer & device,
+                        const Array::Pointer &  src,
+                        Array::Pointer          dst) -> Array::Pointer;
 
 
 /**

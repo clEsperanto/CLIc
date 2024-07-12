@@ -3,6 +3,8 @@
 build
 builds
 install
+.mypy_cache
+.ipynb_checkpoints
 
 # Specific files/folders
 cle_preamble.h

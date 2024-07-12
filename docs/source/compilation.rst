@@ -1,13 +1,13 @@
 Compilation
 -----------
 
-We rely on CMake to build the library. 
-CMake is a cross-platform build system that can generate build files for different build systems like ``make``, ``ninja``, ``Visual Studio``, ``Xcode``, etc. 
-We encourage you to refer to your favorite IDE documentation to learn how to use CMake with it. 
-This documentation will cover how to build the library using the command line and ``ninja`` as the build system. 
+We rely on CMake to build the library.
+CMake is a cross-platform build system that can generate build files for different build systems like ``make``, ``ninja``, ``Visual Studio``, ``Xcode``, etc.
+We encourage you to refer to your favorite IDE documentation to learn how to use CMake with it.
+This documentation will cover how to build the library using the command line and ``ninja`` as the build system.
 Please don't hesitate to contact us if you encounter any issues during the build process.
 
-.. note:: 
+.. note::
 
   For Windows users, you will need to use the ``x64 Native Tools Command Prompt`` from MSVC to build the library.
 
@@ -23,9 +23,9 @@ Then, use ``cmake`` to configure the build:
 .. code-block:: bash
 
    cmake --build ./build --source . -G "Ninja" -D BUILD_TESTS=ON -D CMAKE_BUILD_TYPE=Debug -D BUILD_CUDA_BACKEND=OFF -D BUILD_OPENCL_BACKEND=ON
-  
 
-The ``cmake`` command will generate the build files for the library. The ``--build`` and ``--source`` flags are used to specify the build and source directories. 
+
+The ``cmake`` command will generate the build files for the library. The ``--build`` and ``--source`` flags are used to specify the build and source directories.
 The ``-G`` flag is used to specify the generator to use. The ``-D`` flags are used to pass options to the ``cmake`` command. In this case, we are specifying that we want to build the tests, that we want to build the library in debug mode, and that we want to build the OpenCL backend.
 
 Once configured, we can build the library using the following command:
@@ -34,7 +34,7 @@ Once configured, we can build the library using the following command:
 
    cmake --build ./build --config Debug --parallel 8
 
-The ``--config`` flag is used to specify the configuration to build if multiple are available. 
+The ``--config`` flag is used to specify the configuration to build if multiple are available.
 The ``--parallel`` flag is used to specify the number of parallel builds to use.
 
 Once the build is done, you can run the tests if they were built.

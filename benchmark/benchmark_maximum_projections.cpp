@@ -28,10 +28,10 @@ protected:
   }
 
   auto
-  Iteration() -> void override{};
+  Iteration() -> void override {};
 
   auto
-  Teardown() -> void override{};
+  Teardown() -> void override {};
 
 public:
   size_t dataWidth = 0;

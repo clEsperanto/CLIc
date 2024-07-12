@@ -1,5 +1,6 @@
 #include "device.hpp"
 #include "utils.hpp"
+#include <iomanip> // for std::setw and std::left
 
 namespace cle
 {
@@ -148,26 +149,75 @@ CUDADevice::getArch() const -> std::string
 }
 
 auto
+CUDADevice::supportImage() const -> const bool
+{
+  return true;
+}
+
+auto
 CUDADevice::getInfo() const -> std::string
 {
-  int    numMultiprocessors;
-  int    driverVersion;
-  int    driverMajor;
-  int    driverMinor;
-  size_t totalMemory;
-
-  cuDriverGetVersion(&driverVersion);
-  cuDeviceTotalMem(&totalMemory, cudaDevice);
-  cuDeviceGetAttribute(&numMultiprocessors, CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT, cudaDevice);
-  driverMajor = driverVersion / 1000;
-  driverMinor = (driverVersion % 1000) / 10;
-
   std::ostringstream result;
-  result << "(" << this->getType() << ") " << getName() << " (" << driverMajor << "." << driverMinor << ")\n";
-  result << "\tType: GPU\n";
-  result << "\tCompute Units: " << numMultiprocessors << '\n';
-  result << "\tGlobal Memory Size: " << (totalMemory / (1000 * 1000)) << " MB\n";
+  size_t             totalGlobalMem;
+  int driverVersion, sharedMemPerBlock, runtimeVersion, regsPerBlock, warpSize, maxThreadsPerBlock, totalConstMem,
+    major, minor, clockRate, textureAlignment, multiProcessorCount, maxBlockDimX, maxBlockDimY, maxBlockDimZ,
+    maxGridDimX, maxGridDimY, maxGridDimZ;
+
+  cudaRuntimeGetVersion(&runtimeVersion);
+  cuDriverGetVersion(&driverVersion);
+
+  cuDeviceTotalMem_v2(&totalGlobalMem, cudaDevice);
+  cuDeviceGetAttribute(&sharedMemPerBlock, CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK, cudaDevice);
+  cuDeviceGetAttribute(&regsPerBlock, CU_DEVICE_ATTRIBUTE_MAX_REGISTERS_PER_BLOCK, cudaDevice);
+  cuDeviceGetAttribute(&warpSize, CU_DEVICE_ATTRIBUTE_WARP_SIZE, cudaDevice);
+  cuDeviceGetAttribute(&maxThreadsPerBlock, CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK, cudaDevice);
+  cuDeviceGetAttribute(&totalConstMem, CU_DEVICE_ATTRIBUTE_TOTAL_CONSTANT_MEMORY, cudaDevice);
+  cuDeviceGetAttribute(&major, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, cudaDevice);
+  cuDeviceGetAttribute(&minor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, cudaDevice);
+  cuDeviceGetAttribute(&clockRate, CU_DEVICE_ATTRIBUTE_CLOCK_RATE, cudaDevice);
+  cuDeviceGetAttribute(&textureAlignment, CU_DEVICE_ATTRIBUTE_TEXTURE_ALIGNMENT, cudaDevice);
+  cuDeviceGetAttribute(&multiProcessorCount, CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT, cudaDevice);
+  cuDeviceGetAttribute(&maxBlockDimX, CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X, cudaDevice);
+  cuDeviceGetAttribute(&maxBlockDimY, CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Y, cudaDevice);
+  cuDeviceGetAttribute(&maxBlockDimZ, CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Z, cudaDevice);
+  cuDeviceGetAttribute(&maxGridDimX, CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_X, cudaDevice);
+  cuDeviceGetAttribute(&maxGridDimY, CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Y, cudaDevice);
+  cuDeviceGetAttribute(&maxGridDimZ, CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Z, cudaDevice);
+
+  result << "(" << this->getType() << ") " << getName() << " (" << static_cast<float>(runtimeVersion) / 1000 << ")\n";
+  result << std::left << std::setw(30) << "\tVendor:"
+         << "NVIDIA Corporation"
+         << "\n";
+  result << std::left << std::setw(30) << "\tDevice index:" << cudaDeviceIndex << "\n";
+
+  result << std::left << std::setw(30) << "\tDriver version:" << static_cast<float>(driverVersion) / 1000 << "\n";
+  result << std::left << std::setw(30) << "\tDevice type:"
+         << "GPU"
+         << "\n";
+  result << std::left << std::setw(30) << "\tMultiprocessor count:" << multiProcessorCount << "\n";
+
+  result << std::left << std::setw(30) << "\tTotal global memory:" << totalGlobalMem / (1024 * 1024) << " MB\n";
+  result << std::left << std::setw(30) << "\tShared memory per block:" << sharedMemPerBlock / 1024 << " KB\n";
+  result << std::left << std::setw(30) << "\tClock rate:" << clockRate / 1000 << " MHz"
+         << "\n";
+  result << std::left << std::setw(30) << "\tTotal constant memory:" << totalConstMem / 1024 << " KB\n";
+  result << std::left << std::setw(30) << "\tRegisters per block:" << regsPerBlock << "\n";
+  result << std::left << std::setw(30) << "\tWarp size:" << warpSize << "\n";
+  result << std::left << std::setw(30) << "\tMax threads per block:" << maxThreadsPerBlock << "\n";
+  result << std::left << std::setw(30) << "\tMax block dimension:" << maxBlockDimX << ", " << maxBlockDimY << ", "
+         << maxBlockDimZ << "\n";
+  result << std::left << std::setw(30) << "\tMax grid dimension:" << maxGridDimX << ", " << maxGridDimY << ", "
+         << maxGridDimZ << "\n";
+  result << std::left << std::setw(30) << "\tCompute capability version:" << major << "." << minor << "\n";
+  result << std::left << std::setw(30) << "\tTexture alignment:" << textureAlignment << "\n";
+
   return result.str();
+}
+
+auto
+CUDADevice::getInfoExtended() const -> std::string
+{
+  return getInfo();
 }
 
 #endif // USE_CUDA

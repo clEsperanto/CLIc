@@ -102,8 +102,9 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
  *
  */
 auto
-flag_existing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+flag_existing_labels_func(const Device::Pointer & device,
+                          const Array::Pointer &  src,
+                          Array::Pointer          dst) -> Array::Pointer;
 
 
 /**
@@ -163,8 +164,9 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_generateTouchMatrix
  */
 auto
-generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+generate_touch_matrix_func(const Device::Pointer & device,
+                           const Array::Pointer &  src,
+                           Array::Pointer          dst) -> Array::Pointer;
 
 
 /**
@@ -243,8 +245,9 @@ jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, 
  * @see https://clij.github.io/clij2-docs/reference_labelledSpotsToPointList
  */
 auto
-labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+labelled_spots_to_pointlist_func(const Device::Pointer & device,
+                                 const Array::Pointer &  src,
+                                 Array::Pointer          dst) -> Array::Pointer;
 
 
 /**
@@ -286,6 +289,30 @@ mean_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & s
 auto
 minimum_position_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<size_t, 3>;
 
+
+/**
+ * @name morphological_chan_vese
+ * @brief Compute an active contour model using the Chan-Vese morphological algorithm. The output image (dst) should
+ * also be initialisation of the contour. If not provided (nullptr), the function will use a checkboard pattern
+ * initialisation.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output contour, can also be use to provide initialisation. [Array::Pointer ( = None )]
+ * @param num_iter Number of iterations. [int ( = 100 )]
+ * @param smoothing Number of smoothing iterations. [int ( = 1 )]
+ * @param lambda1 Lambda1. [float ( = 1 )]
+ * @param lambda2 Lambda2. [float ( = 1 )]
+ * @return Array::Pointer
+ */
+auto
+morphological_chan_vese_func(const Device::Pointer & device,
+                             const Array::Pointer &  src,
+                             Array::Pointer          dst,
+                             int                     num_iter,
+                             int                     smoothing,
+                             float                   lambda1,
+                             float                   lambda2) -> Array::Pointer;
 
 } // namespace cle::tier3
 
