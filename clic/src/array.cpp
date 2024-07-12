@@ -55,7 +55,7 @@ Array::create(const size_t            width,
               const Device::Pointer & device_ptr) -> Array::Pointer
 {
   auto ptr = create(width, height, depth, dimension, data_type, mem_type, device_ptr);
-  ptr->write(host_data);
+  ptr->writeFrom(host_data);
   return ptr;
 }
 
@@ -97,7 +97,7 @@ Array::allocate() -> void
 }
 
 auto
-Array::write(const void * host_data) -> void
+Array::writeFrom(const void * host_data) -> void
 {
   if (host_data == nullptr)
   {
@@ -110,9 +110,9 @@ Array::write(const void * host_data) -> void
 }
 
 auto
-Array::write(const void *                  host_data,
-             const std::array<size_t, 3> & region,
-             const std::array<size_t, 3> & buffer_origin) -> void
+Array::writeFrom(const void *                  host_data,
+                 const std::array<size_t, 3> & region,
+                 const std::array<size_t, 3> & buffer_origin) -> void
 {
   if (host_data == nullptr)
   {
@@ -125,13 +125,13 @@ Array::write(const void *                  host_data,
 }
 
 auto
-Array::write(const void * host_data, const size_t x_coord, const size_t y_coord, const size_t z_coord) -> void
+Array::writeFrom(const void * host_data, const size_t x_coord, const size_t y_coord, const size_t z_coord) -> void
 {
-  write(host_data, { 1, 1, 1 }, { x_coord, y_coord, z_coord });
+  writeFrom(host_data, { 1, 1, 1 }, { x_coord, y_coord, z_coord });
 }
 
 auto
-Array::read(void * host_data) const -> void
+Array::readTo(void * host_data) const -> void
 {
   if (host_data == nullptr)
   {
@@ -144,9 +144,9 @@ Array::read(void * host_data) const -> void
 }
 
 auto
-Array::read(void *                        host_data,
-            const std::array<size_t, 3> & region,
-            const std::array<size_t, 3> & buffer_origin) const -> void
+Array::readTo(void *                        host_data,
+              const std::array<size_t, 3> & region,
+              const std::array<size_t, 3> & buffer_origin) const -> void
 {
   if (host_data == nullptr)
   {
@@ -159,13 +159,13 @@ Array::read(void *                        host_data,
 }
 
 auto
-Array::read(void * host_data, const size_t x_coord, const size_t y_coord, const size_t z_coord) const -> void
+Array::readTo(void * host_data, const size_t x_coord, const size_t y_coord, const size_t z_coord) const -> void
 {
-  read(host_data, { 1, 1, 1 }, { x_coord, y_coord, z_coord });
+  readTo(host_data, { 1, 1, 1 }, { x_coord, y_coord, z_coord });
 }
 
 auto
-Array::copy(const Array::Pointer & dst) const -> void
+Array::copyTo(const Array::Pointer & dst) const -> void
 {
   check_ptr(dst, "Error: Destination Array is null");
   if (device() != dst->device())
@@ -208,10 +208,10 @@ Array::copy(const Array::Pointer & dst) const -> void
 }
 
 auto
-Array::copy(const Array::Pointer &        dst,
-            const std::array<size_t, 3> & region,
-            const std::array<size_t, 3> & src_origin,
-            const std::array<size_t, 3> & dst_origin) const -> void
+Array::copyTo(const Array::Pointer &        dst,
+              const std::array<size_t, 3> & region,
+              const std::array<size_t, 3> & src_origin,
+              const std::array<size_t, 3> & dst_origin) const -> void
 {
   check_ptr(dst, "Error: Destination Array is null");
   if (device() != dst->device())
@@ -259,37 +259,37 @@ Array::fill(const float value) -> void
   {
     case dType::FLOAT: {
       std::vector<float> data(this->size(), value);
-      write(data.data());
+      writeFromdata.data());
       return;
     }
     case dType::INT8: {
       std::vector<int8_t> data(this->size(), static_cast<int8_t>(value));
-      write(data.data());
+      writeFromdata.data());
       return;
     }
     case dType::INT16: {
       std::vector<int16_t> data(this->size(), static_cast<int16_t>(value));
-      write(data.data());
+      writeFromdata.data());
       return;
     }
     case dType::INT32: {
       std::vector<int32_t> data(this->size(), static_cast<int32_t>(value));
-      write(data.data());
+      writeFromdata.data());
       return;
     }
     case dType::UINT8: {
       std::vector<uint8_t> data(this->size(), static_cast<uint8_t>(value));
-      write(data.data());
+      writeFromdata.data());
       return;
     }
     case dType::UINT16: {
       std::vector<uint16_t> data(this->size(), static_cast<uint16_t>(value));
-      write(data.data());
+      writeFromdata.data());
       return;
     }
     case dType::UINT32: {
       std::vector<uint32_t> data(this->size(), static_cast<uint32_t>(value));
-      write(data.data());
+      writeFromdata.data());
       return;
     }
     default: {
