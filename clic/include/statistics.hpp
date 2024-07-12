@@ -5,17 +5,20 @@
 #include "array.hpp"
 #include "execution.hpp"
 
+#include "cle_statistics_per_label.h"
 #include "tier0.hpp"
 #include "tier1.hpp"
 #include "tier2.hpp"
-#include "cle_statistics_per_label.h"
 
 namespace cle
 {
 
 
 auto
-statistics_of_labelled_pixels(const Device::Pointer & device, Array::Pointer & intensity, Array::Pointer & label, Array::Pointer & result) -> std::unordered_map<std::string, std::vector<float>> 
+statistics_of_labelled_pixels(const Device::Pointer & device,
+                              Array::Pointer &        intensity,
+                              Array::Pointer &        label,
+                              Array::Pointer &        result) -> std::unordered_map<std::string, std::vector<float>>
 {
   // check input arguments
   if (intensity == nullptr || label == nullptr)
@@ -64,9 +67,11 @@ statistics_of_labelled_pixels(const Device::Pointer & device, Array::Pointer & i
 
   const KernelInfo    kernel = { "statistics_per_label", kernel::statistics_per_label };
   const RangeArray    range = { 1, height, 1 };
-  const ParameterList params = {
-    { "src_label", label }, { "src_image", intensity }, { "dst", cumulative_stats_per_label }, { "sum_background", 0 }, { "z", 0 }
-  };
+  const ParameterList params = { { "src_label", label },
+                                 { "src_image", intensity },
+                                 { "dst", cumulative_stats_per_label },
+                                 { "sum_background", 0 },
+                                 { "z", 0 } };
   for (int z = 0; z < depth; z++)
   {
     params.back()["z"] = z;

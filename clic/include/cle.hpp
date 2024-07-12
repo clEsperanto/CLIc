@@ -6,6 +6,7 @@
 #include "clic.hpp"
 #include "device.hpp"
 
+#include "statistics.hpp"
 #include "tier1.hpp"
 #include "tier2.hpp"
 #include "tier3.hpp"
@@ -14,6 +15,5 @@
 #include "tier6.hpp"
 #include "tier7.hpp"
 #include "tier8.hpp"
-#include "statistics.hpp"
 
 #endif // __INCLUDE_CLE_HPP
