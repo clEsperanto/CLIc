@@ -118,10 +118,12 @@ TEST(TestStandardDeviation, execute)
 
   auto result = cle::statistics_of_labelled_pixels(device, gpu_image, gpu_labels, nullptr);
 
-  float std_dev;
-  result->read(&std_dev, 14 * sizeof(float), sizeof(float)); // Assuming standard deviation is at index 14
 
-  EXPECT_NEAR(std_dev, 2.58, 0.1);
+  // find the value in result with key = "std_dev"
+  auto it = result.find("standard_deviation_intensity");
+  auto std_dev = it->second;
+
+  EXPECT_NEAR(std_dev[0], 2.58, 0.1);
 }
 
 std::vector<std::string>

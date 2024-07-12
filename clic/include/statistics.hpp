@@ -1,6 +1,7 @@
 #ifndef __INCLUDE_STATISTICS_HPP
 #define __INCLUDE_STATISTICS_HPP
 
+#include <numeric>
 
 #include "array.hpp"
 #include "execution.hpp"
@@ -18,7 +19,7 @@ auto
 statistics_of_labelled_pixels(const Device::Pointer & device,
                               Array::Pointer &        intensity,
                               Array::Pointer &        label,
-                              Array::Pointer &        result) -> std::unordered_map<std::string, std::vector<float>>
+                              Array::Pointer          result) -> std::unordered_map<std::string, std::vector<float>>
 {
   // check input arguments
   if (intensity == nullptr || label == nullptr)
@@ -41,7 +42,7 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
 
   int offset = 1;
   int number_of_dimensions = label->dimension();
-  int nb_labels = static_cast<int>(tier2::maximum_of_all_pixels_func(label)) + offset;
+  int nb_labels = static_cast<int>(tier2::maximum_of_all_pixels_func(device, label)) + offset;
   int height = label->height();
   int depth = 1;
   if (number_of_dimensions == 3)
@@ -65,25 +66,25 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   tier1::set_plane_func(device, cumulative_stats_per_label, 14, min_value);
   tier1::set_plane_func(device, cumulative_stats_per_label, 15, min_value);
 
-  const KernelInfo    kernel = { "statistics_per_label", kernel::statistics_per_label };
-  const RangeArray    range = { 1, height, 1 };
-  const ParameterList params = { { "src_label", label },
-                                 { "src_image", intensity },
-                                 { "dst", cumulative_stats_per_label },
-                                 { "sum_background", 0 },
-                                 { "z", 0 } };
+  const KernelInfo kernel = { "statistics_per_label", kernel::statistics_per_label };
+  const RangeArray range = { 1, static_cast<size_t>(height), 1 };
+  ParameterList    params = { { "src_label", label },
+                              { "src_image", intensity },
+                              { "dst", cumulative_stats_per_label },
+                              { "sum_background", 0 },
+                              { "z", 0 } };
   for (int z = 0; z < depth; z++)
   {
-    params.back()["z"] = z;
+    params.back().second = z;
     execute(device, kernel, params, range);
   }
 
   // collect slice-by-slice measurements in single planes
   int num_measurements = nb_labels - offset;
 
-  auto sum_per_label = tier1::sum_y_projection_func(device, cumulative_stats_per_label_image, nullptr);
-  auto min_per_label = tier1::minimum_y_projection_func(device, cumulative_stats_per_label_image, nullptr);
-  auto max_per_label = tier1::maximum_y_projection_func(device, cumulative_stats_per_label_image, nullptr);
+  auto sum_per_label = tier1::sum_y_projection_func(device, cumulative_stats_per_label, nullptr);
+  auto min_per_label = tier1::minimum_y_projection_func(device, cumulative_stats_per_label, nullptr);
+  auto max_per_label = tier1::maximum_y_projection_func(device, cumulative_stats_per_label, nullptr);
 
   auto label_statistics_image = Array::create(nb_labels, 8, 1, 2, dType::FLOAT, mType::BUFFER, device);
   auto result_vector = Array::create(num_measurements, 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
@@ -115,17 +116,17 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   std::vector<float> bbox_max_z(num_measurements);
 
   tier1::crop_func(device, min_per_label, result_vector, offset, 10, 0, num_measurements, 1, 1);
-  result_vector->read(bbox_min_x);
+  result_vector->read(bbox_min_x.data());
   tier1::crop_func(device, max_per_label, result_vector, offset, 11, 0, num_measurements, 1, 1);
-  result_vector->read(bbox_max_x);
+  result_vector->read(bbox_max_x.data());
   tier1::crop_func(device, min_per_label, result_vector, offset, 12, 0, num_measurements, 1, 1);
-  result_vector->read(bbox_min_y);
+  result_vector->read(bbox_min_y.data());
   tier1::crop_func(device, max_per_label, result_vector, offset, 13, 0, num_measurements, 1, 1);
-  result_vector->read(bbox_max_y);
+  result_vector->read(bbox_max_y.data());
   tier1::crop_func(device, min_per_label, result_vector, offset, 14, 0, num_measurements, 1, 1);
-  result_vector->read(bbox_min_z);
+  result_vector->read(bbox_min_z.data());
   tier1::crop_func(device, max_per_label, result_vector, offset, 15, 0, num_measurements, 1, 1);
-  result_vector->read(bbox_max_z);
+  result_vector->read(bbox_max_z.data());
 
   region_props["bbox_min_x"] = bbox_min_x;
   region_props["bbox_max_x"] = bbox_max_x;
@@ -167,29 +168,29 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   // Minimum and maximum intensity
   std::vector<float> min_intensity(num_measurements);
   tier1::crop_func(device, min_per_label, result_vector, offset, 8, 0, num_measurements, 1, 1);
-  result_vector->read(min_intensity);
+  result_vector->read(min_intensity.data());
   region_props["min_intensity"] = min_intensity;
 
   std::vector<float> max_intensity(num_measurements);
   tier1::crop_func(device, max_per_label, result_vector, offset, 9, 0, num_measurements, 1, 1);
-  result_vector->read(max_intensity);
+  result_vector->read(max_intensity.data());
   region_props["max_intensity"] = max_intensity;
 
   // Sum intensity, area, and mean intensity
   std::vector<float> sum_intensity(num_measurements);
   tier1::crop_func(device, sum_per_label, result_vector, offset, 7, 0, num_measurements, 1, 1);
-  result_vector->read(sum_intensity);
+  result_vector->read(sum_intensity.data());
   region_props["sum_intensity"] = sum_intensity;
 
   std::vector<float> area(num_measurements);
   tier1::crop_func(device, sum_per_label, sum_dim, offset, 3, 0, num_measurements, 1, 1);
-  sum_dim->read(area);
+  sum_dim->read(area.data());
   region_props["area"] = area;
 
   std::vector<float> mean_intensity(num_measurements);
   tier1::paste_func(device, sum_dim, label_statistics_image, offset, 7, 0);
   tier1::divide_images_func(device, result_vector, sum_dim, avg_dim);
-  avg_dim->read(mean_intensity);
+  avg_dim->read(mean_intensity.data());
   region_props["mean_intensity"] = mean_intensity;
 
   tier1::paste_func(device, avg_dim, label_statistics_image, offset, 6, 0);
@@ -203,13 +204,13 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
     tier1::crop_func(device, sum_per_label, sum_dim, offset, 4 + dim, 0, num_measurements, 1, 1);
 
     std::vector<float> sum_intensity_times(num_measurements);
-    sum_dim->read(sum_intensity_times);
+    sum_dim->read(sum_intensity_times.data());
     region_props["sum_intensity_times_" + dim_names[dim]] = sum_intensity_times;
 
     tier1::divide_images_func(device, sum_dim, result_vector, avg_dim);
 
     std::vector<float> mass_center(num_measurements);
-    avg_dim->read(mass_center);
+    avg_dim->read(mass_center.data());
     region_props["mass_center_" + dim_names[dim]] = mass_center;
     tier1::paste_func(device, avg_dim, label_statistics_image, offset, 3 + dim, 0);
   }
@@ -221,12 +222,12 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
     tier1::crop_func(device, sum_per_label, sum_dim, offset, 4 + dim, 0, num_measurements, 1, 1);
 
     std::vector<float> sum(num_measurements);
-    sum_dim->read(sum);
+    sum_dim->read(sum.data());
     region_props["sum_" + dim_names[dim]] = sum;
     tier1::divide_images_func(device, sum_dim, result_vector, avg_dim);
 
     std::vector<float> centroid(num_measurements);
-    avg_dim->read(centroid);
+    avg_dim->read(centroid.data());
     region_props["centroid_" + dim_names[dim]] = centroid;
     tier1::paste_func(device, avg_dim, label_statistics_image, offset, 3 + dim, 0);
   }
