@@ -20,13 +20,13 @@ TEST_P(TestConvolve, execute)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(4, 4, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
   auto gpu_kernel = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_kernel->write(kernel.data());
+  gpu_kernel->writeFrom(kernel.data());
 
   auto gpu_output = cle::tier1::convolve_func(device, gpu_input, gpu_kernel, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

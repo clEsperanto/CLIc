@@ -21,13 +21,13 @@ TEST_P(TestUndefinedToZero, execute)
 
   auto gpu_intput1 = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_intput2 = cle::Array::create(gpu_intput1);
-  gpu_intput1->write(input1.data());
-  gpu_intput2->write(input2.data());
+  gpu_intput1->writeFrom(input1.data());
+  gpu_intput2->writeFrom(input2.data());
 
   auto gpu_undef = cle::tier1::divide_images_func(device, gpu_intput1, gpu_intput2, nullptr);
   auto gpu_output = cle::tier1::undefined_to_zero_func(device, gpu_undef, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

@@ -37,10 +37,10 @@ TEST_P(TestDifferenceOfGaussian, execute)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(3, 3, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
   auto gpu_output = cle::tier2::difference_of_gaussian_func(device, gpu_input, nullptr, 1, 1, 1, 3, 3, 3);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_NEAR(output[i], valid[i], 0.0001);

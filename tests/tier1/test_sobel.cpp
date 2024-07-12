@@ -19,11 +19,11 @@ TEST_P(TestSobel, execute)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier1::sobel_func(device, gpu_input, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
 
   for (auto && i : output)
   {

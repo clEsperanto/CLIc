@@ -22,12 +22,12 @@ TEST_P(TestImagesOperation, add)
 
   auto gpu_input1 = cle::Array::create(3, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(gpu_input1);
-  gpu_input1->write(input1.data());
-  gpu_input2->write(input2.data());
+  gpu_input1->writeFrom(input1.data());
+  gpu_input2->writeFrom(input2.data());
 
   auto gpu_output = cle::tier2::add_images_func(device, gpu_input1, gpu_input2, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);
@@ -45,12 +45,12 @@ TEST_P(TestImagesOperation, subtract)
 
   auto gpu_input1 = cle::Array::create(3, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(gpu_input1);
-  gpu_input1->write(input1.data());
-  gpu_input2->write(input2.data());
+  gpu_input1->writeFrom(input1.data());
+  gpu_input2->writeFrom(input2.data());
 
   auto gpu_output = cle::tier2::subtract_images_func(device, gpu_input1, gpu_input2, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);
@@ -67,11 +67,11 @@ TEST_P(TestImagesOperation, square)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(3, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input1.data());
+  gpu_input->writeFrom(input1.data());
 
   auto gpu_output = cle::tier2::square_func(device, gpu_input, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_NEAR(output[i], valid[i], 0.00001);

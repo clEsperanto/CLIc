@@ -20,11 +20,11 @@ TEST_P(TestThresholdOtsu, execute)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(3, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier4::threshold_otsu_func(device, gpu_input, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

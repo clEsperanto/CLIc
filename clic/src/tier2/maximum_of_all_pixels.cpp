@@ -26,7 +26,7 @@ maximum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer 
   tier1::maximum_x_projection_func(device, tmp, dst);
 
   float res;
-  dst->read(&res);
+  dst->readTo(&res);
   return res;
 }
 

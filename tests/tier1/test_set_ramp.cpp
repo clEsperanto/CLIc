@@ -28,11 +28,11 @@ TEST_P(TestRamp, executeRampX)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(3, 3, 2, 3, cle::dType::INT32, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   cle::tier1::set_ramp_x_func(device, gpu_input);
 
-  gpu_input->read(output.data());
+  gpu_input->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_x[i]);
@@ -47,11 +47,11 @@ TEST_P(TestRamp, executeRampY)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(3, 3, 2, 3, cle::dType::INT32, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   cle::tier1::set_ramp_y_func(device, gpu_input);
 
-  gpu_input->read(output.data());
+  gpu_input->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_y[i]);
@@ -66,11 +66,11 @@ TEST_P(TestRamp, executeRampZ)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(3, 3, 2, 3, cle::dType::INT32, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   cle::tier1::set_ramp_z_func(device, gpu_input);
 
-  gpu_input->read(output.data());
+  gpu_input->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_z[i]);

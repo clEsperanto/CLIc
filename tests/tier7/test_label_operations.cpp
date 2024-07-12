@@ -24,11 +24,11 @@ TEST_P(TestLabelOperations, executeDilate)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(6, 6, 2, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier6::dilate_labels_func(device, gpu_input, nullptr, 1);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], dilated[i]);
@@ -36,7 +36,7 @@ TEST_P(TestLabelOperations, executeDilate)
 
   cle::tier6::dilate_labels_func(device, gpu_input, gpu_output, 0);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], input[i]);
@@ -58,11 +58,11 @@ TEST_P(TestLabelOperations, executeErode)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(6, 6, 2, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier6::erode_labels_func(device, gpu_input, nullptr, 1, true);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], eroded[i]);
@@ -70,7 +70,7 @@ TEST_P(TestLabelOperations, executeErode)
 
   cle::tier6::erode_labels_func(device, gpu_input, gpu_output, 0, true);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], input[i]);
@@ -92,11 +92,11 @@ TEST_P(TestLabelOperations, executeOpening)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(6, 6, 2, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier7::opening_labels_func(device, gpu_input, nullptr, 1);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], opened[i]);
@@ -104,7 +104,7 @@ TEST_P(TestLabelOperations, executeOpening)
 
   cle::tier7::opening_labels_func(device, gpu_input, gpu_output, 0);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], input[i]);
@@ -126,11 +126,11 @@ TEST_P(TestLabelOperations, executeClosing)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(6, 6, 2, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier7::closing_labels_func(device, gpu_input, nullptr, 1);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], closed[i]);
@@ -138,7 +138,7 @@ TEST_P(TestLabelOperations, executeClosing)
 
   cle::tier7::closing_labels_func(device, gpu_input, gpu_output, 0);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], input[i]);

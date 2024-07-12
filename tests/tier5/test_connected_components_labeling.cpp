@@ -23,11 +23,11 @@ TEST_P(TestLabeling, executeBox)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 3, 2, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier5::connected_components_labeling_func(device, gpu_input, nullptr, "box");
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_box[i]);
@@ -42,11 +42,11 @@ TEST_P(TestLabeling, executeDiamond)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 3, 2, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier5::connected_components_labeling_func(device, gpu_input, nullptr, "sphere");
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_diamond[i]);

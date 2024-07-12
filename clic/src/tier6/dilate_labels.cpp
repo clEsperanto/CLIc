@@ -33,7 +33,7 @@ dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
     auto active = (iter_count % 2 == 0) ? flip : flop;
     auto passive = (iter_count % 2 == 0) ? flop : flip;
     tier1::onlyzero_overwrite_maximum_func(device, active, flag, passive, (iter_count % 2 == 0) ? "box" : "sphere");
-    flag->read(&flag_value);
+    flag->readTo(&flag_value);
     if (flag_value > 0)
     {
       flag->fill(0);

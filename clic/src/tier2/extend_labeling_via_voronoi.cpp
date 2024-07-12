@@ -31,17 +31,17 @@ extend_labeling_via_voronoi_func(const Device::Pointer & device,
     {
       tier1::onlyzero_overwrite_maximum_func(device, flop, flag, flip, "box");
     }
-    flag->read(&flag_value);
+    flag->readTo(&flag_value);
     flag->fill(0);
     iteration_count++;
   }
   if (iteration_count % 2 == 0)
   {
-    flip->copy(dst);
+    flip->copyTo(dst);
   }
   else
   {
-    flop->copy(dst);
+    flop->copyTo(dst);
   }
   return dst;
 }

@@ -29,11 +29,11 @@ TEST_P(TestLaplace, executeDeprecatedBox)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(4, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input_box.data());
+  gpu_input->writeFrom(input_box.data());
 
   auto gpu_output = cle::tier1::laplace_box_func(device, gpu_input, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_box[i]);
@@ -51,11 +51,11 @@ TEST_P(TestLaplace, executeDeprecatedSphere)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input_sphere.data());
+  gpu_input->writeFrom(input_sphere.data());
 
   auto gpu_output = cle::tier1::laplace_diamond_func(device, gpu_input, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_sphere[i]);
@@ -73,11 +73,11 @@ TEST_P(TestLaplace, executeBox)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(4, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input_box.data());
+  gpu_input->writeFrom(input_box.data());
 
   auto gpu_output = cle::tier1::laplace_func(device, gpu_input, nullptr, "box");
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_box[i]);
@@ -94,11 +94,11 @@ TEST_P(TestLaplace, executeSphere)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input_sphere.data());
+  gpu_input->writeFrom(input_sphere.data());
 
   auto gpu_output = cle::tier1::laplace_func(device, gpu_input, nullptr, "sphere");
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_sphere[i]);

@@ -22,11 +22,11 @@ TEST_P(TestRotate, rotate)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier7::rotate_func(device, gpu_input, nullptr, 0, 0, 45.0, false, false, false);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);
@@ -49,11 +49,11 @@ TEST_P(TestRotate, rotateCentered)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier7::rotate_func(device, gpu_input, nullptr, 0, 0, 90, true, false, false);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);
@@ -76,11 +76,11 @@ TEST_P(TestRotate, rotateResized)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier7::rotate_func(device, gpu_input, nullptr, 0, 0, 45, true, false, true);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

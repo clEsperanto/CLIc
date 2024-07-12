@@ -21,12 +21,12 @@ TEST_P(TestPaste, execute)
 
   auto gpu_input1 = cle::Array::create(4, 4, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(2, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input1->write(input1.data());
-  gpu_input2->write(input2.data());
+  gpu_input1->writeFrom(input1.data());
+  gpu_input2->writeFrom(input2.data());
 
   cle::tier1::paste_func(device, gpu_input2, gpu_input1, 1, 2, 0);
 
-  gpu_input1->read(output.data());
+  gpu_input1->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

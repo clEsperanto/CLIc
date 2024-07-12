@@ -34,11 +34,11 @@ TEST_P(TestSetColumn, execute)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   cle::tier1::set_column_func(device, gpu_input, 1, 100);
 
-  gpu_input->read(output.data());
+  gpu_input->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

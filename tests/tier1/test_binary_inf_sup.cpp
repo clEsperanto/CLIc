@@ -68,11 +68,11 @@ TEST_P(TestBinaryInfSup, infsup_2d)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(14, 14, 1, 2, cle::dType::BINARY, cle::mType::BUFFER, device);
-  gpu_input->write(input_2d.data());
+  gpu_input->writeFrom(input_2d.data());
   auto gpu_output = cle::tier1::binary_infsup_func(device, gpu_input, nullptr);
 
   std::vector<uint8_t> output(gpu_output->size());
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_2d[i]);
@@ -88,11 +88,11 @@ TEST_P(TestBinaryInfSup, infsup_3d)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(10, 10, 5, 3, cle::dType::BINARY, cle::mType::BUFFER, device);
-  gpu_input->write(input_3d.data());
+  gpu_input->writeFrom(input_3d.data());
   auto gpu_output = cle::tier1::binary_infsup_func(device, gpu_input, nullptr);
 
   std::vector<uint8_t> output(gpu_output->size());
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_3d[i]);

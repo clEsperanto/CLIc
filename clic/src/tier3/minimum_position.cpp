@@ -37,17 +37,17 @@ minimum_position_func(const Device::Pointer & device, const Array::Pointer & src
 
   if (pos_x != nullptr)
   {
-    pos_x->read(&x_coord, { 1, 1, 1 }, { 0, 0, 0 });
+    pos_x->readTo(&x_coord, { 1, 1, 1 }, { 0, 0, 0 });
     coord[0] = x_coord;
   }
   if (pos_y != nullptr)
   {
-    pos_y->read(&y_coord, { 1, 1, 1 }, { x_coord, 0, 0 });
+    pos_y->readTo(&y_coord, { 1, 1, 1 }, { x_coord, 0, 0 });
     coord[1] = y_coord;
   }
   if (pos_z != nullptr)
   {
-    pos_z->read(&z_coord, { 1, 1, 1 }, { x_coord, y_coord, 0 });
+    pos_z->readTo(&z_coord, { 1, 1, 1 }, { x_coord, y_coord, 0 });
     coord[2] = z_coord;
   }
   return coord;

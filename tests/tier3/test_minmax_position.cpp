@@ -21,7 +21,7 @@ TEST_P(TestMinMaxPosition, maxPosition)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(4, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto output = cle::tier3::maximum_position_func(device, gpu_input);
 
@@ -41,7 +41,7 @@ TEST_P(TestMinMaxPosition, minPosition)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(4, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto output = cle::tier3::minimum_position_func(device, gpu_input);
 

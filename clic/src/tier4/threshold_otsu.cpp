@@ -19,7 +19,7 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
   auto          hist_array = Array::create(bin, 1, 1, 1, dType::FLOAT, mType::BUFFER, src->device());
   tier3::histogram_func(device, src, hist_array, bin, min_intensity, max_intensity);
   std::vector<float> histogram_array(hist_array->size());
-  hist_array->read(histogram_array.data());
+  hist_array->readTo(histogram_array.data());
   float       threshold = -1;
   float       max_variance = -1;
   float       variance = 0;

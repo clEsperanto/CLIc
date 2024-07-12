@@ -32,11 +32,11 @@ TEST_P(TestDilate, executeDeprecatedBox)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier1::dilate_box_func(device, gpu_input, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], validBox[i]);
@@ -51,11 +51,11 @@ TEST_P(TestDilate, executeDeprecatedSphere)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier1::dilate_sphere_func(device, gpu_input, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], validSphere[i]);
@@ -70,11 +70,11 @@ TEST_P(TestDilate, executeBox)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier1::dilate_func(device, gpu_input, nullptr, "box");
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], validBox[i]);
@@ -89,11 +89,11 @@ TEST_P(TestDilate, executeSphere)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier1::dilate_func(device, gpu_input, nullptr, "sphere");
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], validSphere[i]);

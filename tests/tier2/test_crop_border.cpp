@@ -28,11 +28,11 @@ TEST_P(TestCropBorder, execute2D)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(4, 4, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input_2d.data());
+  gpu_input->writeFrom(input_2d.data());
 
   auto gpu_output = cle::tier2::crop_border_func(device, gpu_input, nullptr, 1);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);
@@ -50,11 +50,11 @@ TEST_P(TestCropBorder, execute3D)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(4, 4, 4, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input_3d.data());
+  gpu_input->writeFrom(input_3d.data());
 
   auto gpu_output = cle::tier2::crop_border_func(device, gpu_input, nullptr, 1);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

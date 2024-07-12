@@ -21,12 +21,12 @@ TEST_P(TestMultiplyMatrix, execute)
 
   auto gpu_input1 = cle::Array::create(3, 4, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input1->write(input1.data());
-  gpu_input2->write(input2.data());
+  gpu_input1->writeFrom(input1.data());
+  gpu_input2->writeFrom(input2.data());
 
   auto gpu_output = cle::tier1::multiply_matrix_func(device, gpu_input1, gpu_input2, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

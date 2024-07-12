@@ -28,12 +28,12 @@ TEST_P(TestNonzeroMaximum, executeDeprecatedBox)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
   auto flag = cle::Array::create(1, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   flag->fill(1);
   auto gpu_output = cle::tier1::nonzero_maximum_box_func(device, gpu_input, flag, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_box[i]);
@@ -48,13 +48,13 @@ TEST_P(TestNonzeroMaximum, executeDeprecatedSphere)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
   auto flag = cle::Array::create(1, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   flag->fill(1);
 
   auto gpu_output = cle::tier1::nonzero_maximum_diamond_func(device, gpu_input, flag, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_diam[i]);
@@ -70,12 +70,12 @@ TEST_P(TestNonzeroMaximum, executeBox)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
   auto flag = cle::Array::create(1, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   flag->fill(1);
   auto gpu_output = cle::tier1::nonzero_maximum_func(device, gpu_input, flag, nullptr, "box");
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_box[i]);
@@ -90,13 +90,13 @@ TEST_P(TestNonzeroMaximum, executeSphere)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
   auto flag = cle::Array::create(1, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   flag->fill(1);
 
   auto gpu_output = cle::tier1::nonzero_maximum_func(device, gpu_input, flag, nullptr, "sphere");
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_diam[i]);

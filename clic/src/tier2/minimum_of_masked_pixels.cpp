@@ -48,7 +48,7 @@ minimum_of_masked_pixels_func(const Device::Pointer & device,
   tier1::minimum_of_masked_pixels_reduction_func(device, tmp_src, tmp_mask, dst_src, dst_mask);
 
   float res;
-  dst_src->read(&res);
+  dst_src->readTo(&res);
   return res;
 }
 

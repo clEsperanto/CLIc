@@ -31,7 +31,7 @@ connected_components_labeling_func(const Device::Pointer & device,
     auto active = (iter_count % 2 == 0) ? temp1 : temp2;
     auto passive = (iter_count % 2 == 0) ? temp2 : temp1;
     tier1::nonzero_minimum_func(device, active, flag, passive, connectivity);
-    flag->read(&flag_value);
+    flag->readTo(&flag_value);
     if (flag_value > 0)
     {
       flag->fill(0);

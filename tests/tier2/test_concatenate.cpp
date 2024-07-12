@@ -22,12 +22,12 @@ TEST_P(TestConcatenate, alongX)
 
   auto gpu_input1 = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(gpu_input1);
-  gpu_input1->write(input1.data());
-  gpu_input2->write(input2.data());
+  gpu_input1->writeFrom(input1.data());
+  gpu_input2->writeFrom(input2.data());
 
   auto gpu_output = cle::tier2::concatenate_along_x_func(device, gpu_input1, gpu_input2, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);
@@ -48,12 +48,12 @@ TEST_P(TestConcatenate, alongY)
 
   auto gpu_input1 = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(gpu_input1);
-  gpu_input1->write(input1.data());
-  gpu_input2->write(input2.data());
+  gpu_input1->writeFrom(input1.data());
+  gpu_input2->writeFrom(input2.data());
 
   auto gpu_output = cle::tier2::concatenate_along_y_func(device, gpu_input1, gpu_input2, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);
@@ -74,12 +74,12 @@ TEST_P(TestConcatenate, alongZ)
 
   auto gpu_input1 = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(gpu_input1);
-  gpu_input1->write(input1.data());
-  gpu_input2->write(input2.data());
+  gpu_input1->writeFrom(input1.data());
+  gpu_input2->writeFrom(input2.data());
 
   auto gpu_output = cle::tier2::concatenate_along_z_func(device, gpu_input1, gpu_input2, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

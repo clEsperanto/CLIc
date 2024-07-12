@@ -39,11 +39,11 @@ TEST_P(TestNonzeroToPixelIndex, execute)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier1::set_nonzero_pixels_to_pixelindex_func(device, gpu_input, nullptr, 1);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);
