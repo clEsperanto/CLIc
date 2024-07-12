@@ -14,5 +14,6 @@
 #include "tier6.hpp"
 #include "tier7.hpp"
 #include "tier8.hpp"
+#include "statistics.hpp"
 
 #endif // __INCLUDE_CLE_HPP

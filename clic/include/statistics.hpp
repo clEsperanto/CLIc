@@ -5,17 +5,17 @@
 #include "array.hpp"
 #include "execution.hpp"
 
-#include "statistics.hpp"
 #include "tier0.hpp"
 #include "tier1.hpp"
 #include "tier2.hpp"
+#include "cle_statistics_per_label.h"
 
 namespace cle
 {
 
 
 auto
-compute_statistics(const Device::Pointer & device, Array::Pointer & intensity, Array::Pointer & label) -> void
+statistics_of_labelled_pixels(const Device::Pointer & device, Array::Pointer & intensity, Array::Pointer & label, Array::Pointer & result) -> std::unordered_map<std::string, std::vector<float>> 
 {
   // check input arguments
   if (intensity == nullptr || label == nullptr)
@@ -47,43 +47,43 @@ compute_statistics(const Device::Pointer & device, Array::Pointer & intensity, A
   }
 
 
-  auto cumulative_stats_per_label = Array::Create(nb_labels, height, 16, 3, dType::FLOAT, mType::BUFFER, device);
+  auto cumulative_stats_per_label = Array::create(nb_labels, height, 16, 3, dType::FLOAT, mType::BUFFER, device);
   cumulative_stats_per_label->fill(0);
 
   float min_value = 0;
   float max_value = 0;
 
-  tier1::set_plane(device, cumulative_stats_per_label, 8, min_value);
-  tier1::set_plane(device, cumulative_stats_per_label, 9, min_value);
-  tier1::set_plane(device, cumulative_stats_per_label, 10, min_value);
-  tier1::set_plane(device, cumulative_stats_per_label, 11, min_value);
-  tier1::set_plane(device, cumulative_stats_per_label, 12, min_value);
-  tier1::set_plane(device, cumulative_stats_per_label, 13, min_value);
-  tier1::set_plane(device, cumulative_stats_per_label, 14, min_value);
-  tier1::set_plane(device, cumulative_stats_per_label, 15, min_value);
+  tier1::set_plane_func(device, cumulative_stats_per_label, 8, min_value);
+  tier1::set_plane_func(device, cumulative_stats_per_label, 9, min_value);
+  tier1::set_plane_func(device, cumulative_stats_per_label, 10, min_value);
+  tier1::set_plane_func(device, cumulative_stats_per_label, 11, min_value);
+  tier1::set_plane_func(device, cumulative_stats_per_label, 12, min_value);
+  tier1::set_plane_func(device, cumulative_stats_per_label, 13, min_value);
+  tier1::set_plane_func(device, cumulative_stats_per_label, 14, min_value);
+  tier1::set_plane_func(device, cumulative_stats_per_label, 15, min_value);
 
-  const KernelInfo    kernel = { "binary_or", kernel::binary_or };
+  const KernelInfo    kernel = { "statistics_per_label", kernel::statistics_per_label };
   const RangeArray    range = { 1, height, 1 };
   const ParameterList params = {
-    { "src0", label }, { "src1", intensity }, { "dst", cumulative_stats_per_label }, { "sum", 0 }, { "depth", 0 }
+    { "src_label", label }, { "src_image", intensity }, { "dst", cumulative_stats_per_label }, { "sum_background", 0 }, { "z", 0 }
   };
   for (int z = 0; z < depth; z++)
   {
-    params.back()["depth"] = z;
+    params.back()["z"] = z;
     execute(device, kernel, params, range);
   }
 
   // collect slice-by-slice measurements in single planes
   int num_measurements = nb_labels - offset;
 
-  auto sum_per_label = tier1::sum_y_projection(device, cumulative_stats_per_label_image, nullptr);
-  auto min_per_label = tier1::minimum_y_projection(device, cumulative_stats_per_label_image, nullptr);
-  auto max_per_label = tier1::maximum_y_projection(device, cumulative_stats_per_label_image, nullptr);
+  auto sum_per_label = tier1::sum_y_projection_func(device, cumulative_stats_per_label_image, nullptr);
+  auto min_per_label = tier1::minimum_y_projection_func(device, cumulative_stats_per_label_image, nullptr);
+  auto max_per_label = tier1::maximum_y_projection_func(device, cumulative_stats_per_label_image, nullptr);
 
-  auto label_statistics_image = Array::Create(nb_labels, 8, 1, 2, dType::FLOAT, mType::BUFFER, device);
-  auto result_vector = Array::Create(num_measurements, 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
-  auto sum_dim = Array::Create(result_vector);
-  auto avg_dim = Array::Create(result_vector);
+  auto label_statistics_image = Array::create(nb_labels, 8, 1, 2, dType::FLOAT, mType::BUFFER, device);
+  auto result_vector = Array::create(num_measurements, 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
+  auto sum_dim = Array::create(result_vector);
+  auto avg_dim = Array::create(result_vector);
 
   std::unordered_map<std::string, std::vector<float>> region_props;
 
@@ -109,18 +109,18 @@ compute_statistics(const Device::Pointer & device, Array::Pointer & intensity, A
   std::vector<float> bbox_min_z(num_measurements);
   std::vector<float> bbox_max_z(num_measurements);
 
-  tier1::crop(device, min_per_label, result_vector, offset, 10, 0, num_measurements, 1, 1);
-  result_vector.read(bbox_min_x);
-  tier1::crop(device, max_per_label, result_vector, offset, 11, 0, num_measurements, 1, 1);
-  result_vector.read(bbox_max_x);
-  tier1::crop(device, min_per_label, result_vector, offset, 12, 0, num_measurements, 1, 1);
-  result_vector.read(bbox_min_y);
-  tier1::crop(device, max_per_label, result_vector, offset, 13, 0, num_measurements, 1, 1);
-  result_vector.read(bbox_max_y);
-  tier1::crop(device, min_per_label, result_vector, offset, 14, 0, num_measurements, 1, 1);
-  result_vector.read(bbox_min_z);
-  tier1::crop(device, max_per_label, result_vector, offset, 15, 0, num_measurements, 1, 1);
-  result_vector.read(bbox_max_z);
+  tier1::crop_func(device, min_per_label, result_vector, offset, 10, 0, num_measurements, 1, 1);
+  result_vector->read(bbox_min_x);
+  tier1::crop_func(device, max_per_label, result_vector, offset, 11, 0, num_measurements, 1, 1);
+  result_vector->read(bbox_max_x);
+  tier1::crop_func(device, min_per_label, result_vector, offset, 12, 0, num_measurements, 1, 1);
+  result_vector->read(bbox_min_y);
+  tier1::crop_func(device, max_per_label, result_vector, offset, 13, 0, num_measurements, 1, 1);
+  result_vector->read(bbox_max_y);
+  tier1::crop_func(device, min_per_label, result_vector, offset, 14, 0, num_measurements, 1, 1);
+  result_vector->read(bbox_min_z);
+  tier1::crop_func(device, max_per_label, result_vector, offset, 15, 0, num_measurements, 1, 1);
+  result_vector->read(bbox_max_z);
 
   region_props["bbox_min_x"] = bbox_min_x;
   region_props["bbox_max_x"] = bbox_max_x;
@@ -161,69 +161,69 @@ compute_statistics(const Device::Pointer & device, Array::Pointer & intensity, A
 
   // Minimum and maximum intensity
   std::vector<float> min_intensity(num_measurements);
-  tier1::crop(device, min_per_label, result_vector, offset, 8, 0, num_measurements, 1, 1);
-  result_vector.read(min_intensity);
+  tier1::crop_func(device, min_per_label, result_vector, offset, 8, 0, num_measurements, 1, 1);
+  result_vector->read(min_intensity);
   region_props["min_intensity"] = min_intensity;
 
   std::vector<float> max_intensity(num_measurements);
-  tier1::crop(device, max_per_label, result_vector, offset, 9, 0, num_measurements, 1, 1);
-  result_vector.read(max_intensity);
+  tier1::crop_func(device, max_per_label, result_vector, offset, 9, 0, num_measurements, 1, 1);
+  result_vector->read(max_intensity);
   region_props["max_intensity"] = max_intensity;
 
   // Sum intensity, area, and mean intensity
   std::vector<float> sum_intensity(num_measurements);
-  tier1::crop(device, sum_per_label, result_vector, offset, 7, 0, num_measurements, 1, 1);
-  result_vector.read(sum_intensity);
+  tier1::crop_func(device, sum_per_label, result_vector, offset, 7, 0, num_measurements, 1, 1);
+  result_vector->read(sum_intensity);
   region_props["sum_intensity"] = sum_intensity;
 
   std::vector<float> area(num_measurements);
-  tier1::crop(device, sum_per_label, result_vector, offset, 3, 0, num_measurements, 1, 1);
-  result_vector.read(area);
+  tier1::crop_func(device, sum_per_label, sum_dim, offset, 3, 0, num_measurements, 1, 1);
+  sum_dim->read(area);
   region_props["area"] = area;
 
-  std::vector<float> area(num_measurements);
-  tier1::paste(device, sum_dim, label_statistics_image, offset, 7, 0, num_measurements, 1, 1);
-  tier1::divide_images(device, result_vector, sum_dim, avg_dim);
-  avg_dim.read(mean_intensity);
+  std::vector<float> mean_intensity(num_measurements);
+  tier1::paste_func(device, sum_dim, label_statistics_image, offset, 7, 0);
+  tier1::divide_images_func(device, result_vector, sum_dim, avg_dim);
+  avg_dim->read(mean_intensity);
   region_props["mean_intensity"] = mean_intensity;
 
-  tier1::paste(device, avg_dim, label_statistics_image, offset, 6, 0, num_measurements, 1, 1);
+  tier1::paste_func(device, avg_dim, label_statistics_image, offset, 6, 0);
 
   // Sum intensity times x, y, z and mass center
 
   std::vector<std::string> dim_names = { "x", "y", "z" };
-  tier1::crop(device, sum_per_label, result_vector, offset, 4 + 3, 0, num_measurements, 1, 1);
+  tier1::crop_func(device, sum_per_label, result_vector, offset, 4 + 3, 0, num_measurements, 1, 1);
   for (int dim = 0; dim < 3; ++dim)
   {
-    tier1::crop(device, sum_per_label, sum_dim, offset, 4 + dim, 0, num_measurements, 1, 1);
+    tier1::crop_func(device, sum_per_label, sum_dim, offset, 4 + dim, 0, num_measurements, 1, 1);
 
     std::vector<float> sum_intensity_times(num_measurements);
-    sum_dim.read(sum_intensity_times);
+    sum_dim->read(sum_intensity_times);
     region_props["sum_intensity_times_" + dim_names[dim]] = sum_intensity_times;
 
-    tier1::divide_images(device, sum_dim, result_vector, avg_dim);
+    tier1::divide_images_func(device, sum_dim, result_vector, avg_dim);
 
     std::vector<float> mass_center(num_measurements);
-    avg_dim.read(mass_center);
+    avg_dim->read(mass_center);
     region_props["mass_center_" + dim_names[dim]] = mass_center;
-    tier1::paste(device, avg_dim, label_statistics_image, offset, 3 + dim, 0, num_measurements, 1, 1);
+    tier1::paste_func(device, avg_dim, label_statistics_image, offset, 3 + dim, 0);
   }
 
   // Sum x, y, z and centroid
-  tier1::crop(device, sum_per_label, result_vector, offset, 3, 0);
+  tier1::crop_func(device, sum_per_label, result_vector, offset, 3, 0, num_measurements, 1, 1);
   for (int dim = 0; dim < 3; ++dim)
   {
-    tier1::crop(device, sum_per_label, sum_dim, offset, 4 + dim, 0, num_measurements, 1, 1);
+    tier1::crop_func(device, sum_per_label, sum_dim, offset, 4 + dim, 0, num_measurements, 1, 1);
 
     std::vector<float> sum(num_measurements);
-    sum_dim.read(sum);
+    sum_dim->read(sum);
     region_props["sum_" + dim_names[dim]] = sum;
-    tier1::divide_images(device, sum_dim, result_vector, avg_dim);
+    tier1::divide_images_func(device, sum_dim, result_vector, avg_dim);
 
     std::vector<float> centroid(num_measurements);
-    avg_dim.read(centroid);
+    avg_dim->read(centroid);
     region_props["centroid_" + dim_names[dim]] = centroid;
-    tier1::paste(device, avg_dim, label_statistics_image, offset, 3 + dim, 0, num_measurements, 1, 1);
+    tier1::paste_func(device, avg_dim, label_statistics_image, offset, 3 + dim, 0);
   }
   /*
     // Second part: determine parameters which depend on other parameters
