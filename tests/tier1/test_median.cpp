@@ -26,11 +26,11 @@ TEST_P(TestMedian, executeDeprecatedBox)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier1::median_box_func(device, gpu_input, nullptr, 1, 1, 0);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_box[i]);
@@ -45,11 +45,11 @@ TEST_P(TestMedian, executeDeprecatedSphere)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier1::median_sphere_func(device, gpu_input, nullptr, 1, 1, 0);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_sphere[i]);
@@ -64,11 +64,11 @@ TEST_P(TestMedian, executeBox)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier1::median_func(device, gpu_input, nullptr, 1, 1, 0, "box");
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_box[i]);
@@ -83,11 +83,11 @@ TEST_P(TestMedian, executeSphere)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier1::median_func(device, gpu_input, nullptr, 1, 1, 0, "sphere");
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_sphere[i]);

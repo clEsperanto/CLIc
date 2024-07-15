@@ -29,11 +29,11 @@ TEST_P(TestDetectMaxima, execute)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(10, 5, 3, 3, cle::dType::UINT8, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier2::detect_maxima_box_func(device, gpu_input, nullptr, 0, 0, 0);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

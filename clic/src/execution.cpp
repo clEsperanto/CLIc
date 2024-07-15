@@ -294,7 +294,7 @@ execute_separable(const Device::Pointer &      device,
     }
     else
     {
-      input->copy(output);
+      input->copyTo(output);
     }
   };
 

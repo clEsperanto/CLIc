@@ -26,11 +26,11 @@ TEST_P(TestWriteValuesTopositions, execute2D)
   device->setWaitToFinish(true);
 
   auto gpu_coord = cle::Array::create(5, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_coord->write(list_2d.data());
+  gpu_coord->writeFrom(list_2d.data());
 
   auto gpu_output = cle::tier1::write_values_to_positions_func(device, gpu_coord, nullptr);
 
-  gpu_output->read(output_2d.data());
+  gpu_output->readTo(output_2d.data());
   for (int i = 0; i < output_2d.size(); i++)
   {
     EXPECT_EQ(output_2d[i], valid_2d[i]);
@@ -45,11 +45,11 @@ TEST_P(TestWriteValuesTopositions, execute3D)
   device->setWaitToFinish(true);
 
   auto gpu_coord = cle::Array::create(5, 4, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_coord->write(list_3d.data());
+  gpu_coord->writeFrom(list_3d.data());
 
   auto gpu_output = cle::tier1::write_values_to_positions_func(device, gpu_coord, nullptr);
 
-  gpu_output->read(output_3d.data());
+  gpu_output->readTo(output_3d.data());
   for (int i = 0; i < output_3d.size(); i++)
   {
     EXPECT_EQ(output_3d[i], valid_3d[i]);

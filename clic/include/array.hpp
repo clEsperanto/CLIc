@@ -103,7 +103,7 @@ public:
    * @param host_data pointer to the host data
    */
   auto
-  write(const void * host_data) -> void;
+  writeFrom(const void * host_data) -> void;
 
   /**
    * @brief Write host data into the Array region
@@ -112,9 +112,9 @@ public:
    * @param buffer_origin origin of the buffer to write
    */
   auto
-  write(const void *                  host_data,
-        const std::array<size_t, 3> & region,
-        const std::array<size_t, 3> & buffer_origin) -> void;
+  writeFrom(const void *                  host_data,
+            const std::array<size_t, 3> & region,
+            const std::array<size_t, 3> & buffer_origin) -> void;
 
   /**
    * @brief Write host data into the Array at a specific position (x, y, z)
@@ -124,14 +124,14 @@ public:
    * @param z_coord z coordinate
    */
   auto
-  write(const void * host_data, size_t x_coord, size_t y_coord, size_t z_coord) -> void;
+  writeFrom(const void * host_data, size_t x_coord, size_t y_coord, size_t z_coord) -> void;
 
   /**
    * @brief Read the Array data into host memory
    * @param host_data pointer to the host data
    */
   auto
-  read(void * host_data) const -> void;
+  readTo(void * host_data) const -> void;
 
   /**
    * @brief Read the Array region data into host memory
@@ -140,9 +140,9 @@ public:
    * @param buffer_origin origin of the buffer to read
    */
   auto
-  read(void *                        host_data,
-       const std::array<size_t, 3> & region,
-       const std::array<size_t, 3> & buffer_origin) const -> void;
+  readTo(void *                        host_data,
+         const std::array<size_t, 3> & region,
+         const std::array<size_t, 3> & buffer_origin) const -> void;
 
   /**
    * @brief Read the Array data at a specific position (x, y, z) into host memory
@@ -152,14 +152,14 @@ public:
    * @param z_coord z coordinate
    */
   auto
-  read(void * host_data, size_t x_coord, size_t y_coord, size_t z_coord) const -> void;
+  readTo(void * host_data, size_t x_coord, size_t y_coord, size_t z_coord) const -> void;
 
   /**
    * @brief Copy the Array data into another Array
    * @param dst destination Array::Pointer
    */
   auto
-  copy(const Array::Pointer & dst) const -> void;
+  copyTo(const Array::Pointer & dst) const -> void;
 
   /**
    * @brief Copy the Array region data into another Array
@@ -169,10 +169,10 @@ public:
    * @param dst_origin origin of the destination buffer
    */
   auto
-  copy(const Array::Pointer &        dst,
-       const std::array<size_t, 3> & region,
-       const std::array<size_t, 3> & src_origin,
-       const std::array<size_t, 3> & dst_origin) const -> void;
+  copyTo(const Array::Pointer &        dst,
+         const std::array<size_t, 3> & region,
+         const std::array<size_t, 3> & src_origin,
+         const std::array<size_t, 3> & dst_origin) const -> void;
 
   /**
    * @brief Fill the Array with a specific value
@@ -337,7 +337,7 @@ print(const Array::Pointer & array, const char * name = "Array::Pointer") -> voi
     return;
   }
   std::vector<T> host_data(array->size());
-  array->read(host_data.data());
+  array->readTo(host_data.data());
   std::ostringstream oss;
   oss << name << ":\n";
   for (auto i = 0; i < array->depth(); ++i)

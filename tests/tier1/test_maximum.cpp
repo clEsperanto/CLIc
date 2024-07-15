@@ -38,11 +38,11 @@ TEST_P(TestMaximum, executeDeprecatedBox)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input_box.data());
+  gpu_input->writeFrom(input_box.data());
 
   auto gpu_output = cle::tier1::maximum_box_func(device, gpu_input, nullptr, 1, 1, 1);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_box[i]);
@@ -57,11 +57,11 @@ TEST_P(TestMaximum, executeDeprecatedSphere)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input_sphere.data());
+  gpu_input->writeFrom(input_sphere.data());
 
   auto gpu_output = cle::tier1::maximum_sphere_func(device, gpu_input, nullptr, 1, 1, 1);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_sphere[i]);
@@ -76,11 +76,11 @@ TEST_P(TestMaximum, executeBox)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input_box.data());
+  gpu_input->writeFrom(input_box.data());
 
   auto gpu_output = cle::tier1::maximum_func(device, gpu_input, nullptr, 1, 1, 1, "box");
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_box[i]);
@@ -95,11 +95,11 @@ TEST_P(TestMaximum, executeSphere)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input_sphere.data());
+  gpu_input->writeFrom(input_sphere.data());
 
   auto gpu_output = cle::tier1::maximum_func(device, gpu_input, nullptr, 1, 1, 1, "sphere");
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_sphere[i]);

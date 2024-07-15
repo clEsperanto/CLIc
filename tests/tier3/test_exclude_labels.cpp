@@ -33,12 +33,12 @@ TEST_P(TestExcludeLabels, onList)
 
   auto gpu_input = cle::Array::create(7, 6, 3, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
   auto gpu_list = cle::Array::create(10, 1, 1, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
-  gpu_list->write(list.data());
+  gpu_input->writeFrom(input.data());
+  gpu_list->writeFrom(list.data());
 
   auto gpu_output = cle::tier3::exclude_labels_func(device, gpu_input, gpu_list, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);
@@ -60,11 +60,11 @@ TEST_P(TestExcludeLabels, onEdges)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(7, 6, 3, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier3::exclude_labels_on_edges_func(device, gpu_input, nullptr, true, true, true);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

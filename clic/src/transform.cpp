@@ -75,7 +75,7 @@ apply_affine_transform(const cle::Array::Pointer &  src,
 
   // push the matrix on gpu as the inverse transposed transform matrix
   auto mat = cle::Array::create(4, 4, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, src->device());
-  mat->write(cle::AffineTransform::toArray(new_transform.getInverseTranspose()).data());
+  mat->writeFrom(cle::AffineTransform::toArray(new_transform.getInverseTranspose()).data());
 
   cle::Array::Pointer image = src;
   if (interpolate && src->mtype() != mType::IMAGE)
@@ -85,7 +85,7 @@ apply_affine_transform(const cle::Array::Pointer &  src,
     {
       image = cle::Array::create(
         src->width(), src->height(), src->depth(), src->dimension(), src->dtype(), mType::IMAGE, src->device());
-      src->copy(image);
+      src->copyTo(image);
     }
     catch (const std::exception & e)
     {

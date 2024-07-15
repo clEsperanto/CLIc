@@ -19,12 +19,12 @@ TEST_P(TestCopyVerticalSlice, executeFrom)
 
   auto gpu_input = cle::Array::create(2, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_output = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
   gpu_output->fill(0);
 
   cle::tier1::copy_vertical_slice_func(device, gpu_input, gpu_output, 0);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   EXPECT_EQ(*std::min_element(output.begin(), output.end()), 0.0);
   EXPECT_EQ(*std::max_element(output.begin(), output.end()), 1.0);
   EXPECT_EQ(std::accumulate(output.begin(), output.end(), 0.0) / output.size(), 0.75);
@@ -43,12 +43,12 @@ TEST_P(TestCopyVerticalSlice, executeTo)
 
   auto gpu_input = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_output = cle::Array::create(2, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
   gpu_output->fill(0);
 
   cle::tier1::copy_vertical_slice_func(device, gpu_input, gpu_output, 0);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   EXPECT_EQ(*std::min_element(output.begin(), output.end()), 0.0);
   EXPECT_EQ(*std::max_element(output.begin(), output.end()), 5.0);
   EXPECT_EQ(std::accumulate(output.begin(), output.end(), 0.0) / output.size(), 2.0);
@@ -68,12 +68,12 @@ TEST_P(TestCopyVerticalSlice, executeIMG)
 
   auto gpu_input = cle::Array::create(3, 3, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_output = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
   gpu_output->fill(0);
 
   cle::tier1::copy_vertical_slice_func(device, gpu_input, gpu_output, 1);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (size_t i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

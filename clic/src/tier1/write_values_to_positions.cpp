@@ -26,7 +26,7 @@ write_values_to_positions_func(const Device::Pointer & device,
     auto temp = Array::create(1, list->height(), 1, 2, dType::INT32, list->mtype(), list->device());
     maximum_x_projection_func(device, list, temp);
     std::vector<int> max_position(temp->size());
-    temp->read(max_position.data());
+    temp->readTo(max_position.data());
     size_t max_pos_x = max_position[0] + 1;
     size_t max_pos_y = (list->height() > 2) ? max_position[1] + 1 : 1;
     size_t max_pos_z = (list->height() > 3) ? max_position[2] + 1 : 1;

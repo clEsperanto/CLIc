@@ -35,12 +35,12 @@ TEST_P(TestMask, execute)
 
   auto gpu_input = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_mask = cle::Array::create(gpu_input);
-  gpu_input->write(input.data());
-  gpu_mask->write(mask.data());
+  gpu_input->writeFrom(input.data());
+  gpu_mask->writeFrom(mask.data());
 
   auto gpu_output = cle::tier1::mask_func(device, gpu_input, gpu_mask, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

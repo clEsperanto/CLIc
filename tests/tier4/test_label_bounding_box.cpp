@@ -19,7 +19,7 @@ TEST_P(TestBoundingBox, execute2d)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(7, 7, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto output = cle::tier4::label_bounding_box_func(device, gpu_input, 2);
 

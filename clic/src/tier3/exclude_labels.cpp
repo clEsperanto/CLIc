@@ -20,7 +20,7 @@ exclude_labels_func(const Device::Pointer & device,
     throw std::runtime_error("exclude_labels: label list must be of type uint32");
   }
   std::vector<uint32_t> labels_list(list->size());
-  list->read(labels_list.data());
+  list->readTo(labels_list.data());
 
   labels_list.front() = 0;
   uint32_t count = 1;
@@ -38,7 +38,7 @@ exclude_labels_func(const Device::Pointer & device,
   }
 
   auto index_list = Array::create(list->size(), 1, 1, 1, dType::LABEL, mType::BUFFER, src->device());
-  index_list->write(labels_list.data());
+  index_list->writeFrom(labels_list.data());
   tier1::replace_values_func(device, src, index_list, dst);
   return dst;
 }

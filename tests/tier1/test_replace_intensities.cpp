@@ -38,12 +38,12 @@ TEST_P(TestReplaceIntensities, execute)
 
   auto gpu_input1 = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(10, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input1->write(input.data());
-  gpu_input2->write(intmap.data());
+  gpu_input1->writeFrom(input.data());
+  gpu_input2->writeFrom(intmap.data());
 
   auto gpu_output = cle::tier1::replace_values_func(device, gpu_input1, gpu_input2, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

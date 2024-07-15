@@ -21,7 +21,7 @@ TEST_P(TestBoundingBox, execute2d)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input2d.data());
+  gpu_input->writeFrom(input2d.data());
 
   auto output = cle::tier3::bounding_box_func(device, gpu_input);
 
@@ -41,7 +41,7 @@ TEST_P(TestBoundingBox, execute3d)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 2, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input3d.data());
+  gpu_input->writeFrom(input3d.data());
 
   auto output = cle::tier3::bounding_box_func(device, gpu_input);
 
@@ -67,7 +67,7 @@ TEST_P(TestBoundingBox, largePositionInt8)
   input_large[265 * 265 - 1] = 1;
 
   auto gpu_input = cle::Array::create(265, 265, 1, 2, cle::dType::INT8, cle::mType::BUFFER, device);
-  gpu_input->write(input_large.data());
+  gpu_input->writeFrom(input_large.data());
 
   auto output = cle::tier3::bounding_box_func(device, gpu_input);
 

@@ -22,12 +22,12 @@ TEST_P(TestAffineTransform, affineTransform)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   std::vector<float> matrix = { 1, 0, -1, 0, 1, -1, 0, 0, 1 };
   auto               gpu_output = cle::tier7::affine_transform_func(device, gpu_input, nullptr, &matrix, false, false);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);
@@ -57,12 +57,12 @@ TEST_P(TestAffineTransform, affineTransformInterpolate)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   std::vector<float> matrix = { 2, 0, 0, 0, 2, 0, 0, 0, 1 };
   auto               gpu_output = cle::tier7::affine_transform_func(device, gpu_input, nullptr, &matrix, true, true);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

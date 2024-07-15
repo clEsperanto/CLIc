@@ -25,11 +25,11 @@ TEST_P(TestArrayComparisons, execute)
   auto gpu_input4 = cle::Array::create(3, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input5 = cle::Array::create(1, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
 
-  gpu_input1->write(input1.data());
-  gpu_input2->write(input2.data());
-  gpu_input3->write(input3.data());
-  gpu_input4->write(input4.data());
-  gpu_input5->write(input4.data());
+  gpu_input1->writeFrom(input1.data());
+  gpu_input2->writeFrom(input2.data());
+  gpu_input3->writeFrom(input3.data());
+  gpu_input4->writeFrom(input4.data());
+  gpu_input5->writeFrom(input4.data());
 
   EXPECT_FALSE(cle::tier5::array_equal_func(device, gpu_input1, gpu_input2));
   EXPECT_FALSE(cle::tier5::array_equal_func(device, gpu_input1, gpu_input3));

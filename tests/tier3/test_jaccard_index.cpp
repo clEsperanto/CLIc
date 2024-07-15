@@ -18,8 +18,8 @@ TEST_P(TestJaccardIndex, execute2D)
 
   auto gpu_input1 = cle::Array::create(5, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(gpu_input1);
-  gpu_input1->write(input1.data());
-  gpu_input2->write(input2.data());
+  gpu_input1->writeFrom(input1.data());
+  gpu_input2->writeFrom(input2.data());
 
   auto output = cle::tier3::jaccard_index_func(device, gpu_input1, gpu_input2);
 
@@ -38,8 +38,8 @@ TEST_P(TestJaccardIndex, execute3D)
 
   auto gpu_input1 = cle::Array::create(3, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(gpu_input1);
-  gpu_input1->write(input1.data());
-  gpu_input2->write(input2.data());
+  gpu_input1->writeFrom(input1.data());
+  gpu_input2->writeFrom(input2.data());
 
   auto output = cle::tier3::jaccard_index_func(device, gpu_input1, gpu_input2);
 

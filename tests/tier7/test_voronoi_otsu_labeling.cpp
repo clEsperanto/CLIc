@@ -29,11 +29,11 @@ TEST_P(TestVoronoiOtsuLabeling, execute)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(7, 7, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier7::voronoi_otsu_labeling_func(device, gpu_input, nullptr, 0, 1);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

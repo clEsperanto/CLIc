@@ -80,14 +80,14 @@ We need now to write data into the device array.
 
 .. code-block:: c++
 
-    gpu_array->write(array.data());
+    gpu_array->writeFrom(array.data());
 
 Where ``array`` is a ``std::vector`` or ``std::array`` of the same size and type as the ``gpu_array`` we are trying to write into.
 We can do the oposite operation and read the ``gpu_array`` into a ``std::vector`` or ``std::array``.
 
 .. code-block:: c++
 
-    gpu_array->read(array.data());
+    gpu_array->readTo(array.data());
 
 .. note::
 

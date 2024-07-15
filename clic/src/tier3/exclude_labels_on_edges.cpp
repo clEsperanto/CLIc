@@ -41,7 +41,7 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
   execute_if_needed(exclude_z, src->depth(), "exclude_on_edges_z");
 
   std::vector<uint32_t> label_map_vector(label_map->size());
-  label_map->read(label_map_vector.data());
+  label_map->readTo(label_map_vector.data());
   int32_t count = 1;
   for (auto & i : label_map_vector)
   {
@@ -51,7 +51,7 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
       count++;
     }
   }
-  label_map->write(label_map_vector.data());
+  label_map->writeFrom(label_map_vector.data());
   return tier1::replace_values_func(device, src, label_map, dst);
 }
 
