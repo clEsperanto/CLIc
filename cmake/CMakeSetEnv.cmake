@@ -12,12 +12,14 @@ string(TOLOWER ${LIBRARY_NAME} LIBRARY_NAME_LOWERCASE)
 # Enforce only using MPL2/BSD license for Eigen
 # test if unix system
 if(UNIX AND CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-  SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -DEIGEN_MPL2_ONLY")
+  # SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -DEIGEN_MPL2_ONLY")
+  add_compile_options(-DEIGEN_MPL2_ONLY)
 endif()
 
 # add the /MP flag for MSVC compiler
 if(MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP16")
+  # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP16")
+  add_compile_options(/MP16)
 endif()
 
 # set folder properties for IDE
@@ -63,7 +65,8 @@ endif()
 option(BUILD_COVERAGE "Enable coverage reporting" OFF)
 message(STATUS "Build project code coverage: ${BUILD_COVERAGE}")
 if (BUILD_COVERAGE)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+  add_compile_options(-g -O0 -fprofile-arcs -ftest-coverage)
+  # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
   # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
   set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
 endif()
