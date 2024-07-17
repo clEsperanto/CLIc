@@ -6,7 +6,6 @@
 #include "clic.hpp"
 #include "device.hpp"
 
-#include "statistics.hpp"
 #include "tier1.hpp"
 #include "tier2.hpp"
 #include "tier3.hpp"

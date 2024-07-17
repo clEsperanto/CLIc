@@ -1,6 +1,10 @@
 #include "cle.hpp"
+
+#include "statistics.hpp"
+
 #include <array>
 #include <cmath>
+
 #include <gtest/gtest.h>
 
 class TestStatisticsOfLabelledPixels : public ::testing::TestWithParam<std::string>
