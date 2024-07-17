@@ -7,6 +7,7 @@
 #include "execution.hpp"
 
 #include "cle_statistics_per_label.h"
+#include "cle_standard_deviation_per_label.h"
 #include "tier0.hpp"
 #include "tier1.hpp"
 #include "tier2.hpp"
