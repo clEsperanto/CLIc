@@ -15,6 +15,11 @@ if(UNIX AND CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} " -DEIGEN_MPL2_ONLY")
 endif()
 
+# add the /MP flag for MSVC compiler
+if(MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+endif()
+
 # set folder properties for IDE
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
