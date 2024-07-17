@@ -26,11 +26,11 @@
             "inherits": [
                 "win-config"
             ]
-        }
+        },
         {
             "name": "win-msvc19",
             "displayName": "MSVS 19",
-            "description": "Win msvc17 configuration",
+            "description": "Win msvc19 configuration",
             "generator": "Visual Studio 19",
             "inherits": [
                 "win-config"
@@ -48,7 +48,7 @@
             ]
         },
         {
-            "name": "win-ninja-release",
+            "name": "win-ninja-debug",
             "displayName": "Debug",
             "description": "Win Ninja Debug build",
             "configurePreset": "windows-ninja-multi",
@@ -73,11 +73,11 @@
             "inherits": [
                 "debug-build"
             ]
-        }
+        },
         {
             "name": "win-msvc19-release",
             "displayName": "Release",
-            "description": "Win msvc17 Release build",
+            "description": "Win msvc19 Release build",
             "configurePreset": "win-msvc19",
             "inherits": [
                 "release-build"
@@ -86,7 +86,7 @@
         {
             "name": "win-msvc19-debug",
             "displayName": "Debug",
-            "description": "Win msvc17 Debug build",
+            "description": "Win msvc19 Debug build",
             "configurePreset": "win-msvc19",
             "inherits": [
                 "debug-build"
@@ -129,12 +129,12 @@
             "inherits": [
                 "debug-test"
             ]
-        }
+        },
         {
             "name": "win-msvc19-release",
             "displayName": "CTest Release",
             "description": "win msvc19 Release test",
-            "configurePreset": "win-msvc17",
+            "configurePreset": "win-msvc19",
             "inherits": [
                 "release-test"
             ]
