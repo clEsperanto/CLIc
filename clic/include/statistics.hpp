@@ -231,66 +231,83 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
     region_props["centroid_" + dim_names[dim]] = centroid;
     tier1::paste_func(device, avg_dim, label_statistics_image, offset, 3 + dim, 0);
   }
-  /*
-    // Second part: determine parameters which depend on other parameters
-    auto label_statistics_stack = Array::Create(nb_labels, height, 6, 3, dType::FLOAT, mType::BUFFER, device);
-    label_statistics_stack->fill(0);
+  
+  // Second part: determine parameters which depend on other parameters
+  auto label_statistics_stack = Array::create(nb_labels, height, 6, 3, dType::FLOAT, mType::BUFFER, device);
+  label_statistics_stack->fill(0);
 
-    const KernelInfo    kernel_std = { "standard_deviation_per_label", kernel::standard_deviation_per_label };
-    const RangeArray    range_std = { 1, height, 1 };
-    const ParameterList params_std = { { "dst", label_statistics_stack },
-                                       { "src_statistics", label_statistics_image },
-                                       { "src_label", label },
-                                       { "src_image", intensity },
-                                       { "sum_background", 0 },
-                                       { "z", 0 } };
+  const KernelInfo    kernel_std = { "standard_deviation_per_label", kernel::standard_deviation_per_label };
+  const RangeArray    range_std = { 1, height, 1 };
+  const ParameterList params_std = { { "dst", label_statistics_stack },
+                                      { "src_statistics", label_statistics_image },
+                                      { "src_label", label },
+                                      { "src_image", intensity },
+                                      { "sum_background", 0 },
+                                      { "z", 0 } };
 
-    for (int z = 0; z < depth; z++)
-    {
-      params_std.back()["z"] = z;
-      execute(device, kernel_std, params_std, range_std);
-    }
+  for (int z = 0; z < depth; z++)
+  {
+    params.back().second = z;
+    execute(device, kernel_std, params_std, range_std);
+  }
 
-    auto sum_statistics = tier1::sum_y_projection(device, label_statistics_stack, nullptr);
-    auto max_statistics = tier1::maximum_y_projection(device, label_statistics_stack, nullptr);
+  auto sum_statistics = tier1::sum_y_projection_func(device, label_statistics_stack, nullptr);
+  auto max_statistics = tier1::maximum_y_projection_func(device, label_statistics_stack, nullptr);
 
     // Distance to centroid
-    tier1::crop(device, sum_statistics, sum_dim, offset, 0, 0);
-    region_props["sum_distance_to_centroid"] = sum_dim->as_vector<float>();
-    tier1::divide_images(device, sum_dim, result_vector, avg_dim);
-    region_props["mean_distance_to_centroid"] = avg_dim->as_vector<float>();
+  std::vector<float> sum_distance_to_centroid(num_measurements);
+  tier1::crop_func(device, sum_per_label, result_vector, offset, 3, 0, num_measurements, 1, 1);
+  result_vector->read(sum_distance_to_centroid.data());
+  region_props["sum_distance_to_centroid"] = sum_distance_to_centroid;
 
-    // Distance to center of mass
-    tier1::crop(device, sum_statistics, sum_dim, offset, 1, 0);
-    region_props["sum_distance_to_mass_center"] = sum_dim->as_vector<float>();
-    tier1::divide_images(device, sum_dim, result_vector, avg_dim);
-    region_props["mean_distance_to_mass_center"] = avg_dim->as_vector<float>();
+  std::vector<float> mean_distance_to_centroid(num_measurements);
+  tier1::divide_images_func(device, sum_dim, result_vector, avg_dim);
+  result_vector->read(mean_distance_to_centroid.data());
+  region_props["mean_distance_to_centroid"] = mean_distance_to_centroid;
 
-    // Standard deviation intensity
-    tier1::crop(device, sum_statistics, sum_dim, offset, 2, 0);
-    tier1::power(device, sum_dim, result_vector, 0.5f);
-    region_props["standard_deviation_intensity"] = result_vector->as_vector<float>();
+  // Distance to center of mass
+  std::vector<float> sum_distance_to_mass_center(num_measurements);
+  tier1::crop_func(device, sum_statistics, sum_dim, offset, 1, 0, num_measurements, 1, 1);
+  result_vector->read(sum_distance_to_mass_center.data());
+  region_props["sum_distance_to_mass_center"] = sum_distance_to_mass_center;
 
-    tier1::crop(device, max_statistics, result_vector, offset, 4, 0);
-    region_props["max_distance_to_centroid"] = result_vector->as_vector<float>();
-    tier1::crop(device, max_statistics, result_vector, offset, 5, 0);
-    region_props["max_distance_to_mass_center"] = result_vector->as_vector<float>();
+  std::vector<float> mean_distance_to_mass_center(num_measurements);
+  tier1::divide_images_func(device, sum_dim, result_vector, avg_dim);
+  result_vector->read(mean_distance_to_mass_center.data());
+  region_props["mean_distance_to_mass_center"] = mean_distance_to_mass_center;
 
-    // Calculate ratios
-    std::vector<float> mean_max_distance_to_centroid_ratio(nb_labels - offset);
-    std::vector<float> mean_max_distance_to_mass_center_ratio(nb_labels - offset);
+  // Standard deviation intensity
+  std::vector<float> standard_deviation_intensity(num_measurements);
+  tier1::crop_func(device, sum_statistics, sum_dim, offset, 2, 0, num_measurements, 1, 1);
+  tier1::power_func(device, sum_dim, result_vector, 0.5f);
+  result_vector->read(standard_deviation_intensity.data());
+  region_props["standard_deviation_intensity"] = standard_deviation_intensity;
 
-    for (size_t i = 0; i < mean_max_distance_to_centroid_ratio.size(); ++i)
-    {
-      mean_max_distance_to_centroid_ratio[i] =
-        region_props["max_distance_to_centroid"][i] / region_props["mean_distance_to_centroid"][i];
-      mean_max_distance_to_mass_center_ratio[i] =
-        region_props["max_distance_to_mass_center"][i] / region_props["mean_distance_to_mass_center"][i];
-    }
+  std::vector<float> max_distance_to_centroid(num_measurements);
+  tier1::crop_func(device, max_statistics, result_vector, offset, 4, 0, num_measurements, 1, 1);
+  result_vector->read(max_distance_to_centroid.data());
+  region_props["max_distance_to_centroid"] = max_distance_to_centroid;
+  
+  std::vector<float> max_distance_to_mass_center(num_measurements);
+  tier1::crop_func(device, max_statistics, result_vector, offset, 5, 0, num_measurements, 1, 1);
+  result_vector->read(max_distance_to_mass_center.data());
+  region_props["max_distance_to_mass_center"] = max_distance_to_mass_center;
 
-    region_props["mean_max_distance_to_centroid_ratio"] = mean_max_distance_to_centroid_ratio;
-    region_props["mean_max_distance_to_mass_center_ratio"] = mean_max_distance_to_mass_center_ratio;
-  */
+  // Calculate ratios
+  std::vector<float> mean_max_distance_to_centroid_ratio(nb_labels - offset);
+  std::vector<float> mean_max_distance_to_mass_center_ratio(nb_labels - offset);
+
+  for (size_t i = 0; i < mean_max_distance_to_centroid_ratio.size(); ++i)
+  {
+    mean_max_distance_to_centroid_ratio[i] =
+      region_props["max_distance_to_centroid"][i] / region_props["mean_distance_to_centroid"][i];
+    mean_max_distance_to_mass_center_ratio[i] =
+      region_props["max_distance_to_mass_center"][i] / region_props["mean_distance_to_mass_center"][i];
+  }
+
+  region_props["mean_max_distance_to_centroid_ratio"] = mean_max_distance_to_centroid_ratio;
+  region_props["mean_max_distance_to_mass_center_ratio"] = mean_max_distance_to_mass_center_ratio;
+
   return region_props;
 }
 
