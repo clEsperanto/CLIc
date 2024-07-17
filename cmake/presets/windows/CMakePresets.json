@@ -27,6 +27,15 @@
                 "win-config"
             ]
         }
+        {
+            "name": "win-msvc19",
+            "displayName": "MSVS 19",
+            "description": "Win msvc17 configuration",
+            "generator": "Visual Studio 19",
+            "inherits": [
+                "win-config"
+            ]
+        }
     ],
     "buildPresets": [
         {
@@ -65,6 +74,24 @@
                 "debug-build"
             ]
         }
+        {
+            "name": "win-msvc19-release",
+            "displayName": "Release",
+            "description": "Win msvc17 Release build",
+            "configurePreset": "win-msvc19",
+            "inherits": [
+                "release-build"
+            ]
+        },
+        {
+            "name": "win-msvc19-debug",
+            "displayName": "Debug",
+            "description": "Win msvc17 Debug build",
+            "configurePreset": "win-msvc19",
+            "inherits": [
+                "debug-build"
+            ]
+        }
     ],
     "testPresets": [
         {
@@ -99,6 +126,24 @@
             "displayName": "CTest Debug",
             "description": "win msvc17 Debug test",
             "configurePreset": "win-msvc17",
+            "inherits": [
+                "debug-test"
+            ]
+        }
+        {
+            "name": "win-msvc19-release",
+            "displayName": "CTest Release",
+            "description": "win msvc19 Release test",
+            "configurePreset": "win-msvc17",
+            "inherits": [
+                "release-test"
+            ]
+        },
+        {
+            "name": "win-msvc19-debug",
+            "displayName": "CTest Debug",
+            "description": "win msvc19 Debug test",
+            "configurePreset": "win-msvc19",
             "inherits": [
                 "debug-test"
             ]
