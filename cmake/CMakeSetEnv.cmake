@@ -17,7 +17,7 @@ endif()
 
 # add the /MP flag for MSVC compiler
 if(MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP16")
 endif()
 
 # set folder properties for IDE
