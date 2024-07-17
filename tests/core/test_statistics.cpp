@@ -6,15 +6,12 @@
 class TestStatisticsOfLabelledPixels : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::array<float, 3 * 3 * 1>  intensity = { 0, 1, 2, 
-                                              1, 2, 3, 
-                                              2, 3, 4 };
-  std::array<float, 3 * 3 * 1>  labels = { 1, 1, 2, 
-                                           1, 2, 2, 
-                                           3, 3, 3 };
-  };
-  std::array<float, 36 * 3 * 1> output;
+  std::array<float, 3 * 3 * 1> intensity = { 0, 1, 2, 1, 2, 3, 2, 3, 4 };
+  std::array<float, 3 * 3 * 1> labels = { 1, 1, 2, 1, 2, 2, 3, 3, 3 };
 };
+std::array<float, 36 * 3 * 1> output;
+}
+;
 
 TEST_P(TestStatisticsOfLabelledPixels, execute)
 {
@@ -28,46 +25,45 @@ TEST_P(TestStatisticsOfLabelledPixels, execute)
   auto gpu_labels = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_labels->write(labels.data());
 
-  // { 1, 1, 2, 
-  //   1, 2, 2, 
+  // { 1, 1, 2,
+  //   1, 2, 2,
   //   3, 3, 3 };
 
   // passing labels also as intensity image to have a simpler test
   auto result = cle::statistics_of_labelled_pixels(device, labels, gpu_labels, nullptr);
 
   // Test bounding box
-  std::vector<float> expected_bbox_min_x = {0, 1, 0};
+  std::vector<float> expected_bbox_min_x = { 0, 1, 0 };
   ASSERT_EQ(region_props["bbox_min_x"], expected_bbox_min_x);
-  std::vector<float> expected_bbox_max_x = {1, 2, 2};
+  std::vector<float> expected_bbox_max_x = { 1, 2, 2 };
   ASSERT_EQ(region_props["bbox_max_x"], expected_bbox_max_x);
-  std::vector<float> expected_bbox_min_y = {0, 0, 2};
+  std::vector<float> expected_bbox_min_y = { 0, 0, 2 };
   ASSERT_EQ(region_props["bbox_min_y"], expected_bbox_min_y);
-  std::vector<float> expected_bbox_max_y = {1, 1, 2};
+  std::vector<float> expected_bbox_max_y = { 1, 1, 2 };
   ASSERT_EQ(region_props["bbox_max_y"], expected_bbox_max_y);
-  std::vector<float> expected_bbox_min_z = {0, 0, 0};
+  std::vector<float> expected_bbox_min_z = { 0, 0, 0 };
   ASSERT_EQ(region_props["bbox_min_z"], expected_bbox_min_z);
-  std::vector<float> expected_bbox_min_z = {0, 0, 0};
+  std::vector<float> expected_bbox_min_z = { 0, 0, 0 };
   ASSERT_EQ(region_props["bbox_max_z"], expected_bbox_min_z);
 
-  std::vector<float> expected_bbox_width = {2, 2, 3};
+  std::vector<float> expected_bbox_width = { 2, 2, 3 };
   ASSERT_EQ(region_props["bbox_width"], expected_bbox_width);
-  std::vector<float> expected_bbox_height = {2, 2, 1};
+  std::vector<float> expected_bbox_height = { 2, 2, 1 };
   ASSERT_EQ(region_props["bbox_height"], expected_bbox_height);
-  std::vector<float> expected_bbox_depth = {1, 1, 1};
+  std::vector<float> expected_bbox_depth = { 1, 1, 1 };
   ASSERT_EQ(region_props["bbox_depth"], expected_bbox_depth);
 
 
   // Test intensities
-  std::vector<float> expected_min_intensity = {1, 2, 3};
+  std::vector<float> expected_min_intensity = { 1, 2, 3 };
   ASSERT_EQ(region_props["min_intensity"], expected_min_intensity);
-  std::vector<float> expected_max_intensity = {1, 2, 3};
+  std::vector<float> expected_max_intensity = { 1, 2, 3 };
   ASSERT_EQ(region_props["max_intensity"], expected_max_intensity);
-  std::vector<float> expected_mean_intensity = {1, 2, 3};
+  std::vector<float> expected_mean_intensity = { 1, 2, 3 };
   ASSERT_EQ(region_props["mean_intensity"], expected);
-  //std::vector<float> expected_std_intensity = {0, 0, 0};
-  //ASSERT_EQ(region_props["standard_deviation_intensity"], expected_std_intensity);
+  // std::vector<float> expected_std_intensity = {0, 0, 0};
+  // ASSERT_EQ(region_props["standard_deviation_intensity"], expected_std_intensity);
 
-  
 
   // Assuming cle::push_regionprops is implemented
   /*
@@ -119,7 +115,7 @@ TEST_P(TestStatisticsOfLabelledPixels3D, execute)
 
   auto result = cle::statistics_of_labelled_pixels(device, gpu_intensity, gpu_labels, nullptr);
   // Test intensities
-  std::vector<float> expected_intensity = {1, 2, 3, 4};
+  std::vector<float> expected_intensity = { 1, 2, 3, 4 };
   ASSERT_EQ(region_props["min_intensity"], expected);
   ASSERT_EQ(region_props["max_intensity"], expected);
   ASSERT_EQ(region_props["mean_intensity"], expected);
