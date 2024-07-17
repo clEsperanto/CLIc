@@ -6,11 +6,10 @@
 class TestStatisticsOfLabelledPixels : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::array<float, 3 * 3 * 1> intensity = { 0, 1, 2, 1, 2, 3, 2, 3, 4 };
-  std::array<float, 3 * 3 * 1> labels = { 1, 1, 2, 1, 2, 2, 3, 3, 3 };
+  std::array<float, 3 * 3 * 1>  intensity = { 0, 1, 2, 1, 2, 3, 2, 3, 4 };
+  std::array<float, 3 * 3 * 1>  labels = { 1, 1, 2, 1, 2, 2, 3, 3, 3 };
   std::array<float, 36 * 3 * 1> output;
-}
-;
+};
 
 TEST_P(TestStatisticsOfLabelledPixels, execute)
 {
@@ -60,7 +59,7 @@ TEST_P(TestStatisticsOfLabelledPixels, execute)
   ASSERT_EQ(region_props["max_intensity"], expected_max_intensity);
   std::vector<float> expected_mean_intensity = { 1, 2, 3 };
   ASSERT_EQ(region_props["mean_intensity"], expected_mean_intensity);
-  std::vector<float> expected_std_intensity = {0, 0, 0};
+  std::vector<float> expected_std_intensity = { 0, 0, 0 };
   ASSERT_EQ(region_props["standard_deviation_intensity"], expected_std_intensity);
 
 
