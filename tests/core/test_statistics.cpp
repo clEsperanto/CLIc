@@ -23,35 +23,45 @@ TEST_P(TestStatisticsOfLabelledPixels, execute)
   auto gpu_labels = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_labels->write(labels.data());
 
-  // { 1, 1, 2,
-  //   1, 2, 2,
-  //   3, 3, 3 };
 
   // passing labels also as intensity image to have a simpler test
   auto region_props = cle::statistics_of_labelled_pixels(device, gpu_labels, gpu_labels, nullptr);
 
   // Test bounding box
-  std::vector<float> expected_bbox_min_x = { 0, 1, 0 };
+  std::vector<float> expected_bbox_min_x = { 0, 0, 2 };
   ASSERT_EQ(region_props["bbox_min_x"], expected_bbox_min_x);
-  std::vector<float> expected_bbox_max_x = { 1, 2, 2 };
+  std::vector<float> expected_bbox_max_x = { 1, 1, 2 };
   ASSERT_EQ(region_props["bbox_max_x"], expected_bbox_max_x);
-  std::vector<float> expected_bbox_min_y = { 0, 0, 2 };
+  std::vector<float> expected_bbox_min_y = { 0, 1, 0 };
   ASSERT_EQ(region_props["bbox_min_y"], expected_bbox_min_y);
-  std::vector<float> expected_bbox_max_y = { 1, 1, 2 };
+  std::vector<float> expected_bbox_max_y = { 1, 2, 2 };
   ASSERT_EQ(region_props["bbox_max_y"], expected_bbox_max_y);
   std::vector<float> expected_bbox_min_z = { 0, 0, 0 };
   ASSERT_EQ(region_props["bbox_min_z"], expected_bbox_min_z);
   std::vector<float> expected_bbox_max_z = { 0, 0, 0 };
   ASSERT_EQ(region_props["bbox_max_z"], expected_bbox_max_z);
 
-  std::vector<float> expected_bbox_width = { 2, 2, 3 };
+  std::vector<float> expected_bbox_width = { 2, 2, 1 };
   ASSERT_EQ(region_props["bbox_width"], expected_bbox_width);
-  std::vector<float> expected_bbox_height = { 2, 2, 1 };
+  std::vector<float> expected_bbox_height = { 2, 2, 3 };
   ASSERT_EQ(region_props["bbox_height"], expected_bbox_height);
   std::vector<float> expected_bbox_depth = { 1, 1, 1 };
   ASSERT_EQ(region_props["bbox_depth"], expected_bbox_depth);
 
+  // { 1, 1, 2,
+  //   1, 2, 2,
+  //   3, 3, 3 };
 
+  // Test centroids
+  std::vector<float> expected_centroid_x = { 0.333, 0.666, 2 };
+  std::vector<float> expected_centroid_y = { 0.333, 1.666, 1 };
+  std::vector<float> expected_centroid_z = { 0, 0, 0 };
+  for (int i = 0; i < region_props["centroid_x"].size(); i++)
+  {
+    ASSERT_NEAR(region_props["centroid_x"][i], expected_centroid_x[i], 0.001);
+    ASSERT_NEAR(region_props["centroid_y"][i], expected_centroid_y[i], 0.001);
+    ASSERT_NEAR(region_props["centroid_z"][i], expected_centroid_z[i], 0.001);
+  }
   // Test intensities
   std::vector<float> expected_min_intensity = { 1, 2, 3 };
   ASSERT_EQ(region_props["min_intensity"], expected_min_intensity);
