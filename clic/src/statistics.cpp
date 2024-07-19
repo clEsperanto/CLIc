@@ -52,8 +52,11 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   auto cumulative_stats_per_label = Array::create(nb_labels, height, 16, 3, dType::FLOAT, mType::BUFFER, device);
   cumulative_stats_per_label->fill(0);
 
-  float min_value = std::numeric_limits<float>::min();
+  float min_value = -std::numeric_limits<float>::max();
   float max_value = std::numeric_limits<float>::max();
+
+  std::cout << "min_value: " << min_value << std::endl;
+  std::cout << "max_value: " << max_value << std::endl;
 
   tier1::set_plane_func(device, cumulative_stats_per_label, 8, max_value);
   tier1::set_plane_func(device, cumulative_stats_per_label, 9, min_value);
@@ -217,7 +220,7 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   tier1::crop_func(device, sum_per_label, result_vector, offset, 3, 0, num_measurements, 1, 1);
   for (int dim = 0; dim < 3; ++dim)
   {
-    tier1::crop_func(device, sum_per_label, sum_dim, offset, 4 + dim, 0, num_measurements, 1, 1);
+    tier1::crop_func(device, sum_per_label, sum_dim, offset, dim, 0, num_measurements, 1, 1);
 
     std::vector<float> sum(num_measurements);
     sum_dim->read(sum.data());
