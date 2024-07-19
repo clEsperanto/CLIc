@@ -33,7 +33,8 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   {
     std::cerr << "Warning: intensity is not set. Pixels will be treated as one object." << std::endl;
     tier0::create_like(label, intensity, dType::FLOAT);
-    label->copy(label); # todo: I think one of these two should be intensity
+    label->copy(label);
+#    todo : I think one of these two should be intensity
   }
 
 
@@ -238,7 +239,7 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   label_statistics_stack->fill(0);
 
   cle::print<float>(label_statistics_image, "label_statistics_image");
-  
+
   const KernelInfo    kernel_std = { "standard_deviation_per_label", kernel::standard_deviation_per_label };
   const RangeArray    range_std = { 1, static_cast<size_t>(height), 1 };
   const ParameterList params_std = { { "dst", label_statistics_stack },
