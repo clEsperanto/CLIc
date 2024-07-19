@@ -8,7 +8,6 @@
 #include "tier1.hpp"
 #include "tier2.hpp"
 
-
 namespace cle
 {
 
@@ -34,7 +33,7 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   {
     std::cerr << "Warning: intensity is not set. Pixels will be treated as one object." << std::endl;
     tier0::create_like(label, intensity, dType::FLOAT);
-    label->copy(label);
+    label->copy(label); # todo: I think one of these two should be intensity
   }
 
 
@@ -234,9 +233,12 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   }
 
   // Second part: determine parameters which depend on other parameters
+  std::cout << "nb_labels: " << nb_labels << std::endl;
   auto label_statistics_stack = Array::create(nb_labels, height, 6, 3, dType::FLOAT, mType::BUFFER, device);
   label_statistics_stack->fill(0);
 
+  cle::print<float>(label_statistics_image, "label_statistics_image");
+  
   const KernelInfo    kernel_std = { "standard_deviation_per_label", kernel::standard_deviation_per_label };
   const RangeArray    range_std = { 1, static_cast<size_t>(height), 1 };
   const ParameterList params_std = { { "dst", label_statistics_stack },
@@ -251,6 +253,8 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
     params.back().second = z;
     execute(device, kernel_std, params_std, range_std);
   }
+
+  cle::print<float>(label_statistics_stack, "label_statistics_stack");
 
   auto sum_statistics = tier1::sum_y_projection_func(device, label_statistics_stack, nullptr);
   auto max_statistics = tier1::maximum_y_projection_func(device, label_statistics_stack, nullptr);
