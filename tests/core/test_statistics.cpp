@@ -32,10 +32,10 @@ TEST_P(TestStatisticsOfLabelledPixels, execute)
   auto region_props = cle::statistics_of_labelled_pixels(device, gpu_labels, gpu_labels, nullptr);
 
   // Print out all entries in region_props
-  for (const auto& entry : region_props)
+  for (const auto & entry : region_props)
   {
     std::cout << entry.first << ": ";
-    for (const auto& value : entry.second)
+    for (const auto & value : entry.second)
     {
       std::cout << value << " ";
     }
@@ -89,17 +89,10 @@ TEST_P(TestStatisticsOfLabelledPixels, execute)
 }
 
 
-
 class TestStatisticsOfLabelledPixelsShape : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::array<float, 5 * 5 * 1>  labels = { 
-    0, 0, 1, 0, 0,
-    0, 1, 1, 1, 0,
-    1, 1, 1, 1, 1,
-    0, 1, 1, 1, 0,
-    0, 0, 1, 0, 0
-  };
+  std::array<float, 5 * 5 * 1>  labels = { 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0 };
   std::array<float, 36 * 3 * 1> output;
 };
 
@@ -118,10 +111,10 @@ TEST_P(TestStatisticsOfLabelledPixelsShape, execute)
   auto region_props = cle::statistics_of_labelled_pixels(device, gpu_labels, gpu_labels, nullptr);
 
   // Print out all entries in region_props
-  for (const auto& entry : region_props)
+  for (const auto & entry : region_props)
   {
     std::cout << entry.first << ": ";
-    for (const auto& value : entry.second)
+    for (const auto & value : entry.second)
     {
       std::cout << value << " ";
     }
@@ -172,7 +165,6 @@ TEST_P(TestStatisticsOfLabelledPixelsShape, execute)
   ASSERT_EQ(region_props["mean_max_distance_to_centroid_ratio"], expected_mean_max_distance_to_centroid_ratio);
   std::vector<float> expected_mean_max_distance_to_mass_center_ratio = { 1 };
   ASSERT_EQ(region_props["mean_max_distance_to_mass_center_ratio"], expected_mean_max_distance_to_mass_center_ratio);
-
 }
 
 
