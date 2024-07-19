@@ -238,7 +238,7 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   label_statistics_stack->fill(0);
 
   const KernelInfo    kernel_std = { "standard_deviation_per_label", kernel::standard_deviation_per_label };
-  const RangeArray    range_std = { 1, height, 1 };
+  const RangeArray    range_std = { 1, static_cast<size_t>(height), 1 };
   const ParameterList params_std = { { "dst", label_statistics_stack },
                                      { "src_statistics", label_statistics_image },
                                      { "src_label", label },
@@ -255,26 +255,29 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   auto sum_statistics = tier1::sum_y_projection_func(device, label_statistics_stack, nullptr);
   auto max_statistics = tier1::maximum_y_projection_func(device, label_statistics_stack, nullptr);
 
+  // Area
+  tier1::crop_func(device, sum_per_label, result_vector, offset, 3, 0, num_measurements, 1, 1);
+
   // Distance to centroid
   std::vector<float> sum_distance_to_centroid(num_measurements);
-  tier1::crop_func(device, sum_per_label, result_vector, offset, 3, 0, num_measurements, 1, 1);
-  result_vector->read(sum_distance_to_centroid.data());
+  tier1::crop_func(device, sum_statistics, sum_dim, offset, 0, 0, num_measurements, 1, 1);
+  sum_dim->read(sum_distance_to_centroid.data());
   region_props["sum_distance_to_centroid"] = sum_distance_to_centroid;
 
   std::vector<float> mean_distance_to_centroid(num_measurements);
   tier1::divide_images_func(device, sum_dim, result_vector, avg_dim);
-  result_vector->read(mean_distance_to_centroid.data());
+  avg_dim->read(mean_distance_to_centroid.data());
   region_props["mean_distance_to_centroid"] = mean_distance_to_centroid;
 
   // Distance to center of mass
   std::vector<float> sum_distance_to_mass_center(num_measurements);
   tier1::crop_func(device, sum_statistics, sum_dim, offset, 1, 0, num_measurements, 1, 1);
-  result_vector->read(sum_distance_to_mass_center.data());
+  sum_dim->read(sum_distance_to_mass_center.data());
   region_props["sum_distance_to_mass_center"] = sum_distance_to_mass_center;
 
   std::vector<float> mean_distance_to_mass_center(num_measurements);
   tier1::divide_images_func(device, sum_dim, result_vector, avg_dim);
-  result_vector->read(mean_distance_to_mass_center.data());
+  avg_dim->read(mean_distance_to_mass_center.data());
   region_props["mean_distance_to_mass_center"] = mean_distance_to_mass_center;
 
   // Standard deviation intensity
