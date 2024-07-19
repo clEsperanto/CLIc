@@ -52,16 +52,16 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   auto cumulative_stats_per_label = Array::create(nb_labels, height, 16, 3, dType::FLOAT, mType::BUFFER, device);
   cumulative_stats_per_label->fill(0);
 
-  float min_value = 0;
-  float max_value = 0;
+  float min_value = std::numeric_limits<float>::min();
+  float max_value = std::numeric_limits<float>::max();
 
-  tier1::set_plane_func(device, cumulative_stats_per_label, 8, min_value);
+  tier1::set_plane_func(device, cumulative_stats_per_label, 8, max_value);
   tier1::set_plane_func(device, cumulative_stats_per_label, 9, min_value);
-  tier1::set_plane_func(device, cumulative_stats_per_label, 10, min_value);
+  tier1::set_plane_func(device, cumulative_stats_per_label, 10, max_value);
   tier1::set_plane_func(device, cumulative_stats_per_label, 11, min_value);
-  tier1::set_plane_func(device, cumulative_stats_per_label, 12, min_value);
+  tier1::set_plane_func(device, cumulative_stats_per_label, 12, max_value);
   tier1::set_plane_func(device, cumulative_stats_per_label, 13, min_value);
-  tier1::set_plane_func(device, cumulative_stats_per_label, 14, min_value);
+  tier1::set_plane_func(device, cumulative_stats_per_label, 14, max_value);
   tier1::set_plane_func(device, cumulative_stats_per_label, 15, min_value);
 
   const KernelInfo kernel = { "statistics_per_label", kernel::statistics_per_label };
@@ -128,10 +128,10 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
 
   region_props["bbox_min_x"] = bbox_min_x;
   region_props["bbox_max_x"] = bbox_max_x;
-  region_props["bbox_min_y"] = bbox_min_x;
-  region_props["bbox_max_y"] = bbox_max_x;
-  region_props["bbox_min_z"] = bbox_min_x;
-  region_props["bbox_max_z"] = bbox_max_x;
+  region_props["bbox_min_y"] = bbox_min_y;
+  region_props["bbox_max_y"] = bbox_max_y;
+  region_props["bbox_min_z"] = bbox_min_z;
+  region_props["bbox_max_z"] = bbox_max_z;
 
   // Calculate bbox width, height, depth
   std::vector<float> bbox_width(num_measurements);

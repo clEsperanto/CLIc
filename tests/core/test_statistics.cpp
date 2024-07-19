@@ -31,6 +31,17 @@ TEST_P(TestStatisticsOfLabelledPixels, execute)
   // passing labels also as intensity image to have a simpler test
   auto region_props = cle::statistics_of_labelled_pixels(device, gpu_labels, gpu_labels, nullptr);
 
+  // Print out all entries in region_props
+  for (const auto& entry : region_props)
+  {
+    std::cout << entry.first << ": ";
+    for (const auto& value : entry.second)
+    {
+      std::cout << value << " ";
+    }
+    std::cout << std::endl;
+  }
+
   // Test bounding box
   std::vector<float> expected_bbox_min_x = { 0, 0, 2 };
   ASSERT_EQ(region_props["bbox_min_x"], expected_bbox_min_x);
