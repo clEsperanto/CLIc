@@ -34,7 +34,7 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
     std::cerr << "Warning: intensity is not set. Pixels will be treated as one object." << std::endl;
     tier0::create_like(label, intensity, dType::FLOAT);
     label->copy(label);
-#    todo : I think one of these two should be intensity
+    // todo : I think one of these two should be intensity
   }
 
 
