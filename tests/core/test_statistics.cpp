@@ -8,15 +8,14 @@
 #include <gtest/gtest.h>
 
 class TestStatisticsOfLabelledPixels : public ::testing::TestWithParam<std::string>
-{
-protected:
-  std::array<float, 3 * 3 * 1>  intensity = { 0, 1, 2, 1, 2, 3, 2, 3, 4 };
-  std::array<float, 3 * 3 * 1>  labels = { 1, 1, 2, 1, 2, 2, 3, 3, 3 };
-  std::array<float, 36 * 3 * 1> output;
-};
+{};
 
-TEST_P(TestStatisticsOfLabelledPixels, execute)
+TEST_P(TestStatisticsOfLabelledPixels, simple)
 {
+
+  std::array<float, 3 * 3 * 1> intensity = { 0, 1, 2, 1, 2, 3, 2, 3, 4 };
+  std::array<float, 3 * 3 * 1> labels = { 1, 1, 2, 1, 2, 2, 3, 3, 3 };
+
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
@@ -27,7 +26,6 @@ TEST_P(TestStatisticsOfLabelledPixels, execute)
   auto gpu_labels = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_labels->write(labels.data());
 
-
   // passing labels also as intensity image to have a simpler test
   auto region_props = cle::statistics_of_labelled_pixels(device, gpu_labels, gpu_labels, nullptr);
 
@@ -37,12 +35,12 @@ TEST_P(TestStatisticsOfLabelledPixels, execute)
     std::cout << entry.first << ": ";
     for (const auto & value : entry.second)
     {
-      std::cout << value << " ";
+      std::cout << std::fixed << std::setprecision(2) << value << " ";
     }
     std::cout << std::endl;
   }
 
-  // Test bounding box
+  // Test bounding box min/max (x, y, z)
   std::vector<float> expected_bbox_min_x = { 0, 1, 0 };
   ASSERT_EQ(region_props["bbox_min_x"], expected_bbox_min_x);
   std::vector<float> expected_bbox_max_x = { 1, 2, 2 };
@@ -55,7 +53,7 @@ TEST_P(TestStatisticsOfLabelledPixels, execute)
   ASSERT_EQ(region_props["bbox_min_z"], expected_bbox_min_z);
   std::vector<float> expected_bbox_max_z = { 0, 0, 0 };
   ASSERT_EQ(region_props["bbox_max_z"], expected_bbox_max_z);
-
+  // Test bounding box width/height/depth
   std::vector<float> expected_bbox_width = { 2, 2, 3 };
   ASSERT_EQ(region_props["bbox_width"], expected_bbox_width);
   std::vector<float> expected_bbox_height = { 2, 2, 1 };
@@ -88,16 +86,10 @@ TEST_P(TestStatisticsOfLabelledPixels, execute)
   ASSERT_EQ(region_props["standard_deviation_intensity"], expected_std_intensity);
 }
 
-
-class TestStatisticsOfLabelledPixelsShape : public ::testing::TestWithParam<std::string>
+TEST_P(TestStatisticsOfLabelledPixels, shape)
 {
-protected:
-  std::array<float, 5 * 5 * 1>  labels = { 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0 };
-  std::array<float, 36 * 3 * 1> output;
-};
+  std::array<float, 5 * 5 * 1> labels = { 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0 };
 
-TEST_P(TestStatisticsOfLabelledPixelsShape, execute)
-{
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
@@ -116,12 +108,12 @@ TEST_P(TestStatisticsOfLabelledPixelsShape, execute)
     std::cout << entry.first << ": ";
     for (const auto & value : entry.second)
     {
-      std::cout << value << " ";
+      std::cout << std::fixed << std::setprecision(2) << value << " ";
     }
     std::cout << std::endl;
   }
 
-  // Test bounding box
+  // Test bounding box min/max (x, y, z)
   std::vector<float> expected_bbox_min_x = { 0 };
   ASSERT_EQ(region_props["bbox_min_x"], expected_bbox_min_x);
   std::vector<float> expected_bbox_max_x = { 4 };
@@ -134,7 +126,7 @@ TEST_P(TestStatisticsOfLabelledPixelsShape, execute)
   ASSERT_EQ(region_props["bbox_min_z"], expected_bbox_min_z);
   std::vector<float> expected_bbox_max_z = { 0 };
   ASSERT_EQ(region_props["bbox_max_z"], expected_bbox_max_z);
-
+  // Test bounding box width/height/depth
   std::vector<float> expected_bbox_width = { 5 };
   ASSERT_EQ(region_props["bbox_width"], expected_bbox_width);
   std::vector<float> expected_bbox_height = { 5 };
@@ -168,31 +160,26 @@ TEST_P(TestStatisticsOfLabelledPixelsShape, execute)
 }
 
 
-class TestStatisticsOfLabelledPixels3D : public ::testing::TestWithParam<std::string>
+TEST_P(TestStatisticsOfLabelledPixels, dim3)
 {
-protected:
-  std::array<float, 3 * 3 * 3>  intensity = { 0, 1, 2, 1, 2, 3, 2, 3, 4 };
-  std::array<float, 3 * 3 * 3>  labels = { 1, 1, 2, 1, 2, 2, 3, 3, 3 };
-  std::array<float, 36 * 3 * 1> reference = {
-    // IDENTIFIER(0)
-    1,
-    2,
-    3,
-    // BOUNDING_BOX_X(1)
-    0,
-    1,
-    0,
-    // BOUNDING_BOX_Y(2)
-    0,
-    0,
-    0,
-    // ... [rest of the reference data]
-  };
-  std::array<float, 36 * 3 * 1> output;
-};
+  std::array<float, 3 * 3 * 3> intensity = { 0, 1, 2, 1, 2, 3, 2, 3, 4 };
+  std::array<float, 3 * 3 * 3> labels = { 1, 1, 2, 1, 2, 2, 3, 3, 3 };
+  // std::array<float, 36 * 3 * 1> reference = {
+  //     // IDENTIFIER(0)
+  //     1,
+  //     2,
+  //     3,
+  //     // BOUNDING_BOX_X(1)
+  //     0,
+  //     1,
+  //     0,
+  //     // BOUNDING_BOX_Y(2)
+  //     0,
+  //     0,
+  //     0,
+  //     // ... [rest of the reference data]
+  //   };
 
-TEST_P(TestStatisticsOfLabelledPixels3D, execute)
-{
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
@@ -204,6 +191,7 @@ TEST_P(TestStatisticsOfLabelledPixels3D, execute)
   gpu_labels->write(labels.data());
 
   auto region_props = cle::statistics_of_labelled_pixels(device, gpu_intensity, gpu_labels, nullptr);
+
   // Test intensities
   std::vector<float> expected = { 1, 2, 3, 4 };
   ASSERT_EQ(region_props["min_intensity"], expected);
@@ -226,7 +214,7 @@ result_image->read(output.data());
   */
 }
 
-TEST(TestStandardDeviation, execute)
+TEST_P(TestStatisticsOfLabelledPixels, standard_deviation)
 {
   std::array<float, 3 * 3> image = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
   std::array<float, 3 * 3> labels = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
@@ -240,7 +228,6 @@ TEST(TestStandardDeviation, execute)
   gpu_labels->write(labels.data());
 
   auto result = cle::statistics_of_labelled_pixels(device, gpu_image, gpu_labels, nullptr);
-
 
   // find the value in result with key = "std_dev"
   auto it = result.find("standard_deviation_intensity");
@@ -263,5 +250,3 @@ getParameters()
 }
 
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestStatisticsOfLabelledPixels, ::testing::ValuesIn(getParameters()));
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestStatisticsOfLabelledPixelsShape, ::testing::ValuesIn(getParameters()));
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestStatisticsOfLabelledPixels3D, ::testing::ValuesIn(getParameters()));
