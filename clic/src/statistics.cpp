@@ -242,10 +242,10 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
 
   const KernelInfo    kernel_std = { "standard_deviation_per_label", kernel::standard_deviation_per_label };
   const RangeArray    range_std = { 1, static_cast<size_t>(height), 1 };
-  const ParameterList params_std = { { "dst", label_statistics_stack },
-                                     { "src_statistics", label_statistics_image },
+  const ParameterList params_std = { { "src_statistics", label_statistics_image },
                                      { "src_label", label },
                                      { "src_image", intensity },
+                                     { "dst", label_statistics_stack },
                                      { "sum_background", 0 },
                                      { "z", 0 } };
 
