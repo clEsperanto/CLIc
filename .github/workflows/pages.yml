@@ -37,7 +37,7 @@ jobs:
           python-version: 3.11
 
       - name: Get specific version of CMake, Ninja
-        uses: lukka/get-cmake@v3.30.0
+        uses: lukka/get-cmake@v3.30.1
 
       - name: Install doxygen
         run: |
