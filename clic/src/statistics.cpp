@@ -249,9 +249,9 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
                                      { "sum_background", 0 },
                                      { "z", 0 } };
 
-  for (int z = 0; z < depth; z++)
+  for (size_t z = 0; z < depth; z++)
   {
-    params.back().second = z;
+    params.back().second = static_cast<int>(z);
     execute(device, kernel_std, params_std, range_std);
   }
 
@@ -261,11 +261,11 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   auto max_statistics = tier1::maximum_y_projection_func(device, label_statistics_stack, nullptr);
 
   // Area
-  tier1::crop_func(device, sum_per_label, result_vector, offset, 3, 0, num_measurements, 1, 1);
+  sum_per_label->copy(result_vector, { num_measurements, 1, 1 }, { offset, 3, 0 }, { 0, 0, 0 });
 
   // Distance to centroid
   std::vector<float> sum_distance_to_centroid(num_measurements);
-  tier1::crop_func(device, sum_statistics, sum_dim, offset, 0, 0, num_measurements, 1, 1);
+  sum_statistics->copy(sum_dim, { num_measurements, 1, 1 }, { offset, 0, 0 }, { 0, 0, 0 });
   sum_dim->read(sum_distance_to_centroid.data());
   region_props["sum_distance_to_centroid"] = sum_distance_to_centroid;
 
@@ -276,7 +276,7 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
 
   // Distance to center of mass
   std::vector<float> sum_distance_to_mass_center(num_measurements);
-  tier1::crop_func(device, sum_statistics, sum_dim, offset, 1, 0, num_measurements, 1, 1);
+  sum_statistics->copy(sum_dim, { num_measurements, 1, 1 }, { offset, 1, 0 }, { 0, 0, 0 });
   sum_dim->read(sum_distance_to_mass_center.data());
   region_props["sum_distance_to_mass_center"] = sum_distance_to_mass_center;
 
@@ -287,18 +287,18 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
 
   // Standard deviation intensity
   std::vector<float> standard_deviation_intensity(num_measurements);
-  tier1::crop_func(device, sum_statistics, sum_dim, offset, 2, 0, num_measurements, 1, 1);
+  sum_statistics->copy(sum_dim, { num_measurements, 1, 1 }, { offset, 2, 0 }, { 0, 0, 0 });
   tier1::power_func(device, sum_dim, result_vector, 0.5f);
   result_vector->read(standard_deviation_intensity.data());
   region_props["standard_deviation_intensity"] = standard_deviation_intensity;
 
   std::vector<float> max_distance_to_centroid(num_measurements);
-  tier1::crop_func(device, max_statistics, result_vector, offset, 4, 0, num_measurements, 1, 1);
+  max_statistics->copy(result_vector, { num_measurements, 1, 1 }, { offset, 4, 0 }, { 0, 0, 0 });
   result_vector->read(max_distance_to_centroid.data());
   region_props["max_distance_to_centroid"] = max_distance_to_centroid;
 
   std::vector<float> max_distance_to_mass_center(num_measurements);
-  tier1::crop_func(device, max_statistics, result_vector, offset, 5, 0, num_measurements, 1, 1);
+  max_statistics->copy(result_vector, { num_measurements, 1, 1 }, { offset, 5, 0 }, { 0, 0, 0 });
   result_vector->read(max_distance_to_mass_center.data());
   region_props["max_distance_to_mass_center"] = max_distance_to_mass_center;
 
