@@ -199,10 +199,10 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   // Sum intensity times x, y, z and mass center
 
   std::vector<std::string> dim_names = { "x", "y", "z" };
-  tier1::crop_func(device, sum_per_label, result_vector, offset, 4 + 3, 0, num_measurements, 1, 1);
-  for (int dim = 0; dim < 3; ++dim)
+  sum_per_label->copy(result_vector, { num_measurements, 1, 1 }, { offset, 4 + 3, 0 }, { 0, 0, 0 });
+  for (size_t dim = 0; dim < 3; ++dim)
   {
-    tier1::crop_func(device, sum_per_label, sum_dim, offset, 4 + dim, 0, num_measurements, 1, 1);
+    sum_per_label->copy(sum_dim, { num_measurements, 1, 1 }, { offset, 4 + dim, 0 }, { 0, 0, 0 });
 
     std::vector<float> sum_intensity_times(num_measurements);
     sum_dim->read(sum_intensity_times.data());
@@ -217,10 +217,10 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   }
 
   // Sum x, y, z and centroid
-  tier1::crop_func(device, sum_per_label, result_vector, offset, 3, 0, num_measurements, 1, 1);
-  for (int dim = 0; dim < 3; ++dim)
+  sum_per_label->copy(result_vector, { num_measurements, 1, 1 }, { offset, 3, 0 }, { 0, 0, 0 });
+  for (size_t dim = 0; dim < 3; ++dim)
   {
-    tier1::crop_func(device, sum_per_label, sum_dim, offset, dim, 0, num_measurements, 1, 1);
+    sum_per_label->copy(sum_dim, { num_measurements, 1, 1 }, { offset, dim, 0 }, { 0, 0, 0 });
 
     std::vector<float> sum(num_measurements);
     sum_dim->read(sum.data());
