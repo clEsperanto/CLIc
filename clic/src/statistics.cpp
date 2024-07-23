@@ -38,11 +38,11 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   }
 
 
-  int offset = 1;
-  int number_of_dimensions = label->dimension();
-  int nb_labels = static_cast<int>(tier2::maximum_of_all_pixels_func(device, label)) + offset;
-  int height = label->height();
-  int depth = 1;
+  size_t offset = 1;
+  size_t number_of_dimensions = label->dimension();
+  size_t nb_labels = static_cast<size_t>(tier2::maximum_of_all_pixels_func(device, label)) + offset;
+  size_t height = label->height();
+  size_t depth = 1;
   if (number_of_dimensions == 3)
   {
     depth = label->depth();
@@ -68,15 +68,15 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   tier1::set_plane_func(device, cumulative_stats_per_label, 15, min_value);
 
   const KernelInfo kernel = { "statistics_per_label", kernel::statistics_per_label };
-  const RangeArray range = { 1, static_cast<size_t>(height), 1 };
+  const RangeArray range = { 1, height, 1 };
   ParameterList    params = { { "src_label", label },
                               { "src_image", intensity },
                               { "dst", cumulative_stats_per_label },
                               { "sum_background", 0 },
                               { "z", 0 } };
-  for (int z = 0; z < depth; z++)
+  for (size_t z = 0; z < depth; z++)
   {
-    params.back().second = z;
+    params.back().second = static_cast<int>(z);
     execute(device, kernel, params, range);
   }
 
@@ -241,7 +241,7 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   cle::print<float>(label_statistics_image, "label_statistics_image");
 
   const KernelInfo    kernel_std = { "standard_deviation_per_label", kernel::standard_deviation_per_label };
-  const RangeArray    range_std = { 1, static_cast<size_t>(height), 1 };
+  const RangeArray    range_std = { 1, height, 1 };
   const ParameterList params_std = { { "src_statistics", label_statistics_image },
                                      { "src_label", label },
                                      { "src_image", intensity },
