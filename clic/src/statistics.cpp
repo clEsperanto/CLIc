@@ -38,11 +38,11 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   }
 
 
-  size_t offset = 1;
-  size_t number_of_dimensions = label->dimension();
-  size_t nb_labels = static_cast<size_t>(tier2::maximum_of_all_pixels_func(device, label)) + offset;
-  size_t height = label->height();
-  size_t depth = 1;
+  int offset = 1;
+  int number_of_dimensions = label->dimension();
+  int nb_labels = static_cast<int>(tier2::maximum_of_all_pixels_func(device, label)) + offset;
+  int height = label->height();
+  int depth = 1;
   if (number_of_dimensions == 3)
   {
     depth = label->depth();
@@ -68,20 +68,20 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   tier1::set_plane_func(device, cumulative_stats_per_label, 15, min_value);
 
   const KernelInfo kernel = { "statistics_per_label", kernel::statistics_per_label };
-  const RangeArray range = { 1, height, 1 };
+  const RangeArray range = { 1, static_cast<size_t>(height), 1 };
   ParameterList    params = { { "src_label", label },
                               { "src_image", intensity },
                               { "dst", cumulative_stats_per_label },
                               { "sum_background", 0 },
                               { "z", 0 } };
-  for (size_t z = 0; z < depth; z++)
+  for (int z = 0; z < depth; z++)
   {
-    params.back().second = static_cast<int>(z);
+    params.back().second = z;
     execute(device, kernel, params, range);
   }
 
   // collect slice-by-slice measurements in single planes
-  size_t num_measurements = nb_labels - offset;
+  int num_measurements = nb_labels - offset;
 
   auto sum_per_label = tier1::sum_y_projection_func(device, cumulative_stats_per_label, nullptr);
   auto min_per_label = tier1::minimum_y_projection_func(device, cumulative_stats_per_label, nullptr);
@@ -168,23 +168,23 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
 
   // Minimum and maximum intensity
   std::vector<float> min_intensity(num_measurements);
-  min_per_label->copy(result_vector, { num_measurements, 1, 1 }, { offset, 8, 0 }, { 0, 0, 0 });
+  tier1::crop_func(device, min_per_label, result_vector, offset, 8, 0, num_measurements, 1, 1);
   result_vector->read(min_intensity.data());
   region_props["min_intensity"] = min_intensity;
 
   std::vector<float> max_intensity(num_measurements);
-  max_per_label->copy(result_vector, { num_measurements, 1, 1 }, { offset, 9, 0 }, { 0, 0, 0 });
+  tier1::crop_func(device, max_per_label, result_vector, offset, 9, 0, num_measurements, 1, 1);
   result_vector->read(max_intensity.data());
   region_props["max_intensity"] = max_intensity;
 
   // Sum intensity, area, and mean intensity
   std::vector<float> sum_intensity(num_measurements);
-  sum_per_label->copy(result_vector, { num_measurements, 1, 1 }, { offset, 7, 0 }, { 0, 0, 0 });
+  tier1::crop_func(device, sum_per_label, result_vector, offset, 7, 0, num_measurements, 1, 1);
   result_vector->read(sum_intensity.data());
   region_props["sum_intensity"] = sum_intensity;
 
   std::vector<float> area(num_measurements);
-  sum_per_label->copy(sum_dim, { num_measurements, 1, 1 }, { offset, 3, 0 }, { 0, 0, 0 });
+  tier1::crop_func(device, sum_per_label, sum_dim, offset, 3, 0, num_measurements, 1, 1);
   sum_dim->read(area.data());
   region_props["area"] = area;
 
@@ -199,10 +199,10 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   // Sum intensity times x, y, z and mass center
 
   std::vector<std::string> dim_names = { "x", "y", "z" };
-  sum_per_label->copy(result_vector, { num_measurements, 1, 1 }, { offset, 4 + 3, 0 }, { 0, 0, 0 });
-  for (size_t dim = 0; dim < 3; ++dim)
+  tier1::crop_func(device, sum_per_label, result_vector, offset, 4 + 3, 0, num_measurements, 1, 1);
+  for (int dim = 0; dim < 3; ++dim)
   {
-    sum_per_label->copy(sum_dim, { num_measurements, 1, 1 }, { offset, 4 + dim, 0 }, { 0, 0, 0 });
+    tier1::crop_func(device, sum_per_label, sum_dim, offset, 4 + dim, 0, num_measurements, 1, 1);
 
     std::vector<float> sum_intensity_times(num_measurements);
     sum_dim->read(sum_intensity_times.data());
@@ -217,10 +217,10 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   }
 
   // Sum x, y, z and centroid
-  sum_per_label->copy(result_vector, { num_measurements, 1, 1 }, { offset, 3, 0 }, { 0, 0, 0 });
-  for (size_t dim = 0; dim < 3; ++dim)
+  tier1::crop_func(device, sum_per_label, result_vector, offset, 3, 0, num_measurements, 1, 1);
+  for (int dim = 0; dim < 3; ++dim)
   {
-    sum_per_label->copy(sum_dim, { num_measurements, 1, 1 }, { offset, dim, 0 }, { 0, 0, 0 });
+    tier1::crop_func(device, sum_per_label, sum_dim, offset, dim, 0, num_measurements, 1, 1);
 
     std::vector<float> sum(num_measurements);
     sum_dim->read(sum.data());
@@ -241,7 +241,7 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   cle::print<float>(label_statistics_image, "label_statistics_image");
 
   const KernelInfo    kernel_std = { "standard_deviation_per_label", kernel::standard_deviation_per_label };
-  const RangeArray    range_std = { 1, height, 1 };
+  const RangeArray    range_std = { 1, static_cast<size_t>(height), 1 };
   const ParameterList params_std = { { "src_statistics", label_statistics_image },
                                      { "src_label", label },
                                      { "src_image", intensity },
@@ -249,9 +249,9 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
                                      { "sum_background", 0 },
                                      { "z", 0 } };
 
-  for (size_t z = 0; z < depth; z++)
+  for (int z = 0; z < depth; z++)
   {
-    params.back().second = static_cast<int>(z);
+    params.back().second = z;
     execute(device, kernel_std, params_std, range_std);
   }
 
@@ -261,11 +261,11 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   auto max_statistics = tier1::maximum_y_projection_func(device, label_statistics_stack, nullptr);
 
   // Area
-  sum_per_label->copy(result_vector, { num_measurements, 1, 1 }, { offset, 3, 0 }, { 0, 0, 0 });
+  tier1::crop_func(device, sum_per_label, result_vector, offset, 3, 0, num_measurements, 1, 1);
 
   // Distance to centroid
   std::vector<float> sum_distance_to_centroid(num_measurements);
-  sum_statistics->copy(sum_dim, { num_measurements, 1, 1 }, { offset, 0, 0 }, { 0, 0, 0 });
+  tier1::crop_func(device, sum_statistics, sum_dim, offset, 0, 0, num_measurements, 1, 1);
   sum_dim->read(sum_distance_to_centroid.data());
   region_props["sum_distance_to_centroid"] = sum_distance_to_centroid;
 
@@ -276,7 +276,7 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
 
   // Distance to center of mass
   std::vector<float> sum_distance_to_mass_center(num_measurements);
-  sum_statistics->copy(sum_dim, { num_measurements, 1, 1 }, { offset, 1, 0 }, { 0, 0, 0 });
+  tier1::crop_func(device, sum_statistics, sum_dim, offset, 1, 0, num_measurements, 1, 1);
   sum_dim->read(sum_distance_to_mass_center.data());
   region_props["sum_distance_to_mass_center"] = sum_distance_to_mass_center;
 
@@ -287,18 +287,18 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
 
   // Standard deviation intensity
   std::vector<float> standard_deviation_intensity(num_measurements);
-  sum_statistics->copy(sum_dim, { num_measurements, 1, 1 }, { offset, 2, 0 }, { 0, 0, 0 });
+  tier1::crop_func(device, sum_statistics, sum_dim, offset, 2, 0, num_measurements, 1, 1);
   tier1::power_func(device, sum_dim, result_vector, 0.5f);
   result_vector->read(standard_deviation_intensity.data());
   region_props["standard_deviation_intensity"] = standard_deviation_intensity;
 
   std::vector<float> max_distance_to_centroid(num_measurements);
-  max_statistics->copy(result_vector, { num_measurements, 1, 1 }, { offset, 4, 0 }, { 0, 0, 0 });
+  tier1::crop_func(device, max_statistics, result_vector, offset, 4, 0, num_measurements, 1, 1);
   result_vector->read(max_distance_to_centroid.data());
   region_props["max_distance_to_centroid"] = max_distance_to_centroid;
 
   std::vector<float> max_distance_to_mass_center(num_measurements);
-  max_statistics->copy(result_vector, { num_measurements, 1, 1 }, { offset, 5, 0 }, { 0, 0, 0 });
+  tier1::crop_func(device, max_statistics, result_vector, offset, 5, 0, num_measurements, 1, 1);
   result_vector->read(max_distance_to_mass_center.data());
   region_props["max_distance_to_mass_center"] = max_distance_to_mass_center;
 
