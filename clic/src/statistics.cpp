@@ -81,7 +81,7 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   }
 
   // collect slice-by-slice measurements in single planes
-  int num_measurements = nb_labels - offset;
+  size_t num_measurements = nb_labels - offset;
 
   auto sum_per_label = tier1::sum_y_projection_func(device, cumulative_stats_per_label, nullptr);
   auto min_per_label = tier1::minimum_y_projection_func(device, cumulative_stats_per_label, nullptr);
@@ -168,23 +168,23 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
 
   // Minimum and maximum intensity
   std::vector<float> min_intensity(num_measurements);
-  tier1::crop_func(device, min_per_label, result_vector, offset, 8, 0, num_measurements, 1, 1);
+  min_per_label->copy(result_vector, { num_measurements, 1, 1 }, { offset, 8, 0 }, { 0, 0, 0 });
   result_vector->read(min_intensity.data());
   region_props["min_intensity"] = min_intensity;
 
   std::vector<float> max_intensity(num_measurements);
-  tier1::crop_func(device, max_per_label, result_vector, offset, 9, 0, num_measurements, 1, 1);
+  max_per_label->copy(result_vector, { num_measurements, 1, 1 }, { offset, 9, 0 }, { 0, 0, 0 });
   result_vector->read(max_intensity.data());
   region_props["max_intensity"] = max_intensity;
 
   // Sum intensity, area, and mean intensity
   std::vector<float> sum_intensity(num_measurements);
-  tier1::crop_func(device, sum_per_label, result_vector, offset, 7, 0, num_measurements, 1, 1);
+  sum_per_label->copy(result_vector, { num_measurements, 1, 1 }, { offset, 7, 0 }, { 0, 0, 0 });
   result_vector->read(sum_intensity.data());
   region_props["sum_intensity"] = sum_intensity;
 
   std::vector<float> area(num_measurements);
-  tier1::crop_func(device, sum_per_label, sum_dim, offset, 3, 0, num_measurements, 1, 1);
+  sum_per_label->copy(sum_dim, { num_measurements, 1, 1 }, { offset, 3, 0 }, { 0, 0, 0 });
   sum_dim->read(area.data());
   region_props["area"] = area;
 
