@@ -10,6 +10,22 @@ function(add_test_executable test_name tier_name)
     add_executable(${test_name} ${test_name}.cpp)
     add_dependencies(${test_name} CLIc)
     target_link_libraries(${test_name} PRIVATE CLIc::CLIc gtest gtest_main)
+
+    if(WIN32)
+        add_custom_command(TARGET ${test_name} POST_BUILD
+                        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                            "$<TARGET_FILE:gtest>"
+                            "$<TARGET_FILE_DIR:${test_name}>")
+        add_custom_command(TARGET ${test_name} POST_BUILD
+                        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                            "$<TARGET_FILE:gtest_main>"
+                            "$<TARGET_FILE_DIR:${test_name}>")
+        add_custom_command(TARGET ${test_name} POST_BUILD
+                        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                            "$<TARGET_FILE:CLIc>"
+                            "$<TARGET_FILE_DIR:${test_name}>")
+    endif()
+
     set_target_properties(${test_name} PROPERTIES FOLDER "Tests")
     add_test(NAME ${test_name} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMAND ${test_name})
     set_tests_properties(${test_name} PROPERTIES LABELS ${tier_name} WILL_FAIL FALSE)

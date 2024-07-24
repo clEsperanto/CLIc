@@ -1,203 +1,214 @@
-
 #include "tier0.hpp"
 
 namespace cle::tier0
 {
 
+/**
+ * @brief Check ptr and set type if unknown
+ * @param src source array pointer
+ * @param dst destination array pointer
+ * @param type data type
+ * @return true if dst is not null
+ */
 auto
-create_dst(const Array::Pointer & src, Array::Pointer & dst, size_t width, size_t height, size_t depth, dType type)
-  -> void
+check_and_set(const Array::Pointer & src, Array::Pointer & dst, dType & type) -> bool
 {
   if (dst != nullptr)
   {
-    return;
+    return true;
+  }
+  if (src == nullptr)
+  {
+    throw std::invalid_argument("Error: Cannot generate output Array because the provided 'src' is null.");
   }
   if (type == dType::UNKNOWN)
   {
     type = src->dtype();
+  }
+  return false;
+}
+
+/**
+ * @brief Create a destination array with the provided parameters
+ * @param src source array pointer
+ * @param dst destination array pointer
+ * @param width width of the array
+ * @param height height of the array
+ * @param depth depth of the array
+ * @param type data type
+ * @return void
+ */
+auto
+create_dst(const Array::Pointer & src, Array::Pointer & dst, size_t width, size_t height, size_t depth, dType type)
+  -> void
+{
+  if (check_and_set(src, dst, type))
+  {
+    return;
   }
   auto dim = shape_to_dimension(width, height, depth);
   dst = Array::create(width, height, depth, dim, type, src->mtype(), src->device());
 }
 
+/**
+ * @brief Create a destination array identical to the source array
+ * @param src source array pointer
+ * @param dst destination array pointer
+ * @param type data type
+ * @return void
+ */
 auto
 create_like(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  if (dst != nullptr)
+  if (check_and_set(src, dst, type))
   {
     return;
-  }
-  if (type == dType::UNKNOWN)
-  {
-    type = src->dtype();
   }
   dst = Array::create(src->width(), src->height(), src->depth(), src->dimension(), type, src->mtype(), src->device());
 }
 
+/**
+ * @brief Create a destination array with a single element
+ * @param src source array pointer
+ * @param dst destination array pointer
+ * @param type data type
+ * @return void
+ */
 auto
 create_one(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  if (dst != nullptr)
+  if (check_and_set(src, dst, type))
   {
     return;
-  }
-  if (type == dType::UNKNOWN)
-  {
-    type = src->dtype();
   }
   dst = Array::create(1, 1, 1, 1, type, mType::BUFFER, src->device());
 }
 
+/**
+ * @brief Create a destination array of dimension 1
+ * @param src source array pointer
+ * @param dst destination array pointer
+ * @param size size of the array
+ * @param type data type
+ * @return void
+ */
 auto
 create_vector(const Array::Pointer & src, Array::Pointer & dst, const size_t & size, dType type) -> void
 {
-  if (dst != nullptr)
+  if (check_and_set(src, dst, type))
   {
     return;
-  }
-  if (type == dType::UNKNOWN)
-  {
-    type = src->dtype();
   }
   dst = Array::create(size, 1, 1, 1, type, mType::BUFFER, src->device());
 }
 
+/**
+ * @brief Create a destination array with the (x,y,1) as the source array
+ * @param src source array pointer
+ * @param dst destination array pointer
+ * @param type data type
+ * @return void
+ */
 auto
 create_xy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  if (dst != nullptr)
+  if (check_and_set(src, dst, type))
   {
     return;
-  }
-  if (type == dType::UNKNOWN)
-  {
-    type = src->dtype();
   }
   auto dim = shape_to_dimension(src->width(), src->height(), 1);
   dst = Array::create(src->width(), src->height(), 1, dim, type, src->mtype(), src->device());
 }
 
+/**
+ * @brief Create a destination array with the (y,x,1) as the source array
+ * @param src source array pointer
+ * @param dst destination array pointer
+ * @param type data type
+ * @return void
+ */
 auto
 create_yx(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  if (dst != nullptr)
+  if (check_and_set(src, dst, type))
   {
     return;
-  }
-  if (type == dType::UNKNOWN)
-  {
-    type = src->dtype();
   }
   auto dim = shape_to_dimension(src->height(), src->width(), 1);
   dst = Array::create(src->height(), src->width(), 1, dim, type, src->mtype(), src->device());
 }
 
+/**
+ * @brief Create a destination array with the (z,y,1) as the source array
+ * @param src source array pointer
+ * @param dst destination array pointer
+ * @param type data type
+ * @return void
+ */
 auto
 create_zy(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  if (dst != nullptr)
+  if (check_and_set(src, dst, type))
   {
     return;
-  }
-  if (type == dType::UNKNOWN)
-  {
-    type = src->dtype();
   }
   auto dim = shape_to_dimension(src->depth(), src->height(), 1);
   dst = Array::create(src->depth(), src->height(), 1, dim, type, src->mtype(), src->device());
 }
 
+/**
+ * @brief Create a destination array with the (y,z,1) as the source array
+ * @param src source array pointer
+ * @param dst destination array pointer
+ * @param type data type
+ * @return void
+ */
 auto
 create_yz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  if (dst != nullptr)
+  if (check_and_set(src, dst, type))
   {
     return;
-  }
-  if (type == dType::UNKNOWN)
-  {
-    type = src->dtype();
   }
   auto dim = shape_to_dimension(src->height(), src->depth(), 1);
   dst = Array::create(src->height(), src->depth(), 1, dim, type, src->mtype(), src->device());
 }
 
+/**
+ * @brief Create a destination array with the (x,z,1) as the source array
+ * @param src source array pointer
+ * @param dst destination array pointer
+ * @param type data type
+ * @return void
+ */
 auto
 create_xz(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  if (dst != nullptr)
+  if (check_and_set(src, dst, type))
   {
     return;
-  }
-  if (type == dType::UNKNOWN)
-  {
-    type = src->dtype();
   }
   auto dim = shape_to_dimension(src->width(), src->depth(), 1);
   dst = Array::create(src->width(), src->depth(), 1, dim, type, src->mtype(), src->device());
 }
 
+/**
+ * @brief Create a destination array with the (z,x,1) as the source array
+ * @param src source array pointer
+ * @param dst destination array pointer
+ * @param type data type
+ * @return void
+ */
 auto
 create_zx(const Array::Pointer & src, Array::Pointer & dst, dType type) -> void
 {
-  if (dst != nullptr)
+  if (check_and_set(src, dst, type))
   {
     return;
-  }
-  if (type == dType::UNKNOWN)
-  {
-    type = src->dtype();
   }
   auto dim = shape_to_dimension(src->depth(), src->width(), 1);
   dst = Array::create(src->depth(), src->width(), 1, dim, type, src->mtype(), src->device());
 }
 
-auto
-execute_separable_func(const Device::Pointer &      device,
-                       const KernelInfo &           kernel,
-                       const Array::Pointer &       src,
-                       const Array::Pointer &       dst,
-                       const std::array<float, 3> & sigma,
-                       const std::array<int, 3> &   radius) -> void
-{
-  const RangeArray global_range = { dst->width(), dst->height(), dst->depth() };
-
-  auto tmp1 = Array::create(dst);
-  auto tmp2 = Array::create(dst);
-
-  if (dst->width() > 1 && sigma[0] > 0)
-  {
-    const ParameterList parameters = {
-      { "src", src }, { "dst", tmp1 }, { "dim", 0 }, { "N", radius[0] }, { "s", sigma[0] }
-    };
-    execute(device, kernel, parameters, global_range);
-  }
-  else
-  {
-    src->copy(tmp1);
-  }
-  if (dst->height() > 1 && sigma[1] > 0)
-  {
-    const ParameterList parameters = {
-      { "src", tmp1 }, { "dst", tmp2 }, { "dim", 1 }, { "N", radius[1] }, { "s", sigma[1] }
-    };
-    execute(device, kernel, parameters, global_range);
-  }
-  else
-  {
-    tmp1->copy(tmp2);
-  }
-  if (dst->depth() > 1 && sigma[2] > 0)
-  {
-    const ParameterList parameters = {
-      { "src", tmp2 }, { "dst", dst }, { "dim", 2 }, { "N", radius[2] }, { "s", sigma[2] }
-    };
-    execute(device, kernel, parameters, global_range);
-  }
-  else
-  {
-    tmp2->copy(dst);
-  }
-}
 
 } // namespace cle::tier0

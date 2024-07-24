@@ -67,7 +67,7 @@
             "name": "default-build",
             "hidden": true,
             "configurePreset": "default-config",
-            "jobs": 4
+            "jobs": 16
         },
         {
             "name": "release-build",

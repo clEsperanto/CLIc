@@ -112,8 +112,9 @@ public:
    * @param buffer_origin origin of the buffer to write
    */
   auto
-  write(const void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin)
-    -> void;
+  write(const void *                  host_data,
+        const std::array<size_t, 3> & region,
+        const std::array<size_t, 3> & buffer_origin) -> void;
 
   /**
    * @brief Write host data into the Array at a specific position (x, y, z)
@@ -139,8 +140,9 @@ public:
    * @param buffer_origin origin of the buffer to read
    */
   auto
-  read(void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin) const
-    -> void;
+  read(void *                        host_data,
+       const std::array<size_t, 3> & region,
+       const std::array<size_t, 3> & buffer_origin) const -> void;
 
   /**
    * @brief Read the Array data at a specific position (x, y, z) into host memory
@@ -257,13 +259,6 @@ public:
   initialized() const -> bool;
 
   /**
-   * @brief Get the data type as a short string
-   * @return std::string
-   */
-  [[nodiscard]] auto
-  shortType() const -> std::string;
-
-  /**
    * @brief Get the memory pointer of the Array
    * @return void **
    */
@@ -286,6 +281,20 @@ public:
    * @brief copy constructor
    */
   Array(const Array &) = default;
+
+  /**
+   * @brief Check if the shared_ptr is null and throw an exception if it is
+   * @param ptr The shared_ptr to check
+   * @param errorMessage The error message to throw
+   */
+  static inline void
+  check_ptr(const Array::Pointer & ptr, const char * errorMessage)
+  {
+    if (!ptr)
+    {
+      throw std::invalid_argument(errorMessage);
+    }
+  }
 
   /**
    * @brief Print the Array as a matrix for debugging
@@ -320,23 +329,33 @@ private:
 
 template <typename T>
 auto
-print(const Array::Pointer & array) -> void
+print(const Array::Pointer & array, const char * name = "Array::Pointer") -> void
 {
+  if (array == nullptr)
+  {
+    std::cout << "Print Array::Pointer (nullptr)\n";
+    return;
+  }
   std::vector<T> host_data(array->size());
   array->read(host_data.data());
-
-  for (int i = 0; i < array->depth(); i++)
+  std::ostringstream oss;
+  oss << name << ":\n";
+  for (auto i = 0; i < array->depth(); ++i)
   {
-    std::cout << "z = " << i << std::endl;
-    for (int j = 0; j < array->height(); j++)
+    if (array->depth() > 1)
     {
-      for (int k = 0; k < array->width(); k++)
+      oss << "z = " << i << '\n';
+    }
+    for (auto j = 0; j < array->height(); ++j)
+    {
+      for (auto k = 0; k < array->width(); ++k)
       {
-        std::cout << (float)host_data[i * array->height() * array->width() + j * array->width() + k] << " ";
+        oss << static_cast<float>(host_data[i * array->height() * array->width() + j * array->width() + k]) << ' ';
       }
-      std::cout << std::endl;
+      oss << '\n';
     }
   }
+  std::cout << oss.str();
 }
 
 } // namespace cle

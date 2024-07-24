@@ -26,6 +26,15 @@
             "inherits": [
                 "win-config"
             ]
+        },
+        {
+            "name": "win-msvc19",
+            "displayName": "MSVS 19",
+            "description": "Win msvc19 configuration",
+            "generator": "Visual Studio 19",
+            "inherits": [
+                "win-config"
+            ]
         }
     ],
     "buildPresets": [
@@ -39,7 +48,7 @@
             ]
         },
         {
-            "name": "win-ninja-release",
+            "name": "win-ninja-debug",
             "displayName": "Debug",
             "description": "Win Ninja Debug build",
             "configurePreset": "windows-ninja-multi",
@@ -61,6 +70,24 @@
             "displayName": "Debug",
             "description": "Win msvc17 Debug build",
             "configurePreset": "win-msvc17",
+            "inherits": [
+                "debug-build"
+            ]
+        },
+        {
+            "name": "win-msvc19-release",
+            "displayName": "Release",
+            "description": "Win msvc19 Release build",
+            "configurePreset": "win-msvc19",
+            "inherits": [
+                "release-build"
+            ]
+        },
+        {
+            "name": "win-msvc19-debug",
+            "displayName": "Debug",
+            "description": "Win msvc19 Debug build",
+            "configurePreset": "win-msvc19",
             "inherits": [
                 "debug-build"
             ]
@@ -99,6 +126,24 @@
             "displayName": "CTest Debug",
             "description": "win msvc17 Debug test",
             "configurePreset": "win-msvc17",
+            "inherits": [
+                "debug-test"
+            ]
+        },
+        {
+            "name": "win-msvc19-release",
+            "displayName": "CTest Release",
+            "description": "win msvc19 Release test",
+            "configurePreset": "win-msvc19",
+            "inherits": [
+                "release-test"
+            ]
+        },
+        {
+            "name": "win-msvc19-debug",
+            "displayName": "CTest Debug",
+            "description": "win msvc19 Debug test",
+            "configurePreset": "win-msvc19",
             "inherits": [
                 "debug-test"
             ]

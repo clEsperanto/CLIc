@@ -40,7 +40,7 @@ jobs:
             cmake-build-flag: ""
 
     steps:
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5.1.0
         with:
@@ -53,7 +53,7 @@ jobs:
         shell: bash
 
       - name: Get specific version of CMake, Ninja
-        uses: lukka/get-cmake@v3.29.0
+        uses: lukka/get-cmake@v3.30.0
 
       - name: Install ocl-icd-loader - windows
         if: matrix.os == 'windows-latest'
@@ -61,8 +61,8 @@ jobs:
           cd ..
           git clone --branch ${{ env.opencl-icd-loader-git-tag }} https://github.com/KhronosGroup/OpenCL-ICD-Loader
           git clone --branch ${{ env.opencl-headers-git-tag }} https://github.com/KhronosGroup/OpenCL-Headers
-          # cmake -D CMAKE_INSTALL_PREFIX="./OpenCL-Headers/install" -S "./OpenCL-Headers" -B "./OpenCL-Headers/build" 
-          cmake -S "./OpenCL-Headers" -B "./OpenCL-Headers/build" 
+          # cmake -D CMAKE_INSTALL_PREFIX="./OpenCL-Headers/install" -S "./OpenCL-Headers" -B "./OpenCL-Headers/build"
+          cmake -S "./OpenCL-Headers" -B "./OpenCL-Headers/build"
           cmake --build "./OpenCL-Headers/build" --parallel 6 --target install
           cmake -D CMAKE_PREFIX_PATH="./OpenCL-Headers" -D OPENCL_ICD_LOADER_HEADERS_DIR="./OpenCL-Headers/" -S "./OpenCL-ICD-Loader" -B "./OpenCL-ICD-Loader/build" -A x64
           cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
@@ -81,7 +81,7 @@ jobs:
           cd ..
           git clone --branch ${{ env.opencl-icd-loader-git-tag }} https://github.com/KhronosGroup/OpenCL-ICD-Loader
           git clone --branch ${{ env.opencl-headers-git-tag }} https://github.com/KhronosGroup/OpenCL-Headers
-          cmake -S "./OpenCL-Headers" -B "./OpenCL-Headers/build" 
+          cmake -S "./OpenCL-Headers" -B "./OpenCL-Headers/build"
           sudo cmake --build "./OpenCL-Headers/build" --parallel 6 --target install
           cmake -D CMAKE_PREFIX_PATH="./OpenCL-Headers/" -D OPENCL_ICD_LOADER_HEADERS_DIR="./OpenCL-Headers/" -S "./OpenCL-ICD-Loader" -B "./OpenCL-ICD-Loader/build"
           sudo cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
@@ -97,7 +97,7 @@ jobs:
       #     sudo cp /var/cuda-repo-ubuntu2204-12-1-local/cuda-*-keyring.gpg /usr/share/keyrings/
       #     sudo apt-get update
       #     sudo apt-get -y install cuda
-      
+
       - uses: actions/checkout@v4
         with:
           submodules: true
@@ -107,7 +107,7 @@ jobs:
         run : |
           cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_DOCUMENTATION=OFF -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARIES:FILEPATH="/usr/local/lib/libOpenCL.so" -DOpenCL_INCLUDE_DIRS:PATH="/usr/local/include/"
           cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
-        shell: bash -l {0}    
+        shell: bash -l {0}
 
       - name: compile CLIc - windows
         if: matrix.os == 'windows-latest'
@@ -122,10 +122,3 @@ jobs:
           cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_DOCUMENTATION=OFF -DBUILD_BENCHMARK=OFF
           cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
         shell: bash -l {0}
-
-
-      
-      
-
-
-

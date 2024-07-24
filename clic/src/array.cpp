@@ -24,7 +24,7 @@ Array::Array(const size_t            width,
 
 Array::~Array()
 {
-  if (initialized() && data_.unique())
+  if (initialized() && data_.use_count() == 1)
   {
     backend_.freeMemory(device(), mtype(), get());
   }
@@ -75,6 +75,11 @@ Array::create(const Array::Pointer & array) -> Array::Pointer
 auto
 operator<<(std::ostream & out, const Array::Pointer & array) -> std::ostream &
 {
+  if (array == nullptr)
+  {
+    out << "Null Array";
+    return out;
+  }
   out << array->dimension() << "dArray ([" << array->width() << "," << array->height() << "," << array->depth()
       << "], dtype=" << array->dtype() << ", mtype=" << array->mtype() << ")";
   return out;
@@ -98,10 +103,6 @@ Array::write(const void * host_data) -> void
   {
     throw std::runtime_error("Error: Host data is null");
   }
-  if (!initialized())
-  {
-    allocate();
-  }
   std::array<size_t, 3> _origin = { 0, 0, 0 };
   std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
   std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
@@ -109,16 +110,13 @@ Array::write(const void * host_data) -> void
 }
 
 auto
-Array::write(const void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin)
-  -> void
+Array::write(const void *                  host_data,
+             const std::array<size_t, 3> & region,
+             const std::array<size_t, 3> & buffer_origin) -> void
 {
   if (host_data == nullptr)
   {
     throw std::runtime_error("Error: Host data is null");
-  }
-  if (!initialized())
-  {
-    allocate();
   }
   std::array<size_t, 3> _origin = buffer_origin;
   std::array<size_t, 3> _region = region;
@@ -139,10 +137,6 @@ Array::read(void * host_data) const -> void
   {
     throw std::runtime_error("Error: Host data is null");
   }
-  if (!initialized())
-  {
-    throw std::runtime_error("Error: Array is not initialized, it cannot be read");
-  }
   std::array<size_t, 3> _origin = { 0, 0, 0 };
   std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
   std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
@@ -150,16 +144,13 @@ Array::read(void * host_data) const -> void
 }
 
 auto
-Array::read(void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin) const
-  -> void
+Array::read(void *                        host_data,
+            const std::array<size_t, 3> & region,
+            const std::array<size_t, 3> & buffer_origin) const -> void
 {
   if (host_data == nullptr)
   {
     throw std::runtime_error("Error: Host data is null");
-  }
-  if (!initialized())
-  {
-    throw std::runtime_error("Error: Array is not initialized, it cannot be read");
   }
   std::array<size_t, 3> _origin = buffer_origin;
   std::array<size_t, 3> _region = region;
@@ -176,10 +167,7 @@ Array::read(void * host_data, const size_t x_coord, const size_t y_coord, const 
 auto
 Array::copy(const Array::Pointer & dst) const -> void
 {
-  if (!initialized() || !dst->initialized())
-  {
-    throw std::runtime_error("Error: Arrays are not initialized_");
-  }
+  check_ptr(dst, "Error: Destination Array is null");
   if (device() != dst->device())
   {
     throw std::runtime_error("Error: Copying Arrays from different devices");
@@ -225,10 +213,7 @@ Array::copy(const Array::Pointer &        dst,
             const std::array<size_t, 3> & src_origin,
             const std::array<size_t, 3> & dst_origin) const -> void
 {
-  if (!initialized() || !dst->initialized())
-  {
-    throw std::runtime_error("Error: Arrays are not initialized_");
-  }
+  check_ptr(dst, "Error: Destination Array is null");
   if (device() != dst->device())
   {
     throw std::runtime_error("Error: Copying Arrays from different devices");
@@ -265,11 +250,6 @@ Array::copy(const Array::Pointer &        dst,
 auto
 Array::fill(const float value) -> void
 {
-  if (!initialized())
-  {
-    throw std::runtime_error("Error: Array it is not initialized.");
-  }
-
 #if defined(__APPLE__) && defined(__arm64__)
   // clEnqueueFillBuffer not behaving as expected on Apple Silicon
   // FIX: Filling buffer with host data
@@ -389,13 +369,5 @@ Array::c_get() const -> const void **
 {
   return (const void **)data_.get();
 }
-
-auto
-Array::shortType() const -> std::string
-{
-  const auto str_type = toString(dtype());
-  return (str_type[0] == 'u') ? str_type.substr(0, 2) : str_type.substr(0, 1);
-}
-
 
 } // namespace cle

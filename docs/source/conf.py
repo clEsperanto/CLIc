@@ -49,7 +49,7 @@ templates_path = ['_templates']
 source_suffix = '.rst'
 exclude_patterns = ["build", "_build", "Thumbs.db", ".DS_Store"]
 cpp_index_common_prefix = [
-    'cle::', 
+    'cle::',
     'cle::tier1::',
     'cle::tier2::',
     'cle::tier3::',
