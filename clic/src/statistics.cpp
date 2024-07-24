@@ -32,7 +32,7 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   {
     std::cerr << "Warning: intensity is not set. Pixels will be treated as one object." << std::endl;
     tier0::create_like(label, intensity, dType::FLOAT);
-    label->copy(label);
+    label->copyTo(label);
     // todo : I think one of these two should be intensity
   }
 
@@ -96,17 +96,17 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   */
 
   // min and max bbox x, y, z
-  min_per_label->read(temp_results.data(), { num_measurements, 1, 1 }, { offset, 10, 0 });
+  min_per_label->readTo(temp_results.data(), { num_measurements, 1, 1 }, { offset, 10, 0 });
   region_props["bbox_min_x"] = temp_results;
-  min_per_label->read(temp_results.data(), { num_measurements, 1, 1 }, { offset, 12, 0 });
+  min_per_label->readTo(temp_results.data(), { num_measurements, 1, 1 }, { offset, 12, 0 });
   region_props["bbox_min_y"] = temp_results;
-  min_per_label->read(temp_results.data(), { num_measurements, 1, 1 }, { offset, 14, 0 });
+  min_per_label->readTo(temp_results.data(), { num_measurements, 1, 1 }, { offset, 14, 0 });
   region_props["bbox_min_z"] = temp_results;
-  max_per_label->read(temp_results.data(), { num_measurements, 1, 1 }, { offset, 11, 0 });
+  max_per_label->readTo(temp_results.data(), { num_measurements, 1, 1 }, { offset, 11, 0 });
   region_props["bbox_max_x"] = temp_results;
-  max_per_label->read(temp_results.data(), { num_measurements, 1, 1 }, { offset, 13, 0 });
+  max_per_label->readTo(temp_results.data(), { num_measurements, 1, 1 }, { offset, 13, 0 });
   region_props["bbox_max_y"] = temp_results;
-  max_per_label->read(temp_results.data(), { num_measurements, 1, 1 }, { offset, 15, 0 });
+  max_per_label->readTo(temp_results.data(), { num_measurements, 1, 1 }, { offset, 15, 0 });
   region_props["bbox_max_z"] = temp_results;
   // bbox width, height, depth
   std::vector<float> bbox_width(num_measurements);
@@ -137,45 +137,46 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   */
 
   // Area, minimum, maximum, sum, and mean intensity
-  sum_per_label->copy(sum_dim, { num_measurements, 1, 1 }, { offset, 3, 0 }, { 0, 0, 0 });
-  sum_dim->read(temp_results.data());
+  sum_per_label->copyTo(sum_dim, { num_measurements, 1, 1 }, { offset, 3, 0 }, { 0, 0, 0 });
+  sum_dim->readTo(temp_results.data());
   region_props["area"] = temp_results;
-  min_per_label->read(temp_results.data(), { num_measurements, 1, 1 }, { offset, 8, 0 });
+  min_per_label->readTo(temp_results.data(), { num_measurements, 1, 1 }, { offset, 8, 0 });
   region_props["min_intensity"] = temp_results;
-  max_per_label->read(temp_results.data(), { num_measurements, 1, 1 }, { offset, 9, 0 });
+  max_per_label->readTo(temp_results.data(), { num_measurements, 1, 1 }, { offset, 9, 0 });
   region_props["max_intensity"] = temp_results;
-  sum_per_label->copy(result_vector, { num_measurements, 1, 1 }, { offset, 7, 0 }, { 0, 0, 0 });
-  result_vector->read(temp_results.data());
+  sum_per_label->copyTo(result_vector, { num_measurements, 1, 1 }, { offset, 7, 0 }, { 0, 0, 0 });
+  result_vector->readTo(temp_results.data());
   region_props["sum_intensity"] = temp_results;
   tier1::paste_func(device, sum_dim, label_statistics_image, offset, 7, 0);
   tier1::divide_images_func(device, result_vector, sum_dim, avg_dim);
   tier1::paste_func(device, avg_dim, label_statistics_image, offset, 6, 0);
-  avg_dim->read(temp_results.data());
+  avg_dim->readTo(temp_results.data());
   region_props["mean_intensity"] = temp_results;
 
   // Sum intensity times x, y, z and mass center
   std::vector<std::string> dim_names = { "x", "y", "z" };
-  sum_per_label->copy(result_vector, { num_measurements, 1, 1 }, { offset, 4 + 3, 0 }, { 0, 0, 0 });
+  sum_per_label->copyTo(result_vector, { num_measurements, 1, 1 }, { offset, 4 + 3, 0 }, { 0, 0, 0 });
   for (int dim = 0; dim < 3; ++dim)
   {
-    sum_per_label->copy(sum_dim, { num_measurements, 1, 1 }, { offset, 4 + static_cast<size_t>(dim), 0 }, { 0, 0, 0 });
-    sum_dim->read(temp_results.data());
+    sum_per_label->copyTo(
+      sum_dim, { num_measurements, 1, 1 }, { offset, 4 + static_cast<size_t>(dim), 0 }, { 0, 0, 0 });
+    sum_dim->readTo(temp_results.data());
     region_props["sum_intensity_times_" + dim_names[dim]] = temp_results;
     tier1::divide_images_func(device, sum_dim, result_vector, avg_dim);
-    avg_dim->read(temp_results.data());
+    avg_dim->readTo(temp_results.data());
     region_props["mass_center_" + dim_names[dim]] = temp_results;
     tier1::paste_func(device, avg_dim, label_statistics_image, offset, 3 + dim, 0);
   }
 
   // Sum x, y, z and centroid
-  sum_per_label->copy(result_vector, { num_measurements, 1, 1 }, { offset, 3, 0 }, { 0, 0, 0 });
+  sum_per_label->copyTo(result_vector, { num_measurements, 1, 1 }, { offset, 3, 0 }, { 0, 0, 0 });
   for (int dim = 0; dim < 3; ++dim)
   {
-    sum_per_label->copy(sum_dim, { num_measurements, 1, 1 }, { offset, static_cast<size_t>(dim), 0 }, { 0, 0, 0 });
-    sum_dim->read(temp_results.data());
+    sum_per_label->copyTo(sum_dim, { num_measurements, 1, 1 }, { offset, static_cast<size_t>(dim), 0 }, { 0, 0, 0 });
+    sum_dim->readTo(temp_results.data());
     region_props["sum_" + dim_names[dim]] = temp_results;
     tier1::divide_images_func(device, sum_dim, result_vector, avg_dim);
-    avg_dim->read(temp_results.data());
+    avg_dim->readTo(temp_results.data());
     region_props["centroid_" + dim_names[dim]] = temp_results;
     tier1::paste_func(device, avg_dim, label_statistics_image, offset, dim, 0);
   }
@@ -199,31 +200,31 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   }
   auto sum_statistics = tier1::sum_y_projection_func(device, label_statistics_stack, nullptr);
   auto max_statistics = tier1::maximum_y_projection_func(device, label_statistics_stack, nullptr);
-  sum_per_label->copy(result_vector, { num_measurements, 1, 1 }, { offset, 3, 0 }, { 0, 0, 0 });
+  sum_per_label->copyTo(result_vector, { num_measurements, 1, 1 }, { offset, 3, 0 }, { 0, 0, 0 });
 
   // Sum and mean distance to centroid
-  sum_statistics->copy(sum_dim, { num_measurements, 1, 1 }, { offset, 0, 0 }, { 0, 0, 0 });
-  sum_dim->read(temp_results.data());
+  sum_statistics->copyTo(sum_dim, { num_measurements, 1, 1 }, { offset, 0, 0 }, { 0, 0, 0 });
+  sum_dim->readTo(temp_results.data());
   region_props["sum_distance_to_centroid"] = temp_results;
   tier1::divide_images_func(device, sum_dim, result_vector, avg_dim);
-  avg_dim->read(temp_results.data());
+  avg_dim->readTo(temp_results.data());
   region_props["mean_distance_to_centroid"] = temp_results;
   // Sum and mean distance to center of mass
-  sum_statistics->copy(sum_dim, { num_measurements, 1, 1 }, { offset, 1, 0 }, { 0, 0, 0 });
-  sum_dim->read(temp_results.data());
+  sum_statistics->copyTo(sum_dim, { num_measurements, 1, 1 }, { offset, 1, 0 }, { 0, 0, 0 });
+  sum_dim->readTo(temp_results.data());
   region_props["sum_distance_to_mass_center"] = temp_results;
   tier1::divide_images_func(device, sum_dim, result_vector, avg_dim);
-  avg_dim->read(temp_results.data());
+  avg_dim->readTo(temp_results.data());
   region_props["mean_distance_to_mass_center"] = temp_results;
   // Standard deviation intensity
-  sum_statistics->copy(sum_dim, { num_measurements, 1, 1 }, { offset, 2, 0 }, { 0, 0, 0 });
+  sum_statistics->copyTo(sum_dim, { num_measurements, 1, 1 }, { offset, 2, 0 }, { 0, 0, 0 });
   tier1::power_func(device, sum_dim, result_vector, 0.5f);
-  result_vector->read(temp_results.data());
+  result_vector->readTo(temp_results.data());
   region_props["standard_deviation_intensity"] = temp_results;
   // Max distance to centroid and center of mass
-  max_statistics->read(temp_results.data(), { num_measurements, 1, 1 }, { offset, 4, 0 });
+  max_statistics->readTo(temp_results.data(), { num_measurements, 1, 1 }, { offset, 4, 0 });
   region_props["max_distance_to_centroid"] = temp_results;
-  max_statistics->read(temp_results.data(), { num_measurements, 1, 1 }, { offset, 5, 0 });
+  max_statistics->readTo(temp_results.data(), { num_measurements, 1, 1 }, { offset, 5, 0 });
   region_props["max_distance_to_mass_center"] = temp_results;
 
   // Calculate distance ratios

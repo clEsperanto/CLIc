@@ -79,9 +79,9 @@ TEST_P(TestStatisticsOfLabelledPixels, execute2D)
   device->setWaitToFinish(true);
 
   auto gpu_intensity = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_intensity->write(intensity.data());
+  gpu_intensity->writeFrom(intensity.data());
   auto gpu_labels = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_labels->write(labels.data());
+  gpu_labels->writeFrom(labels.data());
 
   // passing labels also as intensity image to have a simpler test
   auto region_props = cle::statistics_of_labelled_pixels(device, gpu_intensity, gpu_labels, nullptr);
@@ -148,9 +148,9 @@ TEST_P(TestStatisticsOfLabelledPixels, execute3D)
   device->setWaitToFinish(true);
 
   auto gpu_intensity = cle::Array::create(3, 2, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_intensity->write(intensity.data());
+  gpu_intensity->writeFrom(intensity.data());
   auto gpu_labels = cle::Array::create(3, 2, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_labels->write(labels.data());
+  gpu_labels->writeFrom(labels.data());
 
   auto region_props = cle::statistics_of_labelled_pixels(device, gpu_intensity, gpu_labels, nullptr);
 
@@ -236,7 +236,7 @@ TEST_P(TestStatisticsOfLabelledPixels, shape)
   device->setWaitToFinish(true);
 
   auto gpu_labels = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_labels->write(labels.data());
+  gpu_labels->writeFrom(labels.data());
 
 
   // passing labels also as intensity image to have a simpler test
@@ -304,9 +304,9 @@ TEST_P(TestStatisticsOfLabelledPixels, standard_deviation)
   device->setWaitToFinish(true);
 
   auto gpu_image = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_image->write(image.data());
+  gpu_image->writeFrom(image.data());
   auto gpu_labels = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_labels->write(labels.data());
+  gpu_labels->writeFrom(labels.data());
 
   auto region_props = cle::statistics_of_labelled_pixels(device, gpu_image, gpu_labels, nullptr);
 
