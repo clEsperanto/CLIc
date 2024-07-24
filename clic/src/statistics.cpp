@@ -213,7 +213,7 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
     std::vector<float> mass_center(num_measurements);
     avg_dim->read(mass_center.data());
     region_props["mass_center_" + dim_names[dim]] = mass_center;
-    tier1::paste_func(device, avg_dim, label_statistics_image, offset, 3 + dim, 0);
+    tier1::paste_func(device, avg_dim, label_statistics_image, offset, dim, 0);
   }
 
   // Sum x, y, z and centroid
