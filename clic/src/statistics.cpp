@@ -240,14 +240,14 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
 
   cle::print<float>(label_statistics_image, "label_statistics_image");
 
-  const KernelInfo    kernel_std = { "standard_deviation_per_label", kernel::standard_deviation_per_label };
-  const RangeArray    range_std = { 1, static_cast<size_t>(height), 1 };
-  ParameterList params_std = { { "src_statistics", label_statistics_image },
-                                     { "src_label", label },
-                                     { "src_image", intensity },
-                                     { "dst", label_statistics_stack },
-                                     { "sum_background", 0 },
-                                     { "z", 0 } };
+  const KernelInfo kernel_std = { "standard_deviation_per_label", kernel::standard_deviation_per_label };
+  const RangeArray range_std = { 1, static_cast<size_t>(height), 1 };
+  ParameterList    params_std = { { "src_statistics", label_statistics_image },
+                                  { "src_label", label },
+                                  { "src_image", intensity },
+                                  { "dst", label_statistics_stack },
+                                  { "sum_background", 0 },
+                                  { "z", 0 } };
 
   for (int z = 0; z < depth; z++)
   {
