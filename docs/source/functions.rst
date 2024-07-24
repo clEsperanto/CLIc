@@ -194,17 +194,17 @@ A more advanced function implementation could be the ``extend_labeling_via_voron
             {
                 tier1::onlyzero_overwrite_maximum_box_func(device, flop, flag, flip);
             }
-            flag->read(&flag_value);
+            flag->readTo(&flag_value);
             flag->fill(0);
             iteration_count++;
         }
         if (iteration_count % 2 == 0)
         {
-            flip->copy(dst);
+            flip->copyTo(dst);
         }
         else
         {
-            flop->copy(dst);
+            flop->copyTo(dst);
         }
         return dst;
     }

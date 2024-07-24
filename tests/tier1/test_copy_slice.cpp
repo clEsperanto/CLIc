@@ -19,12 +19,12 @@ TEST_P(TestCopySlice, executeCopySliceFrom)
 
   auto gpu_input = cle::Array::create(2, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_output = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
   gpu_output->fill(0);
 
   cle::tier1::copy_slice_func(device, gpu_input, gpu_output, 0);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   EXPECT_EQ(*std::min_element(output.begin(), output.end()), 0.0);
   EXPECT_EQ(*std::max_element(output.begin(), output.end()), 4.0);
   EXPECT_EQ(std::accumulate(output.begin(), output.end(), 0.0) / output.size(), 2.25);
@@ -42,12 +42,12 @@ TEST_P(TestCopySlice, executeCopySliceTo)
 
   auto gpu_input = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_output = cle::Array::create(2, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
   gpu_output->fill(0);
 
   cle::tier1::copy_slice_func(device, gpu_input, gpu_output, 0);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   EXPECT_EQ(*std::min_element(output.begin(), output.end()), 0.0);
   EXPECT_EQ(*std::max_element(output.begin(), output.end()), 5.0);
   EXPECT_EQ(std::accumulate(output.begin(), output.end(), 0.0) / output.size(), 2.0);
@@ -65,12 +65,12 @@ TEST_P(TestCopySlice, executeCopySliceToWithOneSlice)
 
   auto gpu_input = cle::Array::create(3, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_output = cle::Array::create(3, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
   gpu_output->fill(0);
 
   cle::tier1::copy_slice_func(device, gpu_input, gpu_output, 0);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   EXPECT_EQ(*std::min_element(output.begin(), output.end()), 2.0);
   EXPECT_EQ(*std::max_element(output.begin(), output.end()), 6.0);
   EXPECT_EQ(std::accumulate(output.begin(), output.end(), 0.0) / output.size(), 4.0);
@@ -88,12 +88,12 @@ TEST_P(TestCopySlice, executeCopySliceMinX)
 
   auto gpu_input = cle::Array::create(4, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_output = cle::Array::create(4, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
   gpu_output->fill(0);
 
   cle::tier1::copy_slice_func(device, gpu_input, gpu_output, 0);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   EXPECT_EQ(*std::min_element(output.begin(), output.end()), 1.0);
   EXPECT_EQ(*std::max_element(output.begin(), output.end()), 4.0);
   EXPECT_EQ(std::accumulate(output.begin(), output.end(), 0.0) / output.size(), 2.5);
@@ -111,12 +111,12 @@ TEST_P(TestCopySlice, executeCopySliceMinY)
 
   auto gpu_input = cle::Array::create(1, 4, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_output = cle::Array::create(1, 4, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
   gpu_output->fill(0);
 
   cle::tier1::copy_slice_func(device, gpu_input, gpu_output, 0);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   EXPECT_EQ(*std::min_element(output.begin(), output.end()), 1.0);
   EXPECT_EQ(*std::max_element(output.begin(), output.end()), 4.0);
   EXPECT_EQ(std::accumulate(output.begin(), output.end(), 0.0) / output.size(), 2.5);

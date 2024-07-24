@@ -20,8 +20,8 @@ TEST_P(TestMeanSquareError, execute)
 
   auto gpu_input1 = cle::Array::create(3, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(gpu_input1);
-  gpu_input1->write(input1.data());
-  gpu_input2->write(input2.data());
+  gpu_input1->writeFrom(input1.data());
+  gpu_input2->writeFrom(input2.data());
 
   auto output = cle::tier4::mean_squared_error_func(device, gpu_input1, gpu_input2);
   EXPECT_NEAR(output, 11.333, 0.001);

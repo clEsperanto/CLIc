@@ -28,7 +28,7 @@ create_checkerboard_init(const Array::Pointer & src, Array::Pointer dst, int squ
       }
     }
   }
-  dst->write(checkerboard.data());
+  dst->writeFrom(checkerboard.data());
 }
 
 

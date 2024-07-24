@@ -21,12 +21,12 @@ TEST_P(TestCountNeighbor, ignoreBG)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto touch_mat = cle::tier3::generate_touch_matrix_func(device, gpu_input, nullptr);
   auto gpu_output = cle::tier2::count_touching_neighbors_func(device, touch_mat, nullptr, true);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);
@@ -44,12 +44,12 @@ TEST_P(TestCountNeighbor, includeBG)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto touch_mat = cle::tier3::generate_touch_matrix_func(device, gpu_input, nullptr);
   auto gpu_output = cle::tier2::count_touching_neighbors_func(device, touch_mat, nullptr, false);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

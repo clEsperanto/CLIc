@@ -46,12 +46,12 @@ TEST_P(TestChanVese, chanvese2d_without_smoothing)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(14, 14, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier3::morphological_chan_vese_func(device, gpu_input, nullptr, 20, 0, 1, 1);
 
   std::vector<uint8_t> output(gpu_output->size());
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);
@@ -67,12 +67,12 @@ TEST_P(TestChanVese, chanvese2d_with_smoothing)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(14, 14, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier3::morphological_chan_vese_func(device, gpu_input, nullptr, 20, 1, 1, 1);
 
   std::vector<uint8_t> output(gpu_output->size());
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_smooth[i]);

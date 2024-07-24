@@ -27,11 +27,11 @@ TEST_P(TestSmoothLabels, execute)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(8, 9, 1, 2, cle::dType::UINT32, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier8::smooth_labels_func(device, gpu_input, nullptr, 3);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

@@ -23,11 +23,11 @@ TEST_P(TestExistingLabels, execute)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier3::gamma_correction_func(device, gpu_input, nullptr, 0.5);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   // assert (np.abs(np.mean(a) - 11.1786) < 0.001)
   EXPECT_LT(std::abs(*std::min_element(output.begin(), output.end())), 0.001);
   EXPECT_LT(std::abs(*std::max_element(output.begin(), output.end())) - 100, 0.001);

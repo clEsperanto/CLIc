@@ -26,7 +26,7 @@ eroded_otsu_labeling_func(const Device::Pointer & device,
   Array::Pointer eroded2 = nullptr;
   tier0::create_like(binary, eroded1);
   tier0::create_like(binary, eroded2);
-  binary->copy(eroded1);
+  binary->copyTo(eroded1);
   for (int i = 0; i < number_of_erosions; i++)
   {
     tier1::erode_box_func(device, eroded1, eroded2);

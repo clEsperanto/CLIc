@@ -118,7 +118,7 @@ TEST_P(TestExecution, execute)
 
 
   std::vector<float> h_c(10);
-  arr_b->read(h_c.data());
+  arr_b->readTo(h_c.data());
   for (int i = 0; i < h_c.size(); i++)
   {
     EXPECT_EQ(h_c[i], 1);
@@ -157,7 +157,7 @@ TEST_P(TestExecution, executeNative)
 
 
   std::vector<float> h_c(10);
-  arr_c->read(h_c.data());
+  arr_c->readTo(h_c.data());
   for (int i = 0; i < h_c.size(); i++)
   {
     EXPECT_EQ(h_c[i], 3);

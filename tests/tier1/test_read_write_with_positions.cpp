@@ -22,13 +22,13 @@ TEST_P(TestCoordReadWrite, executeReadFromCoord1)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
   auto gpu_list = cle::Array::create(1, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_list->write(list.data());
+  gpu_list->writeFrom(list.data());
 
   auto gpu_output = cle::tier1::read_values_from_positions_func(device, gpu_input, gpu_list, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);
@@ -48,13 +48,13 @@ TEST_P(TestCoordReadWrite, executeReadFromCoord2)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
   auto gpu_list = cle::Array::create(3, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_list->write(list.data());
+  gpu_list->writeFrom(list.data());
 
   auto gpu_output = cle::tier1::read_values_from_positions_func(device, gpu_input, gpu_list, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

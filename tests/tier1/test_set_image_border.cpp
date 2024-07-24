@@ -19,11 +19,11 @@ TEST_P(TestPaste, execute)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::INT16, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   cle::tier1::set_image_borders_func(device, gpu_input, 4);
 
-  gpu_input->read(output.data());
+  gpu_input->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid[i]);

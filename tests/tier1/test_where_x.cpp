@@ -28,11 +28,11 @@ TEST_P(TestWhereX, executeSmallerY)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(4, 4, 1, 3, cle::dType::INT32, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   cle::tier1::set_where_x_smaller_than_y_func(device, gpu_input, 3);
 
-  gpu_input->read(output.data());
+  gpu_input->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_smaller[i]);
@@ -47,11 +47,11 @@ TEST_P(TestWhereX, executeEqualY)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(4, 4, 1, 3, cle::dType::INT32, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   cle::tier1::set_where_x_equals_y_func(device, gpu_input, 3);
 
-  gpu_input->read(output.data());
+  gpu_input->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_equal[i]);
@@ -66,11 +66,11 @@ TEST_P(TestWhereX, executeGreaterY)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(4, 4, 1, 3, cle::dType::INT32, cle::mType::BUFFER, device);
-  gpu_input->write(input.data());
+  gpu_input->writeFrom(input.data());
 
   cle::tier1::set_where_x_greater_than_y_func(device, gpu_input, 3);
 
-  gpu_input->read(output.data());
+  gpu_input->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], valid_greater[i]);

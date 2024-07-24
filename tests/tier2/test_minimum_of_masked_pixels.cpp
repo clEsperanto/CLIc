@@ -32,8 +32,8 @@ TEST_P(TestMinMaskPixel, execute)
 
   auto gpu_input = cle::Array::create(5, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_mask = cle::Array::create(gpu_input);
-  gpu_input->write(input.data());
-  gpu_mask->write(mask.data());
+  gpu_input->writeFrom(input.data());
+  gpu_mask->writeFrom(mask.data());
 
   auto output = cle::tier2::minimum_of_masked_pixels_func(device, gpu_input, gpu_mask);
 

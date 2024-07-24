@@ -26,11 +26,11 @@ TEST_P(TestTranspose, executeXY)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(4, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(inputXYZ.data());
+  gpu_input->writeFrom(inputXYZ.data());
 
   auto gpu_output = cle::tier1::transpose_xy_func(device, gpu_input, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], inputYXZ[i]);
@@ -48,11 +48,11 @@ TEST_P(TestTranspose, executeXZ)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(4, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(inputXYZ.data());
+  gpu_input->writeFrom(inputXYZ.data());
 
   auto gpu_output = cle::tier1::transpose_xz_func(device, gpu_input, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], inputZYX[i]);
@@ -70,11 +70,11 @@ TEST_P(TestTranspose, executeYZ)
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(4, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->write(inputXYZ.data());
+  gpu_input->writeFrom(inputXYZ.data());
 
   auto gpu_output = cle::tier1::transpose_yz_func(device, gpu_input, nullptr);
 
-  gpu_output->read(output.data());
+  gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
     EXPECT_EQ(output[i], inputXZY[i]);
