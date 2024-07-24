@@ -251,7 +251,7 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
 
   for (int z = 0; z < depth; z++)
   {
-    params.back().second = z;
+    params_std.back().second = z;
     execute(device, kernel_std, params_std, range_std);
   }
 
