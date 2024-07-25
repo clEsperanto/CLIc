@@ -1,6 +1,6 @@
 #include "cle.hpp"
 
-#include "statistics.hpp"
+#include "tier3.hpp"
 
 #include <array>
 #include <cmath>
@@ -84,9 +84,7 @@ TEST_P(TestStatisticsOfLabelledPixels, execute2D)
   gpu_labels->writeFrom(labels.data());
 
   // passing labels also as intensity image to have a simpler test
-  auto region_props = cle::statistics_of_labelled_pixels(device, gpu_intensity, gpu_labels, nullptr);
-
-  // print_stats_dict(region_props);
+  auto region_props = cle::tier3::statistics_of_labelled_pixels(device, gpu_labels, gpu_intensity);
 
   // Test bounding box min/max (x, y, z)
   std::vector<float> expected_bbox_min_x = { 0, 1, 0 };
@@ -152,9 +150,7 @@ TEST_P(TestStatisticsOfLabelledPixels, execute3D)
   auto gpu_labels = cle::Array::create(3, 2, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_labels->writeFrom(labels.data());
 
-  auto region_props = cle::statistics_of_labelled_pixels(device, gpu_intensity, gpu_labels, nullptr);
-
-  // print_stats_dict(region_props);
+  auto region_props = cle::tier3::statistics_of_labelled_pixels(device, gpu_labels, gpu_intensity);
 
   // Test bounding box min/max (x, y, z)
   std::vector<float> expected_bbox_min_x = { 0, 1, 0 };
@@ -238,11 +234,8 @@ TEST_P(TestStatisticsOfLabelledPixels, shape)
   auto gpu_labels = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_labels->writeFrom(labels.data());
 
-
   // passing labels also as intensity image to have a simpler test
-  auto region_props = cle::statistics_of_labelled_pixels(device, gpu_labels, gpu_labels, nullptr);
-
-  // print_stats_dict(region_props);
+  auto region_props = cle::tier3::statistics_of_labelled_pixels(device, gpu_labels, gpu_labels);
 
   // Test bounding box min/max (x, y, z)
   std::vector<float> expected_bbox_min_x = { 0 };
@@ -308,7 +301,7 @@ TEST_P(TestStatisticsOfLabelledPixels, standard_deviation)
   auto gpu_labels = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_labels->writeFrom(labels.data());
 
-  auto region_props = cle::statistics_of_labelled_pixels(device, gpu_image, gpu_labels, nullptr);
+  auto region_props = cle::tier3::statistics_of_labelled_pixels(device, gpu_labels, gpu_image);
 
   // print_stats_dict(region_props);
 

@@ -1,6 +1,7 @@
 #ifndef __INCLUDE_TIER3_HPP
 #define __INCLUDE_TIER3_HPP
 
+#include "statistics.hpp"
 #include "tier0.hpp"
 
 /**
@@ -313,6 +314,22 @@ morphological_chan_vese_func(const Device::Pointer & device,
                              int                     smoothing,
                              float                   lambda1,
                              float                   lambda2) -> Array::Pointer;
+
+/**
+ * @name statistics_of_labelled_pixels
+ * @brief Compute the bounding box, area (in pixels/voxels), minimum intensity, maximum intensity, average intensity,
+ * standard deviation of the intensity, and some shape descriptors of labelled objects in a label image and its
+ * corresponding intensity image.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param label Input label image. [Array::Pointer ( = None )]
+ * @param intensity Input intensity image. [Array::Pointer ( = None )]
+ * @return StatisticsMap
+ */
+auto
+statistics_of_labelled_pixels(const Device::Pointer & device,
+                              Array::Pointer          label,
+                              Array::Pointer          intensity) -> StatisticsMap;
 
 } // namespace cle::tier3
 
