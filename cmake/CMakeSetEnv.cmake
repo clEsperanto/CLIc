@@ -67,7 +67,7 @@ message(STATUS "Build project code coverage: ${BUILD_COVERAGE}")
 if (BUILD_COVERAGE)
 # add_compile_options(-g -O0 -fprofile-arcs -ftest-coverage)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
-  # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
   set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
 endif()
 
