@@ -1,19 +1,33 @@
 #ifndef __INCLUDE_STATISTICS_HPP
 #define __INCLUDE_STATISTICS_HPP
 
-#include <numeric>
-
 #include "array.hpp"
+
+#include <unordered_map>
+#include <vector>
 
 namespace cle
 {
 
+using StatisticsMap = std::unordered_map<std::string, std::vector<float>>;
 
 auto
-statistics_of_labelled_pixels(const Device::Pointer & device,
-                              Array::Pointer          intensity,
-                              Array::Pointer          label,
-                              Array::Pointer          result) -> std::unordered_map<std::string, std::vector<float>>;
+compute_statistics_per_labels(const Device::Pointer & device,
+                              const Array::Pointer &  label,
+                              const Array::Pointer &  intensity) -> StatisticsMap;
+
+auto
+_statistics_per_label(const Device::Pointer & device,
+                      const Array::Pointer &  label,
+                      const Array::Pointer &  intensity,
+                      int                     nb_labels) -> Array::Pointer;
+
+auto
+_std_per_label(const Device::Pointer & device,
+               const Array::Pointer &  statistics,
+               const Array::Pointer &  label,
+               const Array::Pointer &  intensity,
+               int                     nb_labels) -> Array::Pointer;
 
 } // namespace cle
 
