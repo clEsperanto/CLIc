@@ -109,7 +109,7 @@ bottom_hat_sphere_func(const Device::Pointer & device,
  * @param radius_x Radius of the background determination region in X. [float ( = 1 )]
  * @param radius_y Radius of the background determination region in Y. [float ( = 1 )]
  * @param radius_z Radius of the background determination region in Z. [float ( = 1 )]
- * @param connectivity Element shape, "box" or "sphere" [string ( = "box" )]
+ * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
  * @note 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
@@ -206,7 +206,7 @@ closing_sphere_func(const Device::Pointer & device,
  * @param radius_x Radius along the x axis. [int ( = 1 )]
  * @param radius_y Radius along the y axis. [int ( = 1 )]
  * @param radius_z Radius along the z axis. [int ( = 0 )]
- * @param connectivity Element shape, "box" or "sphere" [string ( = "box" )]
+ * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  * @note 'filter', 'in assistant', 'bia-bob-suggestion'
  */
@@ -390,7 +390,7 @@ detect_maxima_box_func(const Device::Pointer & device,
  * @param radius_x Radius along the x axis. [int ( = 0 )]
  * @param radius_y Radius along the y axis. [int ( = 0 )]
  * @param radius_z Radius along the z axis. [int ( = 0 )]
- * @param connectivity Element shape, "box" or "sphere" [string ( = "box" )]
+ * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
@@ -443,7 +443,7 @@ detect_minima_box_func(const Device::Pointer & device,
  * @param radius_x Radius along the x axis. [int ( = 0 )]
  * @param radius_y Radius along the y axis. [int ( = 0 )]
  * @param radius_z Radius along the z axis. [int ( = 0 )]
- * @param connectivity Element shape, "box" or "sphere" [string ( = "box" )]
+ * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
@@ -671,7 +671,7 @@ opening_sphere_func(const Device::Pointer & device,
  * @param radius_x Radius along the x axis. [float ( = 1 )]
  * @param radius_y Radius along the y axis. [float ( = 1 )]
  * @param radius_z Radius along the z axis. [float ( = 0 )]
- * @param connectivity Element shape, "box" or "sphere" [string ( = "box" )]
+ * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  * @note 'filter', 'in assistant', 'bia-bob-suggestion'
  *
@@ -836,7 +836,7 @@ standard_deviation_sphere_func(const Device::Pointer & device,
  * @param radius_x Radius along the x axis. [int ( = 1 )]
  * @param radius_y Radius along the y axis. [int ( = 1 )]
  * @param radius_z Radius along the z axis. [int ( = 1 )]
- * @param connectivity Neigborhood shape, "box" or "sphere" [string ( = "box" )]
+ * @param connectivity Neigborhood shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
  * @note 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
@@ -970,7 +970,7 @@ top_hat_sphere_func(const Device::Pointer & device,
  * @param radius_x Radius of the background determination region in X. [float ( = 1 )]
  * @param radius_y Radius of the background determination region in Y. [float ( = 1 )]
  * @param radius_z Radius of the background determination region in Z. [float ( = 1 )]
- * @param connectivity Element shape, "box" or "sphere" [string ( = "box" )]
+ * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
  * @note 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
