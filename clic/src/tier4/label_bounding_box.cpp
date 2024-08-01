@@ -10,9 +10,7 @@ namespace cle::tier4
 {
 
 auto
-label_bounding_box_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        int                     label_id) -> std::array<float, 6>
+label_bounding_box_func(const Device::Pointer & device, const Array::Pointer & src, int label_id) -> std::vector<float>
 {
   auto binary = tier1::equal_constant_func(device, src, nullptr, label_id);
   return tier3::bounding_box_func(device, binary);

@@ -23,7 +23,7 @@ namespace cle::tier3
  *
  */
 auto
-bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<float, 6>;
+bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) -> std::vector<float>;
 
 
 /**
@@ -38,7 +38,7 @@ bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) ->
  *
  */
 auto
-center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<float, 3>;
+center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) -> std::vector<float>;
 
 
 /**
