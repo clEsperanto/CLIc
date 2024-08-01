@@ -17,13 +17,13 @@ namespace cle::tier3
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src [const Array::Pointer &]
- * @return std::array<float, 6>
+ * @return std::vector<float>
  *
  * @see https://clij.github.io/clij2-docs/reference_boundingBox
  *
  */
 auto
-bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<float, 6>;
+bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) -> std::vector<float>;
 
 
 /**
@@ -33,12 +33,12 @@ bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) ->
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src [const Array::Pointer &]
- * @return std::array<float, 3>
+ * @return std::vector<float>
  * @see https://clij.github.io/clij2-docs/reference_centerOfMass
  *
  */
 auto
-center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<float, 3>;
+center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) -> std::vector<float>;
 
 
 /**
@@ -256,11 +256,11 @@ labelled_spots_to_pointlist_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The image of which the position of the maximum of all pixels will be determined. [const Array::Pointer &]
- * @return std::array<size_t, 3>
+ * @return std::vector<float>
  *
  */
 auto
-maximum_position_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<size_t, 3>;
+maximum_position_func(const Device::Pointer & device, const Array::Pointer & src) -> std::vector<float>;
 
 
 /**
@@ -283,11 +283,11 @@ mean_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & s
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src  The image of which the position of the minimum of all pixels will be determined. [const Array::Pointer &]
- * @return std::array<size_t, 3>
+ * @return std::vector<float>
  *
  */
 auto
-minimum_position_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<size_t, 3>;
+minimum_position_func(const Device::Pointer & device, const Array::Pointer & src) -> std::vector<float>;
 
 
 /**

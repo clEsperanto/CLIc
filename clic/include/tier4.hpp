@@ -19,15 +19,13 @@ namespace cle::tier4
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src [const Array::Pointer &]
  * @param label_id [int]
- * @return std::array<float, 6>
+ * @return std::vector<float>
  *
  * @see https://clij.github.io/clij2-docs/reference_boundingBox
  *
  */
 auto
-label_bounding_box_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        int                     label_id) -> std::array<float, 6>;
+label_bounding_box_func(const Device::Pointer & device, const Array::Pointer & src, int label_id) -> std::vector<float>;
 
 /**
  * @name mean_squared_error
