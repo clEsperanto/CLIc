@@ -9,12 +9,12 @@ namespace cle::tier3
 {
 
 auto
-maximum_position_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<size_t, 3>
+maximum_position_func(const Device::Pointer & device, const Array::Pointer & src) -> std::vector<float>
 {
-  size_t                z_coord = 0;
-  size_t                y_coord = 0;
-  size_t                x_coord = 0;
-  std::array<size_t, 3> coord = { 0, 0, 0 };
+  size_t             z_coord = 0;
+  size_t             y_coord = 0;
+  size_t             x_coord = 0;
+  std::vector<float> coord(3, 0);
 
   Array::Pointer pos_x;
   Array::Pointer pos_y;

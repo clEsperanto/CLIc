@@ -256,11 +256,11 @@ labelled_spots_to_pointlist_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The image of which the position of the maximum of all pixels will be determined. [const Array::Pointer &]
- * @return std::array<size_t, 3>
+ * @return std::vector<float>
  *
  */
 auto
-maximum_position_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<size_t, 3>;
+maximum_position_func(const Device::Pointer & device, const Array::Pointer & src) -> std::vector<float>;
 
 
 /**
@@ -283,11 +283,11 @@ mean_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & s
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src  The image of which the position of the minimum of all pixels will be determined. [const Array::Pointer &]
- * @return std::array<size_t, 3>
+ * @return std::vector<float>
  *
  */
 auto
-minimum_position_func(const Device::Pointer & device, const Array::Pointer & src) -> std::array<size_t, 3>;
+minimum_position_func(const Device::Pointer & device, const Array::Pointer & src) -> std::vector<float>;
 
 
 /**
