@@ -17,7 +17,7 @@ namespace cle::tier3
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src [const Array::Pointer &]
- * @return std::array<float, 6>
+ * @return std::vector<float>
  *
  * @see https://clij.github.io/clij2-docs/reference_boundingBox
  *
@@ -33,7 +33,7 @@ bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) ->
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src [const Array::Pointer &]
- * @return std::array<float, 3>
+ * @return std::vector<float>
  * @see https://clij.github.io/clij2-docs/reference_centerOfMass
  *
  */
