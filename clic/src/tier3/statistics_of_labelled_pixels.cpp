@@ -7,7 +7,7 @@ namespace cle::tier3
 
 auto
 statistics_of_labelled_pixels(const Device::Pointer & device,
-                              const Array::Pointer &  input,
+                              const Array::Pointer &  src,
                               Array::Pointer          intensity) -> StatisticsMap
 {
   // create intensity if not set
@@ -15,12 +15,12 @@ statistics_of_labelled_pixels(const Device::Pointer & device,
   {
     // std::cerr << "Warning: no intensity was provided. Pixels intensity will be set to their label value." <<
     // std::endl;
-    tier0::create_like(input, intensity, dType::FLOAT);
+    tier0::create_like(src, intensity, dType::FLOAT);
     intensity->fill(0);
     // tier1::copy_func(device, label, intensity);
   }
 
-  return compute_statistics_per_labels(device, input, intensity);
+  return compute_statistics_per_labels(device, src, intensity);
 }
 
 
