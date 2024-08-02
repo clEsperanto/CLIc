@@ -324,7 +324,7 @@ morphological_chan_vese_func(const Device::Pointer & device,
  * The intensity image is optional and set to 0 if not provided.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Label image to compute the statistics. [Array::Pointer]
+ * @param src Label image to compute the statistics. [const Array::Pointer &]]
  * @param intensity Intensity image. [Array::Pointer ( = None )]
  * @return StatisticsMap
  */
