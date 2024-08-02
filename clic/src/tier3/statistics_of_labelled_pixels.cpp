@@ -6,9 +6,9 @@ namespace cle::tier3
 {
 
 auto
-statistics_of_labelled_pixels(const Device::Pointer & device,
-                              Array::Pointer          label,
-                              Array::Pointer          intensity) -> StatisticsMap
+statistics_of_labelled_pixels_func(const Device::Pointer & device,
+                                   Array::Pointer          label,
+                                   Array::Pointer          intensity) -> StatisticsMap
 {
   if (!intensity && !label)
   {
