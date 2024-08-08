@@ -12,9 +12,12 @@ To compile the library, you'll need the following software:
     - On macOS, you can install the `Xcode command line tools <https://developer.apple.com/xcode/resources/>`__
     - On Linux, you can install GCC with the `build-essential <https://packages.ubuntu.com/jammy/build-essential>`__ package.
 
-For building the documentation or the CUDA version, the following additional software is required:
+For building the documentation, the additional library is required:
 
 - `Sphinx <https://www.sphinx-doc.org/en/master/>`__
+
+For building the CUDA backend verions (WIP), the following software is required:
+
 - `CUDA Toolkit <https://developer.nvidia.com/cuda-toolkit>`__
 
 .. note::

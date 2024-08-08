@@ -10,15 +10,27 @@ FetchContent_Declare(kernels
     GIT_TAG        ${CLESPERANTO_KERNEL_TAG}
     BUILD_ALWAYS   OFF
 )
+FetchContent_Declare(eigen
+GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+GIT_TAG        3.4.0
+BUILD_ALWAYS   OFF
+)
+
 FetchContent_GetProperties(kernels)
+FetchContent_GetProperties(eigen)
 if(NOT kernels_POPULATED)
     FetchContent_Populate(kernels)
+endif()
+if(NOT Eigen_POPULATED)
+    FetchContent_Populate(eigen)
 endif()
 
 set(KERNELS_SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/kernels-src CACHE PATH "Path to opencl kernel files (.cl)" FORCE)
 mark_as_advanced(KERNELS_SOURCE_DIR)
 set(KERNELS_HEADER_DIR ${CMAKE_CURRENT_BINARY_DIR}/kernels CACHE PATH "Path to kernel files (.h)" FORCE)
 mark_as_advanced(KERNELS_HEADER_DIR)
+set(EIGEN_SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/eigen-src CACHE PATH "Path to eigen lib" FORCE)
+mark_as_advanced(EIGEN_SOURCE_DIR)
 
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 # Define the command to generate kernels
@@ -34,14 +46,4 @@ add_custom_target(
     DEPENDS ${KERNELS_HEADER_DIR}
 )
 
-FetchContent_Declare(eigen
-    GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
-    GIT_TAG        3.4.0
-    BUILD_ALWAYS   OFF
-)
-FetchContent_GetProperties(eigen)
-if(NOT Eigen_POPULATED)
-    FetchContent_Populate(eigen)
-endif()
-set(EIGEN_SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/eigen-src CACHE PATH "Path to eigen lib" FORCE)
-mark_as_advanced(EIGEN_SOURCE_DIR)
+

@@ -371,10 +371,3 @@ Additionally, the CI/CD pipeline runs tests on each pull request.
 
     To run a specific test, use the ``ctest -C Debug -R {test_name}`` command.
 
-
-Code formatting
----------------
-
-The code formatting is managed by the `clang-format` tool.
-The configuration file is located at the root of the repository and is named `.clang-format`.
-For more information on how to use `clang-format`, please refer to the `official documentation <https://clang.llvm.org/docs/ClangFormat.html>`__.
