@@ -370,4 +370,3 @@ Additionally, the CI/CD pipeline runs tests on each pull request.
 .. note::
 
     To run a specific test, use the ``ctest -C Debug -R {test_name}`` command.
-

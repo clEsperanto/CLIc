@@ -51,7 +51,7 @@ To build the library using VScode, which we advise if you are planning to contri
 - Install VScode from `here <https://code.visualstudio.com/>`__ and the extension ``C/C++ Extension Pack`` by Microsoft
 - Open the repository folder in VScode.
 - Select the CMake presets configuration from the bottom action bar:
-  
+
   - Project Generator: ``Ninja``, ``Makefiles``, ``Visual Studio``, etc.
   - Project Build Type: ``Debug``, ``Release``, etc.
   - Project Test type: ``Ctest Debug``, ``Ctest Release``, etc.
@@ -62,7 +62,7 @@ To build the library using VScode, which we advise if you are planning to contri
 .. note::
 
   You can also refere to this issue for more information: `Issue #320 <https://github.com/clEsperanto/CLIc/issues/320#issuecomment-2225234326>`__
-    
+
 
 Configuration options
 ~~~~~~~~~~~~~~~~~~~~~
