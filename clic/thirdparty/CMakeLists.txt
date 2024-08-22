@@ -7,19 +7,9 @@ FetchContent_Declare(kernels
     GIT_TAG        ${kernel_version_tag}
     BUILD_ALWAYS   OFF
 )
-FetchContent_Declare(eigen
-GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
-GIT_TAG        3.4.0
-BUILD_ALWAYS   OFF
-)
-
 FetchContent_GetProperties(kernels)
-FetchContent_GetProperties(eigen)
 if(NOT kernels_POPULATED)
     FetchContent_Populate(kernels)
-endif()
-if(NOT Eigen_POPULATED)
-    FetchContent_Populate(eigen)
 endif()
 
 ## Fetch Eigen library sources
