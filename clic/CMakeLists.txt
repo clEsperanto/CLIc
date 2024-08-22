@@ -1,10 +1,5 @@
-
 # managed third party libraries
 add_subdirectory(thirdparty)
-
-# include eigen library but exclude it from build
-# include_directories(${EIGEN_SOURCE_DIR})
-# message(STATUS "Eigen include directory: ${EIGEN_SOURCE_DIR}")
 
 # manage configuration files
 configure_file(
