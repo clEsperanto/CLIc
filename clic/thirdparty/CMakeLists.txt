@@ -43,4 +43,3 @@ add_custom_target(
     generate_kernels
     DEPENDS ${KERNELS_HEADER_DIR}
 )
-
