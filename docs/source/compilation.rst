@@ -1,6 +1,9 @@
 Compilation
 -----------
 
+in Terminal
+~~~~~~~~~~~
+
 We rely on CMake to build the library.
 CMake is a cross-platform build system that can generate build files for different build systems like ``make``, ``ninja``, ``Visual Studio``, ``Xcode``, etc.
 We encourage you to refer to your favorite IDE documentation to learn how to use CMake with it.
@@ -38,6 +41,28 @@ The ``--config`` flag is used to specify the configuration to build if multiple 
 The ``--parallel`` flag is used to specify the number of parallel builds to use.
 
 Once the build is done, you can run the tests if they were built.
+
+in VScode
+~~~~~~~~~
+
+To build the library using VScode, which we advise if you are planning to contribute to the library and you are not familiar with other IDEs or Cpp projects in general, you can follow the steps below:
+
+- Install the requirements mentioned in the `Requirements <requirements>`__ section.
+- Install VScode from `here <https://code.visualstudio.com/>`__ and the extension ``C/C++ Extension Pack`` by Microsoft
+- Open the repository folder in VScode.
+- Select the CMake presets configuration from the bottom action bar:
+
+  - Project Generator: ``Ninja``, ``Makefiles``, ``Visual Studio``, etc.
+  - Project Build Type: ``Debug``, ``Release``, etc.
+  - Project Test type: ``Ctest Debug``, ``Ctest Release``, etc.
+
+- You can now configure the project by calling the ``CMake: Configure`` command from the command palette (``Ctrl+Shift+P``).
+- Once configured, you can build the project by calling the ``CMake: Build`` command from the command palette (``Ctrl+Shift+P``).
+
+.. note::
+
+  You can also refere to this issue for more information: `Issue #320 <https://github.com/clEsperanto/CLIc/issues/320#issuecomment-2225234326>`__
+
 
 Configuration options
 ~~~~~~~~~~~~~~~~~~~~~

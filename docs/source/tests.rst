@@ -3,7 +3,7 @@ Tests
 
 Simply building the library does not necessarily guarantee its correct functionality.
 The best way to ensure that it works correctly is by running tests.
-It's essential to set the option ``-D BUILD_TESTS=ON`` during configuration.
+It's essential to set the option ``-D BUILD_TESTS=ON`` during configuration (it should be set by default if you followed the instructions in the `Compilation <compilation>`__ section).
 This step is highly recommended during development to verify the library's functionality after each modification.
 
 To run all the tests, you can use the following command in the build directory:
