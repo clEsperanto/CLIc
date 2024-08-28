@@ -67,6 +67,49 @@ connected_components_labeling_func(const Device::Pointer & device,
                                    Array::Pointer          dst,
                                    const std::string &     connectivity) -> Array::Pointer;
 
+
+/**
+ * @name remove_small_objects
+ * @brief Removes labelled objects small than a given size (in pixels) from a label map.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Label image to filter. [const Array::Pointer &]
+ * @param dst Output label image fitlered. [Array::Pointer ( = None )]
+ * @param min_size Smallest size object allowed. [float ( = 100 )]
+ * @return Array::Pointer
+ *
+ * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
+ */
+auto
+remove_small_objects_func(const Device::Pointer & device,
+                        const Array::Pointer &  src,
+                        Array::Pointer          dst,
+                        float min_size) -> Array::Pointer;
+
+/**
+ * @name remove_big_objects
+ * @brief Removes labelled objects bigger than a given size (in pixels) from a label map.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Label image to filter. [const Array::Pointer &]
+ * @param dst Output label image fitlered. [Array::Pointer ( = None )]
+ * @param max_size Biggest size object allowed. [float ( = 100 )]
+ * @return Array::Pointer
+ *
+ * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
+ */
+auto
+remove_big_objects_func(const Device::Pointer & device,
+                        const Array::Pointer &  src,
+                        Array::Pointer          dst,
+                        float max_size) -> Array::Pointer;                        
+
+
+                      
+
+
 } // namespace cle::tier5
 
 #endif // __INCLUDE_TIER5_HPP
