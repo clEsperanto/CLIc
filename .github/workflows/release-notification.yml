@@ -32,5 +32,3 @@ jobs:
             -H "Authorization: token ${{ secrets.RELEASE_PAT }}" \
             https://api.github.com/repos/clEsperanto/clesperantoj_prototype/dispatches \
             -d '{"event_type":"custom_event", "client_payload": {"release_tag": "${{ env.LATEST_RELEASE_TAG }}"}}'
-
-
