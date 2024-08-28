@@ -60,9 +60,9 @@ center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) 
  */
 auto
 remove_labels_func(const Device::Pointer & device,
-                    const Array::Pointer &  src,
-                    const Array::Pointer &  list,
-                    Array::Pointer          dst) -> Array::Pointer;
+                   const Array::Pointer &  src,
+                   const Array::Pointer &  list,
+                   Array::Pointer          dst) -> Array::Pointer;
 
 
 /**
@@ -83,11 +83,11 @@ remove_labels_func(const Device::Pointer & device,
  */
 auto
 remove_labels_on_edges_func(const Device::Pointer & device,
-                             const Array::Pointer &  src,
-                             Array::Pointer          dst,
-                             bool                    exclude_x,
-                             bool                    exclude_y,
-                             bool                    exclude_z) -> Array::Pointer;
+                            const Array::Pointer &  src,
+                            Array::Pointer          dst,
+                            bool                    exclude_x,
+                            bool                    exclude_y,
+                            bool                    exclude_z) -> Array::Pointer;
 
 
 /**
