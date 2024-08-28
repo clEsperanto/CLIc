@@ -128,11 +128,9 @@ voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & src
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
  */
 auto
-remove_holes_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        Array::Pointer          dst,
-                        float max_size) -> Array::Pointer;  
-                        
+remove_holes_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float max_size)
+  -> Array::Pointer;
+
 
 } // namespace cle::tier6
 

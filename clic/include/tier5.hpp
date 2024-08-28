@@ -83,9 +83,9 @@ connected_components_labeling_func(const Device::Pointer & device,
  */
 auto
 remove_small_objects_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        Array::Pointer          dst,
-                        float min_size) -> Array::Pointer;
+                          const Array::Pointer &  src,
+                          Array::Pointer          dst,
+                          float                   min_size) -> Array::Pointer;
 
 /**
  * @name remove_big_objects
@@ -101,13 +101,8 @@ remove_small_objects_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
  */
 auto
-remove_big_objects_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        Array::Pointer          dst,
-                        float max_size) -> Array::Pointer;                        
-
-
-                      
+remove_big_objects_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float max_size)
+  -> Array::Pointer;
 
 
 } // namespace cle::tier5

@@ -13,20 +13,18 @@ namespace cle::tier5
 
 auto
 remove_small_objects_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        Array::Pointer          dst,
-                        float min_size) -> Array::Pointer
+                          const Array::Pointer &  src,
+                          Array::Pointer          dst,
+                          float                   min_size) -> Array::Pointer
 {
-    return tier4::filter_label_by_size_func(device, src, dst, min_size, std::numeric_limits<float>::max());
+  return tier4::filter_label_by_size_func(device, src, dst, min_size, std::numeric_limits<float>::max());
 }
 
 auto
-remove_big_objects_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        Array::Pointer          dst,
-                        float max_size) -> Array::Pointer
+remove_big_objects_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float max_size)
+  -> Array::Pointer
 {
-    return tier4::filter_label_by_size_func(device, src, dst, 0, max_size);
+  return tier4::filter_label_by_size_func(device, src, dst, 0, max_size);
 }
 
 } // namespace cle::tier5

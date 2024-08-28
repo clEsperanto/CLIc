@@ -119,8 +119,11 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
  */
 auto
-filter_label_by_size_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float min_size, float max_size) -> Array::Pointer;
-
+filter_label_by_size_func(const Device::Pointer & device,
+                          const Array::Pointer &  src,
+                          Array::Pointer          dst,
+                          float                   min_size,
+                          float                   max_size) -> Array::Pointer;
 
 
 } // namespace cle::tier4
