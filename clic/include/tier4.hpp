@@ -106,7 +106,7 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
 
 /**
  * @name filter_label_by_size
- * @brief filter labelled objects from a label map by size ("area") using the min/max size range value.
+ * @brief Filter labelled objects outside of the min/max size range value.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input label image. [const Array::Pointer &]
