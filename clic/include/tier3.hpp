@@ -43,7 +43,7 @@ center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) 
 
 
 /**
- * @name exclude_labels
+ * @name remove_labels
  * @brief This operation removes labels from a labelmap and renumbers the remaining labels. Hand over a binary flag list
  * vector starting with a flag for the background, continuing with label1, label2,... For example if you pass 0,1,0,0,1:
  * Labels 1 and 4 will be removed (those with a 1 in the vector will be excluded). Labels 2 and 3 will be kept and
@@ -59,14 +59,14 @@ center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) 
  *
  */
 auto
-exclude_labels_func(const Device::Pointer & device,
+remove_labels_func(const Device::Pointer & device,
                     const Array::Pointer &  src,
                     const Array::Pointer &  list,
                     Array::Pointer          dst) -> Array::Pointer;
 
 
 /**
- * @name exclude_labels_on_edges
+ * @name remove_labels_on_edges
  * @brief Removes all labels from a label map which touch the edges of the image. Remaining label elements are
  * renumbered afterwards.
  *
@@ -82,7 +82,7 @@ exclude_labels_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOnEdges
  */
 auto
-exclude_labels_on_edges_func(const Device::Pointer & device,
+remove_labels_on_edges_func(const Device::Pointer & device,
                              const Array::Pointer &  src,
                              Array::Pointer          dst,
                              bool                    exclude_x,

@@ -36,7 +36,7 @@ TEST_P(TestExcludeLabels, onList)
   gpu_input->writeFrom(input.data());
   gpu_list->writeFrom(list.data());
 
-  auto gpu_output = cle::tier3::exclude_labels_func(device, gpu_input, gpu_list, nullptr);
+  auto gpu_output = cle::tier3::remove_labels_func(device, gpu_input, gpu_list, nullptr);
 
   gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
@@ -62,7 +62,7 @@ TEST_P(TestExcludeLabels, onEdges)
   auto gpu_input = cle::Array::create(7, 6, 3, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
-  auto gpu_output = cle::tier3::exclude_labels_on_edges_func(device, gpu_input, nullptr, true, true, true);
+  auto gpu_output = cle::tier3::remove_labels_on_edges_func(device, gpu_input, nullptr, true, true, true);
 
   gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)

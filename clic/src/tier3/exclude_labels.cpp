@@ -9,7 +9,7 @@ namespace cle::tier3
 {
 
 auto
-exclude_labels_func(const Device::Pointer & device,
+remove_labels_func(const Device::Pointer & device,
                     const Array::Pointer &  src,
                     const Array::Pointer &  list,
                     Array::Pointer          dst) -> Array::Pointer
@@ -17,7 +17,7 @@ exclude_labels_func(const Device::Pointer & device,
   tier0::create_like(src, dst);
   if (list->dtype() != dType::LABEL)
   {
-    throw std::runtime_error("exclude_labels: label list must be of type uint32");
+    throw std::runtime_error("remove_labels: label list must be of type uint32");
   }
   std::vector<uint32_t> labels_list(list->size());
   list->readTo(labels_list.data());

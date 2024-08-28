@@ -11,7 +11,7 @@ namespace cle::tier3
 {
 
 auto
-exclude_labels_on_edges_func(const Device::Pointer & device,
+remove_labels_on_edges_func(const Device::Pointer & device,
                              const Array::Pointer &  src,
                              Array::Pointer          dst,
                              bool                    exclude_x,
