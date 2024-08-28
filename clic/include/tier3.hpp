@@ -326,12 +326,14 @@ morphological_chan_vese_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Label image to compute the statistics. [const Array::Pointer &]]
  * @param intensity Intensity image. [Array::Pointer ( = None )]
+ * @param withBG Include the background label in the statistics. [bool ( = False )]
  * @return StatisticsMap
  */
 auto
 statistics_of_labelled_pixels_func(const Device::Pointer & device,
                                    const Array::Pointer &  src,
-                                   Array::Pointer          intensity) -> StatisticsMap;
+                                   Array::Pointer          intensity,
+                                   bool withBG) -> StatisticsMap;
 
 } // namespace cle::tier3
 
