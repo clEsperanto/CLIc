@@ -9,7 +9,7 @@ auto
 statistics_of_labelled_pixels_func(const Device::Pointer & device,
                                    const Array::Pointer &  src,
                                    Array::Pointer          intensity,
-                                   bool withBG) -> StatisticsMap
+                                   bool                    withBG) -> StatisticsMap
 {
   // create intensity if not set
   if (intensity == nullptr)

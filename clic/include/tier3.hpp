@@ -333,7 +333,7 @@ auto
 statistics_of_labelled_pixels_func(const Device::Pointer & device,
                                    const Array::Pointer &  src,
                                    Array::Pointer          intensity,
-                                   bool withBG) -> StatisticsMap;
+                                   bool                    withBG) -> StatisticsMap;
 
 } // namespace cle::tier3
 

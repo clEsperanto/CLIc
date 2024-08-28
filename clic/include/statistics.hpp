@@ -15,7 +15,7 @@ auto
 compute_statistics_per_labels(const Device::Pointer & device,
                               const Array::Pointer &  label,
                               const Array::Pointer &  intensity,
-                              size_t offset) -> StatisticsMap;
+                              size_t                  offset) -> StatisticsMap;
 
 auto
 _statistics_per_label(const Device::Pointer & device,

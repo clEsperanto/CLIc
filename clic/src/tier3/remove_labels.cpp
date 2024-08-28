@@ -10,9 +10,9 @@ namespace cle::tier3
 
 auto
 remove_labels_func(const Device::Pointer & device,
-                    const Array::Pointer &  src,
-                    const Array::Pointer &  list,
-                    Array::Pointer          dst) -> Array::Pointer
+                   const Array::Pointer &  src,
+                   const Array::Pointer &  list,
+                   Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(src, dst);
   if (list->dtype() != dType::LABEL)
