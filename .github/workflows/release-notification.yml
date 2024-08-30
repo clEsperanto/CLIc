@@ -15,29 +15,10 @@ jobs:
           latest_release=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
           echo "LATEST_RELEASE_TAG=$latest_release" >> $GITHUB_ENV
           
-
-      - name: Send release notification to pyclesperanto
+      - name: Send release notification to gencle
         run: |
           curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.RELEASE_PAT }}" \
-            https://api.github.com/repos/clEsperanto/pyclesperanto/dispatches \
-            -d '{"event_type":"custom_event", "client_payload": {"release_tag": "${{ env.LATEST_RELEASE_TAG }}"}}'
-
-
-      - name: Send release notification to clesperantoJ
-        run: |
-          curl -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token ${{ secrets.RELEASE_PAT }}" \
-            https://api.github.com/repos/clEsperanto/clesperantoj_prototype/dispatches \
-            -d '{"event_type":"custom_event", "client_payload": {"release_tag": "${{ env.LATEST_RELEASE_TAG }}"}}'
-
-
-      - name: Send release notification to playground
-        run: |
-          curl -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token ${{ secrets.RELEASE_PAT }}" \
-            https://api.github.com/repos/clEsperanto/bot_playground/dispatches \
-            -d '{"event_type":"custom_event", "client_payload": {"release_tag": "${{ env.LATEST_RELEASE_TAG }}"}}'
+            https://api.github.com/repos/clEsperanto/gencle/dispatches \
+            -d '{"event_type":"clic_update", "client_payload": {"release_tag": "${{ env.LATEST_RELEASE_TAG }}"}}'
