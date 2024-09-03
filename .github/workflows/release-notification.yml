@@ -19,8 +19,7 @@ jobs:
       - name: Send release notification to bot playground
         run: |
           curl -X POST \
-            -H "Accept: application/vnd.github.v3+json" \ 
+            -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             https://api.github.com/repos/clEsperanto/bot_playground/dispatches \
             -d '{"event_type":"clic_update", "client_payload": {"release_tag": "${{ env.LATEST_RELEASE_TAG }}"}}'
-
