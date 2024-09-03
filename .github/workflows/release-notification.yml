@@ -28,6 +28,6 @@ jobs:
           curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \ 
             -H "Authorization: token ${{ secrets.RELEASE_PAT }}" \
-            https://api.github.com/repos/clEsperanto/bot_playground/dispatches \
+            https://smee.io/DAmb8YAjb1l0NHDz \
             -d '{"event_type":"clic_update", "client_payload": {"release_tag": "${{ env.LATEST_RELEASE_TAG }}"}}'
 
