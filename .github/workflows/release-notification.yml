@@ -15,7 +15,6 @@ jobs:
           latest_release=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
           echo "LATEST_RELEASE_TAG=$latest_release" >> $GITHUB_ENV
 
-          
       - name: Send release notification to bot playground
         run: |
           curl -X POST \
