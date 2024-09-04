@@ -72,8 +72,8 @@ spots_to_pointlist_func(const Device::Pointer & device,
  * performed on the CPU.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Label image. [const Array::Pointer &]
+ * @param dst Output label image. [Array::Pointer ( = None )]
  * @param blocksize Renumbering is done in blocks for performance reasons. [int ( = 4096 )]
  * @return Array::Pointer
  *
@@ -91,8 +91,8 @@ relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & s
  * determined on the GPU to create binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to threshold. [const Array::Pointer &]
+ * @param dst Output binary image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant', 'bia-bob-suggestion'
@@ -102,6 +102,29 @@ relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & s
  */
 auto
 threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+
+/**
+ * @name filter_label_by_size
+ * @brief Filter labelled objects outside of the min/max size range value.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input label image. [const Array::Pointer &]
+ * @param dst Output label image. [Array::Pointer ( = None )]
+ * @param min_size Minimum size of labels to keep. [float ( = 0 )]
+ * @param max_size Maximum size of labels to keep. [float ( = 100 )]
+ * @return Array::Pointer
+ *
+ * @note 'label processing', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
+ */
+auto
+filter_label_by_size_func(const Device::Pointer & device,
+                          const Array::Pointer &  src,
+                          Array::Pointer          dst,
+                          float                   min_size,
+                          float                   max_size) -> Array::Pointer;
+
 
 } // namespace cle::tier4
 

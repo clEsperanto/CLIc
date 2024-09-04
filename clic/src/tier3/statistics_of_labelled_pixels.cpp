@@ -8,7 +8,8 @@ namespace cle::tier3
 auto
 statistics_of_labelled_pixels_func(const Device::Pointer & device,
                                    const Array::Pointer &  src,
-                                   Array::Pointer          intensity) -> StatisticsMap
+                                   Array::Pointer          intensity,
+                                   bool                    withBG) -> StatisticsMap
 {
   // create intensity if not set
   if (intensity == nullptr)
@@ -20,7 +21,8 @@ statistics_of_labelled_pixels_func(const Device::Pointer & device,
     // tier1::copy_func(device, label, intensity);
   }
 
-  return compute_statistics_per_labels(device, src, intensity);
+  size_t offset = (withBG) ? 0 : 1;
+  return compute_statistics_per_labels(device, src, intensity, offset);
 }
 
 

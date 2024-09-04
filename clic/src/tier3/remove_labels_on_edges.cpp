@@ -11,12 +11,12 @@ namespace cle::tier3
 {
 
 auto
-exclude_labels_on_edges_func(const Device::Pointer & device,
-                             const Array::Pointer &  src,
-                             Array::Pointer          dst,
-                             bool                    exclude_x,
-                             bool                    exclude_y,
-                             bool                    exclude_z) -> Array::Pointer
+remove_labels_on_edges_func(const Device::Pointer & device,
+                            const Array::Pointer &  src,
+                            Array::Pointer          dst,
+                            bool                    exclude_x,
+                            bool                    exclude_y,
+                            bool                    exclude_z) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::LABEL);
   auto num_labels = static_cast<uint32_t>(tier2::maximum_of_all_pixels_func(device, src));

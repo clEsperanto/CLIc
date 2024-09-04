@@ -77,12 +77,13 @@ _std_per_label(const Device::Pointer & device,
 auto
 compute_statistics_per_labels(const Device::Pointer & device,
                               const Array::Pointer &  label,
-                              const Array::Pointer &  intensity) -> StatisticsMap
+                              const Array::Pointer &  intensity,
+                              size_t                  offset) -> StatisticsMap
 {
 
 
   // initialize variables, output, and constants
-  const size_t     offset = 1; // skip the bg label with value 0
+  // const size_t     offset= 0; // skip the bg label with value 0
   const size_t     nb_labels = static_cast<size_t>(tier2::maximum_of_all_pixels_func(device, label)) + offset;
   const size_t     nb_measurements = nb_labels - offset;
   const RangeArray origin = { 0, 0, 0 };
