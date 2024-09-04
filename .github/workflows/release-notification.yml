@@ -5,6 +5,9 @@ on:
       types: [published]
     workflow_dispatch:  # This allows manual triggering
 
+permissions:
+  contents: write
+
 jobs:
   release-notification:
     runs-on: ubuntu-latest
@@ -16,11 +19,14 @@ jobs:
           echo "LATEST_RELEASE_TAG=$latest_release" >> $GITHUB_ENV
 
       - name: Send release notification to bot playground
+        env:
+          LATEST_RELEASE_TAG: ${{ env.LATEST_RELEASE_TAG }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token ${{ secrets.TOKEN_SR }}" \
+            -H "Authorization: token $GITHUB_TOKEN" \
             https://api.github.com/repos/clEsperanto/bot_playground/dispatches \
-            -d '{"event_type":"clic_update", "client_payload": {"release_tag": "${{ env.LATEST_RELEASE_TAG }}"}}'
+            -d '{"event_type":"clic_update", "client_payload": {"release_tag": "$LATEST_RELEASE_TAG"}}'
 
             
