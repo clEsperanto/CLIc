@@ -10,8 +10,9 @@
 namespace cle::tier5
 {
 
+
 auto
-connected_components_labeling_func(const Device::Pointer & device,
+connected_component_labeling_func(const Device::Pointer & device,
                                    const Array::Pointer &  src,
                                    Array::Pointer          dst,
                                    const std::string &     connectivity) -> Array::Pointer
@@ -39,6 +40,15 @@ connected_components_labeling_func(const Device::Pointer & device,
     iter_count++;
   }
   return tier4::relabel_sequential_func(device, (iter_count % 2 == 0) ? temp1 : temp2, dst, 4096);
+}
+
+auto
+connected_components_labeling_func(const Device::Pointer & device,
+                                   const Array::Pointer &  src,
+                                   Array::Pointer          dst,
+                                   const std::string &     connectivity) -> Array::Pointer
+{
+  return connected_component_labeling_func(device, src, dst, connectivity);
 }
 
 } // namespace cle::tier5
