@@ -47,7 +47,7 @@ erode_labels_func(const Device::Pointer & device,
       tier1::copy_func(device, temp, dst);
     }
     tier1::not_equal_constant_func(device, dst, temp, 0);
-    tier5::connected_components_labeling_func(device, temp, dst, "sphere");
+    tier5::connected_component_labeling_func(device, temp, dst, "sphere");
   }
   else
   {
