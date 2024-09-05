@@ -17,13 +17,12 @@ jobs:
 
       - name: Send dispatch event to bot_playground repository
         env:
-          LATEST_RELEASE_TAG: ${{ env.LATEST_RELEASE_TAG }}
           PAT: ${{ secrets.TOKEN_SR }}
         run: |
           curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token $PAT" \
             https://api.github.com/repos/clEsperanto/bot_playground/dispatches \
-            -d '{"event_type":"clic_update", "client_payload": {"release_tag": "$LATEST_RELEASE_TAG"}}'
+            -d '{"event_type":"clic_update", "client_payload": {"release_tag": "${{ env.LATEST_RELEASE_TAG }}"}}'
 
             
