@@ -85,9 +85,9 @@ connected_components_labeling_func(const Device::Pointer & device,
  */
 auto
 connected_component_labeling_func(const Device::Pointer & device,
-                                   const Array::Pointer &  src,
-                                   Array::Pointer          dst,
-                                   const std::string &     connectivity) -> Array::Pointer;
+                                  const Array::Pointer &  src,
+                                  Array::Pointer          dst,
+                                  const std::string &     connectivity) -> Array::Pointer;
 
 
 /**

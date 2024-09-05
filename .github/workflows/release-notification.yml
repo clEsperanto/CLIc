@@ -24,5 +24,3 @@ jobs:
             -H "Authorization: token $PAT" \
             https://api.github.com/repos/clEsperanto/bot_playground/dispatches \
             -d '{"event_type":"clic_update", "client_payload": {"release_tag": "${{ env.LATEST_RELEASE_TAG }}"}}'
-
-            
