@@ -115,8 +115,8 @@ voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & src
 
 
 /**
- * @name remove_holes
- * @brief Removes holes in labelled objects samller than a given size (in pixels) from a label map.
+ * @name fill_holes
+ * @brief Fill holes in labelled objects samller than a given size (in pixels) from a label map.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Label image to filter. [const Array::Pointer &]
@@ -128,7 +128,7 @@ voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & src
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
  */
 auto
-remove_holes_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float max_size)
+fill_holes_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float max_size)
   -> Array::Pointer;
 
 

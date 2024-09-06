@@ -12,7 +12,7 @@ namespace cle::tier6
 {
 
 auto
-remove_holes_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float max_size)
+fill_holes_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float max_size)
   -> Array::Pointer
 {
   // get the holes by looking at the inverted image
