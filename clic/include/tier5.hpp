@@ -60,34 +60,12 @@ combine_labels_func(const Device::Pointer & device,
  *
  * @note 'label', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_connectedComponentsLabelingBox
- * @deprecated Function is deprecated. Use connected_component_labeling() instead.
  */
 auto
 connected_components_labeling_func(const Device::Pointer & device,
                                    const Array::Pointer &  src,
                                    Array::Pointer          dst,
                                    const std::string &     connectivity) -> Array::Pointer;
-
-
-/**
- * @name connected_component_labeling
- * @brief Performs connected components analysis inspecting the box neighborhood of every pixel to a binary image and
- * generates a label map.
- *
- * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Binary image to label. [const Array::Pointer &]
- * @param dst Output label image. [Array::Pointer ( = None )]
- * @param connectivity Defines pixel neighborhood relationship, "box" or "sphere". [const std::string & ( = 'box' )]
- * @return Array::Pointer
- *
- * @note 'label', 'in assistant', 'bia-bob-suggestion'
- * @see https://clij.github.io/clij2-docs/reference_connectedComponentsLabelingBox
- */
-auto
-connected_component_labeling_func(const Device::Pointer & device,
-                                  const Array::Pointer &  src,
-                                  Array::Pointer          dst,
-                                  const std::string &     connectivity) -> Array::Pointer;
 
 
 /**

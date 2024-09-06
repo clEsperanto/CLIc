@@ -19,7 +19,7 @@ remove_holes_func(const Device::Pointer & device, const Array::Pointer & src, Ar
   auto binary = tier1::greater_constant_func(device, src, nullptr, 0);
   auto inverted = tier1::binary_not_func(device, binary, nullptr);
 
-  auto labels = tier5::connected_component_labeling_func(device, inverted, nullptr, "box");
+  auto labels = tier5::connected_components_labeling_func(device, inverted, nullptr, "box");
   tier5::remove_small_labels_func(device, labels, dst, max_size);
 
   // invert the filtered image
