@@ -55,4 +55,15 @@ remove_labels_on_edges_func(const Device::Pointer & device,
   return tier1::replace_values_func(device, src, label_map, dst);
 }
 
+auto
+exclude_labels_on_edges_func(const Device::Pointer & device,
+                            const Array::Pointer &  src,
+                            Array::Pointer          dst,
+                            bool                    exclude_x,
+                            bool                    exclude_y,
+                            bool                    exclude_z) -> Array::Pointer
+                            {
+  return remove_labels_on_edges_func(device, src, dst, exclude_x, exclude_y, exclude_z);
+                            }
+
 } // namespace cle::tier3

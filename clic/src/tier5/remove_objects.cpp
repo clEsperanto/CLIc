@@ -12,7 +12,7 @@ namespace cle::tier5
 {
 
 auto
-remove_small_objects_func(const Device::Pointer & device,
+remove_small_labels_func(const Device::Pointer & device,
                           const Array::Pointer &  src,
                           Array::Pointer          dst,
                           float                   min_size) -> Array::Pointer
@@ -21,10 +21,28 @@ remove_small_objects_func(const Device::Pointer & device,
 }
 
 auto
-remove_big_objects_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float max_size)
+remove_large_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float max_size)
   -> Array::Pointer
 {
   return tier4::filter_label_by_size_func(device, src, dst, 0, max_size);
 }
+
+auto
+exclude_small_labels_func(const Device::Pointer & device,
+                          const Array::Pointer &  src,
+                          Array::Pointer          dst,
+                          float                   max_size) -> Array::Pointer
+                          {
+  return tier5::remove_small_labels_func(device, src, dst, max_size);
+                          }
+
+                          auto
+exclude_large_labels_func(const Device::Pointer & device,
+                          const Array::Pointer &  src,
+                          Array::Pointer          dst,
+                          float                   min_size) -> Array::Pointer
+                          {
+  return tier5::remove_large_labels_func(device, src, dst, min_size);
+                          }
 
 } // namespace cle::tier5
