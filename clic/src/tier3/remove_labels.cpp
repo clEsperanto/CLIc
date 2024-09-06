@@ -46,11 +46,11 @@ remove_labels_func(const Device::Pointer & device,
 
 auto
 exclude_labels_func(const Device::Pointer & device,
-                   const Array::Pointer &  src,
-                   const Array::Pointer &  list,
-                   Array::Pointer          dst) -> Array::Pointer
+                    const Array::Pointer &  src,
+                    const Array::Pointer &  list,
+                    Array::Pointer          dst) -> Array::Pointer
 {
-return remove_labels_func(device, src, list, dst);
+  return remove_labels_func(device, src, list, dst);
 }
 
 } // namespace cle::tier3

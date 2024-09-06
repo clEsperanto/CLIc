@@ -18,7 +18,7 @@ fill_holes_func(const Device::Pointer & device, const Array::Pointer & src, Arra
   // get the holes by looking at the inverted image
   auto binary = tier1::greater_constant_func(device, src, nullptr, 0);
   auto inverted = tier1::binary_not_func(device, binary, nullptr);
-  
+
   tier5::remove_small_labels_func(device, labels, dst, max_size);
   auto labels = tier5::connected_component_labeling_func(device, inverted, nullptr, "box");
 

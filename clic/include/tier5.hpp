@@ -88,7 +88,7 @@ connected_component_labeling_func(const Device::Pointer & device,
                                   const Array::Pointer &  src,
                                   Array::Pointer          dst,
                                   const std::string &     connectivity) -> Array::Pointer;
-  
+
 /**
  * @name remove_small_labels
  * @brief Removes labelled objects small than a given size (in pixels) from a label map.
@@ -103,10 +103,8 @@ connected_component_labeling_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
  */
 auto
-remove_small_labels_func(const Device::Pointer & device,
-                          const Array::Pointer &  src,
-                          Array::Pointer          dst,
-                          float                   min_size) -> Array::Pointer;
+remove_small_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float min_size)
+  -> Array::Pointer;
 
 /**
  * @name exclude_small_labels
@@ -125,7 +123,7 @@ auto
 exclude_small_labels_func(const Device::Pointer & device,
                           const Array::Pointer &  src,
                           Array::Pointer          dst,
-                          float                   max_size) -> Array::Pointer;                          
+                          float                   max_size) -> Array::Pointer;
 
 /**
  * @name remove_large_labels
@@ -158,8 +156,10 @@ remove_large_labels_func(const Device::Pointer & device, const Array::Pointer & 
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
  */
 auto
-exclude_large_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float min_size)
-  -> Array::Pointer;  
+exclude_large_labels_func(const Device::Pointer & device,
+                          const Array::Pointer &  src,
+                          Array::Pointer          dst,
+                          float                   min_size) -> Array::Pointer;
 
 
 } // namespace cle::tier5

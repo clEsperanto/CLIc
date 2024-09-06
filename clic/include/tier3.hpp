@@ -82,9 +82,9 @@ remove_labels_func(const Device::Pointer & device,
  */
 auto
 exclude_labels_func(const Device::Pointer & device,
-                   const Array::Pointer &  src,
-                   const Array::Pointer &  list,
-                   Array::Pointer          dst) -> Array::Pointer;
+                    const Array::Pointer &  src,
+                    const Array::Pointer &  list,
+                    Array::Pointer          dst) -> Array::Pointer;
 
 /**
  * @name remove_labels_on_edges
@@ -128,11 +128,11 @@ remove_labels_on_edges_func(const Device::Pointer & device,
  */
 auto
 exclude_labels_on_edges_func(const Device::Pointer & device,
-                            const Array::Pointer &  src,
-                            Array::Pointer          dst,
-                            bool                    exclude_x,
-                            bool                    exclude_y,
-                            bool                    exclude_z) -> Array::Pointer;
+                             const Array::Pointer &  src,
+                             Array::Pointer          dst,
+                             bool                    exclude_x,
+                             bool                    exclude_y,
+                             bool                    exclude_z) -> Array::Pointer;
 
 /**
  * @name flag_existing_labels
