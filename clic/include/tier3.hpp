@@ -64,6 +64,27 @@ remove_labels_func(const Device::Pointer & device,
                    const Array::Pointer &  list,
                    Array::Pointer          dst) -> Array::Pointer;
 
+/**
+ * @name exclude_labels
+ * @brief This operation removes labels from a labelmap and renumbers the remaining labels. Hand over a binary flag list
+ * vector starting with a flag for the background, continuing with label1, label2,... For example if you pass 0,1,0,0,1:
+ * Labels 1 and 4 will be removed (those with a 1 in the vector will be excluded). Labels 2 and 3 will be kept and
+ * renumbered to 1 and 2.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src [const Array::Pointer &]
+ * @param list [const Array::Pointer &]
+ * @param dst [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @see https://clij.github.io/clij2-docs/reference_excludeLabels
+ *
+ */
+auto
+exclude_labels_func(const Device::Pointer & device,
+                    const Array::Pointer &  src,
+                    const Array::Pointer &  list,
+                    Array::Pointer          dst) -> Array::Pointer;
 
 /**
  * @name remove_labels_on_edges
@@ -89,6 +110,29 @@ remove_labels_on_edges_func(const Device::Pointer & device,
                             bool                    exclude_y,
                             bool                    exclude_z) -> Array::Pointer;
 
+/**
+ * @name exclude_labels_on_edges
+ * @brief Removes all labels from a label map which touch the edges of the image. Remaining label elements are
+ * renumbered afterwards.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer & ( = None )]
+ * @param src [const Array::Pointer &]
+ * @param dst [Array::Pointer ( = None )]
+ * @param exclude_x Exclude labels along min and max x [bool ( = True )]
+ * @param exclude_y Exclude labels along min and max y [bool ( = True )]
+ * @param exclude_z Exclude labels along min and max z [bool ( = True )]
+ * @return Array::Pointer
+ *
+ * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOnEdges
+ */
+auto
+exclude_labels_on_edges_func(const Device::Pointer & device,
+                             const Array::Pointer &  src,
+                             Array::Pointer          dst,
+                             bool                    exclude_x,
+                             bool                    exclude_y,
+                             bool                    exclude_z) -> Array::Pointer;
 
 /**
  * @name flag_existing_labels
