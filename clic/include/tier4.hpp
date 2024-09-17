@@ -145,6 +145,22 @@ label_pixel_count_map_func(const Device::Pointer & device,
                            Array::Pointer          dst) -> Array::Pointer;
 
 
+/**
+ * @name centroids_of_labels
+ * @brief Determines the centroids of all labels in a label image or image stack.
+ * It writes the resulting coordinates in point list image of dimensions n * d
+ * where n is the number of labels and d=3 the dimensionality (x,y,z) of the original image.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Label image where the centroids will be determined from. [const Array::Pointer &]
+ * @param dst Output image where the centroids will be written to. [Array::Pointer ( = None )]
+ * @param withBG Determines if the background label should be included. [bool ( = false )]
+ */
+auto
+centroids_of_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, bool withBG)
+  -> Array::Pointer;
+
+
 } // namespace cle::tier4
 
 #endif // __INCLUDE_TIER4_HPP
