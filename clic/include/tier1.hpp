@@ -2060,6 +2060,47 @@ replace_value_func(const Device::Pointer & device,
                    float                   scalar1) -> Array::Pointer;
 
 /**
+ * @name replace_intensity
+ * @brief Replaces a specific intensity in an image with a given new value.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param scalar0 Old value. [float ( = 0 )]
+ * @param scalar1 New value. [float ( = 1 )]
+ * @return Array::Pointer
+ * @see https://clij.github.io/clij2-docs/reference_replaceIntensity
+ * @deprecated This function is deprecated. Consider using replace_value() instead.
+ */
+auto
+replace_intensity_func(const Device::Pointer & device,
+                       const Array::Pointer &  src,
+                       Array::Pointer          dst,
+                       float                   scalar0,
+                       float                   scalar1) -> Array::Pointer;
+
+/**
+ * @name replace_intensities
+ * @brief Replaces integer intensities specified in a vector image. The values are passed as a vector of values.
+ * The vector index represents the old intensity and the value at that position represents the new intensity.s
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src0 Input image to process. [const Array::Pointer &]
+ * @param src1 List of intensities to replace, as a vector of values. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_replaceIntensities
+ * @deprecated This function is deprecated. Consider using replace_values() instead.
+ */
+auto
+replace_intensities_func(const Device::Pointer & device,
+                         const Array::Pointer &  src0,
+                         const Array::Pointer &  src1,
+                         Array::Pointer          dst) -> Array::Pointer;
+
+/**
  * @name maximum_sphere
  * @brief Computes the local maximum of a pixels spherical neighborhood. The spheres size is specified by its halfwidth,
  * halfheight and halfdepth (radius).
