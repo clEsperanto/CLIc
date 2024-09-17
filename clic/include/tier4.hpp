@@ -126,6 +126,25 @@ filter_label_by_size_func(const Device::Pointer & device,
                           float                   max_size) -> Array::Pointer;
 
 
+/**
+ * @name label_pixel_count_map
+ * @brief Takes a label map, determines the number of pixels per label and replaces every label with the that number.
+ * This results in a parametric image expressing area or volume.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Label image to measure [const Array::Pointer &]
+ * @param dst Parametric image computed[Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'label measurement', 'map', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_pixelCountMap
+ */
+auto
+label_pixel_count_map_func(const Device::Pointer & device,
+                           const Array::Pointer &  src,
+                           Array::Pointer          dst) -> Array::Pointer;
+
+
 } // namespace cle::tier4
 
 #endif // __INCLUDE_TIER4_HPP
