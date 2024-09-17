@@ -162,6 +162,24 @@ exclude_large_labels_func(const Device::Pointer & device,
                           float                   min_size) -> Array::Pointer;
 
 
+/**
+ * @name reduce_labels_to_centroids
+ * @brief Take a label map and reduce each label to its centroid.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Label image to reduce. [const Array::Pointer &]
+ * @param dst Output label image with centroids. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_reduceLabelsToCentroids
+ */
+auto
+reduce_labels_to_centroids_func(const Device::Pointer & device,
+                                const Array::Pointer &  src,
+                                Array::Pointer          dst) -> Array::Pointer;
+
+
 } // namespace cle::tier5
 
 #endif // __INCLUDE_TIER5_HPP
