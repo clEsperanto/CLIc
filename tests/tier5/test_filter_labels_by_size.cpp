@@ -24,7 +24,7 @@ TEST_P(TestFilterLabelsBySize, execute2d)
   auto gpu_input = cle::Array::create(6, 5, 1, 2, cle::dType::LABEL, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
-  auto gpu_output = cle::tier4::filter_label_by_size_func(device, gpu_input, nullptr, 4, 5);
+  auto gpu_output = cle::tier5::filter_label_by_size_func(device, gpu_input, nullptr, 4, 5);
 
   std::vector<uint32_t> output(gpu_output->size());
   gpu_output->readTo(output.data());

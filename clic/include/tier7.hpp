@@ -272,6 +272,23 @@ voronoi_otsu_labeling_func(const Device::Pointer & device,
                            float                   outline_sigma) -> Array::Pointer;
 
 
+/**
+ * @name fill_holes
+ * @brief Fill holes in labelled objects samller than a given size (in pixels) from a label map.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Label image to filter. [const Array::Pointer &]
+ * @param dst Output label image fitlered. [Array::Pointer ( = None )]
+ * @param max_size Biggest size holes allowed. [float ( = 100 )]
+ * @return Array::Pointer
+ *
+ * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
+ */
+auto
+fill_holes_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float max_size)
+  -> Array::Pointer;
+
 } // namespace cle::tier7
 
 #endif // __INCLUDE_TIER7_HPP
