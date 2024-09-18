@@ -895,6 +895,46 @@ subtract_images_func(const Device::Pointer & device,
                      const Array::Pointer &  src1,
                      Array::Pointer          dst) -> Array::Pointer;
 
+/**
+ * @name sub_stack
+ * @brief Crop a volume into a new volume, along the z-axis.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image. [const Array::Pointer &]
+ * @param dst Output image. [Array::Pointer ( = None )]
+ * @param start_z Start z coordinate of the crop. [int ( = 0 )]
+ * @param end_z End z coordinate of the crop. [int ( = 0 )]
+ * @return Array::Pointer
+ *
+ * @note 'transform', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_subStack
+ */
+auto
+sub_stack_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int start_z, int end_z)
+  -> Array::Pointer;
+
+/**
+ * @name reduce_stack
+ * @brief Reduces the number of z-slices in a stack by a given factor. With the offset you have control which slices
+ * stays: with a factor 3 and offset 0, slices 0,3,6, etc. are kept. with a factor 4 and offset 1, slices 1,5,9, etc.
+ * are kept.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image. [const Array::Pointer &]
+ * @param dst Output image. [Array::Pointer ( = None )]
+ * @param reduction_factor Reduction factor. [int ( = 2 )]
+ * @param offset Offset. [int ( = 0 )]
+ * @return Array::Pointer
+ *
+ * @note 'transform', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_reduceStack
+ */
+auto
+reduce_stack_func(const Device::Pointer & device,
+                  const Array::Pointer &  src,
+                  Array::Pointer          dst,
+                  int                     reduction_factor,
+                  int                     offset) -> Array::Pointer;
 
 /**
  * @name sum_of_all_pixels
