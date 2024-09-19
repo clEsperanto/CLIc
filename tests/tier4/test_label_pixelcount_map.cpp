@@ -26,14 +26,12 @@ TEST_P(TestLabelPixelCountMap, execute2d)
 
   auto gpu_output = cle::tier4::label_pixel_count_map_func(device, gpu_input, nullptr);
 
-  cle::print<float>(gpu_output);
-
   std::vector<float> output(gpu_output->size());
   gpu_output->readTo(output.data());
-  //   for (int i = 0; i < output.size(); i++)
-  //   {
-  //     EXPECT_EQ(output[i], valid[i]);
-  //   }
+  for (int i = 0; i < output.size(); i++)
+  {
+    EXPECT_EQ(output[i], valid[i]);
+  }
 }
 
 
