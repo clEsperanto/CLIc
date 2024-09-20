@@ -132,7 +132,11 @@ label_pixel_count_map_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Label image where the centroids will be determined from. [const Array::Pointer &]
  * @param dst Output image where the centroids will be written to. [Array::Pointer ( = None )]
- * @param withBG Determines if the background label should be included. [bool ( = false )]
+ * @param withBG Determines if the background label should be included. [bool ( = False )]
+ * @return Array::Pointer
+ *
+ * @note 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_centroidsOfLabels
  */
 auto
 centroids_of_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, bool withBG)
