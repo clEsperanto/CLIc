@@ -14,12 +14,12 @@ namespace cle::tier4
 {
 
 auto
-remove_labels_out_of_range_func(const Device::Pointer & device,
-                                const Array::Pointer &  src,
-                                const Array::Pointer &  values,
-                                Array::Pointer          dst,
-                                float                   min_value,
-                                float                   max_value) -> Array::Pointer
+remove_labels_with_values_out_of_range_func(const Device::Pointer & device,
+                                            const Array::Pointer &  src,
+                                            const Array::Pointer &  values,
+                                            Array::Pointer          dst,
+                                            float                   min_value,
+                                            float                   max_value) -> Array::Pointer
 {
   auto above = tier1::greater_constant_func(device, values, nullptr, max_value);
   auto below = tier1::smaller_constant_func(device, values, nullptr, min_value);
@@ -30,12 +30,12 @@ remove_labels_out_of_range_func(const Device::Pointer & device,
 
 
 auto
-remove_labels_within_range_func(const Device::Pointer & device,
-                                const Array::Pointer &  src,
-                                const Array::Pointer &  values,
-                                Array::Pointer          dst,
-                                float                   min_value,
-                                float                   max_value) -> Array::Pointer
+remove_labels_with_values_within_range_func(const Device::Pointer & device,
+                                            const Array::Pointer &  src,
+                                            const Array::Pointer &  values,
+                                            Array::Pointer          dst,
+                                            float                   min_value,
+                                            float                   max_value) -> Array::Pointer
 {
   auto above = tier1::greater_or_equal_constant_func(device, values, nullptr, max_value);
   auto below = tier1::smaller_or_equal_constant_func(device, values, nullptr, max_value);
@@ -53,7 +53,7 @@ exclude_labels_with_values_out_of_range_func(const Device::Pointer & device,
                                              float                   min_value_range,
                                              float                   max_value_range) -> Array::Pointer
 {
-  return remove_labels_out_of_range_func(device, src, values, dst, min_value_range, max_value_range);
+  return remove_labels_with_values_out_of_range_func(device, src, values, dst, min_value_range, max_value_range);
 }
 
 
@@ -65,7 +65,7 @@ exclude_labels_with_values_within_range_func(const Device::Pointer & device,
                                              float                   min_value_range,
                                              float                   max_value_range) -> Array::Pointer
 {
-  return remove_labels_within_range_func(device, src, values, dst, min_value_range, max_value_range);
+  return remove_labels_with_values_within_range_func(device, src, values, dst, min_value_range, max_value_range);
 }
 
 } // namespace cle::tier4

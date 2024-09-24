@@ -144,7 +144,7 @@ centroids_of_labels_func(const Device::Pointer & device, const Array::Pointer & 
 
 
 /**
- * @name remove_labels_out_of_range
+ * @name remove_labels_with_values_out_of_range
  * @brief Remove labels with values outside a given value range based on a vector of values
  * associated with the labels.
  *
@@ -160,15 +160,15 @@ centroids_of_labels_func(const Device::Pointer & device, const Array::Pointer & 
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsWithValuesOutOfRange
  */
 auto
-remove_labels_out_of_range_func(const Device::Pointer & device,
-                                const Array::Pointer &  src,
-                                const Array::Pointer &  values,
-                                Array::Pointer          dst,
-                                float                   min_value,
-                                float                   max_value) -> Array::Pointer;
+remove_labels_with_values_out_of_range_func(const Device::Pointer & device,
+                                            const Array::Pointer &  src,
+                                            const Array::Pointer &  values,
+                                            Array::Pointer          dst,
+                                            float                   min_value,
+                                            float                   max_value) -> Array::Pointer;
 
 /**
- * @name remove_labels_within_range
+ * @name remove_labels_with_values_within_range
  * @brief Remove labels with values inside a given value range based on a vector of values
  * associated with the labels.
  *
@@ -184,12 +184,12 @@ remove_labels_out_of_range_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsWithValuesWithinRange
  */
 auto
-remove_labels_within_range_func(const Device::Pointer & device,
-                                const Array::Pointer &  src,
-                                const Array::Pointer &  values,
-                                Array::Pointer          dst,
-                                float                   min_value,
-                                float                   max_value) -> Array::Pointer;
+remove_labels_with_values_within_range_func(const Device::Pointer & device,
+                                            const Array::Pointer &  src,
+                                            const Array::Pointer &  values,
+                                            Array::Pointer          dst,
+                                            float                   min_value,
+                                            float                   max_value) -> Array::Pointer;
 
 /**
  * @name exclude_labels_with_values_out_of_range
