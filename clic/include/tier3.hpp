@@ -368,16 +368,36 @@ morphological_chan_vese_func(const Device::Pointer & device,
  * The intensity image is optional and set to 0 if not provided.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Label image to compute the statistics. [const Array::Pointer &]]
+ * @param label Label image to compute the statistics. [const Array::Pointer &]]
  * @param intensity Intensity image. [Array::Pointer ( = None )]
- * @param withBG Include the background label in the statistics. [bool ( = False )]
  * @return StatisticsMap
+ *
+ * @see https://clij.github.io/clij2-docs/reference_statisticsOfLabelledPixels
  */
 auto
 statistics_of_labelled_pixels_func(const Device::Pointer & device,
-                                   const Array::Pointer &  src,
-                                   Array::Pointer          intensity,
-                                   bool                    withBG) -> StatisticsMap;
+                                   const Array::Pointer &  label,
+                                   Array::Pointer          intensity) -> StatisticsMap;
+
+/**
+ * @name statistics_of_background_and_labelled_pixels
+ * @brief Compute, for the background and labels, the bounding box, area (in pixels/voxels), minimum intensity,
+ * maximum intensity, average intensity, standard deviation of the intensity, and some shape descriptors of
+ * labelled objects in a label image and its corresponding intensity image.
+ *
+ * The intensity image is optional and set to 0 if not provided.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param label Label image to compute the statistics. [const Array::Pointer &]]
+ * @param intensity Intensity image. [Array::Pointer ( = None )]
+ * @return StatisticsMap
+ *
+ * @see https://clij.github.io/clij2-docs/reference_statisticsOfBackgroundAndLabelledPixels
+ */
+auto
+statistics_of_background_and_labelled_pixels_func(const Device::Pointer & device,
+                                                  const Array::Pointer &  label,
+                                                  const Array::Pointer &  intensity) -> StatisticsMap;
 
 } // namespace cle::tier3
 

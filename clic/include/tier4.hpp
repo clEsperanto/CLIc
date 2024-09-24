@@ -105,25 +105,162 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
 
 
 /**
- * @name filter_label_by_size
- * @brief Filter labelled objects outside of the min/max size range value.
+ * @name label_pixel_count_map
+ * @brief Takes a label map, determines the number of pixels per label and replaces every label with the that number.
+ * This results in a parametric image expressing area or volume.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Label image to measure [const Array::Pointer &]
+ * @param dst Parametric image computed[Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'label measurement', 'map', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_pixelCountMap
+ */
+auto
+label_pixel_count_map_func(const Device::Pointer & device,
+                           const Array::Pointer &  src,
+                           Array::Pointer          dst) -> Array::Pointer;
+
+
+/**
+ * @name centroids_of_labels
+ * @brief Determines the centroids of all labels in a label image or image stack.
+ * It writes the resulting coordinates in point list image of dimensions n * d
+ * where n is the number of labels and d=3 the dimensionality (x,y,z) of the original image.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Label image where the centroids will be determined from. [const Array::Pointer &]
+ * @param dst Output image where the centroids will be written to. [Array::Pointer ( = None )]
+ * @param withBG Determines if the background label should be included. [bool ( = False )]
+ * @return Array::Pointer
+ *
+ * @note 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_centroidsOfLabels
+ */
+auto
+centroids_of_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, bool withBG)
+  -> Array::Pointer;
+
+
+/**
+ * @name remove_labels_with_values_out_of_range
+ * @brief Remove labels with values outside a given value range based on a vector of values
+ * associated with the labels.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image where labels will be filtered. [const Array::Pointer &]
+ * @param values Vector of values associated with the labels. [const Array::Pointer &]
+ * @param dst Output image where labels will be written to. [Array::Pointer ( = None )]
+ * @param min_value Minimum value to keep. [float ( = 0 )]
+ * @param max_value Maximum value to keep. [float ( = 100 )]
+ * @return Array::Pointer
+ *
+ * @note 'label processing', 'combine'
+ * @see https://clij.github.io/clij2-docs/reference_excludeLabelsWithValuesOutOfRange
+ */
+auto
+remove_labels_with_values_out_of_range_func(const Device::Pointer & device,
+                                            const Array::Pointer &  src,
+                                            const Array::Pointer &  values,
+                                            Array::Pointer          dst,
+                                            float                   min_value,
+                                            float                   max_value) -> Array::Pointer;
+
+/**
+ * @name remove_labels_with_values_within_range
+ * @brief Remove labels with values inside a given value range based on a vector of values
+ * associated with the labels.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image where labels will be filtered. [const Array::Pointer &]
+ * @param values Vector of values associated with the labels. [const Array::Pointer &]
+ * @param dst Output image where labels will be written to. [Array::Pointer ( = None )]
+ * @param min_value Minimum value to keep. [float ( = 0 )]
+ * @param max_value Maximum value to keep. [float ( = 100 )]
+ * @return Array::Pointer
+ *
+ * @note 'label processing', 'combine'
+ * @see https://clij.github.io/clij2-docs/reference_excludeLabelsWithValuesWithinRange
+ */
+auto
+remove_labels_with_values_within_range_func(const Device::Pointer & device,
+                                            const Array::Pointer &  src,
+                                            const Array::Pointer &  values,
+                                            Array::Pointer          dst,
+                                            float                   min_value,
+                                            float                   max_value) -> Array::Pointer;
+
+/**
+ * @name exclude_labels_with_values_out_of_range
+ * @brief Exclude labels with values outside a given value range based on a vector of values
+ * associated with the labels.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image where labels will be filtered. [const Array::Pointer &]
+ * @param values Vector of values associated with the labels. [const Array::Pointer &]
+ * @param dst Output image where labels will be written to. [Array::Pointer ( = None )]
+ * @param min_value_range Minimum value to keep. [float ( = 0 )]
+ * @param max_value_range Maximum value to keep. [float ( = 100 )]
+ * @return Array::Pointer
+ *
+ * @note 'label processing', 'combine'
+ * @see https://clij.github.io/clij2-docs/reference_excludeLabelsWithValuesOutOfRange
+ * @deprecated This function is deprecated. Use remove_labels_with_values_out_of_range_func instead.
+ */
+auto
+exclude_labels_with_values_out_of_range_func(const Device::Pointer & device,
+                                             const Array::Pointer &  src,
+                                             const Array::Pointer &  values,
+                                             Array::Pointer          dst,
+                                             float                   min_value_range,
+                                             float                   max_value_range) -> Array::Pointer;
+
+/**
+ * @name exclude_labels_with_values_within_range
+ * @brief Exclude labels with values inside a given value range based on a vector of values
+ * associated with the labels.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image where labels will be filtered. [const Array::Pointer &]
+ * @param values Vector of values associated with the labels. [const Array::Pointer &]
+ * @param dst Output image where labels will be written to. [Array::Pointer ( = None )]
+ * @param min_value_range Minimum value to keep. [float ( = 0 )]
+ * @param max_value_range Maximum value to keep. [float ( = 100 )]
+ * @return Array::Pointer
+ *
+ * @note 'label processing', 'combine'
+ * @see https://clij.github.io/clij2-docs/reference_excludeLabelsWithValuesWithinRange
+ * @deprecated This function is deprecated. Use remove_labels_with_values_within_range_func instead.
+ */
+auto
+exclude_labels_with_values_within_range_func(const Device::Pointer & device,
+                                             const Array::Pointer &  src,
+                                             const Array::Pointer &  values,
+                                             Array::Pointer          dst,
+                                             float                   min_value_range,
+                                             float                   max_value_range) -> Array::Pointer;
+
+/**
+ * @name extension_ratio_map
+ * @brief Determines the ratio of the extension for every label in a label map and returns it as
+ * a parametric map.
+ *
+ * The extension ration is defined as the maximum distance of any pixel in the label to the label's centroid divided by
+ * the average distance of all pixels in the label to the centroid.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input label image. [const Array::Pointer &]
- * @param dst Output label image. [Array::Pointer ( = None )]
- * @param min_size Minimum size of labels to keep. [float ( = 0 )]
- * @param max_size Maximum size of labels to keep. [float ( = 100 )]
+ * @param dst Output parametric image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'label processing', 'in assistant'
- * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
+ * @note 'label processing', 'in assistant', 'map'
+ * @see https://clij.github.io/clij2-docs/reference_extensionRatioMap
  */
 auto
-filter_label_by_size_func(const Device::Pointer & device,
-                          const Array::Pointer &  src,
-                          Array::Pointer          dst,
-                          float                   min_size,
-                          float                   max_size) -> Array::Pointer;
+extension_ratio_map_func(const Device::Pointer & device,
+                         const Array::Pointer &  src,
+                         Array::Pointer          dst) -> Array::Pointer;
 
 
 } // namespace cle::tier4

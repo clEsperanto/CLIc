@@ -3,17 +3,17 @@
 #include <array>
 #include <gtest/gtest.h>
 
-class TestFilterLabelsBySize : public ::testing::TestWithParam<std::string>
+class TestLabelPixelCountMap : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<uint32_t, 6 * 5 * 1> input = { 1, 1, 2, 0, 3, 3, 1, 1, 2, 0, 3, 3, 0, 0, 0,
                                             0, 0, 0, 4, 4, 5, 6, 6, 6, 4, 4, 5, 6, 6, 6 };
 
-  std::array<uint32_t, 6 * 5 * 1> valid = { 1, 1, 0, 0, 2, 2, 1, 1, 0, 0, 2, 2, 0, 0, 0,
-                                            0, 0, 0, 3, 3, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0 };
+  std::array<float, 6 * 5 * 1> valid = { 4, 4, 2, 0, 4, 4, 4, 4, 2, 0, 4, 4, 0, 0, 0,
+                                         0, 0, 0, 4, 4, 2, 6, 6, 6, 4, 4, 2, 6, 6, 6 };
 };
 
-TEST_P(TestFilterLabelsBySize, execute2d)
+TEST_P(TestLabelPixelCountMap, execute2d)
 {
 
   std::string param = GetParam();
@@ -24,9 +24,9 @@ TEST_P(TestFilterLabelsBySize, execute2d)
   auto gpu_input = cle::Array::create(6, 5, 1, 2, cle::dType::LABEL, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
-  auto gpu_output = cle::tier4::filter_label_by_size_func(device, gpu_input, nullptr, 4, 5);
+  auto gpu_output = cle::tier4::label_pixel_count_map_func(device, gpu_input, nullptr);
 
-  std::vector<uint32_t> output(gpu_output->size());
+  std::vector<float> output(gpu_output->size());
   gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
@@ -48,4 +48,4 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestFilterLabelsBySize, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestLabelPixelCountMap, ::testing::ValuesIn(getParameters()));

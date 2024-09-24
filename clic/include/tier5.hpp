@@ -89,77 +89,44 @@ connected_component_labeling_func(const Device::Pointer & device,
                                   Array::Pointer          dst,
                                   const std::string &     connectivity) -> Array::Pointer;
 
-/**
- * @name remove_small_labels
- * @brief Removes labelled objects small than a given size (in pixels) from a label map.
- *
- * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Label image to filter. [const Array::Pointer &]
- * @param dst Output label image fitlered. [Array::Pointer ( = None )]
- * @param min_size Smallest size object allowed. [float ( = 100 )]
- * @return Array::Pointer
- *
- * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
- * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
- */
-auto
-remove_small_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float min_size)
-  -> Array::Pointer;
 
 /**
- * @name exclude_small_labels
- * @brief Removes labels from a label map which are below a given maximum size.
+ * @name reduce_labels_to_centroids
+ * @brief Take a label map and reduce each label to its centroid.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Label image to filter. [const Array::Pointer &]
- * @param dst Output label image fitlered. [Array::Pointer ( = None )]
- * @param max_size Largest size object to exclude. [float ( = 100 )]
+ * @param src Label image to reduce. [const Array::Pointer &]
+ * @param dst Output label image with centroids. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_reduceLabelsToCentroids
+ */
+auto
+reduce_labels_to_centroids_func(const Device::Pointer & device,
+                                const Array::Pointer &  src,
+                                Array::Pointer          dst) -> Array::Pointer;
+
+/**
+ * @name filter_label_by_size
+ * @brief Filter labelled objects outside of the min/max size range value.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input label image. [const Array::Pointer &]
+ * @param dst Output label image. [Array::Pointer ( = None )]
+ * @param min_size Minimum size of labels to keep. [float ( = 0 )]
+ * @param max_size Maximum size of labels to keep. [float ( = 100 )]
+ * @return Array::Pointer
+ *
+ * @note 'label processing', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
  */
 auto
-exclude_small_labels_func(const Device::Pointer & device,
+filter_label_by_size_func(const Device::Pointer & device,
                           const Array::Pointer &  src,
                           Array::Pointer          dst,
+                          float                   min_size,
                           float                   max_size) -> Array::Pointer;
-
-/**
- * @name remove_large_labels
- * @brief Removes labelled objects bigger than a given size (in pixels) from a label map.
- *
- * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Label image to filter. [const Array::Pointer &]
- * @param dst Output label image fitlered. [Array::Pointer ( = None )]
- * @param max_size Biggest size object allowed. [float ( = 100 )]
- * @return Array::Pointer
- *
- * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
- * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
- */
-auto
-remove_large_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float max_size)
-  -> Array::Pointer;
-
-/**
- * @name exclude_large_labels
- * @brief Removes labels from a label map which are higher a given minimum size.
- *
- * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Label image to filter. [const Array::Pointer &]
- * @param dst Output label image fitlered. [Array::Pointer ( = None )]
- * @param min_size Smallest size object to keep. [float ( = 100 )]
- * @return Array::Pointer
- *
- * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
- * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
- */
-auto
-exclude_large_labels_func(const Device::Pointer & device,
-                          const Array::Pointer &  src,
-                          Array::Pointer          dst,
-                          float                   min_size) -> Array::Pointer;
 
 
 } // namespace cle::tier5
