@@ -16,6 +16,7 @@ auto
 fill_holes_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float max_size)
   -> Array::Pointer
 {
+  tier0::create_like(src, dst, dType::LABEL);
   // get the holes by looking at the inverted image
   auto binary = tier1::greater_constant_func(device, src, nullptr, 0);
   auto inverted = tier1::binary_not_func(device, binary, nullptr);
@@ -26,7 +27,10 @@ fill_holes_func(const Device::Pointer & device, const Array::Pointer & src, Arra
   // invert the filtered image
   tier1::greater_constant_func(device, dst, binary, 0);
   tier1::binary_not_func(device, binary, inverted);
-  return tier1::multiply_images_func(device, src, inverted, dst);
+
+  auto centroids = tier5::reduce_labels_to_centroids_func(device, src, nullptr);
+  auto voroi = tier2::extend_labeling_via_voronoi_func(device, centroids, nullptr);
+  return tier1::mask_func(device, voroi, inverted, dst);
 }
 
 
