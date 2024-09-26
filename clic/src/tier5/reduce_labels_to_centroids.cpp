@@ -24,6 +24,7 @@ reduce_labels_to_centroids_func(const Device::Pointer & device,
   pos->copyTo(label_pos, { pos->width(), 3, 1 }, { 0, 0, 0 }, { 0, 0, 0 });
 
   tier1::set_column_func(device, label_pos, 0, -1);
+  tier1::nan_to_num_func(device, label_pos, label_pos, -1, -1, -1);
   return tier1::write_values_to_positions_func(device, label_pos, dst);
 }
 
