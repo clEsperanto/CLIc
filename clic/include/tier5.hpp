@@ -128,6 +128,26 @@ filter_label_by_size_func(const Device::Pointer & device,
                           float                   min_size,
                           float                   max_size) -> Array::Pointer;
 
+/**
+ * @name exclude_labels_outside_size_range
+ * @brief Filter labelled objects outside of the min/max size range value.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input label image. [const Array::Pointer &]
+ * @param dst Output label image. [Array::Pointer ( = None )]
+ * @param min_size Minimum size of labels to keep. [float ( = 0 )]
+ * @param max_size Maximum size of labels to keep. [float ( = 100 )]
+ * @return Array::Pointer
+ *
+ * @note 'label processing', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
+ */
+auto
+exclude_labels_outside_size_range_func(const Device::Pointer & device,
+                                       const Array::Pointer &  src,
+                                       Array::Pointer          dst,
+                                       float                   min_size,
+                                       float                   max_size) -> Array::Pointer;
 
 } // namespace cle::tier5
 
