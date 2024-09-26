@@ -1,0 +1,53 @@
+#include "cle.hpp"
+
+#include <array>
+#include <gtest/gtest.h>
+
+class TestFillHoles : public ::testing::TestWithParam<std::string>
+{
+protected:
+  std::array<uint32_t, 8 * 8 * 1> output;
+};
+
+TEST_P(TestFillHoles, execute)
+{
+  std::array<uint32_t, 8 * 8 * 1> input = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 6, 6, 6, 0, 0, 1, 0, 1, 6, 0, 6, 0, 0, 1, 0, 1, 6, 0, 6, 0,
+    0, 1, 0, 1, 6, 0, 6, 0, 0, 1, 0, 1, 6, 0, 6, 0, 0, 1, 1, 1, 6, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  };
+  std::array<uint32_t, 8 * 8 * 1> valid = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 6, 6, 6, 0, 0, 1, 1, 1, 6, 6, 6, 0, 0, 1, 1, 1, 6, 6, 6, 0,
+    0, 1, 1, 1, 6, 6, 6, 0, 0, 1, 1, 1, 6, 6, 6, 0, 0, 1, 1, 6, 6, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  };
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
+
+  auto gpu_input = cle::Array::create(8, 8, 1, 2, cle::dType::UINT32, cle::mType::BUFFER, device);
+  gpu_input->writeFrom(input.data());
+
+  auto gpu_output = cle::tier7::fill_holes_func(device, gpu_input, nullptr, 5);
+
+  gpu_output->readTo(output.data());
+  for (int i = 0; i < output.size(); i++)
+  {
+    EXPECT_EQ(output[i], valid[i]);
+  }
+}
+
+
+std::vector<std::string>
+getParameters()
+{
+  std::vector<std::string> parameters;
+#if USE_OPENCL
+  parameters.push_back("opencl");
+#endif
+#if USE_CUDA
+  parameters.push_back("cuda");
+#endif
+  return parameters;
+}
+
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestFillHoles, ::testing::ValuesIn(getParameters()));
