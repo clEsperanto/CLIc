@@ -29,7 +29,7 @@ extend_labeling_via_voronoi_func(const Device::Pointer & device,
     }
     else
     {
-      tier1::onlyzero_overwrite_maximum_func(device, flop, flag, flip, "box");
+      tier1::onlyzero_overwrite_maximum_func(device, flop, flag, flip, "sphere");
     }
     flag->readTo(&flag_value);
     flag->fill(0);

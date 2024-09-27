@@ -26,14 +26,16 @@ filter_label_by_size_func(const Device::Pointer & device,
   list_of_area->writeFrom(stats["area"].data());
 
   return tier4::remove_labels_with_values_out_of_range_func(device, src, list_of_area, dst, min_size, max_size);
-
-  // auto below_min_buffer = tier1::smaller_constant_func(device, list_of_area, nullptr, min_size);
-  // auto above_max_buffer = tier1::greater_constant_func(device, list_of_area, nullptr, max_size);
-
-  // auto list_of_labels_to_exclude = Array::create(nb_labels, 1, 1, 1, dType::LABEL, mType::BUFFER, device);
-  // tier1::binary_or_func(device, below_min_buffer, above_max_buffer, list_of_labels_to_exclude);
-  // return tier3::remove_labels_func(device, src, list_of_labels_to_exclude, dst);
 }
 
+auto
+exclude_labels_outside_size_range_func(const Device::Pointer & device,
+                                       const Array::Pointer &  src,
+                                       Array::Pointer          dst,
+                                       float                   min_size,
+                                       float                   max_size) -> Array::Pointer
+{
+  return filter_label_by_size_func(device, src, dst, min_size, max_size);
+}
 
 } // namespace cle::tier5
