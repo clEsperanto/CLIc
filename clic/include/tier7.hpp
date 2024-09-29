@@ -210,7 +210,7 @@ closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
 
 /**
  * @name erode_connected_labels
- * @category 'label processing', 'in assistant'
+ * @note 'label processing', 'in assistant'
  * @brief Erodes labels to a smaller size. Note: Depending on the label image and the radius,
  *  labels may disappear and labels may split into multiple islands. Thus, overlapping labels of input and output may
  *  not have the same identifier.
