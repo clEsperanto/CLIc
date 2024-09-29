@@ -34,7 +34,6 @@ smooth_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
 
 /**
  * @name smooth_connected_labels
- * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
  * @brief Apply a morphological erosion and dilation of the label image with respect to
  *     the connectivity of the labels.
  *
@@ -46,6 +45,7 @@ smooth_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
  * @param radius Smoothing radius. [int ( = 0 )]
  * @return Array::Pointer
  *
+ * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 smooth_connected_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
