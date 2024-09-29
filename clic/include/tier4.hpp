@@ -208,7 +208,7 @@ remove_labels_with_map_values_within_range_func(const Device::Pointer & device,
                                                 float                   max_value) -> Array::Pointer;
 
 /**
- * @name exclude_labels_with_values_out_of_range
+ * @name exclude_labels_with_map_values_out_of_range
  * @brief Exclude labels with values outside a given value range based on a vector of values
  * associated with the labels.
  *
@@ -233,7 +233,7 @@ exclude_labels_with_map_values_out_of_range_func(const Device::Pointer & device,
                                                  float                   max_value_range) -> Array::Pointer;
 
 /**
- * @name exclude_labels_with_values_within_range
+ * @name exclude_labels_with_map_values_within_range
  * @brief Exclude labels with values inside a given value range based on a vector of values
  * associated with the labels.
  *
