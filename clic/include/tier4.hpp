@@ -135,7 +135,6 @@ label_pixel_count_map_func(const Device::Pointer & device,
  * @param withBG Determines if the background label should be included. [bool ( = False )]
  * @return Array::Pointer
  *
- * @note 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_centroidsOfLabels
  */
 auto

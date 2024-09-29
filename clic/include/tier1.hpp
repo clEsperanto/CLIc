@@ -19,7 +19,7 @@ namespace cle::tier1
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'filter', 'in assistant', 'bia-bob-suggestion'
+ * @note 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_absolute
  */
 auto
@@ -81,7 +81,7 @@ add_image_and_scalar_func(const Device::Pointer & device, const Array::Pointer &
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'combine', 'binary processing', 'in assistant', 'combine labels', 'label processing', 'bia-bob-suggestion'
+ * @note 'combine', 'binary processing', 'in assistant', 'combine labels', 'label processing'
  * @see https://clij.github.io/clij2-docs/reference_binaryAnd
  */
 auto
@@ -138,7 +138,7 @@ binary_not_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param src1 The second binary input image to be processed. [const Array::Pointer &]
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
- * @note 'combine', 'binary processing', 'in assistant', 'combine labels', 'label processing', 'bia-bob-suggestion'
+ * @note 'combine', 'binary processing', 'in assistant', 'combine labels', 'label processing'
  *
  * @see https://clij.github.io/clij2-docs/reference_binaryOr
  */
@@ -158,7 +158,7 @@ binary_or_func(const Device::Pointer & device,
  * @param src1 The second binary input image to be subtracted from the first. [const Array::Pointer &]
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
- * @note 'combine', 'binary processing', 'in assistant', 'combine labels', 'label processing', 'bia-bob-suggestion'
+ * @note 'combine', 'binary processing', 'in assistant', 'combine labels', 'label processing'
  *
  * @see https://clij.github.io/clij2-docs/reference_binarySubtract
  */
@@ -181,7 +181,7 @@ binary_subtract_func(const Device::Pointer & device,
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'combine', 'binary processing', 'in assistant', 'combine labels', 'label processing', 'bia-bob-suggestion'
+ * @note 'combine', 'binary processing', 'in assistant', 'combine labels', 'label processing'
  * @see https://clij.github.io/clij2-docs/reference_binaryXOr
  */
 auto
@@ -431,7 +431,7 @@ dilate_box_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param dst Output result image. Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'binary processing', 'bia-bob-suggestion'
+ * @note 'binary processing'
  * @see https://clij.github.io/clij2-docs/reference_dilateSphere
  * @deprecated This function is deprecated. Consider using dilate() instead.
  */
@@ -452,7 +452,7 @@ dilate_sphere_func(const Device::Pointer & device, const Array::Pointer & src, A
  * @param connectivity Element shape, "box" or "sphere". [std::string ( = "box" )]
  * @return Array::Pointer
  *
- * @note 'binary processing', 'bia-bob-suggestion'
+ * @note 'binary processing'
  * @see https://clij.github.io/clij2-docs/reference_dilateBox
  * @see https://clij.github.io/clij2-docs/reference_dilateSphere
  */
@@ -567,7 +567,7 @@ erode_box_func(const Device::Pointer & device, const Array::Pointer & src, Array
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'binary processing', 'bia-bob-suggestion'
+ * @note 'binary processing'
  * @see https://clij.github.io/clij2-docs/reference_erodeSphere
  * @deprecated This function is deprecated. Consider using erode() instead.
  */
@@ -588,7 +588,7 @@ erode_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  * @param connectivity Element shape, "box" or "sphere". [std::string ( = "box" )]
  * @return Array::Pointer
  *
- * @note 'binary processing', 'bia-bob-suggestion'
+ * @note 'binary processing'
  * @see https://clij.github.io/clij2-docs/reference_erodeBox
  * @see https://clij.github.io/clij2-docs/reference_erodeSphere
  */
@@ -678,7 +678,6 @@ gaussian_blur_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_generateDistanceMatrix
  */
 auto
@@ -851,7 +850,7 @@ hessian_eigenvalues_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
+ * @note 'filter', 'edge detection', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_laplaceBox
  * @deprecated This function is deprecated. Consider using laplace() instead.
  */
@@ -868,7 +867,7 @@ laplace_box_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'filter', 'edge detection', 'bia-bob-suggestion'
+ * @note 'filter', 'edge detection'
  * @see https://clij.github.io/clij2-docs/reference_laplaceDiamond
  * @deprecated This function is deprecated. Consider using laplace() instead.
  */
@@ -886,7 +885,7 @@ laplace_diamond_func(const Device::Pointer & device, const Array::Pointer & src,
  * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
- * @note 'filter', 'edge detection', 'bia-bob-suggestion'
+ * @note 'filter', 'edge detection'
  * @see https://clij.github.io/clij2-docs/reference_laplaceDiamond
  */
 auto
@@ -941,7 +940,6 @@ logarithm_func(const Device::Pointer & device, const Array::Pointer & src, Array
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_mask
  */
 auto
@@ -963,7 +961,6 @@ mask_func(const Device::Pointer & device, const Array::Pointer & src, const Arra
  * @param label Label value to use. [float ( = 1 )]
  * @return Array::Pointer
  *
- * @note 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_maskLabel
  */
 auto
@@ -985,7 +982,7 @@ mask_label_func(const Device::Pointer & device,
  * @param scalar Scalar value used in the comparison. [float ( = 0 )]
  * @return Array::Pointer
  *
- * @note 'filter', 'in assistant', 'bia-bob-suggestion'
+ * @note 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_maximumImageAndScalar
  */
 auto
@@ -1006,7 +1003,7 @@ maximum_image_and_scalar_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'combine', 'in assistant', 'bia-bob-suggestion'
+ * @note 'combine', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_maximumImages
  */
 auto
@@ -1188,7 +1185,7 @@ mean_sphere_func(const Device::Pointer & device,
  * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
- * @note 'filter', 'denoise', 'in assistant', 'bia-bob-suggestion'
+ * @note 'filter', 'denoise', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_mean3DSphere
  */
 auto
@@ -1560,7 +1557,7 @@ mode_sphere_func(const Device::Pointer & device,
  * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
- * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label processing', 'in assistant'
  */
 auto
 mode_func(const Device::Pointer & device,
@@ -1581,7 +1578,7 @@ mode_func(const Device::Pointer & device,
  * @param src1 Second input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
- * @note 'combine', 'bia-bob-suggestion'
+ * @note 'combine'
  *
  */
 auto
@@ -2009,7 +2006,6 @@ range_func(const Device::Pointer & device,
  * @param dst Output vector image of intensities. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'bia-bob-suggestion'
  */
 auto
 read_values_from_positions_func(const Device::Pointer & device,
@@ -2090,7 +2086,6 @@ replace_intensity_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_replaceIntensities
  * @deprecated This function is deprecated. Consider using replace_values() instead.
  */
@@ -2707,7 +2702,7 @@ variance_box_func(const Device::Pointer & device,
  * @param radius_z Radius size along z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @note 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
+ * @note 'filter', 'edge detection', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_varianceSphere
  * @deprecated This function is deprecated. Consider using variance() instead.
  */

@@ -57,7 +57,7 @@ affine_transform_func(const Device::Pointer & device,
  * @param outline_sigma Gaussian blur sigma applied before Otsu thresholding. [float ( = 2 )]
  * @return Array::Pointer
  *
- * @note 'label', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label', 'in assistant'
  * @see https://github.com/biovoxxel/bv3dbox (BV_LabelSplitter.java#L83)
  * @see https://zenodo.org/badge/latestdoi/434949702
  */
@@ -88,7 +88,7 @@ eroded_otsu_labeling_func(const Device::Pointer & device,
  * @param resize Automatically determines the size of the output depending on the rotation angles. [bool ( = False )]
  * @return Array::Pointer
  *
- * @note 'transform', 'in assistant', 'bia-bob-suggestion'
+ * @note 'transform', 'in assistant'
  */
 auto
 rigid_transform_func(const Device::Pointer & device,
@@ -201,7 +201,7 @@ translate_func(const Device::Pointer & device,
  * @param radius Radius size for the closing. [int ( = 0 )]
  * @return Array::Pointer
  *
- * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label processing', 'in assistant'
  */
 auto
 closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
@@ -210,7 +210,7 @@ closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
 
 /**
  * @name erode_connected_labels
- * @category 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @category 'label processing', 'in assistant'
  * @brief Erodes labels to a smaller size. Note: Depending on the label image and the radius,
  *  labels may disappear and labels may split into multiple islands. Thus, overlapping labels of input and output may
  *  not have the same identifier.
@@ -238,7 +238,7 @@ erode_connected_labels_func(const Device::Pointer & device, const Array::Pointer
  * @param radius Radius size for the opening. [int ( = 0 )]
  * @return Array::Pointer
  *
- * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label processing', 'in assistant'
  */
 auto
 opening_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
