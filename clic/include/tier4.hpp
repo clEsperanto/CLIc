@@ -105,6 +105,22 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
 
 
 /**
+ * @name pixel_count_map
+ * @brief Takes a label map, determines the number of pixels per label and replaces every label with the that number.
+ * This results in a parametric image expressing area or volume.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Label image to measure [const Array::Pointer &]
+ * @param dst Parametric image computed[Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'label measurement', 'map', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_pixelCountMap
+ */
+auto
+pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+/**
  * @name label_pixel_count_map
  * @brief Takes a label map, determines the number of pixels per label and replaces every label with the that number.
  * This results in a parametric image expressing area or volume.
@@ -116,6 +132,7 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
  *
  * @note 'label measurement', 'map', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_pixelCountMap
+ * @deprecated This function is deprecated. Use pixel_count_map_func instead.
  */
 auto
 label_pixel_count_map_func(const Device::Pointer & device,
@@ -143,7 +160,7 @@ centroids_of_labels_func(const Device::Pointer & device, const Array::Pointer & 
 
 
 /**
- * @name remove_labels_with_values_out_of_range
+ * @name remove_labels_with_map_values_out_of_range
  * @brief Remove labels with values outside a given value range based on a vector of values
  * associated with the labels.
  *
@@ -159,15 +176,15 @@ centroids_of_labels_func(const Device::Pointer & device, const Array::Pointer & 
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsWithValuesOutOfRange
  */
 auto
-remove_labels_with_values_out_of_range_func(const Device::Pointer & device,
-                                            const Array::Pointer &  src,
-                                            const Array::Pointer &  values,
-                                            Array::Pointer          dst,
-                                            float                   min_value,
-                                            float                   max_value) -> Array::Pointer;
+remove_labels_with_map_values_out_of_range_func(const Device::Pointer & device,
+                                                const Array::Pointer &  src,
+                                                const Array::Pointer &  values,
+                                                Array::Pointer          dst,
+                                                float                   min_value,
+                                                float                   max_value) -> Array::Pointer;
 
 /**
- * @name remove_labels_with_values_within_range
+ * @name remove_labels_with_map_values_within_range
  * @brief Remove labels with values inside a given value range based on a vector of values
  * associated with the labels.
  *
@@ -183,12 +200,12 @@ remove_labels_with_values_out_of_range_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsWithValuesWithinRange
  */
 auto
-remove_labels_with_values_within_range_func(const Device::Pointer & device,
-                                            const Array::Pointer &  src,
-                                            const Array::Pointer &  values,
-                                            Array::Pointer          dst,
-                                            float                   min_value,
-                                            float                   max_value) -> Array::Pointer;
+remove_labels_with_map_values_within_range_func(const Device::Pointer & device,
+                                                const Array::Pointer &  src,
+                                                const Array::Pointer &  values,
+                                                Array::Pointer          dst,
+                                                float                   min_value,
+                                                float                   max_value) -> Array::Pointer;
 
 /**
  * @name exclude_labels_with_values_out_of_range
@@ -205,15 +222,15 @@ remove_labels_with_values_within_range_func(const Device::Pointer & device,
  *
  * @note 'label processing', 'combine'
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsWithValuesOutOfRange
- * @deprecated This function is deprecated. Use remove_labels_with_values_out_of_range_func instead.
+ * @deprecated This function is deprecated. Use remove_labels_with_map_values_out_of_range_func instead.
  */
 auto
-exclude_labels_with_values_out_of_range_func(const Device::Pointer & device,
-                                             const Array::Pointer &  src,
-                                             const Array::Pointer &  values,
-                                             Array::Pointer          dst,
-                                             float                   min_value_range,
-                                             float                   max_value_range) -> Array::Pointer;
+exclude_labels_with_map_values_out_of_range_func(const Device::Pointer & device,
+                                                 const Array::Pointer &  src,
+                                                 const Array::Pointer &  values,
+                                                 Array::Pointer          dst,
+                                                 float                   min_value_range,
+                                                 float                   max_value_range) -> Array::Pointer;
 
 /**
  * @name exclude_labels_with_values_within_range
@@ -233,12 +250,12 @@ exclude_labels_with_values_out_of_range_func(const Device::Pointer & device,
  * @deprecated This function is deprecated. Use remove_labels_with_values_within_range_func instead.
  */
 auto
-exclude_labels_with_values_within_range_func(const Device::Pointer & device,
-                                             const Array::Pointer &  src,
-                                             const Array::Pointer &  values,
-                                             Array::Pointer          dst,
-                                             float                   min_value_range,
-                                             float                   max_value_range) -> Array::Pointer;
+exclude_labels_with_map_values_within_range_func(const Device::Pointer & device,
+                                                 const Array::Pointer &  src,
+                                                 const Array::Pointer &  values,
+                                                 Array::Pointer          dst,
+                                                 float                   min_value_range,
+                                                 float                   max_value_range) -> Array::Pointer;
 
 /**
  * @name extension_ratio_map
