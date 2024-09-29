@@ -123,7 +123,7 @@ remove_labels_on_edges_func(const Device::Pointer & device,
  * @param exclude_z Exclude labels along min and max z [bool ( = True )]
  * @return Array::Pointer
  *
- * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label processing', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOnEdges
  */
 auto
@@ -205,7 +205,6 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_generateTouchMatrix
  */
 auto
@@ -286,7 +285,6 @@ jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, 
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_labelledSpotsToPointList
  */
 auto

@@ -20,7 +20,7 @@ namespace cle::tier2
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'combine', 'in assistant', 'bia-bob-suggestion'
+ * @note 'combine', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_absoluteDifference
  */
 auto
@@ -87,7 +87,7 @@ bottom_hat_box_func(const Device::Pointer & device,
  * @param radius_z Radius of the background determination region in Z. [float ( = 1 )]
  * @return Array::Pointer
  *
- * @note 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
+ * @note 'filter', 'background removal', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_bottomHatSphere
  * @deprecated This method is deprecated. Consider using bottom_hat() instead.
  */
@@ -112,7 +112,7 @@ bottom_hat_sphere_func(const Device::Pointer & device,
  * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
- * @note 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
+ * @note 'filter', 'background removal', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_bottomHatBox
  * @see https://clij.github.io/clij2-docs/reference_bottomHatSphere
  */
@@ -208,7 +208,7 @@ closing_sphere_func(const Device::Pointer & device,
  * @param radius_z Radius along the z axis. [int ( = 0 )]
  * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
- * @note 'filter', 'in assistant', 'bia-bob-suggestion'
+ * @note 'filter', 'in assistant'
  */
 auto
 closing_func(const Device::Pointer & device,
@@ -288,7 +288,6 @@ concatenate_along_z_func(const Device::Pointer & device,
  * @param ignore_background [bool ( = True )]
  * @return Array::Pointer
  *
- * @note 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_countTouchingNeighbors
  */
 auto
@@ -327,7 +326,7 @@ crop_border_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  * @param sigma_z Gaussian sigma value along z. [float ( = 2 )]
  * @return Array::Pointer
  *
- * @note 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
+ * @note 'filter', 'background removal', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_divideByGaussianBackground
  */
 auto
@@ -501,7 +500,7 @@ difference_of_gaussian_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label processing', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_extendLabelingViaVoronoi
  */
 auto
@@ -537,7 +536,7 @@ invert_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'label', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_labelSpots
  */
 auto
@@ -648,7 +647,7 @@ opening_box_func(const Device::Pointer & device,
  * @param radius_y Radius along the y axis. [float ( = 1 )]
  * @param radius_z Radius along the z axis. [float ( = 0 )]
  * @return Array::Pointer
- * @note 'filter', 'in assistant', 'bia-bob-suggestion'
+ * @note 'filter', 'in assistant'
  * @deprecated This method is deprecated. Consider using opening() instead.
  */
 auto
@@ -673,7 +672,7 @@ opening_sphere_func(const Device::Pointer & device,
  * @param radius_z Radius along the z axis. [float ( = 0 )]
  * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
- * @note 'filter', 'in assistant', 'bia-bob-suggestion'
+ * @note 'filter', 'in assistant'
  *
  */
 auto
@@ -764,7 +763,7 @@ square_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'combine', 'in assistant', 'bia-bob-suggestion'
+ * @note 'combine', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_squaredDifference
  */
 auto
@@ -813,7 +812,7 @@ standard_deviation_box_func(const Device::Pointer & device,
  * @param radius_z Radius along the z axis. [int ( = 1 )]
  * @return Array::Pointer
  *
- * @note 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
+ * @note 'filter', 'edge detection', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_standardDeviationSphere
  * @deprecated This method is deprecated. Consider using standard_deviation() instead.
  */
@@ -839,7 +838,7 @@ standard_deviation_sphere_func(const Device::Pointer & device,
  * @param connectivity Neigborhood shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
- * @note 'filter', 'edge detection', 'in assistant', 'bia-bob-suggestion'
+ * @note 'filter', 'edge detection', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_standardDeviationBox
  * @see https://clij.github.io/clij2-docs/reference_standardDeviationSphere
  */
@@ -1013,7 +1012,7 @@ top_hat_sphere_func(const Device::Pointer & device,
  * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
- * @note 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
+ * @note 'filter', 'background removal', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_topHatBox
  * @see https://clij.github.io/clij2-docs/reference_topHatSphere
  */

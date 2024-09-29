@@ -58,7 +58,7 @@ combine_labels_func(const Device::Pointer & device,
  * @param connectivity Defines pixel neighborhood relationship, "box" or "sphere". [const std::string & ( = 'box' )]
  * @return Array::Pointer
  *
- * @note 'label', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_connectedComponentsLabelingBox
  * @deprecated This method is deprecated. Consider using connected_component_labeling() instead.
  */

@@ -65,7 +65,7 @@ erode_labels_func(const Device::Pointer & device,
  * @param outline_sigma Gaussian blur sigma along all axes [float ( = 0 )]
  * @return Array::Pointer
  *
- * @note 'label', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label', 'in assistant'
  * @see https://ieeexplore.ieee.org/document/4310076
  * @see https://en.wikipedia.org/wiki/Connected-component_labeling
  */
@@ -87,7 +87,7 @@ gauss_otsu_labeling_func(const Device::Pointer & device,
  * @param dst [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'label', 'bia-bob-suggestion'
+ * @note 'label'
  * @see https://clij.github.io/clij2-docs/reference_maskedVoronoiLabeling
  */
 auto
@@ -141,7 +141,7 @@ remove_small_labels_func(const Device::Pointer & device, const Array::Pointer & 
  * @param max_size Largest size object to exclude. [float ( = 100 )]
  * @return Array::Pointer
  *
- * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label processing', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
  */
 auto
@@ -177,7 +177,7 @@ remove_large_labels_func(const Device::Pointer & device, const Array::Pointer & 
  * @param min_size Smallest size object to keep. [float ( = 100 )]
  * @return Array::Pointer
  *
- * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
+ * @note 'label processing', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
  */
 auto
