@@ -58,12 +58,12 @@ exclude_labels_with_map_values_out_of_range_func(const Device::Pointer & device,
 
 
 auto
-exclude_labels_with_values_within_range_func(const Device::Pointer & device,
-                                             const Array::Pointer &  src,
-                                             const Array::Pointer &  values,
-                                             Array::Pointer          dst,
-                                             float                   min_value_range,
-                                             float                   max_value_range) -> Array::Pointer
+exclude_labels_with_map_values_within_range_func(const Device::Pointer & device,
+                                                 const Array::Pointer &  src,
+                                                 const Array::Pointer &  values,
+                                                 Array::Pointer          dst,
+                                                 float                   min_value_range,
+                                                 float                   max_value_range) -> Array::Pointer
 {
   return remove_labels_with_map_values_within_range_func(device, src, values, dst, min_value_range, max_value_range);
 }
