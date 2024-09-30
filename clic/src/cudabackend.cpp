@@ -754,9 +754,8 @@ saveBinaryToCache(const std::string & device_hash, const std::string & source_ha
 }
 
 static auto
-loadBinaryFromCache(const Device::Pointer & device,
-                    const std::string &     device_hash,
-                    const std::string &     source_hash) -> std::string
+loadBinaryFromCache(const Device::Pointer & device, const std::string & device_hash, const std::string & source_hash)
+  -> std::string
 {
   std::filesystem::path binary_path =
     CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".ptx");

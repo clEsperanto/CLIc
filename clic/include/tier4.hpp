@@ -41,9 +41,8 @@ label_bounding_box_func(const Device::Pointer & device, const Array::Pointer & s
  * @see https://clij.github.io/clij2-docs/reference_meanSquaredError
  */
 auto
-mean_squared_error_func(const Device::Pointer & device,
-                        const Array::Pointer &  src0,
-                        const Array::Pointer &  src1) -> float;
+mean_squared_error_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1)
+  -> float;
 
 
 /**
@@ -60,9 +59,8 @@ mean_squared_error_func(const Device::Pointer & device,
  *
  */
 auto
-spots_to_pointlist_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        Array::Pointer          dst) -> Array::Pointer;
+spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -135,9 +133,8 @@ pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src,
  * @deprecated This function is deprecated. Use pixel_count_map_func instead.
  */
 auto
-label_pixel_count_map_func(const Device::Pointer & device,
-                           const Array::Pointer &  src,
-                           Array::Pointer          dst) -> Array::Pointer;
+label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -274,9 +271,8 @@ exclude_labels_with_map_values_within_range_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_extensionRatioMap
  */
 auto
-extension_ratio_map_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
-                         Array::Pointer          dst) -> Array::Pointer;
+extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 } // namespace cle::tier4

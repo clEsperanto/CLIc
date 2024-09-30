@@ -25,17 +25,15 @@ pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src,
 }
 
 auto
-label_pixel_count_map_func(const Device::Pointer & device,
-                           const Array::Pointer &  src,
-                           Array::Pointer          dst) -> Array::Pointer
+label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer
 {
   return pixel_count_map_func(device, src, dst);
 }
 
 auto
-extension_ratio_map_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
-                         Array::Pointer          dst) -> Array::Pointer
+extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::FLOAT);
   auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, nullptr);

@@ -11,9 +11,8 @@ namespace cle::tier3
 {
 
 auto
-generate_touch_matrix_func(const Device::Pointer & device,
-                           const Array::Pointer &  src,
-                           Array::Pointer          dst) -> Array::Pointer
+generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer
 {
   if (dst == nullptr)
   {

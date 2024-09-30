@@ -9,9 +9,8 @@ namespace cle::tier1
 {
 
 auto
-set_where_x_greater_than_y_func(const Device::Pointer & device,
-                                const Array::Pointer &  src,
-                                float                   value) -> Array::Pointer
+set_where_x_greater_than_y_func(const Device::Pointer & device, const Array::Pointer & src, float value)
+  -> Array::Pointer
 {
   const KernelInfo    kernel = { "set_where_x_greater_than_y", kernel::set_where_x_greater_than_y };
   const ParameterList params = { { "dst", src }, { "scalar", value } };

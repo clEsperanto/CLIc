@@ -349,9 +349,8 @@ divide_by_gaussian_background_func(const Device::Pointer & device,
  *
  */
 auto
-degrees_to_radians_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        Array::Pointer          dst) -> Array::Pointer;
+degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 /**
  * @name detect_maxima_box
@@ -504,9 +503,8 @@ difference_of_gaussian_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_extendLabelingViaVoronoi
  */
 auto
-extend_labeling_via_voronoi_func(const Device::Pointer & device,
-                                 const Array::Pointer &  src,
-                                 Array::Pointer          dst) -> Array::Pointer;
+extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -555,9 +553,8 @@ label_spots_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  *
  */
 auto
-large_hessian_eigenvalue_func(const Device::Pointer & device,
-                              const Array::Pointer &  src,
-                              Array::Pointer          dst) -> Array::Pointer;
+large_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -606,9 +603,8 @@ minimum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer 
  *
  */
 auto
-minimum_of_masked_pixels_func(const Device::Pointer & device,
-                              const Array::Pointer &  src,
-                              const Array::Pointer &  mask) -> float;
+minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask)
+  -> float;
 
 
 /**
@@ -696,9 +692,8 @@ opening_func(const Device::Pointer & device,
  *
  */
 auto
-radians_to_degrees_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        Array::Pointer          dst) -> Array::Pointer;
+radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -714,9 +709,8 @@ radians_to_degrees_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_reduceLabelsToLabelEdges
  */
 auto
-reduce_labels_to_label_edges_func(const Device::Pointer & device,
-                                  const Array::Pointer &  src,
-                                  Array::Pointer          dst) -> Array::Pointer;
+reduce_labels_to_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -731,9 +725,8 @@ reduce_labels_to_label_edges_func(const Device::Pointer & device,
  *
  */
 auto
-small_hessian_eigenvalue_func(const Device::Pointer & device,
-                              const Array::Pointer &  src,
-                              Array::Pointer          dst) -> Array::Pointer;
+small_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**

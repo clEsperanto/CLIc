@@ -147,9 +147,8 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
  *
  */
 auto
-flag_existing_labels_func(const Device::Pointer & device,
-                          const Array::Pointer &  src,
-                          Array::Pointer          dst) -> Array::Pointer;
+flag_existing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -208,9 +207,8 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_generateTouchMatrix
  */
 auto
-generate_touch_matrix_func(const Device::Pointer & device,
-                           const Array::Pointer &  src,
-                           Array::Pointer          dst) -> Array::Pointer;
+generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -288,9 +286,8 @@ jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, 
  * @see https://clij.github.io/clij2-docs/reference_labelledSpotsToPointList
  */
 auto
-labelled_spots_to_pointlist_func(const Device::Pointer & device,
-                                 const Array::Pointer &  src,
-                                 Array::Pointer          dst) -> Array::Pointer;
+labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**

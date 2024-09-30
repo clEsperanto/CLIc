@@ -9,9 +9,8 @@ namespace cle::tier1
 {
 
 auto
-z_position_of_maximum_z_projection_func(const Device::Pointer & device,
-                                        const Array::Pointer &  src,
-                                        Array::Pointer          dst) -> Array::Pointer
+z_position_of_maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_xy(src, dst, dType::INDEX);
   const KernelInfo    kernel = { "z_position_of_maximum_z_projection", kernel::z_position_of_maximum_z_projection };

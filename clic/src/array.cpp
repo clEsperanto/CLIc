@@ -144,9 +144,8 @@ Array::readTo(void * host_data) const -> void
 }
 
 auto
-Array::readTo(void *                        host_data,
-              const std::array<size_t, 3> & region,
-              const std::array<size_t, 3> & buffer_origin) const -> void
+Array::readTo(void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin) const
+  -> void
 {
   if (host_data == nullptr)
   {
