@@ -10,9 +10,8 @@ namespace cle::tier1
 {
 
 auto
-minimum_z_projection_func(const Device::Pointer & device,
-                          const Array::Pointer &  src,
-                          Array::Pointer          dst) -> Array::Pointer
+minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_xy(src, dst);
   const KernelInfo    kernel = { "minimum_z_projection", kernel::minimum_z_projection };

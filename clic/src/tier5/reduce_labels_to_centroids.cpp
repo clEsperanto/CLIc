@@ -11,9 +11,8 @@ namespace cle::tier5
 {
 
 auto
-reduce_labels_to_centroids_func(const Device::Pointer & device,
-                                const Array::Pointer &  src,
-                                Array::Pointer          dst) -> Array::Pointer
+reduce_labels_to_centroids_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::LABEL);
   dst->fill(0);

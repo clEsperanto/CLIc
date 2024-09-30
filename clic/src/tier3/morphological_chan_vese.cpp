@@ -93,9 +93,8 @@ compute_contour_evolution(const Device::Pointer & device,
 }
 
 auto
-apply_contour_evolution(const Device::Pointer & device,
-                        const Array::Pointer &  evolution,
-                        Array::Pointer          contour) -> void
+apply_contour_evolution(const Device::Pointer & device, const Array::Pointer & evolution, Array::Pointer contour)
+  -> void
 {
   auto evolution_pos = tier1::greater_constant_func(device, evolution, nullptr, 0);
   auto evolution_neg = tier1::smaller_constant_func(device, evolution, nullptr, 0);
