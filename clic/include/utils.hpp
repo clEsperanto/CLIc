@@ -44,12 +44,12 @@ enum class dType
   FLOAT,
   // DOUBLE,   // not supported by GPUs
 
+  UNKNOWN,
+
   INT = INT32,
   INDEX = UINT32,
   LABEL = UINT32,
   BINARY = UINT8,
-
-  UNKNOWN
 };
 
 /**
