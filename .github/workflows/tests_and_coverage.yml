@@ -54,7 +54,7 @@ jobs:
 
       - name: Upload coverage report
         if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
-        uses: codecov/codecov-action@v4.5.0
+        uses: codecov/codecov-action@v4.6.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           files: ${{ runner.workspace }}/build/coverage.xml
