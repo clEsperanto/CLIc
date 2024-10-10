@@ -103,8 +103,9 @@ connected_component_labeling_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_reduceLabelsToCentroids
  */
 auto
-reduce_labels_to_centroids_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+reduce_labels_to_centroids_func(const Device::Pointer & device,
+                                const Array::Pointer &  src,
+                                Array::Pointer          dst) -> Array::Pointer;
 
 /**
  * @name filter_label_by_size
@@ -113,8 +114,8 @@ reduce_labels_to_centroids_func(const Device::Pointer & device, const Array::Poi
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input label image. [const Array::Pointer &]
  * @param dst Output label image. [Array::Pointer ( = None )]
- * @param min_size Minimum size of labels to keep. [float ( = 0 )]
- * @param max_size Maximum size of labels to keep. [float ( = 100 )]
+ * @param minimum_size Minimum size of labels to keep. [float ( = 0 )]
+ * @param maximum_size Maximum size of labels to keep. [float ( = 100 )]
  * @return Array::Pointer
  *
  * @note 'label processing', 'in assistant'
@@ -124,8 +125,8 @@ auto
 filter_label_by_size_func(const Device::Pointer & device,
                           const Array::Pointer &  src,
                           Array::Pointer          dst,
-                          float                   min_size,
-                          float                   max_size) -> Array::Pointer;
+                          float                   minimum_size,
+                          float                   maximum_size) -> Array::Pointer;
 
 /**
  * @name exclude_labels_outside_size_range
@@ -134,8 +135,8 @@ filter_label_by_size_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input label image. [const Array::Pointer &]
  * @param dst Output label image. [Array::Pointer ( = None )]
- * @param min_size Minimum size of labels to keep. [float ( = 0 )]
- * @param max_size Maximum size of labels to keep. [float ( = 100 )]
+ * @param minimum_size Minimum size of labels to keep. [float ( = 0 )]
+ * @param maximum_size Maximum size of labels to keep. [float ( = 100 )]
  * @return Array::Pointer
  *
  * @note 'label processing', 'in assistant'
@@ -145,8 +146,8 @@ auto
 exclude_labels_outside_size_range_func(const Device::Pointer & device,
                                        const Array::Pointer &  src,
                                        Array::Pointer          dst,
-                                       float                   min_size,
-                                       float                   max_size) -> Array::Pointer;
+                                       float                   minimum_size,
+                                       float                   maximum_size) -> Array::Pointer;
 
 } // namespace cle::tier5
 
