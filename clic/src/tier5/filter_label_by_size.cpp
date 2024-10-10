@@ -15,8 +15,8 @@ auto
 filter_label_by_size_func(const Device::Pointer & device,
                           const Array::Pointer &  src,
                           Array::Pointer          dst,
-                          float                   min_size,
-                          float                   max_size) -> Array::Pointer
+                          float                   minimum_size,
+                          float                   maximum_size) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::LABEL);
   auto stats = tier3::statistics_of_background_and_labelled_pixels_func(device, src, nullptr);
@@ -25,17 +25,18 @@ filter_label_by_size_func(const Device::Pointer & device,
   auto       list_of_area = Array::create(nb_labels, 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
   list_of_area->writeFrom(stats["area"].data());
 
-  return tier4::remove_labels_with_map_values_out_of_range_func(device, src, list_of_area, dst, min_size, max_size);
+  return tier4::remove_labels_with_map_values_out_of_range_func(
+    device, src, list_of_area, dst, minimum_size, maximum_size);
 }
 
 auto
 exclude_labels_outside_size_range_func(const Device::Pointer & device,
                                        const Array::Pointer &  src,
                                        Array::Pointer          dst,
-                                       float                   min_size,
-                                       float                   max_size) -> Array::Pointer
+                                       float                   minimum_size,
+                                       float                   maximum_size) -> Array::Pointer
 {
-  return filter_label_by_size_func(device, src, dst, min_size, max_size);
+  return filter_label_by_size_func(device, src, dst, minimum_size, maximum_size);
 }
 
 } // namespace cle::tier5
