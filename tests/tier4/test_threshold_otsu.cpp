@@ -12,9 +12,8 @@ protected:
   std::array<uint8_t, 3 * 2 * 2>       output;
 
 
-
-  const std::array<float, 3 * 3 * 1>   input_low = { 0, 0, 0, 0, 0.003, 0, 0, 0, 0}; 
-  const std::array<uint8_t, 3 * 3 * 1> valid_low = { 0, 0, 0, 0, 1, 0, 0, 0, 0 };    
+  const std::array<float, 3 * 3 * 1>   input_low = { 0, 0, 0, 0, 0.003, 0, 0, 0, 0 };
+  const std::array<uint8_t, 3 * 3 * 1> valid_low = { 0, 0, 0, 0, 1, 0, 0, 0, 0 };
   std::array<uint8_t, 3 * 3 * 1>       output_low;
 };
 

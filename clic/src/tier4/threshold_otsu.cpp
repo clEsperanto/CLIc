@@ -38,13 +38,13 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
   // std::iota(range.begin(), range.end(), 0.0);
   // std::transform(range.begin(), range.end(), range.begin(), [intensity_factor, min_intensity](float intensity) {
   //   return intensity * intensity_factor + static_cast<float>(min_intensity);
-  // }); 
+  // });
   //
   std::vector<double> range(bin);
   std::iota(range.begin(), range.end(), 0.0f);
   std::transform(range.begin(), range.end(), range.begin(), [intensity_factor, min_intensity](double value) {
-      return (value * intensity_factor) / (bin-1) + static_cast<double>(min_intensity);
-  }); 
+    return (value * intensity_factor) / (bin - 1) + static_cast<double>(min_intensity);
+  });
 
   sum_1 = std::transform_reduce(
     range.begin(), range.end(), histogram_array.begin(), 0.0f, std::plus<>(), [](double intensity, double hist_value) {
@@ -74,5 +74,3 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
 }
 
 } // namespace cle::tier4
-
-
