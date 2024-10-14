@@ -55,8 +55,8 @@ _std_per_label(const Device::Pointer & device,
                const Array::Pointer &  intensity,
                int                     nb_labels) -> Array::Pointer
 {
-  const size_t height = label->height();
-  const size_t depth = label->depth();
+  const auto height = label->height();
+  const auto depth = label->depth();
 
   auto label_statistics_stack = Array::create(nb_labels, height, 6, 3, dType::FLOAT, mType::BUFFER, device);
   label_statistics_stack->fill(0);
@@ -82,9 +82,9 @@ compute_statistics_per_labels(const Device::Pointer & device,
 
 
   // initialize variables, output, and constants
-  const size_t     offset = 1;
-  const size_t     nb_labels = static_cast<size_t>(tier2::maximum_of_all_pixels_func(device, label)) + offset;
-  const size_t     nb_measurements = nb_labels - offset;
+  const auto       offset = 1;
+  const auto       nb_labels = static_cast<size_t>(tier2::maximum_of_all_pixels_func(device, label)) + offset;
+  const auto       nb_measurements = nb_labels - offset;
   const RangeArray origin = { 0, 0, 0 };
   const RangeArray region = { nb_measurements, 1, 1 };
 
@@ -105,7 +105,7 @@ compute_statistics_per_labels(const Device::Pointer & device,
 
   // 0 labels
   std::vector<float> labels_list(nb_measurements);
-  std::iota(labels_list.begin(), labels_list.end(), offset);
+  std::iota(labels_list.begin(), labels_list.end(), static_cast<float>(offset));
   region_props["label"] = std::move(labels_list);
 
   // 1-6 bbox x, y, z, width, height, depth

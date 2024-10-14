@@ -53,7 +53,7 @@ jobs:
         shell: bash
 
       - name: Get specific version of CMake, Ninja
-        uses: lukka/get-cmake@v3.30.3
+        uses: lukka/get-cmake@v3.30.5
 
       - name: Install ocl-icd-loader - windows
         if: matrix.os == 'windows-latest'
