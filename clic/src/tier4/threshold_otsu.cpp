@@ -6,6 +6,7 @@
 
 #include "utils.hpp"
 #include <numeric>
+#include <functional>
 
 namespace cle::tier4
 {
