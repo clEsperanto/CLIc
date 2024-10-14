@@ -1,7 +1,10 @@
 #include "cle.hpp"
 
+#include <algorithm>
 #include <array>
+#include <functional>
 #include <random>
+
 
 #include <gtest/gtest.h>
 
@@ -18,8 +21,8 @@ protected:
     static std::uniform_int_distribution<int> distribution(0, 1);
     static std::default_random_engine         generator;
     std::generate(input.begin(), input.end(), []() { return static_cast<uint8_t>(distribution(generator)); });
-    std::transform(input.begin(), input.end(), valid.begin(), [](const float & x) {
-      return static_cast<float>(std::abs(static_cast<float>(x) - 1));
+    std::transform(input.begin(), input.end(), valid.begin(), [](const uint8_t & x) {
+      return static_cast<uint8_t>(std::abs(1 - x));
     });
   }
 };
