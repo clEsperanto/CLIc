@@ -37,7 +37,8 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
   {
     auto active = (iter_count % 2 == 0) ? flip : flop;
     auto passive = (iter_count % 2 == 0) ? flop : flip;
-    tier1::onlyzero_overwrite_maximum_func(device, active, flag, passive, (iter_count % 2 == 0) ? "box" : "sphere");
+    auto connectivity = (iter_count % 2 == 0) ? "box" : "sphere";
+    tier1::onlyzero_overwrite_maximum_func(device, active, flag, passive, connectivity);
     flag->readTo(&flag_value);
     if (flag_value > 0)
     {
