@@ -82,9 +82,9 @@ compute_statistics_per_labels(const Device::Pointer & device,
 
 
   // initialize variables, output, and constants
-  const auto     offset = 1;
-  const auto     nb_labels = static_cast<size_t>(tier2::maximum_of_all_pixels_func(device, label)) + offset;
-  const auto     nb_measurements = nb_labels - offset;
+  const auto       offset = 1;
+  const auto       nb_labels = static_cast<size_t>(tier2::maximum_of_all_pixels_func(device, label)) + offset;
+  const auto       nb_measurements = nb_labels - offset;
   const RangeArray origin = { 0, 0, 0 };
   const RangeArray region = { nb_measurements, 1, 1 };
 

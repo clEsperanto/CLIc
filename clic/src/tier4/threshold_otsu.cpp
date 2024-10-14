@@ -93,9 +93,10 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
 
   std::vector<double> bin_centers(bin);
   std::iota(bin_centers.begin(), bin_centers.end(), 0.0);
-  std::transform(bin_centers.begin(), bin_centers.end(), bin_centers.begin(), [range, min_intensity, bin](double value) {
-    return (value * range) / (bin - 1) + static_cast<double>(min_intensity);
-  });
+  std::transform(
+    bin_centers.begin(), bin_centers.end(), bin_centers.begin(), [range, min_intensity, bin](double value) {
+      return (value * range) / (bin - 1) + static_cast<double>(min_intensity);
+    });
 
   std::vector<double> weight1(bin), weight2(bin), mean1(bin), mean2(bin), variance12(bin - 1);
 
