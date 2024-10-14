@@ -40,6 +40,8 @@ TEST_P(TestDetectMaxima, execute)
 
   auto gpu_output = cle::tier2::detect_maxima_func(device, gpu_input, nullptr, 0, 0, 0, "box");
 
+  cle::print<uint8_t>(gpu_output);
+
   gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
