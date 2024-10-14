@@ -5,8 +5,8 @@
 #include "tier4.hpp"
 
 #include "utils.hpp"
-#include <numeric>
 #include <functional>
+#include <numeric>
 
 namespace cle::tier4
 {
