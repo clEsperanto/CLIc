@@ -6,16 +6,16 @@
 class TestDetectMaxima : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::array<uint8_t, 10 * 5 * 3> output;
-  std::array<uint8_t, 10 * 5 * 3> valid;
-  std::array<uint8_t, 10 * 5 * 3> input;
+  std::array<uint8_t, 10 * 5 * 1> output;
+  std::array<uint8_t, 10 * 5 * 1> valid;
+  std::array<uint8_t, 10 * 5 * 1> input;
 
   virtual void
   SetUp()
   {
     std::fill(input.begin(), input.end(), static_cast<uint8_t>(0));
     std::fill(valid.begin(), valid.end(), static_cast<uint8_t>(0));
-    const size_t center = (10 / 2) + (5 / 2) * 10 + (3 / 2) * 10 * 5;
+    const size_t center = (10 / 2) + (5 / 2) * 10;
     input[center] = static_cast<uint8_t>(100);
     valid[center] = static_cast<uint8_t>(1);
   }
@@ -35,7 +35,7 @@ TEST_P(TestDetectMaxima, execute)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(10, 5, 3, 3, cle::dType::UINT8, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(10, 5, 1, 2, cle::dType::UINT8, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
   auto gpu_output = cle::tier2::detect_maxima_func(device, gpu_input, nullptr, 0, 0, 0, "box");
