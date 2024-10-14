@@ -8,27 +8,14 @@ class TestVoronoiOtsuLabeling : public ::testing::TestWithParam<std::string>
 protected:
   const std::array<float, 6 * 7 * 1> input = {
 
-            0, 0, 1, 1, 0, 0,
-            0, 1, 8, 9, 1, 0,
-            0, 1, 7, 6, 1, 0,
-            0, 0, 1, 1, 1, 0,
-            0, 0, 1, 1, 1, 0,
-            0, 0, 1, 8, 7, 1,
-            0, 0, 1, 1, 1, 0
-
+    0, 0, 1, 1, 0, 0, 0, 1, 8, 9, 1, 0, 0, 1, 7, 6, 1, 0, 0, 0, 1,
+    1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 8, 7, 1, 0, 0, 1, 1, 1, 0
 
 
   };
-  const std::array<uint32_t, 6 * 7 * 1> valid = {
-            0, 0, 1, 1, 0, 0,
-            0, 1, 1, 1, 1, 0,
-            0, 1, 1, 1, 1, 0,
-            0, 0, 1, 2, 2, 0,
-            0, 0, 0, 2, 2, 0,
-            0, 0, 2, 2, 2, 0,
-            0, 0, 0, 2, 2, 0
-  };
-  std::array<uint32_t, 6 * 7 * 1> output;
+  const std::array<uint32_t, 6 * 7 * 1> valid = { 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1,
+                                                  2, 2, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 2, 2, 0 };
+  std::array<uint32_t, 6 * 7 * 1>       output;
 };
 
 TEST_P(TestVoronoiOtsuLabeling, execute)
