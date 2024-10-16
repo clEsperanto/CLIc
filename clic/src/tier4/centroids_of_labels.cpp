@@ -18,11 +18,11 @@ centroids_of_labels_func(const Device::Pointer & device, const Array::Pointer & 
   cle::StatisticsMap props;
   if (withBG)
   {
-    props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, nullptr);
+    props = tier3::statistics_of_background_and_labelled_pixels_func(device, nullptr, src);
   }
   else
   {
-    props = tier3::statistics_of_labelled_pixels_func(device, src, nullptr);
+    props = tier3::statistics_of_labelled_pixels_func(device, nullptr, src);
   }
   auto centroid_x = props["centroid_x"];
   auto centroid_y = props["centroid_y"];
