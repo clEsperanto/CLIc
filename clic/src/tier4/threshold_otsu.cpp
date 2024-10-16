@@ -18,8 +18,8 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
   constexpr int bin = 256;
   const float   min_intensity = tier2::minimum_of_all_pixels_func(device, src);
   const float   max_intensity = tier2::maximum_of_all_pixels_func(device, src);
-  double range = max_intensity - min_intensity;
-  
+  double        range = max_intensity - min_intensity;
+
   // Compute histogram
   auto hist_array = Array::create(bin, 1, 1, 1, dType::FLOAT, mType::BUFFER, src->device());
   tier3::histogram_func(device, src, hist_array, bin, min_intensity, max_intensity);
@@ -41,7 +41,7 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
   // Compute weight2
   std::vector<double> reversed_counts(counts.rbegin(), counts.rend());
   std::partial_sum(reversed_counts.begin(), reversed_counts.end(), weight2.rbegin());
-  
+
   // Compute mean1
   std::vector<double> counts_bin_centers(bin);
   std::transform(counts.begin(), counts.end(), bin_centers.begin(), counts_bin_centers.begin(), std::multiplies<>());
@@ -62,7 +62,7 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
   auto   max_it = std::max_element(variance12.begin(), variance12.end());
   size_t idx = std::distance(variance12.begin(), max_it);
   double threshold = bin_centers[idx];
-  
+
   // Create binary image with threshold
   tier0::create_like(src, dst, dType::BINARY);
   return tier1::greater_constant_func(device, src, dst, static_cast<float>(threshold));

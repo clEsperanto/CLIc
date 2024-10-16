@@ -1056,12 +1056,12 @@ maximum_box_func(const Device::Pointer & device,
  */
 auto
 maximum_filter_func(const Device::Pointer & device,
-             const Array::Pointer &  src,
-             Array::Pointer          dst,
-             float                   radius_x,
-             float                   radius_y,
-             float                   radius_z,
-             std::string             connectivity) -> Array::Pointer;
+                    const Array::Pointer &  src,
+                    Array::Pointer          dst,
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z,
+                    std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -1369,12 +1369,12 @@ minimum_box_func(const Device::Pointer & device,
  */
 auto
 minimum_filter_func(const Device::Pointer & device,
-             const Array::Pointer &  src,
-             Array::Pointer          dst,
-             float                   radius_x,
-             float                   radius_y,
-             float                   radius_z,
-             std::string             connectivity) -> Array::Pointer;
+                    const Array::Pointer &  src,
+                    Array::Pointer          dst,
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z,
+                    std::string             connectivity) -> Array::Pointer;
 
 
 /**
