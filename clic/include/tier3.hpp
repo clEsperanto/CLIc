@@ -371,9 +371,8 @@ morphological_chan_vese_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_statisticsOfLabelledPixels
  */
 auto
-statistics_of_labelled_pixels_func(const Device::Pointer & device,
-                                   Array::Pointer  intensity,
-                                   Array::Pointer  label) -> StatisticsMap;
+statistics_of_labelled_pixels_func(const Device::Pointer & device, Array::Pointer intensity, Array::Pointer label)
+  -> StatisticsMap;
 
 /**
  * @name statistics_of_background_and_labelled_pixels
@@ -393,8 +392,8 @@ statistics_of_labelled_pixels_func(const Device::Pointer & device,
  */
 auto
 statistics_of_background_and_labelled_pixels_func(const Device::Pointer & device,
-                                                  Array::Pointer  intensity,
-                                                  Array::Pointer  label) -> StatisticsMap;
+                                                  Array::Pointer          intensity,
+                                                  Array::Pointer          label) -> StatisticsMap;
 
 } // namespace cle::tier3
 
