@@ -1,3 +1,4 @@
+cpp
 #include "tier0.hpp"
 #include "tier1.hpp"
 #include "tier2.hpp"
@@ -16,7 +17,7 @@ erode_labels_func(const Device::Pointer & device,
                   const Array::Pointer &  src,
                   Array::Pointer          dst,
                   int                     radius,
-                  bool                    relabel) -> Array::Pointer
+                  bool                    relabel_islands) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::LABEL);
   if (radius <= 0)
@@ -40,7 +41,7 @@ erode_labels_func(const Device::Pointer & device,
     tier1::minimum_func(device, active, passive, 1, 1, 1, (i % 2 == 0) ? "sphere" : "box");
   }
 
-  if (relabel)
+  if (relabel_islands)
   {
     if (radius % 2 != 0)
     {
