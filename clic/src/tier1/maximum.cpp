@@ -22,7 +22,7 @@ namespace cle::tier1
 {
 
 auto
-maximum_func(const Device::Pointer & device,
+maximum_filter_func(const Device::Pointer & device,
              const Array::Pointer &  src,
              Array::Pointer          dst,
              float                   radius_x,

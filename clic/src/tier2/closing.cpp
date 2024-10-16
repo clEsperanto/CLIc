@@ -16,8 +16,8 @@ closing_func(const Device::Pointer & device,
              float                   radius_z,
              std::string             connectivity) -> Array::Pointer
 {
-  auto temp = tier1::maximum_func(device, src, nullptr, radius_x, radius_y, radius_z, connectivity);
-  return tier1::minimum_func(device, temp, dst, radius_x, radius_y, radius_z, connectivity);
+  auto temp = tier1::maximum_filter_func(device, src, nullptr, radius_x, radius_y, radius_z, connectivity);
+  return tier1::minimum_filter_func(device, temp, dst, radius_x, radius_y, radius_z, connectivity);
 }
 
 } // namespace cle::tier2

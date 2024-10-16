@@ -21,7 +21,7 @@ namespace cle::tier1
 {
 
 auto
-minimum_func(const Device::Pointer & device,
+minimum_filter_func(const Device::Pointer & device,
              const Array::Pointer &  src,
              Array::Pointer          dst,
              float                   radius_x,

@@ -16,8 +16,8 @@ top_hat_func(const Device::Pointer & device,
              float                   radius_z,
              std::string             connectivity) -> Array::Pointer
 {
-  auto temp1 = tier1::minimum_func(device, src, nullptr, radius_x, radius_y, radius_z, connectivity);
-  auto temp2 = tier1::maximum_func(device, temp1, nullptr, radius_x, radius_y, radius_z, connectivity);
+  auto temp1 = tier1::minimum_filter_func(device, src, nullptr, radius_x, radius_y, radius_z, connectivity);
+  auto temp2 = tier1::maximum_filter_func(device, temp1, nullptr, radius_x, radius_y, radius_z, connectivity);
   return tier1::add_images_weighted_func(device, src, temp2, dst, 1, -1);
 }
 
