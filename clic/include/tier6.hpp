@@ -1,3 +1,4 @@
+cpp
 #ifndef __INCLUDE_TIER6_HPP
 #define __INCLUDE_TIER6_HPP
 
@@ -38,7 +39,7 @@ dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
  * @param src result [const Array::Pointer &]
  * @param dst [Array::Pointer ( = None )]
  * @param radius [int ( = 1 )]
- * @param relabel and all label indices exist. [bool ( = False )]
+ * @param relabel_islands and all label indices exist. [bool ( = False )]
  * @return Array::Pointer
  *
  * @note 'label processing', 'in assistant'
@@ -48,7 +49,7 @@ erode_labels_func(const Device::Pointer & device,
                   const Array::Pointer &  src,
                   Array::Pointer          dst,
                   int                     radius,
-                  bool                    relabel) -> Array::Pointer;
+                  bool                    relabel_islands) -> Array::Pointer;
 
 
 /**
