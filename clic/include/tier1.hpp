@@ -1836,7 +1836,7 @@ not_equal_constant_func(const Device::Pointer & device, const Array::Pointer & s
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param index_x Origin pixel coodinate in x to paste. [int ( = 0 )]
+ * @param destination_x Origin pixel coodinate in x to paste. [int ( = 0 )]
  * @param destination_y Origin pixel coodinate in y to paste. [int ( = 0 )]
  * @param destination_z Origin pixel coodinate in z to paste. [int ( = 0 )]
  * @return Array::Pointer
