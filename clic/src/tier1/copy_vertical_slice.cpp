@@ -10,8 +10,10 @@ namespace cle::tier1
 {
 
 auto
-copy_vertical_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice_index)
-  -> Array::Pointer
+copy_vertical_slice_func(const Device::Pointer & device,
+                         const Array::Pointer &  src,
+                         Array::Pointer          dst,
+                         int                     slice_index) -> Array::Pointer
 {
   tier0::create_like(src, dst);
   const ParameterList params = { { "src", src }, { "dst", dst }, { "index", slice_index } };
