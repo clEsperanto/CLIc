@@ -103,15 +103,15 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
  * touch. The resulting label map is written to the output.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param input_binary [const Array::Pointer &]
+ * @param output_labels [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'label', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_voronoiLabeling
  */
 auto
-voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & input_binary, Array::Pointer output_labels) -> Array::Pointer;
 
 
 /**
