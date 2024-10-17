@@ -111,7 +111,8 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_voronoiLabeling
  */
 auto
-voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & input_binary, Array::Pointer output_labels) -> Array::Pointer;
+voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & input_binary, Array::Pointer output_labels)
+  -> Array::Pointer;
 
 
 /**
