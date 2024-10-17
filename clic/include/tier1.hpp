@@ -2224,14 +2224,14 @@ set_image_borders_func(const Device::Pointer & device, const Array::Pointer & sr
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param plane Plane index. [int ( = 0 )]
+ * @param plane_index Plane index. [int ( = 0 )]
  * @param value Value to set. [float ( = 0 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_setPlane
  *
  */
 auto
-set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int plane, float value) -> Array::Pointer;
+set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int plane_index, float value) -> Array::Pointer;
 
 
 /**
