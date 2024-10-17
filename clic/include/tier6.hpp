@@ -16,8 +16,8 @@ namespace cle::tier6
  * scikitimage [2] and MorpholibJ[3] Notes * This operation assumes input images are isotropic.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src label image to erode [const Array::Pointer &]
- * @param dst result [Array::Pointer ( = None )]
+ * @param src Input label image to erode [const Array::Pointer &]
+ * @param dst Output label image [Array::Pointer ( = None )]
  * @param radius [int ( = 2 )]
  * @return Array::Pointer
  *
@@ -35,10 +35,10 @@ dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
  * identifier. Notes * This operation assumes input images are isotropic.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src result [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input label image [const Array::Pointer &]
+ * @param dst Output label image [Array::Pointer ( = None )]
  * @param radius [int ( = 1 )]
- * @param relabel and all label indices exist. [bool ( = False )]
+ * @param relabel Relabel the image, e.g. if object disappear or split. [bool ( = False )]
  * @return Array::Pointer
  *
  * @note 'label processing', 'in assistant'
@@ -60,7 +60,7 @@ erode_labels_func(const Device::Pointer & device,
  *  thresholded binary image is flooded using the Voronoi tesselation approach starting from the found local maxima.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 intensity image to add labels [const Array::Pointer &]
+ * @param src0 Intensity image to segment [const Array::Pointer &]
  * @param dst Output label image. [Array::Pointer ( = None )]
  * @param outline_sigma Gaussian blur sigma along all axes [float ( = 0 )]
  * @return Array::Pointer
@@ -82,9 +82,9 @@ gauss_otsu_labeling_func(const Device::Pointer & device,
  * touch. The region growing is limited to a masked area. The resulting label map is written to the output.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param mask [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input binary image [const Array::Pointer &]
+ * @param mask Input mask [const Array::Pointer &]
+ * @param dst Output label image [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'label'
@@ -103,8 +103,8 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
  * touch. The resulting label map is written to the output.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param input_binary [const Array::Pointer &]
- * @param output_labels [Array::Pointer ( = None )]
+ * @param input_binary Input binary image  [const Array::Pointer &]
+ * @param output_labels Output label image [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'label', 'in assistant', 'bia-bob-suggestion'
@@ -120,7 +120,7 @@ voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & inp
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Label image to filter. [const Array::Pointer &]
- * @param dst Output label image fitlered. [Array::Pointer ( = None )]
+ * @param dst Output label image filtered. [Array::Pointer ( = None )]
  * @param minimum_size Smallest size object allowed. [float ( = 100 )]
  * @return Array::Pointer
  *
@@ -139,7 +139,7 @@ remove_small_labels_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Label image to filter. [const Array::Pointer &]
- * @param dst Output label image fitlered. [Array::Pointer ( = None )]
+ * @param dst Output label image filtered. [Array::Pointer ( = None )]
  * @param maximum_size Largest size object to exclude. [float ( = 100 )]
  * @return Array::Pointer
  *
@@ -154,11 +154,11 @@ exclude_small_labels_func(const Device::Pointer & device,
 
 /**
  * @name remove_large_labels
- * @brief Removes labelled objects bigger than a given size (in pixels) from a label map.
+ * @brief Removes labeled objects bigger than a given size (in pixels) from a label map.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Label image to filter. [const Array::Pointer &]
- * @param dst Output label image fitlered. [Array::Pointer ( = None )]
+ * @param dst Output label image filtered. [Array::Pointer ( = None )]
  * @param maximum_size Biggest size object allowed. [float ( = 100 )]
  * @return Array::Pointer
  *
@@ -177,7 +177,7 @@ remove_large_labels_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Label image to filter. [const Array::Pointer &]
- * @param dst Output label image fitlered. [Array::Pointer ( = None )]
+ * @param dst Output label image filtered. [Array::Pointer ( = None )]
  * @param minimum_size Smallest size object to keep. [float ( = 100 )]
  * @return Array::Pointer
  *
