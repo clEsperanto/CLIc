@@ -19,8 +19,8 @@ namespace cle::tier7
  *  If no matrix is given, the identity matrix will be used.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input Array to be transformed. [const Array::Pointer &]
- * @param dst Output Array. [Array::Pointer ( = None )]
+ * @param src Input image to be transformed. [const Array::Pointer &]
+ * @param dst Output image. [Array::Pointer ( = None )]
  * @param transform_matrix Affine transformation matrix (3x3 or 4x4). [std::vector<float> * ( = None )]
  * @param interpolate If true, bi/trilinear interpolation will be applied, if hardware allows. [bool ( = False )]
  * @param resize Automatically determines the size of the output depending on the rotation angles. [bool ( = False )]
@@ -51,8 +51,8 @@ affine_transform_func(const Device::Pointer & device,
  *  This function is inspired by a similar implementation in Java by Jan Brocher (Biovoxxel) [0] [1]
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input Array to be transformed. [const Array::Pointer &]
- * @param dst Output Array. [Array::Pointer ( = None )]
+ * @param src Input image to be transformed. [const Array::Pointer &]
+ * @param dst Output label image. [Array::Pointer ( = None )]
  * @param number_of_erosions Number of iteration of erosion. [int ( = 5 )]
  * @param outline_sigma Gaussian blur sigma applied before Otsu thresholding. [float ( = 2 )]
  * @return Array::Pointer
@@ -75,8 +75,8 @@ eroded_otsu_labeling_func(const Device::Pointer & device,
  * radians to degrees, use this formula: angle_in_degrees = angle_in_radians / numpy.pi * 180.0
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input Array to be transformed. [const Array::Pointer &]
- * @param dst Output Array. [Array::Pointer ( = None )]
+ * @param src Input image to be transformed. [const Array::Pointer &]
+ * @param dst Output image. [Array::Pointer ( = None )]
  * @param translate_x Translation along x axis in pixels. [float ( = 0 )]
  * @param translate_y Translation along y axis in pixels. [float ( = 0 )]
  * @param translate_z Translation along z axis in pixels. [float ( = 0 )]
@@ -111,8 +111,8 @@ rigid_transform_func(const Device::Pointer & device,
  * formula: angle_in_degrees = angle_in_radians / numpy.pi * 180.0
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input Array to be rotated. [const Array::Pointer &]
- * @param dst Output Array. [Array::Pointer ( = None )]
+ * @param src Input image to be rotated. [const Array::Pointer &]
+ * @param dst Output image. [Array::Pointer ( = None )]
  * @param angle_x Rotation around x axis in degrees. [float ( = 0 )]
  * @param angle_y Rotation around y axis in degrees. [float ( = 0 )]
  * @param angle_z Rotation around z axis in degrees. [float ( = 0 )]
@@ -140,8 +140,8 @@ rotate_func(const Device::Pointer & device,
  * @brief Scale the image by given factors.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input Array to be scaleded. [const Array::Pointer &]
- * @param dst Output Array. [Array::Pointer ( = None )]
+ * @param src Input image to be scaled. [const Array::Pointer &]
+ * @param dst Output image. [Array::Pointer ( = None )]
  * @param factor_x Scaling along x axis. [float ( = 1 )]
  * @param factor_y Scaling along y axis. [float ( = 1 )]
  * @param factor_z Scaling along z axis. [float ( = 1 )]
@@ -169,8 +169,8 @@ scale_func(const Device::Pointer & device,
  * @brief Translate the image by a given vector.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input Array to be translated. [const Array::Pointer &]
- * @param dst Output Array. [Array::Pointer ( = None )]
+ * @param src Input image to be translated. [const Array::Pointer &]
+ * @param dst Output image. [Array::Pointer ( = None )]
  * @param translate_x Translation along x axis in pixels. [float ( = 0 )]
  * @param translate_y Translation along y axis in pixels. [float ( = 0 )]
  * @param translate_z Translation along z axis in pixels. [float ( = 0 )]
@@ -196,8 +196,8 @@ translate_func(const Device::Pointer & device,
  * operation has an octagon as structuring element. Notes * This operation assumes input images are isotropic.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input label Array. [const Array::Pointer &]
- * @param dst Output label Array. [Array::Pointer ( = None )]
+ * @param src Input label image. [const Array::Pointer &]
+ * @param dst Output label image. [Array::Pointer ( = None )]
  * @param radius Radius size for the closing. [int ( = 0 )]
  * @return Array::Pointer
  *
@@ -215,8 +215,8 @@ closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
  *  not have the same identifier.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src result [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to process [const Array::Pointer &]
+ * @param dst Output label image [Array::Pointer ( = None )]
  * @param radius [int ( = 1 )]
  * @return Array::Pointer
  *
@@ -233,8 +233,8 @@ erode_connected_labels_func(const Device::Pointer & device, const Array::Pointer
  * operation has an octagon as structuring element. Notes * This operation assumes input images are isotropic.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input label Array. [const Array::Pointer &]
- * @param dst Output label Array. [Array::Pointer ( = None )]
+ * @param src Input label image. [const Array::Pointer &]
+ * @param dst Output label image. [Array::Pointer ( = None )]
  * @param radius Radius size for the opening. [int ( = 0 )]
  * @return Array::Pointer
  *
@@ -253,8 +253,8 @@ opening_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
  * Notes * This operation assumes input images are isotropic.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input intensity Array. [const Array::Pointer &]
- * @param dst Output label Array. [Array::Pointer ( = None )]
+ * @param src Input intensity image. [const Array::Pointer &]
+ * @param dst Output label image. [Array::Pointer ( = None )]
  * @param spot_sigma Controls how close detected cells can be. [float ( = 2 )]
  * @param outline_sigma Controls how precise segmented objects are outlined. [float ( = 2 )]
  * @return Array::Pointer

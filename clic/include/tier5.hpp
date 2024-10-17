@@ -16,8 +16,8 @@ namespace cle::tier5
  * False. True otherwise This function is supposed to work similarly like its counterpart in numpy [1].
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
+ * @param src0 First array to compare [const Array::Pointer &]
+ * @param src1 Second array to compare [const Array::Pointer &]
  * @return bool
  *
  * @note 'combine'

@@ -675,8 +675,8 @@ gaussian_blur_func(const Device::Pointer & device,
  * meshes.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 First input image to process. [const Array::Pointer &]
- * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param coordinate_list1 First coordinate list to process. [const Array::Pointer &]
+ * @param coordinate_list2 Second coordinate list to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -684,9 +684,9 @@ gaussian_blur_func(const Device::Pointer & device,
  */
 auto
 generate_distance_matrix_func(const Device::Pointer & device,
-                              const Array::Pointer &  src0,
-                              const Array::Pointer &  src1,
-                              Array::Pointer          dst) -> Array::Pointer;
+                              const Array::Pointer &  coordinate_list1,
+                              const Array::Pointer &  coordinate_list2,
+                              Array::Pointer          distance_matrix_destination) -> Array::Pointer;
 
 
 /**
@@ -2145,18 +2145,18 @@ minimum_sphere_func(const Device::Pointer & device,
  * @brief Multiplies two matrices with each other. Shape of matrix1 should be equal to shape of matrix2 transposed.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 First input image to process. [const Array::Pointer &]
- * @param src1 Second input image to process. [const Array::Pointer &]
- * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param matrix1 First matrix to process. [const Array::Pointer &]
+ * @param matrix2 Second matrix to process. [const Array::Pointer &]
+ * @param matrix_destination Output result matrix. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_multiplyMatrix
  *
  */
 auto
 multiply_matrix_func(const Device::Pointer & device,
-                     const Array::Pointer &  src0,
-                     const Array::Pointer &  src1,
-                     Array::Pointer          dst) -> Array::Pointer;
+                     const Array::Pointer &  matrix1,
+                     const Array::Pointer &  matrix2,
+                     Array::Pointer          matrix_destination) -> Array::Pointer;
 
 
 /**

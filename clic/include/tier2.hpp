@@ -283,8 +283,8 @@ concatenate_along_z_func(const Device::Pointer & device,
  * matrix where the first column (index = 0) has been set to 0. Use set_column for that.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input image to process. [const Array::Pointer &]
- * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param touch_matrix Input touch matrix to process. [const Array::Pointer &]
+ * @param touching_neighbors_count_destination Output vector of touch count. [Array::Pointer ( = None )]
  * @param ignore_background [bool ( = True )]
  * @return Array::Pointer
  *
@@ -292,8 +292,8 @@ concatenate_along_z_func(const Device::Pointer & device,
  */
 auto
 count_touching_neighbors_func(const Device::Pointer & device,
-                              const Array::Pointer &  src,
-                              Array::Pointer          dst,
+                              const Array::Pointer &  touch_matrix,
+                              Array::Pointer          touching_neighbors_count_destination,
                               bool                    ignore_background) -> Array::Pointer;
 
 
