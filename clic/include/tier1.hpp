@@ -282,57 +282,57 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 
 /**
  * @name copy_slice
- * @brief This method has two purposes: It copies a 2D image to a given slice z position in a 3D image stack or It
- * copies a given slice at position z in an image stack to a 2D image. The first case is only available via ImageJ
+ * @brief This method has two purposes: It copies a 2D image to a given slice_index z position in a 3D image stack or It
+ * copies a given slice_index at position z in an image stack to a 2D image. The first case is only available via ImageJ
  * macro. If you are using it, it is recommended that the target 3D image already preexists in GPU memory before calling
  * this method. Otherwise, CLIJ create the image stack with z planes.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to copy from. [const Array::Pointer &]
- * @param dst Output copy image slice. [Array::Pointer ( = None )]
- * @param slice [int ( = 0 )]
+ * @param dst Output copy image slice_index. [Array::Pointer ( = None )]
+ * @param slice_index [int ( = 0 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_copySlice
  *
  */
 auto
-copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
+copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice_index)
   -> Array::Pointer;
 
 
 /**
  * @name copy_horizontal_slice
- * @brief This method has two purposes: It copies a 2D image to a given slice y position in a 3D image stack or It
- * copies a given slice at position y in an image stack to a 2D image.
+ * @brief This method has two purposes: It copies a 2D image to a given slice_index y position in a 3D image stack or It
+ * copies a given slice_index at position y in an image stack to a 2D image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to copy from. [const Array::Pointer &]
- * @param dst Output copy image slice. [Array::Pointer ( = None )]
- * @param slice [int ( = 0 )]
+ * @param dst Output copy image slice_index. [Array::Pointer ( = None )]
+ * @param slice_index [int ( = 0 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_copySlice
  *
  */
 auto
-copy_horizontal_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
+copy_horizontal_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice_index)
   -> Array::Pointer;
 
 
 /**
  * @name copy_vertical_slice
- * @brief This method has two purposes: It copies a 2D image to a given slice x position in a 3D image stack or It
- * copies a given slice at position x in an image stack to a 2D image.
+ * @brief This method has two purposes: It copies a 2D image to a given slice_index x position in a 3D image stack or It
+ * copies a given slice_index at position x in an image stack to a 2D image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to copy from. [const Array::Pointer &]
- * @param dst Output copy image slice. [Array::Pointer ( = None )]
- * @param slice [int ( = 0 )]
+ * @param dst Output copy image slice_index. [Array::Pointer ( = None )]
+ * @param slice_index [int ( = 0 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_copySlice
  *
  */
 auto
-copy_vertical_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
+copy_vertical_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice_index)
   -> Array::Pointer;
 
 
