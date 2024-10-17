@@ -35,8 +35,8 @@ absolute_func(const Device::Pointer & device, const Array::Pointer & src, Array:
  * @param src0 The first input image to added. [const Array::Pointer &]
  * @param src1 The second image to be added. [const Array::Pointer &]
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
- * @param factor0 Multiplication factor of each pixel of src0 before adding it. [float ( = 1 )]
- * @param factor1 Multiplication factor of each pixel of src1 before adding it. [float ( = 1 )]
+ * @param factor1 Multiplication factor of each pixel of src0 before adding it. [float ( = 1 )]
+ * @param factor2 Multiplication factor of each pixel of src1 before adding it. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'combine', 'in assistant'
