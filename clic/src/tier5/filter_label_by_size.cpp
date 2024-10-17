@@ -19,7 +19,7 @@ filter_label_by_size_func(const Device::Pointer & device,
                           float                   maximum_size) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::LABEL);
-  auto stats = tier3::statistics_of_background_and_labelled_pixels_func(device, src, nullptr);
+  auto stats = tier3::statistics_of_background_and_labelled_pixels_func(device, nullptr, src);
 
   const auto nb_labels = stats["label"].size();
   auto       list_of_area = Array::create(nb_labels, 1, 1, 1, dType::FLOAT, mType::BUFFER, device);

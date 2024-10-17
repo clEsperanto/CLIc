@@ -80,7 +80,7 @@ TEST_P(TestMinimum, executeBox)
   auto gpu_input = cle::Array::create(5, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input_box.data());
 
-  auto gpu_output = cle::tier1::minimum_func(device, gpu_input, nullptr, 1, 1, 1, "box");
+  auto gpu_output = cle::tier1::minimum_filter_func(device, gpu_input, nullptr, 1, 1, 1, "box");
 
   gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
@@ -100,7 +100,7 @@ TEST_P(TestMinimum, executeSphere)
   auto gpu_input = cle::Array::create(5, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input_sphere.data());
 
-  auto gpu_output = cle::tier1::minimum_func(device, gpu_input, nullptr, 1, 1, 1, "sphere");
+  auto gpu_output = cle::tier1::minimum_filter_func(device, gpu_input, nullptr, 1, 1, 1, "sphere");
 
   gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)

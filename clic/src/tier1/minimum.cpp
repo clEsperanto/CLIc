@@ -21,13 +21,13 @@ namespace cle::tier1
 {
 
 auto
-minimum_func(const Device::Pointer & device,
-             const Array::Pointer &  src,
-             Array::Pointer          dst,
-             float                   radius_x,
-             float                   radius_y,
-             float                   radius_z,
-             std::string             connectivity) -> Array::Pointer
+minimum_filter_func(const Device::Pointer & device,
+                    const Array::Pointer &  src,
+                    Array::Pointer          dst,
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z,
+                    std::string             connectivity) -> Array::Pointer
 {
   tier0::create_like(src, dst);
   auto r_x = radius2kernelsize(radius_x);

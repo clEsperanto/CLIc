@@ -47,27 +47,27 @@ remove_labels_with_map_values_within_range_func(const Device::Pointer & device,
 
 auto
 exclude_labels_with_map_values_out_of_range_func(const Device::Pointer & device,
-                                                 const Array::Pointer &  src,
-                                                 const Array::Pointer &  values,
+                                                 const Array::Pointer &  values_map,
+                                                 const Array::Pointer &  label_map_input,
                                                  Array::Pointer          dst,
                                                  float                   minimum_value_range,
                                                  float                   maximum_value_range) -> Array::Pointer
 {
   return remove_labels_with_map_values_out_of_range_func(
-    device, src, values, dst, minimum_value_range, maximum_value_range);
+    device, label_map_input, values_map, dst, minimum_value_range, maximum_value_range);
 }
 
 
 auto
 exclude_labels_with_map_values_within_range_func(const Device::Pointer & device,
-                                                 const Array::Pointer &  src,
-                                                 const Array::Pointer &  values,
+                                                 const Array::Pointer &  values_map,
+                                                 const Array::Pointer &  label_map_input,
                                                  Array::Pointer          dst,
                                                  float                   minimum_value_range,
                                                  float                   maximum_value_range) -> Array::Pointer
 {
   return remove_labels_with_map_values_within_range_func(
-    device, src, values, dst, minimum_value_range, maximum_value_range);
+    device, label_map_input, values_map, dst, minimum_value_range, maximum_value_range);
 }
 
 } // namespace cle::tier4
