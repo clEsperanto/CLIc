@@ -15,7 +15,7 @@ auto
 pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::FLOAT);
-  auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, nullptr);
+  auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, nullptr, src);
 
   auto values = cle::Array::create(props["area"].size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
   values->writeFrom(props["area"].data());
@@ -36,7 +36,7 @@ extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & 
   -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::FLOAT);
-  auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, nullptr);
+  auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, nullptr, src);
   auto vector = props["mean_max_distance_to_centroid_ratio"];
   auto values = Array::create(vector.size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
   values->writeFrom(vector.data());
