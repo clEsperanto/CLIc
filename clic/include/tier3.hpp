@@ -236,9 +236,9 @@ generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer 
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src [const Array::Pointer &]
  * @param dst [Array::Pointer ( = None )]
- * @param nbins [int ( = 256 )]
- * @param min [float ( = None )]
- * @param max [float ( = None )]
+ * @param num_bins [int ( = 256 )]
+ * @param minimum_intensity [float ( = None )]
+ * @param maximum_intensity [float ( = None )]
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_histogram
@@ -248,9 +248,9 @@ auto
 histogram_func(const Device::Pointer & device,
                const Array::Pointer &  src,
                Array::Pointer          dst,
-               int                     nbins,
-               float                   min = NaN,
-               float                   max = NaN) -> Array::Pointer;
+               int                     num_bins,
+               float                   minimum_intensity = NaN,
+               float                   maximum_intensity = NaN) -> Array::Pointer;
 
 
 /**

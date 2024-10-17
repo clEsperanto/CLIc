@@ -35,8 +35,8 @@ absolute_func(const Device::Pointer & device, const Array::Pointer & src, Array:
  * @param src0 The first input image to added. [const Array::Pointer &]
  * @param src1 The second image to be added. [const Array::Pointer &]
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
- * @param factor0 Multiplication factor of each pixel of src0 before adding it. [float ( = 1 )]
- * @param factor1 Multiplication factor of each pixel of src1 before adding it. [float ( = 1 )]
+ * @param factor1 Multiplication factor of each pixel of src0 before adding it. [float ( = 1 )]
+ * @param factor2 Multiplication factor of each pixel of src1 before adding it. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'combine', 'in assistant'
@@ -47,8 +47,8 @@ add_images_weighted_func(const Device::Pointer & device,
                          const Array::Pointer &  src0,
                          const Array::Pointer &  src1,
                          Array::Pointer          dst,
-                         float                   factor0,
-                         float                   factor1) -> Array::Pointer;
+                         float                   factor1,
+                         float                   factor2) -> Array::Pointer;
 
 
 /**
@@ -282,58 +282,62 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 
 /**
  * @name copy_slice
- * @brief This method has two purposes: It copies a 2D image to a given slice z position in a 3D image stack or It
- * copies a given slice at position z in an image stack to a 2D image. The first case is only available via ImageJ
+ * @brief This method has two purposes: It copies a 2D image to a given slice_index z position in a 3D image stack or It
+ * copies a given slice_index at position z in an image stack to a 2D image. The first case is only available via ImageJ
  * macro. If you are using it, it is recommended that the target 3D image already preexists in GPU memory before calling
  * this method. Otherwise, CLIJ create the image stack with z planes.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to copy from. [const Array::Pointer &]
- * @param dst Output copy image slice. [Array::Pointer ( = None )]
- * @param slice [int ( = 0 )]
+ * @param dst Output copy image slice_index. [Array::Pointer ( = None )]
+ * @param slice_index [int ( = 0 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_copySlice
  *
  */
 auto
-copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
+copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice_index)
   -> Array::Pointer;
 
 
 /**
  * @name copy_horizontal_slice
- * @brief This method has two purposes: It copies a 2D image to a given slice y position in a 3D image stack or It
- * copies a given slice at position y in an image stack to a 2D image.
+ * @brief This method has two purposes: It copies a 2D image to a given slice_index y position in a 3D image stack or It
+ * copies a given slice_index at position y in an image stack to a 2D image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to copy from. [const Array::Pointer &]
- * @param dst Output copy image slice. [Array::Pointer ( = None )]
- * @param slice [int ( = 0 )]
+ * @param dst Output copy image slice_index. [Array::Pointer ( = None )]
+ * @param slice_index [int ( = 0 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_copySlice
  *
  */
 auto
-copy_horizontal_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
-  -> Array::Pointer;
+copy_horizontal_slice_func(const Device::Pointer & device,
+                           const Array::Pointer &  src,
+                           Array::Pointer          dst,
+                           int                     slice_index) -> Array::Pointer;
 
 
 /**
  * @name copy_vertical_slice
- * @brief This method has two purposes: It copies a 2D image to a given slice x position in a 3D image stack or It
- * copies a given slice at position x in an image stack to a 2D image.
+ * @brief This method has two purposes: It copies a 2D image to a given slice_index x position in a 3D image stack or It
+ * copies a given slice_index at position x in an image stack to a 2D image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to copy from. [const Array::Pointer &]
- * @param dst Output copy image slice. [Array::Pointer ( = None )]
- * @param slice [int ( = 0 )]
+ * @param dst Output copy image slice_index. [Array::Pointer ( = None )]
+ * @param slice_index [int ( = 0 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_copySlice
  *
  */
 auto
-copy_vertical_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice)
-  -> Array::Pointer;
+copy_vertical_slice_func(const Device::Pointer & device,
+                         const Array::Pointer &  src,
+                         Array::Pointer          dst,
+                         int                     slice_index) -> Array::Pointer;
 
 
 /**
@@ -1836,9 +1840,9 @@ not_equal_constant_func(const Device::Pointer & device, const Array::Pointer & s
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param index_x Origin pixel coodinate in x to paste. [int ( = 0 )]
- * @param index_y Origin pixel coodinate in y to paste. [int ( = 0 )]
- * @param index_z Origin pixel coodinate in z to paste. [int ( = 0 )]
+ * @param destination_x Origin pixel coodinate in x to paste. [int ( = 0 )]
+ * @param destination_y Origin pixel coodinate in y to paste. [int ( = 0 )]
+ * @param destination_z Origin pixel coodinate in z to paste. [int ( = 0 )]
  * @return Array::Pointer
  *
  * @note 'combine', 'in assistant'
@@ -1848,9 +1852,9 @@ auto
 paste_func(const Device::Pointer & device,
            const Array::Pointer &  src,
            Array::Pointer          dst,
-           int                     index_x,
-           int                     index_y,
-           int                     index_z) -> Array::Pointer;
+           int                     destination_x,
+           int                     destination_y,
+           int                     destination_z) -> Array::Pointer;
 
 
 /**
@@ -2031,8 +2035,8 @@ replace_values_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param scalar0 Old value. [float ( = 0 )]
- * @param scalar1 New value. [float ( = 1 )]
+ * @param value_to_replace Old value. [float ( = 0 )]
+ * @param value_replacement New value. [float ( = 1 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_replaceIntensity
  *
@@ -2041,8 +2045,8 @@ auto
 replace_value_func(const Device::Pointer & device,
                    const Array::Pointer &  src,
                    Array::Pointer          dst,
-                   float                   scalar0,
-                   float                   scalar1) -> Array::Pointer;
+                   float                   value_to_replace,
+                   float                   value_replacement) -> Array::Pointer;
 
 /**
  * @name replace_intensity
@@ -2051,8 +2055,8 @@ replace_value_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param scalar0 Old value. [float ( = 0 )]
- * @param scalar1 New value. [float ( = 1 )]
+ * @param value_to_replace Old value. [float ( = 0 )]
+ * @param value_replacement New value. [float ( = 1 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_replaceIntensity
  * @deprecated This function is deprecated. Consider using replace_value() instead.
@@ -2061,8 +2065,8 @@ auto
 replace_intensity_func(const Device::Pointer & device,
                        const Array::Pointer &  src,
                        Array::Pointer          dst,
-                       float                   scalar0,
-                       float                   scalar1) -> Array::Pointer;
+                       float                   value_to_replace,
+                       float                   value_replacement) -> Array::Pointer;
 
 /**
  * @name replace_intensities
@@ -2193,14 +2197,15 @@ set_func(const Device::Pointer & device, const Array::Pointer & src, float scala
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param column Column index. [int ( = 0 )]
+ * @param column_index Column index. [int ( = 0 )]
  * @param value Value to set. [float ( = 0 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_setColumn
  *
  */
 auto
-set_column_func(const Device::Pointer & device, const Array::Pointer & src, int column, float value) -> Array::Pointer;
+set_column_func(const Device::Pointer & device, const Array::Pointer & src, int column_index, float value)
+  -> Array::Pointer;
 
 
 /**
@@ -2224,14 +2229,15 @@ set_image_borders_func(const Device::Pointer & device, const Array::Pointer & sr
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param plane Plane index. [int ( = 0 )]
+ * @param plane_index Plane index. [int ( = 0 )]
  * @param value Value to set. [float ( = 0 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_setPlane
  *
  */
 auto
-set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int plane, float value) -> Array::Pointer;
+set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int plane_index, float value)
+  -> Array::Pointer;
 
 
 /**
@@ -2282,14 +2288,14 @@ set_ramp_z_func(const Device::Pointer & device, const Array::Pointer & src) -> A
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param row [int ( = 0 )]
+ * @param row_index [int ( = 0 )]
  * @param value [float ( = 0 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_setRow
  *
  */
 auto
-set_row_func(const Device::Pointer & device, const Array::Pointer & src, int row, float value) -> Array::Pointer;
+set_row_func(const Device::Pointer & device, const Array::Pointer & src, int row_index, float value) -> Array::Pointer;
 
 
 /**

@@ -9,10 +9,10 @@ namespace cle::tier1
 {
 
 auto
-set_row_func(const Device::Pointer & device, const Array::Pointer & src, int row, float value) -> Array::Pointer
+set_row_func(const Device::Pointer & device, const Array::Pointer & src, int row_index, float value) -> Array::Pointer
 {
   const KernelInfo    kernel = { "set_row", kernel::set_row };
-  const ParameterList params = { { "dst", src }, { "index", row }, { "scalar", value } };
+  const ParameterList params = { { "dst", src }, { "index", row_index }, { "scalar", value } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
   execute(device, kernel, params, range);
   return src;

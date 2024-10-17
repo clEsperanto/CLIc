@@ -12,11 +12,13 @@ namespace cle::tier4
 {
 
 auto
-centroids_of_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, bool withBG)
-  -> Array::Pointer
+centroids_of_labels_func(const Device::Pointer & device,
+                         const Array::Pointer &  src,
+                         Array::Pointer          dst,
+                         bool                    include_background) -> Array::Pointer
 {
   cle::StatisticsMap props;
-  if (withBG)
+  if (include_background)
   {
     props = tier3::statistics_of_background_and_labelled_pixels_func(device, nullptr, src);
   }
