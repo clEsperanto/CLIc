@@ -212,8 +212,8 @@ remove_labels_with_map_values_within_range_func(const Device::Pointer & device,
  * associated with the labels.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input image where labels will be filtered. [const Array::Pointer &]
- * @param values Vector of values associated with the labels. [const Array::Pointer &]
+ * @param values_map Vector of values associated with the labels. [const Array::Pointer &]
+ * @param label_map_input Input image where labels will be filtered. [const Array::Pointer &]
  * @param dst Output image where labels will be written to. [Array::Pointer ( = None )]
  * @param minimum_value_range Minimum value to keep. [float ( = 0 )]
  * @param maximum_value_range Maximum value to keep. [float ( = 100 )]
@@ -225,8 +225,8 @@ remove_labels_with_map_values_within_range_func(const Device::Pointer & device,
  */
 auto
 exclude_labels_with_map_values_out_of_range_func(const Device::Pointer & device,
-                                                 const Array::Pointer &  src,
-                                                 const Array::Pointer &  values,
+                                                 const Array::Pointer &  values_map,
+                                                 const Array::Pointer &  label_map_input,
                                                  Array::Pointer          dst,
                                                  float                   minimum_value_range,
                                                  float                   maximum_value_range) -> Array::Pointer;
@@ -237,8 +237,8 @@ exclude_labels_with_map_values_out_of_range_func(const Device::Pointer & device,
  * associated with the labels.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input image where labels will be filtered. [const Array::Pointer &]
- * @param values Vector of values associated with the labels. [const Array::Pointer &]
+ * @param values_map Vector of values associated with the labels. [const Array::Pointer &]
+ * @param label_map_input Input image where labels will be filtered. [const Array::Pointer &]
  * @param dst Output image where labels will be written to. [Array::Pointer ( = None )]
  * @param minimum_value_range Minimum value to keep. [float ( = 0 )]
  * @param maximum_value_range Maximum value to keep. [float ( = 100 )]
@@ -250,8 +250,8 @@ exclude_labels_with_map_values_out_of_range_func(const Device::Pointer & device,
  */
 auto
 exclude_labels_with_map_values_within_range_func(const Device::Pointer & device,
-                                                 const Array::Pointer &  src,
-                                                 const Array::Pointer &  values,
+                                                 const Array::Pointer &  values_map,
+                                                 const Array::Pointer &  label_map_input,
                                                  Array::Pointer          dst,
                                                  float                   minimum_value_range,
                                                  float                   maximum_value_range) -> Array::Pointer;

@@ -1030,7 +1030,7 @@ maximum_images_func(const Device::Pointer & device,
  *
  * @note 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_maximum3DBox
- * @deprecated This function is deprecated. Consider using maximum() instead.
+ * @deprecated This function is deprecated. Consider using maximum_filter() instead.
  */
 auto
 maximum_box_func(const Device::Pointer & device,
@@ -1041,7 +1041,7 @@ maximum_box_func(const Device::Pointer & device,
                  int                     radius_z) -> Array::Pointer;
 
 /**
- * @name maximum
+ * @name maximum_filter
  * @brief Computes the local maximum of a pixels neighborhood (box or sphere). The neighborhood size is specified by its
  * halfwidth, halfheight and halfdepth (radius).
  *
@@ -1059,13 +1059,13 @@ maximum_box_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_maximum3DSphere
  */
 auto
-maximum_func(const Device::Pointer & device,
-             const Array::Pointer &  src,
-             Array::Pointer          dst,
-             float                   radius_x,
-             float                   radius_y,
-             float                   radius_z,
-             std::string             connectivity) -> Array::Pointer;
+maximum_filter_func(const Device::Pointer & device,
+                    const Array::Pointer &  src,
+                    Array::Pointer          dst,
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z,
+                    std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -1342,7 +1342,7 @@ median_func(const Device::Pointer & device,
  *
  * @note 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_minimum3DBox
- * @deprecated This function is deprecated. Consider using minimum() instead.
+ * @deprecated This function is deprecated. Consider using minimum_filter() instead.
  */
 auto
 minimum_box_func(const Device::Pointer & device,
@@ -1354,7 +1354,7 @@ minimum_box_func(const Device::Pointer & device,
 
 
 /**
- * @name minimum
+ * @name minimum_filter
  * @brief Computes the local minimum of a pixels cube neighborhood. The cubes size is specified by its halfwidth,
  * halfheight and halfdepth (radius).
  *
@@ -1372,13 +1372,13 @@ minimum_box_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_minimum3DSphere
  */
 auto
-minimum_func(const Device::Pointer & device,
-             const Array::Pointer &  src,
-             Array::Pointer          dst,
-             float                   radius_x,
-             float                   radius_y,
-             float                   radius_z,
-             std::string             connectivity) -> Array::Pointer;
+minimum_filter_func(const Device::Pointer & device,
+                    const Array::Pointer &  src,
+                    Array::Pointer          dst,
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z,
+                    std::string             connectivity) -> Array::Pointer;
 
 
 /**
