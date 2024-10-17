@@ -262,7 +262,7 @@ histogram_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src0 First binary image to compare [const Array::Pointer &]
- * @param src1 Second binary image to compare[const Array::Pointer &]
+ * @param src1 Second binary image to compare [const Array::Pointer &]
  * @return float
  *
  * @see https://clij.github.io/clij2-docs/reference_jaccardIndex
