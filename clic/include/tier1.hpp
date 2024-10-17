@@ -2204,7 +2204,8 @@ set_func(const Device::Pointer & device, const Array::Pointer & src, float scala
  *
  */
 auto
-set_column_func(const Device::Pointer & device, const Array::Pointer & src, int column_index, float value) -> Array::Pointer;
+set_column_func(const Device::Pointer & device, const Array::Pointer & src, int column_index, float value)
+  -> Array::Pointer;
 
 
 /**
@@ -2235,7 +2236,8 @@ set_image_borders_func(const Device::Pointer & device, const Array::Pointer & sr
  *
  */
 auto
-set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int plane_index, float value) -> Array::Pointer;
+set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int plane_index, float value)
+  -> Array::Pointer;
 
 
 /**

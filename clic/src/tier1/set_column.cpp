@@ -9,7 +9,8 @@ namespace cle::tier1
 {
 
 auto
-set_column_func(const Device::Pointer & device, const Array::Pointer & src, int column_index, float value) -> Array::Pointer
+set_column_func(const Device::Pointer & device, const Array::Pointer & src, int column_index, float value)
+  -> Array::Pointer
 {
   const KernelInfo    kernel = { "set_column", kernel::set_column };
   const ParameterList params = { { "dst", src }, { "index", column_index }, { "scalar", value } };

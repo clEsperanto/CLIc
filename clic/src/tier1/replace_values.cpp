@@ -32,8 +32,10 @@ replace_value_func(const Device::Pointer & device,
 {
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "replace_value", kernel::replace_value };
-  const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar0", value_to_replace }, { "scalar1", value_replacement } };
-  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  const ParameterList params = {
+    { "src", src }, { "dst", dst }, { "scalar0", value_to_replace }, { "scalar1", value_replacement }
+  };
+  const RangeArray range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
 }
