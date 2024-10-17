@@ -146,13 +146,13 @@ label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer 
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Label image where the centroids will be determined from. [const Array::Pointer &]
  * @param dst Output image where the centroids will be written to. [Array::Pointer ( = None )]
- * @param withBG Determines if the background label should be included. [bool ( = False )]
+ * @param include_background Determines if the background label should be included. [bool ( = False )]
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_centroidsOfLabels
  */
 auto
-centroids_of_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, bool withBG)
+centroids_of_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, bool include_background)
   -> Array::Pointer;
 
 
@@ -213,8 +213,8 @@ remove_labels_with_map_values_within_range_func(const Device::Pointer & device,
  * @param src Input image where labels will be filtered. [const Array::Pointer &]
  * @param values Vector of values associated with the labels. [const Array::Pointer &]
  * @param dst Output image where labels will be written to. [Array::Pointer ( = None )]
- * @param min_value_range Minimum value to keep. [float ( = 0 )]
- * @param max_value_range Maximum value to keep. [float ( = 100 )]
+ * @param minimum_value_range Minimum value to keep. [float ( = 0 )]
+ * @param maximum_value_range Maximum value to keep. [float ( = 100 )]
  * @return Array::Pointer
  *
  * @note 'label processing', 'combine'
@@ -226,8 +226,8 @@ exclude_labels_with_map_values_out_of_range_func(const Device::Pointer & device,
                                                  const Array::Pointer &  src,
                                                  const Array::Pointer &  values,
                                                  Array::Pointer          dst,
-                                                 float                   min_value_range,
-                                                 float                   max_value_range) -> Array::Pointer;
+                                                 float                   minimum_value_range,
+                                                 float                   maximum_value_range) -> Array::Pointer;
 
 /**
  * @name exclude_labels_with_map_values_within_range
@@ -238,8 +238,8 @@ exclude_labels_with_map_values_out_of_range_func(const Device::Pointer & device,
  * @param src Input image where labels will be filtered. [const Array::Pointer &]
  * @param values Vector of values associated with the labels. [const Array::Pointer &]
  * @param dst Output image where labels will be written to. [Array::Pointer ( = None )]
- * @param min_value_range Minimum value to keep. [float ( = 0 )]
- * @param max_value_range Maximum value to keep. [float ( = 100 )]
+ * @param minimum_value_range Minimum value to keep. [float ( = 0 )]
+ * @param maximum_value_range Maximum value to keep. [float ( = 100 )]
  * @return Array::Pointer
  *
  * @note 'label processing', 'combine'
@@ -251,8 +251,8 @@ exclude_labels_with_map_values_within_range_func(const Device::Pointer & device,
                                                  const Array::Pointer &  src,
                                                  const Array::Pointer &  values,
                                                  Array::Pointer          dst,
-                                                 float                   min_value_range,
-                                                 float                   max_value_range) -> Array::Pointer;
+                                                 float                   minimum_value_range,
+                                                 float                   maximum_value_range) -> Array::Pointer;
 
 /**
  * @name extension_ratio_map
