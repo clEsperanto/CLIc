@@ -2193,14 +2193,14 @@ set_func(const Device::Pointer & device, const Array::Pointer & src, float scala
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param column Column index. [int ( = 0 )]
+ * @param column_index Column index. [int ( = 0 )]
  * @param value Value to set. [float ( = 0 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_setColumn
  *
  */
 auto
-set_column_func(const Device::Pointer & device, const Array::Pointer & src, int column, float value) -> Array::Pointer;
+set_column_func(const Device::Pointer & device, const Array::Pointer & src, int column_index, float value) -> Array::Pointer;
 
 
 /**
