@@ -152,8 +152,10 @@ label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer 
  * @see https://clij.github.io/clij2-docs/reference_centroidsOfLabels
  */
 auto
-centroids_of_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, bool include_background)
-  -> Array::Pointer;
+centroids_of_labels_func(const Device::Pointer & device,
+                         const Array::Pointer &  src,
+                         Array::Pointer          dst,
+                         bool                    include_background) -> Array::Pointer;
 
 
 /**
