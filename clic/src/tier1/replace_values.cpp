@@ -27,12 +27,12 @@ auto
 replace_value_func(const Device::Pointer & device,
                    const Array::Pointer &  src,
                    Array::Pointer          dst,
-                   float                   scalar0,
-                   float                   scalar1) -> Array::Pointer
+                   float                   value_to_replace,
+                   float                   value_replacement) -> Array::Pointer
 {
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "replace_value", kernel::replace_value };
-  const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar0", scalar0 }, { "scalar1", scalar1 } };
+  const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar0", value_to_replace }, { "scalar1", value_replacement } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
@@ -42,10 +42,10 @@ auto
 replace_intensity_func(const Device::Pointer & device,
                        const Array::Pointer &  src,
                        Array::Pointer          dst,
-                       float                   scalar0,
-                       float                   scalar1) -> Array::Pointer
+                       float                   value_to_replace,
+                       float                   value_replacement) -> Array::Pointer
 {
-  return replace_value_func(device, src, dst, scalar0, scalar1);
+  return replace_value_func(device, src, dst, value_to_replace, value_replacement);
 }
 
 auto

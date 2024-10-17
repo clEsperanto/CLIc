@@ -2031,8 +2031,8 @@ replace_values_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param scalar0 Old value. [float ( = 0 )]
- * @param scalar1 New value. [float ( = 1 )]
+ * @param value_to_replace Old value. [float ( = 0 )]
+ * @param value_replacement New value. [float ( = 1 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_replaceIntensity
  *
@@ -2041,8 +2041,8 @@ auto
 replace_value_func(const Device::Pointer & device,
                    const Array::Pointer &  src,
                    Array::Pointer          dst,
-                   float                   scalar0,
-                   float                   scalar1) -> Array::Pointer;
+                   float                   value_to_replace,
+                   float                   value_replacement) -> Array::Pointer;
 
 /**
  * @name replace_intensity
@@ -2051,8 +2051,8 @@ replace_value_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param scalar0 Old value. [float ( = 0 )]
- * @param scalar1 New value. [float ( = 1 )]
+ * @param value_to_replace Old value. [float ( = 0 )]
+ * @param value_replacement New value. [float ( = 1 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_replaceIntensity
  * @deprecated This function is deprecated. Consider using replace_value() instead.
@@ -2061,8 +2061,8 @@ auto
 replace_intensity_func(const Device::Pointer & device,
                        const Array::Pointer &  src,
                        Array::Pointer          dst,
-                       float                   scalar0,
-                       float                   scalar1) -> Array::Pointer;
+                       float                   value_to_replace,
+                       float                   value_replacement) -> Array::Pointer;
 
 /**
  * @name replace_intensities
