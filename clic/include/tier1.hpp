@@ -1837,8 +1837,8 @@ not_equal_constant_func(const Device::Pointer & device, const Array::Pointer & s
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @param index_x Origin pixel coodinate in x to paste. [int ( = 0 )]
- * @param index_y Origin pixel coodinate in y to paste. [int ( = 0 )]
- * @param index_z Origin pixel coodinate in z to paste. [int ( = 0 )]
+ * @param destination_y Origin pixel coodinate in y to paste. [int ( = 0 )]
+ * @param destination_z Origin pixel coodinate in z to paste. [int ( = 0 )]
  * @return Array::Pointer
  *
  * @note 'combine', 'in assistant'
@@ -1848,9 +1848,9 @@ auto
 paste_func(const Device::Pointer & device,
            const Array::Pointer &  src,
            Array::Pointer          dst,
-           int                     index_x,
-           int                     index_y,
-           int                     index_z) -> Array::Pointer;
+           int                     destination_x,
+           int                     destination_y,
+           int                     destination_z) -> Array::Pointer;
 
 
 /**
