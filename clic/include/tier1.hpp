@@ -2288,14 +2288,14 @@ set_ramp_z_func(const Device::Pointer & device, const Array::Pointer & src) -> A
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param row [int ( = 0 )]
+ * @param row_index [int ( = 0 )]
  * @param value [float ( = 0 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_setRow
  *
  */
 auto
-set_row_func(const Device::Pointer & device, const Array::Pointer & src, int row, float value) -> Array::Pointer;
+set_row_func(const Device::Pointer & device, const Array::Pointer & src, int row_index, float value) -> Array::Pointer;
 
 
 /**
