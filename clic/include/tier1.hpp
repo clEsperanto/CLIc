@@ -47,8 +47,8 @@ add_images_weighted_func(const Device::Pointer & device,
                          const Array::Pointer &  src0,
                          const Array::Pointer &  src1,
                          Array::Pointer          dst,
-                         float                   factor0,
-                         float                   factor1) -> Array::Pointer;
+                         float                   factor1,
+                         float                   factor2) -> Array::Pointer;
 
 
 /**
