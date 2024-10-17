@@ -250,8 +250,8 @@ block_enumerate_func(const Device::Pointer & device,
  * and Z.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src First input image to process. [const Array::Pointer &]
- * @param kernel Second input image to process. [const Array::Pointer &]
+ * @param src0 First input image to process. [const Array::Pointer &]
+ * @param src1 Second input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -260,8 +260,8 @@ block_enumerate_func(const Device::Pointer & device,
  */
 auto
 convolve_func(const Device::Pointer & device,
-              const Array::Pointer &  src,
-              const Array::Pointer &  kernel,
+              const Array::Pointer &  src0,
+              const Array::Pointer &  src1,
               Array::Pointer          dst) -> Array::Pointer;
 
 

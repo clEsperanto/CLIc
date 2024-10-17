@@ -10,13 +10,13 @@ namespace cle::tier1
 
 auto
 convolve_func(const Device::Pointer & device,
-              const Array::Pointer &  src,
-              const Array::Pointer &  kernel,
+              const Array::Pointer &  src0,
+              const Array::Pointer &  src1,
               Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::FLOAT);
+  tier0::create_like(src0, dst, dType::FLOAT);
   const KernelInfo    kernel = { "convolve", kernel::convolve };
-  const ParameterList params = { { "src0", src }, { "src1", kernel }, { "dst", dst } };
+  const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
