@@ -249,7 +249,7 @@ Array::copyTo(const Array::Pointer &        dst,
 auto
 Array::fill(const float value) -> void
 {
-#if defined(__APPLE__) && defined(__arm64__)
+#if defined(__APPLE__)
   // clEnqueueFillBuffer not behaving as expected on Apple Silicon
   // FIX: Filling buffer with host data
   // TODO: Find a better solution
