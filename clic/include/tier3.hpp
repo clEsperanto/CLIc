@@ -17,7 +17,7 @@ namespace cle::tier3
  *  an array of 6 values as follows: minX, minY, minZ, maxX, maxY, maxZ.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
+ * @param src Input binary image [const Array::Pointer &]
  * @return std::vector<float>
  *
  * @see https://clij.github.io/clij2-docs/reference_boundingBox
@@ -33,7 +33,7 @@ bounding_box_func(const Device::Pointer & device, const Array::Pointer & src) ->
  * columns MassX, MassY and MassZ.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
+ * @param src Input image [const Array::Pointer &]
  * @return std::vector<float>
  * @see https://clij.github.io/clij2-docs/reference_centerOfMass
  *
@@ -50,9 +50,9 @@ center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) 
  * renumbered to 1 and 2.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param list [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input label image [const Array::Pointer &]
+ * @param list Vector of 0 and 1 flagging labels to remove [const Array::Pointer &]
+ * @param dst Output label image [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_excludeLabels
@@ -72,9 +72,9 @@ remove_labels_func(const Device::Pointer & device,
  * renumbered to 1 and 2.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param list [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input label image [const Array::Pointer &]
+ * @param list Vector of 0 and 1 flagging labels to remove [const Array::Pointer &]
+ * @param dst Output label image [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_excludeLabels
@@ -92,8 +92,8 @@ exclude_labels_func(const Device::Pointer & device,
  * renumbered afterwards.
  *
  * @param device Device to perform the operation on. [const Device::Pointer & ( = None )]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input label image [const Array::Pointer &]
+ * @param dst Output label image[Array::Pointer ( = None )]
  * @param exclude_x Exclude labels along min and max x [bool ( = True )]
  * @param exclude_y Exclude labels along min and max y [bool ( = True )]
  * @param exclude_z Exclude labels along min and max z [bool ( = True )]
@@ -116,8 +116,8 @@ remove_labels_on_edges_func(const Device::Pointer & device,
  * renumbered afterwards.
  *
  * @param device Device to perform the operation on. [const Device::Pointer & ( = None )]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input label image [const Array::Pointer &]
+ * @param dst Output label image [Array::Pointer ( = None )]
  * @param exclude_x Exclude labels along min and max x [bool ( = True )]
  * @param exclude_y Exclude labels along min and max y [bool ( = True )]
  * @param exclude_z Exclude labels along min and max z [bool ( = True )]
@@ -157,8 +157,8 @@ flag_existing_labels_func(const Device::Pointer & device, const Array::Pointer &
  * gamma g is computed, before normlization is reversed (^ is the power operator):f(x) = (x / max(X)) ^ gamma * max(X)
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image [const Array::Pointer &]
+ * @param dst Output image [Array::Pointer ( = None )]
  * @param gamma [float ( = 1 )]
  * @return Array::Pointer
  *
@@ -177,9 +177,9 @@ gamma_correction_func(const Device::Pointer & device, const Array::Pointer & src
  * touching then the pixel (3,4) in the matrix will be set to 1.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src0 First input label image [const Array::Pointer &]
+ * @param src1 Second input label image [const Array::Pointer &]
+ * @param dst Output overlap matrix [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_generateBinaryOverlapMatrix
@@ -200,8 +200,8 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
  * adjacency graph
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input label image [const Array::Pointer &]
+ * @param dst Output touch matrix [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_generateTouchMatrix
@@ -234,8 +234,8 @@ generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer 
  * http://www.openclprogrammingguide.com
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input image to derive histogram from [const Array::Pointer &]
+ * @param dst Output histogram [Array::Pointer ( = None )]
  * @param num_bins [int ( = 256 )]
  * @param minimum_intensity [float ( = None )]
  * @param maximum_intensity [float ( = None )]
@@ -261,8 +261,8 @@ histogram_func(const Device::Pointer & device,
  * + 1)</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
+ * @param src0 First binary image to compare [const Array::Pointer &]
+ * @param src1 Second binary image to compare[const Array::Pointer &]
  * @return float
  *
  * @see https://clij.github.io/clij2-docs/reference_jaccardIndex
@@ -279,8 +279,8 @@ jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, 
  * contains d pixels (with d = dimensionality of the original image) with the coordinates of the maxima/minima.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input label image [const Array::Pointer &]
+ * @param dst Output coordinate list [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_labelledSpotsToPointList
