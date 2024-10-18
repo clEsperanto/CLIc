@@ -16,7 +16,7 @@ standard_deviation_func(const Device::Pointer & device,
                         int                     radius_z,
                         std::string             connectivity) -> Array::Pointer
 {
-  auto temp = tier1::variance_func(device, src, nullptr, radius_x, radius_y, radius_z, connectivity);
+  auto temp = tier1::variance_filter_func(device, src, nullptr, radius_x, radius_y, radius_z, connectivity);
   return tier1::power_func(device, temp, dst, 0.5);
 }
 

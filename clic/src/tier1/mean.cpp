@@ -13,7 +13,7 @@ namespace cle::tier1
 {
 
 auto
-mean_func(const Device::Pointer & device,
+mean_filter_func(const Device::Pointer & device,
           const Array::Pointer &  src,
           Array::Pointer          dst,
           int                     radius_x,

@@ -1171,7 +1171,7 @@ mean_sphere_func(const Device::Pointer & device,
                  int                     radius_z) -> Array::Pointer;
 
 /**
- * @name mean
+ * @name mean_filter
  * @brief Computes the local mean average of a pixels neighborhood defined as a boxshaped or a sphereshaped.
  * The shape size is specified by its halfwidth, halfheight and halfdepth (radius).
  *
@@ -1188,7 +1188,7 @@ mean_sphere_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_mean3DSphere
  */
 auto
-mean_func(const Device::Pointer & device,
+mean_filter_func(const Device::Pointer & device,
           const Array::Pointer &  src,
           Array::Pointer          dst,
           int                     radius_x,
@@ -2707,7 +2707,7 @@ variance_sphere_func(const Device::Pointer & device,
                      int                     radius_z) -> Array::Pointer;
 
 /**
- * @name variance
+ * @name variance_filter
  * @brief Computes the local variance of a pixels neighborhood (box or sphere). The neighborhood size is specified by
  * its halfwidth, halfheight and halfdepth (radius). If 2D images are given, radius_z will be ignored.
  *
@@ -2725,7 +2725,7 @@ variance_sphere_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_varianceSphere
  */
 auto
-variance_func(const Device::Pointer & device,
+variance_filter_func(const Device::Pointer & device,
               const Array::Pointer &  src,
               Array::Pointer          dst,
               int                     radius_x,

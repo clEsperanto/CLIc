@@ -10,7 +10,7 @@ namespace cle::tier1
 {
 
 auto
-variance_func(const Device::Pointer & device,
+variance_filter_func(const Device::Pointer & device,
               const Array::Pointer &  src,
               Array::Pointer          dst,
               int                     radius_x,
