@@ -103,6 +103,26 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
 
 
 /**
+ * @name mean_intensity_map
+ * @brief Takes an image and a corresponding label map, determines the mean 
+ *   intensity per label and replaces every label with the that number.
+ *   
+ * This results in a parametric image expressing mean object intensity. 
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src intensity image [const Array::Pointer &]
+ * @param labels label image [const Array::Pointer &]
+ * @param dst Parametric image computed[Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'label measurement', 'map', 'in assistant', 'combine'
+ * @see https://clij.github.io/clij2-docs/reference_meanIntensityMap
+ */
+auto
+mean_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst) -> Array::Pointer;
+
+
+/**
  * @name pixel_count_map
  * @brief Takes a label map, determines the number of pixels per label and replaces every label with the that number.
  * This results in a parametric image expressing area or volume.

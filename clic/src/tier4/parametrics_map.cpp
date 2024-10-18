@@ -44,5 +44,18 @@ extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & 
   return tier1::replace_values_func(device, src, values, dst);
 }
 
+auto
+mean_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst) -> Array::Pointer
+{
+  tier0::create_like(src, dst, dType::FLOAT);
+  auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, labels);
+
+  auto values = cle::Array::create(props["mean_intensity"].size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
+  values->writeFrom(props["mean_intensity"].data());
+
+  tier1::set_column_func(device, values, 0, 0);
+  return tier1::replace_values_func(device, labels, values, dst);
+}
+
 
 } // namespace cle::tier4
