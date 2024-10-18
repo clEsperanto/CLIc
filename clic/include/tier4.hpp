@@ -17,8 +17,8 @@ namespace cle::tier4
  *  an array of 6 values as follows: minX, minY, minZ, maxX, maxY, maxZ.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param label_id [int]
+ * @param src Label image [const Array::Pointer &]
+ * @param label_id Identifier of label [int]
  * @return std::vector<float>
  *
  * @see https://clij.github.io/clij2-docs/reference_boundingBox
@@ -33,8 +33,8 @@ label_bounding_box_func(const Device::Pointer & device, const Array::Pointer & s
  * Results table in the column 'MSE'.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 [const Array::Pointer &]
- * @param src1 [const Array::Pointer &]
+ * @param src0 First image to compare [const Array::Pointer &]
+ * @param src1 Second image to compare [const Array::Pointer &]
  * @return float
  *
  * @note 'in assistant', 'combine', 'bia-bob-suggestion'
@@ -51,8 +51,8 @@ mean_squared_error_func(const Device::Pointer & device, const Array::Pointer & s
  * pixels (with d = dimensionality of the original image) with the coordinates of the maxima/minima.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src [const Array::Pointer &]
- * @param dst [Array::Pointer ( = None )]
+ * @param src Input binary image of spots [const Array::Pointer &]
+ * @param dst Output coordinate list of spots [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_spotsToPointList
@@ -70,7 +70,7 @@ spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & s
  * performed on the CPU.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Label image. [const Array::Pointer &]
+ * @param src Input label image. [const Array::Pointer &]
  * @param dst Output label image. [Array::Pointer ( = None )]
  * @param blocksize Renumbering is done in blocks for performance reasons. [int ( = 4096 )]
  * @return Array::Pointer
@@ -144,8 +144,9 @@ label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer 
  * where n is the number of labels and d=3 the dimensionality (x,y,z) of the original image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Label image where the centroids will be determined from. [const Array::Pointer &]
- * @param dst Output image where the centroids will be written to. [Array::Pointer ( = None )]
+ * @param label_image Label image where the centroids will be determined from. [const Array::Pointer &]
+ * @param coorindate_list_destination Output list of coordinates where the centroids will be written to. [Array::Pointer
+ * ( = None )]
  * @param include_background Determines if the background label should be included. [bool ( = False )]
  * @return Array::Pointer
  *
@@ -153,8 +154,8 @@ label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer 
  */
 auto
 centroids_of_labels_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
-                         Array::Pointer          dst,
+                         const Array::Pointer &  label_image,
+                         Array::Pointer          coorindate_list_destination,
                          bool                    include_background) -> Array::Pointer;
 
 

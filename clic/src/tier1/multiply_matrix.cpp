@@ -10,16 +10,16 @@ namespace cle::tier1
 
 auto
 multiply_matrix_func(const Device::Pointer & device,
-                     const Array::Pointer &  src0,
-                     const Array::Pointer &  src1,
-                     Array::Pointer          dst) -> Array::Pointer
+                     const Array::Pointer &  matrix1,
+                     const Array::Pointer &  matrix2,
+                     Array::Pointer          matrix_destination) -> Array::Pointer
 {
-  tier0::create_dst(src0, dst, src1->width(), src0->height(), src0->depth(), dType::FLOAT);
+  tier0::create_dst(matrix1, matrix_destination, matrix2->width(), matrix1->height(), matrix1->depth(), dType::FLOAT);
   const KernelInfo    kernel = { "multiply_matrix", kernel::multiply_matrix };
-  const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
-  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  const ParameterList params = { { "src0", matrix1 }, { "src1", matrix2 }, { "dst", matrix_destination } };
+  const RangeArray range = { matrix_destination->width(), matrix_destination->height(), matrix_destination->depth() };
   execute(device, kernel, params, range);
-  return dst;
+  return matrix_destination;
 }
 
 } // namespace cle::tier1
