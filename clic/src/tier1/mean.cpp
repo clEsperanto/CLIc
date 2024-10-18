@@ -13,13 +13,13 @@ namespace cle::tier1
 {
 
 auto
-mean_func(const Device::Pointer & device,
-          const Array::Pointer &  src,
-          Array::Pointer          dst,
-          int                     radius_x,
-          int                     radius_y,
-          int                     radius_z,
-          std::string             connectivity) -> Array::Pointer
+mean_filter_func(const Device::Pointer & device,
+                 const Array::Pointer &  src,
+                 Array::Pointer          dst,
+                 int                     radius_x,
+                 int                     radius_y,
+                 int                     radius_z,
+                 std::string             connectivity) -> Array::Pointer
 {
   tier0::create_like(src, dst);
   auto r_x = radius2kernelsize(radius_x);

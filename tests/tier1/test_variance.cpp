@@ -63,7 +63,7 @@ TEST_P(TestVariance, executeBox)
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
-  auto gpu_output = cle::tier1::variance_func(device, gpu_input, nullptr, 1, 1, 0, "box");
+  auto gpu_output = cle::tier1::variance_filter_func(device, gpu_input, nullptr, 1, 1, 0, "box");
 
   gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
@@ -82,7 +82,7 @@ TEST_P(TestVariance, executeSphere)
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
-  auto gpu_output = cle::tier1::variance_func(device, gpu_input, nullptr, 1, 1, 0, "sphere");
+  auto gpu_output = cle::tier1::variance_filter_func(device, gpu_input, nullptr, 1, 1, 0, "sphere");
 
   gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)

@@ -16,7 +16,7 @@ standard_deviation_box_func(const Device::Pointer & device,
                             int                     radius_z) -> Array::Pointer
 {
   std::cerr << "Deprecated: this function is deprecated, use standard_deviation instead\n";
-  auto temp = tier1::variance_box_func(device, src, nullptr, radius_x, radius_y, radius_z);
+  auto temp = tier1::variance_filter_func(device, src, nullptr, radius_x, radius_y, radius_z, "box");
   return tier1::power_func(device, temp, dst, 0.5);
 }
 
