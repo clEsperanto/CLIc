@@ -6,23 +6,11 @@
 class TestMeanIntensityMap : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::array<float, 3 * 3 * 1> intensity = {
-1, 1, 2,
-4, 0, 0,
-5, 3, 0
-  };
+  std::array<float, 3 * 3 * 1> intensity = { 1, 1, 2, 4, 0, 0, 5, 3, 0 };
 
-  std::array<uint32_t, 3 * 3 * 1> label = {
-        1, 1, 2,
-        1, 0, 0,
-        3, 3, 0
-  };
+  std::array<uint32_t, 3 * 3 * 1> label = { 1, 1, 2, 1, 0, 0, 3, 3, 0 };
 
-std::array<float, 3 * 3 * 1> valid = { 
-2, 2, 2,
-2, 0, 0,
-4, 4, 0
-};                                        
+  std::array<float, 3 * 3 * 1> valid = { 2, 2, 2, 2, 0, 0, 4, 4, 0 };
 };
 
 TEST_P(TestMeanIntensityMap, execute)

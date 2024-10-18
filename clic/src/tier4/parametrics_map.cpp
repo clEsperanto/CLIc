@@ -45,7 +45,10 @@ extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & 
 }
 
 auto
-mean_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst) -> Array::Pointer
+mean_intensity_map_func(const Device::Pointer & device,
+                        const Array::Pointer &  src,
+                        const Array::Pointer &  labels,
+                        Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::FLOAT);
   auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, labels);
