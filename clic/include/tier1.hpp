@@ -1189,12 +1189,12 @@ mean_sphere_func(const Device::Pointer & device,
  */
 auto
 mean_filter_func(const Device::Pointer & device,
-          const Array::Pointer &  src,
-          Array::Pointer          dst,
-          int                     radius_x,
-          int                     radius_y,
-          int                     radius_z,
-          std::string             connectivity) -> Array::Pointer;
+                 const Array::Pointer &  src,
+                 Array::Pointer          dst,
+                 int                     radius_x,
+                 int                     radius_y,
+                 int                     radius_z,
+                 std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -2726,12 +2726,12 @@ variance_sphere_func(const Device::Pointer & device,
  */
 auto
 variance_filter_func(const Device::Pointer & device,
-              const Array::Pointer &  src,
-              Array::Pointer          dst,
-              int                     radius_x,
-              int                     radius_y,
-              int                     radius_z,
-              std::string             connectivity) -> Array::Pointer;
+                     const Array::Pointer &  src,
+                     Array::Pointer          dst,
+                     int                     radius_x,
+                     int                     radius_y,
+                     int                     radius_z,
+                     std::string             connectivity) -> Array::Pointer;
 
 
 /**
