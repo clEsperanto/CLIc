@@ -212,18 +212,18 @@ closing_sphere_func(const Device::Pointer & device,
  */
 auto
 grayscale_closing_func(const Device::Pointer & device,
-             const Array::Pointer &  src,
-             Array::Pointer          dst,
-             float                   radius_x,
-             float                   radius_y,
-             float                   radius_z,
-             std::string             connectivity) -> Array::Pointer;
+                       const Array::Pointer &  src,
+                       Array::Pointer          dst,
+                       float                   radius_x,
+                       float                   radius_y,
+                       float                   radius_z,
+                       std::string             connectivity) -> Array::Pointer;
 
 
 /**
  * @name closing
- * @brief Closing operator, applies morphological closing to intensity images using a custom structuring element provided as input. 
- * This operator also works with binary images.
+ * @brief Closing operator, applies morphological closing to intensity images using a custom structuring element
+ * provided as input. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -234,9 +234,9 @@ grayscale_closing_func(const Device::Pointer & device,
  */
 auto
 closing_func(const Device::Pointer & device,
-                  const Array::Pointer &  src,
-                  const Array::Pointer &  strel,
-                  Array::Pointer          dst) -> Array::Pointer;
+             const Array::Pointer &  src,
+             const Array::Pointer &  strel,
+             Array::Pointer          dst) -> Array::Pointer;
 
 /**
  * @name binary_closing
@@ -252,9 +252,9 @@ closing_func(const Device::Pointer & device,
  */
 auto
 binary_closing_func(const Device::Pointer & device,
-             const Array::Pointer &  src,
-             Array::Pointer          dst,
-             std::string             connectivity) -> Array::Pointer;        
+                    const Array::Pointer &  src,
+                    Array::Pointer          dst,
+                    std::string             connectivity) -> Array::Pointer;
 
 /**
  * @name concatenate_along_x
@@ -719,8 +719,8 @@ opening_func(const Device::Pointer & device,
 
 /**
  * @name opening
- * @brief Closing operator, applies morphological opening to intensity images using a custom structuring element provided as input. 
- * This operator also works with binary images.
+ * @brief Closing operator, applies morphological opening to intensity images using a custom structuring element
+ * provided as input. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -731,9 +731,9 @@ opening_func(const Device::Pointer & device,
  */
 auto
 opening_func(const Device::Pointer & device,
-                  const Array::Pointer &  src,
-                  const Array::Pointer &  strel,
-                  Array::Pointer          dst) -> Array::Pointer;
+             const Array::Pointer &  src,
+             const Array::Pointer &  strel,
+             Array::Pointer          dst) -> Array::Pointer;
 
 /**
  * @name binary_opening
@@ -749,9 +749,9 @@ opening_func(const Device::Pointer & device,
  */
 auto
 binary_opening_func(const Device::Pointer & device,
-             const Array::Pointer &  src,
-             Array::Pointer          dst,
-             std::string             connectivity) -> Array::Pointer;    
+                    const Array::Pointer &  src,
+                    Array::Pointer          dst,
+                    std::string             connectivity) -> Array::Pointer;
 
 /**
  * @name radians_to_degrees

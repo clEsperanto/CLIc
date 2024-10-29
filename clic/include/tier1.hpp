@@ -403,9 +403,9 @@ detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & s
 
 /**
  * @name dilation
- * @brief Computes the dilation operation between an image and a structuring element. The operation is applied in grayscale
- * if the image is in grayscale. The structuring element is a binary image with pixel values 0 and 1, and must have the same 
- * dimensionality as the image (3D is the image is 3D, 2D if the image is 2D).
+ * @brief Computes the dilation operation between an image and a structuring element. The operation is applied in
+ * grayscale if the image is in grayscale. The structuring element is a binary image with pixel values 0 and 1, and must
+ * have the same dimensionality as the image (3D is the image is 3D, 2D if the image is 2D).
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -418,7 +418,10 @@ detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & s
  * @deprecated This function is deprecated. Consider using erode() instead.
  */
 auto
-dilation_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & strel, Array::Pointer dst) -> Array::Pointer;
+dilation_func(const Device::Pointer & device,
+              const Array::Pointer &  src,
+              const Array::Pointer &  strel,
+              Array::Pointer          dst) -> Array::Pointer;
 
 /**
  * @name dilate_box
@@ -466,7 +469,7 @@ dilate_sphere_func(const Device::Pointer & device, const Array::Pointer & src, A
  * dilation apply the Mooreneighborhood (8 pixels in 2D and 26 pixels in 3d) for the "box" connectivity and
  * the vonNeumannneighborhood (4 pixels in 2D and 6 pixels in 3d) for a "sphere" connectivity.
  * The pixels in the input image with pixel value not equal to 0 will be interpreted as 1.
- * 
+ *
  * For a more flexible dilation with arbitrary shapes, use dilation() instead.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -480,8 +483,10 @@ dilate_sphere_func(const Device::Pointer & device, const Array::Pointer & src, A
  * @see https://clij.github.io/clij2-docs/reference_dilateSphere
  */
 auto
-binary_dilate_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, std::string connectivity)
-  -> Array::Pointer;
+binary_dilate_func(const Device::Pointer & device,
+                   const Array::Pointer &  src,
+                   Array::Pointer          dst,
+                   std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -559,9 +564,9 @@ equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, 
 
 /**
  * @name erosion
- * @brief Computes the erosion operation between an image and a structuring element. The operation is applied in grayscale
- * if the image is in grayscale. The structuring element is a binary image with pixel values 0 and 1, and must have the same 
- * dimensionality as the image (3D is the image is 3D, 2D if the image is 2D).
+ * @brief Computes the erosion operation between an image and a structuring element. The operation is applied in
+ * grayscale if the image is in grayscale. The structuring element is a binary image with pixel values 0 and 1, and must
+ * have the same dimensionality as the image (3D is the image is 3D, 2D if the image is 2D).
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -573,7 +578,10 @@ equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, 
  * @see https://clij.github.io/clij2-docs/reference_erodeBox
  */
 auto
-erosion_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & strel, Array::Pointer dst) -> Array::Pointer;
+erosion_func(const Device::Pointer & device,
+             const Array::Pointer &  src,
+             const Array::Pointer &  strel,
+             Array::Pointer          dst) -> Array::Pointer;
 
 /**
  * @name erode_box
@@ -621,7 +629,7 @@ erode_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  * erosion apply the Mooreneighborhood (8 pixels in 2D and 26 pixels in 3d) for the "box" connectivity and
  * the vonNeumannneighborhood (4 pixels in 2D and 6 pixels in 3d) for a "sphere" connectivity. The pixels in the input
  * image with pixel value not equal to 0 will be interpreted as 1.
- * 
+ *
  * For a more flexible erosion with arbitrary shapes, use erosion() instead.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -635,8 +643,10 @@ erode_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  * @see https://clij.github.io/clij2-docs/reference_erodeSphere
  */
 auto
-binary_erode_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, std::string connectivity)
-  -> Array::Pointer;
+binary_erode_func(const Device::Pointer & device,
+                  const Array::Pointer &  src,
+                  Array::Pointer          dst,
+                  std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -1129,12 +1139,12 @@ maximum_filter_func(const Device::Pointer & device,
  */
 auto
 grayscale_dilate_func(const Device::Pointer & device,
-                    const Array::Pointer &  src,
-                    Array::Pointer          dst,
-                    float                   radius_x,
-                    float                   radius_y,
-                    float                   radius_z,
-                    std::string             connectivity) -> Array::Pointer;       
+                      const Array::Pointer &  src,
+                      Array::Pointer          dst,
+                      float                   radius_x,
+                      float                   radius_y,
+                      float                   radius_z,
+                      std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -1471,12 +1481,12 @@ minimum_filter_func(const Device::Pointer & device,
  */
 auto
 grayscale_erode_func(const Device::Pointer & device,
-                    const Array::Pointer &  src,
-                    Array::Pointer          dst,
-                    float                   radius_x,
-                    float                   radius_y,
-                    float                   radius_z,
-                    std::string             connectivity) -> Array::Pointer;                    
+                     const Array::Pointer &  src,
+                     Array::Pointer          dst,
+                     float                   radius_x,
+                     float                   radius_y,
+                     float                   radius_z,
+                     std::string             connectivity) -> Array::Pointer;
 
 
 /**

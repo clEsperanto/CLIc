@@ -68,14 +68,14 @@ maximum_box_func(const Device::Pointer & device,
 
 auto
 grayscale_dilate_func(const Device::Pointer & device,
-                    const Array::Pointer &  src,
-                    Array::Pointer          dst,
-                    float                   radius_x,
-                    float                   radius_y,
-                    float                   radius_z,
-                    std::string             connectivity) -> Array::Pointer
-                    {
-                      return maximum_filter_func(device, src, dst, radius_x, radius_y, radius_z, connectivity);
-                    }
+                      const Array::Pointer &  src,
+                      Array::Pointer          dst,
+                      float                   radius_x,
+                      float                   radius_y,
+                      float                   radius_z,
+                      std::string             connectivity) -> Array::Pointer
+{
+  return maximum_filter_func(device, src, dst, radius_x, radius_y, radius_z, connectivity);
+}
 
 } // namespace cle::tier1

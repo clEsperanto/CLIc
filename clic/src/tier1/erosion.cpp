@@ -11,24 +11,29 @@ namespace cle::tier1
 {
 
 auto
-erosion_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & strel, Array::Pointer dst)
-  -> Array::Pointer
+erosion_func(const Device::Pointer & device,
+             const Array::Pointer &  src,
+             const Array::Pointer &  strel,
+             Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  if( src->dimension() != strel->dimension() )
+  if (src->dimension() != strel->dimension())
   {
-    throw std::runtime_error("Error: input and structuring element in erosion operator must have the same dimensionality.");
+    throw std::runtime_error(
+      "Error: input and structuring element in erosion operator must have the same dimensionality.");
   }
-  KernelInfo kernel = { "erosion", kernel::erosion };
+  KernelInfo          kernel = { "erosion", kernel::erosion };
   const ParameterList params = { { "src", src }, { "strel", strel }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
-}    
+}
 
 auto
-binary_erode_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, std::string connectivity)
-  -> Array::Pointer
+binary_erode_func(const Device::Pointer & device,
+                  const Array::Pointer &  src,
+                  Array::Pointer          dst,
+                  std::string             connectivity) -> Array::Pointer
 {
   tier0::create_like(src, dst);
   KernelInfo kernel = { "erode_box", kernel::erode_box };

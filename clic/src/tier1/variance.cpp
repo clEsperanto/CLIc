@@ -42,9 +42,9 @@ variance_sphere_func(const Device::Pointer & device,
                      int                     radius_x,
                      int                     radius_y,
                      int                     radius_z) -> Array::Pointer
-                     {
+{
   return variance_filter_func(device, src, dst, radius_x, radius_y, radius_z, "sphere");
-                     }
+}
 
 
 auto
@@ -54,8 +54,8 @@ variance_box_func(const Device::Pointer & device,
                   int                     radius_x,
                   int                     radius_y,
                   int                     radius_z) -> Array::Pointer
-                  {
+{
   return variance_filter_func(device, src, dst, radius_x, radius_y, radius_z, "box");
-                  }
+}
 
 } // namespace cle::tier1
