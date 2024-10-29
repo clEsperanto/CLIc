@@ -3,20 +3,8 @@
 
 #include "utils.hpp"
 
-#include "cle_maximum_image_and_scalar.h"
-#include "cle_maximum_images.h"
 #include "cle_maximum_separable.h"
 #include "cle_maximum_sphere.h"
-#include "cle_maximum_x_projection.h"
-#include "cle_maximum_y_projection.h"
-#include "cle_maximum_z_projection.h"
-#include "cle_nonzero_maximum_box.h"
-#include "cle_nonzero_maximum_diamond.h"
-#include "cle_onlyzero_overwrite_maximum_box.h"
-#include "cle_onlyzero_overwrite_maximum_diamond.h"
-#include "cle_x_position_of_maximum_x_projection.h"
-#include "cle_y_position_of_maximum_y_projection.h"
-#include "cle_z_position_of_maximum_z_projection.h"
 
 namespace cle::tier1
 {
@@ -55,5 +43,39 @@ maximum_filter_func(const Device::Pointer & device,
   }
   return dst;
 }
+
+auto
+maximum_sphere_func(const Device::Pointer & device,
+                    const Array::Pointer &  src,
+                    Array::Pointer          dst,
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z) -> Array::Pointer
+{
+  return maximum_filter_func(device, src, dst, radius_x, radius_y, radius_z, "sphere");
+}
+
+auto
+maximum_box_func(const Device::Pointer & device,
+                 const Array::Pointer &  src,
+                 Array::Pointer          dst,
+                 int                     radius_x,
+                 int                     radius_y,
+                 int                     radius_z) -> Array::Pointer
+{
+  return maximum_filter_func(device, src, dst, radius_x, radius_y, radius_z, "box");
+}
+
+auto
+grayscale_dilate_func(const Device::Pointer & device,
+                    const Array::Pointer &  src,
+                    Array::Pointer          dst,
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z,
+                    std::string             connectivity) -> Array::Pointer
+                    {
+                      return maximum_filter_func(device, src, dst, radius_x, radius_y, radius_z, connectivity);
+                    }
 
 } // namespace cle::tier1

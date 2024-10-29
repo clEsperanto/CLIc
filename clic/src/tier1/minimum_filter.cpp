@@ -3,20 +3,8 @@
 
 #include "utils.hpp"
 
-#include "cle_minimum_image_and_scalar.h"
-#include "cle_minimum_images.h"
-#include "cle_minimum_of_masked_pixels_reduction.h"
 #include "cle_minimum_separable.h"
 #include "cle_minimum_sphere.h"
-#include "cle_minimum_x_projection.h"
-#include "cle_minimum_y_projection.h"
-#include "cle_minimum_z_projection.h"
-#include "cle_nonzero_minimum_box.h"
-#include "cle_nonzero_minimum_diamond.h"
-#include "cle_x_position_of_minimum_x_projection.h"
-#include "cle_y_position_of_minimum_y_projection.h"
-#include "cle_z_position_of_minimum_z_projection.h"
-
 namespace cle::tier1
 {
 
@@ -54,5 +42,39 @@ minimum_filter_func(const Device::Pointer & device,
   }
   return dst;
 }
+
+auto
+minimum_sphere_func(const Device::Pointer & device,
+                    const Array::Pointer &  src,
+                    Array::Pointer          dst,
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z) -> Array::Pointer
+{
+  return minimum_filter_func(device, src, dst, radius_x, radius_y, radius_z, "sphere");
+}
+
+auto
+minimum_box_func(const Device::Pointer & device,
+                 const Array::Pointer &  src,
+                 Array::Pointer          dst,
+                 int                     radius_x,
+                 int                     radius_y,
+                 int                     radius_z) -> Array::Pointer
+{
+  return minimum_filter_func(device, src, dst, radius_x, radius_y, radius_z, "box");
+}
+
+auto
+grayscale_erode_func(const Device::Pointer & device,
+                    const Array::Pointer &  src,
+                    Array::Pointer          dst,
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z,
+                    std::string             connectivity) -> Array::Pointer
+                    {
+                      return minimum_filter_func(device, src, dst, radius_x, radius_y, radius_z, connectivity);
+                    }
 
 } // namespace cle::tier1

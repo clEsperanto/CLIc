@@ -25,4 +25,16 @@ laplace_func(const Device::Pointer & device, const Array::Pointer & src, Array::
   return dst;
 }
 
+auto
+laplace_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+{
+  return laplace_func(device, src, dst, "box");
+}
+
+auto
+laplace_diamond_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+{
+  return laplace_func(device, src, dst, "sphere");
+}
+
 } // namespace cle::tier1

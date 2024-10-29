@@ -16,7 +16,6 @@ median_sphere_func(const Device::Pointer & device,
                    int                     radius_y,
                    int                     radius_z) -> Array::Pointer
 {
-  std::cerr << "Deprecated: Please use median() instead\n";
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "median_sphere", kernel::median_sphere };
   const ParameterList params = { { "src", src },

@@ -28,6 +28,24 @@ onlyzero_overwrite_maximum_func(const Device::Pointer & device,
   return dst1;
 }
 
+auto
+onlyzero_overwrite_maximum_diamond_func(const Device::Pointer & device,
+                                        const Array::Pointer &  src,
+                                        Array::Pointer          dst0,
+                                        Array::Pointer          dst1) -> Array::Pointer
+{
+  return onlyzero_overwrite_maximum_func(device, src, dst0, dst1, "sphere");
+}
+
+auto
+onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
+                                    const Array::Pointer &  src,
+                                    Array::Pointer          dst0,
+                                    Array::Pointer          dst1) -> Array::Pointer
+{
+  return onlyzero_overwrite_maximum_func(device, src, dst0, dst1, "box");
+}
+
 // point_index_list_to_mesh_func
 // point_index_list_to_touch_matrix_func
 
