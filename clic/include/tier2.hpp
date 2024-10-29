@@ -150,8 +150,8 @@ clip_func(const Device::Pointer & device,
 
 /**
  * @name closing_box
- * @brief Closing operator, boxshaped Applies morphological closing to intensity images using a boxshaped footprint.
- * This operator also works with binary images.
+ * @brief Closing operator, applies grayscale morphological closing to intensity images using a box shaped
+ * footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -174,7 +174,7 @@ closing_box_func(const Device::Pointer & device,
 
 /**
  * @name closing_sphere
- * @brief Closing operator, sphereshaped Applies morphological closing to intensity images using a sphereshaped
+ * @brief Closing operator, applies grayscale morphological closing to intensity images using a sphere shaped
  * footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -196,8 +196,8 @@ closing_sphere_func(const Device::Pointer & device,
                     float                   radius_z) -> Array::Pointer;
 
 /**
- * @name closing
- * @brief Closing operator, sphereshaped Applies morphological closing to intensity images using a sphereshaped
+ * @name grayscale_closing
+ * @brief Closing operator, applies grayscale morphological closing to intensity images using a sphere or box shaped
  * footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -211,13 +211,50 @@ closing_sphere_func(const Device::Pointer & device,
  * @note 'filter', 'in assistant'
  */
 auto
-closing_func(const Device::Pointer & device,
+grayscale_closing_func(const Device::Pointer & device,
              const Array::Pointer &  src,
              Array::Pointer          dst,
              float                   radius_x,
              float                   radius_y,
              float                   radius_z,
              std::string             connectivity) -> Array::Pointer;
+
+
+/**
+ * @name closing
+ * @brief Closing operator, applies morphological closing to intensity images using a custom structuring element provided as input. 
+ * This operator also works with binary images.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param strel Structuring element for the operation. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ * @note 'filter', 'in assistant'
+ */
+auto
+closing_func(const Device::Pointer & device,
+                  const Array::Pointer &  src,
+                  const Array::Pointer &  strel,
+                  Array::Pointer          dst) -> Array::Pointer;
+
+/**
+ * @name binary_closing
+ * @brief Closing operator, applies binary morphological closing to intensity images using a sphere or box shaped
+ * footprint. This operator also works with binary images.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
+ * @return Array::Pointer
+ * @note 'filter', 'in assistant'
+ */
+auto
+binary_closing_func(const Device::Pointer & device,
+             const Array::Pointer &  src,
+             Array::Pointer          dst,
+             std::string             connectivity) -> Array::Pointer;        
 
 /**
  * @name concatenate_along_x
@@ -609,7 +646,7 @@ minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Point
 
 /**
  * @name opening_box
- * @brief Opening operator, boxshaped Applies morphological opening to intensity images using a boxshaped footprint.
+ * @brief Opening operator, applies morphological opening to intensity images using a boxshaped footprint.
  * This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -633,7 +670,7 @@ opening_box_func(const Device::Pointer & device,
 
 /**
  * @name opening_sphere
- * @brief Opening operator, sphereshaped Applies morphological opening to intensity images using a sphereshaped
+ * @brief Opening operator, applies morphological opening to intensity images using a sphereshaped
  * footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -657,8 +694,8 @@ opening_sphere_func(const Device::Pointer & device,
 
 /**
  * @name opening
- * @brief Opening operator, sphereshaped Applies morphological opening to intensity images using a sphereshaped
- * footprint. This operator also works with binary images.
+ * @brief Opening operator, Applies morphological opening to intensity images using a sphereshaped or
+ * boxshepd footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -680,6 +717,41 @@ opening_func(const Device::Pointer & device,
              float                   radius_z,
              std::string             connectivity) -> Array::Pointer;
 
+/**
+ * @name opening
+ * @brief Closing operator, applies morphological opening to intensity images using a custom structuring element provided as input. 
+ * This operator also works with binary images.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param strel Structuring element for the operation. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ * @note 'filter', 'in assistant'
+ */
+auto
+opening_func(const Device::Pointer & device,
+                  const Array::Pointer &  src,
+                  const Array::Pointer &  strel,
+                  Array::Pointer          dst) -> Array::Pointer;
+
+/**
+ * @name binary_opening
+ * @brief Closing operator, applies binary morphological opening to intensity images using a sphere or box shaped
+ * footprint. This operator also works with binary images.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
+ * @return Array::Pointer
+ * @note 'filter', 'in assistant'
+ */
+auto
+binary_opening_func(const Device::Pointer & device,
+             const Array::Pointer &  src,
+             Array::Pointer          dst,
+             std::string             connectivity) -> Array::Pointer;    
 
 /**
  * @name radians_to_degrees
