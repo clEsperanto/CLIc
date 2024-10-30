@@ -227,7 +227,7 @@ grayscale_closing_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param strel Structuring element for the operation. [const Array::Pointer &]
+ * @param footprint Structuring element for the operation. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @note 'filter', 'in assistant'
@@ -235,7 +235,7 @@ grayscale_closing_func(const Device::Pointer & device,
 auto
 closing_func(const Device::Pointer & device,
              const Array::Pointer &  src,
-             const Array::Pointer &  strel,
+             const Array::Pointer &  footprint,
              Array::Pointer          dst) -> Array::Pointer;
 
 /**
@@ -709,7 +709,7 @@ opening_sphere_func(const Device::Pointer & device,
  *
  */
 auto
-opening_func(const Device::Pointer & device,
+grayscale_opening_func(const Device::Pointer & device,
              const Array::Pointer &  src,
              Array::Pointer          dst,
              float                   radius_x,
@@ -724,7 +724,7 @@ opening_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param strel Structuring element for the operation. [const Array::Pointer &]
+ * @param footprint Structuring element for the operation. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @note 'filter', 'in assistant'
@@ -732,7 +732,7 @@ opening_func(const Device::Pointer & device,
 auto
 opening_func(const Device::Pointer & device,
              const Array::Pointer &  src,
-             const Array::Pointer &  strel,
+             const Array::Pointer &  footprint,
              Array::Pointer          dst) -> Array::Pointer;
 
 /**

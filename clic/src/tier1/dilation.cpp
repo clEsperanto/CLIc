@@ -13,17 +13,17 @@ namespace cle::tier1
 auto
 dilation_func(const Device::Pointer & device,
               const Array::Pointer &  src,
-              const Array::Pointer &  strel,
+              const Array::Pointer &  footprint,
               Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  if (src->dimension() != strel->dimension())
+  if (src->dimension() != footprint->dimension())
   {
     throw std::runtime_error(
       "Error: input and structuring element in dilation operator must have the same dimensionality.");
   }
   KernelInfo          kernel = { "dilation", kernel::dilation };
-  const ParameterList params = { { "src", src }, { "strel", strel }, { "dst", dst } };
+  const ParameterList params = { { "src", src }, { "strel", footprint }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;

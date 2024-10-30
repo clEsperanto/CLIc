@@ -409,7 +409,7 @@ detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & s
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param strel Structuring element to use for the operation. [const Array::Pointer &]
+ * @param footprint Structuring element to use for the operation. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -420,7 +420,7 @@ detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & s
 auto
 dilation_func(const Device::Pointer & device,
               const Array::Pointer &  src,
-              const Array::Pointer &  strel,
+              const Array::Pointer &  footprint,
               Array::Pointer          dst) -> Array::Pointer;
 
 /**
@@ -570,7 +570,7 @@ equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, 
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param strel Structuring element to use for the operation. [const Array::Pointer &]
+ * @param footprint Structuring element to use for the operation. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -580,7 +580,7 @@ equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, 
 auto
 erosion_func(const Device::Pointer & device,
              const Array::Pointer &  src,
-             const Array::Pointer &  strel,
+             const Array::Pointer &  footprint,
              Array::Pointer          dst) -> Array::Pointer;
 
 /**
