@@ -710,12 +710,12 @@ opening_sphere_func(const Device::Pointer & device,
  */
 auto
 grayscale_opening_func(const Device::Pointer & device,
-             const Array::Pointer &  src,
-             Array::Pointer          dst,
-             float                   radius_x,
-             float                   radius_y,
-             float                   radius_z,
-             std::string             connectivity) -> Array::Pointer;
+                       const Array::Pointer &  src,
+                       Array::Pointer          dst,
+                       float                   radius_x,
+                       float                   radius_y,
+                       float                   radius_z,
+                       std::string             connectivity) -> Array::Pointer;
 
 /**
  * @name opening
