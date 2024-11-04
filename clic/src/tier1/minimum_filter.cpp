@@ -58,23 +58,13 @@ auto
 minimum_box_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 int                     radius_x,
-                 int                     radius_y,
-                 int                     radius_z) -> Array::Pointer
+                 float                     radius_x,
+                 float                     radius_y,
+                 float                     radius_z) -> Array::Pointer
 {
   return minimum_filter_func(device, src, dst, radius_x, radius_y, radius_z, "box");
 }
 
-auto
-grayscale_erode_func(const Device::Pointer & device,
-                     const Array::Pointer &  src,
-                     Array::Pointer          dst,
-                     float                   radius_x,
-                     float                   radius_y,
-                     float                   radius_z,
-                     std::string             connectivity) -> Array::Pointer
-{
-  return minimum_filter_func(device, src, dst, radius_x, radius_y, radius_z, connectivity);
-}
+
 
 } // namespace cle::tier1
