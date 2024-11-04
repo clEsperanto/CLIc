@@ -10,16 +10,16 @@ namespace cle::tier2
 auto
 closing_func(const Device::Pointer & device,
              const Array::Pointer &  src,
-             const Array::Pointer &  strel,
+             const Array::Pointer &  footprint,
              Array::Pointer          dst) -> Array::Pointer
 {
-  if (src->dimension() != strel->dimension())
+  if (src->dimension() != footprint->dimension())
   {
     throw std::runtime_error(
       "Error: input and structuring element in closing operator must have the same dimensionality.");
   }
-  auto temp = tier1::dilation_func(device, src, strel, nullptr);
-  return tier1::erosion_func(device, temp, strel, dst);
+  auto temp = tier1::dilation_func(device, src, footprint, nullptr);
+  return tier1::erosion_func(device, temp, footprint, dst);
 }
 
 auto
