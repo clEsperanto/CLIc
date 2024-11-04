@@ -79,7 +79,7 @@ TEST_P(TestErode, executeBox)
   auto gpu_input = cle::Array::create(5, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input_box.data());
 
-  auto gpu_output = cle::tier1::binary_erode_func(device, gpu_input, nullptr, "box");
+  auto gpu_output = cle::tier1::binary_erode_func(device, gpu_input, nullptr, 1 ,1 ,1, "box");
 
   gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
@@ -98,7 +98,7 @@ TEST_P(TestErode, executeSphere)
   auto gpu_input = cle::Array::create(5, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input_sphere.data());
 
-  auto gpu_output = cle::tier1::binary_erode_func(device, gpu_input, nullptr, "sphere");
+  auto gpu_output = cle::tier1::binary_erode_func(device, gpu_input, nullptr, 1, 1, 1, "sphere");
 
   gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)

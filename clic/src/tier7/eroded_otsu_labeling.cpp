@@ -29,7 +29,7 @@ eroded_otsu_labeling_func(const Device::Pointer & device,
   binary->copyTo(eroded1);
   for (int i = 0; i < number_of_erosions; i++)
   {
-    tier1::binary_erode_func(device, eroded1, eroded2, "box");
+    tier1::binary_erode_func(device, eroded1, eroded2, 1, 1, 1, "box");
     std::swap(eroded1, eroded2);
   }
   return tier6::masked_voronoi_labeling_func(device, eroded1, binary, dst);
