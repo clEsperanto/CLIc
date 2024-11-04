@@ -59,13 +59,12 @@ auto
 maximum_box_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 float                     radius_x,
-                 float                     radius_y,
-                 float                     radius_z) -> Array::Pointer
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer
 {
   return maximum_filter_func(device, src, dst, radius_x, radius_y, radius_z, "box");
 }
-
 
 
 } // namespace cle::tier1

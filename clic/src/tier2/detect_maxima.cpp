@@ -13,9 +13,9 @@ auto
 detect_maxima_func(const Device::Pointer & device,
                    const Array::Pointer &  src,
                    Array::Pointer          dst,
-                   float                     radius_x,
-                   float                     radius_y,
-                   float                     radius_z,
+                   float                   radius_x,
+                   float                   radius_y,
+                   float                   radius_z,
                    std::string             connectivity) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::BINARY);
@@ -31,11 +31,11 @@ auto
 detect_maxima_box_func(const Device::Pointer & device,
                        const Array::Pointer &  src,
                        Array::Pointer          dst,
-                       float                     radius_x,
-                       float                     radius_y,
-                       float                     radius_z) -> Array::Pointer
-                       {
-                        return detect_maxima_func(device, src, dst, radius_x, radius_y, radius_z, "box");
-                       }
+                       float                   radius_x,
+                       float                   radius_y,
+                       float                   radius_z) -> Array::Pointer
+{
+  return detect_maxima_func(device, src, dst, radius_x, radius_y, radius_z, "box");
+}
 
 } // namespace cle::tier2

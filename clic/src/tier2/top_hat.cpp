@@ -25,23 +25,23 @@ auto
 top_hat_box_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 float                     radius_x,
-                 float                     radius_y,
-                 float                     radius_z) -> Array::Pointer
-                 {
-                  return top_hat_func(device, src, dst, radius_x, radius_y, radius_z, "box");
-                 }
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer
+{
+  return top_hat_func(device, src, dst, radius_x, radius_y, radius_z, "box");
+}
 
 
-                 auto
+auto
 top_hat_sphere_func(const Device::Pointer & device,
                     const Array::Pointer &  src,
                     Array::Pointer          dst,
                     float                   radius_x,
                     float                   radius_y,
                     float                   radius_z) -> Array::Pointer
-                    {
-                      return top_hat_func(device, src, dst, radius_x, radius_y, radius_z, "sphere");
-                    }
+{
+  return top_hat_func(device, src, dst, radius_x, radius_y, radius_z, "sphere");
+}
 
 } // namespace cle::tier2

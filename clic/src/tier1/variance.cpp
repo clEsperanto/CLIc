@@ -13,9 +13,9 @@ auto
 variance_filter_func(const Device::Pointer & device,
                      const Array::Pointer &  src,
                      Array::Pointer          dst,
-                     float                     radius_x,
-                     float                     radius_y,
-                     float                     radius_z,
+                     float                   radius_x,
+                     float                   radius_y,
+                     float                   radius_z,
                      std::string             connectivity) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::FLOAT);
@@ -39,9 +39,9 @@ auto
 variance_sphere_func(const Device::Pointer & device,
                      const Array::Pointer &  src,
                      Array::Pointer          dst,
-                     float                     radius_x,
-                     float                     radius_y,
-                     float                     radius_z) -> Array::Pointer
+                     float                   radius_x,
+                     float                   radius_y,
+                     float                   radius_z) -> Array::Pointer
 {
   return variance_filter_func(device, src, dst, radius_x, radius_y, radius_z, "sphere");
 }
@@ -51,9 +51,9 @@ auto
 variance_box_func(const Device::Pointer & device,
                   const Array::Pointer &  src,
                   Array::Pointer          dst,
-                  float                     radius_x,
-                  float                     radius_y,
-                  float                     radius_z) -> Array::Pointer
+                  float                   radius_x,
+                  float                   radius_y,
+                  float                   radius_z) -> Array::Pointer
 {
   return variance_filter_func(device, src, dst, radius_x, radius_y, radius_z, "box");
 }

@@ -489,9 +489,9 @@ auto
 binary_dilate_func(const Device::Pointer & device,
                    const Array::Pointer &  src,
                    Array::Pointer          dst,
-                  float                    radius_x,
-                  float                    radius_y,
-                  float                    radius_z,
+                   float                   radius_x,
+                   float                   radius_y,
+                   float                   radius_z,
                    std::string             connectivity) -> Array::Pointer;
 
 
@@ -655,9 +655,9 @@ auto
 binary_erode_func(const Device::Pointer & device,
                   const Array::Pointer &  src,
                   Array::Pointer          dst,
-                  float radius_x,
-                  float radius_y,
-                  float radius_z,
+                  float                   radius_x,
+                  float                   radius_y,
+                  float                   radius_z,
                   std::string             connectivity) -> Array::Pointer;
 
 
@@ -1098,9 +1098,9 @@ auto
 maximum_box_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 float                     radius_x,
-                 float                     radius_y,
-                 float                     radius_z) -> Array::Pointer;
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer;
 
 /**
  * @name maximum_filter
@@ -1231,9 +1231,9 @@ auto
 mean_box_func(const Device::Pointer & device,
               const Array::Pointer &  src,
               Array::Pointer          dst,
-              float                     radius_x,
-              float                     radius_y,
-              float                     radius_z) -> Array::Pointer;
+              float                   radius_x,
+              float                   radius_y,
+              float                   radius_z) -> Array::Pointer;
 
 
 /**
@@ -1257,9 +1257,9 @@ auto
 mean_sphere_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 float                     radius_x,
-                 float                     radius_y,
-                 float                     radius_z) -> Array::Pointer;
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer;
 
 /**
  * @name mean_filter
@@ -1282,9 +1282,9 @@ auto
 mean_filter_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 float                     radius_x,
-                 float                     radius_y,
-                 float                     radius_z,
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z,
                  std::string             connectivity) -> Array::Pointer;
 
 
@@ -1360,9 +1360,9 @@ auto
 median_box_func(const Device::Pointer & device,
                 const Array::Pointer &  src,
                 Array::Pointer          dst,
-                float                     radius_x,
-                float                     radius_y,
-                float                     radius_z) -> Array::Pointer;
+                float                   radius_x,
+                float                   radius_y,
+                float                   radius_z) -> Array::Pointer;
 
 
 /**
@@ -1386,9 +1386,9 @@ auto
 median_sphere_func(const Device::Pointer & device,
                    const Array::Pointer &  src,
                    Array::Pointer          dst,
-                   float                     radius_x,
-                   float                     radius_y,
-                   float                     radius_z) -> Array::Pointer;
+                   float                   radius_x,
+                   float                   radius_y,
+                   float                   radius_z) -> Array::Pointer;
 
 /**
  * @name median
@@ -1412,9 +1412,9 @@ auto
 median_func(const Device::Pointer & device,
             const Array::Pointer &  src,
             Array::Pointer          dst,
-            float                     radius_x,
-            float                     radius_y,
-            float                     radius_z,
+            float                   radius_x,
+            float                   radius_y,
+            float                   radius_z,
             std::string             connectivity) -> Array::Pointer;
 
 
@@ -1439,9 +1439,9 @@ auto
 minimum_box_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 float                     radius_x,
-                 float                     radius_y,
-                 float                     radius_z) -> Array::Pointer;
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer;
 
 
 /**
@@ -1623,9 +1623,9 @@ auto
 mode_box_func(const Device::Pointer & device,
               const Array::Pointer &  src,
               Array::Pointer          dst,
-              float                     radius_x,
-              float                     radius_y,
-              float                     radius_z) -> Array::Pointer;
+              float                   radius_x,
+              float                   radius_y,
+              float                   radius_z) -> Array::Pointer;
 
 
 /**
@@ -1650,9 +1650,9 @@ auto
 mode_sphere_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 float                     radius_x,
-                 float                     radius_y,
-                 float                     radius_z) -> Array::Pointer;
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer;
 
 /**
  * @name mode
@@ -1676,9 +1676,9 @@ auto
 mode_func(const Device::Pointer & device,
           const Array::Pointer &  src,
           Array::Pointer          dst,
-          float                     radius_x,
-          float                     radius_y,
-          float                     radius_z,
+          float                   radius_x,
+          float                   radius_y,
+          float                   radius_z,
           std::string             connectivity) -> Array::Pointer;
 
 
@@ -2796,9 +2796,9 @@ auto
 variance_box_func(const Device::Pointer & device,
                   const Array::Pointer &  src,
                   Array::Pointer          dst,
-                  float                     radius_x,
-                  float                     radius_y,
-                  float                     radius_z) -> Array::Pointer;
+                  float                   radius_x,
+                  float                   radius_y,
+                  float                   radius_z) -> Array::Pointer;
 
 
 /**
@@ -2822,9 +2822,9 @@ auto
 variance_sphere_func(const Device::Pointer & device,
                      const Array::Pointer &  src,
                      Array::Pointer          dst,
-                     float                     radius_x,
-                     float                     radius_y,
-                     float                     radius_z) -> Array::Pointer;
+                     float                   radius_x,
+                     float                   radius_y,
+                     float                   radius_z) -> Array::Pointer;
 
 /**
  * @name variance_filter
@@ -2848,9 +2848,9 @@ auto
 variance_filter_func(const Device::Pointer & device,
                      const Array::Pointer &  src,
                      Array::Pointer          dst,
-                     float                     radius_x,
-                     float                     radius_y,
-                     float                     radius_z,
+                     float                   radius_x,
+                     float                   radius_y,
+                     float                   radius_z,
                      std::string             connectivity) -> Array::Pointer;
 
 

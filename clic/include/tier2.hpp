@@ -70,9 +70,9 @@ auto
 bottom_hat_box_func(const Device::Pointer & device,
                     const Array::Pointer &  src,
                     Array::Pointer          dst,
-                    float                     radius_x,
-                    float                     radius_y,
-                    float                     radius_z) -> Array::Pointer;
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z) -> Array::Pointer;
 
 
 /**
@@ -167,9 +167,9 @@ auto
 closing_box_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 float                     radius_x,
-                 float                     radius_y,
-                 float                     radius_z) -> Array::Pointer;
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer;
 
 
 /**
@@ -257,9 +257,9 @@ auto
 binary_closing_func(const Device::Pointer & device,
                     const Array::Pointer &  src,
                     Array::Pointer          dst,
-                       float                   radius_x,
-                       float                   radius_y,
-                       float                   radius_z,
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z,
                     std::string             connectivity) -> Array::Pointer;
 
 /**
@@ -416,9 +416,9 @@ auto
 detect_maxima_box_func(const Device::Pointer & device,
                        const Array::Pointer &  src,
                        Array::Pointer          dst,
-                       float                     radius_x,
-                       float                     radius_y,
-                       float                     radius_z) -> Array::Pointer;
+                       float                   radius_x,
+                       float                   radius_y,
+                       float                   radius_z) -> Array::Pointer;
 
 /**
  * @name detect_maxima
@@ -442,9 +442,9 @@ auto
 detect_maxima_func(const Device::Pointer & device,
                    const Array::Pointer &  src,
                    Array::Pointer          dst,
-                   float                     radius_x,
-                   float                     radius_y,
-                   float                     radius_z,
+                   float                   radius_x,
+                   float                   radius_y,
+                   float                   radius_z,
                    std::string             connectivity) -> Array::Pointer;
 
 
@@ -469,9 +469,9 @@ auto
 detect_minima_box_func(const Device::Pointer & device,
                        const Array::Pointer &  src,
                        Array::Pointer          dst,
-                       float                     radius_x,
-                       float                     radius_y,
-                       float                     radius_z) -> Array::Pointer;
+                       float                   radius_x,
+                       float                   radius_y,
+                       float                   radius_z) -> Array::Pointer;
 
 /**
  * @name detect_minima
@@ -495,9 +495,9 @@ auto
 detect_minima_func(const Device::Pointer & device,
                    const Array::Pointer &  src,
                    Array::Pointer          dst,
-                   float                     radius_x,
-                   float                     radius_y,
-                   float                     radius_z,
+                   float                   radius_x,
+                   float                   radius_y,
+                   float                   radius_z,
                    std::string             connectivity) -> Array::Pointer;
 
 /**
@@ -669,9 +669,9 @@ auto
 opening_box_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 float                     radius_x,
-                 float                     radius_y,
-                 float                     radius_z) -> Array::Pointer;
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer;
 
 
 /**
@@ -760,9 +760,9 @@ auto
 binary_opening_func(const Device::Pointer & device,
                     const Array::Pointer &  src,
                     Array::Pointer          dst,
-                       float                   radius_x,
-                       float                   radius_y,
-                       float                   radius_z,
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z,
                     std::string             connectivity) -> Array::Pointer;
 
 /**
@@ -871,9 +871,9 @@ auto
 standard_deviation_box_func(const Device::Pointer & device,
                             const Array::Pointer &  src,
                             Array::Pointer          dst,
-                            float                     radius_x,
-                            float                     radius_y,
-                            float                     radius_z) -> Array::Pointer;
+                            float                   radius_x,
+                            float                   radius_y,
+                            float                   radius_z) -> Array::Pointer;
 
 
 /**
@@ -897,9 +897,9 @@ auto
 standard_deviation_sphere_func(const Device::Pointer & device,
                                const Array::Pointer &  src,
                                Array::Pointer          dst,
-                               float                     radius_x,
-                               float                     radius_y,
-                               float                     radius_z) -> Array::Pointer;
+                               float                   radius_x,
+                               float                   radius_y,
+                               float                   radius_z) -> Array::Pointer;
 
 /**
  * @name standard_deviation
@@ -923,9 +923,9 @@ auto
 standard_deviation_func(const Device::Pointer & device,
                         const Array::Pointer &  src,
                         Array::Pointer          dst,
-                        float                     radius_x,
-                        float                     radius_y,
-                        float                     radius_z,
+                        float                   radius_x,
+                        float                   radius_y,
+                        float                   radius_z,
                         std::string             connectivity) -> Array::Pointer;
 
 /**
@@ -1047,9 +1047,9 @@ auto
 top_hat_box_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 float                     radius_x,
-                 float                     radius_y,
-                 float                     radius_z) -> Array::Pointer;
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer;
 
 
 /**

@@ -33,24 +33,24 @@ auto
 binary_dilate_func(const Device::Pointer & device,
                    const Array::Pointer &  src,
                    Array::Pointer          dst,
-                  float                    radius_x,
-                  float                    radius_y,
-                  float                    radius_z,
+                   float                   radius_x,
+                   float                   radius_y,
+                   float                   radius_z,
                    std::string             connectivity) -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  auto r_x = radius2kernelsize(radius_x);
-  auto r_y = radius2kernelsize(radius_y);
-  auto r_z = radius2kernelsize(radius_z);
+  auto       r_x = radius2kernelsize(radius_x);
+  auto       r_y = radius2kernelsize(radius_y);
+  auto       r_z = radius2kernelsize(radius_z);
   KernelInfo kernel = { "dilate_box", kernel::dilate_box };
   if (connectivity == "sphere")
   {
     kernel = { "dilate_sphere", kernel::dilate_sphere };
   }
   const ParameterList params = {
-      { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z }
-    };
-  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+    { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z }
+  };
+  const RangeArray range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
 }
@@ -58,7 +58,7 @@ binary_dilate_func(const Device::Pointer & device,
 auto
 dilate_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return binary_dilate_func(device, src, dst, 1, 1, 1,"box");
+  return binary_dilate_func(device, src, dst, 1, 1, 1, "box");
 }
 
 auto
