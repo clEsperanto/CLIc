@@ -21,4 +21,26 @@ bottom_hat_func(const Device::Pointer & device,
   return tier1::add_images_weighted_func(device, temp2, src, dst, 1, -1);
 }
 
+auto
+bottom_hat_box_func(const Device::Pointer & device,
+                    const Array::Pointer &  src,
+                    Array::Pointer          dst,
+                    float                     radius_x,
+                    float                     radius_y,
+                    float                     radius_z) -> Array::Pointer
+                    {
+                      return bottom_hat_func(device, src, dst, radius_x, radius_y, radius_z, "box");
+                    }
+
+                    auto
+bottom_hat_sphere_func(const Device::Pointer & device,
+                       const Array::Pointer &  src,
+                       Array::Pointer          dst,
+                       float                   radius_x,
+                       float                   radius_y,
+                       float                   radius_z) -> Array::Pointer
+                       {
+                        return bottom_hat_func(device, src, dst, radius_x, radius_y, radius_z, "sphere");
+                       }
+
 } // namespace cle::tier2
