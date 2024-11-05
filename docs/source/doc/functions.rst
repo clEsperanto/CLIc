@@ -1,5 +1,5 @@
-Functions
-=========
+Adding new functions
+====================
 
 The library is organized into tiers. Each tier consists of functions that rely on one or more functions from the previous tier.
 ``Tier1`` is the lowest, primarily composed of basic operations in pure ``OpenCL`` code.
