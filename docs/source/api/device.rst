@@ -1,5 +1,5 @@
-Device
-======
+Device Class
+============
 
 A ``Device`` is a processing unit that can execute OpenCL kernels.
 It is mainly a GPU, but it can also be a CPU or a simulation of a device (e.g. `pocl`, `oclgrind`).

@@ -1,5 +1,5 @@
-Array
-=====
+Array Class
+===========
 
 The ``Array`` class is the primary data structure class of the library.
 It stores the pointer to the memory space in the ``Device``, along with the necessary information to access and manipulate it.

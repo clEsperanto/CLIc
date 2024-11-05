@@ -1,8 +1,8 @@
-Usage
------
+How to use the library
+======================
 
-It is not adviced to use this library directly in your project as it does not provide a simple API to use.
-It is a low-level library on which rely other user oriented libraries (pyclesperanto, clesperantoJ, `etc.`).
+It is not adviced to use this library directly in your project as it does not provide a simple API for development.
+Indeed, it is a middle-level code on which rely other user-oriented libraries (pyclesperanto, clesperantoJ, `etc.`).
 
 However, as a developer, you may have to use this library to implement new operations or to integrate it into your own project.
 In the following, we provide a simple example to show how to use this library.
