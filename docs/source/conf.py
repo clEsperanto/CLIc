@@ -86,4 +86,3 @@ html_show_sourcelink = True
 htmlhelp_basename = slug
 
 html_static_path = ['_static']
-

@@ -24,4 +24,3 @@ The ``-V`` flag indicates that the tests should be run in verbose mode.
   It is also possible to run a particular test using the ``ctest`` command: ``ctest --test-dir ./build -C Debug -R {test_name}``.
 
 If using VSCode or any other IDE, it is also possible to run the tests directly from it. Please refer to the respective software documentation for instructions on how to run the tests with CMake and the IDE.
-

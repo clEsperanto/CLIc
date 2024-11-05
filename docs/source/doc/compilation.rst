@@ -5,7 +5,7 @@ Requirements
 ------------
 
 This section lists the software requirements for building the CLIc library.
-If you never compiled a C++ project before, you may want to check out these tutorials before proceeding: 
+If you never compiled a C++ project before, you may want to check out these tutorials before proceeding:
 
 - `C++ Tutorial <https://www.tutorialspoint.com/cplusplus/index.htm>`__.
 - `CMake Tutorial <https://cmake.org/cmake/help/latest/guide/tutorial/index.html>`__.
@@ -48,7 +48,7 @@ We can then uses CMakes's command-line interface to configure
 
 .. code-block:: bash
 
-   cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON 
+   cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON
 
 The parameter ``-S`` specifies the source directory, and ``-B`` specifies the build directory. ``-G`` allows you to specify your project generator like Ninja, MSVC, XCode, or other compatible with CMake. You can also configure specific variable of the project as followed ``-D<NAME_OF_THE_VARIABLE>=<VALUE>``. In this case, we are setting the build type to ``Release`` and enabling the tests.
 
@@ -82,7 +82,7 @@ Once you have generated the project, you can open the project file with your IDE
 Using VSCode
 ~~~~~~~~~~~~
 
-If you are using Visual Studio Code, you can use the C/C++ Extension Pack provided by Microsoft. This extension pack includes the CMake Tools extension, which allows you to configure and build the project directly from the IDE. 
+If you are using Visual Studio Code, you can use the C/C++ Extension Pack provided by Microsoft. This extension pack includes the CMake Tools extension, which allows you to configure and build the project directly from the IDE.
 We provided a set of presets configurations for the project that can be directly used with the CMake Tools extension.
 Configure the project manually or using the presets from the extension menu or the bottom action bar. Mainly you will have to specify:
 - The project generator (``Ninja``, ``MSVC``, ``XCode``, etc.)

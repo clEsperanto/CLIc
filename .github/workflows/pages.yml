@@ -35,19 +35,19 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event_name == 'release' && github.event.release.tag_name || github.ref_name }}
-      
+
       - name: Set environment variables
         run: |
           echo "RELEASE_TAG_NAME=${{ github.event.release.tag_name || github.ref_name }}" >> $GITHUB_ENV
- 
+
       - name: Get specific version of CMake, Ninja
         uses: lukka/get-cmake@v3.30.5
-      
+
       - name: Install doxygen
         run: |
           sudo apt update && sudo apt install -y doxygen
         shell: bash -l {0}
-        
+
       - name: Setup Python
         uses: actions/setup-python@v5.3.0
         with:

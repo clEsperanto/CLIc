@@ -1,4 +1,4 @@
-How to use the library 
+How to use the library
 ======================
 
 It is not adviced to use this library directly in your project as it does not provide a simple API for development.
