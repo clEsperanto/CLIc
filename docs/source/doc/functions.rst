@@ -220,12 +220,12 @@ In the previous examples, we haven't directly called a GPU kernel, yet we've man
 This is mainly because we relied on blocks of the algorithm already implemented on the GPU, such as `gaussian_blur_func` and `add_images_weighted_func` from `tier1`.
 If we inspect their implementation, we can see that they don't contain algorithmic code but rather calls for GPU kernel execution.
 Indeed, the lower in the tiers we go, the more we rely on GPU kernels to perform the operations.
-Inversement, the higher in the tiers we go, the more we rely on pre-existing functions to perform the operations.
-
+Inversement, the higher in the tiers we go, the more we rely on pre-existing functions to perform the operations.  
+  
 In this section, we will see how to call a GPU kernel directly from a function.
 This will require that the kernel already exist and is compatible with the CLIJ convention.
 More on this can be found in the `CLIJ kernel repository <https://github.com/clEsperanto/clij-opencl-kernels>`__.
-Kernels in the CLIJ repository are automatically stringify and stored in a header file that can be ``include``d in the library.
+Kernels in the CLIJ repository are automatically stringify and stored in a header file that can be ``included`` in the library.
 
 .. code-block:: cpp
 
