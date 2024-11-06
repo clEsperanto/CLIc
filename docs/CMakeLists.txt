@@ -19,28 +19,21 @@ if (NOT SPHINX)
     return()
 endif()
 
-# Configure the Doxyfile with the correct input folder
-set(SOURCE_FOLDER ${CMAKE_CURRENT_SOURCE_DIR}/../clic/)
-configure_file(Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-set(DOXYGEN_INPUT "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile")  # Path to the generated Doxyfile
-
 # Add a custom target to run Doxygen when building the documentation
 add_custom_target(
     doxygen
-    COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMAND doxygen ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Generating Doxygen documentation"
     VERBATIM
-    BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/docs/xml
 )
 
 # Add a custom target to run Sphinx when building the documentation
 add_custom_target(
     documentation
-    COMMAND ${CMAKE_COMMAND} -E env CLIC_DOCS=${CMAKE_CURRENT_BINARY_DIR}/xml ${SPHINX} -b html ${CMAKE_CURRENT_SOURCE_DIR}/source ${CMAKE_CURRENT_SOURCE_DIR}/build
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMAND make html
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Generating Sphinx documentation"
     VERBATIM
     DEPENDS doxygen
-    BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/build
 )
