@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-  release:
-    types: [created, published]
 
 
   # Allows you to run this workflow manually from the Actions tab
