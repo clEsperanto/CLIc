@@ -7,9 +7,9 @@ This documentation will focus on the library design and code.
 
 For usage documentation, please refer to one of the following links:
 
-- |:snake:| - `pyclesperanto <https://clesperanto.github.io/pyclesperanto/>`__
-- |:coffee:| - `clEsperantoJ <https://clesperanto.github.io/clEsperantoj/>`__  (WIP)
-- |:rocket:| - `clEsperanto <https://clesperanto.github.io/clEsperanto/>`__  (WIP)
+- |:snake:| - `pyclesperanto documentation <https://clesperanto.github.io/pyclesperanto/>`__
+- |:coffee:| - `clEsperantoJ documentation <https://clesperanto.github.io/clEsperantoj/>`__  (WIP)
+- |:rocket:| - `clEsperanto documentation <https://clesperanto.github.io/clEsperanto/>`__  (WIP)
 
 .. note::
 

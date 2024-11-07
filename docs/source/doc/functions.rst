@@ -225,7 +225,7 @@ Inversement, the higher in the tiers we go, the more we rely on pre-existing fun
 In this section, we will see how to call a GPU kernel directly from a function.
 This will require that the kernel already exist and is compatible with the CLIJ convention.
 More on this can be found in the `CLIJ kernel repository <https://github.com/clEsperanto/clij-opencl-kernels>`__.
-Kernels in the CLIJ repository are automatically stringify and stored in a header file that can be ``include``d in the library.
+Kernels in the CLIJ repository are automatically stringify and stored in a header file that can be ``included`` in the library.
 
 .. code-block:: cpp
 
