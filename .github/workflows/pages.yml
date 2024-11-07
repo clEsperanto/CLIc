@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+  release:
+    types: [published]
 
 
   # Allows you to run this workflow manually from the Actions tab
@@ -31,12 +33,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event_name == 'release' && github.event.release.tag_name || github.ref_name }}
-
-      - name: Set environment variables
-        run: |
-          echo "RELEASE_TAG_NAME=${{ github.event.release.tag_name || github.ref_name }}" >> $GITHUB_ENV
 
       - name: Get specific version of CMake, Ninja
         uses: lukka/get-cmake@v3.30.5
@@ -59,8 +55,11 @@ jobs:
 
       - name: generat build folder
         run: |
-          cmake -S ./docs -B ./build -G Ninja
-          cmake --build ./build --target documentation
+          git fetch --tags
+          cd docs
+          mkdir build
+          doxygen Doxyfile
+          python build_doc.py
         shell: bash -l {0}
 
       - name: Setup Pages
@@ -69,7 +68,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './docs/build/html'
+          path: './pages'
 
       - name: Deploy to GitHub Pages
         id: deployment
