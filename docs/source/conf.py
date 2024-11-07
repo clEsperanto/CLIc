@@ -93,7 +93,7 @@ if build_all_docs is not None:
   current_language = os.environ.get("current_language")
   current_version = os.environ.get("current_version")
 
-  # we set the html_context wit current language and version 
+  # we set the html_context wit current language and version
   # and empty languages and versions for now
   html_context: Dict[str, Any] = {
     'current_language' : current_language,
@@ -102,8 +102,8 @@ if build_all_docs is not None:
     'versions' : [],
   }
 
-  # and we append all versions and langauges accordingly 
-  # we treat t he main branch as latest 
+  # and we append all versions and langauges accordingly
+  # we treat t he main branch as latest
   if (current_version == 'latest'):
     html_context['languages'].append(['en', pages_root])
 
