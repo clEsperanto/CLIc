@@ -23,7 +23,7 @@ erosion_func(const Device::Pointer & device,
       "Error: input and structuring element in erosion operator must have the same dimensionality.");
   }
   KernelInfo          kernel = { "erosion", kernel::erosion };
-  const ParameterList params = { { "src", src }, { "strel", footprint }, { "dst", dst } };
+  const ParameterList params = { { "src", src }, { "footprint", footprint }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
