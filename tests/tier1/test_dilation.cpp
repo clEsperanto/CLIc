@@ -34,8 +34,6 @@ TEST_P(TestDilate, execute)
 
   auto gpu_output = cle::tier1::dilation_func(device, gpu_input, gpu_kernel, nullptr);
 
-  cle::print<float>(gpu_output);
-
   gpu_output->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
