@@ -57,9 +57,9 @@ add_images_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image where the background is subtracted from. [const Array::Pointer &]
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
- * @param radius_x Radius of the background determination region in X. [int ( = 1 )]
- * @param radius_y Radius of the background determination region in Y. [int ( = 1 )]
- * @param radius_z Radius of the background determination region in Z. [int ( = 1 )]
+ * @param radius_x Radius of the background determination region in X. [float ( = 1 )]
+ * @param radius_y Radius of the background determination region in Y. [float ( = 1 )]
+ * @param radius_z Radius of the background determination region in Z. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'filter', 'background removal', 'in assistant'
@@ -70,9 +70,9 @@ auto
 bottom_hat_box_func(const Device::Pointer & device,
                     const Array::Pointer &  src,
                     Array::Pointer          dst,
-                    int                     radius_x,
-                    int                     radius_y,
-                    int                     radius_z) -> Array::Pointer;
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z) -> Array::Pointer;
 
 
 /**
@@ -150,15 +150,15 @@ clip_func(const Device::Pointer & device,
 
 /**
  * @name closing_box
- * @brief Closing operator, boxshaped Applies morphological closing to intensity images using a boxshaped footprint.
- * This operator also works with binary images.
+ * @brief Closing operator, applies grayscale morphological closing to intensity images using a box shaped
+ * footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius along the x axis. [int ( = 0 )]
- * @param radius_y Radius along the y axis. [int ( = 0 )]
- * @param radius_z Radius along the z axis. [int ( = 0 )]
+ * @param radius_x Radius along the x axis. [int ( = 1 )]
+ * @param radius_y Radius along the y axis. [int ( = 1 )]
+ * @param radius_z Radius along the z axis. [int ( = 1 )]
  * @return Array::Pointer
  * @note 'filter', 'in assistant'
  * @deprecated This method is deprecated. Consider using closing() instead.
@@ -167,22 +167,22 @@ auto
 closing_box_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 int                     radius_x,
-                 int                     radius_y,
-                 int                     radius_z) -> Array::Pointer;
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer;
 
 
 /**
  * @name closing_sphere
- * @brief Closing operator, sphereshaped Applies morphological closing to intensity images using a sphereshaped
+ * @brief Closing operator, applies grayscale morphological closing to intensity images using a sphere shaped
  * footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius along the x axis. [int ( = 1 )]
- * @param radius_y Radius along the y axis. [int ( = 1 )]
- * @param radius_z Radius along the z axis. [int ( = 0 )]
+ * @param radius_x Radius along the x axis. [float ( = 1 )]
+ * @param radius_y Radius along the y axis. [float ( = 1 )]
+ * @param radius_z Radius along the z axis. [float ( = 1 )]
  * @return Array::Pointer
  * @note 'filter', 'in assistant', 'bia-bob-suggestion'
  * @deprecated This method is deprecated. Consider using closing() instead.
@@ -196,28 +196,71 @@ closing_sphere_func(const Device::Pointer & device,
                     float                   radius_z) -> Array::Pointer;
 
 /**
- * @name closing
- * @brief Closing operator, sphereshaped Applies morphological closing to intensity images using a sphereshaped
+ * @name grayscale_closing
+ * @brief Closing operator, applies grayscale morphological closing to intensity images using a sphere or box shaped
  * footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius along the x axis. [int ( = 1 )]
- * @param radius_y Radius along the y axis. [int ( = 1 )]
- * @param radius_z Radius along the z axis. [int ( = 0 )]
+ * @param radius_x Radius along the x axis. [float ( = 1 )]
+ * @param radius_y Radius along the y axis. [float ( = 1 )]
+ * @param radius_z Radius along the z axis. [float ( = 1 )]
  * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
+ * @return Array::Pointer
+ * @note 'filter', 'in assistant'
+ */
+auto
+grayscale_closing_func(const Device::Pointer & device,
+                       const Array::Pointer &  src,
+                       Array::Pointer          dst,
+                       float                   radius_x,
+                       float                   radius_y,
+                       float                   radius_z,
+                       std::string             connectivity) -> Array::Pointer;
+
+
+/**
+ * @name closing
+ * @brief Closing operator, applies morphological closing to intensity images using a custom structuring element
+ * provided as input. This operator also works with binary images.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param footprint Structuring element for the operation. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @note 'filter', 'in assistant'
  */
 auto
 closing_func(const Device::Pointer & device,
              const Array::Pointer &  src,
-             Array::Pointer          dst,
-             float                   radius_x,
-             float                   radius_y,
-             float                   radius_z,
-             std::string             connectivity) -> Array::Pointer;
+             const Array::Pointer &  footprint,
+             Array::Pointer          dst) -> Array::Pointer;
+
+/**
+ * @name binary_closing
+ * @brief Closing operator, applies binary morphological closing to intensity images using a sphere or box shaped
+ * footprint. This operator also works with binary images.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius of the sphere or box element along the x axis. [float ( = 1 )]
+ * @param radius_y Radius of the sphere or box element along the y axis. [float ( = 1 )]
+ * @param radius_z Radius of the sphere or box element along the z axis. [float ( = 1 )]
+ * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
+ * @return Array::Pointer
+ * @note 'filter', 'in assistant'
+ */
+auto
+binary_closing_func(const Device::Pointer & device,
+                    const Array::Pointer &  src,
+                    Array::Pointer          dst,
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z,
+                    std::string             connectivity) -> Array::Pointer;
 
 /**
  * @name concatenate_along_x
@@ -360,9 +403,9 @@ degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & s
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius along the x axis. [int ( = 0 )]
- * @param radius_y Radius along the y axis. [int ( = 0 )]
- * @param radius_z Radius along the z axis. [int ( = 0 )]
+ * @param radius_x Radius along the x axis. [float ( = 1 )]
+ * @param radius_y Radius along the y axis. [float ( = 1 )]
+ * @param radius_z Radius along the z axis. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
@@ -373,9 +416,9 @@ auto
 detect_maxima_box_func(const Device::Pointer & device,
                        const Array::Pointer &  src,
                        Array::Pointer          dst,
-                       int                     radius_x,
-                       int                     radius_y,
-                       int                     radius_z) -> Array::Pointer;
+                       float                   radius_x,
+                       float                   radius_y,
+                       float                   radius_z) -> Array::Pointer;
 
 /**
  * @name detect_maxima
@@ -385,9 +428,9 @@ detect_maxima_box_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius along the x axis. [int ( = 0 )]
- * @param radius_y Radius along the y axis. [int ( = 0 )]
- * @param radius_z Radius along the z axis. [int ( = 0 )]
+ * @param radius_x Radius along the x axis. [float ( = 1 )]
+ * @param radius_y Radius along the y axis. [float ( = 1 )]
+ * @param radius_z Radius along the z axis. [float ( = 1 )]
  * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
@@ -399,9 +442,9 @@ auto
 detect_maxima_func(const Device::Pointer & device,
                    const Array::Pointer &  src,
                    Array::Pointer          dst,
-                   int                     radius_x,
-                   int                     radius_y,
-                   int                     radius_z,
+                   float                   radius_x,
+                   float                   radius_y,
+                   float                   radius_z,
                    std::string             connectivity) -> Array::Pointer;
 
 
@@ -413,9 +456,9 @@ detect_maxima_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius along the x axis. [int ( = 0 )]
- * @param radius_y Radius along the y axis. [int ( = 0 )]
- * @param radius_z Radius along the z axis. [int ( = 0 )]
+ * @param radius_x Radius along the x axis. [float ( = 1 )]
+ * @param radius_y Radius along the y axis. [float ( = 1 )]
+ * @param radius_z Radius along the z axis. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
@@ -426,9 +469,9 @@ auto
 detect_minima_box_func(const Device::Pointer & device,
                        const Array::Pointer &  src,
                        Array::Pointer          dst,
-                       int                     radius_x,
-                       int                     radius_y,
-                       int                     radius_z) -> Array::Pointer;
+                       float                   radius_x,
+                       float                   radius_y,
+                       float                   radius_z) -> Array::Pointer;
 
 /**
  * @name detect_minima
@@ -438,9 +481,9 @@ detect_minima_box_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius along the x axis. [int ( = 0 )]
- * @param radius_y Radius along the y axis. [int ( = 0 )]
- * @param radius_z Radius along the z axis. [int ( = 0 )]
+ * @param radius_x Radius along the x axis. [float ( = 1 )]
+ * @param radius_y Radius along the y axis. [float ( = 1 )]
+ * @param radius_z Radius along the z axis. [float ( = 1 )]
  * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
@@ -452,9 +495,9 @@ auto
 detect_minima_func(const Device::Pointer & device,
                    const Array::Pointer &  src,
                    Array::Pointer          dst,
-                   int                     radius_x,
-                   int                     radius_y,
-                   int                     radius_z,
+                   float                   radius_x,
+                   float                   radius_y,
+                   float                   radius_z,
                    std::string             connectivity) -> Array::Pointer;
 
 /**
@@ -609,15 +652,15 @@ minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Point
 
 /**
  * @name opening_box
- * @brief Opening operator, boxshaped Applies morphological opening to intensity images using a boxshaped footprint.
+ * @brief Opening operator, applies morphological opening to intensity images using a boxshaped footprint.
  * This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius along the x axis. [int ( = 0 )]
- * @param radius_y Radius along the y axis. [int ( = 0 )]
- * @param radius_z Radius along the z axis. [int ( = 0 )]
+ * @param radius_x Radius along the x axis. [float ( = 1 )]
+ * @param radius_y Radius along the y axis. [float ( = 1 )]
+ * @param radius_z Radius along the z axis. [float ( = 1 )]
  * @return Array::Pointer
  * @note 'filter', 'in assistant'
  * @deprecated This method is deprecated. Consider using opening() instead.
@@ -626,14 +669,14 @@ auto
 opening_box_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 int                     radius_x,
-                 int                     radius_y,
-                 int                     radius_z) -> Array::Pointer;
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer;
 
 
 /**
  * @name opening_sphere
- * @brief Opening operator, sphereshaped Applies morphological opening to intensity images using a sphereshaped
+ * @brief Opening operator, applies morphological opening to intensity images using a sphereshaped
  * footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -641,7 +684,7 @@ opening_box_func(const Device::Pointer & device,
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @param radius_x Radius along the x axis. [float ( = 1 )]
  * @param radius_y Radius along the y axis. [float ( = 1 )]
- * @param radius_z Radius along the z axis. [float ( = 0 )]
+ * @param radius_z Radius along the z axis. [float ( = 1 )]
  * @return Array::Pointer
  * @note 'filter', 'in assistant'
  * @deprecated This method is deprecated. Consider using opening() instead.
@@ -657,29 +700,70 @@ opening_sphere_func(const Device::Pointer & device,
 
 /**
  * @name opening
- * @brief Opening operator, sphereshaped Applies morphological opening to intensity images using a sphereshaped
- * footprint. This operator also works with binary images.
+ * @brief Opening operator, Applies morphological opening to intensity images using a sphereshaped or
+ * boxshepd footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @param radius_x Radius along the x axis. [float ( = 1 )]
  * @param radius_y Radius along the y axis. [float ( = 1 )]
- * @param radius_z Radius along the z axis. [float ( = 0 )]
+ * @param radius_z Radius along the z axis. [float ( = 1 )]
  * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  * @note 'filter', 'in assistant'
  *
  */
 auto
+grayscale_opening_func(const Device::Pointer & device,
+                       const Array::Pointer &  src,
+                       Array::Pointer          dst,
+                       float                   radius_x,
+                       float                   radius_y,
+                       float                   radius_z,
+                       std::string             connectivity) -> Array::Pointer;
+
+/**
+ * @name opening
+ * @brief Closing operator, applies morphological opening to intensity images using a custom structuring element
+ * provided as input. This operator also works with binary images.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param footprint Structuring element for the operation. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ * @note 'filter', 'in assistant'
+ */
+auto
 opening_func(const Device::Pointer & device,
              const Array::Pointer &  src,
-             Array::Pointer          dst,
-             float                   radius_x,
-             float                   radius_y,
-             float                   radius_z,
-             std::string             connectivity) -> Array::Pointer;
+             const Array::Pointer &  footprint,
+             Array::Pointer          dst) -> Array::Pointer;
 
+/**
+ * @name binary_opening
+ * @brief Closing operator, applies binary morphological opening to intensity images using a sphere or box shaped
+ * footprint. This operator also works with binary images.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius of the sphere or box element along the x axis. [float ( = 1 )]
+ * @param radius_y Radius of the sphere or box element along the y axis. [float ( = 1 )]
+ * @param radius_z Radius of the sphere or box element along the z axis. [float ( = 1 )]
+ * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
+ * @return Array::Pointer
+ * @note 'filter', 'in assistant'
+ */
+auto
+binary_opening_func(const Device::Pointer & device,
+                    const Array::Pointer &  src,
+                    Array::Pointer          dst,
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z,
+                    std::string             connectivity) -> Array::Pointer;
 
 /**
  * @name radians_to_degrees
@@ -774,9 +858,9 @@ squared_difference_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius along the x axis. [int ( = 1 )]
- * @param radius_y Radius along the y axis. [int ( = 1 )]
- * @param radius_z Radius along the z axis. [int ( = 1 )]
+ * @param radius_x Radius along the x axis. [float ( = 1 )]
+ * @param radius_y Radius along the y axis. [float ( = 1 )]
+ * @param radius_z Radius along the z axis. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'filter', 'edge detection', 'in assistant'
@@ -787,9 +871,9 @@ auto
 standard_deviation_box_func(const Device::Pointer & device,
                             const Array::Pointer &  src,
                             Array::Pointer          dst,
-                            int                     radius_x,
-                            int                     radius_y,
-                            int                     radius_z) -> Array::Pointer;
+                            float                   radius_x,
+                            float                   radius_y,
+                            float                   radius_z) -> Array::Pointer;
 
 
 /**
@@ -800,9 +884,9 @@ standard_deviation_box_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius along the x axis. [int ( = 1 )]
- * @param radius_y Radius along the y axis. [int ( = 1 )]
- * @param radius_z Radius along the z axis. [int ( = 1 )]
+ * @param radius_x Radius along the x axis. [float ( = 1 )]
+ * @param radius_y Radius along the y axis. [float ( = 1 )]
+ * @param radius_z Radius along the z axis. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'filter', 'edge detection', 'in assistant'
@@ -813,9 +897,9 @@ auto
 standard_deviation_sphere_func(const Device::Pointer & device,
                                const Array::Pointer &  src,
                                Array::Pointer          dst,
-                               int                     radius_x,
-                               int                     radius_y,
-                               int                     radius_z) -> Array::Pointer;
+                               float                   radius_x,
+                               float                   radius_y,
+                               float                   radius_z) -> Array::Pointer;
 
 /**
  * @name standard_deviation
@@ -825,9 +909,9 @@ standard_deviation_sphere_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius along the x axis. [int ( = 1 )]
- * @param radius_y Radius along the y axis. [int ( = 1 )]
- * @param radius_z Radius along the z axis. [int ( = 1 )]
+ * @param radius_x Radius along the x axis. [float ( = 1 )]
+ * @param radius_y Radius along the y axis. [float ( = 1 )]
+ * @param radius_z Radius along the z axis. [float ( = 1 )]
  * @param connectivity Neigborhood shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
@@ -839,9 +923,9 @@ auto
 standard_deviation_func(const Device::Pointer & device,
                         const Array::Pointer &  src,
                         Array::Pointer          dst,
-                        int                     radius_x,
-                        int                     radius_y,
-                        int                     radius_z,
+                        float                   radius_x,
+                        float                   radius_y,
+                        float                   radius_z,
                         std::string             connectivity) -> Array::Pointer;
 
 /**
@@ -950,9 +1034,9 @@ sum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image where the background is subtracted from. [const Array::Pointer &]
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
- * @param radius_x Radius of the background determination region in X. [int ( = 1 )]
- * @param radius_y Radius of the background determination region in Y. [int ( = 1 )]
- * @param radius_z Radius of the background determination region in Z. [int ( = 1 )]
+ * @param radius_x Radius of the background determination region in X. [float ( = 1 )]
+ * @param radius_y Radius of the background determination region in Y. [float ( = 1 )]
+ * @param radius_z Radius of the background determination region in Z. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'filter', 'background removal', 'in assistant'
@@ -963,9 +1047,9 @@ auto
 top_hat_box_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 int                     radius_x,
-                 int                     radius_y,
-                 int                     radius_z) -> Array::Pointer;
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer;
 
 
 /**

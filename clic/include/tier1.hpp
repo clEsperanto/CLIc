@@ -402,6 +402,28 @@ detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & s
   -> Array::Pointer;
 
 /**
+ * @name dilation
+ * @brief Computes the dilation operation between an image and a structuring element. The operation is applied in
+ * grayscale if the image is in grayscale. The structuring element is a binary image with pixel values 0 and 1, and must
+ * have the same dimensionality as the image (3D is the image is 3D, 2D if the image is 2D).
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param footprint Structuring element to use for the operation. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'binary processing' 'filter'
+ * @see https://clij.github.io/clij2-docs/reference_erodeBox
+ * @deprecated This function is deprecated. Consider using erode() instead.
+ */
+auto
+dilation_func(const Device::Pointer & device,
+              const Array::Pointer &  src,
+              const Array::Pointer &  footprint,
+              Array::Pointer          dst) -> Array::Pointer;
+
+/**
  * @name dilate_box
  * @brief Computes a binary image with pixel values 0 and 1 containing the binary dilation of a given input image. The
  * dilation takes the Mooreneighborhood (8 pixels in 2D and 26 pixels in 3d) into account. The pixels in the input image
@@ -442,15 +464,20 @@ dilate_sphere_func(const Device::Pointer & device, const Array::Pointer & src, A
 
 
 /**
- * @name dilate
+ * @name binary_dilate
  * @brief Computes a binary image with pixel values 0 and 1 containing the binary dilation of a given input image. The
  * dilation apply the Mooreneighborhood (8 pixels in 2D and 26 pixels in 3d) for the "box" connectivity and
  * the vonNeumannneighborhood (4 pixels in 2D and 6 pixels in 3d) for a "sphere" connectivity.
  * The pixels in the input image with pixel value not equal to 0 will be interpreted as 1.
  *
+ * For a more flexible dilation with arbitrary shapes, use dilation() instead.
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. Input image to process. [const Array::Pointer &]
  * @param dst Output result image. Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius of sphere or box structuring element in X. [float ( = 1 )]
+ * @param radius_y Radius of sphere or box structuring element in Y. [float ( = 1 )]
+ * @param radius_z Radius of sphere or box structuring element in Z. [float ( = 1 )]
  * @param connectivity Element shape, "box" or "sphere". [std::string ( = "box" )]
  * @return Array::Pointer
  *
@@ -459,8 +486,13 @@ dilate_sphere_func(const Device::Pointer & device, const Array::Pointer & src, A
  * @see https://clij.github.io/clij2-docs/reference_dilateSphere
  */
 auto
-dilate_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, std::string connectivity)
-  -> Array::Pointer;
+binary_dilate_func(const Device::Pointer & device,
+                   const Array::Pointer &  src,
+                   Array::Pointer          dst,
+                   float                   radius_x,
+                   float                   radius_y,
+                   float                   radius_z,
+                   std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -536,6 +568,26 @@ auto
 equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
   -> Array::Pointer;
 
+/**
+ * @name erosion
+ * @brief Computes the erosion operation between an image and a structuring element. The operation is applied in
+ * grayscale if the image is in grayscale. The structuring element is a binary image with pixel values 0 and 1, and must
+ * have the same dimensionality as the image (3D is the image is 3D, 2D if the image is 2D).
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param footprint Structuring element to use for the operation. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'binary processing' 'filter'
+ * @see https://clij.github.io/clij2-docs/reference_erodeBox
+ */
+auto
+erosion_func(const Device::Pointer & device,
+             const Array::Pointer &  src,
+             const Array::Pointer &  footprint,
+             Array::Pointer          dst) -> Array::Pointer;
 
 /**
  * @name erode_box
@@ -584,9 +636,14 @@ erode_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  * the vonNeumannneighborhood (4 pixels in 2D and 6 pixels in 3d) for a "sphere" connectivity. The pixels in the input
  * image with pixel value not equal to 0 will be interpreted as 1.
  *
+ * For a more flexible erosion with arbitrary shapes, use erosion() instead.
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius of the eroding sphere or box structuring element in X. [float ( = 1 )]
+ * @param radius_y Radius of the eroding sphere or box structuring element in Y. [float ( = 1 )]
+ * @param radius_z Radius of the eroding sphere or box structuring element in Z. [float ( = 1 )]
  * @param connectivity Element shape, "box" or "sphere". [std::string ( = "box" )]
  * @return Array::Pointer
  *
@@ -595,8 +652,13 @@ erode_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  * @see https://clij.github.io/clij2-docs/reference_erodeSphere
  */
 auto
-erode_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, std::string connectivity)
-  -> Array::Pointer;
+binary_erode_func(const Device::Pointer & device,
+                  const Array::Pointer &  src,
+                  Array::Pointer          dst,
+                  float                   radius_x,
+                  float                   radius_y,
+                  float                   radius_z,
+                  std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -1023,9 +1085,9 @@ maximum_images_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius size along x axis. [int ( = 1 )]
- * @param radius_y Radius size along y axis. [int ( = 1 )]
- * @param radius_z Radius size along z axis. [int ( = 1 )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'filter', 'in assistant'
@@ -1036,9 +1098,9 @@ auto
 maximum_box_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 int                     radius_x,
-                 int                     radius_y,
-                 int                     radius_z) -> Array::Pointer;
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer;
 
 /**
  * @name maximum_filter
@@ -1048,9 +1110,9 @@ maximum_box_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius size along x axis. [int ( = 0 )]
- * @param radius_y Radius size along y axis. [int ( = 0 )]
- * @param radius_z Radius size along z axis. [int ( = 0 )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
@@ -1066,6 +1128,35 @@ maximum_filter_func(const Device::Pointer & device,
                     float                   radius_y,
                     float                   radius_z,
                     std::string             connectivity) -> Array::Pointer;
+
+/**
+ * @name grayscale_dilate
+ * @brief Computes a grayscale image containing the grayscale dilation of a given input image. The
+ * erosion apply the Mooreneighborhood (8 pixels in 2D and 26 pixels in 3d) for the "box" connectivity and
+ * the vonNeumannneighborhood (4 pixels in 2D and 6 pixels in 3d) for a "sphere" connectivity. The pixels in the input
+ * image with pixel value not equal to 0 will be interpreted as 1.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
+ * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_minimum3DBox
+ * @see https://clij.github.io/clij2-docs/reference_minimum3DSphere
+ */
+auto
+grayscale_dilate_func(const Device::Pointer & device,
+                      const Array::Pointer &  src,
+                      Array::Pointer          dst,
+                      float                   radius_x,
+                      float                   radius_y,
+                      float                   radius_z,
+                      std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -1127,9 +1218,9 @@ maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius size along x axis. [int ( = 1 )]
- * @param radius_y Radius size along y axis. [int ( = 1 )]
- * @param radius_z Radius size along z axis. [int ( = 1 )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'filter', 'denoise', 'in assistant'
@@ -1140,9 +1231,9 @@ auto
 mean_box_func(const Device::Pointer & device,
               const Array::Pointer &  src,
               Array::Pointer          dst,
-              int                     radius_x,
-              int                     radius_y,
-              int                     radius_z) -> Array::Pointer;
+              float                   radius_x,
+              float                   radius_y,
+              float                   radius_z) -> Array::Pointer;
 
 
 /**
@@ -1153,9 +1244,9 @@ mean_box_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius size along x axis. [int ( = 1 )]
- * @param radius_y Radius size along y axis. [int ( = 1 )]
- * @param radius_z Radius size along z axis. [int ( = 1 )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'filter', 'denoise', 'in assistant', 'bia-bob-suggestion'
@@ -1166,9 +1257,9 @@ auto
 mean_sphere_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 int                     radius_x,
-                 int                     radius_y,
-                 int                     radius_z) -> Array::Pointer;
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer;
 
 /**
  * @name mean_filter
@@ -1178,9 +1269,9 @@ mean_sphere_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius size along x axis. [int ( = 1 )]
- * @param radius_y Radius size along y axis. [int ( = 1 )]
- * @param radius_z Radius size along z axis. [int ( = 1 )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
@@ -1191,9 +1282,9 @@ auto
 mean_filter_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 int                     radius_x,
-                 int                     radius_y,
-                 int                     radius_z,
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z,
                  std::string             connectivity) -> Array::Pointer;
 
 
@@ -1256,9 +1347,9 @@ mean_z_projection_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius size along x axis. [int ( = 1 )]
- * @param radius_y Radius size along y axis. [int ( = 1 )]
- * @param radius_z Radius size along z axis. [int ( = 1 )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'filter', 'denoise', 'in assistant'
@@ -1269,9 +1360,9 @@ auto
 median_box_func(const Device::Pointer & device,
                 const Array::Pointer &  src,
                 Array::Pointer          dst,
-                int                     radius_x,
-                int                     radius_y,
-                int                     radius_z) -> Array::Pointer;
+                float                   radius_x,
+                float                   radius_y,
+                float                   radius_z) -> Array::Pointer;
 
 
 /**
@@ -1282,9 +1373,9 @@ median_box_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius size along x axis. [int ( = 1 )]
- * @param radius_y Radius size along y axis. [int ( = 1 )]
- * @param radius_z Radius size along z axis. [int ( = 1 )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'filter', 'denoise', 'in assistant'
@@ -1295,9 +1386,9 @@ auto
 median_sphere_func(const Device::Pointer & device,
                    const Array::Pointer &  src,
                    Array::Pointer          dst,
-                   int                     radius_x,
-                   int                     radius_y,
-                   int                     radius_z) -> Array::Pointer;
+                   float                   radius_x,
+                   float                   radius_y,
+                   float                   radius_z) -> Array::Pointer;
 
 /**
  * @name median
@@ -1308,9 +1399,9 @@ median_sphere_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius size along x axis. [int ( = 1 )]
- * @param radius_y Radius size along y axis. [int ( = 1 )]
- * @param radius_z Radius size along z axis. [int ( = 1 )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
@@ -1321,9 +1412,9 @@ auto
 median_func(const Device::Pointer & device,
             const Array::Pointer &  src,
             Array::Pointer          dst,
-            int                     radius_x,
-            int                     radius_y,
-            int                     radius_z,
+            float                   radius_x,
+            float                   radius_y,
+            float                   radius_z,
             std::string             connectivity) -> Array::Pointer;
 
 
@@ -1335,9 +1426,9 @@ median_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius size along x axis. [int ( = 0 )]
- * @param radius_y Radius size along y axis. [int ( = 0 )]
- * @param radius_z Radius size along z axis. [int ( = 0 )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'filter', 'in assistant'
@@ -1348,9 +1439,9 @@ auto
 minimum_box_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 int                     radius_x,
-                 int                     radius_y,
-                 int                     radius_z) -> Array::Pointer;
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer;
 
 
 /**
@@ -1361,9 +1452,9 @@ minimum_box_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius size along x axis. [int ( = 0 )]
- * @param radius_y Radius size along y axis. [int ( = 0 )]
- * @param radius_z Radius size along z axis. [int ( = 0 )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
@@ -1379,6 +1470,35 @@ minimum_filter_func(const Device::Pointer & device,
                     float                   radius_y,
                     float                   radius_z,
                     std::string             connectivity) -> Array::Pointer;
+
+/**
+ * @name grayscale_erode
+ * @brief Computes a grayscale image containing the grayscale erosion of a given input image. The
+ * erosion apply the Mooreneighborhood (8 pixels in 2D and 26 pixels in 3d) for the "box" connectivity and
+ * the vonNeumannneighborhood (4 pixels in 2D and 6 pixels in 3d) for a "sphere" connectivity. The pixels in the input
+ * image with pixel value not equal to 0 will be interpreted as 1.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
+ * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_minimum3DBox
+ * @see https://clij.github.io/clij2-docs/reference_minimum3DSphere
+ */
+auto
+grayscale_erode_func(const Device::Pointer & device,
+                     const Array::Pointer &  src,
+                     Array::Pointer          dst,
+                     float                   radius_x,
+                     float                   radius_y,
+                     float                   radius_z,
+                     std::string             connectivity) -> Array::Pointer;
 
 
 /**
@@ -1491,9 +1611,9 @@ minimum_of_masked_pixels_reduction_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius size along x axis. [int ( = 1 )]
- * @param radius_y Radius size along y axis. [int ( = 1 )]
- * @param radius_z Radius size along z axis. [int ( = 1 )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'label processing', 'in assistant'
@@ -1503,9 +1623,9 @@ auto
 mode_box_func(const Device::Pointer & device,
               const Array::Pointer &  src,
               Array::Pointer          dst,
-              int                     radius_x,
-              int                     radius_y,
-              int                     radius_z) -> Array::Pointer;
+              float                   radius_x,
+              float                   radius_y,
+              float                   radius_z) -> Array::Pointer;
 
 
 /**
@@ -1518,9 +1638,9 @@ mode_box_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius size along x axis. [int ( = 1 )]
- * @param radius_y Radius size along y axis. [int ( = 1 )]
- * @param radius_z Radius size along z axis. [int ( = 1 )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
@@ -1530,9 +1650,9 @@ auto
 mode_sphere_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 int                     radius_x,
-                 int                     radius_y,
-                 int                     radius_z) -> Array::Pointer;
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer;
 
 /**
  * @name mode
@@ -1544,9 +1664,9 @@ mode_sphere_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius size along x axis. [int ( = 1 )]
- * @param radius_y Radius size along y axis. [int ( = 1 )]
- * @param radius_z Radius size along z axis. [int ( = 1 )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
@@ -1556,9 +1676,9 @@ auto
 mode_func(const Device::Pointer & device,
           const Array::Pointer &  src,
           Array::Pointer          dst,
-          int                     radius_x,
-          int                     radius_y,
-          int                     radius_z,
+          float                   radius_x,
+          float                   radius_y,
+          float                   radius_z,
           std::string             connectivity) -> Array::Pointer;
 
 
@@ -2663,9 +2783,9 @@ undefined_to_zero_func(const Device::Pointer & device, const Array::Pointer & sr
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius size along x axis. [int ( = 1 )]
- * @param radius_y Radius size along y axis. [int ( = 1 )]
- * @param radius_z Radius size along z axis. [int ( = 1 )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'filter', 'edge detection', 'in assistant'
@@ -2676,9 +2796,9 @@ auto
 variance_box_func(const Device::Pointer & device,
                   const Array::Pointer &  src,
                   Array::Pointer          dst,
-                  int                     radius_x,
-                  int                     radius_y,
-                  int                     radius_z) -> Array::Pointer;
+                  float                   radius_x,
+                  float                   radius_y,
+                  float                   radius_z) -> Array::Pointer;
 
 
 /**
@@ -2689,9 +2809,9 @@ variance_box_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius size along x axis. [int ( = 1 )]
- * @param radius_y Radius size along y axis. [int ( = 1 )]
- * @param radius_z Radius size along z axis. [int ( = 1 )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'filter', 'edge detection', 'in assistant'
@@ -2702,9 +2822,9 @@ auto
 variance_sphere_func(const Device::Pointer & device,
                      const Array::Pointer &  src,
                      Array::Pointer          dst,
-                     int                     radius_x,
-                     int                     radius_y,
-                     int                     radius_z) -> Array::Pointer;
+                     float                   radius_x,
+                     float                   radius_y,
+                     float                   radius_z) -> Array::Pointer;
 
 /**
  * @name variance_filter
@@ -2714,9 +2834,9 @@ variance_sphere_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius size along x axis. [int ( = 1 )]
- * @param radius_y Radius size along y axis. [int ( = 1 )]
- * @param radius_z Radius size along z axis. [int ( = 1 )]
+ * @param radius_x Radius size along x axis. [float ( = 1 )]
+ * @param radius_y Radius size along y axis. [float ( = 1 )]
+ * @param radius_z Radius size along z axis. [float ( = 1 )]
  * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
@@ -2728,9 +2848,9 @@ auto
 variance_filter_func(const Device::Pointer & device,
                      const Array::Pointer &  src,
                      Array::Pointer          dst,
-                     int                     radius_x,
-                     int                     radius_y,
-                     int                     radius_z,
+                     float                   radius_x,
+                     float                   radius_y,
+                     float                   radius_z,
                      std::string             connectivity) -> Array::Pointer;
 
 

@@ -16,9 +16,9 @@ auto
 mean_filter_func(const Device::Pointer & device,
                  const Array::Pointer &  src,
                  Array::Pointer          dst,
-                 int                     radius_x,
-                 int                     radius_y,
-                 int                     radius_z,
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z,
                  std::string             connectivity) -> Array::Pointer
 {
   tier0::create_like(src, dst);
@@ -45,6 +45,28 @@ mean_filter_func(const Device::Pointer & device,
                       { r_x, r_y, r_z });
   }
   return dst;
+}
+
+auto
+mean_sphere_func(const Device::Pointer & device,
+                 const Array::Pointer &  src,
+                 Array::Pointer          dst,
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer
+{
+  return mean_filter_func(device, src, dst, radius_x, radius_y, radius_z, "sphere");
+}
+
+auto
+mean_box_func(const Device::Pointer & device,
+              const Array::Pointer &  src,
+              Array::Pointer          dst,
+              float                   radius_x,
+              float                   radius_y,
+              float                   radius_z) -> Array::Pointer
+{
+  return mean_filter_func(device, src, dst, radius_x, radius_y, radius_z, "box");
 }
 
 } // namespace cle::tier1

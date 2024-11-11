@@ -26,7 +26,7 @@ closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
   auto flop = Array::create(flip);
   for (size_t i = 0; i < radius; i++)
   {
-    tier1::erode_func(device, (i % 2 == 0) ? flip : flop, flop, (i % 2 == 0) ? "sphere" : "box");
+    tier1::binary_erode_func(device, (i % 2 == 0) ? flip : flop, flop, 1, 1, 1, (i % 2 == 0) ? "sphere" : "box");
   }
   return tier1::multiply_images_func(device, (radius % 2 == 0) ? flip : flop, temp, dst);
 }

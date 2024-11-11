@@ -3,25 +3,14 @@
 
 #include "utils.hpp"
 
-#include "cle_minimum_image_and_scalar.h"
-#include "cle_minimum_images.h"
-#include "cle_minimum_of_masked_pixels_reduction.h"
-#include "cle_minimum_separable.h"
-#include "cle_minimum_sphere.h"
-#include "cle_minimum_x_projection.h"
-#include "cle_minimum_y_projection.h"
-#include "cle_minimum_z_projection.h"
-#include "cle_nonzero_minimum_box.h"
-#include "cle_nonzero_minimum_diamond.h"
-#include "cle_x_position_of_minimum_x_projection.h"
-#include "cle_y_position_of_minimum_y_projection.h"
-#include "cle_z_position_of_minimum_z_projection.h"
+#include "cle_maximum_separable.h"
+#include "cle_maximum_sphere.h"
 
 namespace cle::tier1
 {
 
 auto
-minimum_filter_func(const Device::Pointer & device,
+maximum_filter_func(const Device::Pointer & device,
                     const Array::Pointer &  src,
                     Array::Pointer          dst,
                     float                   radius_x,
@@ -35,7 +24,7 @@ minimum_filter_func(const Device::Pointer & device,
   auto r_z = radius2kernelsize(radius_z);
   if (connectivity == "sphere")
   {
-    const KernelInfo    kernel = { "minimum_sphere", kernel::minimum_sphere };
+    const KernelInfo    kernel = { "maximum_sphere", kernel::maximum_sphere };
     const ParameterList params = {
       { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z }
     };
@@ -44,7 +33,7 @@ minimum_filter_func(const Device::Pointer & device,
   }
   else
   {
-    const KernelInfo kernel = { "minimum_separable", kernel::minimum_separable };
+    const KernelInfo kernel = { "maximum_separable", kernel::maximum_separable };
     execute_separable(device,
                       kernel,
                       src,
@@ -54,5 +43,28 @@ minimum_filter_func(const Device::Pointer & device,
   }
   return dst;
 }
+
+auto
+maximum_sphere_func(const Device::Pointer & device,
+                    const Array::Pointer &  src,
+                    Array::Pointer          dst,
+                    float                   radius_x,
+                    float                   radius_y,
+                    float                   radius_z) -> Array::Pointer
+{
+  return maximum_filter_func(device, src, dst, radius_x, radius_y, radius_z, "sphere");
+}
+
+auto
+maximum_box_func(const Device::Pointer & device,
+                 const Array::Pointer &  src,
+                 Array::Pointer          dst,
+                 float                   radius_x,
+                 float                   radius_y,
+                 float                   radius_z) -> Array::Pointer
+{
+  return maximum_filter_func(device, src, dst, radius_x, radius_y, radius_z, "box");
+}
+
 
 } // namespace cle::tier1

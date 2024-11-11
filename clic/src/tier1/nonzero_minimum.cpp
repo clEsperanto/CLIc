@@ -28,4 +28,22 @@ nonzero_minimum_func(const Device::Pointer & device,
   return dst1;
 }
 
+auto
+nonzero_minimum_diamond_func(const Device::Pointer & device,
+                             const Array::Pointer &  src,
+                             Array::Pointer          dst0,
+                             Array::Pointer          dst1) -> Array::Pointer
+{
+  return nonzero_minimum_func(device, src, dst0, dst1, "sphere");
+}
+
+auto
+nonzero_minimum_box_func(const Device::Pointer & device,
+                         const Array::Pointer &  src,
+                         Array::Pointer          dst0,
+                         Array::Pointer          dst1) -> Array::Pointer
+{
+  return nonzero_minimum_func(device, src, dst0, dst1, "box");
+}
+
 } // namespace cle::tier1
