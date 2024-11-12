@@ -500,8 +500,8 @@ binary_dilate_func(const Device::Pointer & device,
  * @brief Divides two images X and Y by each other pixel wise. <pre>f(x, y) = x / y</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 First input image to process. [const Array::Pointer &]
- * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param dividend Input image to process. [const Array::Pointer &]
+ * @param divisor Second input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -510,8 +510,8 @@ binary_dilate_func(const Device::Pointer & device,
  */
 auto
 divide_images_func(const Device::Pointer & device,
-                   const Array::Pointer &  src0,
-                   const Array::Pointer &  src1,
+                   const Array::Pointer &  dividend,
+                   const Array::Pointer &  divisor,
                    Array::Pointer          dst) -> Array::Pointer;
 
 
@@ -739,7 +739,7 @@ gaussian_blur_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param coordinate_list1 First coordinate list to process. [const Array::Pointer &]
  * @param coordinate_list2 Second coordinate list to process. [const Array::Pointer &]
- * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param distance_matrix_destination Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_generateDistanceMatrix
@@ -962,8 +962,8 @@ laplace_func(const Device::Pointer & device, const Array::Pointer & src, Array::
  * @brief Compute the cross correlation of an image to a given kernel.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 First input image to process. [const Array::Pointer &]
- * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param kernel Input kernel. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @note 'filter', 'combine', 'in assistant'
@@ -971,8 +971,8 @@ laplace_func(const Device::Pointer & device, const Array::Pointer & src, Array::
  */
 auto
 local_cross_correlation_func(const Device::Pointer & device,
-                             const Array::Pointer &  src0,
-                             const Array::Pointer &  src1,
+                             const Array::Pointer &  src,
+                             const Array::Pointer &  kernel,
                              Array::Pointer          dst) -> Array::Pointer;
 
 
@@ -1015,8 +1015,7 @@ mask_func(const Device::Pointer & device, const Array::Pointer & src, const Arra
  * @name mask_label
  * @brief Computes a masked image by applying a label mask to an image. All pixel values x of image X will be copied to
  * the destination image in case pixel value m at the same position in the label_map image has the right index value i.
- * f(x,m,i) = (x if (m
- * == i); (0 otherwise))
+ * f(x,m,i) = (x if (m == i); (0 otherwise))
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src0 Input Intensity image. [const Array::Pointer &]
@@ -1037,8 +1036,8 @@ mask_label_func(const Device::Pointer & device,
 
 /**
  * @name maximum_image_and_scalar
- * @brief Computes the maximum of a constant scalar s and each pixel value x in a given image X. <pre>f(x, s) = max(x,
- * s)</pre>
+ * @brief Computes the maximum of a constant scalar s and each pixel value x in a given image X. 
+ * <pre>f(x, s) = max(x, s)</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -1058,8 +1057,8 @@ maximum_image_and_scalar_func(const Device::Pointer & device,
 
 /**
  * @name maximum_images
- * @brief Computes the maximum of a pair of pixel values x, y from two given images X and Y. <pre>f(x, y) = max(x,
- * y)</pre>
+ * @brief Computes the maximum of a pair of pixel values x, y from two given images X and Y. 
+ * <pre>f(x, y) = max(x, y)</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src0 First input image to process. [const Array::Pointer &]
@@ -1983,8 +1982,8 @@ paste_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param dst0 Output flag value, 0 or 1. [Array::Pointer]
- * @param dst1 Output image. [Array::Pointer ( = None )]
+ * @param flag Output flag value, 0 or 1. [Array::Pointer]
+ * @param dst Output image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_onlyzeroOverwriteMaximumBox
  * @deprecated This function is deprecated. Consider using onlyzero_overwrite_maximum() instead.
@@ -1992,8 +1991,8 @@ paste_func(const Device::Pointer & device,
 auto
 onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
                                     const Array::Pointer &  src,
-                                    Array::Pointer          dst0,
-                                    Array::Pointer          dst1) -> Array::Pointer;
+                                    Array::Pointer          flag,
+                                    Array::Pointer          dst) -> Array::Pointer;
 
 
 /**
@@ -2002,8 +2001,8 @@ onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param dst0 Output flag value, 0 or 1. [Array::Pointer]
- * @param dst1 Output image. [Array::Pointer ( = None )]
+ * @param flag Output flag value, 0 or 1. [Array::Pointer]
+ * @param dst Output image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_onlyzeroOverwriteMaximumDiamond
  * @deprecated This function is deprecated. Consider using onlyzero_overwrite_maximum() instead.
@@ -2011,8 +2010,8 @@ onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
 auto
 onlyzero_overwrite_maximum_diamond_func(const Device::Pointer & device,
                                         const Array::Pointer &  src,
-                                        Array::Pointer          dst0,
-                                        Array::Pointer          dst1) -> Array::Pointer;
+                                        Array::Pointer          flag,
+                                        Array::Pointer          dst) -> Array::Pointer;
 
 /**
  * @name onlyzero_overwrite_maximum
@@ -2020,8 +2019,8 @@ onlyzero_overwrite_maximum_diamond_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param dst0 Output flag value, 0 or 1. [Array::Pointer]
- * @param dst1 Output image. [Array::Pointer ( = None )]
+ * @param flag Output flag value, 0 or 1. [Array::Pointer]
+ * @param dst Output image. [Array::Pointer ( = None )]
  * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_onlyzeroOverwriteMaximumBox
@@ -2031,8 +2030,8 @@ onlyzero_overwrite_maximum_diamond_func(const Device::Pointer & device,
 auto
 onlyzero_overwrite_maximum_func(const Device::Pointer & device,
                                 const Array::Pointer &  src,
-                                Array::Pointer          dst0,
-                                Array::Pointer          dst1,
+                                Array::Pointer          flag,
+                                Array::Pointer          dst,
                                 std::string             connectivity) -> Array::Pointer;
 
 /**

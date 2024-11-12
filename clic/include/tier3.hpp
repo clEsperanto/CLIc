@@ -279,14 +279,14 @@ jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, 
  * contains d pixels (with d = dimensionality of the original image) with the coordinates of the maxima/minima.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input label image [const Array::Pointer &]
- * @param dst Output coordinate list [Array::Pointer ( = None )]
+ * @param label Input label image [const Array::Pointer &]
+ * @param pointlist Output coordinate list [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_labelledSpotsToPointList
  */
 auto
-labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & label, Array::Pointer dspointlistt)
   -> Array::Pointer;
 
 
