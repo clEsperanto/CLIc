@@ -11,7 +11,7 @@
 [![GitHub issues](https://img.shields.io/github/issues-raw/clEsperanto/CLIc)](https://github.com/clEsperanto/CLIc/issues)
 [![GitHub stars](https://img.shields.io/github/stars/clEsperanto/CLIc?style=social)](https://github.com/clEsperanto/CLIc)
 [![GitHub forks](https://img.shields.io/github/forks/clEsperanto/CLIc?style=social)](https://github.com/clEsperanto/CLIc)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13857353.svg)](https://doi.org/10.5281/zenodo.13857353)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6075345.svg)](https://doi.org/10.5281/zenodo.6075345)
 
 
 CLIc is a **prototype** backend library for [CLesperanto](https://github.com/clEsperanto) - a multi-language framework for GPU-accelerated image processing. It uses the [OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/development/src/main/java/net/haesleinhuepf/clij/kernels) from [CLIJ](https://clij.github.io/)
