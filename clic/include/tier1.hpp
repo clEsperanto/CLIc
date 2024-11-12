@@ -426,10 +426,10 @@ dilation_func(const Device::Pointer & device,
 /**
  * @name dilate_box
  * @brief Computes a binary image with pixel values 0 and 1 containing the binary dilation of a given input image. The
- * dilation takes the Moore neighborhood (8 pixels in 2D and 26 pixels in 3d) into account. The pixels in the input image
- * with pixel value not equal to 0 will be interpreted as 1. This method is comparable to the 'Dilate' menu in ImageJ in
- * case it is applied to a 2D image. The only difference is that the output image contains values 0 and 1 instead of 0
- * and 255.
+ * dilation takes the Moore neighborhood (8 pixels in 2D and 26 pixels in 3d) into account. The pixels in the input
+ * image with pixel value not equal to 0 will be interpreted as 1. This method is comparable to the 'Dilate' menu in
+ * ImageJ in case it is applied to a 2D image. The only difference is that the output image contains values 0 and 1
+ * instead of 0 and 255.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. Input image to process. [const Array::Pointer &]
@@ -754,7 +754,7 @@ generate_distance_matrix_func(const Device::Pointer & device,
 /**
  * @name gradient_x
  * @brief Computes the gradient of gray values along X. Assuming a, b and c are three adjacent pixels in X direction. In
- * the target image will be saved as: 
+ * the target image will be saved as:
  * <pre>b' = c a;</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -772,7 +772,7 @@ gradient_x_func(const Device::Pointer & device, const Array::Pointer & src, Arra
 /**
  * @name gradient_y
  * @brief Computes the gradient of gray values along Y. Assuming a, b and c are three adjacent pixels in Y direction. In
- * the target image will be saved as: 
+ * the target image will be saved as:
  * <pre>b' = c a;</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -790,7 +790,7 @@ gradient_y_func(const Device::Pointer & device, const Array::Pointer & src, Arra
 /**
  * @name gradient_z
  * @brief Computes the gradient of gray values along Z. Assuming a, b and c are three adjacent pixels in Z direction. In
- * the target image will be saved as: 
+ * the target image will be saved as:
  * <pre>b' = c a;</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -998,7 +998,7 @@ logarithm_func(const Device::Pointer & device, const Array::Pointer & src, Array
 /**
  * @name mask
  * @brief Computes a masked image by applying a binary mask to an image. All pixel values x of image X will be copied to
- * the destination image in case pixel value m at the same position in the mask image is not equal to zero. 
+ * the destination image in case pixel value m at the same position in the mask image is not equal to zero.
  * <pre>f(x,m) = (x if (m != 0); (0 otherwise))</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -1039,7 +1039,7 @@ mask_label_func(const Device::Pointer & device,
 
 /**
  * @name maximum_image_and_scalar
- * @brief Computes the maximum of a constant scalar s and each pixel value x in a given image X. 
+ * @brief Computes the maximum of a constant scalar s and each pixel value x in a given image X.
  * <pre>f(x, s) = max(x, s)</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -1060,7 +1060,7 @@ maximum_image_and_scalar_func(const Device::Pointer & device,
 
 /**
  * @name maximum_images
- * @brief Computes the maximum of a pair of pixel values x, y from two given images X and Y. 
+ * @brief Computes the maximum of a pair of pixel values x, y from two given images X and Y.
  * <pre>f(x, y) = max(x, y)</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]

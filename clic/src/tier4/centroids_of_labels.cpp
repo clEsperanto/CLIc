@@ -31,14 +31,17 @@ centroids_of_labels_func(const Device::Pointer & device,
   auto centroid_z = props["centroid_z"];
   auto nb_labels = centroid_x.size();
 
-  if (centroids_coordinates == nullptr) {
+  if (centroids_coordinates == nullptr)
+  {
     centroids_coordinates = Array::create(nb_labels, 3, 1, 1, dType::FLOAT, mType::BUFFER, device);
   }
 
   if (centroids_coordinates->width() != nb_labels || centroids_coordinates->height() != 3)
   {
-    throw std::runtime_error("centroids_of_labels: Provided output array has wrong dimensions." 
-        + std::to_string(centroids_coordinates->width()) + "x" + std::to_string(centroids_coordinates->height()) + "x1 instead of " + std::to_string(nb_labels) + "x3x1");
+    throw std::runtime_error("centroids_of_labels: Provided output array has wrong dimensions." +
+                             std::to_string(centroids_coordinates->width()) + "x" +
+                             std::to_string(centroids_coordinates->height()) + "x1 instead of " +
+                             std::to_string(nb_labels) + "x3x1");
   }
 
   if (centroids_coordinates->dtype() != dType::FLOAT)

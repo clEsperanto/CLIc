@@ -286,8 +286,9 @@ jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, 
  * @see https://clij.github.io/clij2-docs/reference_labelledSpotsToPointList
  */
 auto
-labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & label, Array::Pointer dspointlistt)
-  -> Array::Pointer;
+labelled_spots_to_pointlist_func(const Device::Pointer & device,
+                                 const Array::Pointer &  label,
+                                 Array::Pointer          dspointlistt) -> Array::Pointer;
 
 
 /**

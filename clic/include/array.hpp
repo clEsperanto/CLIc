@@ -335,7 +335,7 @@ private:
 
 /**
  * @brief Print the Array as a matrix for debugging
- * 
+ *
  * @tparam T Data type of the Array
  * @param array Array::Pointer to print
  * @param name Name of the Array to print (default: "Array::Pointer")
