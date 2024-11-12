@@ -17,7 +17,7 @@ reduce_labels_to_centroids_func(const Device::Pointer & device, const Array::Poi
   tier0::create_like(src, dst, dType::LABEL);
   dst->fill(0);
 
-  auto pos = tier4::centroids_of_labels_func(device, src, dst, true);
+  auto pos = tier4::centroids_of_labels_func(device, src, nullptr, true);
   auto label_pos = Array::create(pos->width(), 4, 1, 2, dType::FLOAT, mType::BUFFER, device);
   tier1::set_ramp_x_func(device, label_pos);
   pos->copyTo(label_pos, { pos->width(), 3, 1 }, { 0, 0, 0 }, { 0, 0, 0 });

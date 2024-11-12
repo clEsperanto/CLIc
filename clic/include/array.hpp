@@ -304,7 +304,14 @@ public:
 private:
   using MemoryPointer = std::shared_ptr<void *>;
 
+  /**
+   * @brief Default constructor
+   */
   Array() = default;
+
+  /**
+   * @brief Constructor
+   */
   Array(size_t                  width,
         size_t                  height,
         size_t                  depth,
@@ -325,6 +332,15 @@ private:
   const Backend & backend_ = cle::BackendManager::getInstance().getBackend();
 };
 
+
+/**
+ * @brief Print the Array as a matrix for debugging
+ *
+ * @tparam T Data type of the Array
+ * @param array Array::Pointer to print
+ * @param name Name of the Array to print (default: "Array::Pointer")
+ * @return void
+ */
 template <typename T>
 auto
 print(const Array::Pointer & array, const char * name = "Array::Pointer") -> void
