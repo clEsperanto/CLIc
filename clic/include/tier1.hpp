@@ -16,7 +16,7 @@ namespace cle::tier1
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image to be processed. [const Array::Pointer &]
- * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'filter', 'in assistant'
@@ -32,9 +32,9 @@ absolute_func(const Device::Pointer & device, const Array::Pointer & src, Array:
  * a, b) = x * a + y * b</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 The first input image to added. [const Array::Pointer &]
- * @param src1 The second image to be added. [const Array::Pointer &]
- * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param src0 First input image to add. [const Array::Pointer &]
+ * @param src1 Second image to add. [const Array::Pointer &]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @param factor1 Multiplication factor of each pixel of src0 before adding it. [float ( = 1 )]
  * @param factor2 Multiplication factor of each pixel of src1 before adding it. [float ( = 1 )]
  * @return Array::Pointer
@@ -56,9 +56,9 @@ add_images_weighted_func(const Device::Pointer & device,
  * @brief Adds a scalar value s to all pixels x of a given image X. <pre>f(x, s) = x + s</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src The input image where scalare should be added. [const Array::Pointer &]
- * @param dst The output image where results are written into. [Array::Pointer ( = None )]
- * @param scalar The constant number which will be added to all pixels. [float ( = 1 )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output image. [Array::Pointer ( = None )]
+ * @param scalar Scalar number to add to all pixels. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'filter', 'in assistant'
@@ -76,9 +76,9 @@ add_image_and_scalar_func(const Device::Pointer & device, const Array::Pointer &
  * <pre>f(x, y) = x & y</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 The first binary input image to be processed. [const Array::Pointer &]
- * @param src1 The second binary input image to be processed. [const Array::Pointer &]
- * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param src0 First binary input image to be processed. [const Array::Pointer &]
+ * @param src1 Second binary input image to be processed. [const Array::Pointer &]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'combine', 'binary processing', 'in assistant', 'combine labels', 'label processing'
@@ -97,8 +97,8 @@ binary_and_func(const Device::Pointer & device,
  * image. All other pixels are set to 0.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src The binary input image where edges will be searched. [const Array::Pointer &]
- * @param dst The output image where edge pixels will be 1. [Array::Pointer ( = None )]
+ * @param src Binary input image where edges will be searched. [const Array::Pointer &]
+ * @param dst Output image where edge pixels will be 1. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'binary processing', 'label processing', 'in assistant', 'bia-bob-suggestion'
@@ -115,8 +115,8 @@ binary_edge_detection_func(const Device::Pointer & device, const Array::Pointer 
  * the binary NOT operator ! All pixel values except 0 in the input image are interpreted as 1. <pre>f(x) = !x</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src The binary input image to be inverted. [const Array::Pointer &]
- * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param src Binary input image to be inverted. [const Array::Pointer &]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'binary processing', 'filter', 'label processing', 'in assistant', 'bia-bob-suggestion'
@@ -133,9 +133,9 @@ binary_not_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * as 1.<pre>f(x, y) = x | y</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 The first binary input image to be processed. [const Array::Pointer &]
- * @param src1 The second binary input image to be processed. [const Array::Pointer &]
- * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param src0 First binary input image to be processed. [const Array::Pointer &]
+ * @param src1 Second binary input image to be processed. [const Array::Pointer &]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @note 'combine', 'binary processing', 'in assistant', 'combine labels', 'label processing'
  *
@@ -153,9 +153,9 @@ binary_or_func(const Device::Pointer & device,
  * @brief Subtracts one binary image from another.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 The first binary input image to be processed. [const Array::Pointer &]
- * @param src1 The second binary input image to be subtracted from the first. [const Array::Pointer &]
- * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param src0 First binary input image to be processed. [const Array::Pointer &]
+ * @param src1 Second binary input image to be subtracted from the first. [const Array::Pointer &]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @note 'combine', 'binary processing', 'in assistant', 'combine labels', 'label processing'
  *
@@ -175,9 +175,9 @@ binary_subtract_func(const Device::Pointer & device,
  * 0 in the input images are interpreted as 1. <pre>f(x, y) = (x & !y) | (!x & y)</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 The first binary input image to be processed. [const Array::Pointer &]
- * @param src1 The second binary input image to be processed. [const Array::Pointer &]
- * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param src0 First binary input image to be processed. [const Array::Pointer &]
+ * @param src1 Second binary input image to be processed. [const Array::Pointer &]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'combine', 'binary processing', 'in assistant', 'combine labels', 'label processing'
@@ -196,7 +196,7 @@ binary_xor_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The binary input image to be processed. [const Array::Pointer &]
- * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'filter', 'binary processing'
@@ -212,7 +212,7 @@ binary_supinf_func(const Device::Pointer & device, const Array::Pointer & src, A
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The binary input image to be processed. [const Array::Pointer &]
- * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'filter', 'binary processing'
@@ -290,7 +290,7 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to copy from. [const Array::Pointer &]
  * @param dst Output copy image slice_index. [Array::Pointer ( = None )]
- * @param slice_index [int ( = 0 )]
+ * @param slice_index Index of the slice to copy. [int ( = 0 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_copySlice
  *
@@ -308,7 +308,7 @@ copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to copy from. [const Array::Pointer &]
  * @param dst Output copy image slice_index. [Array::Pointer ( = None )]
- * @param slice_index [int ( = 0 )]
+ * @param slice_index Index of the slice to copy. [int ( = 0 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_copySlice
  *
@@ -328,7 +328,7 @@ copy_horizontal_slice_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to copy from. [const Array::Pointer &]
  * @param dst Output copy image slice_index. [Array::Pointer ( = None )]
- * @param slice_index [int ( = 0 )]
+ * @param slice_index Index of the slice to copy. [int ( = 0 )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_copySlice
  *
@@ -426,7 +426,7 @@ dilation_func(const Device::Pointer & device,
 /**
  * @name dilate_box
  * @brief Computes a binary image with pixel values 0 and 1 containing the binary dilation of a given input image. The
- * dilation takes the Mooreneighborhood (8 pixels in 2D and 26 pixels in 3d) into account. The pixels in the input image
+ * dilation takes the Moore neighborhood (8 pixels in 2D and 26 pixels in 3d) into account. The pixels in the input image
  * with pixel value not equal to 0 will be interpreted as 1. This method is comparable to the 'Dilate' menu in ImageJ in
  * case it is applied to a 2D image. The only difference is that the output image contains values 0 and 1 instead of 0
  * and 255.
@@ -447,7 +447,7 @@ dilate_box_func(const Device::Pointer & device, const Array::Pointer & src, Arra
 /**
  * @name dilate_sphere
  * @brief Computes a binary image with pixel values 0 and 1 containing the binary dilation of a given input image. The
- * dilation takes the vonNeumannneighborhood (4 pixels in 2D and 6 pixels in 3d) into account. The pixels in the input
+ * dilation takes the von Neumann neighborhood (4 pixels in 2D and 6 pixels in 3d) into account. The pixels in the input
  * image with pixel value not equal to 0 will be interpreted as 1.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -466,8 +466,8 @@ dilate_sphere_func(const Device::Pointer & device, const Array::Pointer & src, A
 /**
  * @name binary_dilate
  * @brief Computes a binary image with pixel values 0 and 1 containing the binary dilation of a given input image. The
- * dilation apply the Mooreneighborhood (8 pixels in 2D and 26 pixels in 3d) for the "box" connectivity and
- * the vonNeumannneighborhood (4 pixels in 2D and 6 pixels in 3d) for a "sphere" connectivity.
+ * dilation apply the Moore neighborhood (8 pixels in 2D and 26 pixels in 3d) for the "box" connectivity and
+ * the von Neumann neighborhood (4 pixels in 2D and 6 pixels in 3d) for a "sphere" connectivity.
  * The pixels in the input image with pixel value not equal to 0 will be interpreted as 1.
  *
  * For a more flexible dilation with arbitrary shapes, use dilation() instead.
@@ -522,7 +522,7 @@ divide_images_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param scalar [float ( = 0 )]
+ * @param scalar Scalar value to divide the image with. [float ( = 0 )]
  * @return Array::Pointer
  *
  * @note 'filter', 'in assistant'
@@ -538,9 +538,9 @@ divide_scalar_by_image_func(const Device::Pointer & device,
  * @brief Determines if two images A and B equal pixel wise. <pre>f(a, b) = 1 if a == b; 0 otherwise.</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 The first image to be compared with. [const Array::Pointer &]
- * @param src1 The second image to be compared with the first. [const Array::Pointer &]
- * @param dst The resulting binary image where pixels will be 1 only if source1 [Array::Pointer ( = None )]
+ * @param src0 First image to be compared with. [const Array::Pointer &]
+ * @param src1 Second image to be compared with the first. [const Array::Pointer &]
+ * @param dst Output binary image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'combine', 'binarize', 'in assistant'
@@ -556,9 +556,9 @@ equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Ar
  * @brief Determines if an image A and a constant b are equal. <pre>f(a, b) = 1 if a == b; 0 otherwise.</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src The image where every pixel is compared to the constant. [const Array::Pointer &]
- * @param dst The resulting binary image where pixels will be 1 only if source1 [Array::Pointer ( = None )]
- * @param scalar The constant where every pixel is compared to. [float ( = 0 )]
+ * @param src Input omage where every pixel is compared to the constant. [const Array::Pointer &]
+ * @param dst Output binary image. [Array::Pointer ( = None )]
+ * @param scalar Scalar value to compare pixel with. [float ( = 0 )]
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
@@ -592,7 +592,7 @@ erosion_func(const Device::Pointer & device,
 /**
  * @name erode_box
  * @brief Computes a binary image with pixel values 0 and 1 containing the binary erosion of a given input image. The
- * erosion takes the Mooreneighborhood (8 pixels in 2D and 26 pixels in 3d) into account. The pixels in the input image
+ * erosion takes the Moore neighborhood (8 pixels in 2D and 26 pixels in 3d) into account. The pixels in the input image
  * with pixel value not equal to 0 will be interpreted as 1. This method is comparable to the 'Erode' menu in ImageJ in
  * case it is applied to a 2D image. The only difference is that the output image contains values 0 and 1 instead of 0
  * and 255.
@@ -613,7 +613,7 @@ erode_box_func(const Device::Pointer & device, const Array::Pointer & src, Array
 /**
  * @name erode_sphere
  * @brief Computes a binary image with pixel values 0 and 1 containing the binary erosion of a given input image. The
- * erosion takes the vonNeumannneighborhood (4 pixels in 2D and 6 pixels in 3d) into account. The pixels in the input
+ * erosion takes the von Neumann neighborhood (4 pixels in 2D and 6 pixels in 3d) into account. The pixels in the input
  * image with pixel value not equal to 0 will be interpreted as 1.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -632,8 +632,8 @@ erode_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Ar
 /**
  * @name erode
  * @brief Computes a binary image with pixel values 0 and 1 containing the binary erosion of a given input image. The
- * erosion apply the Mooreneighborhood (8 pixels in 2D and 26 pixels in 3d) for the "box" connectivity and
- * the vonNeumannneighborhood (4 pixels in 2D and 6 pixels in 3d) for a "sphere" connectivity. The pixels in the input
+ * erosion apply the Moore neighborhood (8 pixels in 2D and 26 pixels in 3d) for the "box" connectivity and
+ * the von Neumann neighborhood (4 pixels in 2D and 6 pixels in 3d) for a "sphere" connectivity. The pixels in the input
  * image with pixel value not equal to 0 will be interpreted as 1.
  *
  * For a more flexible erosion with arbitrary shapes, use erosion() instead.
@@ -754,7 +754,8 @@ generate_distance_matrix_func(const Device::Pointer & device,
 /**
  * @name gradient_x
  * @brief Computes the gradient of gray values along X. Assuming a, b and c are three adjacent pixels in X direction. In
- * the target image will be saved as: <pre>b' = c a;</pre>
+ * the target image will be saved as: 
+ * <pre>b' = c a;</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -771,7 +772,8 @@ gradient_x_func(const Device::Pointer & device, const Array::Pointer & src, Arra
 /**
  * @name gradient_y
  * @brief Computes the gradient of gray values along Y. Assuming a, b and c are three adjacent pixels in Y direction. In
- * the target image will be saved as: <pre>b' = c a;</pre>
+ * the target image will be saved as: 
+ * <pre>b' = c a;</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -788,7 +790,8 @@ gradient_y_func(const Device::Pointer & device, const Array::Pointer & src, Arra
 /**
  * @name gradient_z
  * @brief Computes the gradient of gray values along Z. Assuming a, b and c are three adjacent pixels in Z direction. In
- * the target image will be saved as: <pre>b' = c a;</pre>
+ * the target image will be saved as: 
+ * <pre>b' = c a;</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -829,7 +832,7 @@ greater_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param scalar [float ( = 0 )]
+ * @param scalar Scalar value to compare pixel with. [float ( = 0 )]
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
@@ -867,7 +870,7 @@ greater_or_equal_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param scalar Scalar value used in the comparison. [float ( = 0 )]
+ * @param scalar Scalar value to compare pixel with. [float ( = 0 )]
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
@@ -995,8 +998,8 @@ logarithm_func(const Device::Pointer & device, const Array::Pointer & src, Array
 /**
  * @name mask
  * @brief Computes a masked image by applying a binary mask to an image. All pixel values x of image X will be copied to
- * the destination image in case pixel value m at the same position in the mask image is not equal to zero. <pre>f(x,m)
- * = (x if (m != 0); (0 otherwise))</pre>
+ * the destination image in case pixel value m at the same position in the mask image is not equal to zero. 
+ * <pre>f(x,m) = (x if (m != 0); (0 otherwise))</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -1015,7 +1018,7 @@ mask_func(const Device::Pointer & device, const Array::Pointer & src, const Arra
  * @name mask_label
  * @brief Computes a masked image by applying a label mask to an image. All pixel values x of image X will be copied to
  * the destination image in case pixel value m at the same position in the label_map image has the right index value i.
- * f(x,m,i) = (x if (m == i); (0 otherwise))
+ * <pre>f(x,m,i) = (x if (m == i); (0 otherwise))</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src0 Input Intensity image. [const Array::Pointer &]
@@ -1131,8 +1134,8 @@ maximum_filter_func(const Device::Pointer & device,
 /**
  * @name grayscale_dilate
  * @brief Computes a grayscale image containing the grayscale dilation of a given input image. The
- * erosion apply the Mooreneighborhood (8 pixels in 2D and 26 pixels in 3d) for the "box" connectivity and
- * the vonNeumannneighborhood (4 pixels in 2D and 6 pixels in 3d) for a "sphere" connectivity. The pixels in the input
+ * erosion apply the Moore neighborhood (8 pixels in 2D and 26 pixels in 3d) for the "box" connectivity and
+ * the von Neumann neighborhood (4 pixels in 2D and 6 pixels in 3d) for a "sphere" connectivity. The pixels in the input
  * image with pixel value not equal to 0 will be interpreted as 1.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -1724,7 +1727,7 @@ multiply_image_and_position_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image to be multiplied with a constant. [const Array::Pointer &]
- * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @param scalar The number with which every pixel will be multiplied with. [float ( = 0 )]
  * @return Array::Pointer
  *
@@ -1743,9 +1746,9 @@ multiply_image_and_scalar_func(const Device::Pointer & device,
  * @brief Multiplies all pairs of pixel values x and y from two image X and Y. <pre>f(x, y) = x * y</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 The first input image to be multiplied. [const Array::Pointer &]
- * @param src1 The second image to be multiplied. [const Array::Pointer &]
- * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param src0 First input image to be multiplied. [const Array::Pointer &]
+ * @param src1 Second image to be multiplied. [const Array::Pointer &]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'combine', 'in assistant'
@@ -1767,7 +1770,7 @@ multiply_images_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @param nan Value to replace nan with. [float ( = 0 )]
  * @param posinf Value to replace +inf with. [float ( = np.nan_to_num(float('inf')) )]
  * @param neginf Value to replace -inf with. [float ( = np.nan_to_num(float('-inf')) )]
@@ -1919,8 +1922,8 @@ nonzero_minimum_func(const Device::Pointer & device,
  * @brief Determines if two images A and B equal pixel wise. f(a, b) = 1 if a != b; 0 otherwise.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 The first image to be compared with. [const Array::Pointer &]
- * @param src1 The second image to be compared with the first. [const Array::Pointer &]
+ * @param src0 First image to be compared with. [const Array::Pointer &]
+ * @param src1 Second image to be compared with the first. [const Array::Pointer &]
  * @param dst The resulting binary image where pixels will be 1 only if source1 [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -2716,7 +2719,7 @@ sum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image. [const Array::Pointer &]
- * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'transform'
@@ -2732,7 +2735,7 @@ transpose_xy_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image. [const Array::Pointer &]
- * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'transform'
@@ -2748,7 +2751,7 @@ transpose_xz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image. [const Array::Pointer &]
- * @param dst The output image where results are written into. [Array::Pointer ( = None )]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'transform'
