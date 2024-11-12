@@ -47,4 +47,4 @@ There is no publication for CLIc yet. If you use it in your research or project,
 .. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.6075345.svg
    :target: https://doi.org/10.5281/zenodo.6075345
    :alt: DOI: 10.5281/zenodo.6075345
-   :align: center 
+   :align: center
