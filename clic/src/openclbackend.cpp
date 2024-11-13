@@ -313,13 +313,20 @@ auto
 OpenCLBackend::freeMemory(const Device::Pointer & device, const mType & mtype, void ** data_ptr) const -> void
 {
 #if USE_OPENCL
+  if (data_ptr == nullptr || *data_ptr == nullptr)
+  {
+    throw std::invalid_argument("Error: data_ptr is null.");
+  }
+
   auto * cl_mem_ptr = static_cast<cl_mem *>(*data_ptr);
   auto   err = clReleaseMemObject(*cl_mem_ptr);
   if (err != CL_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to free memory. OpenCL error : " + getErrorString(err) + " (" +
+    throw std::runtime_error("Error: Failed to free memory. OpenCL error: " + getErrorString(err) + " (" +
                              std::to_string(err) + ").");
   }
+
+  *data_ptr = nullptr; // Reset the pointer to avoid dangling pointers
 #else
   throw std::runtime_error("Error: OpenCL is not enabled");
 #endif
