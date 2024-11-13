@@ -28,7 +28,7 @@ Array::~Array()
   {
     if (initialized() && data_.use_count() == 1)
     {
-      auto *ptr = get();
+      auto * ptr = get();
       if (ptr != nullptr)
       {
         backend_.freeMemory(device(), mtype(), ptr);
