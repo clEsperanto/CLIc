@@ -24,9 +24,24 @@ Array::Array(const size_t            width,
 
 Array::~Array()
 {
-  if (initialized() && data_.use_count() == 1)
+  try
   {
-    backend_.freeMemory(device(), mtype(), get());
+    if (initialized() && data_.use_count() == 1)
+    {
+      auto * ptr = get();
+      if (ptr != nullptr)
+      {
+        backend_.freeMemory(device(), mtype(), ptr);
+      }
+    }
+  }
+  catch (const std::exception & e)
+  {
+    std::cerr << "Error cle::~Array: " << e.what() << std::endl;
+  }
+  catch (...)
+  {
+    std::cerr << "Unknown error in Array::~Array" << std::endl;
   }
 }
 
