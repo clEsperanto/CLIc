@@ -53,7 +53,7 @@ See more complete example on usage by looking at the kernels [tests](./tests/).
 
 # __Documentation__
 
-A detail documentation is available at [https://clesperanto.github.io/CLIc](https://clesperanto.github.io/CLIc/master/en/index.html). 
+A detail documentation is available at [https://clesperanto.github.io/CLIc](https://clesperanto.github.io/CLIc/master/en/index.html).
 If any information is missing or is incorrect, do not hesitate to raise an issue.
 
 # __Contributing__

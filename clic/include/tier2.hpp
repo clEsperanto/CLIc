@@ -699,7 +699,7 @@ opening_sphere_func(const Device::Pointer & device,
 
 
 /**
- * @name opening
+ * @name grayscale_opening
  * @brief Opening operator, Applies morphological opening to intensity images using a sphereshaped or
  * boxshepd footprint. This operator also works with binary images.
  *
