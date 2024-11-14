@@ -403,9 +403,9 @@ degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & s
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius along the x axis. [float ( = 1 )]
- * @param radius_y Radius along the y axis. [float ( = 1 )]
- * @param radius_z Radius along the z axis. [float ( = 1 )]
+ * @param radius_x Radius along the x axis. [float ( = 0 )]
+ * @param radius_y Radius along the y axis. [float ( = 0 )]
+ * @param radius_z Radius along the z axis. [float ( = 0 )]
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
@@ -428,9 +428,9 @@ detect_maxima_box_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius along the x axis. [float ( = 1 )]
- * @param radius_y Radius along the y axis. [float ( = 1 )]
- * @param radius_z Radius along the z axis. [float ( = 1 )]
+ * @param radius_x Radius along the x axis. [float ( = 0 )]
+ * @param radius_y Radius along the y axis. [float ( = 0 )]
+ * @param radius_z Radius along the z axis. [float ( = 0 )]
  * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
@@ -456,9 +456,9 @@ detect_maxima_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius along the x axis. [float ( = 1 )]
- * @param radius_y Radius along the y axis. [float ( = 1 )]
- * @param radius_z Radius along the z axis. [float ( = 1 )]
+ * @param radius_x Radius along the x axis. [float ( = 0 )]
+ * @param radius_y Radius along the y axis. [float ( = 0 )]
+ * @param radius_z Radius along the z axis. [float ( = 0 )]
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
@@ -481,9 +481,9 @@ detect_minima_box_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius along the x axis. [float ( = 1 )]
- * @param radius_y Radius along the y axis. [float ( = 1 )]
- * @param radius_z Radius along the z axis. [float ( = 1 )]
+ * @param radius_x Radius along the x axis. [float ( = 0 )]
+ * @param radius_y Radius along the y axis. [float ( = 0 )]
+ * @param radius_z Radius along the z axis. [float ( = 0 )]
  * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
