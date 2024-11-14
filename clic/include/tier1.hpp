@@ -630,7 +630,7 @@ erode_sphere_func(const Device::Pointer & device, const Array::Pointer & src, Ar
 
 
 /**
- * @name erode
+ * @name binary_erode
  * @brief Computes a binary image with pixel values 0 and 1 containing the binary erosion of a given input image. The
  * erosion apply the Moore neighborhood (8 pixels in 2D and 26 pixels in 3d) for the "box" connectivity and
  * the von Neumann neighborhood (4 pixels in 2D and 6 pixels in 3d) for a "sphere" connectivity. The pixels in the input
