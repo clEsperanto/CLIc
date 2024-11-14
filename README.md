@@ -13,10 +13,12 @@
 [![GitHub forks](https://img.shields.io/github/forks/clEsperanto/CLIc?style=social)](https://github.com/clEsperanto/CLIc)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6075345.svg)](https://doi.org/10.5281/zenodo.6075345)
 
+CLIc is a **prototype** backend library for [CLesperanto](https://github.com/clEsperanto) - a multi-language framework for GPU-accelerated image processing. It uses the [OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/clesperanto_kernels) originally developped for [CLIJ](https://clij.github.io/). It currently focussed on running with [OpenCL](https://github.com/KhronosGroup/OpenCL-CLHPP).
 
-CLIc is a **prototype** backend library for [CLesperanto](https://github.com/clEsperanto) - a multi-language framework for GPU-accelerated image processing. It uses the [OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/development/src/main/java/net/haesleinhuepf/clij/kernels) from [CLIJ](https://clij.github.io/)
-
-It is a preliminary projet and mainly focussed on running a kernel using the [OpenCL C++ API from Khronos](https://github.com/KhronosGroup/OpenCL-CLHPP).
+The library is used for various user-oriented API libraries:
+- :snake: [pyclesperanto](https://github.com/clEsperanto/pyclesperanto)
+- :coffee: [clesperantoj](https://github.com/clEsperanto/clesperantoj_prototype)
+- Fiji plugin - [clij3](https://github.com/clEsperanto/clij3)
 
 # __Usage example__
 
@@ -49,41 +51,14 @@ int main( int argc, char** argv)
 ```
 See more complete example on usage by looking at the kernels [tests](./tests/).
 
-# __Installation__
+# __Documentation__
 
-## Requirements
-
-CLIc rely on OpenCL language for parallelisation and CMake for configuration and build.
-Follow the [compilation guideline](https://clesperanto.github.io/CLIc/compilation.html) for helps on building the library.
-
-## Quick install
-
-Clone the repository and update the submodules
-```
-git clone git@github.com:clEsperanto/CLIc.git
-cd CLIc
-```
-
-Create a build folder and configure cmake to generate the adapted makefile.
-Then compile the library and install it at specified location on your system.
-```
-cmake -S . -B ./build -D CMAKE_INSTALL_PREFIX=/path/to/installation/folder
-cmake --build ./build --parallel 10 --target install
-```
-
-You can modify installation location using `-D CMAKE_INSTALL_PREFIX=/path/to/installation/folder`. If not specify, the default location is `/usr/local`.
-
-CLIc can be uninstall by running the following command
-```
-cmake --build ./build --target uninstall
-```
-
-## Kernels
-CLIc filters rely on the clEsperanto branch of [CLIj OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels). They are managed as a submodule of this repository.
+A detail documentation is available at [https://clesperanto.github.io/CLIc](https://clesperanto.github.io/CLIc/master/en/index.html). 
+If any information is missing or is incorrect, do not hesitate to raise an issue.
 
 # __Contributing__
 Contributions are very welcome. Before spending effort on coding and filing a pull-request, please get in touch with us, [file an issue](https://github.com/clEsperanto/CLIc/issues), and let's discuss your potential contribution.
-More information on how to add new kernels to the library can be found in the [documentation](https://clesperanto.github.io/CLIc/contribute.html).
+More information on how to add new kernels to the library can be found in the [documentation](https://clesperanto.github.io/CLIc/master/en/doc/functions.html).
 
 # __Feedback welcome!__
 clEsperanto is developed in the open because we believe in the [open source community](https://clij.github.io/clij2-docs/community_guidelines).
