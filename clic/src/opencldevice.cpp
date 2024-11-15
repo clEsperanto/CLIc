@@ -19,10 +19,29 @@ OpenCLDevice::OpenCLDevice(const cl_platform_id & platform, const cl_device_id &
 
 OpenCLDevice::~OpenCLDevice()
 {
-  if (isInitialized())
-  {
-    finalize();
+  if (clCommandQueue != nullptr) {
+    cl_int err = clReleaseCommandQueue(clCommandQueue);
+    if (err != CL_SUCCESS) {
+      std::cerr << "Failed to release OpenCL command queue" << std::endl;
+    }
+    clCommandQueue = nullptr;
   }
+  if (clContext != nullptr) {
+    cl_int err = clReleaseContext(clContext);
+    if (err != CL_SUCCESS) {
+      std::cerr << "Failed to release OpenCL context" << std::endl;
+    }
+    clContext = nullptr;
+  }
+  if (clDevice != nullptr) {
+    cl_int err = clReleaseDevice(clDevice);
+    if (err != CL_SUCCESS) {
+      std::cerr << "Failed to release OpenCL device" << std::endl;
+    }
+    clDevice = nullptr;
+  }
+  waitFinish = false;
+  initialized = false;
 }
 
 [[nodiscard]] auto
@@ -66,17 +85,7 @@ OpenCLDevice::initialize() -> void
 auto
 OpenCLDevice::finalize() -> void
 {
-  if (!isInitialized())
-  {
-    std::cerr << "OpenCL device not initialized" << std::endl;
-    return;
-  }
-  this->waitFinish = true;
-  this->finish();
-  clReleaseContext(clContext);
-  clReleaseCommandQueue(clCommandQueue);
-  clReleaseDevice(clDevice);
-  initialized = false;
+  // force device to finish
 }
 
 auto
