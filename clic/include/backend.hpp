@@ -538,13 +538,29 @@ public:
 class OpenCLBackend : public Backend
 {
 public:
-  OpenCLBackend() = default;
+
+  struct ocl_device
+  {
+    cl_platform_id platform;
+    cl_device_id device;
+    cl_device_type type;
+    std::string name;
+    int index;
+  };
+  
+private:
+  std::vector<ocl_device> device_list;
+  auto
+  discoverDevices() -> void;
+
+public:
+
+  OpenCLBackend();
+  ~OpenCLBackend() override = default;
 
   OpenCLBackend(const OpenCLBackend &) = default;
-
   OpenCLBackend(OpenCLBackend &&) = default;
 
-  ~OpenCLBackend() override = default;
 
   auto
   operator=(const OpenCLBackend &) -> OpenCLBackend & = default;
@@ -554,6 +570,7 @@ public:
 
   [[nodiscard]] auto
   getDevices(const std::string & type) const -> std::vector<Device::Pointer> override;
+
 
   [[nodiscard]] auto
   getDevice(const std::string & name, const std::string & type) const -> Device::Pointer override;

@@ -150,6 +150,7 @@ public:
 class OpenCLDevice : public Device
 {
 public:
+
   /**
    * @brief Construct a new OpenCLDevice object
    * @param platform

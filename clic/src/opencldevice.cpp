@@ -66,6 +66,7 @@ OpenCLDevice::initialize() -> void
   {
     return;
   }
+  
   cl_int err = CL_SUCCESS;
   clContext = clCreateContext(nullptr, 1, &clDevice, nullptr, nullptr, &err);
   if (err != CL_SUCCESS)
