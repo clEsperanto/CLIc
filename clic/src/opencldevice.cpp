@@ -86,6 +86,42 @@ auto
 OpenCLDevice::finalize() -> void
 {
   // force device to finish
+  waitFinish = true;
+  finish();
+  
+  if (clCommandQueue != nullptr)
+  {
+    clFlush(clCommandQueue);
+    cl_int err = clReleaseCommandQueue(clCommandQueue);
+    if (err != CL_SUCCESS)
+    {
+      std::cerr << "Failed to release OpenCL command queue, error code: " << err << std::endl;
+    }
+    clCommandQueue = nullptr;
+  }
+  
+  if (clContext != nullptr)
+  {
+    cl_int err = clReleaseContext(clContext);
+    if (err != CL_SUCCESS)
+    {
+      std::cerr << "Failed to release OpenCL context, error code: " << err << std::endl;
+    }
+    clContext = nullptr;
+  }
+  
+  if (clDevice != nullptr)
+  {
+    cl_int err = clReleaseDevice(clDevice);
+    if (err != CL_SUCCESS)
+    {
+      std::cerr << "Failed to release OpenCL device, error code: " << err << std::endl;
+    }
+    clDevice = nullptr;
+  }
+  
+  waitFinish = false;
+  initialized = false;
 }
 
 auto
