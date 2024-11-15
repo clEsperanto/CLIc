@@ -113,16 +113,6 @@ public:
   supportImage() const -> bool = 0;
 
   /**
-   * @brief Get device state
-   */
-  [[nodiscard]] virtual auto getState() const -> std::unordered_map<std::string, std::uintptr_t> = 0;
-
-  /**
-   * @brief Set device state
-   */
-  virtual auto setState(const std::unordered_map<std::string, std::uintptr_t>& state) -> void = 0;  
-
-  /**
    * @brief operator << for Device::Type
    */
   friend auto
@@ -275,32 +265,6 @@ public:
   [[nodiscard]] auto
   supportImage() const -> bool override;
 
-  /**
-   * @brief Get device state
-   */
-  [[nodiscard]] auto getState() const -> std::unordered_map<std::string, std::uintptr_t> override {
-      std::unordered_map<std::string, std::uintptr_t> state;
-      state["Platform"] = reinterpret_cast<std::uintptr_t>(clPlatform);
-      state["Device"] = reinterpret_cast<std::uintptr_t>(clDevice);
-      state["Context"] = reinterpret_cast<std::uintptr_t>(clContext);
-      state["CommandQueue"] = reinterpret_cast<std::uintptr_t>(clCommandQueue);
-      state["initialized"] = static_cast<std::uintptr_t>(initialized);
-      state["waitFinish"] = static_cast<std::uintptr_t>(waitFinish);
-      return state;
-  }
-
-  /**
-   * @brief Set device state
-   */
-  auto setState(const std::unordered_map<std::string, std::uintptr_t>& state) -> void override {
-      clDevice = reinterpret_cast<cl_device_id>(state.at("Device"));
-      clPlatform = reinterpret_cast<cl_platform_id>(state.at("Platform"));
-      clContext = reinterpret_cast<cl_context>(state.at("Context"));
-      clCommandQueue = reinterpret_cast<cl_command_queue>(state.at("CommandQueue"));
-      initialized = static_cast<bool>(state.at("initialized"));
-      waitFinish = static_cast<bool>(state.at("waitFinish"));
-  }
-
 private:
   cl_device_id     clDevice = nullptr;
   cl_platform_id   clPlatform = nullptr;
@@ -438,32 +402,6 @@ public:
    */
   [[nodiscard]] auto
   supportImage() const -> bool override;
-
-  /**
-   * @brief Get device state
-   */
-  [[nodiscard]] auto getState() const -> std::unordered_map<std::string, std::uintptr_t> override{
-      std::unordered_map<std::string, std::uintptr_t> state;
-      state["Platform"] = reinterpret_cast<std::uintptr_t>(cudaDeviceIndex);
-      state["Device"] = reinterpret_cast<std::uintptr_t>(cudaDevice);
-      state["Context"] = reinterpret_cast<std::uintptr_t>(cudaContext);
-      state["CommandQueue"] = reinterpret_cast<std::uintptr_t>(cudaStream);
-      state["initialized"] = static_cast<std::uintptr_t>(initialized);
-      state["waitFinish"] = static_cast<std::uintptr_t>(waitFinish);
-      return state;
-  }
-
-  /**
-   * @brief Set device state
-   */
-  auto setState(const std::unordered_map<std::string, std::uintptr_t>& state) -> void override {
-      cudaDeviceIndex = reinterpret_cast<int>(state.at("Platform"));
-      cudaDevice = reinterpret_cast<CUdevice>(state.at("Device"));
-      cudaContext = reinterpret_cast<CUcontext>(state.at("Context"));
-      cudaStream = reinterpret_cast<CUstream>(state.at("CommandQueue"));
-      initialized = static_cast<bool>(state.at("initialized"));
-      waitFinish = static_cast<bool>(state.at("waitFinish"));
-  }
 
 private:
   int       cudaDeviceIndex;
