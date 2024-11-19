@@ -38,7 +38,7 @@ TEST_P(TestDevice, defaultDevice)
   cle::BackendManager::getInstance().setBackend(param);
 
   auto list = cle::BackendManager::getInstance().getBackend().getDevicesList("all");
-  for (auto &&i : list)
+  for (auto && i : list)
   {
     std::cout << i << " ";
   }

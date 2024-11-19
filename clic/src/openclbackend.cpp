@@ -92,7 +92,7 @@ OpenCLBackend::initialiseRessources() -> void
 
   // explore ressources available
   std::unordered_map<cl_platform_id, std::vector<cl_device_id>> ressources;
-  size_t device_counter = 0;
+  size_t                                                        device_counter = 0;
 
   cl_uint platformCount = 0;
   cl_int  err = clGetPlatformIDs(0, nullptr, &platformCount);

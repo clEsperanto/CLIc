@@ -31,7 +31,7 @@ TEST_P(TestNonzeroMaximum, executeDeprecatedBox)
   gpu_input->writeFrom(input.data());
   auto flag = cle::Array::create(1, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   flag->fill(1);
-  auto gpu_output = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device); 
+  auto gpu_output = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_output->fill(0);
 
   cle::tier1::nonzero_maximum_box_func(device, gpu_input, flag, gpu_output);
@@ -54,7 +54,7 @@ TEST_P(TestNonzeroMaximum, executeDeprecatedSphere)
   gpu_input->writeFrom(input.data());
   auto flag = cle::Array::create(1, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   flag->fill(1);
-    auto gpu_output = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device); 
+  auto gpu_output = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_output->fill(0);
 
   cle::tier1::nonzero_maximum_diamond_func(device, gpu_input, flag, gpu_output);
@@ -78,7 +78,7 @@ TEST_P(TestNonzeroMaximum, executeBox)
   gpu_input->writeFrom(input.data());
   auto flag = cle::Array::create(1, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   flag->fill(1);
-    auto gpu_output = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device); 
+  auto gpu_output = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_output->fill(0);
   cle::tier1::nonzero_maximum_func(device, gpu_input, flag, gpu_output, "box");
 
@@ -100,7 +100,7 @@ TEST_P(TestNonzeroMaximum, executeSphere)
   gpu_input->writeFrom(input.data());
   auto flag = cle::Array::create(1, 1, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   flag->fill(1);
-    auto gpu_output = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device); 
+  auto gpu_output = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_output->fill(0);
 
   cle::tier1::nonzero_maximum_func(device, gpu_input, flag, gpu_output, "sphere");
