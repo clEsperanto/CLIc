@@ -31,7 +31,7 @@ TEST_P(TestDetectMinima, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(10, 5, 1, 2, cle::dType::UINT8, cle::mType::BUFFER, device);
@@ -50,7 +50,7 @@ TEST_P(TestDetectMinima, boundaries)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 2, cle::dType::UINT8, cle::mType::BUFFER, device);

@@ -19,7 +19,7 @@ TEST_P(TestReduceLabelToCentroids, executeBox)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(6, 6, 1, 3, cle::dType::LABEL, cle::mType::BUFFER, device);

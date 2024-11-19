@@ -25,7 +25,7 @@ TEST_P(TestOnlyzeroOverwriteMaximum, executeDeprecatedBox)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -46,7 +46,7 @@ TEST_P(TestOnlyzeroOverwriteMaximum, executeDeprecatedSphere)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -67,7 +67,7 @@ TEST_P(TestOnlyzeroOverwriteMaximum, executeBox)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -88,7 +88,7 @@ TEST_P(TestOnlyzeroOverwriteMaximum, executeSphere)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);

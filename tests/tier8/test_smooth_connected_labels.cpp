@@ -21,7 +21,7 @@ TEST_P(TestSmoothConnectedLabels, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(9, 7, 1, 2, cle::dType::UINT32, cle::mType::BUFFER, device);
