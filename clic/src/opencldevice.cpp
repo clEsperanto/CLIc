@@ -11,8 +11,8 @@ namespace cle
 #if USE_OPENCL
 
 
-
-OpenCLDevice::Context::Context(const cl_context& ptr) : ptr(ptr) 
+OpenCLDevice::Context::Context(const cl_context & ptr)
+  : ptr(ptr)
 {
   cl_int err = clGetContextInfo(ptr, CL_CONTEXT_NUM_DEVICES, sizeof(size_t), &nb_device, nullptr);
   if (err != CL_SUCCESS)
@@ -33,12 +33,14 @@ OpenCLDevice::Context::~Context()
   }
 }
 
-auto OpenCLDevice::Context::get() const -> const cl_context &
+auto
+OpenCLDevice::Context::get() const -> const cl_context &
 {
   return ptr;
 }
 
-OpenCLDevice::CommandQueue::CommandQueue(const cl_command_queue & ptr) : ptr(ptr) 
+OpenCLDevice::CommandQueue::CommandQueue(const cl_command_queue & ptr)
+  : ptr(ptr)
 {}
 
 OpenCLDevice::CommandQueue::~CommandQueue()
@@ -52,12 +54,15 @@ OpenCLDevice::CommandQueue::~CommandQueue()
     }
   }
 }
-auto OpenCLDevice::CommandQueue::get() const -> const cl_command_queue &
+auto
+OpenCLDevice::CommandQueue::get() const -> const cl_command_queue &
 {
   return ptr;
 }
 
-OpenCLDevice::Ressources::Ressources(const cl_platform_id & platform, const cl_device_id & device) : platform_ptr(platform), device_ptr(device)
+OpenCLDevice::Ressources::Ressources(const cl_platform_id & platform, const cl_device_id & device)
+  : platform_ptr(platform)
+  , device_ptr(device)
 {
   char _platform_name[256];
   clGetPlatformInfo(platform_ptr, CL_PLATFORM_NAME, sizeof(char) * 256, &_platform_name, nullptr);
@@ -83,43 +88,49 @@ OpenCLDevice::Ressources::~Ressources()
   }
 }
 
-auto OpenCLDevice::Ressources::get_device() const -> const cl_device_id &
+auto
+OpenCLDevice::Ressources::get_device() const -> const cl_device_id &
 {
   return device_ptr;
 }
 
-auto OpenCLDevice::Ressources::get_platform() const -> const cl_platform_id &
+auto
+OpenCLDevice::Ressources::get_platform() const -> const cl_platform_id &
 {
   return platform_ptr;
 }
 
 
-
-
-
-
 OpenCLDevice::OpenCLDevice(const cl_platform_id & platform, const cl_device_id & device)
   : clRessources(std::make_shared<Ressources>(platform, device))
 {
-   initialize();
+  initialize();
 }
 
-OpenCLDevice::OpenCLDevice(const std::shared_ptr<Ressources> & ressources, const std::shared_ptr<Context> & context, const std::shared_ptr<CommandQueue> & command_queue, size_t device_index)
-: clRessources(ressources), clContext(context), clCommandQueue(command_queue), deviceIndex(device_index)
+OpenCLDevice::OpenCLDevice(const std::shared_ptr<Ressources> &   ressources,
+                           const std::shared_ptr<Context> &      context,
+                           const std::shared_ptr<CommandQueue> & command_queue,
+                           size_t                                device_index)
+  : clRessources(ressources)
+  , clContext(context)
+  , clCommandQueue(command_queue)
+  , deviceIndex(device_index)
 {
   initialized = true;
 }
 
 OpenCLDevice::~OpenCLDevice()
 {
-  if (clCommandQueue != nullptr) {
+  if (clCommandQueue != nullptr)
+  {
     clCommandQueue.reset();
   }
   if (clContext != nullptr)
   {
     clContext.reset();
   }
-  if (clRessources != nullptr) {
+  if (clRessources != nullptr)
+  {
     clRessources.reset();
   }
 }
@@ -143,15 +154,17 @@ OpenCLDevice::initialize() -> void
   {
     return;
   }
-  
+
   cl_int err = CL_SUCCESS;
-  clContext = std::make_shared<Context>(clCreateContext(nullptr, 1, &clRessources->get_device(), nullptr, nullptr, &err));
+  clContext =
+    std::make_shared<Context>(clCreateContext(nullptr, 1, &clRessources->get_device(), nullptr, nullptr, &err));
   if (err != CL_SUCCESS)
   {
     std::cerr << "Failed to create OpenCL context" << std::endl;
     return;
   }
-  clCommandQueue = std::make_shared<CommandQueue>(clCreateCommandQueue(clContext->get(), clRessources->get_device(), 0, &err)); // clCreateCommandQueue deprecated in OpenCL 2.0+
+  clCommandQueue = std::make_shared<CommandQueue>(clCreateCommandQueue(
+    clContext->get(), clRessources->get_device(), 0, &err)); // clCreateCommandQueue deprecated in OpenCL 2.0+
   if (err != CL_SUCCESS)
   {
     std::cerr << "Failed to create OpenCL command queue" << std::endl;
@@ -166,18 +179,20 @@ OpenCLDevice::finalize() -> void
   // force device to finish
   waitFinish = true;
   finish();
-  
-  if (clCommandQueue != nullptr) {
+
+  if (clCommandQueue != nullptr)
+  {
     clCommandQueue.reset();
   }
   if (clContext != nullptr)
   {
     clContext.reset();
   }
-  if (clRessources != nullptr) {
+  if (clRessources != nullptr)
+  {
     clRessources.reset();
   }
-  
+
   waitFinish = false;
   initialized = false;
 }
@@ -249,16 +264,16 @@ OpenCLDevice::getDeviceType() const -> std::string
 {
   switch (clRessources->device_type)
   {
-  case CL_DEVICE_TYPE_CPU:
-    return "cpu";
-  case CL_DEVICE_TYPE_GPU:
-    return "gpu";
-  case CL_DEVICE_TYPE_ACCELERATOR:
-    return "accelerator";
-  case CL_DEVICE_TYPE_CUSTOM:
-    return "custom";
-  default:
-    return "unknown";
+    case CL_DEVICE_TYPE_CPU:
+      return "cpu";
+    case CL_DEVICE_TYPE_GPU:
+      return "gpu";
+    case CL_DEVICE_TYPE_ACCELERATOR:
+      return "accelerator";
+    case CL_DEVICE_TYPE_CUSTOM:
+      return "custom";
+    default:
+      return "unknown";
   }
 }
 
@@ -294,8 +309,10 @@ OpenCLDevice::getInfo() const -> std::string
   clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint), &compute_units, nullptr);
   clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(size_t), &global_mem_size, nullptr);
   clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_MAX_MEM_ALLOC_SIZE, sizeof(size_t), &max_mem_size, nullptr);
-  clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(cl_uint), &max_work_group_size, nullptr);
-  clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_MAX_CLOCK_FREQUENCY, sizeof(cl_uint), &max_clock_frequency, nullptr);
+  clGetDeviceInfo(
+    clRessources->get_device(), CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(cl_uint), &max_work_group_size, nullptr);
+  clGetDeviceInfo(
+    clRessources->get_device(), CL_DEVICE_MAX_CLOCK_FREQUENCY, sizeof(cl_uint), &max_clock_frequency, nullptr);
   clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_IMAGE_SUPPORT, sizeof(cl_uint), &image_support, nullptr);
 
   std::map<cl_device_type, std::string> deviceTypeMap = {
@@ -327,9 +344,15 @@ OpenCLDevice::getInfoExtended() const -> std::string
   cl_uint            max_work_group_size, max_work_item_dimensions;
   size_t             max_work_item_sizes[3];
   clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_EXTENSIONS, sizeof(char) * 1024, &extensions, nullptr);
-  clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(cl_uint), &max_work_group_size, nullptr);
-  clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS, sizeof(cl_uint), &max_work_item_dimensions, nullptr);
-  clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_MAX_WORK_ITEM_SIZES, sizeof(size_t) * 3, &max_work_item_sizes, nullptr);
+  clGetDeviceInfo(
+    clRessources->get_device(), CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(cl_uint), &max_work_group_size, nullptr);
+  clGetDeviceInfo(clRessources->get_device(),
+                  CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS,
+                  sizeof(cl_uint),
+                  &max_work_item_dimensions,
+                  nullptr);
+  clGetDeviceInfo(
+    clRessources->get_device(), CL_DEVICE_MAX_WORK_ITEM_SIZES, sizeof(size_t) * 3, &max_work_item_sizes, nullptr);
 
   // Split extensions string into a vector
   std::istringstream       iss((std::string(extensions)));

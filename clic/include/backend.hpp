@@ -536,12 +536,11 @@ public:
  *       This class holds low-level device operations for OpenCL devices.
  */
 class OpenCLBackend : public Backend
-{  
+{
 private:
   std::vector<Device::Pointer> device_list_;
 
 public:
-
   OpenCLBackend();
   ~OpenCLBackend() override;
 
@@ -556,7 +555,7 @@ public:
   operator=(OpenCLBackend &&) -> OpenCLBackend & = default;
 
   auto
-  initialiseRessources() -> void;  
+  initialiseRessources() -> void;
 
   [[nodiscard]] auto
   getDevices(const std::string & type) const -> std::vector<Device::Pointer> override;

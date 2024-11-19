@@ -98,12 +98,12 @@ public:
   [[nodiscard]] virtual auto
   getType() const -> Device::Type = 0;
 
-    /**
+  /**
    * @brief Get device type as string
    * @return std::string
    */
-[[nodiscard]] virtual auto
-getDeviceType() const -> std::string = 0;
+  [[nodiscard]] virtual auto
+  getDeviceType() const -> std::string = 0;
 
   /**
    * @brief Get device index in context
@@ -169,42 +169,44 @@ getDeviceType() const -> std::string = 0;
 class OpenCLDevice : public Device
 {
 public:
-
   struct Context
   {
     cl_context ptr = nullptr;
-    size_t nb_device = 0;
+    size_t     nb_device = 0;
 
-    Context(const cl_context& ptr);
+    Context(const cl_context & ptr);
     ~Context();
-    auto get() const -> const cl_context &;
+    auto
+    get() const -> const cl_context &;
   };
 
   struct CommandQueue
   {
-    cl_command_queue ptr= nullptr;
+    cl_command_queue ptr = nullptr;
 
     CommandQueue(const cl_command_queue & ptr);
     ~CommandQueue();
-    auto get() const -> const cl_command_queue &;
+    auto
+    get() const -> const cl_command_queue &;
   };
 
   struct Ressources
   {
-    cl_device_id device_ptr= nullptr;
-    cl_platform_id platform_ptr= nullptr;
+    cl_device_id   device_ptr = nullptr;
+    cl_platform_id platform_ptr = nullptr;
     cl_device_type device_type = 0;
-    std::string device_name ="";
-    std::string platform_name ="";
-    std::string platform_vendor="";
-    bool image_support = false;
+    std::string    device_name = "";
+    std::string    platform_name = "";
+    std::string    platform_vendor = "";
+    bool           image_support = false;
 
     Ressources(const cl_platform_id & platform, const cl_device_id & device);
     ~Ressources();
-    auto get_device() const -> const cl_device_id &;
-    auto get_platform() const -> const cl_platform_id &;
+    auto
+    get_device() const -> const cl_device_id &;
+    auto
+    get_platform() const -> const cl_platform_id &;
   };
-  
 
 
   /**
@@ -224,7 +226,10 @@ public:
    * @param nb_device
    * @return OpenCLDevice
    */
-  OpenCLDevice(const std::shared_ptr<Ressources> & ressources, const std::shared_ptr<Context> & context, const std::shared_ptr<CommandQueue> & command_queue, size_t device_index);
+  OpenCLDevice(const std::shared_ptr<Ressources> &   ressources,
+               const std::shared_ptr<Context> &      context,
+               const std::shared_ptr<CommandQueue> & command_queue,
+               size_t                                device_index);
 
   /**
    * @brief Destroy the OpenCLDevice object
@@ -356,12 +361,11 @@ private:
   std::shared_ptr<Ressources>   clRessources = nullptr;
   std::shared_ptr<Context>      clContext = nullptr;
   std::shared_ptr<CommandQueue> clCommandQueue = nullptr;
-  bool             initialized = false;
-  bool             waitFinish = false;
+  bool                          initialized = false;
+  bool                          waitFinish = false;
 
-  size_t          deviceIndex = 0;
-  size_t          nbDeviceInContext = 1;
-
+  size_t deviceIndex = 0;
+  size_t nbDeviceInContext = 1;
 };
 #endif // USE_OPENCL
 
@@ -422,12 +426,12 @@ public:
   [[nodiscard]] auto
   getType() const -> Device::Type override;
 
-      /**
+  /**
    * @brief Get device type as string
    * @return std::string
    */
-[[nodiscard]] auto
-getDeviceType() const -> std::string override;
+  [[nodiscard]] auto
+  getDeviceType() const -> std::string override;
 
   /**
    * @brief Check if device is initialized
@@ -506,7 +510,7 @@ getDeviceType() const -> std::string override;
   [[nodiscard]] auto
   getNbDevicesFromContext() const -> size_t override;
 
-    /**
+  /**
    * @brief Get device index in context
    */
   [[nodiscard]] auto
