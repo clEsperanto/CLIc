@@ -21,7 +21,7 @@ TEST_P(TestBinaryEdgeDetection, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(6, 5, 3, 3, cle::dType::UINT8, cle::mType::BUFFER, device);

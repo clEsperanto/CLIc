@@ -68,15 +68,19 @@ OpenCLDevice::Ressources::Ressources(const cl_platform_id & platform, const cl_d
   char _platform_name[256];
   clGetPlatformInfo(platform_ptr, CL_PLATFORM_NAME, sizeof(char) * 256, &_platform_name, nullptr);
   platform_name = std::string(_platform_name);
+  platform_name.erase(platform_name.find_last_not_of(" ") + 1);
   char _platform_vendor[256];
   clGetPlatformInfo(platform_ptr, CL_PLATFORM_VENDOR, sizeof(char) * 256, &_platform_vendor, nullptr);
   platform_vendor = std::string(_platform_vendor);
+  platform_vendor.erase(platform_vendor.find_last_not_of(" ") + 1);
   char _device_name[256];
   clGetDeviceInfo(device_ptr, CL_DEVICE_NAME, sizeof(char) * 256, &_device_name, nullptr);
   device_name = std::string(_device_name);
+  device_name.erase(device_name.find_last_not_of(" ") + 1);
   clGetDeviceInfo(device_ptr, CL_DEVICE_TYPE, sizeof(cl_device_type), &device_type, nullptr);
   clGetDeviceInfo(device_ptr, CL_DEVICE_IMAGE_SUPPORT, sizeof(cl_bool), &image_support, nullptr);
 }
+
 OpenCLDevice::Ressources::~Ressources()
 {
   if (device_ptr != nullptr)

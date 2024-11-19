@@ -32,6 +32,24 @@ TEST_P(TestDevice, availableDevices)
 }
 
 
+TEST_P(TestDevice, defaultDevice)
+{
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+
+  auto list = cle::BackendManager::getInstance().getBackend().getDevicesList("all");
+  for (auto && i : list)
+  {
+    std::cout << i << " ";
+  }
+  std::cout << std::endl;
+
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  device->setWaitToFinish(true);
+  std::cout << device->getName() << std::endl;
+}
+
+
 TEST_P(TestDevice, type)
 {
   std::string param = GetParam();

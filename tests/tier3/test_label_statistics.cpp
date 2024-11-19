@@ -75,7 +75,7 @@ TEST_P(TestStatisticsOfLabelledPixels, execute2D)
 
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
   auto gpu_intensity = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -142,7 +142,7 @@ TEST_P(TestStatisticsOfLabelledPixels, execute3D)
 
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
   auto gpu_intensity = cle::Array::create(3, 2, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -228,7 +228,7 @@ TEST_P(TestStatisticsOfLabelledPixels, shape)
 
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
   auto gpu_labels = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -293,7 +293,7 @@ TEST_P(TestStatisticsOfLabelledPixels, standard_deviation)
   std::array<float, 3 * 3 * 1> image = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
   std::array<float, 3 * 3 * 1> labels = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
   auto gpu_image = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);

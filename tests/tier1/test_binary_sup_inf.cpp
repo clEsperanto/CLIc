@@ -67,7 +67,7 @@ TEST_P(TestBinarySupInf, supinf_2d)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
 
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(14, 14, 1, 2, cle::dType::BINARY, cle::mType::BUFFER, device);
@@ -87,7 +87,7 @@ TEST_P(TestBinarySupInf, supinf_3d)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
 
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(10, 10, 5, 3, cle::dType::BINARY, cle::mType::BUFFER, device);

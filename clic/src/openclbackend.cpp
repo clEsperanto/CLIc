@@ -92,6 +92,7 @@ OpenCLBackend::initialiseRessources() -> void
 
   // explore ressources available
   std::unordered_map<cl_platform_id, std::vector<cl_device_id>> ressources;
+  size_t                                                        device_counter = 0;
 
   cl_uint platformCount = 0;
   cl_int  err = clGetPlatformIDs(0, nullptr, &platformCount);
@@ -121,6 +122,7 @@ OpenCLBackend::initialiseRessources() -> void
       continue;
     }
     ressources[platform_id] = deviceIds;
+    device_counter += deviceCount;
   }
   if (ressources.empty())
   {
@@ -128,6 +130,7 @@ OpenCLBackend::initialiseRessources() -> void
   }
 
   // allocate ressources
+  device_list_.reserve(device_counter);
   for (const auto & [platform_id, device_ids] : ressources)
   {
     cl_uint num_devices = device_ids.size();
@@ -168,6 +171,7 @@ OpenCLBackend::getDevices(const std::string & type) const -> std::vector<Device:
                device_list_.end(),
                std::back_inserter(filtered_devices),
                [&type](const Device::Pointer & device) { return device->getDeviceType() == type; });
+  filtered_devices.shrink_to_fit(); // Reduce memory usage if the filtered list is smaller
   return filtered_devices;
 }
 
@@ -189,7 +193,7 @@ OpenCLBackend::getDevice(const std::string & name, const std::string & type) con
   }
   if (!devices.empty())
   {
-    return devices.front();
+    return device_list_.back();
   }
   std::cerr << "Warning: Fail to find any OpenCL compatible devices." << std::endl;
   return nullptr;
@@ -209,7 +213,7 @@ OpenCLBackend::getDeviceFromIndex(size_t index, const std::string & type) const 
   }
   if (!devices.empty())
   {
-    return devices.front();
+    return device_list_.back();
   }
   std::cerr << "Warning: Fail to find any OpenCL compatible devices." << std::endl;
   return nullptr;
