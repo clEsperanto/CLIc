@@ -199,8 +199,9 @@ public:
     std::string    platform_name = "";
     std::string    platform_vendor = "";
     bool           image_support = false;
+    size_t         device_index = 0;
 
-    Ressources(const cl_platform_id & platform, const cl_device_id & device);
+    Ressources(const cl_platform_id & platform, const cl_device_id & device, size_t index);
     ~Ressources();
     auto
     get_device() const -> const cl_device_id &;
@@ -228,8 +229,7 @@ public:
    */
   OpenCLDevice(const std::shared_ptr<Ressources> &   ressources,
                const std::shared_ptr<Context> &      context,
-               const std::shared_ptr<CommandQueue> & command_queue,
-               size_t                                device_index);
+               const std::shared_ptr<CommandQueue> & command_queue);
 
   /**
    * @brief Destroy the OpenCLDevice object
@@ -363,9 +363,6 @@ private:
   std::shared_ptr<CommandQueue> clCommandQueue = nullptr;
   bool                          initialized = false;
   bool                          waitFinish = false;
-
-  size_t deviceIndex = 0;
-  size_t nbDeviceInContext = 1;
 };
 #endif // USE_OPENCL
 

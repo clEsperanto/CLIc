@@ -60,9 +60,10 @@ OpenCLDevice::CommandQueue::get() const -> const cl_command_queue &
   return ptr;
 }
 
-OpenCLDevice::Ressources::Ressources(const cl_platform_id & platform, const cl_device_id & device)
+OpenCLDevice::Ressources::Ressources(const cl_platform_id & platform, const cl_device_id & device, size_t device_index)
   : platform_ptr(platform)
   , device_ptr(device)
+  , device_index(device_index)
 {
   char _platform_name[256];
   clGetPlatformInfo(platform_ptr, CL_PLATFORM_NAME, sizeof(char) * 256, &_platform_name, nullptr);
@@ -102,19 +103,17 @@ OpenCLDevice::Ressources::get_platform() const -> const cl_platform_id &
 
 
 OpenCLDevice::OpenCLDevice(const cl_platform_id & platform, const cl_device_id & device)
-  : clRessources(std::make_shared<Ressources>(platform, device))
+  : clRessources(std::make_shared<Ressources>(platform, device, 0))
 {
   initialize();
 }
 
 OpenCLDevice::OpenCLDevice(const std::shared_ptr<Ressources> &   ressources,
                            const std::shared_ptr<Context> &      context,
-                           const std::shared_ptr<CommandQueue> & command_queue,
-                           size_t                                device_index)
+                           const std::shared_ptr<CommandQueue> & command_queue)
   : clRessources(ressources)
   , clContext(context)
   , clCommandQueue(command_queue)
-  , deviceIndex(device_index)
 {
   initialized = true;
 }
@@ -256,25 +255,19 @@ OpenCLDevice::getName(bool lowercase) const -> std::string
 auto
 OpenCLDevice::getDeviceIndex() const -> size_t
 {
-  return deviceIndex;
+  return clRessources->device_index;
 }
 
 auto
 OpenCLDevice::getDeviceType() const -> std::string
 {
-  switch (clRessources->device_type)
-  {
-    case CL_DEVICE_TYPE_CPU:
-      return "cpu";
-    case CL_DEVICE_TYPE_GPU:
-      return "gpu";
-    case CL_DEVICE_TYPE_ACCELERATOR:
-      return "accelerator";
-    case CL_DEVICE_TYPE_CUSTOM:
-      return "custom";
-    default:
-      return "unknown";
-  }
+  std::map<cl_device_type, std::string> deviceTypeMap = {
+    { CL_DEVICE_TYPE_CPU, "cpu" },
+    { CL_DEVICE_TYPE_GPU, "gpu" },
+    { CL_DEVICE_TYPE_ACCELERATOR, "accelerator" },
+    { CL_DEVICE_TYPE_CUSTOM, "custom" },
+  };
+  return deviceTypeMap.count(clRessources->device_type) ? deviceTypeMap[clRessources->device_type] : "Unknown";
 }
 
 auto

@@ -147,7 +147,7 @@ OpenCLBackend::initialiseRessources() -> void
         throw std::runtime_error("Error: Failed to create OpenCL command queue.");
       }
       device_list_.emplace_back(std::make_shared<OpenCLDevice>(
-        std::make_shared<OpenCLDevice::Ressources>(platform_id, device_id), context, command_queue, device_index++));
+        std::make_shared<OpenCLDevice::Ressources>(platform_id, device_id, device_index++), context, command_queue));
     }
   }
 #else
