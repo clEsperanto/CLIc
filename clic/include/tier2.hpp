@@ -725,7 +725,7 @@ grayscale_opening_func(const Device::Pointer & device,
 
 /**
  * @name opening
- * @brief Closing operator, applies morphological opening to intensity images using a custom structuring element
+ * @brief Opening operator, applies morphological opening to intensity images using a custom structuring element
  * provided as input. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]

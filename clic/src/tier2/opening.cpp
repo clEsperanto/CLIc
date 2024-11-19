@@ -18,8 +18,8 @@ opening_func(const Device::Pointer & device,
     throw std::runtime_error(
       "Error: input and structuring element in opening operator must have the same dimensionality.");
   }
-  auto temp = tier1::dilation_func(device, src, footprint, nullptr);
-  return tier1::erosion_func(device, temp, footprint, dst);
+  auto temp = tier1::erosion_func(device, src, footprint, nullptr);
+  return tier1::dilation_func(device, temp, footprint, dst);
 }
 
 auto
