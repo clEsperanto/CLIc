@@ -98,6 +98,19 @@ public:
   [[nodiscard]] virtual auto
   getType() const -> Device::Type = 0;
 
+    /**
+   * @brief Get device type as string
+   * @return std::string
+   */
+[[nodiscard]] virtual auto
+getDeviceType() const -> std::string = 0;
+
+  /**
+   * @brief Get device index in context
+   */
+  [[nodiscard]] virtual auto
+  getDeviceIndex() const -> size_t = 0;
+
   /**
    * @brief Get device platform
    * @return std::string
@@ -111,6 +124,12 @@ public:
    */
   [[nodiscard]] virtual auto
   supportImage() const -> bool = 0;
+
+  /**
+   * @brief Get shared context devices
+   */
+  [[nodiscard]] virtual auto
+  getNbDevicesFromContext() const -> size_t = 0;
 
   /**
    * @brief operator << for Device::Type
@@ -160,6 +179,18 @@ public:
   OpenCLDevice(const cl_platform_id & platform, const cl_device_id & device);
 
   /**
+   * @brief Construct a new Device object
+   * @param platform
+   * @param device
+   * @param context
+   * @param command_queue
+   * @param device_index
+   * @param nb_device
+   * @return OpenCLDevice
+   */
+  OpenCLDevice(const cl_platform_id & platform, const cl_device_id & device, const std::shared_ptr<cl_context> & context, const cl_command_queue & command_queue, size_t device_index, size_t nb_device);
+
+  /**
    * @brief Destroy the OpenCLDevice object
    */
   ~OpenCLDevice() override;
@@ -201,6 +232,19 @@ public:
    */
   [[nodiscard]] auto
   getType() const -> Device::Type override;
+
+  /**
+   * @brief Get device type as string
+   * @return std::string
+   */
+  [[nodiscard]] auto
+  getDeviceType() const -> std::string override;
+
+  /**
+   * @brief Get device index in context
+   */
+  [[nodiscard]] auto
+  getDeviceIndex() const -> size_t override;
 
   /**
    * @brief Check if device is initialized
@@ -260,6 +304,12 @@ public:
   getInfoExtended() const -> std::string override;
 
   /**
+   * @brief Get shared context devices
+   */
+  [[nodiscard]] auto
+  getNbDevicesFromContext() const -> size_t override;
+
+  /**
    * @brief check if device is compatible with cl_image
    * @return bool
    */
@@ -269,10 +319,14 @@ public:
 private:
   cl_device_id     clDevice = nullptr;
   cl_platform_id   clPlatform = nullptr;
-  cl_context       clContext = nullptr;
+  std::shared_ptr<cl_context> clContext = nullptr;
   cl_command_queue clCommandQueue = nullptr;
   bool             initialized = false;
   bool             waitFinish = false;
+
+  size_t          deviceIndex = 0;
+  size_t          nbDeviceInContext = 1;
+
 };
 #endif // USE_OPENCL
 
@@ -332,6 +386,13 @@ public:
    */
   [[nodiscard]] auto
   getType() const -> Device::Type override;
+
+      /**
+   * @brief Get device type as string
+   * @return std::string
+   */
+[[nodiscard]] auto
+getDeviceType() const -> std::string override;
 
   /**
    * @brief Check if device is initialized
@@ -403,6 +464,18 @@ public:
    */
   [[nodiscard]] auto
   supportImage() const -> bool override;
+
+  /**
+   * @brief Get shared context devices
+   */
+  [[nodiscard]] auto
+  getNbDevicesFromContext() const -> size_t override;
+
+    /**
+   * @brief Get device index in context
+   */
+  [[nodiscard]] auto
+  getDeviceIndex() const -> size_t override;
 
 private:
   int       cudaDeviceIndex;

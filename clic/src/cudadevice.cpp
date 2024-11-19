@@ -139,6 +139,13 @@ CUDADevice::getName(bool lowercase) const -> std::string
   return std::string(device_name);
 }
 
+
+[[nodiscard]] auto
+getDeviceType() const -> std::string
+{
+  return "gpu";
+}
+
 auto
 CUDADevice::getArch() const -> std::string
 {

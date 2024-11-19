@@ -17,6 +17,12 @@ OpenCLDevice::OpenCLDevice(const cl_platform_id & platform, const cl_device_id &
   initialize();
 }
 
+OpenCLDevice::OpenCLDevice(const cl_platform_id & platform, const cl_device_id & device, const std::shared_ptr<cl_context> & context, const cl_command_queue & command_queue, size_t device_index, size_t nb_device)
+: clDevice(device), clPlatform(platform), clContext(context), clCommandQueue(command_queue), deviceIndex(device_index), nbDeviceInContext(nb_device)
+{
+  initialized = true;
+}
+
 OpenCLDevice::~OpenCLDevice()
 {
   if (clCommandQueue != nullptr) {
@@ -26,12 +32,17 @@ OpenCLDevice::~OpenCLDevice()
     }
     clCommandQueue = nullptr;
   }
-  if (clContext != nullptr) {
-    cl_int err = clReleaseContext(clContext);
-    if (err != CL_SUCCESS) {
-      std::cerr << "Failed to release OpenCL context" << std::endl;
+  if (clContext != nullptr)
+  {
+    if (clContext.use_count() == 1)
+    {
+      auto err = clReleaseContext(*clContext);
+      if (err != CL_SUCCESS)
+      {
+        std::cerr << "Failed to release OpenCL context" << std::endl;
+      }
     }
-    clContext = nullptr;
+    clContext.reset();
   }
   if (clDevice != nullptr) {
     cl_int err = clReleaseDevice(clDevice);
@@ -40,14 +51,11 @@ OpenCLDevice::~OpenCLDevice()
     }
     clDevice = nullptr;
   }
-  waitFinish = false;
-  initialized = false;
 }
 
 [[nodiscard]] auto
 OpenCLDevice::getPlatform() const -> std::string
 {
-  // from cl_platform_id to std::string
   char platform_name[256];
   clGetPlatformInfo(clPlatform, CL_PLATFORM_NAME, sizeof(char) * 256, &platform_name, nullptr);
   return std::string(platform_name);
@@ -68,13 +76,13 @@ OpenCLDevice::initialize() -> void
   }
   
   cl_int err = CL_SUCCESS;
-  clContext = clCreateContext(nullptr, 1, &clDevice, nullptr, nullptr, &err);
+  clContext = std::make_shared<cl_context>(clCreateContext(nullptr, 1, &clDevice, nullptr, nullptr, &err));
   if (err != CL_SUCCESS)
   {
     std::cerr << "Failed to create OpenCL context" << std::endl;
     return;
   }
-  clCommandQueue = clCreateCommandQueue(clContext, clDevice, 0, &err); // clCreateCommandQueue deprecated in OpenCL 2.0+
+  clCommandQueue = clCreateCommandQueue(*clContext, clDevice, 0, &err); // clCreateCommandQueue deprecated in OpenCL 2.0+
   if (err != CL_SUCCESS)
   {
     std::cerr << "Failed to create OpenCL command queue" << std::endl;
@@ -100,15 +108,18 @@ OpenCLDevice::finalize() -> void
     }
     clCommandQueue = nullptr;
   }
-  
+
   if (clContext != nullptr)
   {
-    cl_int err = clReleaseContext(clContext);
-    if (err != CL_SUCCESS)
+    if (clContext.use_count() == 1)
     {
-      std::cerr << "Failed to release OpenCL context, error code: " << err << std::endl;
+      auto err = clReleaseContext(*clContext);
+      if (err != CL_SUCCESS)
+      {
+        std::cerr << "Failed to release OpenCL context" << std::endl;
+      }
     }
-    clContext = nullptr;
+    clContext.reset();
   }
   
   if (clDevice != nullptr)
@@ -166,7 +177,7 @@ OpenCLDevice::getCLDevice() const -> const cl_device_id &
 auto
 OpenCLDevice::getCLContext() const -> const cl_context &
 {
-  return clContext;
+  return *clContext;
 }
 
 auto
@@ -185,6 +196,38 @@ OpenCLDevice::getName(bool lowercase) const -> std::string
     return to_lower(std::string(device_name));
   }
   return std::string(device_name);
+}
+
+   auto
+  OpenCLDevice::getDeviceIndex() const -> size_t
+  {
+    return deviceIndex;
+  }
+
+auto
+OpenCLDevice::getDeviceType() const -> std::string
+{
+  cl_device_type type;
+  clGetDeviceInfo(clDevice, CL_DEVICE_TYPE, sizeof(cl_device_type), &type, nullptr);
+  switch (type)
+  {
+  case CL_DEVICE_TYPE_CPU:
+    return "cpu";
+  case CL_DEVICE_TYPE_GPU:
+    return "gpu";
+  case CL_DEVICE_TYPE_ACCELERATOR:
+    return "accelerator";
+  case CL_DEVICE_TYPE_CUSTOM:
+    return "custom";
+  default:
+    return "unknown";
+  }
+}
+
+auto
+OpenCLDevice::getNbDevicesFromContext() const -> size_t
+{
+  return nbDeviceInContext;
 }
 
 auto
