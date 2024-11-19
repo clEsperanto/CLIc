@@ -23,7 +23,7 @@ We can then call the ``setBackend()`` function to set the backend we want to use
 Here we use the OpenCL backend. This is the only backend available at the moment.
 
 Once set, the backend will initialize all ressources available on the machine, and make them available to the library.
-Here, by ressources, we mean devices (CPU, GPU, etc.) that are available on the system. 
+Here, by ressources, we mean devices (CPU, GPU, etc.) that are available on the system.
 If no devices are available, the backend will not be able to initialize and will throw an error.
 
 Now that the backend is initialized, we can access it through the ``getBackend()`` function of the singleton as such:
@@ -45,7 +45,7 @@ Here, we can specify the device we want using its name or index, as well as filt
 
     auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
 
-By default, we get the first available device of any type possible (CPU or GPU). 
+By default, we get the first available device of any type possible (CPU or GPU).
 If multiple devices have the same name, we can identify them by their index.
 
 For example, if we have two GPUs named ``"RTX 2090``, we can select the second one with the following code:
