@@ -64,65 +64,111 @@ getErrorString(const cl_int & error) -> std::string
 }
 #endif
 
-auto
-OpenCLBackend::getDevices(const std::string & type) const -> std::vector<Device::Pointer>
+OpenCLBackend::OpenCLBackend()
 {
 #if USE_OPENCL
-  std::vector<Device::Pointer> devices;
-
-  cl_uint platformCount = 0;
-  clGetPlatformIDs(0, nullptr, &platformCount);
-  if (platformCount == 0)
-  {
-    throw std::runtime_error("Error: Fail to find any OpenCL compatible platforms.");
-  }
-  std::vector<cl_platform_id> platformIds(platformCount);
-  clGetPlatformIDs(platformCount, platformIds.data(), nullptr);
-
-  cl_device_type deviceType;
-  if (type == "cpu")
-  {
-    deviceType = CL_DEVICE_TYPE_CPU;
-  }
-  else if (type == "gpu")
-  {
-    deviceType = CL_DEVICE_TYPE_GPU;
-  }
-  else if (type == "all")
-  {
-    deviceType = CL_DEVICE_TYPE_ALL;
-  }
-  else
-  {
-    std::cerr << "Warning: Unknown device type '" << type << "' provided. Default: fetching 'all' type." << std::endl;
-    deviceType = CL_DEVICE_TYPE_ALL;
-  }
-
-  for (auto && platform_id : platformIds)
-  {
-    cl_uint deviceCount = 0;
-    clGetDeviceIDs(platform_id, deviceType, 0, nullptr, &deviceCount);
-    if (deviceCount == 0)
-    {
-      continue;
-    }
-    std::vector<cl_device_id> deviceIds(deviceCount);
-    clGetDeviceIDs(platform_id, deviceType, deviceCount, deviceIds.data(), nullptr);
-    for (auto && device_id : deviceIds)
-    {
-      devices.emplace_back(std::make_shared<OpenCLDevice>(platform_id, device_id));
-    }
-  }
-
-  if (devices.empty())
-  {
-    std::cerr << "Warning: Fail to find '" << type << "' OpenCL compatible devices." << std::endl;
-  }
-
-  return devices;
+  OpenCLBackend::initialiseRessources();
 #else
   throw std::runtime_error("Error: OpenCL is not enabled");
 #endif
+}
+
+OpenCLBackend::~OpenCLBackend()
+{
+#if USE_OPENCL
+  if (!device_list_.empty())
+  {
+    device_list_.clear();
+  }
+#else
+  throw std::runtime_error("Error: OpenCL is not enabled");
+#endif
+}
+
+auto
+OpenCLBackend::initialiseRessources() -> void
+{
+#if USE_OPENCL
+
+  // explore ressources available
+  std::unordered_map<cl_platform_id, std::vector<cl_device_id>> ressources;
+
+  cl_uint platformCount = 0;
+  cl_int  err = clGetPlatformIDs(0, nullptr, &platformCount);
+  if (err != CL_SUCCESS || platformCount == 0)
+  {
+    throw std::runtime_error("Error: Failed to find any OpenCL compatible platforms.");
+  }
+  std::vector<cl_platform_id> platformIds(platformCount);
+  err = clGetPlatformIDs(platformCount, platformIds.data(), nullptr);
+  if (err != CL_SUCCESS)
+  {
+    throw std::runtime_error("Error: Failed to get OpenCL platform IDs.");
+  }
+  for (const auto & platform_id : platformIds)
+  {
+    cl_uint deviceCount = 0;
+    err = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_ALL, 0, nullptr, &deviceCount);
+    if (err != CL_SUCCESS || deviceCount == 0)
+    {
+      continue;
+    }
+
+    std::vector<cl_device_id> deviceIds(deviceCount);
+    err = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_ALL, deviceCount, deviceIds.data(), nullptr);
+    if (err != CL_SUCCESS)
+    {
+      continue;
+    }
+    ressources[platform_id] = deviceIds;
+  }
+  if (ressources.empty())
+  {
+    std::cerr << "Warning: Failed to find OpenCL compatible devices." << std::endl;
+  }
+
+  // allocate ressources
+  for (const auto & [platform_id, device_ids] : ressources)
+  {
+    cl_uint num_devices = device_ids.size();
+    auto    context = std::make_shared<OpenCLDevice::Context>(
+      clCreateContext(nullptr, num_devices, device_ids.data(), nullptr, nullptr, nullptr));
+    if (context == nullptr)
+    {
+      throw std::runtime_error("Error: Failed to create OpenCL context.");
+    }
+    size_t device_index = 0;
+    for (const auto & device_id : device_ids)
+    {
+      auto command_queue =
+        std::make_shared<OpenCLDevice::CommandQueue>(clCreateCommandQueue(context->get(), device_id, 0, nullptr));
+      if (command_queue == nullptr)
+      {
+        throw std::runtime_error("Error: Failed to create OpenCL command queue.");
+      }
+      device_list_.emplace_back(std::make_shared<OpenCLDevice>(
+        std::make_shared<OpenCLDevice::Ressources>(platform_id, device_id, device_index++), context, command_queue));
+    }
+  }
+#else
+  throw std::runtime_error("Error: OpenCL is not enabled");
+#endif
+}
+
+auto
+OpenCLBackend::getDevices(const std::string & type) const -> std::vector<Device::Pointer>
+{
+  if (type != "gpu" && type != "cpu")
+  {
+    return device_list_;
+  }
+  std::vector<Device::Pointer> filtered_devices;
+  filtered_devices.reserve(device_list_.size()); // Reserve space to avoid multiple allocations
+  std::copy_if(device_list_.begin(),
+               device_list_.end(),
+               std::back_inserter(filtered_devices),
+               [&type](const Device::Pointer & device) { return device->getDeviceType() == type; });
+  return filtered_devices;
 }
 
 auto
@@ -130,20 +176,20 @@ OpenCLBackend::getDevice(const std::string & name, const std::string & type) con
 {
 #if USE_OPENCL
   auto devices = getDevices(type);
-  auto lower_case_name = to_lower(name);
   if (!name.empty())
   {
+    auto lower_case_name = to_lower(name);
     auto ite = std::find_if(devices.begin(), devices.end(), [&lower_case_name](const Device::Pointer & dev) {
-      return dev->getName(true).find(lower_case_name) != std::string::npos;
+      return (to_lower(dev->getName()).find(lower_case_name) != std::string::npos);
     });
     if (ite != devices.end())
     {
-      return std::move(*ite);
+      return *ite;
     }
   }
   if (!devices.empty())
   {
-    return std::move(devices.back());
+    return devices.front();
   }
   std::cerr << "Warning: Fail to find any OpenCL compatible devices." << std::endl;
   return nullptr;
@@ -159,11 +205,11 @@ OpenCLBackend::getDeviceFromIndex(size_t index, const std::string & type) const 
   auto devices = getDevices(type);
   if (index < devices.size())
   {
-    return std::move(devices[index]);
+    return devices[index];
   }
   if (!devices.empty())
   {
-    return std::move(devices.back());
+    return devices.front();
   }
   std::cerr << "Warning: Fail to find any OpenCL compatible devices." << std::endl;
   return nullptr;
@@ -178,13 +224,13 @@ OpenCLBackend::getDevicesList(const std::string & type) const -> std::vector<std
 #if USE_OPENCL
   auto                     devices = getDevices(type);
   std::vector<std::string> deviceList;
-  for (auto && device : devices)
-  {
-    deviceList.emplace_back(device->getName());
-  }
+  deviceList.reserve(devices.size());
+  std::transform(devices.begin(), devices.end(), std::back_inserter(deviceList), [](const Device::Pointer & device) {
+    return device->getName();
+  });
   return deviceList;
 #else
-  throw std::runtime_error("Error: OpenCL is not enabled");
+  throw std::runtime_error
 #endif
 }
 
@@ -1001,23 +1047,27 @@ buildProgram(const Device::Pointer & device, const cl_program & program) -> void
 }
 
 static auto
-saveBinaryToCache(const std::string & device_hash, const std::string & source_hash, const cl_program & program) -> void
+saveBinaryToCache(const std::string &     device_hash,
+                  const std::string &     source_hash,
+                  const cl_program &      program,
+                  const Device::Pointer & device) -> void
 {
-  size_t   nb_devices = 1;
-  size_t * np = new size_t[nb_devices];
-  auto     err = clGetProgramInfo(program, CL_PROGRAM_BINARY_SIZES, sizeof(size_t) * nb_devices, np, nullptr);
+  size_t   device_index = device->getDeviceIndex();
+  size_t   nb_devices = device->getNbDevicesFromContext();
+  size_t * bin_size_list = new size_t[nb_devices];
+  auto err = clGetProgramInfo(program, CL_PROGRAM_BINARY_SIZES, sizeof(size_t) * nb_devices, bin_size_list, nullptr);
   if (err != CL_SUCCESS)
   {
     throw std::runtime_error("Error: Fail to fetch program binary size. OpenCL error : " + getErrorString(err) + " (" +
                              std::to_string(err) + ").");
   }
 
-  char ** bn = new char *[nb_devices];
+  char ** bin_value_list = new char *[nb_devices];
   for (int i = 0; i < nb_devices; i++)
   {
-    bn[i] = new char[np[i]];
+    bin_value_list[i] = new char[bin_size_list[i]];
   }
-  err = clGetProgramInfo(program, CL_PROGRAM_BINARIES, sizeof(unsigned char *) * nb_devices, bn, nullptr);
+  err = clGetProgramInfo(program, CL_PROGRAM_BINARIES, sizeof(unsigned char *) * nb_devices, bin_value_list, nullptr);
   if (err != CL_SUCCESS)
   {
     throw std::runtime_error("Error: Fail to fetch program binary. OpenCL error : " + getErrorString(err) + " (" +
@@ -1033,19 +1083,19 @@ saveBinaryToCache(const std::string & device_hash, const std::string & source_ha
     throw std::runtime_error("Error: Fail to open binary cache file.");
   }
 
-  outfile.write(reinterpret_cast<char *>(bn[nb_devices - 1]), np[nb_devices - 1]);
+  outfile.write(reinterpret_cast<char *>(bin_value_list[device_index]), bin_size_list[device_index]);
   if (!outfile.good())
   {
     throw std::runtime_error("Error: Fail to write binary cache file.");
   }
 
   // properly deallocate the memory
-  delete[] np;
+  delete[] bin_size_list;
   for (int i = 0; i < nb_devices; i++)
   {
-    delete[] bn[i];
+    delete[] bin_value_list[i];
   }
-  delete[] bn;
+  delete[] bin_value_list;
 }
 
 static auto
@@ -1070,7 +1120,7 @@ loadProgramFromCache(const Device::Pointer & device, const std::string & device_
   size_t binary_size = binary_file.tellg();
   if (binary_size <= 0)
   {
-    std::cerr << "Error: Fail to read binary file size." << std::endl;
+    std::cerr << "Error: Fail to read binary file size. Reading size: " << binary_size << std::endl;
     return nullptr;
   }
   binary_file.seekg(0, std::ios::beg);
@@ -1148,7 +1198,7 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
     program = CreateProgramFromSource(device, kernel_source);
     if (use_cache)
     {
-      saveBinaryToCache(device_hash, source_hash, program);
+      saveBinaryToCache(device_hash, source_hash, program, device);
     }
   }
 

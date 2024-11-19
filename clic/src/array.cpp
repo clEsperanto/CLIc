@@ -24,24 +24,13 @@ Array::Array(const size_t            width,
 
 Array::~Array()
 {
-  try
+  if (initialized())
   {
-    if (initialized() && data_.use_count() == 1)
+    if (data_.use_count() == 1 && get() != nullptr)
     {
-      auto * ptr = get();
-      if (ptr != nullptr)
-      {
-        backend_.freeMemory(device(), mtype(), ptr);
-      }
+      backend_.freeMemory(device(), mtype(), get());
     }
-  }
-  catch (const std::exception & e)
-  {
-    std::cerr << "Error cle::~Array: " << e.what() << std::endl;
-  }
-  catch (...)
-  {
-    std::cerr << "Unknown error in Array::~Array" << std::endl;
+    data_.reset();
   }
 }
 

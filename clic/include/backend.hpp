@@ -537,20 +537,25 @@ public:
  */
 class OpenCLBackend : public Backend
 {
+private:
+  std::vector<Device::Pointer> device_list_;
+
 public:
-  OpenCLBackend() = default;
+  OpenCLBackend();
+  ~OpenCLBackend() override;
 
   OpenCLBackend(const OpenCLBackend &) = default;
-
   OpenCLBackend(OpenCLBackend &&) = default;
 
-  ~OpenCLBackend() override = default;
 
   auto
   operator=(const OpenCLBackend &) -> OpenCLBackend & = default;
 
   auto
   operator=(OpenCLBackend &&) -> OpenCLBackend & = default;
+
+  auto
+  initialiseRessources() -> void;
 
   [[nodiscard]] auto
   getDevices(const std::string & type) const -> std::vector<Device::Pointer> override;

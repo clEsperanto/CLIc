@@ -20,13 +20,11 @@ First, we need to initialize the ``Backend``. This is done through the singleton
 
 The ``cle::BackendManager::getInstance()`` function returns the singleton instance of the ``BackendManager``.
 We can then call the ``setBackend()`` function to set the backend we want to use.
-Here we use the OpenCL backend.
-CUDA is also available.
+Here we use the OpenCL backend. This is the only backend available at the moment.
 
-.. warning::
-
-    Available GPU backends are dependent on the hardware and the installed software on the machine you are operating.
-    It is possible to know what is available by calling the ``listAvailableBackends()`` function from the ``BackendManager``.
+Once set, the backend will initialize all ressources available on the machine, and make them available to the library.
+Here, by ressources, we mean devices (CPU, GPU, etc.) that are available on the system.
+If no devices are available, the backend will not be able to initialize and will throw an error.
 
 Now that the backend is initialized, we can access it through the ``getBackend()`` function of the singleton as such:
 
@@ -34,30 +32,28 @@ Now that the backend is initialized, we can access it through the ``getBackend()
 
     auto backend = cle::BackendManager::getInstance().getBackend();
 
-With the exception of the device initialisation, most operation involving the backend will be done in the background.
+With the exception of the device initialisation, most operation involving the backend will be done in the background and are not meant to be accessed by the user.
 
 Get a device
 ~~~~~~~~~~~~
 
-GPU operation are done on a device.
-So before we can do any operation, we need to access a device made available by the backend.
+Operations are done to be executed by a compatible device (CPU, GPU, etc.).
+Hence, before we can continue, we need to select a device on which we will run our operation. This is done through the ``getDevice()`` or ``getDeviceByIndex()`` functions of the backend.
+Here, we can specify the device we want using its name or index, as well as filter the devices by type.
 
 .. code-block:: c++
 
     auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
 
-The ``getDevice()`` function returns a device that is available on the backend.
-Here we use the first available device of any type possible (CPU or GPU).
-It is also possible to specify the device we want to use by providing the name of the device as the first argument of the function.
-The second argument is the type of device we want to use (``"gpu"`` or ``"cpu"``), or ``"all"`` to use any available device.
+By default, we get the first available device of any type possible (CPU or GPU).
+If multiple devices have the same name, we can identify them by their index.
 
-For example:
+For example, if we have two GPUs named ``"RTX 2090``, we can select the second one with the following code:
 
 .. code-block:: c++
 
-    auto device = cle::BackendManager::getInstance().getBackend().getDevice("RTX", "all");
+    auto device = cle::BackendManager::getInstance().getBackend().getDeviceByIndex(1, "gpu");
 
-Will select the first available device with the name ``"RTX"`` in its name.
 
 Create, Write, and Read an Array
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
