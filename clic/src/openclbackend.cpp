@@ -131,7 +131,7 @@ OpenCLBackend::initialiseRessources() -> void
   for (const auto& [platform_id, device_ids] : ressources)
   {
     cl_uint num_devices = device_ids.size();
-    auto context = std::make_shared<cl_context>(clCreateContext(nullptr, num_devices, device_ids.data(), nullptr, nullptr, nullptr));
+    auto context = std::make_shared<OpenCLDevice::Context>(clCreateContext(nullptr, num_devices, device_ids.data(), nullptr, nullptr, nullptr));
     if (context == nullptr)
     {
         throw std::runtime_error("Error: Failed to create OpenCL context.");
@@ -139,12 +139,19 @@ OpenCLBackend::initialiseRessources() -> void
     size_t device_index = 0;
     for (const auto& device_id : device_ids)
     {
-        auto command_queue = clCreateCommandQueue(*context, device_id, 0, nullptr);
+        auto command_queue = std::make_shared<OpenCLDevice::CommandQueue>(clCreateCommandQueue(context->get(), device_id, 0, nullptr));
         if (command_queue == nullptr)
         {
             throw std::runtime_error("Error: Failed to create OpenCL command queue.");
         }
-        device_list_.emplace_back(std::make_shared<OpenCLDevice>(platform_id, device_id, context, command_queue, device_index++, num_devices));
+        device_list_.emplace_back(
+          std::make_shared<OpenCLDevice>(
+            std::make_shared<OpenCLDevice::Ressources>(platform_id, device_id), 
+            context, 
+            command_queue, 
+            device_index++
+            )
+          );
     }
   }
   #else
@@ -360,7 +367,7 @@ OpenCLBackend::freeMemory(const Device::Pointer & device, const mType & mtype, v
   {
     throw std::invalid_argument("Error: data_ptr is null.");
   }
-
+  
   auto * cl_mem_ptr = static_cast<cl_mem *>(*data_ptr);
   auto   err = clReleaseMemObject(*cl_mem_ptr);
   if (err != CL_SUCCESS)
