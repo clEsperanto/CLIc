@@ -180,6 +180,10 @@ OpenCLBackend::getDevice(const std::string & name, const std::string & type) con
 {
 #if USE_OPENCL
   auto devices = getDevices(type);
+  if (devices.empty())
+  {
+    return device_list_.back();
+  }
   if (!name.empty())
   {
     auto lower_case_name = to_lower(name);
@@ -193,8 +197,9 @@ OpenCLBackend::getDevice(const std::string & name, const std::string & type) con
   }
   if (!devices.empty())
   {
-    return device_list_.back();
+    return devices.back();
   }
+
   std::cerr << "Warning: Fail to find any OpenCL compatible devices." << std::endl;
   return nullptr;
 #else
@@ -207,13 +212,17 @@ OpenCLBackend::getDeviceFromIndex(size_t index, const std::string & type) const 
 {
 #if USE_OPENCL
   auto devices = getDevices(type);
+  if (devices.empty())
+  {
+    return device_list_.back();
+  }
   if (index < devices.size())
   {
     return devices[index];
   }
   if (!devices.empty())
   {
-    return device_list_.back();
+    return devices.back();
   }
   std::cerr << "Warning: Fail to find any OpenCL compatible devices." << std::endl;
   return nullptr;
