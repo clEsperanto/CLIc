@@ -26,11 +26,9 @@ Array::~Array()
 {
   if (initialized())
   {
-    if (data_.use_count() == 1 && get() != nullptr)
-    {
-      backend_.freeMemory(device(), mtype(), get());
-    }
+    backend_.freeMemory(device(), mtype(), get());
     data_.reset();
+    initialized_ = false;
   }
 }
 
