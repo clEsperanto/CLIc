@@ -179,29 +179,40 @@ auto
 OpenCLBackend::getDevice(const std::string & name, const std::string & type) const -> Device::Pointer
 {
 #if USE_OPENCL
-  auto devices = getDevices(type);
+
+  // if no device in system, return nullptr
+  if (device_list_.empty())
+  {
+    std::cerr << "Warning: Fail to find any OpenCL compatible devices." << std::endl;
+    return nullptr;
+  }
+
+  // if no device of the specified type, return the last device from system
+  const auto devices = getDevices(type);
   if (devices.empty())
   {
     return device_list_.back();
   }
-  if (!name.empty())
-  {
-    auto lower_case_name = to_lower(name);
-    auto ite = std::find_if(devices.begin(), devices.end(), [&lower_case_name](const Device::Pointer & dev) {
-      return (to_lower(dev->getName()).find(lower_case_name) != std::string::npos);
-    });
-    if (ite != devices.end())
-    {
-      return *ite;
-    }
-  }
-  if (!devices.empty())
+
+  // if no specific device name, return the last device of the specified type
+  if (name.empty())
   {
     return devices.back();
   }
 
-  std::cerr << "Warning: Fail to find any OpenCL compatible devices." << std::endl;
-  return nullptr;
+  // search for the device by name
+  auto lower_case_name = to_lower(name);
+  auto ite = std::find_if(devices.begin(), devices.end(), [&lower_case_name](const Device::Pointer & dev) {
+    return (to_lower(dev->getName()).find(lower_case_name) != std::string::npos);
+  });
+  if (ite != devices.end())
+  {
+    return *ite;
+  }
+
+  // if no device found, return the last device of the specified type
+  return devices.back();
+  
 #else
   throw std::runtime_error("Error: OpenCL is not enabled");
 #endif
@@ -211,21 +222,25 @@ auto
 OpenCLBackend::getDeviceFromIndex(size_t index, const std::string & type) const -> Device::Pointer
 {
 #if USE_OPENCL
+  // if no device in system, return nullptr
+  if (device_list_.empty())
+  {
+    std::cerr << "Warning: Fail to find any OpenCL compatible devices." << std::endl;
+    return nullptr;
+  }
+
   auto devices = getDevices(type);
   if (devices.empty())
   {
     return device_list_.back();
   }
+
   if (index < devices.size())
   {
     return devices[index];
   }
-  if (!devices.empty())
-  {
-    return devices.back();
-  }
-  std::cerr << "Warning: Fail to find any OpenCL compatible devices." << std::endl;
-  return nullptr;
+
+  return devices.back();
 #else
   throw std::runtime_error("Error: OpenCL is not enabled");
 #endif
