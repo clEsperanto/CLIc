@@ -212,7 +212,7 @@ OpenCLBackend::getDevice(const std::string & name, const std::string & type) con
 
   // if no device found, return the last device of the specified type
   return devices.back();
-  
+
 #else
   throw std::runtime_error("Error: OpenCL is not enabled");
 #endif
