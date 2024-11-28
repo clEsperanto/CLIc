@@ -397,8 +397,9 @@ degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & s
 
 /**
  * @name detect_maxima_box
- * @brief Detects local maxima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
- * is no other pixel in a given radius which has a higher intensity, and to 0 otherwise.
+ * @brief Detects local maxima.
+ * The filter apply a mean filter ahead of the detection, defined by a radius, to determine a region of detection.
+ * Pixel are then set to 1 if there is no other pixel in direct neighborhood which has a higher intensity, 0 otherwise.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -422,8 +423,9 @@ detect_maxima_box_func(const Device::Pointer & device,
 
 /**
  * @name detect_maxima
- * @brief Detects local maxima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
- * is no other pixel in a given radius which has a higher intensity, and to 0 otherwise.
+ * @brief Detects local maxima.
+ * The filter apply a mean filter ahead of the detection, defined by a radius, to determine a region of detection.
+ * Pixel are then set to 1 if there is no other pixel in direct neighborhood which has a higher intensity, 0 otherwise.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -450,8 +452,9 @@ detect_maxima_func(const Device::Pointer & device,
 
 /**
  * @name detect_minima_box
- * @brief Detects local maxima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
- * is no other pixel in a given radius which has a lower intensity, and to 0 otherwise.
+ * @brief Detects local minima.
+ * The filter apply a mean filter ahead of the detection, defined by a radius, to determine a region of detection.
+ * Pixel are then set to 1 if there is no other pixel in direct neighborhood which has a lower intensity, 0 otherwise.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -475,8 +478,9 @@ detect_minima_box_func(const Device::Pointer & device,
 
 /**
  * @name detect_minima
- * @brief Detects local maxima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
- * is no other pixel in a given radius which has a lower intensity, and to 0 otherwise.
+ * @brief Detects local minima.
+ * The filter apply a mean filter ahead of the detection, defined by a radius, to determine a region of detection.
+ * Pixel are then set to 1 if there is no other pixel in direct neighborhood which has a lower intensity, 0 otherwise.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
