@@ -301,6 +301,75 @@ extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & 
   -> Array::Pointer;
 
 
+/**
+ * @name minimum_intensity_map
+ * @brief Takes an image and a corresponding label map, determines the minimum
+ *   intensity per label and replaces every label with the that number.
+ *
+ * This results in a parametric image expressing minimum object intensity.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src intensity image [const Array::Pointer &]
+ * @param labels label image [const Array::Pointer &]
+ * @param dst Parametric image computed[Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'label measurement', 'map', 'in assistant', 'combine'
+ * @see https://clij.github.io/clij2-docs/reference_minimumIntensityMap
+ */
+auto
+minimum_intensity_map_func(const Device::Pointer & device,
+                           const Array::Pointer &  src,
+                           const Array::Pointer &  labels,
+                           Array::Pointer          dst) -> Array::Pointer;
+
+
+/**
+ * @name maximum_intensity_map
+ * @brief Takes an image and a corresponding label map, determines the maximum
+ *   intensity per label and replaces every label with the that number.
+ *
+ * This results in a parametric image expressing maximum object intensity.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src intensity image [const Array::Pointer &]
+ * @param labels label image [const Array::Pointer &]
+ * @param dst Parametric image computed[Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'label measurement', 'map', 'in assistant', 'combine'
+ * @see https://clij.github.io/clij2-docs/reference_maximumIntensityMap
+ */
+auto
+maximum_intensity_map_func(const Device::Pointer & device,
+                           const Array::Pointer &  src,
+                           const Array::Pointer &  labels,
+                           Array::Pointer          dst) -> Array::Pointer;
+
+
+/**
+ * @name standard_deviation_intensity_map
+ * @brief Takes an image and a corresponding label map, determines the standard deviation
+ *   intensity per label and replaces every label with the that number.
+ *
+ * This results in a parametric image expressing std object intensity.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src intensity image [const Array::Pointer &]
+ * @param labels label image [const Array::Pointer &]
+ * @param dst Parametric image computed[Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'label measurement', 'map', 'in assistant', 'combine'
+ * @see https://clij.github.io/clij2-docs/reference_standardDeviationIntensityMap
+ */
+auto
+standard_deviation_intensity_map_func(const Device::Pointer & device,
+                                      const Array::Pointer &  src,
+                                      const Array::Pointer &  labels,
+                                      Array::Pointer          dst) -> Array::Pointer;
+
+
 } // namespace cle::tier4
 
 #endif // __INCLUDE_TIER4_HPP
