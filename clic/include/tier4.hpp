@@ -301,8 +301,7 @@ extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & 
   -> Array::Pointer;
 
 
-
-  /**
+/**
  * @name minimum_intensity_map
  * @brief Takes an image and a corresponding label map, determines the minimum
  *   intensity per label and replaces every label with the that number.
@@ -320,12 +319,12 @@ extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & 
  */
 auto
 minimum_intensity_map_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        const Array::Pointer &  labels,
-                        Array::Pointer          dst) -> Array::Pointer;
+                           const Array::Pointer &  src,
+                           const Array::Pointer &  labels,
+                           Array::Pointer          dst) -> Array::Pointer;
 
 
-  /**
+/**
  * @name maximum_intensity_map
  * @brief Takes an image and a corresponding label map, determines the maximum
  *   intensity per label and replaces every label with the that number.
@@ -343,12 +342,12 @@ minimum_intensity_map_func(const Device::Pointer & device,
  */
 auto
 maximum_intensity_map_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        const Array::Pointer &  labels,
-                        Array::Pointer          dst) -> Array::Pointer;   
+                           const Array::Pointer &  src,
+                           const Array::Pointer &  labels,
+                           Array::Pointer          dst) -> Array::Pointer;
 
 
-  /**
+/**
  * @name standard_deviation_intensity_map
  * @brief Takes an image and a corresponding label map, determines the standard deviation
  *   intensity per label and replaces every label with the that number.
@@ -366,9 +365,9 @@ maximum_intensity_map_func(const Device::Pointer & device,
  */
 auto
 standard_deviation_intensity_map_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        const Array::Pointer &  labels,
-                        Array::Pointer          dst) -> Array::Pointer;                                               
+                                      const Array::Pointer &  src,
+                                      const Array::Pointer &  labels,
+                                      Array::Pointer          dst) -> Array::Pointer;
 
 
 } // namespace cle::tier4

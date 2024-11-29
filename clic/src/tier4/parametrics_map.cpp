@@ -62,9 +62,9 @@ mean_intensity_map_func(const Device::Pointer & device,
 
 auto
 minimum_intensity_map_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        const Array::Pointer &  labels,
-                        Array::Pointer          dst) -> Array::Pointer
+                           const Array::Pointer &  src,
+                           const Array::Pointer &  labels,
+                           Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::FLOAT);
   auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, labels);
@@ -78,9 +78,9 @@ minimum_intensity_map_func(const Device::Pointer & device,
 
 auto
 maximum_intensity_map_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        const Array::Pointer &  labels,
-                        Array::Pointer          dst) -> Array::Pointer
+                           const Array::Pointer &  src,
+                           const Array::Pointer &  labels,
+                           Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::FLOAT);
   auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, labels);
@@ -94,9 +94,9 @@ maximum_intensity_map_func(const Device::Pointer & device,
 
 auto
 standard_deviation_intensity_map_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        const Array::Pointer &  labels,
-                        Array::Pointer          dst) -> Array::Pointer
+                                      const Array::Pointer &  src,
+                                      const Array::Pointer &  labels,
+                                      Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::FLOAT);
   auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, labels);
@@ -110,9 +110,8 @@ standard_deviation_intensity_map_func(const Device::Pointer & device,
 
 
 auto
-touching_neighbor_count_map_func(const Device::Pointer & device,
-                        const Array::Pointer &  labels,
-                        Array::Pointer          dst) -> Array::Pointer
+touching_neighbor_count_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_like(labels, dst, dType::FLOAT);
   auto touch_matrix = tier3::generate_touch_matrix_func(device, labels, nullptr);
@@ -120,10 +119,6 @@ touching_neighbor_count_map_func(const Device::Pointer & device,
   auto nb_touching_neighbors = tier2::count_touching_neighbors_func(device, touch_matrix, nullptr, true);
   return tier1::replace_values_func(device, labels, nb_touching_neighbors, dst);
 }
-
-
-
-
 
 
 } // namespace cle::tier4
