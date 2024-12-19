@@ -338,7 +338,7 @@ mean_extension_map_func(const Device::Pointer & device, const Array::Pointer & s
  */
 auto
 maximum_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;  
+  -> Array::Pointer;
 
 /**
  * @name minimum_intensity_map
