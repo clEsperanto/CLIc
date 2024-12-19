@@ -58,7 +58,7 @@ affine_transform_func(const Device::Pointer & device,
  * @return Array::Pointer
  *
  * @note 'label', 'in assistant'
- * @see https://github.com/biovoxxel/bv3dbox (BV_LabelSplitter.java#L83)
+ * @see https://github.com/biovoxxel/bv3dbox
  * @see https://zenodo.org/badge/latestdoi/434949702
  */
 auto
