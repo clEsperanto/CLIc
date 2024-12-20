@@ -300,6 +300,45 @@ auto
 extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
   -> Array::Pointer;
 
+/**
+ * @name mean_extension_map
+ * @brief Determines for every label the mean distance of any pixel to the centroid in a label map and returns it as
+ * a parametric map.
+ *
+ * The extension ration is defined as the maximum distance of any pixel in the label to the label's centroid divided by
+ * the average distance of all pixels in the label to the centroid.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input label image. [const Array::Pointer &]
+ * @param dst Output parametric image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'label processing', 'in assistant', 'map'
+ * @see https://clij.github.io/clij2-docs/reference_meanExtensionMap
+ */
+auto
+mean_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
+
+/**
+ * @name maximum_extension_map
+ * @brief Determines for every label the maximum distance of any pixel to the centroid in a label map and returns it as
+ * a parametric map.
+ *
+ * The extension ration is defined as the maximum distance of any pixel in the label to the label's centroid divided by
+ * the average distance of all pixels in the label to the centroid.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input label image. [const Array::Pointer &]
+ * @param dst Output parametric image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'label processing', 'in assistant', 'map'
+ * @see https://clij.github.io/clij2-docs/reference_meanExtensionMap
+ */
+auto
+maximum_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 /**
  * @name minimum_intensity_map
