@@ -12,16 +12,16 @@ namespace cle::tier6
 {
 
 auto
-dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
+dilate_labels_func(const Device::Pointer & device, const Array::Pointer & input_labels, Array::Pointer dst, int radius)
   -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::LABEL);
+  tier0::create_like(input_labels, dst, dType::LABEL);
   if (radius <= 0)
   {
-    return tier1::copy_func(device, src, dst);
+    return tier1::copy_func(device, input_labels, dst);
   }
 
-  auto flip = tier1::copy_func(device, src, nullptr);
+  auto flip = tier1::copy_func(device, input_labels, nullptr);
   auto flop = Array::create(flip);
   auto flag = Array::create(1, 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
   flag->fill(0);
