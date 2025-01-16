@@ -139,7 +139,8 @@ mean_intensity_map_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_pixelCountMap
  */
 auto
-pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & input_labels, Array::Pointer dst) -> Array::Pointer;
+pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & input_labels, Array::Pointer dst)
+  -> Array::Pointer;
 
 /**
  * @name label_pixel_count_map

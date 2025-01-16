@@ -17,7 +17,7 @@ minimum_of_masked_pixels_reduction_func(const Device::Pointer & device,
 {
   tier0::create_xy(src, reduced_src);
   tier0::create_xy(mask, reduced_mask);
-  const KernelInfo    kernel_code = { "minimum_of_masked_pixels_reduction", kernel::minimum_of_masked_pixels_reduction };
+  const KernelInfo kernel_code = { "minimum_of_masked_pixels_reduction", kernel::minimum_of_masked_pixels_reduction };
   const ParameterList params = {
     { "src", src }, { "mask", mask }, { "dst_src", reduced_src }, { "dst_mask", reduced_mask }
   };

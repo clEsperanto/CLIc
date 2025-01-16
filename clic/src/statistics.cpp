@@ -62,8 +62,8 @@ _std_per_label(const Device::Pointer & device,
   label_statistics_stack->fill(0);
   const KernelInfo kernel_code = { "standard_deviation_per_label", kernel::standard_deviation_per_label };
   const RangeArray range = { 1, height, 1 };
-  ParameterList params = { { "src_statistics", statistics },  { "src_label", label },  { "src_image", intensity },
-                               { "dst", label_statistics_stack }, { "sum_background", 0 }, { "z", 0 } };
+  ParameterList    params = { { "src_statistics", statistics },  { "src_label", label },  { "src_image", intensity },
+                              { "dst", label_statistics_stack }, { "sum_background", 0 }, { "z", 0 } };
   for (int z = 0; z < depth; z++)
   {
     auto it = std::find_if(params.begin(), params.end(), [](const auto & param) { return param.first == "z"; });

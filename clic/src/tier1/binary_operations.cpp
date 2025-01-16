@@ -9,10 +9,10 @@
 #include "cle_binary_subtract.h"
 #include "cle_binary_xor.h"
 
-#include "cle_superior_inferior_2d.h"
-#include "cle_superior_inferior_3d.h"
 #include "cle_inferior_superior_2d.h"
 #include "cle_inferior_superior_3d.h"
+#include "cle_superior_inferior_2d.h"
+#include "cle_superior_inferior_3d.h"
 
 #include "cle_binary_edge_detection.h"
 
@@ -104,7 +104,7 @@ binary_supinf_func(const Device::Pointer & device, const Array::Pointer & src, A
   }
   tier0::create_like(src, dst, dType::BINARY);
   const KernelInfo    kernel_code = in->depth() > 1 ? KernelInfo{ "superior_inferior", kernel::superior_inferior_3d }
-                                               : KernelInfo{ "superior_inferior", kernel::superior_inferior_2d };
+                                                    : KernelInfo{ "superior_inferior", kernel::superior_inferior_2d };
   const ParameterList params = { { "src", in }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel_code, params, range);
@@ -128,7 +128,7 @@ binary_infsup_func(const Device::Pointer & device, const Array::Pointer & src, A
   }
   tier0::create_like(src, dst, dType::BINARY);
   const KernelInfo    kernel_code = in->depth() > 1 ? KernelInfo{ "inferior_superior", kernel::inferior_superior_3d }
-                                               : KernelInfo{ "inferior_superior", kernel::inferior_superior_2d };
+                                                    : KernelInfo{ "inferior_superior", kernel::inferior_superior_2d };
   const ParameterList params = { { "src", in }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel_code, params, range);

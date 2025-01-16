@@ -2858,7 +2858,8 @@ variance_filter_func(const Device::Pointer & device,
 
 /**
  * @name write_values_to_positions
- * @brief Takes an array of Nx3 (or Nx4 for 3D images) where the first rows are the coordinate x,y(,z) and the last row is the value.
+ * @brief Takes an array of Nx3 (or Nx4 for 3D images) where the first rows are the coordinate x,y(,z) and the last row
+ * is the value.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input coordinates and values. [const Array::Pointer &]

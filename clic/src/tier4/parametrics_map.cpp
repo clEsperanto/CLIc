@@ -12,7 +12,8 @@ namespace cle::tier4
 {
 
 auto
-pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & input_labels, Array::Pointer dst) -> Array::Pointer
+pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & input_labels, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_like(input_labels, dst, dType::FLOAT);
   auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, input_labels, input_labels);
@@ -137,8 +138,9 @@ standard_deviation_intensity_map_func(const Device::Pointer & device,
 
 
 auto
-touching_neighbor_count_map_func(const Device::Pointer & device, const Array::Pointer & input_labels, Array::Pointer dst)
-  -> Array::Pointer
+touching_neighbor_count_map_func(const Device::Pointer & device,
+                                 const Array::Pointer &  input_labels,
+                                 Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(input_labels, dst, dType::FLOAT);
   auto touch_matrix = tier3::generate_touch_matrix_func(device, input_labels, nullptr);

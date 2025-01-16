@@ -5,15 +5,15 @@
 
 #include "cle_equal.h"
 #include "cle_equal_constant.h"
+#include "cle_greater.h"
+#include "cle_greater_constant.h"
+#include "cle_greater_or_equal.h"
+#include "cle_greater_or_equal_constant.h"
 #include "cle_not_equal.h"
 #include "cle_not_equal_constant.h"
-#include "cle_greater.h"
-#include "cle_greater_or_equal.h"
-#include "cle_greater_constant.h"
-#include "cle_greater_or_equal_constant.h"
 #include "cle_smaller.h"
-#include "cle_smaller_or_equal.h"
 #include "cle_smaller_constant.h"
+#include "cle_smaller_or_equal.h"
 #include "cle_smaller_or_equal_constant.h"
 
 
@@ -30,7 +30,7 @@ equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Ar
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel_code, params, range);
   return dst;
-}  
+}
 
 auto
 equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float constant)

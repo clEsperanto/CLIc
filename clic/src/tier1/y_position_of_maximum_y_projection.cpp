@@ -13,7 +13,7 @@ y_position_of_maximum_y_projection_func(const Device::Pointer & device, const Ar
   -> Array::Pointer
 {
   tier0::create_xz(src, dst, dType::INDEX);
-  const KernelInfo    kernel_code = { "y_position_of_maximum_y_projection", kernel::y_position_of_maximum_y_projection };
+  const KernelInfo kernel_code = { "y_position_of_maximum_y_projection", kernel::y_position_of_maximum_y_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel_code, params, range);
