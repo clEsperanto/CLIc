@@ -17,12 +17,12 @@ flip_func(const Device::Pointer & device,
           bool                    flip_z) -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  const KernelInfo    kernel = { "flip", kernel::flip };
+  const KernelInfo    kernel_code = { "flip", kernel::flip };
   const ParameterList params = {
     { "src", src }, { "dst", dst }, { "index0", int(flip_x) }, { "index1", int(flip_y) }, { "index2", int(flip_z) }
   };
   const RangeArray range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 

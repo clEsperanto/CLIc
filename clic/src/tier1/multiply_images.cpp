@@ -15,10 +15,10 @@ multiply_images_func(const Device::Pointer & device,
                      Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(src0, dst);
-  const KernelInfo    kernel = { "multiply_images", kernel::multiply_images };
+  const KernelInfo    kernel_code = { "multiply_images", kernel::multiply_images };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 

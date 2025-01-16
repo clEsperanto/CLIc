@@ -33,10 +33,10 @@ write_values_to_positions_func(const Device::Pointer & device, const Array::Poin
     dst = Array::create(max_pos_x, max_pos_y, max_pos_z, dim, list->dtype(), list->mtype(), list->device());
     dst->fill(0);
   }
-  const KernelInfo    kernel = { "write_values_to_positions", kernel::write_values_to_positions };
+  const KernelInfo    kernel_code = { "write_values_to_positions", kernel::write_values_to_positions };
   const ParameterList params = { { "src", list }, { "dst", dst } };
   const RangeArray    range = { list->width(), 1, 1 };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 

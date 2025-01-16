@@ -13,10 +13,10 @@ detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & s
   -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::BINARY);
-  const KernelInfo    kernel = { "detect_label_edges", kernel::detect_label_edges };
+  const KernelInfo    kernel_code = { "detect_label_edges", kernel::detect_label_edges };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 

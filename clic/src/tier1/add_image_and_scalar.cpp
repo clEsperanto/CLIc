@@ -13,10 +13,10 @@ add_image_and_scalar_func(const Device::Pointer & device, const Array::Pointer &
   -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  const KernelInfo    kernel = { "add_image_and_scalar", kernel::add_image_and_scalar };
+  const KernelInfo    kernel_code = { "add_image_and_scalar", kernel::add_image_and_scalar };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar", scalar } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 

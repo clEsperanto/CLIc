@@ -229,8 +229,8 @@ binary_infsup_func(const Device::Pointer & device, const Array::Pointer & src, A
  * Note that the block size when calling this function and sum_reduction must be identical
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 input binary vector image [const Array::Pointer &]
- * @param src1 precomputed sums of blocks [const Array::Pointer &]
+ * @param src input binary vector image [const Array::Pointer &]
+ * @param sums precomputed sums of blocks [const Array::Pointer &]
  * @param dst output enumerated vector image [Array::Pointer ( = None )]
  * @param blocksize blocksize; must correspond correctly to how the [int ( = 256 )]
  * @return Array::Pointer
@@ -238,8 +238,8 @@ binary_infsup_func(const Device::Pointer & device, const Array::Pointer & src, A
  */
 auto
 block_enumerate_func(const Device::Pointer & device,
-                     const Array::Pointer &  src0,
-                     const Array::Pointer &  src1,
+                     const Array::Pointer &  src,
+                     const Array::Pointer &  sums,
                      Array::Pointer          dst,
                      int                     blocksize) -> Array::Pointer;
 
@@ -250,8 +250,8 @@ block_enumerate_func(const Device::Pointer & device,
  * and Z.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 First input image to process. [const Array::Pointer &]
- * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param src Input image to convolve. [const Array::Pointer &]
+ * @param kernel Kernel image to use for the convolution. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -260,8 +260,8 @@ block_enumerate_func(const Device::Pointer & device,
  */
 auto
 convolve_func(const Device::Pointer & device,
-              const Array::Pointer &  src0,
-              const Array::Pointer &  src1,
+              const Array::Pointer &  src,
+              const Array::Pointer &  kernel,
               Array::Pointer          dst) -> Array::Pointer;
 
 
@@ -558,14 +558,14 @@ equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Ar
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input omage where every pixel is compared to the constant. [const Array::Pointer &]
  * @param dst Output binary image. [Array::Pointer ( = None )]
- * @param scalar Scalar value to compare pixel with. [float ( = 0 )]
+ * @param constant Scalar value to compare pixel with. [float ( = 0 )]
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_equalConstant
  */
 auto
-equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
+equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float constant)
   -> Array::Pointer;
 
 /**
@@ -832,14 +832,14 @@ greater_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param scalar Scalar value to compare pixel with. [float ( = 0 )]
+ * @param constant Scalar value to compare pixel with. [float ( = 0 )]
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_greaterConstant
  */
 auto
-greater_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
+greater_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float constant)
   -> Array::Pointer;
 
 
@@ -870,7 +870,7 @@ greater_or_equal_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param scalar Scalar value to compare pixel with. [float ( = 0 )]
+ * @param constant Scalar value to compare pixel with. [float ( = 0 )]
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
@@ -880,7 +880,7 @@ auto
 greater_or_equal_constant_func(const Device::Pointer & device,
                                const Array::Pointer &  src,
                                Array::Pointer          dst,
-                               float                   scalar) -> Array::Pointer;
+                               float                   constant) -> Array::Pointer;
 
 
 /**
@@ -1021,8 +1021,8 @@ mask_func(const Device::Pointer & device, const Array::Pointer & src, const Arra
  * <pre>f(x,m,i) = (x if (m == i); (0 otherwise))</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 Input Intensity image. [const Array::Pointer &]
- * @param src1 Input Label image. [const Array::Pointer &]
+ * @param src Input Intensity image. [const Array::Pointer &]
+ * @param input_labels Input Label image. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @param label Label value to use. [float ( = 1 )]
  * @return Array::Pointer
@@ -1031,8 +1031,8 @@ mask_func(const Device::Pointer & device, const Array::Pointer & src, const Arra
  */
 auto
 mask_label_func(const Device::Pointer & device,
-                const Array::Pointer &  src0,
-                const Array::Pointer &  src1,
+                const Array::Pointer &  src,
+                const Array::Pointer &  input_labels,
                 Array::Pointer          dst,
                 float                   label) -> Array::Pointer;
 
@@ -1795,8 +1795,8 @@ nan_to_num_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param dst0 Output flag (0 or 1). [Array::Pointer]
- * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
+ * @param flag Output flag (0 or 1). [Array::Pointer]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_nonzeroMaximumBox
  * @deprecated This function is deprecated. Consider using nonzero_maximum() instead.
@@ -1804,8 +1804,8 @@ nan_to_num_func(const Device::Pointer & device,
 auto
 nonzero_maximum_box_func(const Device::Pointer & device,
                          const Array::Pointer &  src,
-                         Array::Pointer          dst0,
-                         Array::Pointer          dst1) -> Array::Pointer;
+                         Array::Pointer          flag,
+                         Array::Pointer          dst) -> Array::Pointer;
 
 
 /**
@@ -1816,8 +1816,8 @@ nonzero_maximum_box_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param dst0 Output flag (0 or 1). [Array::Pointer]
- * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
+ * @param flag Output flag (0 or 1). [Array::Pointer]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_nonzeroMaximumDiamond
  * @deprecated This function is deprecated. Consider using nonzero_maximum() instead.
@@ -1825,8 +1825,8 @@ nonzero_maximum_box_func(const Device::Pointer & device,
 auto
 nonzero_maximum_diamond_func(const Device::Pointer & device,
                              const Array::Pointer &  src,
-                             Array::Pointer          dst0,
-                             Array::Pointer          dst1) -> Array::Pointer;
+                             Array::Pointer          flag,
+                             Array::Pointer          dst) -> Array::Pointer;
 
 /**
  * @name nonzero_maximum
@@ -1837,8 +1837,8 @@ nonzero_maximum_diamond_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param dst0 Output flag (0 or 1). [Array::Pointer]
- * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
+ * @param flag Output flag (0 or 1). [Array::Pointer]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_nonzeroMaximumBox
@@ -1848,8 +1848,8 @@ nonzero_maximum_diamond_func(const Device::Pointer & device,
 auto
 nonzero_maximum_func(const Device::Pointer & device,
                      const Array::Pointer &  src,
-                     Array::Pointer          dst0,
-                     Array::Pointer          dst1,
+                     Array::Pointer          flag,
+                     Array::Pointer          dst,
                      std::string             connectivity) -> Array::Pointer;
 
 /**
@@ -1860,8 +1860,8 @@ nonzero_maximum_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param dst0 Output flag (0 or 1). [Array::Pointer]
- * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
+ * @param flag Output flag (0 or 1). [Array::Pointer]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_nonzeroMinimumBox
  * @deprecated This function is deprecated. Consider using nonzero_minimum() instead.
@@ -1869,8 +1869,8 @@ nonzero_maximum_func(const Device::Pointer & device,
 auto
 nonzero_minimum_box_func(const Device::Pointer & device,
                          const Array::Pointer &  src,
-                         Array::Pointer          dst0,
-                         Array::Pointer          dst1) -> Array::Pointer;
+                         Array::Pointer          flag,
+                         Array::Pointer          dst) -> Array::Pointer;
 
 
 /**
@@ -1881,8 +1881,8 @@ nonzero_minimum_box_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param dst0 Output flag (0 or 1). [Array::Pointer]
- * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
+ * @param flag Output flag (0 or 1). [Array::Pointer]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_nonzeroMinimumDiamond
  * @deprecated This function is deprecated. Consider using nonzero_minimum() instead.
@@ -1890,8 +1890,8 @@ nonzero_minimum_box_func(const Device::Pointer & device,
 auto
 nonzero_minimum_diamond_func(const Device::Pointer & device,
                              const Array::Pointer &  src,
-                             Array::Pointer          dst0,
-                             Array::Pointer          dst1) -> Array::Pointer;
+                             Array::Pointer          flag,
+                             Array::Pointer          dst) -> Array::Pointer;
 
 /**
  * @name nonzero_minimum
@@ -1902,8 +1902,8 @@ nonzero_minimum_diamond_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param dst0 Output flag (0 or 1). [Array::Pointer]
- * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
+ * @param flag Output flag (0 or 1). [Array::Pointer]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
  * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_nonzeroMinimumBox
@@ -1912,8 +1912,8 @@ nonzero_minimum_diamond_func(const Device::Pointer & device,
 auto
 nonzero_minimum_func(const Device::Pointer & device,
                      const Array::Pointer &  src,
-                     Array::Pointer          dst0,
-                     Array::Pointer          dst1,
+                     Array::Pointer          flag,
+                     Array::Pointer          dst,
                      std::string             connectivity) -> Array::Pointer;
 
 
@@ -1944,14 +1944,14 @@ not_equal_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The image where every pixel is compared to the constant. [const Array::Pointer &]
  * @param dst The resulting binary image where pixels will be 1 only if source1 [Array::Pointer ( = None )]
- * @param scalar The constant where every pixel is compared to. [float ( = 0 )]
+ * @param constant The constant where every pixel is compared to. [float ( = 0 )]
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_notEqualConstant
  */
 auto
-not_equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
+not_equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float constant)
   -> Array::Pointer;
 
 
@@ -2044,14 +2044,14 @@ onlyzero_overwrite_maximum_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param scalar Power value. [float ( = 1 )]
+ * @param exponent Exponent value. [float ( = 1 )]
  * @return Array::Pointer
  *
  * @note 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_power
  */
 auto
-power_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
+power_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float exponent)
   -> Array::Pointer;
 
 
@@ -2135,8 +2135,8 @@ read_values_from_positions_func(const Device::Pointer & device,
  * The vector index represents the old intensity and the value at that position represents the new intensity.s
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 Input image to process. [const Array::Pointer &]
- * @param src1 List of intensities to replace, as a vector of values. [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param values List of intensity values to replace. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -2145,8 +2145,8 @@ read_values_from_positions_func(const Device::Pointer & device,
  */
 auto
 replace_values_func(const Device::Pointer & device,
-                    const Array::Pointer &  src0,
-                    const Array::Pointer &  src1,
+                    const Array::Pointer &  src,
+                    const Array::Pointer &  values,
                     Array::Pointer          dst) -> Array::Pointer;
 
 
@@ -2196,8 +2196,8 @@ replace_intensity_func(const Device::Pointer & device,
  * The vector index represents the old intensity and the value at that position represents the new intensity.s
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 Input image to process. [const Array::Pointer &]
- * @param src1 List of intensities to replace, as a vector of values. [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param intensities List of intensities to replace, as a vector of values. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -2206,8 +2206,8 @@ replace_intensity_func(const Device::Pointer & device,
  */
 auto
 replace_intensities_func(const Device::Pointer & device,
-                         const Array::Pointer &  src0,
-                         const Array::Pointer &  src1,
+                         const Array::Pointer &  src,
+                         const Array::Pointer &  intensities,
                          Array::Pointer          dst) -> Array::Pointer;
 
 /**
@@ -2529,14 +2529,14 @@ smaller_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param scalar Scalar used in the comparison. [float ( = 0 )]
+ * @param constant Constant value used in the comparison. [float ( = 0 )]
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_smallerConstant
  */
 auto
-smaller_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
+smaller_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float constant)
   -> Array::Pointer;
 
 
@@ -2567,7 +2567,7 @@ smaller_or_equal_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param scalar Scalar used in the comparison. [float ( = 0 )]
+ * @param constant Constant value used in the comparison. [float ( = 0 )]
  * @return Array::Pointer
  *
  * @note 'binarize', 'in assistant'
@@ -2577,7 +2577,7 @@ auto
 smaller_or_equal_constant_func(const Device::Pointer & device,
                                const Array::Pointer &  src,
                                Array::Pointer          dst,
-                               float                   scalar) -> Array::Pointer;
+                               float                   constant) -> Array::Pointer;
 
 
 /**
@@ -2858,11 +2858,10 @@ variance_filter_func(const Device::Pointer & device,
 
 /**
  * @name write_values_to_positions
- * @brief Takes an image with three/four rows (2D: height = 3; 3D: height = 4): x, y [, z] and v and target image. The
- * value v will be written at position x/y[/z] in the target image.
+ * @brief Takes an array of Nx3 (or Nx4 for 3D images) where the first rows are the coordinate x,y(,z) and the last row is the value.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input image to process. [const Array::Pointer &]
+ * @param src Input coordinates and values. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_writeValuesToPositions

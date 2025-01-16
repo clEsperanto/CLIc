@@ -10,47 +10,47 @@ namespace cle::tier3
 
 auto
 remove_labels_func(const Device::Pointer & device,
-                   const Array::Pointer &  src,
-                   const Array::Pointer &  list,
+                   const Array::Pointer &  input_labels,
+                   const Array::Pointer &  label_list,
                    Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst);
-  if (list->dtype() != dType::LABEL)
+  tier0::create_like(input_labels, dst);
+  if (label_list->dtype() != dType::LABEL)
   {
     throw std::runtime_error("remove_labels: label list must be of type uint32");
   }
-  std::vector<uint32_t> labels_list(list->size());
-  list->readTo(labels_list.data());
+  std::vector<uint32_t> tmp_list(label_list->size());
+  label_list->readTo(tmp_list.data());
 
-  labels_list.front() = 0;
+  tmp_list.front() = 0;
   uint32_t count = 1;
-  for (int32_t i = 1; i < labels_list.size(); i++)
+  for (int32_t i = 1; i < tmp_list.size(); i++)
   {
-    if (labels_list[i] == 0)
+    if (tmp_list[i] == 0)
     {
-      labels_list[i] = count;
+      tmp_list[i] = count;
       count++;
     }
     else
     {
-      labels_list[i] = 0;
+      tmp_list[i] = 0;
     }
   }
 
-  auto index_list = Array::create(list->size(), 1, 1, 1, dType::LABEL, mType::BUFFER, src->device());
-  index_list->writeFrom(labels_list.data());
+  auto index_list = Array::create(label_list->size(), 1, 1, 1, dType::LABEL, mType::BUFFER, input_labels->device());
+  index_list->writeFrom(tmp_list.data());
 
-  tier1::replace_values_func(device, src, index_list, dst);
+  tier1::replace_values_func(device, input_labels, index_list, dst);
   return dst;
 }
 
 auto
 exclude_labels_func(const Device::Pointer & device,
-                    const Array::Pointer &  src,
+                    const Array::Pointer &  input_labels,
                     const Array::Pointer &  list,
                     Array::Pointer          dst) -> Array::Pointer
 {
-  return remove_labels_func(device, src, list, dst);
+  return remove_labels_func(device, input_labels, list, dst);
 }
 
 } // namespace cle::tier3

@@ -21,10 +21,10 @@ read_values_from_positions_func(const Device::Pointer & device,
   //                            std::to_string(list->width()));
   // }
   tier0::create_vector(src, dst, list->width());
-  const KernelInfo    kernel = { "read_values_from_positions", kernel::read_values_from_positions };
+  const KernelInfo    kernel_code = { "read_values_from_positions", kernel::read_values_from_positions };
   const ParameterList params = { { "src0", src }, { "src1", list }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 

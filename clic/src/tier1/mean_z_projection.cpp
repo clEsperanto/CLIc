@@ -12,10 +12,10 @@ auto
 mean_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
   tier0::create_xy(src, dst);
-  const KernelInfo    kernel = { "mean_z_projection", kernel::mean_z_projection };
+  const KernelInfo    kernel_code = { "mean_z_projection", kernel::mean_z_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 

@@ -16,7 +16,7 @@ namespace cle::tier6
  * scikitimage [2] and MorpholibJ[3] Notes * This operation assumes input images are isotropic.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input label image to erode [const Array::Pointer &]
+ * @param input_labels Input label image to erode [const Array::Pointer &]
  * @param dst Output label image [Array::Pointer ( = None )]
  * @param radius [int ( = 2 )]
  * @return Array::Pointer
@@ -24,7 +24,7 @@ namespace cle::tier6
  * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
-dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
+dilate_labels_func(const Device::Pointer & device, const Array::Pointer & input_labels, Array::Pointer dst, int radius)
   -> Array::Pointer;
 
 
@@ -35,7 +35,7 @@ dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
  * identifier. Notes * This operation assumes input images are isotropic.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input label image [const Array::Pointer &]
+ * @param input_labels Input label image [const Array::Pointer &]
  * @param dst Output label image [Array::Pointer ( = None )]
  * @param radius [int ( = 1 )]
  * @param relabel Relabel the image, e.g. if object disappear or split. [bool ( = False )]
@@ -45,7 +45,7 @@ dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
  */
 auto
 erode_labels_func(const Device::Pointer & device,
-                  const Array::Pointer &  src,
+                  const Array::Pointer &  input_labels,
                   Array::Pointer          dst,
                   int                     radius,
                   bool                    relabel) -> Array::Pointer;
@@ -120,7 +120,7 @@ voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & inp
  * @brief Removes labelled objects small than a given size (in pixels) from a label map.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Label image to filter. [const Array::Pointer &]
+ * @param input_labels Label image to filter. [const Array::Pointer &]
  * @param dst Output label image filtered. [Array::Pointer ( = None )]
  * @param minimum_size Smallest size object allowed. [float ( = 100 )]
  * @return Array::Pointer
@@ -130,7 +130,7 @@ voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & inp
  */
 auto
 remove_small_labels_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
+                         const Array::Pointer &  input_labels,
                          Array::Pointer          dst,
                          float                   minimum_size) -> Array::Pointer;
 
@@ -139,17 +139,18 @@ remove_small_labels_func(const Device::Pointer & device,
  * @brief Removes labels from a label map which are below a given maximum size.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Label image to filter. [const Array::Pointer &]
+ * @param input_labels Label image to filter. [const Array::Pointer &]
  * @param dst Output label image filtered. [Array::Pointer ( = None )]
  * @param maximum_size Largest size object to exclude. [float ( = 100 )]
  * @return Array::Pointer
  *
  * @note 'label processing', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
+ * @deprecated This function is deprecated. Use remove_small_labels() instead.
  */
 auto
 exclude_small_labels_func(const Device::Pointer & device,
-                          const Array::Pointer &  src,
+                          const Array::Pointer &  input_labels,
                           Array::Pointer          dst,
                           float                   maximum_size) -> Array::Pointer;
 
@@ -158,7 +159,7 @@ exclude_small_labels_func(const Device::Pointer & device,
  * @brief Removes labeled objects bigger than a given size (in pixels) from a label map.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Label image to filter. [const Array::Pointer &]
+ * @param input_labels Label image to filter. [const Array::Pointer &]
  * @param dst Output label image filtered. [Array::Pointer ( = None )]
  * @param maximum_size Biggest size object allowed. [float ( = 100 )]
  * @return Array::Pointer
@@ -168,7 +169,7 @@ exclude_small_labels_func(const Device::Pointer & device,
  */
 auto
 remove_large_labels_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
+                         const Array::Pointer &  input_labels,
                          Array::Pointer          dst,
                          float                   maximum_size) -> Array::Pointer;
 
@@ -177,17 +178,18 @@ remove_large_labels_func(const Device::Pointer & device,
  * @brief Removes labels from a label map which are higher a given minimum size.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Label image to filter. [const Array::Pointer &]
+ * @param input_labels Label image to filter. [const Array::Pointer &]
  * @param dst Output label image filtered. [Array::Pointer ( = None )]
  * @param minimum_size Smallest size object to keep. [float ( = 100 )]
  * @return Array::Pointer
  *
  * @note 'label processing', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
+ * @deprecated This function is deprecated. Use remove_large_labels() instead.
  */
 auto
 exclude_large_labels_func(const Device::Pointer & device,
-                          const Array::Pointer &  src,
+                          const Array::Pointer &  input_labels,
                           Array::Pointer          dst,
                           float                   minimum_size) -> Array::Pointer;
 

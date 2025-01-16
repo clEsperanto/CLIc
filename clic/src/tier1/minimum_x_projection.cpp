@@ -14,10 +14,10 @@ minimum_x_projection_func(const Device::Pointer & device, const Array::Pointer &
   -> Array::Pointer
 {
   tier0::create_zy(src, dst);
-  const KernelInfo    kernel = { "minimum_x_projection", kernel::minimum_x_projection };
+  const KernelInfo    kernel_code = { "minimum_x_projection", kernel::minimum_x_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 

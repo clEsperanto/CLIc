@@ -16,10 +16,10 @@ transpose_yz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
     auto dim = shape_to_dimension(src->width(), src->depth(), src->height());
     dst = Array::create(src->width(), src->depth(), src->height(), 3, src->dtype(), src->mtype(), src->device());
   }
-  const KernelInfo    kernel = { "transpose_yz", kernel::transpose_yz };
+  const KernelInfo    kernel_code = { "transpose_yz", kernel::transpose_yz };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 

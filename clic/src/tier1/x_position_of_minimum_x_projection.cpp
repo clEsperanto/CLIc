@@ -13,10 +13,10 @@ x_position_of_minimum_x_projection_func(const Device::Pointer & device, const Ar
   -> Array::Pointer
 {
   tier0::create_zy(src, dst, dType::INDEX);
-  const KernelInfo    kernel = { "x_position_of_minimum_x_projection", kernel::x_position_of_minimum_x_projection };
+  const KernelInfo    kernel_code = { "x_position_of_minimum_x_projection", kernel::x_position_of_minimum_x_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 

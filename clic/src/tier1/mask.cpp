@@ -15,10 +15,10 @@ mask_func(const Device::Pointer & device, const Array::Pointer & src, const Arra
   -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  const KernelInfo    kernel = { "mask", kernel::mask };
+  const KernelInfo    kernel_code = { "mask", kernel::mask };
   const ParameterList params = { { "src0", src }, { "src1", mask }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 
