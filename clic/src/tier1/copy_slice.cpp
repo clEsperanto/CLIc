@@ -21,19 +21,19 @@ copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Arra
 {
   tier0::create_like(src, dst);
   const ParameterList params = { { "src", src }, { "dst", dst }, { "index", slice_index } };
-  KernelInfo          kernel;
+  KernelInfo          kernel_code;
   RangeArray          range;
   if (dst->depth() > 1)
   {
-    kernel = { "copy_slice_to", kernel::copy_slice_to };
+    kernel_code = { "copy_slice_to", kernel::copy_slice_to };
     range = { src->width(), src->height(), 1 };
   }
   else
   {
-    kernel = { "copy_slice_from", kernel::copy_slice_from };
+    kernel_code = { "copy_slice_from", kernel::copy_slice_from };
     range = { dst->width(), dst->height(), dst->depth() };
   }
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 
@@ -45,19 +45,19 @@ copy_horizontal_slice_func(const Device::Pointer & device,
 {
   tier0::create_like(src, dst);
   const ParameterList params = { { "src", src }, { "dst", dst }, { "index", slice_index } };
-  KernelInfo          kernel;
+  KernelInfo          kernel_code;
   RangeArray          range;
   if (dst->depth() > 1)
   {
-    kernel = { "copy_horizontal_slice_to", kernel::copy_horizontal_slice_to };
+    kernel_code = { "copy_horizontal_slice_to", kernel::copy_horizontal_slice_to };
     range = { dst->width(), dst->height(), dst->depth() };
   }
   else
   {
-    kernel = { "copy_horizontal_slice_from", kernel::copy_horizontal_slice_from };
+    kernel_code = { "copy_horizontal_slice_from", kernel::copy_horizontal_slice_from };
     range = { dst->width(), dst->height(), dst->depth() };
   }
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 
@@ -69,19 +69,19 @@ copy_vertical_slice_func(const Device::Pointer & device,
 {
   tier0::create_like(src, dst);
   const ParameterList params = { { "src", src }, { "dst", dst }, { "index", slice_index } };
-  KernelInfo          kernel;
+  KernelInfo          kernel_code;
   RangeArray          range;
   if (dst->depth() > 1)
   {
-    kernel = { "copy_vertical_slice_to", kernel::copy_vertical_slice_to };
+    kernel_code = { "copy_vertical_slice_to", kernel::copy_vertical_slice_to };
     range = { src->width(), src->height(), 1 };
   }
   else
   {
-    kernel = { "copy_vertical_slice_from", kernel::copy_vertical_slice_from };
+    kernel_code = { "copy_vertical_slice_from", kernel::copy_vertical_slice_from };
     range = { dst->width(), dst->height(), dst->depth() };
   }
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 

@@ -95,12 +95,12 @@ apply_affine_transform(const cle::Array::Pointer &  src,
 
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   const ParameterList params = { { "src", image }, { "dst", dst }, { "mat", mat } };
-  const KernelInfo    kernel = (interpolate && image->mtype() == mType::IMAGE
-                                  ? KernelInfo{ "affine_transform_interpolate", kernel::affine_transform_interpolate }
-                                  : KernelInfo{ "affine_transform", kernel::affine_transform });
+  const KernelInfo    kernel_code = (interpolate && image->mtype() == mType::IMAGE
+                                       ? KernelInfo{ "affine_transform_interpolate", kernel::affine_transform_interpolate }
+                                       : KernelInfo{ "affine_transform", kernel::affine_transform });
 
   // execute the kernel
-  execute(src->device(), kernel, params, range);
+  execute(src->device(), kernel_code, params, range);
   return dst;
 }
 

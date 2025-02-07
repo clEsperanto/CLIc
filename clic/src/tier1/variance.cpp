@@ -22,16 +22,16 @@ variance_filter_func(const Device::Pointer & device,
   auto       r_x = radius2kernelsize(radius_x);
   auto       r_y = radius2kernelsize(radius_y);
   auto       r_z = radius2kernelsize(radius_z);
-  KernelInfo kernel = { "variance_box", kernel::variance_box };
+  KernelInfo kernel_code = { "variance_box", kernel::variance_box };
   if (connectivity == "sphere")
   {
-    kernel = { "variance_sphere", kernel::variance_sphere };
+    kernel_code = { "variance_sphere", kernel::variance_sphere };
   }
   const ParameterList params = {
     { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z }
   };
   const RangeArray range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 

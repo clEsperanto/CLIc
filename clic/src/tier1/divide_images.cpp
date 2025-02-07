@@ -15,10 +15,10 @@ divide_images_func(const Device::Pointer & device,
                    Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(dividend, dst);
-  const KernelInfo    kernel = { "divide_images", kernel::divide_images };
+  const KernelInfo    kernel_code = { "divide_images", kernel::divide_images };
   const ParameterList params = { { "src0", dividend }, { "src1", divisor }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 
