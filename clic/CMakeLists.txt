@@ -15,7 +15,7 @@ list(APPEND SOURCES ${TIERS})
 
 # target library definition
 add_library(${LIBRARY_NAME} ${SOURCES})
-target_link_libraries(${LIBRARY_NAME} PUBLIC cleKernels::cleKernels Eigen3::Eigen ${CLFFT_LIBRARIES})
+target_link_libraries(${LIBRARY_NAME} PUBLIC cleKernels::cleKernels Eigen3::Eigen)
 
 add_library(${PROJECT_NAME}::${LIBRARY_NAME} ALIAS ${LIBRARY_NAME})
 target_include_directories(${LIBRARY_NAME} PUBLIC
