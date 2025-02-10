@@ -15,7 +15,6 @@ FetchContent_Declare(clFFT
     GIT_REPOSITORY https://github.com/clMathLibraries/clFFT.git
     GIT_TAG        master
     SOURCE_SUBDIR  src  # clFFT CMakeLists.txt is in src/ instead of root
-    FIND_PACKAGE_ARGS NAME
 )
 # Make the fetched content available
 FetchContent_MakeAvailable(cleKernels eigen clFFT)
