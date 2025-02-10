@@ -6,7 +6,6 @@
 class TestclFFT : public ::testing::TestWithParam<std::string>
 {
 protected:
-
 };
 
 TEST_P(TestclFFT, execute)

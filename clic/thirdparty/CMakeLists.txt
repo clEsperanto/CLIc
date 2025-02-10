@@ -33,5 +33,3 @@ if(NOT CLFFT_LIBRARIES)
         message(FATAL_ERROR "clFFT library not found for build type ${CMAKE_BUILD_TYPE}")
     endif()  # Close the else block here
 endif()
-
-
