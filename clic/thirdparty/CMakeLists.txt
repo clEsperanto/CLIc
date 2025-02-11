@@ -16,19 +16,14 @@ FetchContent_Declare(clFFT
     GIT_TAG        master
     SOURCE_SUBDIR  src  # clFFT CMakeLists.txt is in src/ instead of root
 )
-# Make the fetched content available
+# Fetched the content of the three libraries
 FetchContent_MakeAvailable(cleKernels eigen clFFT)
 
-
+# clFFT configuration variables for clic
 if(NOT CLFFT_INCLUDE_DIRS)
-    set(CLFFT_INCLUDE_DIRS ${clFFT_SOURCE_DIR}/include ${clFFT_BINARY_DIR}/include)
+    set(CLFFT_INCLUDE_DIRS ${clFFT_SOURCE_DIR}/include ${clFFT_BINARY_DIR}/include CACHE PATH "Path to clFFT includes")
 endif()
 if(NOT CLFFT_LIBRARIES)
-    if(CMAKE_BUILD_TYPE STREQUAL "Release")
-        set(CLFFT_LIBRARIES ${clFFT_BINARY_DIR}/library/${CMAKE_BUILD_TYPE}/libclFFT.so CACHE FILEPATH "Path to clFFT library")
-    elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        set(CLFFT_LIBRARIES ${clFFT_BINARY_DIR}/library/${CMAKE_BUILD_TYPE}/libclFFT_d.so CACHE FILEPATH "Path to clFFT library")
-    else()
-        message(FATAL_ERROR "clFFT library not found for build type ${CMAKE_BUILD_TYPE}")
-    endif()  # Close the else block here
+    set(CLFFT_LIBRARIES_SUFFIX "$<IF:$<CONFIG:Debug>,_d,>${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    set(CLFFT_LIBRARIES "${clFFT_BINARY_DIR}/library/${CMAKE_BUILD_TYPE}/libclFFT${CLFFT_LIBRARIES_SUFFIX}" CACHE FILEPATH "Path to clFFT library")
 endif()
