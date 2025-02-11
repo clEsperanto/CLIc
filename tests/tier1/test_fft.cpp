@@ -6,13 +6,12 @@
 class TestclFFT : public ::testing::TestWithParam<std::string>
 {
 protected:
-
-std::array<float, 5 * 5 * 1> input;
-virtual void
-SetUp()
-{
-  std::fill(input.begin(), input.end(), static_cast<float>(5));
-}
+  std::array<float, 5 * 5 * 1> input;
+  virtual void
+  SetUp()
+  {
+    std::fill(input.begin(), input.end(), static_cast<float>(5));
+  }
 };
 
 TEST_P(TestclFFT, execute)

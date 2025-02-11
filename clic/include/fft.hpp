@@ -3,19 +3,19 @@
 
 #include "clFFT.h"
 
+#include "array.hpp"
 #include "backend.hpp"
 #include "device.hpp"
-#include "array.hpp"
 #include "execution.hpp"
 
 namespace cle::fft
 {
 
 
-
-clfftDim get_dim(Array::Pointer array)
+clfftDim
+get_dim(Array::Pointer array)
 {
-  switch(array->dimension())
+  switch (array->dimension())
   {
     case 1:
       return CLFFT_1D;
@@ -30,15 +30,17 @@ clfftDim get_dim(Array::Pointer array)
 }
 
 
-Array::Pointer create_complex_buffer(const Array::Pointer & data)
+Array::Pointer
+create_complex_buffer(const Array::Pointer & data)
 {
-  cl_int   err;
-  auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(data->device());
+  cl_int err;
+  auto   ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(data->device());
 
   // create a new buffer with twice the width for the imaginary part
-  auto complex_array =   Array::create(data->width() * 2, data->height(), data->depth(), data->dimension(), data->dtype(), data->mtype(), data->device());
+  auto complex_array = Array::create(
+    data->width() * 2, data->height(), data->depth(), data->dimension(), data->dtype(), data->mtype(), data->device());
 
-  std::array<size_t, 3> src_origin;  
+  std::array<size_t, 3> src_origin;
   std::array<size_t, 3> dst_origin;
   std::array<size_t, 3> region = { 1 * data->itemSize(), data->height(), data->depth() };
 
@@ -49,7 +51,8 @@ Array::Pointer create_complex_buffer(const Array::Pointer & data)
   size_t dst_slice_pitch = dst_row_pitch * complex_array->height();
 
   // loop over the width of the data and copy the real part to the buffer and set the imaginary part to 0
-  for (size_t x = 0; x < data->width(); x++) {
+  for (size_t x = 0; x < data->width(); x++)
+  {
     src_origin = { x * data->itemSize(), 0, 0 };
     dst_origin = { x * 2 * data->itemSize(), 0, 0 };
 
@@ -63,13 +66,16 @@ Array::Pointer create_complex_buffer(const Array::Pointer & data)
                             src_slice_pitch,
                             dst_row_pitch,
                             dst_slice_pitch,
-                            0, NULL, NULL);
-    }
+                            0,
+                            NULL,
+                            NULL);
+  }
 
   return complex_array;
 }
 
-void fft_execute(const Array::Pointer & data)
+void
+fft_execute(const Array::Pointer & data)
 {
   // cast device to OpenCLDevice
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(data->device());
@@ -77,7 +83,7 @@ void fft_execute(const Array::Pointer & data)
   auto queue = ocl_device->getCLCommandQueue();
 
 
-  cl_int   err;
+  cl_int err;
   cle::print<float>(data);
 
   auto complex_data = create_complex_buffer(data);
@@ -92,7 +98,7 @@ void fft_execute(const Array::Pointer & data)
   /* FFT library realted declarations */
   clfftPlanHandle planHandle;
   clfftDim        dim = get_dim(data);
-  size_t          clLengths[] = {data->width(), data->height()};
+  size_t          clLengths[] = { data->width(), data->height() };
 
   /* Create a default plan for a complex FFT. */
   err = clfftCreateDefaultPlan(&planHandle, ctx, dim, clLengths);
@@ -106,7 +112,8 @@ void fft_execute(const Array::Pointer & data)
   err = clfftBakePlan(planHandle, 1, &queue, NULL, NULL);
 
   /* Execute the plan. */
-  err = clfftEnqueueTransform(planHandle, CLFFT_FORWARD, 1, &queue, 0, NULL, NULL, static_cast<cl_mem *>(*complex_data->get()), NULL, NULL);
+  err = clfftEnqueueTransform(
+    planHandle, CLFFT_FORWARD, 1, &queue, 0, NULL, NULL, static_cast<cl_mem *>(*complex_data->get()), NULL, NULL);
 
   /* Wait for calculations to be finished. */
   err = clFinish(queue);
