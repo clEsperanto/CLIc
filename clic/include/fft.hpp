@@ -18,13 +18,16 @@ get_dim(Array::Pointer array)
   switch (array->dimension())
   {
     case 1:
+      std::cout << "CLFFT_1D" << std::endl;
       return CLFFT_1D;
     case 2:
+      std::cout << "CLFFT_2D" << std::endl;
       return CLFFT_2D;
     case 3:
+      std::cout << "CLFFT_3D" << std::endl;
       return CLFFT_3D;
     default:
-      std::runtime_error("Invalid dimension");
+      throw std::runtime_error("Invalid dimension");
   }
   return CLFFT_1D;
 }
@@ -40,36 +43,36 @@ create_complex_buffer(const Array::Pointer & data)
   auto complex_array = Array::create(
     data->width() * 2, data->height(), data->depth(), data->dimension(), data->dtype(), data->mtype(), data->device());
 
-  std::array<size_t, 3> src_origin;
-  std::array<size_t, 3> dst_origin;
-  std::array<size_t, 3> region = { 1 * data->itemSize(), data->height(), data->depth() };
+  // std::array<size_t, 3> src_origin;
+  // std::array<size_t, 3> dst_origin;
+  // std::array<size_t, 3> region = { 1 * data->itemSize(), data->height(), data->depth() };
 
-  size_t src_row_pitch = data->width() * data->itemSize();
-  size_t src_slice_pitch = src_row_pitch * data->height();
+  // size_t src_row_pitch = data->width() * data->itemSize();
+  // size_t src_slice_pitch = src_row_pitch * data->height();
 
-  size_t dst_row_pitch = complex_array->width() * complex_array->itemSize();
-  size_t dst_slice_pitch = dst_row_pitch * complex_array->height();
+  // size_t dst_row_pitch = complex_array->width() * complex_array->itemSize();
+  // size_t dst_slice_pitch = dst_row_pitch * complex_array->height();
 
-  // loop over the width of the data and copy the real part to the buffer and set the imaginary part to 0
-  for (size_t x = 0; x < data->width(); x++)
-  {
-    src_origin = { x * data->itemSize(), 0, 0 };
-    dst_origin = { x * 2 * data->itemSize(), 0, 0 };
+  // // loop over the width of the data and copy the real part to the buffer and set the imaginary part to 0
+  // for (size_t x = 0; x < data->width(); x++)
+  // {
+  //   src_origin = { x * data->itemSize(), 0, 0 };
+  //   dst_origin = { x * 2 * data->itemSize(), 0, 0 };
 
-    clEnqueueCopyBufferRect(ocl_device->getCLCommandQueue(),
-                            *static_cast<const cl_mem *>(*data->get()),
-                            *static_cast<cl_mem *>(*complex_array->get()),
-                            src_origin.data(),
-                            dst_origin.data(),
-                            region.data(),
-                            src_row_pitch,
-                            src_slice_pitch,
-                            dst_row_pitch,
-                            dst_slice_pitch,
-                            0,
-                            NULL,
-                            NULL);
-  }
+  //   clEnqueueCopyBufferRect(ocl_device->getCLCommandQueue(),
+  //                           *static_cast<const cl_mem *>(*data->get()),
+  //                           *static_cast<cl_mem *>(*complex_array->get()),
+  //                           src_origin.data(),
+  //                           dst_origin.data(),
+  //                           region.data(),
+  //                           src_row_pitch,
+  //                           src_slice_pitch,
+  //                           dst_row_pitch,
+  //                           dst_slice_pitch,
+  //                           0,
+  //                           NULL,
+  //                           NULL);
+  // }
 
   return complex_array;
 }
@@ -81,39 +84,40 @@ fft_execute(const Array::Pointer & data)
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(data->device());
   auto ctx = ocl_device->getCLContext();
   auto queue = ocl_device->getCLCommandQueue();
-
-
-  cl_int err;
+  
   cle::print<float>(data);
 
   auto complex_data = create_complex_buffer(data);
 
-  cle::print<float>(complex_data);
 
   /* Setup clFFT. */
   clfftSetupData fftSetup;
-  err = clfftInitSetupData(&fftSetup);
+  cl_int err = clfftInitSetupData(&fftSetup);
   err = clfftSetup(&fftSetup);
 
   /* FFT library realted declarations */
   clfftPlanHandle planHandle;
   clfftDim        dim = get_dim(data);
   size_t          clLengths[] = { data->width(), data->height() };
+  size_t inStride[3] = {1, (size_t)data->width()};
+  size_t outStride[3] = {1, (size_t)data->width()/2+1};
 
   /* Create a default plan for a complex FFT. */
   err = clfftCreateDefaultPlan(&planHandle, ctx, dim, clLengths);
 
   /* Set plan parameters. */
   err = clfftSetPlanPrecision(planHandle, CLFFT_SINGLE);
-  err = clfftSetLayout(planHandle, CLFFT_COMPLEX_INTERLEAVED, CLFFT_COMPLEX_INTERLEAVED);
-  err = clfftSetResultLocation(planHandle, CLFFT_INPLACE);
+  err = clfftSetLayout(planHandle, CLFFT_REAL, CLFFT_HERMITIAN_INTERLEAVED);
+  err = clfftSetResultLocation(planHandle, CLFFT_OUTOFPLACE);
+  err = clfftSetPlanInStride(planHandle, dim, inStride);
+  err = clfftSetPlanInStride(planHandle, dim, outStride);
 
   /* Bake the plan. */
   err = clfftBakePlan(planHandle, 1, &queue, NULL, NULL);
 
   /* Execute the plan. */
   err = clfftEnqueueTransform(
-    planHandle, CLFFT_FORWARD, 1, &queue, 0, NULL, NULL, static_cast<cl_mem *>(*complex_data->get()), NULL, NULL);
+    planHandle, CLFFT_FORWARD, 1, &queue, 0, NULL, NULL, static_cast<cl_mem *>(*data->get()), static_cast<cl_mem *>(*complex_data->get()), NULL);
 
   /* Wait for calculations to be finished. */
   err = clFinish(queue);
@@ -130,3 +134,4 @@ fft_execute(const Array::Pointer & data)
 } // namespace cle::fft
 
 #endif // __INCLUDE_FFT_HPP
+

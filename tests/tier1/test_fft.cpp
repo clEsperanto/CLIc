@@ -6,12 +6,15 @@
 class TestclFFT : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::array<float, 5 * 5 * 1> input;
-  virtual void
-  SetUp()
-  {
-    std::fill(input.begin(), input.end(), static_cast<float>(5));
-  }
+  std::array<float, 2 * 2 * 1> input = {
+    1, 2,
+    3, 4,
+  };
+  // virtual void
+  // SetUp()
+  // {
+  //   std::fill(input.begin(), input.end(), static_cast<float>(5));
+  // }
 };
 
 TEST_P(TestclFFT, execute)
@@ -23,7 +26,7 @@ TEST_P(TestclFFT, execute)
   device->setWaitToFinish(true);
 
 
-  auto gpu_input = cle::Array::create(5, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(2, 2, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
   cle::fft::fft_execute(gpu_input);
