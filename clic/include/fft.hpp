@@ -84,7 +84,7 @@ fft_execute(const Array::Pointer & data)
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(data->device());
   auto ctx = ocl_device->getCLContext();
   auto queue = ocl_device->getCLCommandQueue();
-  
+
   cle::print<float>(data);
 
   auto complex_data = create_complex_buffer(data);
@@ -92,15 +92,15 @@ fft_execute(const Array::Pointer & data)
 
   /* Setup clFFT. */
   clfftSetupData fftSetup;
-  cl_int err = clfftInitSetupData(&fftSetup);
+  cl_int         err = clfftInitSetupData(&fftSetup);
   err = clfftSetup(&fftSetup);
 
   /* FFT library realted declarations */
   clfftPlanHandle planHandle;
   clfftDim        dim = get_dim(data);
   size_t          clLengths[] = { data->width(), data->height() };
-  size_t inStride[3] = {1, (size_t)data->width()};
-  size_t outStride[3] = {1, (size_t)data->width()/2+1};
+  size_t          inStride[3] = { 1, (size_t)data->width() };
+  size_t          outStride[3] = { 1, (size_t)data->width() / 2 + 1 };
 
   /* Create a default plan for a complex FFT. */
   err = clfftCreateDefaultPlan(&planHandle, ctx, dim, clLengths);
@@ -116,8 +116,16 @@ fft_execute(const Array::Pointer & data)
   err = clfftBakePlan(planHandle, 1, &queue, NULL, NULL);
 
   /* Execute the plan. */
-  err = clfftEnqueueTransform(
-    planHandle, CLFFT_FORWARD, 1, &queue, 0, NULL, NULL, static_cast<cl_mem *>(*data->get()), static_cast<cl_mem *>(*complex_data->get()), NULL);
+  err = clfftEnqueueTransform(planHandle,
+                              CLFFT_FORWARD,
+                              1,
+                              &queue,
+                              0,
+                              NULL,
+                              NULL,
+                              static_cast<cl_mem *>(*data->get()),
+                              static_cast<cl_mem *>(*complex_data->get()),
+                              NULL);
 
   /* Wait for calculations to be finished. */
   err = clFinish(queue);
@@ -134,4 +142,3 @@ fft_execute(const Array::Pointer & data)
 } // namespace cle::fft
 
 #endif // __INCLUDE_FFT_HPP
-

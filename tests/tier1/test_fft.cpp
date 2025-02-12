@@ -7,8 +7,10 @@ class TestclFFT : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<float, 2 * 2 * 1> input = {
-    1, 2,
-    3, 4,
+    1,
+    2,
+    3,
+    4,
   };
   // virtual void
   // SetUp()
