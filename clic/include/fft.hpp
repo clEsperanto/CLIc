@@ -4,6 +4,7 @@
 #include "clFFT.h"
 
 #include "array.hpp"
+#include "execution.hpp"
 namespace cle::fft
 {
 

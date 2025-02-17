@@ -7,7 +7,6 @@
 
 #include "fft.hpp"
 #include "device.hpp"
-#include "execution.hpp"
 
 #include <array>
 #include <stdexcept>
