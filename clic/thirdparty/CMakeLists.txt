@@ -27,4 +27,3 @@ if(NOT CLFFT_LIBRARIES)
     set(CLFFT_LIBRARY_PATH ${clFFT_BINARY_DIR}/library/$<CONFIG> CACHE FILEPATH "Path to clFFT library folder")
     set(CLFFT_LIBRARIES ${CLFFT_LIBRARY_PATH}/libclFFT$<IF:$<CONFIG:Debug>,_d,>.so CACHE FILEPATH "Path to clFFT library")
 endif()
-
