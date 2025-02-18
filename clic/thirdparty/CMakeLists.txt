@@ -19,13 +19,17 @@ FetchContent_Declare(clFFT
 # Fetched the content of the three libraries
 FetchContent_MakeAvailable(cleKernels eigen clFFT)
 
-# clFFT configuration variables for clic
-if(NOT CLFFT_INCLUDE_DIRS)
-    set(CLFFT_INCLUDE_DIRS ${clFFT_SOURCE_DIR}/include ${clFFT_BINARY_DIR}/include CACHE PATH "Path to clFFT includes")
-endif()
-if(NOT CLFFT_LIBRARIES)
-    set(CLFFT_LIBRARIES_SUFFIX "$<IF:$<CONFIG:Debug>,_d,>${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    set(CLFFT_LIBRARIES "${clFFT_BINARY_DIR}/library/$<CONFIG>/libclFFT${CLFFT_LIBRARIES_SUFFIX}" CACHE FILEPATH "Path to clFFT library")
+# Set the clFFT library path based on the build configuration
+set(CLFFT_LIBRARY_PATH "${CMAKE_BINARY_DIR}/_deps/clfft-build/library/$<CONFIG>" CACHE FILEPATH "Path to clFFT library folder")
+set(CLFFT_LIBRARY "${CLFFT_LIBRARY_PATH}/libclFFT$<IF:$<CONFIG:Debug>,_d,>.so" CACHE STRING "Path to clFFT library")
 
-    message(STATUS "clFFT Libraries Path: ${CLFFT_LIBRARIES}")
-endif()
+# clFFT configuration variables for clic
+# if(NOT CLFFT_INCLUDE_DIRS)
+#     set(CLFFT_INCLUDE_DIRS ${clFFT_SOURCE_DIR}/include ${clFFT_BINARY_DIR}/include CACHE PATH "Path to clFFT includes")
+# endif()
+# if(NOT CLFFT_LIBRARIES)
+#     set(CLFFT_LIBRARIES_SUFFIX "$<IF:$<CONFIG:Debug>,_d,>${CMAKE_SHARED_LIBRARY_SUFFIX}")
+#     set(CLFFT_LIBRARIES "${clFFT_BINARY_DIR}/library/$<CONFIG>/libclFFT${CLFFT_LIBRARIES_SUFFIX}" CACHE FILEPATH "Path to clFFT library")
+
+#     message(STATUS "clFFT Libraries Path: ${CLFFT_LIBRARIES}")
+# endif()

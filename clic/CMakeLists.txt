@@ -8,6 +8,10 @@ configure_file(
     NO_SOURCE_PERMISSIONS @ONLY
 )
 
+# Find the clFFT library
+find_library(CLFFT_LIBRARY_FOUND NAMES clFFT PATHS ${CLFFT_LIBRARY_PATH})
+
+
 # list project source files
 file(GLOB_RECURSE SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 file(GLOB_RECURSE TIERS "${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.cpp")
@@ -15,7 +19,7 @@ list(APPEND SOURCES ${TIERS})
 
 # target library definition
 add_library(${LIBRARY_NAME} ${SOURCES})
-target_link_libraries(${LIBRARY_NAME} PUBLIC cleKernels::cleKernels Eigen3::Eigen ${CLFFT_LIBRARIES})
+target_link_libraries(${LIBRARY_NAME} PUBLIC cleKernels::cleKernels Eigen3::Eigen ${CLFFT_LIBRARY})
 
 # make target depend on other targets
 add_dependencies(${LIBRARY_NAME} cleKernels::cleKernels Eigen3::Eigen clFFT)
