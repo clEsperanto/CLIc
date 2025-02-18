@@ -8,7 +8,6 @@ set(eigen_lib_version_tag "3.4.0" CACHE STRING "Eigen library version tag")
 # if not set, set the default build type to Release
 if(NOT CLE_BACKEND_TYPE)
     set(CLE_BACKEND_TYPE "OPENCL" CACHE STRING "Backend to use (CUDA or OCL)")
-    set(CL_TARGET_OPENCL_VERSION "120" CACHE STRING "OpenCL version to use")
 endif()
 
 # set environment variables
