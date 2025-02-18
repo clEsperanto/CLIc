@@ -19,7 +19,7 @@ list(APPEND SOURCES ${TIERS})
 
 # target library definition
 add_library(${LIBRARY_NAME} ${SOURCES})
-target_link_libraries(${LIBRARY_NAME} PUBLIC cleKernels::cleKernels Eigen3::Eigen ${CLFFT_LIBRARY})
+target_link_libraries(${LIBRARY_NAME} PUBLIC cleKernels::cleKernels Eigen3::Eigen ${CLFFT_LIBRARIES})
 
 # make target depend on other targets
 add_dependencies(${LIBRARY_NAME} cleKernels::cleKernels Eigen3::Eigen clFFT)

@@ -19,10 +19,6 @@ FetchContent_Declare(clFFT
 # Fetched the content of the three libraries
 FetchContent_MakeAvailable(cleKernels eigen clFFT)
 
-
-if(NOT CLFFT_INCLUDE_DIRS)
-    set(CLFFT_INCLUDE_DIRS ${clFFT_SOURCE_DIR}/include ${clFFT_BINARY_DIR}/include CACHE PATH "Path to clFFT include folder")
-endif()
 if(NOT CLFFT_LIBRARIES)
     set(CLFFT_LIBRARY_PATH ${clFFT_BINARY_DIR}/library/$<CONFIG> CACHE FILEPATH "Path to clFFT library folder")
     set(CLFFT_LIBRARIES ${CLFFT_LIBRARY_PATH}/libclFFT$<IF:$<CONFIG:Debug>,_d,>.so CACHE FILEPATH "Path to clFFT library")
