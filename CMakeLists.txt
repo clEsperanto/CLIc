@@ -15,6 +15,8 @@ include(${PROJECT_SOURCE_DIR}/cmake/CMakeSetEnv.cmake)
 # find library dependencies
 include(${PROJECT_SOURCE_DIR}/cmake/CMakeBackends.cmake)
 
+set(BUILD_TESTING OFF)
+
 # build clic library
 add_subdirectory(clic)
 
