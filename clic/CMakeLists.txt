@@ -8,10 +8,6 @@ configure_file(
     NO_SOURCE_PERMISSIONS @ONLY
 )
 
-# Find the clFFT library
-message(STATUS "Looking for clFFT library")
-message(STATUS "clFFT_LIBRARIES: ${clFFT_LIBRARIES}")
-
 # list project source files
 file(GLOB_RECURSE SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 file(GLOB_RECURSE TIERS "${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.cpp")

@@ -13,7 +13,7 @@ FetchContent_Declare(eigen
 # Fetch clFFT library sources
 FetchContent_Declare(clFFT
     GIT_REPOSITORY https://github.com/clEsperanto/clFFT # https://github.com/clMathLibraries/clFFT.git
-    GIT_TAG        clic-build #master
+    GIT_TAG        test-cmake-export #master
     SOURCE_SUBDIR  src  # clFFT CMakeLists.txt is in src/ instead of root
 )
 # Fetched the content of the three libraries
