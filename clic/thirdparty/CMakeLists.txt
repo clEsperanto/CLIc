@@ -26,6 +26,6 @@ endif()
 if(NOT CLFFT_LIBRARIES)
     set(CLFFT_LIBRARIES_SUFFIX "$<IF:$<CONFIG:Debug>,_d,>${CMAKE_SHARED_LIBRARY_SUFFIX}")
     set(CLFFT_LIBRARIES "${clFFT_BINARY_DIR}/library/$<CONFIG>/libclFFT${CLFFT_LIBRARIES_SUFFIX}" CACHE FILEPATH "Path to clFFT library")
-    
+
     message(STATUS "clFFT Libraries Path: ${CLFFT_LIBRARIES}")
 endif()
