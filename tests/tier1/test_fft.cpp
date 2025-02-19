@@ -59,7 +59,3 @@ getParameters()
 }
 
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestFFT, ::testing::ValuesIn(getParameters()));
-
-
-
-

@@ -222,7 +222,7 @@ fft_forward(const Array::Pointer & real, Array::Pointer complex) -> Array::Point
   auto ctx = ocl_device->getCLContext();
   auto queue = ocl_device->getCLCommandQueue();
 
-  if(complex == nullptr)
+  if (complex == nullptr)
   {
     complex = create_hermitian(real);
   }
@@ -295,7 +295,8 @@ fft_backward(const Array::Pointer & complex, Array::Pointer real) -> void
 
 
 auto
-convolution(const Array::Pointer & input, const Array::Pointer & psf, Array::Pointer output, bool correlate) -> Array::Pointer
+convolution(const Array::Pointer & input, const Array::Pointer & psf, Array::Pointer output, bool correlate)
+  -> Array::Pointer
 {
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
   auto ctx = ocl_device->getCLContext();
@@ -374,16 +375,13 @@ convolution(const Array::Pointer & input, const Array::Pointer & psf, Array::Poi
 }
 
 
-
-
-
 auto
 deconvolution(const Array::Pointer & observe,
-       const Array::Pointer & psf,
-       Array::Pointer         normal,
-       Array::Pointer         estimate,
-       size_t                 iterations,
-       float                  regularization) -> Array::Pointer
+              const Array::Pointer & psf,
+              Array::Pointer         normal,
+              Array::Pointer         estimate,
+              size_t                 iterations,
+              float                  regularization) -> Array::Pointer
 {
   // fetch ocl device, context and queue
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(observe->device());
