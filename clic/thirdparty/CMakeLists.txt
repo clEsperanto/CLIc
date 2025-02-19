@@ -18,4 +18,3 @@ FetchContent_Declare(clFFT
 )
 # Fetched the content of the three libraries
 FetchContent_MakeAvailable(cleKernels eigen clFFT)
-
