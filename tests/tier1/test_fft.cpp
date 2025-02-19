@@ -3,7 +3,7 @@
 #include <array>
 #include <gtest/gtest.h>
 
-class TestclFFT : public ::testing::TestWithParam<std::string>
+class TestFFT : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<float, 10 * 5 * 1> input_2 = {
@@ -12,24 +12,32 @@ protected:
   };
 };
 
-TEST_P(TestclFFT, execute)
+TEST_P(TestFFT, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
 
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "cpu");
   device->setWaitToFinish(true);
-
 
   auto gpu_input = cle::Array::create(10, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input_2.data());
+  cle::print<float>(gpu_input, "input");
 
-  auto new_data = cle::fft::fft_execute(gpu_input);
+  auto gpu_output = cle::Array::create(gpu_input);
+  gpu_output->fill(0);
 
-  std::vector<float> output(new_data->size());
-  new_data->readTo(output.data());
+  // Perform FFT and get the output complex buffer
+  auto gpu_complex = cle::fft::fft_forward(gpu_input, nullptr);
+  cle::print<float>(gpu_complex, "complex");
 
-  // google test compare
+  // Perform IFFT and store the result in a real buffer
+  cle::fft::fft_backward(gpu_complex, gpu_output);
+  cle::print<float>(gpu_output, "output");
+
+  std::vector<float> output(gpu_output->size());
+  gpu_output->readTo(output.data());
+
   EXPECT_EQ(output.size(), input_2.size());
   for (size_t i = 0; i < output.size(); i++)
   {
@@ -50,4 +58,8 @@ getParameters()
   return parameters;
 }
 
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestclFFT, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestFFT, ::testing::ValuesIn(getParameters()));
+
+
+
+
