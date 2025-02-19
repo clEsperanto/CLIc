@@ -185,14 +185,47 @@ execRemoveSmallValues(Array::Pointer &   BufferA,
   native_execute(ocl_device, kernel, params, global_range, local_range);
 }
 
+auto
+execTotalVariationTerm(const Array::Pointer & estimate,
+                       const Array::Pointer & correction,
+                       const Array::Pointer & variation,
+                       size_t                 nx,
+                       size_t                 ny,
+                       size_t                 nz,
+                       float                  hx,
+                       float                  hy,
+                       float                  hz,
+                       float                  regularization_factor,
+                       const RangeArray &     global_range,
+                       const RangeArray &     local_range) -> void
+{
+  auto                ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(estimate->device());
+  KernelInfo          kernel = { "totalVariationTerm", kernel::fft };
+  const ParameterList params = { { "estimate", estimate },
+                                 { "correction", correction },
+                                 { "variation", variation },
+                                 { "Nx", nx },
+                                 { "Ny", ny },
+                                 { "Nz", nz },
+                                 { "hx", hx },
+                                 { "hy", hy },
+                                 { "hz", hz },
+                                 { "regularizationFactor", regularization_factor } };
+  native_execute(ocl_device, kernel, params, global_range, local_range);
+}
+
 
 auto
-fft_forward(const Array::Pointer & real, Array::Pointer complex) -> void
+fft_forward(const Array::Pointer & real, Array::Pointer complex) -> Array::Pointer
 {
-
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(real->device());
   auto ctx = ocl_device->getCLContext();
   auto queue = ocl_device->getCLCommandQueue();
+
+  if(complex == nullptr)
+  {
+    complex = create_hermitian(real);
+  }
 
   /* Setup clFFT. */
   auto err = SetupFFT();
@@ -220,13 +253,14 @@ fft_forward(const Array::Pointer & real, Array::Pointer complex) -> void
 
   /* Release clFFT library. */
   clfftTeardown();
+
+  return complex;
 }
 
 
 auto
 fft_backward(const Array::Pointer & complex, Array::Pointer real) -> void
 {
-
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(complex->device());
   auto ctx = ocl_device->getCLContext();
   auto queue = ocl_device->getCLCommandQueue();
@@ -261,7 +295,7 @@ fft_backward(const Array::Pointer & complex, Array::Pointer real) -> void
 
 
 auto
-conv(const Array::Pointer & input, const Array::Pointer & psf, Array::Pointer output, bool correlate) -> Array::Pointer
+convolution(const Array::Pointer & input, const Array::Pointer & psf, Array::Pointer output, bool correlate) -> Array::Pointer
 {
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
   auto ctx = ocl_device->getCLContext();
@@ -340,38 +374,11 @@ conv(const Array::Pointer & input, const Array::Pointer & psf, Array::Pointer ou
 }
 
 
-auto
-execTotalVariationTerm(const Array::Pointer & estimate,
-                       const Array::Pointer & correction,
-                       const Array::Pointer & variation,
-                       size_t                 nx,
-                       size_t                 ny,
-                       size_t                 nz,
-                       float                  hx,
-                       float                  hy,
-                       float                  hz,
-                       float                  regularization_factor,
-                       const RangeArray &     global_range,
-                       const RangeArray &     local_range) -> void
-{
-  auto                ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(estimate->device());
-  KernelInfo          kernel = { "totalVariationTerm", kernel::fft };
-  const ParameterList params = { { "estimate", estimate },
-                                 { "correction", correction },
-                                 { "variation", variation },
-                                 { "Nx", nx },
-                                 { "Ny", ny },
-                                 { "Nz", nz },
-                                 { "hx", hx },
-                                 { "hy", hy },
-                                 { "hz", hz },
-                                 { "regularizationFactor", regularization_factor } };
-  native_execute(ocl_device, kernel, params, global_range, local_range);
-}
+
 
 
 auto
-deconv(const Array::Pointer & observe,
+deconvolution(const Array::Pointer & observe,
        const Array::Pointer & psf,
        Array::Pointer         normal,
        Array::Pointer         estimate,
@@ -545,41 +552,12 @@ deconv(const Array::Pointer & observe,
     clFinish(queue);
   }
 
-
+  // Release the plan.
   clfftDestroyPlan(&forward_plan);
   clfftDestroyPlan(&backward_plan);
 
   return estimate;
 }
 
-
-auto
-fft_execute(const Array::Pointer & data) -> Array::Pointer
-{
-
-  auto cp_data = Array::create(data); // copy data to avoid modifying the original data
-  cp_data->fill(0);
-
-  cle::print<float>(cp_data, "copy data");
-
-  std::cout << "FFT execute" << std::endl;
-  auto complex_data = create_hermitian(data);
-
-  fft_forward(data, complex_data);
-
-  std::cout << "FFT forward is done" << std::endl;
-
-  cle::print<float>(complex_data, "Complex data");
-
-  std::cout << "Starting FFT backward" << std::endl;
-
-  fft_backward(complex_data, cp_data);
-
-  std::cout << "FFT backward is done" << std::endl;
-
-  cle::print<float>(cp_data, "Real data");
-
-  return cp_data;
-}
 
 } // namespace cle::fft
