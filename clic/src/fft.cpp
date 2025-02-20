@@ -142,10 +142,9 @@ bake_backward(const Array::Pointer & real) -> clfftPlanHandle
 Array::Pointer
 create_hermitian(const Array::Pointer & real_buf)
 {
-  size_t nFreq = real_buf->depth() * real_buf->height() * (real_buf->width() / 2 + 1);
-  size_t hermitian_width = real_buf->width() / 2 + 1;
+  size_t hermitian_width = static_cast<size_t>(real_buf->width() / 2 + 1);
+  size_t nFreq = real_buf->depth() * real_buf->height() * (hermitian_width);
 
-  cl_int err;
   auto   ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(real_buf->device());
 
   // create a new buffer with twice the width for the imaginary part
@@ -268,7 +267,7 @@ fft_backward(const Array::Pointer & complex, Array::Pointer real) -> void
   /* Setup clFFT. */
   auto err = SetupFFT();
 
-  /* FFT library realted declarations */
+  /* FFT library related declarations */
   auto planHandle = bake_backward(real);
 
   /* Execute the plan. */
