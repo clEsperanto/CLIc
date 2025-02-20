@@ -42,6 +42,7 @@ bake_forward(const Array::Pointer & real) -> clfftPlanHandle
   clfftDim                       dim;
   std::array<size_t, dimensions> inStride;
   std::array<size_t, dimensions> outStride;
+  size_t hermitian_width = static_cast<size_t>(real->width() / 2 + 1);
   switch (real->dimension())
   {
     case 1:
@@ -52,14 +53,12 @@ bake_forward(const Array::Pointer & real) -> clfftPlanHandle
     case 2:
       dim = CLFFT_2D;
       inStride = { 1, static_cast<size_t>(real->width()), 1 };
-      outStride = { 1, static_cast<size_t>(real->width()) / 2 + 1, 1 };
+      outStride = { 1, hermitian_width, 1 };
       break;
     case 3:
       dim = CLFFT_3D;
       inStride = { 1, static_cast<size_t>(real->width()), static_cast<size_t>(real->width()) * real->height() };
-      outStride = { 1,
-                    static_cast<size_t>(real->width()) / 2 + 1,
-                    (static_cast<size_t>(real->width()) / 2 + 1) * real->height() };
+      outStride = { 1, hermitian_width, hermitian_width * real->height() };
       break;
     default:
       throw std::runtime_error("Invalid FFT dimension");
@@ -70,7 +69,7 @@ bake_forward(const Array::Pointer & real) -> clfftPlanHandle
   auto            err = clfftCreateDefaultPlan(&planHandle, ctx, dim, clLengths.data());
 
   /* Set plan parameters. */
-  err = clfftSetPlanPrecision(planHandle, CLFFT_SINGLE);
+  err = clfftSetPlanPrecision(planHandle, CLFFT_SINGLE_FAST);
   err = clfftSetLayout(planHandle, CLFFT_REAL, CLFFT_HERMITIAN_INTERLEAVED);
   err = clfftSetResultLocation(planHandle, CLFFT_OUTOFPLACE);
   err = clfftSetPlanInStride(planHandle, dim, inStride.data());
@@ -97,6 +96,7 @@ bake_backward(const Array::Pointer & real) -> clfftPlanHandle
   clfftDim                       dim;
   std::array<size_t, dimensions> inStride;
   std::array<size_t, dimensions> outStride;
+  size_t hermitian_width = static_cast<size_t>(real->width() / 2 + 1);
   switch (real->dimension())
   {
     case 1:
@@ -106,14 +106,12 @@ bake_backward(const Array::Pointer & real) -> clfftPlanHandle
       break;
     case 2:
       dim = CLFFT_2D;
-      inStride = { 1, static_cast<size_t>(real->width()) / 2 + 1, 1 };
+      inStride = { 1, hermitian_width, 1 };
       outStride = { 1, static_cast<size_t>(real->width()), 1 };
       break;
     case 3:
       dim = CLFFT_3D;
-      inStride = { 1,
-                   static_cast<size_t>(real->width()) / 2 + 1,
-                   (static_cast<size_t>(real->width()) / 2 + 1) * real->height() };
+      inStride = { 1, hermitian_width, hermitian_width * real->height() };
       outStride = { 1, static_cast<size_t>(real->width()), static_cast<size_t>(real->width()) * real->height() };
       break;
     default:
@@ -125,7 +123,7 @@ bake_backward(const Array::Pointer & real) -> clfftPlanHandle
   auto            err = clfftCreateDefaultPlan(&planHandle, ctx, dim, clLengths.data());
 
   /* Set plan parameters. */
-  err = clfftSetPlanPrecision(planHandle, CLFFT_SINGLE);
+  err = clfftSetPlanPrecision(planHandle, CLFFT_SINGLE_FAST);
   err = clfftSetLayout(planHandle, CLFFT_HERMITIAN_INTERLEAVED, CLFFT_REAL);
   err = clfftSetResultLocation(planHandle, CLFFT_OUTOFPLACE);
   err = clfftSetPlanInStride(planHandle, dim, inStride.data());
@@ -220,6 +218,8 @@ fft_forward(const Array::Pointer & real, Array::Pointer complex) -> Array::Point
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(real->device());
   auto ctx = ocl_device->getCLContext();
   auto queue = ocl_device->getCLCommandQueue();
+
+  
 
   if (complex == nullptr)
   {

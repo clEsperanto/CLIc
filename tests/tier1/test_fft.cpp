@@ -24,11 +24,12 @@ TEST_P(TestFFT, execute)
   gpu_input->writeFrom(input_2.data());
   cle::print<float>(gpu_input, "input");
 
-  auto gpu_output = cle::Array::create(gpu_input);
+  auto gpu_output = cle::Array::create(10, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_output->fill(0);
 
   // Perform FFT and get the output complex buffer
   auto gpu_complex = cle::fft::fft_forward(gpu_input, nullptr);
+  std::cout << "complexe shape : " << gpu_complex->width() << " " << gpu_complex->height() << " " << gpu_complex->depth() << std::endl;
   cle::print<float>(gpu_complex, "complex");
 
   // Perform IFFT and store the result in a real buffer
