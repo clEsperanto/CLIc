@@ -69,7 +69,7 @@ bake_forward(const Array::Pointer & real) -> clfftPlanHandle
   auto            err = clfftCreateDefaultPlan(&planHandle, ctx, dim, clLengths.data());
 
   /* Set plan parameters. */
-  err = clfftSetPlanPrecision(planHandle, CLFFT_SINGLE_FAST);
+  err = clfftSetPlanPrecision(planHandle, CLFFT_SINGLE);
   err = clfftSetLayout(planHandle, CLFFT_REAL, CLFFT_HERMITIAN_INTERLEAVED);
   err = clfftSetResultLocation(planHandle, CLFFT_OUTOFPLACE);
   err = clfftSetPlanInStride(planHandle, dim, inStride.data());
@@ -123,7 +123,7 @@ bake_backward(const Array::Pointer & real) -> clfftPlanHandle
   auto            err = clfftCreateDefaultPlan(&planHandle, ctx, dim, clLengths.data());
 
   /* Set plan parameters. */
-  err = clfftSetPlanPrecision(planHandle, CLFFT_SINGLE_FAST);
+  err = clfftSetPlanPrecision(planHandle, CLFFT_SINGLE);
   err = clfftSetLayout(planHandle, CLFFT_HERMITIAN_INTERLEAVED, CLFFT_REAL);
   err = clfftSetResultLocation(planHandle, CLFFT_OUTOFPLACE);
   err = clfftSetPlanInStride(planHandle, dim, inStride.data());
