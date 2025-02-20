@@ -42,7 +42,7 @@ bake_forward(const Array::Pointer & real) -> clfftPlanHandle
   clfftDim                       dim;
   std::array<size_t, dimensions> inStride;
   std::array<size_t, dimensions> outStride;
-  size_t hermitian_width = static_cast<size_t>(real->width() / 2 + 1);
+  size_t                         hermitian_width = static_cast<size_t>(real->width() / 2 + 1);
   switch (real->dimension())
   {
     case 1:
@@ -96,7 +96,7 @@ bake_backward(const Array::Pointer & real) -> clfftPlanHandle
   clfftDim                       dim;
   std::array<size_t, dimensions> inStride;
   std::array<size_t, dimensions> outStride;
-  size_t hermitian_width = static_cast<size_t>(real->width() / 2 + 1);
+  size_t                         hermitian_width = static_cast<size_t>(real->width() / 2 + 1);
   switch (real->dimension())
   {
     case 1:
@@ -219,7 +219,6 @@ fft_forward(const Array::Pointer & real, Array::Pointer complex) -> Array::Point
   auto ctx = ocl_device->getCLContext();
   auto queue = ocl_device->getCLCommandQueue();
 
-  
 
   if (complex == nullptr)
   {
