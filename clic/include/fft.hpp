@@ -159,29 +159,33 @@ fft_backward(const Array::Pointer & complex, Array::Pointer real) -> void;
  * @param input Array::Pointer
  * @param psf Array::Pointer
  * @param output Array::Pointer
+ * @param correlate bool
  * @return Array::Pointer
  */
 auto
-convolution(const Array::Pointer & input, const Array::Pointer & psf, Array::Pointer output) -> Array::Pointer;
+convolution(const Array::Pointer & input, const Array::Pointer & psf, Array::Pointer output, bool correlate)
+  -> Array::Pointer;
 
 /**
  * @brief Richardson Lucy deconvolution
  *
  * Perform a Richardson Lucy deconvolution on an observed image using a PSF kernel
  *
- * @param input Array::Pointer
+ * @param observe Array::Pointer
  * @param psf Array::Pointer
  * @param normal Array::Pointer
- * @param output Array::Pointer
+ * @param estimate Array::Pointer
  * @param iterations size_t
+ * @param regularization float
  * @return Array::Pointer
  */
 auto
-deconvolution(const Array::Pointer & input,
+deconvolution(const Array::Pointer & observe,
               const Array::Pointer & psf,
               Array::Pointer         normal,
-              Array::Pointer         output,
-              size_t                 iterations) -> Array::Pointer;
+              Array::Pointer         estimate,
+              size_t                 iterations,
+              float                  regularization) -> Array::Pointer;
 
 } // namespace cle::fft
 
