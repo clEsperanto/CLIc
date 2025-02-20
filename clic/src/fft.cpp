@@ -145,7 +145,7 @@ create_hermitian(const Array::Pointer & real_buf)
   size_t hermitian_width = static_cast<size_t>(real_buf->width() / 2 + 1);
   size_t nFreq = real_buf->depth() * real_buf->height() * (hermitian_width);
 
-  auto   ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(real_buf->device());
+  auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(real_buf->device());
 
   // create a new buffer with twice the width for the imaginary part
   return Array::create(hermitian_width * 2,
