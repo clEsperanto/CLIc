@@ -36,28 +36,35 @@ bake_forward(const Array::Pointer & real) -> clfftPlanHandle
   auto ctx = ocl_device->getCLContext();
   auto queue = ocl_device->getCLCommandQueue();
 
-  /* FFT library realted declarations */
-  constexpr size_t               dimensions = 3;
-  std::array<size_t, dimensions> clLengths = { real->width(), real->height(), real->depth() };
-  clfftDim                       dim;
-  std::array<size_t, dimensions> inStride;
-  std::array<size_t, dimensions> outStride;
-  size_t                         hermitian_width = static_cast<size_t>(real->width() / 2 + 1);
+
+  /* FFT library related declarations */
+  clfftDim dim;
+  std::vector<size_t> clLengths;
+  std::vector<size_t> inStride;
+  std::vector<size_t> outStride;
+  size_t hermitian_width = static_cast<size_t>(real->width() / 2) + 1;
+  // Reserve space for the vectors
+  clLengths.reserve(3);
+  inStride.reserve(3);
+  outStride.reserve(3);
   switch (real->dimension())
   {
     case 1:
       dim = CLFFT_1D;
-      inStride = { 1, 1, 1 };
-      outStride = { 1, 1, 1 };
+      clLengths = { real->width() };
+      inStride = { 1 };
+      outStride = { 1 };
       break;
     case 2:
       dim = CLFFT_2D;
-      inStride = { 1, static_cast<size_t>(real->width()), 1 };
-      outStride = { 1, hermitian_width, 1 };
+      clLengths = { real->width(), real->height() };
+      inStride = { 1, real->width() };
+      outStride = { 1, hermitian_width };
       break;
     case 3:
       dim = CLFFT_3D;
-      inStride = { 1, static_cast<size_t>(real->width()), static_cast<size_t>(real->width()) * real->height() };
+      clLengths = { real->width(), real->height(), real->depth() };
+      inStride = { 1, real->width(), real->width() * real->height() };
       outStride = { 1, hermitian_width, hermitian_width * real->height() };
       break;
     default:
@@ -90,29 +97,35 @@ bake_backward(const Array::Pointer & real) -> clfftPlanHandle
   auto ctx = ocl_device->getCLContext();
   auto queue = ocl_device->getCLCommandQueue();
 
-  /* FFT library realted declarations */
-  constexpr size_t               dimensions = 3;
-  std::array<size_t, dimensions> clLengths = { real->width(), real->height(), real->depth() };
-  clfftDim                       dim;
-  std::array<size_t, dimensions> inStride;
-  std::array<size_t, dimensions> outStride;
-  size_t                         hermitian_width = static_cast<size_t>(real->width() / 2 + 1);
+  /* FFT library related declarations */
+  clfftDim dim;
+  std::vector<size_t> clLengths;
+  std::vector<size_t> inStride;
+  std::vector<size_t> outStride;
+  size_t hermitian_width = static_cast<size_t>(real->width() / 2) + 1;
+  // Reserve space for the vectors
+  clLengths.reserve(3);
+  inStride.reserve(3);
+  outStride.reserve(3);
   switch (real->dimension())
   {
     case 1:
       dim = CLFFT_1D;
-      inStride = { 1, 1, 1 };
-      outStride = { 1, 1, 1 };
+      clLengths = { real->width() };
+      inStride = { 1 };
+      outStride = { 1 };
       break;
     case 2:
       dim = CLFFT_2D;
-      inStride = { 1, hermitian_width, 1 };
-      outStride = { 1, static_cast<size_t>(real->width()), 1 };
+      clLengths = { real->width(), real->height() };
+      inStride = { 1, hermitian_width};
+      outStride = { 1, real->width() };
       break;
     case 3:
       dim = CLFFT_3D;
+      clLengths = { real->width(), real->height(), real->depth() };
       inStride = { 1, hermitian_width, hermitian_width * real->height() };
-      outStride = { 1, static_cast<size_t>(real->width()), static_cast<size_t>(real->width()) * real->height() };
+      outStride = { 1, real->width(), real->width() * real->height() };
       break;
     default:
       throw std::runtime_error("Invalid FFT dimension");
@@ -140,12 +153,8 @@ bake_backward(const Array::Pointer & real) -> clfftPlanHandle
 Array::Pointer
 create_hermitian(const Array::Pointer & real_buf)
 {
-  size_t hermitian_width = static_cast<size_t>(real_buf->width() / 2 + 1);
-  size_t nFreq = real_buf->depth() * real_buf->height() * (hermitian_width);
-
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(real_buf->device());
-
-  // create a new buffer with twice the width for the imaginary part
+  size_t hermitian_width = static_cast<size_t>(real_buf->width() / 2) + 1;
   return Array::create(hermitian_width * 2,
                        real_buf->height(),
                        real_buf->depth(),
@@ -219,7 +228,6 @@ fft_forward(const Array::Pointer & real, Array::Pointer complex) -> Array::Point
   auto ctx = ocl_device->getCLContext();
   auto queue = ocl_device->getCLCommandQueue();
 
-
   if (complex == nullptr)
   {
     complex = create_hermitian(real);
@@ -228,7 +236,7 @@ fft_forward(const Array::Pointer & real, Array::Pointer complex) -> Array::Point
   /* Setup clFFT. */
   auto err = SetupFFT();
 
-  /* FFT library realted declarations */
+  /* FFT library related declarations */
   auto planHandle = bake_forward(real);
 
   /* Execute the plan. */
