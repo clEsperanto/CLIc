@@ -38,11 +38,11 @@ bake_forward(const Array::Pointer & real) -> clfftPlanHandle
 
 
   /* FFT library related declarations */
-  clfftDim dim;
+  clfftDim            dim;
   std::vector<size_t> clLengths;
   std::vector<size_t> inStride;
   std::vector<size_t> outStride;
-  size_t hermitian_width = static_cast<size_t>(real->width() / 2) + 1;
+  size_t              hermitian_width = static_cast<size_t>(real->width() / 2) + 1;
   // Reserve space for the vectors
   clLengths.reserve(3);
   inStride.reserve(3);
@@ -98,11 +98,11 @@ bake_backward(const Array::Pointer & real) -> clfftPlanHandle
   auto queue = ocl_device->getCLCommandQueue();
 
   /* FFT library related declarations */
-  clfftDim dim;
+  clfftDim            dim;
   std::vector<size_t> clLengths;
   std::vector<size_t> inStride;
   std::vector<size_t> outStride;
-  size_t hermitian_width = static_cast<size_t>(real->width() / 2) + 1;
+  size_t              hermitian_width = static_cast<size_t>(real->width() / 2) + 1;
   // Reserve space for the vectors
   clLengths.reserve(3);
   inStride.reserve(3);
@@ -118,7 +118,7 @@ bake_backward(const Array::Pointer & real) -> clfftPlanHandle
     case 2:
       dim = CLFFT_2D;
       clLengths = { real->width(), real->height() };
-      inStride = { 1, hermitian_width};
+      inStride = { 1, hermitian_width };
       outStride = { 1, real->width() };
       break;
     case 3:
@@ -153,7 +153,7 @@ bake_backward(const Array::Pointer & real) -> clfftPlanHandle
 Array::Pointer
 create_hermitian(const Array::Pointer & real_buf)
 {
-  auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(real_buf->device());
+  auto   ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(real_buf->device());
   size_t hermitian_width = static_cast<size_t>(real_buf->width() / 2) + 1;
   return Array::create(hermitian_width * 2,
                        real_buf->height(),
