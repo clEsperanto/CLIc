@@ -167,7 +167,6 @@ performIFFT(const Array::Pointer & input, Array::Pointer output) -> void
 }
 
 
-
 auto
 performConvolution(const Array::Pointer & input, const Array::Pointer & psf, Array::Pointer output, bool correlate)
   -> Array::Pointer
@@ -206,19 +205,17 @@ performConvolution(const Array::Pointer & input, const Array::Pointer & psf, Arr
   // Inverse to get convolved
   performIFFT(fft_input, output);
 
-  return output; 
+  return output;
 }
-
-
 
 
 auto
 performDeconvolution(const Array::Pointer & observe,
-              const Array::Pointer & psf,
-              Array::Pointer         normal,
-              Array::Pointer         estimate,
-              size_t                 iterations,
-              float                  regularization) -> Array::Pointer
+                     const Array::Pointer & psf,
+                     Array::Pointer         normal,
+                     Array::Pointer         estimate,
+                     size_t                 iterations,
+                     float                  regularization) -> Array::Pointer
 {
   // fetch ocl device, context and queue
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(observe->device());
@@ -339,27 +336,6 @@ performDeconvolution(const Array::Pointer & observe,
 
   return estimate;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 auto

@@ -127,12 +127,11 @@ execTotalVariationTerm(const Array::Pointer & estimate,
                        const RangeArray &     local_range) -> void;
 
 
-
 /**
  * @brief Fast Fourier Transform (vkFFT)
  *
  * Perform a forward FFT on a real buffer and store the result in a complex hermitian buffer
- * This operation takes a real array and returns a complex array in the frequency domain. 
+ * This operation takes a real array and returns a complex array in the frequency domain.
  * If provided, will store the result in the provided complex buffer otherwise will create a new one
  * and return it.
  *
@@ -188,12 +187,12 @@ performConvolution(const Array::Pointer & input, const Array::Pointer & psf, Arr
  */
 auto
 performDeconvolution(const Array::Pointer & observe,
-              const Array::Pointer & psf,
-              Array::Pointer         normal,
-              Array::Pointer         estimate,
-              size_t                 iterations,
-              float                  regularization) -> Array::Pointer;
-  
+                     const Array::Pointer & psf,
+                     Array::Pointer         normal,
+                     Array::Pointer         estimate,
+                     size_t                 iterations,
+                     float                  regularization) -> Array::Pointer;
+
 
 /**
  * @brief Fast Fourier Transform (clFFT)
