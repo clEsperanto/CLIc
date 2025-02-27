@@ -311,6 +311,12 @@ Array::size() const -> size_t
   return width_ * height_ * depth_;
 }
 auto
+Array::bitsize() const -> size_t
+{
+  
+  return size() * itemSize();
+}
+auto
 Array::width() const -> size_t
 {
   return width_;
