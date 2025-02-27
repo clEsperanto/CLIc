@@ -46,7 +46,7 @@ create_hermitian(const Array::Pointer & real_buf)
 
 
 auto
-configure(Array::Pointer & array, VkFFTConfiguration & configuration) -> void
+configure(const Array::Pointer & array, VkFFTConfiguration & configuration) -> void
 {
   configuration.numberBatches = 1;
   configuration.size[0] = array->width();
@@ -76,7 +76,7 @@ configure(Array::Pointer & array, VkFFTConfiguration & configuration) -> void
 
 
 auto
-performFFT(Array::Pointer & input, Array::Pointer output) -> Array::Pointer
+performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointer
 {
   if (output == nullptr)
   {
@@ -125,7 +125,7 @@ performFFT(Array::Pointer & input, Array::Pointer output) -> Array::Pointer
 
 
 auto
-performIFFT(Array::Pointer & input, Array::Pointer & output) -> void
+performIFFT(const Array::Pointer & input, Array::Pointer output) -> void
 {
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
   auto device = ocl_device->getCLDevice();
@@ -165,6 +165,201 @@ performIFFT(Array::Pointer & input, Array::Pointer & output) -> void
 
   deleteVkFFT(&app);
 }
+
+
+
+auto
+performConvolution(const Array::Pointer & input, const Array::Pointer & psf, Array::Pointer output, bool correlate)
+  -> Array::Pointer
+{
+  auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
+  auto ctx = ocl_device->getCLContext();
+  auto queue = ocl_device->getCLCommandQueue();
+
+  if (output == nullptr)
+  {
+    output = Array::create(input);
+  }
+
+  // create fft of psf and input
+  auto fft_psf = create_hermitian(psf);
+  auto fft_input = create_hermitian(input);
+
+  // create forward and backward plans
+  performFFT(input, fft_input);
+  performFFT(psf, fft_psf);
+
+
+  // Multiply in frequency domain
+  size_t nElts = input->size();
+  size_t nFreq = (input->width() / 2 + 1) * input->height() * input->depth();
+
+  constexpr size_t LOCAL_ITEM_SIZE = 64;
+  size_t           globalItemSize =
+    static_cast<size_t>(ceil(static_cast<double>(nElts) / static_cast<double>(LOCAL_ITEM_SIZE)) * LOCAL_ITEM_SIZE);
+  size_t globalItemSizeFreq =
+    static_cast<size_t>(ceil(static_cast<double>(nFreq) / static_cast<double>(LOCAL_ITEM_SIZE)) * LOCAL_ITEM_SIZE);
+  std::string kernel_name = correlate ? "vecComplexConjugateMultiply" : "vecComplexMultiply";
+  execOperationKernel(
+    kernel_name, fft_input, fft_psf, fft_input, nFreq, { globalItemSizeFreq, 1, 1 }, { LOCAL_ITEM_SIZE, 1, 1 });
+
+  // Inverse to get convolved
+  performIFFT(fft_input, output);
+
+  return output; 
+}
+
+
+
+
+auto
+performDeconvolution(const Array::Pointer & observe,
+              const Array::Pointer & psf,
+              Array::Pointer         normal,
+              Array::Pointer         estimate,
+              size_t                 iterations,
+              float                  regularization) -> Array::Pointer
+{
+  // fetch ocl device, context and queue
+  auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(observe->device());
+  auto ctx = ocl_device->getCLContext();
+  auto queue = ocl_device->getCLCommandQueue();
+
+  // get the number of elements and frequency domain elements
+  size_t nElts = observe->size();
+  size_t nFreq = (observe->width() / 2 + 1) * observe->height() * observe->depth();
+
+  // set the global and local item sizes
+  constexpr size_t LOCAL_ITEM_SIZE = 64;
+  size_t           globalItemSize =
+    static_cast<size_t>(ceil(static_cast<double>(nElts) / static_cast<double>(LOCAL_ITEM_SIZE)) * LOCAL_ITEM_SIZE);
+  size_t globalItemSizeFreq = static_cast<size_t>(
+    ceil(static_cast<double>(nFreq + 1000) / static_cast<double>(LOCAL_ITEM_SIZE)) * LOCAL_ITEM_SIZE);
+
+  // check if total variation is used
+  bool use_tv = regularization > 0;
+
+  // create buffers for the computation
+  if (estimate == nullptr)
+  {
+    estimate = Array::create(observe);
+  }
+  auto           reblurred = Array::create(observe);
+  auto           fft_estimate = create_hermitian(estimate);
+  auto           fft_psf = create_hermitian(psf);
+  Array::Pointer variation = nullptr;
+  if (use_tv)
+  {
+    variation = Array::create(observe);
+  }
+
+  performFFT(psf, fft_psf);
+
+  if (normal != nullptr)
+  {
+    // remove small values from normal, if used
+    execRemoveSmallValues(normal, nElts, { globalItemSize, 1, 1 }, { LOCAL_ITEM_SIZE, 1, 1 });
+  }
+
+
+  // Richardson Lucy - deconvolution loop
+  for (size_t i = 0; i < iterations; i++)
+  {
+    // FFT of estimate
+    performFFT(estimate, fft_estimate);
+
+    // complex multiply estimate FFT and PSF FFT
+    execOperationKernel("vecComplexMultiply",
+                        fft_estimate,
+                        fft_psf,
+                        fft_estimate,
+                        nFreq,
+                        { globalItemSizeFreq, 1, 1 },
+                        { LOCAL_ITEM_SIZE, 1, 1 });
+
+    // Inverse to get reblurred
+    performIFFT(fft_estimate, reblurred);
+
+    // divide observed by reblurred
+    execOperationKernel(
+      "vecDiv", observe, reblurred, reblurred, nElts, { globalItemSize, 1, 1 }, { LOCAL_ITEM_SIZE, 1, 1 });
+
+    // FFT of observed/reblurred
+    performFFT(reblurred, fft_estimate);
+
+    // Correlate above result with PSF
+    execOperationKernel("vecComplexConjugateMultiply",
+                        fft_estimate,
+                        fft_psf,
+                        fft_estimate,
+                        nFreq,
+                        { globalItemSizeFreq, 1, 1 },
+                        { LOCAL_ITEM_SIZE, 1, 1 });
+
+    // Inverse FFT to get update factor
+    performIFFT(fft_estimate, reblurred);
+
+    // total variation multiply by variation factor, if used
+    if (use_tv)
+    {
+      // calculate total variation
+      execTotalVariationTerm(estimate,
+                             reblurred,
+                             variation,
+                             observe->width(),
+                             observe->height(),
+                             observe->depth(),
+                             1.0,
+                             1.0,
+                             3.0,
+                             regularization,
+                             { globalItemSize, 1, 1 },
+                             { LOCAL_ITEM_SIZE, 1, 1 });
+      // multiply by variation factor
+      execOperationKernel(
+        "vecMul", estimate, variation, estimate, nElts, { globalItemSize, 1, 1 }, { LOCAL_ITEM_SIZE, 1, 1 });
+    }
+    else
+    {
+      // multiply estimate by update factor
+      execOperationKernel(
+        "vecMul", estimate, reblurred, estimate, nElts, { globalItemSize, 1, 1 }, { LOCAL_ITEM_SIZE, 1, 1 });
+    }
+
+    if (normal != nullptr)
+    {
+      // divide estimate by normal, if used
+      execOperationKernel(
+        "vecDiv", estimate, normal, estimate, nElts, { globalItemSize, 1, 1 }, { LOCAL_ITEM_SIZE, 1, 1 });
+    }
+
+    // wait for calculations to be finished before next iteration
+    clFinish(queue);
+  }
+
+  return estimate;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 auto

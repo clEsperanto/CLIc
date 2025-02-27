@@ -126,6 +126,75 @@ execTotalVariationTerm(const Array::Pointer & estimate,
                        const RangeArray &     global_range,
                        const RangeArray &     local_range) -> void;
 
+
+
+/**
+ * @brief Fast Fourier Transform (vkFFT)
+ *
+ * Perform a forward FFT on a real buffer and store the result in a complex hermitian buffer
+ * This operation takes a real array and returns a complex array in the frequency domain. 
+ * If provided, will store the result in the provided complex buffer otherwise will create a new one
+ * and return it.
+ *
+ * @param input Array::Pointer
+ * @param output Array::Pointer
+ * @return Array::Pointer
+ */
+auto
+performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointer;
+
+/**
+ * @brief Inverse Fast Fourier Transform (vkFFT)
+ *
+ * Perform a backward FFT on a complex hermitian buffer and store the result in a real buffer
+ * This operation takes a complex array and returns a real array in the spatial domain.
+ * The real output buffer must be provided as the second argument.
+ *
+ * @param input Array::Pointer
+ * @param output Array::Pointer
+ */
+auto
+performIFFT(const Array::Pointer & input, Array::Pointer output) -> void;
+
+/**
+ * @brief FFT Convolution operation (vkFFT)
+ *
+ * Perform a convolution operation on two arrays in the frequency domain
+ * It takes two real arrays, performs a forward FFT on both, multiply them in the frequency domain
+ * and then perform a backward FFT on the result
+ *
+ * @param input Array::Pointer
+ * @param psf Array::Pointer
+ * @param output Array::Pointer
+ * @param correlate bool
+ * @return Array::Pointer
+ */
+auto
+performConvolution(const Array::Pointer & input, const Array::Pointer & psf, Array::Pointer output, bool correlate)
+  -> Array::Pointer;
+
+/**
+ * @brief Richardson Lucy deconvolution (vkFFT)
+ *
+ * Perform a Richardson Lucy deconvolution on an observed image using a PSF kernel
+ *
+ * @param observe Array::Pointer
+ * @param psf Array::Pointer
+ * @param normal Array::Pointer
+ * @param estimate Array::Pointer
+ * @param iterations size_t
+ * @param regularization float
+ * @return Array::Pointer
+ */
+auto
+performDeconvolution(const Array::Pointer & observe,
+              const Array::Pointer & psf,
+              Array::Pointer         normal,
+              Array::Pointer         estimate,
+              size_t                 iterations,
+              float                  regularization) -> Array::Pointer;
+  
+
 /**
  * @brief Fast Fourier Transform (clFFT)
  *
@@ -138,32 +207,6 @@ execTotalVariationTerm(const Array::Pointer & estimate,
  */
 auto
 fft_forward(const Array::Pointer & real, Array::Pointer complex) -> Array::Pointer;
-
-/**
- * @brief Fast Fourier Transform (vkFFT)
- *
- * Perform a forward FFT on a real buffer and store the result in a complex buffer
- * This operation takes a real array and returns a complex array in the frequency domain
- *
- * @param input Array::Pointer
- * @param output Array::Pointer
- * @return Array::Pointer
- */
-auto
-performFFT(Array::Pointer & input, Array::Pointer output) -> Array::Pointer;
-
-/**
- * @brief Inverse Fast Fourier Transform (vkFFT)
- *
- * Perform a backward FFT on a complex buffer and store the result in a real buffer
- * This operation takes a complex array and returns a real array in the spatial domain
- *
- * @param input Array::Pointer
- * @param output Array::Pointer
- * @return Array::Pointer
- */
-auto
-performIFFT(Array::Pointer & input, Array::Pointer & output) -> void;
 
 /**
  * @brief Inverse Fast Fourier Transform (clFFT)
