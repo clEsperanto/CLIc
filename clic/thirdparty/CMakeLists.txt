@@ -30,9 +30,9 @@ FetchContent_MakeAvailable(cleKernels eigen clFFT)
 
 
 # Fetch vkFFT library sources
-FetchContent_Declare(VkFFT
 set(VKFFT_BACKEND 3 CACHE STRING "VkFFT backend to use (1, 2, 3)")
 set(VKFFT_MAX_FFT_DIMENSIONS 4 CACHE STRING "VkFFT maximum dimension supported")
+FetchContent_Declare(VkFFT
     GIT_REPOSITORY https://github.com/DTolm/VkFFT
     GIT_TAG        v1.3.4 #master
     GIT_SHALLOW ON
