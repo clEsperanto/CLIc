@@ -68,7 +68,6 @@ TEST_P(TestFFT, executeVKFFT)
 
   cle::fft::performIFFT(output, gpu_final);
   cle::print<float>(gpu_final, "output real");
-
 }
 
 std::vector<std::string>

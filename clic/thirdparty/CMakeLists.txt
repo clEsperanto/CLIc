@@ -33,7 +33,7 @@ FetchContent_MakeAvailable(cleKernels eigen clFFT)
 FetchContent_Declare(VkFFT
 set(VKFFT_BACKEND 3 CACHE STRING "VkFFT backend to use (1, 2, 3)")
 set(VKFFT_MAX_FFT_DIMENSIONS 4 CACHE STRING "VkFFT maximum dimension supported")
-    GIT_REPOSITORY https://github.com/DTolm/VkFFT 
+    GIT_REPOSITORY https://github.com/DTolm/VkFFT
     GIT_TAG        v1.3.4 #master
     GIT_SHALLOW ON
 )
@@ -44,5 +44,3 @@ if(NOT VkFFT_POPULATED)
 endif()
 add_library(VkFFT INTERFACE)
 target_compile_definitions(VkFFT INTERFACE -DVKFFT_BACKEND=${VKFFT_BACKEND} -DVKFFT_MAX_FFT_DIMENSIONS=${VKFFT_MAX_FFT_DIMENSIONS})
-
-

@@ -30,7 +30,6 @@ SetupFFT() -> cl_int
 }
 
 
-
 Array::Pointer
 create_hermitian(const Array::Pointer & real_buf)
 {
@@ -46,38 +45,42 @@ create_hermitian(const Array::Pointer & real_buf)
 }
 
 
-
-
-
-
-auto configure(Array::Pointer & array, VkFFTConfiguration & configuration) -> void
+auto
+configure(Array::Pointer & array, VkFFTConfiguration & configuration) -> void
 {
   configuration.numberBatches = 1;
   configuration.size[0] = array->width();
   configuration.size[1] = array->height();
   configuration.size[2] = array->depth();
-  configuration.FFTdim = 1; 
-  if (configuration.size[1] > 1) { configuration.FFTdim++; }
-  if (configuration.size[2] > 1) { configuration.FFTdim++; }
+  configuration.FFTdim = 1;
+  if (configuration.size[1] > 1)
+  {
+    configuration.FFTdim++;
+  }
+  if (configuration.size[2] > 1)
+  {
+    configuration.FFTdim++;
+  }
 
-  configuration.normalize = 1;         // OFF, Normalization
-  configuration.performR2C = 1;        // ON, Real 2 Complex and reverse
-  configuration.performDCT = 0;        // OFF, Discrete Cosine Transform   
-  
+  configuration.normalize = 1;  // OFF, Normalization
+  configuration.performR2C = 1; // ON, Real 2 Complex and reverse
+  configuration.performDCT = 0; // OFF, Discrete Cosine Transform
+
   configuration.isInputFormatted = 1;
   configuration.inverseReturnToInputBuffer = 1;
-  
+
   configuration.inputBufferStride[0] = configuration.size[0];
   configuration.inputBufferStride[1] = configuration.inputBufferStride[0] * configuration.size[1];
   configuration.inputBufferStride[2] = configuration.inputBufferStride[1] * configuration.size[2];
 }
 
 
-auto performFFT(Array::Pointer & input, Array::Pointer output) -> Array::Pointer
+auto
+performFFT(Array::Pointer & input, Array::Pointer output) -> Array::Pointer
 {
-  if(output == nullptr)
+  if (output == nullptr)
   {
-    output = create_hermitian(input);  
+    output = create_hermitian(input);
   }
 
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
@@ -85,31 +88,33 @@ auto performFFT(Array::Pointer & input, Array::Pointer output) -> Array::Pointer
   auto context = ocl_device->getCLContext();
   auto queue = ocl_device->getCLCommandQueue();
 
-  VkFFTConfiguration configuration {};
-  configure(input, configuration); 
+  VkFFTConfiguration configuration{};
+  configure(input, configuration);
 
   auto psize = output->bitsize();
   auto psizein = input->bitsize();
-  configuration.bufferSize = &psize; 
-  configuration.inputBufferSize = &psizein; 
-  configuration.buffer = static_cast<cl_mem*>(*output->get());
-  configuration.inputBuffer = static_cast<cl_mem*>(*input->get());
-  configuration.outputBuffer = static_cast<cl_mem*>(*output->get());
+  configuration.bufferSize = &psize;
+  configuration.inputBufferSize = &psizein;
+  configuration.buffer = static_cast<cl_mem *>(*output->get());
+  configuration.inputBuffer = static_cast<cl_mem *>(*input->get());
+  configuration.outputBuffer = static_cast<cl_mem *>(*output->get());
   configuration.device = &device;
   configuration.context = &context;
   configuration.commandQueue = &queue;
 
   VkFFTApplication app = {};
-  auto resFFT = initializeVkFFT(&app, configuration);
-  if (resFFT != VKFFT_SUCCESS) {
+  auto             resFFT = initializeVkFFT(&app, configuration);
+  if (resFFT != VKFFT_SUCCESS)
+  {
     throw std::runtime_error("Error: Failed to initialize VkFFT -> " + std::string(getVkFFTErrorString(resFFT)));
   }
-  
+
   VkFFTLaunchParams launchParams = {};
   launchParams.commandQueue = &queue;
 
   resFFT = VkFFTAppend(&app, -1, &launchParams);
-  if (resFFT != VKFFT_SUCCESS) {
+  if (resFFT != VKFFT_SUCCESS)
+  {
     throw std::runtime_error("Error: Failed to execute VkFFT -> " + std::string(getVkFFTErrorString(resFFT)));
   }
   clFinish(queue);
@@ -119,48 +124,47 @@ auto performFFT(Array::Pointer & input, Array::Pointer output) -> Array::Pointer
 }
 
 
-auto performIFFT(Array::Pointer & input, Array::Pointer & output) -> void
+auto
+performIFFT(Array::Pointer & input, Array::Pointer & output) -> void
 {
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
   auto device = ocl_device->getCLDevice();
   auto context = ocl_device->getCLContext();
   auto queue = ocl_device->getCLCommandQueue();
 
-  VkFFTConfiguration configuration {};
-  configure(output, configuration); 
+  VkFFTConfiguration configuration{};
+  configure(output, configuration);
 
   auto psize = input->bitsize();
   auto psizein = output->bitsize();
-  configuration.bufferSize = &psize; 
-  configuration.inputBufferSize = &psizein; 
-  configuration.buffer = static_cast<cl_mem*>(*input->get());
-  configuration.inputBuffer = static_cast<cl_mem*>(*output->get());
-  configuration.outputBuffer = static_cast<cl_mem*>(*input->get());
+  configuration.bufferSize = &psize;
+  configuration.inputBufferSize = &psizein;
+  configuration.buffer = static_cast<cl_mem *>(*input->get());
+  configuration.inputBuffer = static_cast<cl_mem *>(*output->get());
+  configuration.outputBuffer = static_cast<cl_mem *>(*input->get());
   configuration.device = &device;
   configuration.context = &context;
   configuration.commandQueue = &queue;
 
   VkFFTApplication app = {};
-  auto resFFT = initializeVkFFT(&app, configuration);
-  if (resFFT != VKFFT_SUCCESS) {
+  auto             resFFT = initializeVkFFT(&app, configuration);
+  if (resFFT != VKFFT_SUCCESS)
+  {
     throw std::runtime_error("Error: Failed to initialize VkFFT -> " + std::string(getVkFFTErrorString(resFFT)));
   }
-  
+
   VkFFTLaunchParams launchParams = {};
   launchParams.commandQueue = &queue;
 
   resFFT = VkFFTAppend(&app, 1, &launchParams);
-  if (resFFT != VKFFT_SUCCESS) {
+  if (resFFT != VKFFT_SUCCESS)
+  {
     throw std::runtime_error("Error: Failed to execute VkFFT -> " + std::string(getVkFFTErrorString(resFFT)));
   }
   clFinish(queue);
 
   deleteVkFFT(&app);
 }
-
-
-
-
 
 
 auto
@@ -282,8 +286,6 @@ bake_backward(const Array::Pointer & real) -> clfftPlanHandle
   /* Return the plan */
   return planHandle;
 }
-
-
 
 
 auto

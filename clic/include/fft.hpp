@@ -149,7 +149,8 @@ fft_forward(const Array::Pointer & real, Array::Pointer complex) -> Array::Point
  * @param output Array::Pointer
  * @return Array::Pointer
  */
-auto performFFT(Array::Pointer & input, Array::Pointer output) -> Array::Pointer;
+auto
+performFFT(Array::Pointer & input, Array::Pointer output) -> Array::Pointer;
 
 /**
  * @brief Inverse Fast Fourier Transform (vkFFT)
@@ -161,7 +162,8 @@ auto performFFT(Array::Pointer & input, Array::Pointer output) -> Array::Pointer
  * @param output Array::Pointer
  * @return Array::Pointer
  */
-auto performIFFT(Array::Pointer & input, Array::Pointer & output) -> void;
+auto
+performIFFT(Array::Pointer & input, Array::Pointer & output) -> void;
 
 /**
  * @brief Inverse Fast Fourier Transform (clFFT)

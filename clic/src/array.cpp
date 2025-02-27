@@ -313,7 +313,7 @@ Array::size() const -> size_t
 auto
 Array::bitsize() const -> size_t
 {
-  
+
   return size() * itemSize();
 }
 auto

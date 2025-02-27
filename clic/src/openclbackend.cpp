@@ -161,8 +161,8 @@ OpenCLBackend::initialiseRessources() -> void
     size_t device_index = 0;
     for (const auto & device_id : device_ids)
     {
-      auto context = std::make_shared<OpenCLDevice::Context>(
-        clCreateContext(nullptr, 1, &device_id, nullptr, nullptr, nullptr));
+      auto context =
+        std::make_shared<OpenCLDevice::Context>(clCreateContext(nullptr, 1, &device_id, nullptr, nullptr, nullptr));
       if (context == nullptr)
       {
         throw std::runtime_error("Error: Failed to create OpenCL context.");
