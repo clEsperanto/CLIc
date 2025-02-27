@@ -3,6 +3,8 @@
 
 #include "clFFT.h"
 
+#include "vkFFT.h"
+
 #include "array.hpp"
 #include "execution.hpp"
 namespace cle::fft
@@ -125,7 +127,7 @@ execTotalVariationTerm(const Array::Pointer & estimate,
                        const RangeArray &     local_range) -> void;
 
 /**
- * @brief Fast Fourier Transform
+ * @brief Fast Fourier Transform (clFFT)
  *
  * Perform a forward FFT on a real buffer and store the result in a complex buffer
  * This operation takes a real array and returns a complex array in the frequency domain
@@ -138,7 +140,31 @@ auto
 fft_forward(const Array::Pointer & real, Array::Pointer complex) -> Array::Pointer;
 
 /**
- * @brief Inverse Fast Fourier Transform
+ * @brief Fast Fourier Transform (vkFFT)
+ *
+ * Perform a forward FFT on a real buffer and store the result in a complex buffer
+ * This operation takes a real array and returns a complex array in the frequency domain
+ *
+ * @param input Array::Pointer
+ * @param output Array::Pointer
+ * @return Array::Pointer
+ */
+auto performFFT(Array::Pointer & input, Array::Pointer output) -> Array::Pointer;
+
+/**
+ * @brief Inverse Fast Fourier Transform (vkFFT)
+ *
+ * Perform a backward FFT on a complex buffer and store the result in a real buffer
+ * This operation takes a complex array and returns a real array in the spatial domain
+ *
+ * @param input Array::Pointer
+ * @param output Array::Pointer
+ * @return Array::Pointer
+ */
+auto performIFFT(Array::Pointer & input, Array::Pointer & output) -> void;
+
+/**
+ * @brief Inverse Fast Fourier Transform (clFFT)
  *
  * Perform a backward FFT on a complex buffer and store the result in a real buffer
  * This operation takes a complex array and returns a real array in the spatial domain

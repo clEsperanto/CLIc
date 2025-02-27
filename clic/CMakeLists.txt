@@ -13,14 +13,18 @@ file(GLOB_RECURSE SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 file(GLOB_RECURSE TIERS "${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.cpp")
 list(APPEND SOURCES ${TIERS})
 
+message(STATUS "FETCHCONTENT_BASE_DIR: ${FETCHCONTENT_BASE_DIR}")
+message(STATUS "VKFFT_INCLUDE_DIR: ${VKFFT_INCLUDE_DIR}")
+
 # target library definition
 add_library(${LIBRARY_NAME} ${SOURCES})
-target_link_libraries(${LIBRARY_NAME} PUBLIC cleKernels::cleKernels Eigen3::Eigen clFFT)
+target_link_libraries(${LIBRARY_NAME} PUBLIC cleKernels::cleKernels Eigen3::Eigen clFFT VkFFT)
 
 # make target depend on other targets
-add_dependencies(${LIBRARY_NAME} cleKernels::cleKernels Eigen3::Eigen clFFT)
+add_dependencies(${LIBRARY_NAME} cleKernels::cleKernels Eigen3::Eigen clFFT VkFFT)
 
 add_library(${PROJECT_NAME}::${LIBRARY_NAME} ALIAS ${LIBRARY_NAME})
+# target_include_directories(${LIBRARY_NAME} PUBLIC ${FETCHCONTENT_BASE_DIR}/vkfft-src/vkFFT/)
 target_include_directories(${LIBRARY_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> # CLIc headers
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include> # CLIc configuration headers
@@ -28,6 +32,7 @@ target_include_directories(${LIBRARY_NAME} PUBLIC
     $<BUILD_INTERFACE:${EIGEN3_INCLUDE_DIR}>               # Eigen headers
     $<BUILD_INTERFACE:${clFFT_SOURCE_DIR}/include>         # clFFT headers
     $<BUILD_INTERFACE:${clFFT_BINARY_DIR}/include>         # clFFT version headers
+    $<BUILD_INTERFACE:${FETCHCONTENT_BASE_DIR}/vkfft-src/vkFFT/> # VkFFT headers
     $<INSTALL_INTERFACE:include>
 )
 

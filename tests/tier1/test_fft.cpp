@@ -12,7 +12,7 @@ protected:
   };
 };
 
-TEST_P(TestFFT, execute)
+TEST_P(TestFFT, executeCLFFT)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -45,6 +45,30 @@ TEST_P(TestFFT, execute)
   {
     EXPECT_NEAR(output[i], input_2[i], 0.1);
   }
+}
+
+
+TEST_P(TestFFT, executeVKFFT)
+{
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "cpu");
+  device->setWaitToFinish(true);
+
+  auto gpu_input = cle::Array::create(10, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  gpu_input->writeFrom(input_2.data());
+  auto gpu_final = cle::Array::create(gpu_input);
+  gpu_final->fill(0);
+
+  cle::print<float>(gpu_input, "input real");
+
+  auto output = cle::fft::performFFT(gpu_input, nullptr);
+  cle::print<float>(output, "output complex");
+
+  cle::fft::performIFFT(output, gpu_final);
+  cle::print<float>(gpu_final, "output real");
+
 }
 
 std::vector<std::string>

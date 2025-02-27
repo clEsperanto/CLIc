@@ -20,6 +20,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CXX_STANDARD 17)           # C++17, global property instead of target property because of wrapper
 set(CMAKE_CXX_STANDARD_REQUIRED ON)  # C++17 is required (no fallback)
 set(CMAKE_CXX_EXTENSIONS OFF)        # Don't use e.g. GNU extension (like -std=gnu++11) for portability
+add_compile_definitions(CL_TARGET_OPENCL_VERSION=120)
 
 # manage build type options (default: Release)
 get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
