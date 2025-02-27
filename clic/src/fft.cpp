@@ -91,8 +91,8 @@ performFFT(Array::Pointer & input, Array::Pointer output) -> Array::Pointer
   VkFFTConfiguration configuration{};
   configure(input, configuration);
 
-  auto psize = output->bitsize();
-  auto psizein = input->bitsize();
+  auto psize = static_cast<uint64_t>(output->bitsize());
+  auto psizein = static_cast<uint64_t>(input->bitsize());
   configuration.bufferSize = &psize;
   configuration.inputBufferSize = &psizein;
   configuration.buffer = static_cast<cl_mem *>(*output->get());
@@ -135,8 +135,8 @@ performIFFT(Array::Pointer & input, Array::Pointer & output) -> void
   VkFFTConfiguration configuration{};
   configure(output, configuration);
 
-  auto psize = input->bitsize();
-  auto psizein = output->bitsize();
+  auto psize = static_cast<uint64_t>(input->bitsize());
+  auto psizein = static_cast<uint64_t>(output->bitsize());
   configuration.bufferSize = &psize;
   configuration.inputBufferSize = &psizein;
   configuration.buffer = static_cast<cl_mem *>(*input->get());
