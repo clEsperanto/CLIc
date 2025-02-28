@@ -463,7 +463,7 @@ auto
 execOperationKernel(const std::string      name,
                     const Array::Pointer & bufferA,
                     const Array::Pointer & bufferB,
-                    Array::Pointer buffer_out,
+                    Array::Pointer         buffer_out,
                     unsigned int           nElements,
                     const RangeArray &     global_range,
                     const RangeArray &     local_range) -> void
@@ -475,7 +475,7 @@ execOperationKernel(const std::string      name,
 }
 
 auto
-execRemoveSmallValues(Array::Pointer   BufferA,
+execRemoveSmallValues(Array::Pointer     BufferA,
                       unsigned int       nElements,
                       const RangeArray & global_range,
                       const RangeArray & local_range) -> void
@@ -489,7 +489,7 @@ execRemoveSmallValues(Array::Pointer   BufferA,
 auto
 execTotalVariationTerm(const Array::Pointer & estimate,
                        const Array::Pointer & correction,
-                       Array::Pointer  variation,
+                       Array::Pointer         variation,
                        unsigned int           nx,
                        unsigned int           ny,
                        unsigned int           nz,
