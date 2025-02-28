@@ -177,7 +177,7 @@ OpenCLBackend::initialiseRessources() -> void
   //       std::make_shared<OpenCLDevice::Ressources>(platform_id, device_id, device_index++), context, command_queue));
   //   }
   // }
-  
+
 #else
   throw std::runtime_error("Error: OpenCL is not enabled");
 #endif
