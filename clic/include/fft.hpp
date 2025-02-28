@@ -65,7 +65,7 @@ bake_backward(const Array::Pointer & real) -> clfftPlanHandle;
  * @param bufferA Array::Pointer
  * @param bufferB Array::Pointer
  * @param buffer_out Array::Pointer
- * @param nElements size_t
+ * @param nElements unsigned int
  * @param global_range RangeArray
  * @param local_range RangeArray
  */
@@ -74,7 +74,7 @@ execOperationKernel(const std::string      name,
                     const Array::Pointer & bufferA,
                     const Array::Pointer & bufferB,
                     const Array::Pointer & buffer_out,
-                    size_t                 nElements,
+                    unsigned int                 nElements,
                     const RangeArray &     global_range,
                     const RangeArray &     local_range) -> void;
 
@@ -84,13 +84,13 @@ execOperationKernel(const std::string      name,
  * Execute remove small values kernel (inplace)
  *
  * @param BufferA Array::Pointer
- * @param nElements size_t
+ * @param nElements unsigned int
  * @param global_range RangeArray
  * @param local_range RangeArray
  */
 auto
 execRemoveSmallValues(Array::Pointer &   BufferA,
-                      size_t             nElements,
+  unsigned int             nElements,
                       const RangeArray & global_range,
                       const RangeArray & local_range) -> void;
 
@@ -102,9 +102,9 @@ execRemoveSmallValues(Array::Pointer &   BufferA,
  * @param estimate Array::Pointer
  * @param correction Array::Pointer
  * @param variation Array::Pointer
- * @param nx size_t
- * @param ny size_t
- * @param nz size_t
+ * @param nx unsigned int
+ * @param ny unsigned int
+ * @param nz unsigned int
  * @param hx float
  * @param hy float
  * @param hz float
@@ -116,9 +116,9 @@ auto
 execTotalVariationTerm(const Array::Pointer & estimate,
                        const Array::Pointer & correction,
                        const Array::Pointer & variation,
-                       size_t                 nx,
-                       size_t                 ny,
-                       size_t                 nz,
+                       unsigned int                 nx,
+                       unsigned int                 ny,
+                       unsigned int                 nz,
                        float                  hx,
                        float                  hy,
                        float                  hz,

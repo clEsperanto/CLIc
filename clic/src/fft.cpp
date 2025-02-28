@@ -464,7 +464,7 @@ execOperationKernel(const std::string      name,
                     const Array::Pointer & bufferA,
                     const Array::Pointer & bufferB,
                     const Array::Pointer & buffer_out,
-                    size_t                 nElements,
+                    unsigned int                 nElements,
                     const RangeArray &     global_range,
                     const RangeArray &     local_range) -> void
 {
@@ -476,7 +476,7 @@ execOperationKernel(const std::string      name,
 
 auto
 execRemoveSmallValues(Array::Pointer &   BufferA,
-                      size_t             nElements,
+  unsigned int             nElements,
                       const RangeArray & global_range,
                       const RangeArray & local_range) -> void
 {
@@ -490,9 +490,9 @@ auto
 execTotalVariationTerm(const Array::Pointer & estimate,
                        const Array::Pointer & correction,
                        const Array::Pointer & variation,
-                       size_t                 nx,
-                       size_t                 ny,
-                       size_t                 nz,
+                       unsigned int                 nx,
+                       unsigned int                 ny,
+                       unsigned int                 nz,
                        float                  hx,
                        float                  hy,
                        float                  hz,
