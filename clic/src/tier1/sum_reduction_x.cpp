@@ -33,10 +33,10 @@ sum_reduction_x_func(const Device::Pointer & device, const Array::Pointer & src,
     }
     dst = Array::create(dst_width, dst_height, dst_depth, 1, src->dtype(), src->mtype(), src->device());
   }
-  const KernelInfo    kernel = { "sum_reduction_x", kernel::sum_reduction_x };
+  const KernelInfo    kernel_code = { "sum_reduction_x", kernel::sum_reduction_x };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "index", blocksize } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 
