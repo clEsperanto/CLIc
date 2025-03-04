@@ -70,13 +70,12 @@ bake_backward(const Array::Pointer & real) -> clfftPlanHandle;
  * @param local_range RangeArray
  */
 auto
-execOperationKernel(const std::string      name,
+execOperationKernel(const Device::Pointer& device, 
+                    const std::string      name,
                     const Array::Pointer & bufferA,
                     const Array::Pointer & bufferB,
                     Array::Pointer         buffer_out,
-                    unsigned int           nElements,
-                    const RangeArray &     global_range,
-                    const RangeArray &     local_range) -> void;
+                    const unsigned int     nElements) -> Array::Pointer;
 
 /**
  * @brief Execute remove small values kernel (inplace)
@@ -89,10 +88,7 @@ execOperationKernel(const std::string      name,
  * @param local_range RangeArray
  */
 auto
-execRemoveSmallValues(Array::Pointer     BufferA,
-                      unsigned int       nElements,
-                      const RangeArray & global_range,
-                      const RangeArray & local_range) -> void;
+execRemoveSmallValues(const Device::Pointer & device, Array::Pointer buffer, const unsigned int           nElements) -> void;
 
 /**
  * @brief Execute a total variation term
@@ -113,7 +109,8 @@ execRemoveSmallValues(Array::Pointer     BufferA,
  * @param local_range RangeArray
  */
 auto
-execTotalVariationTerm(const Array::Pointer & estimate,
+execTotalVariationTerm(const Device::Pointer & device,
+                       const Array::Pointer & estimate,
                        const Array::Pointer & correction,
                        Array::Pointer         variation,
                        unsigned int           nx,
@@ -123,8 +120,7 @@ execTotalVariationTerm(const Array::Pointer & estimate,
                        float                  hy,
                        float                  hz,
                        float                  regularization_factor,
-                       const RangeArray &     global_range,
-                       const RangeArray &     local_range) -> void;
+                       const unsigned int           nElements) -> void;
 
 
 /**
@@ -219,43 +215,43 @@ fft_forward(const Array::Pointer & real, Array::Pointer complex) -> Array::Point
 auto
 fft_backward(const Array::Pointer & complex, Array::Pointer real) -> void;
 
-/**
- * @brief FFT Convolution operation
- *
- * Perform a convolution operation on two arrays in the frequency domain
- * It takes two real arrays, performs a forward FFT on both, multiply them in the frequency domain
- * and then perform a backward FFT on the result
- *
- * @param input Array::Pointer
- * @param psf Array::Pointer
- * @param output Array::Pointer
- * @param correlate bool
- * @return Array::Pointer
- */
-auto
-convolution(const Array::Pointer & input, const Array::Pointer & psf, Array::Pointer output, bool correlate)
-  -> Array::Pointer;
+// /**
+//  * @brief FFT Convolution operation
+//  *
+//  * Perform a convolution operation on two arrays in the frequency domain
+//  * It takes two real arrays, performs a forward FFT on both, multiply them in the frequency domain
+//  * and then perform a backward FFT on the result
+//  *
+//  * @param input Array::Pointer
+//  * @param psf Array::Pointer
+//  * @param output Array::Pointer
+//  * @param correlate bool
+//  * @return Array::Pointer
+//  */
+// auto
+// convolution(const Array::Pointer & input, const Array::Pointer & psf, Array::Pointer output, bool correlate)
+//   -> Array::Pointer;
 
-/**
- * @brief Richardson Lucy deconvolution
- *
- * Perform a Richardson Lucy deconvolution on an observed image using a PSF kernel
- *
- * @param observe Array::Pointer
- * @param psf Array::Pointer
- * @param normal Array::Pointer
- * @param estimate Array::Pointer
- * @param iterations size_t
- * @param regularization float
- * @return Array::Pointer
- */
-auto
-deconvolution(const Array::Pointer & observe,
-              const Array::Pointer & psf,
-              Array::Pointer         normal,
-              Array::Pointer         estimate,
-              size_t                 iterations,
-              float                  regularization) -> Array::Pointer;
+// /**
+//  * @brief Richardson Lucy deconvolution
+//  *
+//  * Perform a Richardson Lucy deconvolution on an observed image using a PSF kernel
+//  *
+//  * @param observe Array::Pointer
+//  * @param psf Array::Pointer
+//  * @param normal Array::Pointer
+//  * @param estimate Array::Pointer
+//  * @param iterations size_t
+//  * @param regularization float
+//  * @return Array::Pointer
+//  */
+// auto
+// deconvolution(const Array::Pointer & observe,
+//               const Array::Pointer & psf,
+//               Array::Pointer         normal,
+//               Array::Pointer         estimate,
+//               size_t                 iterations,
+//               float                  regularization) -> Array::Pointer;
 
 } // namespace cle::fft
 
