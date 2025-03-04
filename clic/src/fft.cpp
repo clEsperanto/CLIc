@@ -255,7 +255,8 @@ performDeconvolution(const Array::Pointer & observe,
     performFFT(reblurred, fft_estimate);
 
     // Correlate above result with PSF
-    execOperationKernel(device, "vecComplexConjugateMultiply", fft_estimate, fft_psf, fft_estimate, fft_estimate->size() / 2);
+    execOperationKernel(
+      device, "vecComplexConjugateMultiply", fft_estimate, fft_psf, fft_estimate, fft_estimate->size() / 2);
 
     // Inverse FFT of estimate to get reblurred
     performIFFT(fft_estimate, reblurred);
@@ -445,21 +446,21 @@ execRemoveSmallValues(const Device::Pointer & device, Array::Pointer buffer, con
 
 auto
 execTotalVariationTerm(const Device::Pointer & device,
-                       const Array::Pointer & estimate,
-                       const Array::Pointer & correction,
-                       Array::Pointer         variation,
-                       float                  hx,
-                       float                  hy,
-                       float                  hz,
-                       float                  regularization_factor) -> void
+                       const Array::Pointer &  estimate,
+                       const Array::Pointer &  correction,
+                       Array::Pointer          variation,
+                       float                   hx,
+                       float                   hy,
+                       float                   hz,
+                       float                   regularization_factor) -> void
 {
- 
+
   unsigned int nx = estimate->width();
   unsigned int ny = estimate->height();
   unsigned int nz = estimate->depth();
-  
-    const RangeArray global_range = {static_cast<size_t>(nx), static_cast<size_t>(ny), static_cast<size_t>(nz)};
-    const RangeArray local_range = {512, 512, 64};
+
+  const RangeArray    global_range = { static_cast<size_t>(nx), static_cast<size_t>(ny), static_cast<size_t>(nz) };
+  const RangeArray    local_range = { 512, 512, 64 };
   KernelInfo          kernel = { "totalVariationTerm", kernel::fft };
   const ParameterList params = { { "estimate", estimate },
                                  { "correction", correction },

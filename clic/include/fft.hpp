@@ -88,7 +88,7 @@ execOperationKernel(const Device::Pointer & device,
  * @param local_range RangeArray
  */
 auto
-execRemoveSmallValues(const Device::Pointer & device, Array::Pointer buffer, const unsigned int           nElements) -> void;
+execRemoveSmallValues(const Device::Pointer & device, Array::Pointer buffer, const unsigned int nElements) -> void;
 
 /**
  * @brief Execute a total variation term
@@ -110,13 +110,13 @@ execRemoveSmallValues(const Device::Pointer & device, Array::Pointer buffer, con
  */
 auto
 execTotalVariationTerm(const Device::Pointer & device,
-                       const Array::Pointer & estimate,
-                       const Array::Pointer & correction,
-                       Array::Pointer         variation,
-                       float                  hx,
-                       float                  hy,
-                       float                  hz,
-                       float                  regularization_factor) -> void;
+                       const Array::Pointer &  estimate,
+                       const Array::Pointer &  correction,
+                       Array::Pointer          variation,
+                       float                   hx,
+                       float                   hy,
+                       float                   hz,
+                       float                   regularization_factor) -> void;
 
 
 /**
