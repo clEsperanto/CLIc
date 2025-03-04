@@ -255,8 +255,7 @@ performDeconvolution(const Array::Pointer & observe,
     performFFT(reblurred, fft_estimate);
 
     // Correlate above result with PSF
-    execOperationKernel(
-      device, "vecComplexConjugateMultiply", fft_estimate, fft_psf, fft_estimate, fft_estimate->size() / 2);
+    execOperationKernel(device, "vecComplexConjugateMultiply", fft_estimate, fft_psf, fft_estimate, fft_estimate->size() / 2);
 
     // Inverse FFT of estimate to get reblurred
     performIFFT(fft_estimate, reblurred);
@@ -265,18 +264,7 @@ performDeconvolution(const Array::Pointer & observe,
     if (use_tv)
     {
       // calculate total variation
-      execTotalVariationTerm(device,
-                             estimate,
-                             reblurred,
-                             variation,
-                             observe->width(),
-                             observe->height(),
-                             observe->depth(),
-                             1.0,
-                             1.0,
-                             3.0,
-                             regularization,
-                             estimate->size());
+      execTotalVariationTerm(device, estimate, reblurred, variation, 1.0, 1.0, 3.0, regularization);
       // multiply by variation factor
       execOperationKernel(device, "vecMul", estimate, variation, estimate, estimate->size());
     }
@@ -457,24 +445,21 @@ execRemoveSmallValues(const Device::Pointer & device, Array::Pointer buffer, con
 
 auto
 execTotalVariationTerm(const Device::Pointer & device,
-                       const Array::Pointer &  estimate,
-                       const Array::Pointer &  correction,
-                       Array::Pointer          variation,
-                       unsigned int            nx,
-                       unsigned int            ny,
-                       unsigned int            nz,
-                       float                   hx,
-                       float                   hy,
-                       float                   hz,
-                       float                   regularization_factor,
-                       const unsigned int      nElements) -> void
+                       const Array::Pointer & estimate,
+                       const Array::Pointer & correction,
+                       Array::Pointer         variation,
+                       float                  hx,
+                       float                  hy,
+                       float                  hz,
+                       float                  regularization_factor) -> void
 {
-
-  constexpr size_t LOCAL_ITEM_SIZE = 64;
-  size_t           globalItemSize =
-    static_cast<size_t>(ceil(static_cast<double>(nElements) / static_cast<double>(LOCAL_ITEM_SIZE)) * LOCAL_ITEM_SIZE);
-  const RangeArray    global_range = { globalItemSize, 1, 1 };
-  const RangeArray    local_range = { LOCAL_ITEM_SIZE, 1, 1 };
+ 
+  unsigned int nx = estimate->width();
+  unsigned int ny = estimate->height();
+  unsigned int nz = estimate->depth();
+  
+    const RangeArray global_range = {static_cast<size_t>(nx), static_cast<size_t>(ny), static_cast<size_t>(nz)};
+    const RangeArray local_range = {512, 512, 64};
   KernelInfo          kernel = { "totalVariationTerm", kernel::fft };
   const ParameterList params = { { "estimate", estimate },
                                  { "correction", correction },
