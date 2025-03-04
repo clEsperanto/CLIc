@@ -70,12 +70,12 @@ bake_backward(const Array::Pointer & real) -> clfftPlanHandle;
  * @param local_range RangeArray
  */
 auto
-execOperationKernel(const Device::Pointer& device, 
-                    const std::string      name,
-                    const Array::Pointer & bufferA,
-                    const Array::Pointer & bufferB,
-                    Array::Pointer         buffer_out,
-                    const unsigned int     nElements) -> Array::Pointer;
+execOperationKernel(const Device::Pointer & device,
+                    const std::string       name,
+                    const Array::Pointer &  bufferA,
+                    const Array::Pointer &  bufferB,
+                    Array::Pointer          buffer_out,
+                    const unsigned int      nElements) -> Array::Pointer;
 
 /**
  * @brief Execute remove small values kernel (inplace)
@@ -88,7 +88,7 @@ execOperationKernel(const Device::Pointer& device,
  * @param local_range RangeArray
  */
 auto
-execRemoveSmallValues(const Device::Pointer & device, Array::Pointer buffer, const unsigned int           nElements) -> void;
+execRemoveSmallValues(const Device::Pointer & device, Array::Pointer buffer, const unsigned int nElements) -> void;
 
 /**
  * @brief Execute a total variation term
@@ -110,17 +110,17 @@ execRemoveSmallValues(const Device::Pointer & device, Array::Pointer buffer, con
  */
 auto
 execTotalVariationTerm(const Device::Pointer & device,
-                       const Array::Pointer & estimate,
-                       const Array::Pointer & correction,
-                       Array::Pointer         variation,
-                       unsigned int           nx,
-                       unsigned int           ny,
-                       unsigned int           nz,
-                       float                  hx,
-                       float                  hy,
-                       float                  hz,
-                       float                  regularization_factor,
-                       const unsigned int           nElements) -> void;
+                       const Array::Pointer &  estimate,
+                       const Array::Pointer &  correction,
+                       Array::Pointer          variation,
+                       unsigned int            nx,
+                       unsigned int            ny,
+                       unsigned int            nz,
+                       float                   hx,
+                       float                   hy,
+                       float                   hz,
+                       float                   regularization_factor,
+                       const unsigned int      nElements) -> void;
 
 
 /**
