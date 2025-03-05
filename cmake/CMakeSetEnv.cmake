@@ -13,6 +13,12 @@ if(MSVC)
   # target_compile_options(${target} PRIVATE /MP16) to do at target level
 endif()
 
+if(APPLE)
+  # vkFFT comes with several warnings, silencing them for now
+  add_compile_options(-Wno-deprecated-declarations -Wno-comment -Wno-switch)
+endif()
+
+
 # set folder properties for IDE
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
