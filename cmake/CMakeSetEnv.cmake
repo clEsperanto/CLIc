@@ -15,7 +15,7 @@ endif()
 
 if(APPLE)
   # vkFFT comes with several warnings, silencing them for now
-  add_compile_options(-Wno-deprecated-declarations -Wno-comment -Wno-switch)
+  add_compile_options(-Wno-deprecated-declarations -Wno-comment -Wno-switch -Wno-return-type)
 endif()
 
 
