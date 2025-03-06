@@ -16,15 +16,15 @@ FetchContent_Declare(eigen
     GIT_SHALLOW ON
 )
 
-# Fetch clFFT library sources
-FetchContent_Declare(clFFT
-    GIT_REPOSITORY https://github.com/clEsperanto/clFFT # https://github.com/clMathLibraries/clFFT.git
-    GIT_TAG        clic-build #master
-    GIT_SHALLOW ON
-    SOURCE_SUBDIR  src  # clFFT CMakeLists.txt is in src/ instead of root
-)
+# # Fetch clFFT library sources
+# FetchContent_Declare(clFFT
+#     GIT_REPOSITORY https://github.com/clEsperanto/clFFT # https://github.com/clMathLibraries/clFFT.git
+#     GIT_TAG        clic-build #master
+#     GIT_SHALLOW ON
+#     SOURCE_SUBDIR  src  # clFFT CMakeLists.txt is in src/ instead of root
+# )
 
-FetchContent_MakeAvailable(cleKernels eigen clFFT)
+FetchContent_MakeAvailable(cleKernels eigen ) # clFFT
 
 
 

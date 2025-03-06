@@ -12,35 +12,35 @@ protected:
   };
 };
 
-TEST_P(TestFFT, executeCLFFT)
-{
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
+// TEST_P(TestFFT, executeCLFFT)
+// {
+//   std::string param = GetParam();
+//   cle::BackendManager::getInstance().setBackend(param);
 
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+//   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+//   device->setWaitToFinish(true);
 
-  auto gpu_input = cle::Array::create(10, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_input->writeFrom(input.data());
+//   auto gpu_input = cle::Array::create(10, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+//   gpu_input->writeFrom(input.data());
 
-  auto gpu_output = cle::Array::create(10, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  gpu_output->fill(0);
+//   auto gpu_output = cle::Array::create(10, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+//   gpu_output->fill(0);
 
-  // Perform FFT and get the output complex buffer
-  auto gpu_complex = cle::fft::fft_forward(gpu_input, nullptr);
+//   // Perform FFT and get the output complex buffer
+//   auto gpu_complex = cle::fft::fft_forward(gpu_input, nullptr);
 
-  // Perform IFFT and store the result in a real buffer
-  cle::fft::fft_backward(gpu_complex, gpu_output);
+//   // Perform IFFT and store the result in a real buffer
+//   cle::fft::fft_backward(gpu_complex, gpu_output);
 
-  std::vector<float> output(gpu_output->size());
-  gpu_output->readTo(output.data());
+//   std::vector<float> output(gpu_output->size());
+//   gpu_output->readTo(output.data());
 
-  EXPECT_EQ(output.size(), input.size());
-  for (size_t i = 0; i < output.size(); i++)
-  {
-    EXPECT_NEAR(output[i], input[i], 0.1);
-  }
-}
+//   EXPECT_EQ(output.size(), input.size());
+//   for (size_t i = 0; i < output.size(); i++)
+//   {
+//     EXPECT_NEAR(output[i], input[i], 0.1);
+//   }
+// }
 
 
 TEST_P(TestFFT, executeVKFFT)

@@ -1,7 +1,7 @@
 #ifndef __INCLUDE_FFT_HPP
 #define __INCLUDE_FFT_HPP
 
-#include "clFFT.h"
+// #include "clFFT.h"
 
 #include "vkFFT.h"
 
@@ -22,38 +22,38 @@ namespace cle::fft
 Array::Pointer
 create_hermitian(const Array::Pointer & real_buf);
 
-/**
- * @brief Setup the clFFT library
- *
- * Setup procedure before using the clFFT library
- *
- * @return cl_int
- */
-auto
-SetupFFT() -> cl_int;
+// /**
+//  * @brief Setup the clFFT library
+//  *
+//  * Setup procedure before using the clFFT library
+//  *
+//  * @return cl_int
+//  */
+// auto
+// SetupFFT() -> cl_int;
 
-/**
- * @brief Create a forward plan for the clFFT library
- *
- * Create a forward plan for the clFFT library
- *
- * @param real Array::Pointer
- * @return clfftPlanHandle
- */
-auto
-bake_forward(const Array::Pointer & real) -> clfftPlanHandle;
+// /**
+//  * @brief Create a forward plan for the clFFT library
+//  *
+//  * Create a forward plan for the clFFT library
+//  *
+//  * @param real Array::Pointer
+//  * @return clfftPlanHandle
+//  */
+// auto
+// bake_forward(const Array::Pointer & real) -> clfftPlanHandle;
 
 
-/**
- * @brief Create a backward plan for the clFFT library
- *
- * Create a backward plan for the clFFT library
- *
- * @param real Array::Pointer
- * @return clfftPlanHandle
- */
-auto
-bake_backward(const Array::Pointer & real) -> clfftPlanHandle;
+// /**
+//  * @brief Create a backward plan for the clFFT library
+//  *
+//  * Create a backward plan for the clFFT library
+//  *
+//  * @param real Array::Pointer
+//  * @return clfftPlanHandle
+//  */
+// auto
+// bake_backward(const Array::Pointer & real) -> clfftPlanHandle;
 
 
 /**
@@ -186,30 +186,30 @@ performDeconvolution(const Array::Pointer & observe,
                      float                  regularization) -> Array::Pointer;
 
 
-/**
- * @brief Fast Fourier Transform (clFFT)
- *
- * Perform a forward FFT on a real buffer and store the result in a complex buffer
- * This operation takes a real array and returns a complex array in the frequency domain
- *
- * @param real Array::Pointer
- * @param complex Array::Pointer
- * @return Array::Pointer
- */
-auto
-fft_forward(const Array::Pointer & real, Array::Pointer complex) -> Array::Pointer;
+// /**
+//  * @brief Fast Fourier Transform (clFFT)
+//  *
+//  * Perform a forward FFT on a real buffer and store the result in a complex buffer
+//  * This operation takes a real array and returns a complex array in the frequency domain
+//  *
+//  * @param real Array::Pointer
+//  * @param complex Array::Pointer
+//  * @return Array::Pointer
+//  */
+// auto
+// fft_forward(const Array::Pointer & real, Array::Pointer complex) -> Array::Pointer;
 
-/**
- * @brief Inverse Fast Fourier Transform (clFFT)
- *
- * Perform a backward FFT on a complex buffer and store the result in a real buffer
- * This operation takes a complex array and returns a real array in the spatial domain
- *
- * @param complex Array::Pointer
- * @param real Array::Pointer
- */
-auto
-fft_backward(const Array::Pointer & complex, Array::Pointer real) -> void;
+// /**
+//  * @brief Inverse Fast Fourier Transform (clFFT)
+//  *
+//  * Perform a backward FFT on a complex buffer and store the result in a real buffer
+//  * This operation takes a complex array and returns a real array in the spatial domain
+//  *
+//  * @param complex Array::Pointer
+//  * @param real Array::Pointer
+//  */
+// auto
+// fft_backward(const Array::Pointer & complex, Array::Pointer real) -> void;
 
 // /**
 //  * @brief FFT Convolution operation

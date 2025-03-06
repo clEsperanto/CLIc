@@ -17,18 +17,18 @@
 namespace cle::fft
 {
 
-auto
-SetupFFT() -> cl_int
-{
-  clfftSetupData fftSetup;
-  cl_int         err = clfftInitSetupData(&fftSetup);
-  err = clfftSetup(&fftSetup);
-  if (err != CL_SUCCESS)
-  {
-    throw std::runtime_error("Failed to setup clFFT");
-  }
-  return err;
-}
+// auto
+// SetupFFT() -> cl_int
+// {
+//   clfftSetupData fftSetup;
+//   cl_int         err = clfftInitSetupData(&fftSetup);
+//   err = clfftSetup(&fftSetup);
+//   if (err != CL_SUCCESS)
+//   {
+//     throw std::runtime_error("Failed to setup clFFT");
+//   }
+//   return err;
+// }
 
 
 Array::Pointer
@@ -289,125 +289,125 @@ performDeconvolution(const Array::Pointer & observe,
 }
 
 
-auto
-bake_forward(const Array::Pointer & real) -> clfftPlanHandle
-{
-  auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(real->device());
-  auto ctx = ocl_device->getCLContext();
-  auto queue = ocl_device->getCLCommandQueue();
+// auto
+// bake_forward(const Array::Pointer & real) -> clfftPlanHandle
+// {
+//   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(real->device());
+//   auto ctx = ocl_device->getCLContext();
+//   auto queue = ocl_device->getCLCommandQueue();
 
 
-  /* FFT library related declarations */
-  clfftDim            dim;
-  std::vector<size_t> clLengths;
-  std::vector<size_t> inStride;
-  std::vector<size_t> outStride;
-  size_t              hermitian_width = static_cast<size_t>(real->width() / 2) + 1;
-  // Reserve space for the vectors
-  clLengths.reserve(3);
-  inStride.reserve(3);
-  outStride.reserve(3);
-  switch (real->dimension())
-  {
-    case 1:
-      dim = CLFFT_1D;
-      clLengths = { real->width() };
-      inStride = { 1 };
-      outStride = { 1 };
-      break;
-    case 2:
-      dim = CLFFT_2D;
-      clLengths = { real->width(), real->height() };
-      inStride = { 1, real->width() };
-      outStride = { 1, hermitian_width };
-      break;
-    case 3:
-      dim = CLFFT_3D;
-      clLengths = { real->width(), real->height(), real->depth() };
-      inStride = { 1, real->width(), real->width() * real->height() };
-      outStride = { 1, hermitian_width, hermitian_width * real->height() };
-      break;
-    default:
-      throw std::runtime_error("Invalid FFT dimension");
-  }
+//   /* FFT library related declarations */
+//   clfftDim            dim;
+//   std::vector<size_t> clLengths;
+//   std::vector<size_t> inStride;
+//   std::vector<size_t> outStride;
+//   size_t              hermitian_width = static_cast<size_t>(real->width() / 2) + 1;
+//   // Reserve space for the vectors
+//   clLengths.reserve(3);
+//   inStride.reserve(3);
+//   outStride.reserve(3);
+//   switch (real->dimension())
+//   {
+//     case 1:
+//       dim = CLFFT_1D;
+//       clLengths = { real->width() };
+//       inStride = { 1 };
+//       outStride = { 1 };
+//       break;
+//     case 2:
+//       dim = CLFFT_2D;
+//       clLengths = { real->width(), real->height() };
+//       inStride = { 1, real->width() };
+//       outStride = { 1, hermitian_width };
+//       break;
+//     case 3:
+//       dim = CLFFT_3D;
+//       clLengths = { real->width(), real->height(), real->depth() };
+//       inStride = { 1, real->width(), real->width() * real->height() };
+//       outStride = { 1, hermitian_width, hermitian_width * real->height() };
+//       break;
+//     default:
+//       throw std::runtime_error("Invalid FFT dimension");
+//   }
 
-  /* Create a default plan for a complex FFT. */
-  clfftPlanHandle planHandle;
-  auto            err = clfftCreateDefaultPlan(&planHandle, ctx, dim, clLengths.data());
+//   /* Create a default plan for a complex FFT. */
+//   clfftPlanHandle planHandle;
+//   auto            err = clfftCreateDefaultPlan(&planHandle, ctx, dim, clLengths.data());
 
-  /* Set plan parameters. */
-  err = clfftSetPlanPrecision(planHandle, CLFFT_SINGLE);
-  err = clfftSetLayout(planHandle, CLFFT_REAL, CLFFT_HERMITIAN_INTERLEAVED);
-  err = clfftSetResultLocation(planHandle, CLFFT_OUTOFPLACE);
-  err = clfftSetPlanInStride(planHandle, dim, inStride.data());
-  err = clfftSetPlanOutStride(planHandle, dim, outStride.data());
+//   /* Set plan parameters. */
+//   err = clfftSetPlanPrecision(planHandle, CLFFT_SINGLE);
+//   err = clfftSetLayout(planHandle, CLFFT_REAL, CLFFT_HERMITIAN_INTERLEAVED);
+//   err = clfftSetResultLocation(planHandle, CLFFT_OUTOFPLACE);
+//   err = clfftSetPlanInStride(planHandle, dim, inStride.data());
+//   err = clfftSetPlanOutStride(planHandle, dim, outStride.data());
 
-  /* Bake the plan. */
-  err = clfftBakePlan(planHandle, 1, &queue, NULL, NULL);
+//   /* Bake the plan. */
+//   err = clfftBakePlan(planHandle, 1, &queue, NULL, NULL);
 
-  /* Return the plan */
-  return planHandle;
-}
+//   /* Return the plan */
+//   return planHandle;
+// }
 
 
-auto
-bake_backward(const Array::Pointer & real) -> clfftPlanHandle
-{
-  auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(real->device());
-  auto ctx = ocl_device->getCLContext();
-  auto queue = ocl_device->getCLCommandQueue();
+// auto
+// bake_backward(const Array::Pointer & real) -> clfftPlanHandle
+// {
+//   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(real->device());
+//   auto ctx = ocl_device->getCLContext();
+//   auto queue = ocl_device->getCLCommandQueue();
 
-  /* FFT library related declarations */
-  clfftDim            dim;
-  std::vector<size_t> clLengths;
-  std::vector<size_t> inStride;
-  std::vector<size_t> outStride;
-  size_t              hermitian_width = static_cast<size_t>(real->width() / 2) + 1;
-  // Reserve space for the vectors
-  clLengths.reserve(3);
-  inStride.reserve(3);
-  outStride.reserve(3);
-  switch (real->dimension())
-  {
-    case 1:
-      dim = CLFFT_1D;
-      clLengths = { real->width() };
-      inStride = { 1 };
-      outStride = { 1 };
-      break;
-    case 2:
-      dim = CLFFT_2D;
-      clLengths = { real->width(), real->height() };
-      inStride = { 1, hermitian_width };
-      outStride = { 1, real->width() };
-      break;
-    case 3:
-      dim = CLFFT_3D;
-      clLengths = { real->width(), real->height(), real->depth() };
-      inStride = { 1, hermitian_width, hermitian_width * real->height() };
-      outStride = { 1, real->width(), real->width() * real->height() };
-      break;
-    default:
-      throw std::runtime_error("Invalid FFT dimension");
-  }
+//   /* FFT library related declarations */
+//   clfftDim            dim;
+//   std::vector<size_t> clLengths;
+//   std::vector<size_t> inStride;
+//   std::vector<size_t> outStride;
+//   size_t              hermitian_width = static_cast<size_t>(real->width() / 2) + 1;
+//   // Reserve space for the vectors
+//   clLengths.reserve(3);
+//   inStride.reserve(3);
+//   outStride.reserve(3);
+//   switch (real->dimension())
+//   {
+//     case 1:
+//       dim = CLFFT_1D;
+//       clLengths = { real->width() };
+//       inStride = { 1 };
+//       outStride = { 1 };
+//       break;
+//     case 2:
+//       dim = CLFFT_2D;
+//       clLengths = { real->width(), real->height() };
+//       inStride = { 1, hermitian_width };
+//       outStride = { 1, real->width() };
+//       break;
+//     case 3:
+//       dim = CLFFT_3D;
+//       clLengths = { real->width(), real->height(), real->depth() };
+//       inStride = { 1, hermitian_width, hermitian_width * real->height() };
+//       outStride = { 1, real->width(), real->width() * real->height() };
+//       break;
+//     default:
+//       throw std::runtime_error("Invalid FFT dimension");
+//   }
 
-  /* Create a default plan for a complex FFT. */
-  clfftPlanHandle planHandle;
-  auto            err = clfftCreateDefaultPlan(&planHandle, ctx, dim, clLengths.data());
+//   /* Create a default plan for a complex FFT. */
+//   clfftPlanHandle planHandle;
+//   auto            err = clfftCreateDefaultPlan(&planHandle, ctx, dim, clLengths.data());
 
-  /* Set plan parameters. */
-  err = clfftSetPlanPrecision(planHandle, CLFFT_SINGLE);
-  err = clfftSetLayout(planHandle, CLFFT_HERMITIAN_INTERLEAVED, CLFFT_REAL);
-  err = clfftSetResultLocation(planHandle, CLFFT_OUTOFPLACE);
-  err = clfftSetPlanInStride(planHandle, dim, inStride.data());
-  err = clfftSetPlanOutStride(planHandle, dim, outStride.data());
+//   /* Set plan parameters. */
+//   err = clfftSetPlanPrecision(planHandle, CLFFT_SINGLE);
+//   err = clfftSetLayout(planHandle, CLFFT_HERMITIAN_INTERLEAVED, CLFFT_REAL);
+//   err = clfftSetResultLocation(planHandle, CLFFT_OUTOFPLACE);
+//   err = clfftSetPlanInStride(planHandle, dim, inStride.data());
+//   err = clfftSetPlanOutStride(planHandle, dim, outStride.data());
 
-  /* Bake the plan. */
-  err = clfftBakePlan(planHandle, 1, &queue, NULL, NULL);
+//   /* Bake the plan. */
+//   err = clfftBakePlan(planHandle, 1, &queue, NULL, NULL);
 
-  /* Return the plan */
-  return planHandle;
-}
+//   /* Return the plan */
+//   return planHandle;
+// }
 
 
 auto
@@ -476,83 +476,83 @@ execTotalVariationTerm(const Device::Pointer & device,
 }
 
 
-auto
-fft_forward(const Array::Pointer & real, Array::Pointer complex) -> Array::Pointer
-{
-  auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(real->device());
-  auto ctx = ocl_device->getCLContext();
-  auto queue = ocl_device->getCLCommandQueue();
+// auto
+// fft_forward(const Array::Pointer & real, Array::Pointer complex) -> Array::Pointer
+// {
+//   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(real->device());
+//   auto ctx = ocl_device->getCLContext();
+//   auto queue = ocl_device->getCLCommandQueue();
 
-  if (complex == nullptr)
-  {
-    complex = create_hermitian(real);
-  }
+//   if (complex == nullptr)
+//   {
+//     complex = create_hermitian(real);
+//   }
 
-  /* Setup clFFT. */
-  auto err = SetupFFT();
+//   /* Setup clFFT. */
+//   auto err = SetupFFT();
 
-  /* FFT library related declarations */
-  auto planHandle = bake_forward(real);
+//   /* FFT library related declarations */
+//   auto planHandle = bake_forward(real);
 
-  /* Execute the plan. */
-  err = clfftEnqueueTransform(planHandle,
-                              CLFFT_FORWARD,
-                              1,
-                              &queue,
-                              0,
-                              NULL,
-                              NULL,
-                              static_cast<cl_mem *>(*real->get()),
-                              static_cast<cl_mem *>(*complex->get()),
-                              NULL);
+//   /* Execute the plan. */
+//   err = clfftEnqueueTransform(planHandle,
+//                               CLFFT_FORWARD,
+//                               1,
+//                               &queue,
+//                               0,
+//                               NULL,
+//                               NULL,
+//                               static_cast<cl_mem *>(*real->get()),
+//                               static_cast<cl_mem *>(*complex->get()),
+//                               NULL);
 
-  /* Wait for calculations to be finished. */
-  err = clFinish(queue);
+//   /* Wait for calculations to be finished. */
+//   err = clFinish(queue);
 
-  /* Release the plan. */
-  err = clfftDestroyPlan(&planHandle);
+//   /* Release the plan. */
+//   err = clfftDestroyPlan(&planHandle);
 
-  /* Release clFFT library. */
-  clfftTeardown();
+//   /* Release clFFT library. */
+//   clfftTeardown();
 
-  return complex;
-}
+//   return complex;
+// }
 
 
-auto
-fft_backward(const Array::Pointer & complex, Array::Pointer real) -> void
-{
-  auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(complex->device());
-  auto ctx = ocl_device->getCLContext();
-  auto queue = ocl_device->getCLCommandQueue();
+// auto
+// fft_backward(const Array::Pointer & complex, Array::Pointer real) -> void
+// {
+//   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(complex->device());
+//   auto ctx = ocl_device->getCLContext();
+//   auto queue = ocl_device->getCLCommandQueue();
 
-  /* Setup clFFT. */
-  auto err = SetupFFT();
+//   /* Setup clFFT. */
+//   auto err = SetupFFT();
 
-  /* FFT library related declarations */
-  auto planHandle = bake_backward(real);
+//   /* FFT library related declarations */
+//   auto planHandle = bake_backward(real);
 
-  /* Execute the plan. */
-  err = clfftEnqueueTransform(planHandle,
-                              CLFFT_BACKWARD,
-                              1,
-                              &queue,
-                              0,
-                              NULL,
-                              NULL,
-                              static_cast<cl_mem *>(*complex->get()),
-                              static_cast<cl_mem *>(*real->get()),
-                              NULL);
+//   /* Execute the plan. */
+//   err = clfftEnqueueTransform(planHandle,
+//                               CLFFT_BACKWARD,
+//                               1,
+//                               &queue,
+//                               0,
+//                               NULL,
+//                               NULL,
+//                               static_cast<cl_mem *>(*complex->get()),
+//                               static_cast<cl_mem *>(*real->get()),
+//                               NULL);
 
-  /* Wait for calculations to be finished. */
-  err = clFinish(queue);
+//   /* Wait for calculations to be finished. */
+//   err = clFinish(queue);
 
-  /* Release the plan. */
-  err = clfftDestroyPlan(&planHandle);
+//   /* Release the plan. */
+//   err = clfftDestroyPlan(&planHandle);
 
-  /* Release clFFT library. */
-  clfftTeardown();
-}
+//   /* Release clFFT library. */
+//   clfftTeardown();
+// }
 
 
 // auto
