@@ -187,6 +187,13 @@ public:
   size() const -> size_t;
 
   /**
+   * @brief Get the total bitsize of the Array (number of elements * size of the data type)
+   * @return size_t
+   */
+  [[nodiscard]] auto
+  bitsize() const -> size_t;
+
+  /**
    * @brief Get the width of the Array
    * @return size_t
    */

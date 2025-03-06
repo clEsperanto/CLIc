@@ -1,25 +1,23 @@
 ## set environment variables
 
-# set library name
+# set library name & Define upper and lower case project name
 if(NOT LIBRARY_NAME)
   set(LIBRARY_NAME ${PROJECT_NAME})
 endif()
-
-# Define upper and lower case project name
 string(TOUPPER ${LIBRARY_NAME} LIBRARY_NAME_UPPERCASE)
 string(TOLOWER ${LIBRARY_NAME} LIBRARY_NAME_LOWERCASE)
 
-# Enforce only using MPL2/BSD license for Eigen
-# only for unix and when building clic itself
-if(UNIX AND CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-  add_compile_options(-DEIGEN_MPL2_ONLY)
-endif()
-
 # add the /MP flag for MSVC compiler
 if(MSVC)
-  # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP16")
   add_compile_options(/MP16)
+  # target_compile_options(${target} PRIVATE /MP16) to do at target level
 endif()
+
+if(APPLE)
+  # vkFFT comes with several warnings, silencing them for now
+  add_compile_options(-Wno-deprecated-declarations -Wno-comment -Wno-switch -Wno-return-type)
+endif()
+
 
 # set folder properties for IDE
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -28,6 +26,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CXX_STANDARD 17)           # C++17, global property instead of target property because of wrapper
 set(CMAKE_CXX_STANDARD_REQUIRED ON)  # C++17 is required (no fallback)
 set(CMAKE_CXX_EXTENSIONS OFF)        # Don't use e.g. GNU extension (like -std=gnu++11) for portability
+add_compile_definitions(CL_TARGET_OPENCL_VERSION=120)
 
 # manage build type options (default: Release)
 get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
@@ -53,7 +52,6 @@ set(CMAKE_RELEASE_POSTFIX "")
 # endif()
 
 ## Defines options for the build
-
 # set build as static or shared library (default: static)
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 if (WIN32 AND BUILD_SHARED_LIBS)
@@ -64,9 +62,7 @@ endif()
 option(BUILD_COVERAGE "Enable coverage reporting" OFF)
 message(STATUS "Build project code coverage: ${BUILD_COVERAGE}")
 if (BUILD_COVERAGE)
-# add_compile_options(-g -O0 -fprofile-arcs -ftest-coverage)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
-  # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
   set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
 endif()
 
@@ -81,6 +77,9 @@ message(STATUS "Build documentation: ${BUILD_DOCUMENTATION} (WIP)")
 # set Benchmark compilation (default: ON)
 option(BUILD_BENCHMARK "build benchmarks tests" OFF)
 message(STATUS "Build benchmark: ${BUILD_BENCHMARK}")
+
+option(CLEAR_KERNEL_CACHE "remove kernel binaries cache from the system" OFF)
+message(STATUS "Clear kernel cache: ${CLEAR_KERNEL_CACHE}")
 
 
 ## Manage cache folder and cache files
@@ -100,14 +99,14 @@ function(delete_folder folder)
         file(REMOVE_RECURSE ${folder})
     endif()
 endfunction()
-# on windows, find the path for AppLocal
 if(WIN32)
     set(CACHE_PATH "$ENV{LOCALAPPDATA}/clesperanto")
 else()
     set(CACHE_PATH "$ENV{HOME}/.cache/clesperanto")
 endif()
-# clear cache folder
-delete_folder(${CACHE_PATH})
+if(CLEAR_KERNEL_CACHE)
+  delete_folder(${CACHE_PATH})
+endif()
 
 
 ## Define install options and presets

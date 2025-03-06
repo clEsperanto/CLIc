@@ -15,7 +15,7 @@ jobs:
     name: ${{ matrix.os }}-${{ matrix.cxx-compiler }}-${{ matrix.cmake-build-type }}
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: true
+      fail-fast: false
       max-parallel: 3
       matrix:
         name: [ubuntu, windows, macos]
