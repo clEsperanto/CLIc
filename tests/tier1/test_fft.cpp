@@ -22,20 +22,15 @@ TEST_P(TestFFT, executeCLFFT)
 
   auto gpu_input = cle::Array::create(10, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
-  cle::print<float>(gpu_input, "input");
 
   auto gpu_output = cle::Array::create(10, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_output->fill(0);
 
   // Perform FFT and get the output complex buffer
   auto gpu_complex = cle::fft::fft_forward(gpu_input, nullptr);
-  std::cout << "complexe shape : " << gpu_complex->width() << " " << gpu_complex->height() << " "
-            << gpu_complex->depth() << std::endl;
-  cle::print<float>(gpu_complex, "complex");
 
   // Perform IFFT and store the result in a real buffer
   cle::fft::fft_backward(gpu_complex, gpu_output);
-  cle::print<float>(gpu_output, "output");
 
   std::vector<float> output(gpu_output->size());
   gpu_output->readTo(output.data());
@@ -61,13 +56,8 @@ TEST_P(TestFFT, executeVKFFT)
   auto gpu_final = cle::Array::create(gpu_input);
   gpu_final->fill(0);
 
-  cle::print<float>(gpu_input, "input real");
-
   auto gpu_output = cle::fft::performFFT(gpu_input, nullptr);
-  cle::print<float>(gpu_output, "output complex");
-
   cle::fft::performIFFT(gpu_output, gpu_final);
-  cle::print<float>(gpu_final, "output real");
 
   std::vector<float> output(gpu_final->size());
   gpu_final->readTo(output.data());
@@ -104,12 +94,7 @@ TEST_P(TestFFT, executeConvolution)
   auto gpu_psf = cle::Array::create(gpu_input);
   gpu_psf->writeFrom(kernel.data());
 
-  cle::print<float>(gpu_input, "input");
-  cle::print<float>(gpu_psf, "kernel");
-
   auto gpu_final = cle::fft::performConvolution(gpu_input, gpu_psf, nullptr, false);
-
-  cle::print<float>(gpu_final, "output");
 
   std::vector<float> output(gpu_final->size());
   gpu_final->readTo(output.data());
@@ -145,12 +130,7 @@ TEST_P(TestFFT, executeConvolutionCorr)
   auto gpu_psf = cle::Array::create(gpu_input);
   gpu_psf->writeFrom(kernel.data());
 
-  cle::print<float>(gpu_input, "input");
-  cle::print<float>(gpu_psf, "kernel");
-
   auto gpu_final = cle::fft::performConvolution(gpu_input, gpu_psf, nullptr, true);
-
-  cle::print<float>(gpu_final, "output");
 
   std::vector<float> output(gpu_final->size());
   gpu_final->readTo(output.data());
@@ -190,9 +170,6 @@ TEST_P(TestFFT, executeDeconvolution)
   gpu_estimate->writeFrom(input.data());
 
   cle::fft::performDeconvolution(gpu_input, gpu_psf, nullptr, gpu_estimate, 100, 0);
-
-  cle::print<float>(gpu_estimate, "output");
-
 
   std::vector<float> output(gpu_estimate->size());
   gpu_estimate->readTo(output.data());
