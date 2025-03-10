@@ -8,6 +8,7 @@
 #include "fft.hpp"
 #include "device.hpp"
 #include "tier0.hpp"
+#include "cache.hpp"
 
 #include <array>
 #include <stdexcept>
@@ -73,6 +74,9 @@ configure(const Array::Pointer & array, VkFFTConfiguration & configuration) -> v
   configuration.inputBufferStride[0] = configuration.size[0];
   configuration.inputBufferStride[1] = configuration.inputBufferStride[0] * configuration.size[1];
   configuration.inputBufferStride[2] = configuration.inputBufferStride[1] * configuration.size[2];
+
+  // configuration.saveApplicationToString = 1;
+  // configuration.loadApplicationFromString = 1;
 }
 
 
@@ -103,12 +107,57 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   configuration.context = &context;
   configuration.commandQueue = &queue;
 
+  const auto use_cache = is_cache_enabled();
+  std::filesystem::path binary_path;
+  if (use_cache) {
+    std::ostringstream hashStream;
+    hashStream << output->width() << "," 
+              << output->height() << "," 
+              << output->depth() << ","
+              << output->dimension();
+    std::hash<std::string> hasher;
+    const auto source_hash = std::to_string(hasher(hashStream.str()));
+    const auto device_hash = std::to_string(hasher(ocl_device->getInfo()));
+
+    binary_path =
+    CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".bin");
+
+    FILE* kernelCache;
+    uint64_t str_len;
+    kernelCache = fopen(binary_path.c_str(), "rb");
+    if (kernelCache == nullptr) {
+      configuration.loadApplicationFromString = 0;
+      configuration.saveApplicationToString = 1;
+    } 
+    else 
+    {
+      configuration.loadApplicationFromString = 1;
+      configuration.saveApplicationToString = 0;
+      fseek(kernelCache, 0, SEEK_END);
+      str_len = ftell(kernelCache);
+      fseek(kernelCache, 0, SEEK_SET);
+      configuration.loadApplicationString = malloc(str_len);
+      fread(configuration.loadApplicationString, str_len, 1, kernelCache);
+      fclose(kernelCache);
+    }
+  }
+
   VkFFTApplication app = {};
   auto             resFFT = initializeVkFFT(&app, configuration);
   if (resFFT != VKFFT_SUCCESS)
   {
     throw std::runtime_error("Error: Failed to initialize VkFFT -> " + std::string(getVkFFTErrorString(resFFT)));
   }
+
+  if (use_cache && configuration.loadApplicationFromString)
+    {free(configuration.loadApplicationString);}
+
+  if (use_cache && configuration.saveApplicationToString) {
+    FILE* kernelCache;
+    kernelCache = fopen(binary_path.c_str(), "wb");
+    fwrite(app.saveApplicationString, app.applicationStringSize, 1, kernelCache);
+    fclose(kernelCache);
+    }
 
   VkFFTLaunchParams launchParams = {};
   launchParams.commandQueue = &queue;
@@ -147,12 +196,57 @@ performIFFT(const Array::Pointer & input, Array::Pointer output) -> void
   configuration.context = &context;
   configuration.commandQueue = &queue;
 
+  const auto use_cache = is_cache_enabled();
+  std::filesystem::path binary_path;
+  if (use_cache) {
+    std::ostringstream hashStream;
+    hashStream << output->width() << "," 
+              << output->height() << "," 
+              << output->depth() << ","
+              << output->dimension();
+    std::hash<std::string> hasher;
+    const auto source_hash = std::to_string(hasher(hashStream.str()));
+    const auto device_hash = std::to_string(hasher(ocl_device->getInfo()));
+
+    binary_path =
+    CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".bin");
+
+    FILE* kernelCache;
+    uint64_t str_len;
+    kernelCache = fopen(binary_path.c_str(), "rb");
+    if (kernelCache == nullptr) {
+      configuration.loadApplicationFromString = 0;
+      configuration.saveApplicationToString = 1;
+    } 
+    else 
+    {
+      configuration.loadApplicationFromString = 1;
+      configuration.saveApplicationToString = 0;
+      fseek(kernelCache, 0, SEEK_END);
+      str_len = ftell(kernelCache);
+      fseek(kernelCache, 0, SEEK_SET);
+      configuration.loadApplicationString = malloc(str_len);
+      fread(configuration.loadApplicationString, str_len, 1, kernelCache);
+      fclose(kernelCache);
+    }
+  }
+
   VkFFTApplication app = {};
   auto             resFFT = initializeVkFFT(&app, configuration);
   if (resFFT != VKFFT_SUCCESS)
   {
     throw std::runtime_error("Error: Failed to initialize VkFFT -> " + std::string(getVkFFTErrorString(resFFT)));
   }
+
+  if (use_cache && configuration.loadApplicationFromString)
+    {free(configuration.loadApplicationString);}
+
+  if (use_cache && configuration.saveApplicationToString) {
+    FILE* kernelCache;
+    kernelCache = fopen(binary_path.c_str(), "wb");
+    fwrite(app.saveApplicationString, app.applicationStringSize, 1, kernelCache);
+    fclose(kernelCache);
+    }
 
   VkFFTLaunchParams launchParams = {};
   launchParams.commandQueue = &queue;
