@@ -57,7 +57,12 @@ TEST_P(TestFFT, executeVKFFT)
   gpu_final->fill(0);
 
   auto gpu_output = cle::fft::performFFT(gpu_input, nullptr);
+
+  cle::print<float>(gpu_output);
+
   cle::fft::performIFFT(gpu_output, gpu_final);
+
+  cle::print<float>(gpu_final);
 
   std::vector<float> output(gpu_final->size());
   gpu_final->readTo(output.data());
