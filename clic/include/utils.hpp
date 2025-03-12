@@ -5,10 +5,10 @@
 #include <cmath>
 #include <cstdint>
 #include <fstream>
+#include <iostream>
 #include <limits>
 #include <type_traits>
 #include <unordered_map>
-#include <iostream>
 #ifndef M_PI
 #  define M_PI 3.14159265358979323846 /* pi */
 #endif
