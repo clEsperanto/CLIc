@@ -92,7 +92,7 @@ execTotalVariationTerm(const Device::Pointer & device,
  * Perform a forward FFT on a real buffer and store the result in a complex hermitian buffer
  * This operation takes a real array and returns a complex array in the frequency domain.
  * The input shape can have an impact on the computation time, it is recommended to use
- * a shape with a power of 2 for each dimension. 
+ * a shape with a power of 2 for each dimension.
  *
  * @param input Array::Pointer
  * @param output Array::Pointer
@@ -121,7 +121,7 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
  * Perform a convolution operation on two arrays in the frequency domain
  * It takes two real arrays, performs a forward FFT on both, multiply them in the frequency domain
  * and then perform a backward FFT on the result
- * 
+ *
  * Caution, this operation expect the kernel to be centered at (0, 0) and the same shape as the input
  *
  * @param input Array::Pointer
@@ -139,7 +139,7 @@ performConvolution(const Array::Pointer & input, const Array::Pointer & psf, Arr
  *
  * Perform a Richardson-Lucy deconvolution on an observed image using a PSF kernel
  * with optional total variation regularization term.
- * 
+ *
  * Caution, this operation expect the kernel to be centered at (0, 0) and the same shape as the input
  *
  * @param observe Array::Pointer
@@ -157,7 +157,6 @@ performDeconvolution(const Array::Pointer & observe,
                      Array::Pointer         estimate,
                      size_t                 iterations,
                      float                  regularization) -> Array::Pointer;
-
 
 
 } // namespace cle::fft

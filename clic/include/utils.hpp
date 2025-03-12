@@ -61,7 +61,7 @@ inline auto
 toString(const dType & dtype) -> std::string
 {
   static const std::unordered_map<dType, std::string> dtypeToString = {
-    { dType::FLOAT, "float" }, { dType::INT32, "int" },   { dType::UINT32, "uint" },  { dType::INT8, "char" },
+    { dType::FLOAT, "float" }, { dType::INT32, "int" },   { dType::UINT32, "uint" },   { dType::INT8, "char" },
     { dType::UINT8, "uchar" }, { dType::INT16, "short" }, { dType::UINT16, "ushort" }, { dType::COMPLEX, "complex" }
   };
 
@@ -75,10 +75,10 @@ toString(const dType & dtype) -> std::string
 inline auto
 toShortString(const dType & dtype) -> std::string
 {
-  static const std::unordered_map<dType, std::string> dtypeToString = { { dType::FLOAT, "f" },   { dType::INT32, "i" },
-                                                                        { dType::UINT32, "ui" }, { dType::INT8, "c" },
-                                                                        { dType::UINT8, "uc" },  { dType::INT16, "s" },
-                                                                        { dType::UINT16, "us" }, { dType::COMPLEX, "j" } };
+  static const std::unordered_map<dType, std::string> dtypeToString = {
+    { dType::FLOAT, "f" },  { dType::INT32, "i" }, { dType::UINT32, "ui" }, { dType::INT8, "c" },
+    { dType::UINT8, "uc" }, { dType::INT16, "s" }, { dType::UINT16, "us" }, { dType::COMPLEX, "j" }
+  };
 
   auto it = dtypeToString.find(dtype);
   return it != dtypeToString.end() ? it->second : "?";
@@ -132,9 +132,9 @@ inline auto
 toBytes(const dType & dtype) -> size_t
 {
   static const std::unordered_map<dType, size_t> dtypeToBytes = {
-    { dType::FLOAT, sizeof(float) },    { dType::INT32, sizeof(int32_t) }, { dType::UINT32, sizeof(uint32_t) },
-    { dType::INT8, sizeof(int8_t) },    { dType::UINT8, sizeof(uint8_t) }, { dType::INT16, sizeof(int16_t) },
-    { dType::UINT16, sizeof(uint16_t)}, { dType::COMPLEX, sizeof(float) }
+    { dType::FLOAT, sizeof(float) },     { dType::INT32, sizeof(int32_t) }, { dType::UINT32, sizeof(uint32_t) },
+    { dType::INT8, sizeof(int8_t) },     { dType::UINT8, sizeof(uint8_t) }, { dType::INT16, sizeof(int16_t) },
+    { dType::UINT16, sizeof(uint16_t) }, { dType::COMPLEX, sizeof(float) }
   };
 
   auto it = dtypeToBytes.find(dtype);
