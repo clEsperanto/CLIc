@@ -18,95 +18,112 @@
 namespace cle::fft
 {
 
-  void handle_prime(int p, int x, std::vector<double>& a) {
-    double log_p = std::log(p);
-    int power = p;
+void
+handle_prime(int p, int x, std::vector<double> & a)
+{
+  double log_p = std::log(p);
+  int    power = p;
 
-    while (power <= x + a.size()) {
-        int j = x % power;
-        if (j > 0) {
-            j = power - j;
-        }
-
-        while (j < a.size()) {
-            a[j] += log_p;
-            j += power;
-        }
-
-        power *= p;
-    }
-}
-
-int next_smooth(int x) {
-    int z = static_cast<int>(10 * std::log2(x));
-    double delta = 0.000001;
-
-    std::vector<double> a(z, 0.0);
-
-    handle_prime(2, x, a);
-    handle_prime(3, x, a);
-    handle_prime(5, x, a);
-    handle_prime(7, x, a);
-
-    double log_x = std::log(x);
-    for (int i = 0; i < a.size(); ++i) {
-        if (a[i] >= log_x - delta) {
-            return x + i;
-        }
+  while (power <= x + a.size())
+  {
+    int j = x % power;
+    if (j > 0)
+    {
+      j = power - j;
     }
 
-    return -1;
+    while (j < a.size())
+    {
+      a[j] += log_p;
+      j += power;
+    }
+
+    power *= p;
+  }
 }
 
-std::vector<int> get_next_smooth(const std::vector<int>& size) {
-    std::vector<int> result(size.size());
-    std::transform(size.begin(), size.end(), result.begin(), next_smooth);
-    return result;
+int
+next_smooth(int x)
+{
+  int    z = static_cast<int>(10 * std::log2(x));
+  double delta = 0.000001;
+
+  std::vector<double> a(z, 0.0);
+
+  handle_prime(2, x, a);
+  handle_prime(3, x, a);
+  handle_prime(5, x, a);
+  handle_prime(7, x, a);
+
+  double log_x = std::log(x);
+  for (int i = 0; i < a.size(); ++i)
+  {
+    if (a[i] >= log_x - delta)
+    {
+      return x + i;
+    }
+  }
+
+  return -1;
 }
 
-std::vector<int> get_pad_size(const std::vector<int>& img_shape, const std::vector<int>& psf_shape) {
-    std::vector<int> result(img_shape.size());
-    std::transform(img_shape.begin(), img_shape.end(), psf_shape.begin(), result.begin(),
-                   [](int i, int j) { return i + 2 * std::floor(j / 2); });
-    return result;
+std::vector<int>
+get_next_smooth(const std::vector<int> & size)
+{
+  std::vector<int> result(size.size());
+  std::transform(size.begin(), size.end(), result.begin(), next_smooth);
+  return result;
 }
 
-auto pad(const Array::Pointer & array, const std::array<size_t,3>& size, const float value) -> Array::Pointer
+std::vector<int>
+get_pad_size(const std::vector<int> & img_shape, const std::vector<int> & psf_shape)
+{
+  std::vector<int> result(img_shape.size());
+  std::transform(img_shape.begin(), img_shape.end(), psf_shape.begin(), result.begin(), [](int i, int j) {
+    return i + 2 * std::floor(j / 2);
+  });
+  return result;
+}
+
+auto
+pad(const Array::Pointer & array, const std::array<size_t, 3> & size, const float value) -> Array::Pointer
 {
   auto width = size[0] + array->width();
   auto height = size[1] + array->height();
   auto depth = size[2] + array->depth();
 
-  std::array<size_t, 3> offset = {0, 0, 0};
+  std::array<size_t, 3> offset = { 0, 0, 0 };
   offset[0] = size[0] / 2;
   offset[1] = size[1] / 2;
   offset[2] = size[2] / 2;
 
-  auto padded = Array::create(width, height, depth, array->dimension(), array->dtype(), array->mtype(), array->device());
+  auto padded =
+    Array::create(width, height, depth, array->dimension(), array->dtype(), array->mtype(), array->device());
   padded->fill(value);
-  array->copyTo(padded, {array->width(), array->height(), array->depth()}, {0,0,0}, offset);
+  array->copyTo(padded, { array->width(), array->height(), array->depth() }, { 0, 0, 0 }, offset);
 
   return padded;
 }
 
 
-auto unpad(const Array::Pointer & array, const std::array<size_t,3>& size) -> Array::Pointer
+auto
+unpad(const Array::Pointer & array, const std::array<size_t, 3> & size) -> Array::Pointer
 {
-  auto dif_width =  array->width() - size[0];
-  auto dif_height =  array->height() - size[1];
-  auto dif_depth =  array->depth() - size[2];
+  auto dif_width = array->width() - size[0];
+  auto dif_height = array->height() - size[1];
+  auto dif_depth = array->depth() - size[2];
 
-  std::array<size_t, 3> offset = {0, 0, 0};
+  std::array<size_t, 3> offset = { 0, 0, 0 };
   offset[0] = dif_width / 2;
   offset[1] = dif_height / 2;
   offset[2] = dif_depth / 2;
 
-  auto unpadded = Array::create(dif_width, dif_height, dif_depth, array->dimension(), array->dtype(), array->mtype(), array->device());
-  array->copyTo(unpadded, {unpadded->width(), unpadded->height(), unpadded->depth()}, offset, {0,0,0});
+  auto unpadded = Array::create(
+    dif_width, dif_height, dif_depth, array->dimension(), array->dtype(), array->mtype(), array->device());
+  array->copyTo(unpadded, { unpadded->width(), unpadded->height(), unpadded->depth() }, offset, { 0, 0, 0 });
 
   return unpadded;
 }
-
 
 
 Array::Pointer
@@ -153,44 +170,42 @@ configure(const Array::Pointer & array, VkFFTConfiguration & configuration) -> v
 }
 
 auto
-get_cache_path(const Array::Pointer &output, const std::shared_ptr<OpenCLDevice> &ocl_device) -> std::filesystem::path
+get_cache_path(const Array::Pointer & output, const std::shared_ptr<OpenCLDevice> & ocl_device) -> std::filesystem::path
 {
-    std::ostringstream hashStream;
-    hashStream << output->width() << ","
-               << output->height() << ","
-               << output->depth() << ","
-               << output->dimension();
-    std::hash<std::string> hasher;
-    const auto source_hash = std::to_string(hasher(hashStream.str()));
-    const auto device_hash = std::to_string(hasher(ocl_device->getInfo()));
-    return CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".bin");
+  std::ostringstream hashStream;
+  hashStream << output->width() << "," << output->height() << "," << output->depth() << "," << output->dimension();
+  std::hash<std::string> hasher;
+  const auto             source_hash = std::to_string(hasher(hashStream.str()));
+  const auto             device_hash = std::to_string(hasher(ocl_device->getInfo()));
+  return CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".bin");
 }
 
-auto 
-load_kernel_cache(const std::filesystem::path &binary_path, VkFFTConfiguration &configuration) -> bool
+auto
+load_kernel_cache(const std::filesystem::path & binary_path, VkFFTConfiguration & configuration) -> bool
 {
-    FILE *kernelCache = fopen(binary_path.c_str(), "rb");
-    if (kernelCache == nullptr) {
-        return false;
-    }
-    fseek(kernelCache, 0, SEEK_END);
-    uint64_t str_len = ftell(kernelCache);
-    fseek(kernelCache, 0, SEEK_SET);
-    configuration.loadApplicationString = malloc(str_len);
-    fread(configuration.loadApplicationString, str_len, 1, kernelCache);
-    fclose(kernelCache);
+  FILE * kernelCache = fopen(binary_path.c_str(), "rb");
+  if (kernelCache == nullptr)
+  {
+    return false;
+  }
+  fseek(kernelCache, 0, SEEK_END);
+  uint64_t str_len = ftell(kernelCache);
+  fseek(kernelCache, 0, SEEK_SET);
+  configuration.loadApplicationString = malloc(str_len);
+  fread(configuration.loadApplicationString, str_len, 1, kernelCache);
+  fclose(kernelCache);
 
-    configuration.loadApplicationFromString = 1;
-    configuration.saveApplicationToString = 0;
-    return true;
+  configuration.loadApplicationFromString = 1;
+  configuration.saveApplicationToString = 0;
+  return true;
 }
 
-auto 
-save_kernel_cache(const std::filesystem::path &binary_path, const VkFFTApplication &app) -> void
+auto
+save_kernel_cache(const std::filesystem::path & binary_path, const VkFFTApplication & app) -> void
 {
-    FILE *kernelCache = fopen(binary_path.c_str(), "wb");
-    fwrite(app.saveApplicationString, app.applicationStringSize, 1, kernelCache);
-    fclose(kernelCache);
+  FILE * kernelCache = fopen(binary_path.c_str(), "wb");
+  fwrite(app.saveApplicationString, app.applicationStringSize, 1, kernelCache);
+  fclose(kernelCache);
 }
 
 auto
@@ -223,37 +238,43 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   configuration.context = &context;
   configuration.commandQueue = &queue;
 
-  // manage jit-cache system  
-  const auto use_cache = is_cache_enabled();
+  // manage jit-cache system
+  const auto            use_cache = is_cache_enabled();
   std::filesystem::path binary_path;
-  if (use_cache) {
-      binary_path = get_cache_path(input, ocl_device);
-      if (!load_kernel_cache(binary_path, configuration)) {
-          configuration.loadApplicationFromString = 0;
-          configuration.saveApplicationToString = 1;
-      }
+  if (use_cache)
+  {
+    binary_path = get_cache_path(input, ocl_device);
+    if (!load_kernel_cache(binary_path, configuration))
+    {
+      configuration.loadApplicationFromString = 0;
+      configuration.saveApplicationToString = 1;
+    }
   }
 
   // initialize VkFFT
   VkFFTApplication app = {};
   auto             resFFT = initializeVkFFT(&app, configuration);
-  if (resFFT != VKFFT_SUCCESS) {
+  if (resFFT != VKFFT_SUCCESS)
+  {
     throw std::runtime_error("Error: Failed to initialize VkFFT -> " + std::string(getVkFFTErrorString(resFFT)));
   }
 
   // free memory if needed, save to cache if needed
-  if (use_cache && configuration.loadApplicationFromString) {
+  if (use_cache && configuration.loadApplicationFromString)
+  {
     free(configuration.loadApplicationString);
   }
-  if (use_cache && configuration.saveApplicationToString) {
-      save_kernel_cache(binary_path, app);
+  if (use_cache && configuration.saveApplicationToString)
+  {
+    save_kernel_cache(binary_path, app);
   }
 
   // execute VkFFT
   VkFFTLaunchParams launchParams = {};
   launchParams.commandQueue = &queue;
   resFFT = VkFFTAppend(&app, -1, &launchParams);
-  if (resFFT != VKFFT_SUCCESS) {
+  if (resFFT != VKFFT_SUCCESS)
+  {
     throw std::runtime_error("Error: Failed to execute VkFFT -> " + std::string(getVkFFTErrorString(resFFT)));
   }
 
@@ -264,72 +285,74 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
 }
 
 
-
-
-
-auto performIFFT(const Array::Pointer &input, Array::Pointer output) -> void
+auto
+performIFFT(const Array::Pointer & input, Array::Pointer output) -> void
 {
-    // fetch ocl device, context and queue
-    auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
-    auto device = ocl_device->getCLDevice();
-    auto context = ocl_device->getCLContext();
-    auto queue = ocl_device->getCLCommandQueue();
+  // fetch ocl device, context and queue
+  auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
+  auto device = ocl_device->getCLDevice();
+  auto context = ocl_device->getCLContext();
+  auto queue = ocl_device->getCLCommandQueue();
 
-    // configure VkFFT
-    VkFFTConfiguration configuration{};
-    configure(output, configuration);
+  // configure VkFFT
+  VkFFTConfiguration configuration{};
+  configure(output, configuration);
 
-    auto input_size = static_cast<uint64_t>(input->bitsize());
-    auto output_size = static_cast<uint64_t>(output->bitsize());
-    configuration.bufferSize = &input_size;
-    configuration.inputBufferSize = &output_size;
-    configuration.buffer = static_cast<cl_mem *>(*input->get());
-    configuration.inputBuffer = static_cast<cl_mem *>(*output->get());
-    configuration.outputBuffer = static_cast<cl_mem *>(*input->get());
-    configuration.device = &device;
-    configuration.context = &context;
-    configuration.commandQueue = &queue;
+  auto input_size = static_cast<uint64_t>(input->bitsize());
+  auto output_size = static_cast<uint64_t>(output->bitsize());
+  configuration.bufferSize = &input_size;
+  configuration.inputBufferSize = &output_size;
+  configuration.buffer = static_cast<cl_mem *>(*input->get());
+  configuration.inputBuffer = static_cast<cl_mem *>(*output->get());
+  configuration.outputBuffer = static_cast<cl_mem *>(*input->get());
+  configuration.device = &device;
+  configuration.context = &context;
+  configuration.commandQueue = &queue;
 
-    // manage jit-cache system
-    const auto use_cache = is_cache_enabled();
-    std::filesystem::path binary_path;
-    if (use_cache) {
-        binary_path = get_cache_path(output, ocl_device);
-        if (!load_kernel_cache(binary_path, configuration)) {
-            configuration.loadApplicationFromString = 0;
-            configuration.saveApplicationToString = 1;
-        }
+  // manage jit-cache system
+  const auto            use_cache = is_cache_enabled();
+  std::filesystem::path binary_path;
+  if (use_cache)
+  {
+    binary_path = get_cache_path(output, ocl_device);
+    if (!load_kernel_cache(binary_path, configuration))
+    {
+      configuration.loadApplicationFromString = 0;
+      configuration.saveApplicationToString = 1;
     }
+  }
 
-    // initialize VkFFT
-    VkFFTApplication app = {};
-    auto resFFT = initializeVkFFT(&app, configuration);
-    if (resFFT != VKFFT_SUCCESS) {
-        throw std::runtime_error("Error: Failed to initialize VkFFT -> " + std::string(getVkFFTErrorString(resFFT)));
-    }
+  // initialize VkFFT
+  VkFFTApplication app = {};
+  auto             resFFT = initializeVkFFT(&app, configuration);
+  if (resFFT != VKFFT_SUCCESS)
+  {
+    throw std::runtime_error("Error: Failed to initialize VkFFT -> " + std::string(getVkFFTErrorString(resFFT)));
+  }
 
-    // free memory if needed, save to cache if needed
-    if (use_cache && configuration.loadApplicationFromString) {
-        free(configuration.loadApplicationString);
-    }
-    if (use_cache && configuration.saveApplicationToString) {
-        save_kernel_cache(binary_path, app);
-    }
+  // free memory if needed, save to cache if needed
+  if (use_cache && configuration.loadApplicationFromString)
+  {
+    free(configuration.loadApplicationString);
+  }
+  if (use_cache && configuration.saveApplicationToString)
+  {
+    save_kernel_cache(binary_path, app);
+  }
 
-    // execute VkFFT
-    VkFFTLaunchParams launchParams = {};
-    launchParams.commandQueue = &queue;
-    resFFT = VkFFTAppend(&app, 1, &launchParams);
-    if (resFFT != VKFFT_SUCCESS) {
-        throw std::runtime_error("Error: Failed to execute VkFFT -> " + std::string(getVkFFTErrorString(resFFT)));
-    }
+  // execute VkFFT
+  VkFFTLaunchParams launchParams = {};
+  launchParams.commandQueue = &queue;
+  resFFT = VkFFTAppend(&app, 1, &launchParams);
+  if (resFFT != VKFFT_SUCCESS)
+  {
+    throw std::runtime_error("Error: Failed to execute VkFFT -> " + std::string(getVkFFTErrorString(resFFT)));
+  }
 
-    // wait for calculations to be finished before returning
-    clFinish(queue);
-    deleteVkFFT(&app);
+  // wait for calculations to be finished before returning
+  clFinish(queue);
+  deleteVkFFT(&app);
 }
-
-
 
 
 auto
