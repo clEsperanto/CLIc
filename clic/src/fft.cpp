@@ -18,114 +18,6 @@
 namespace cle::fft
 {
 
-void
-handle_prime(int p, int x, std::vector<double> & a)
-{
-  double log_p = std::log(p);
-  int    power = p;
-
-  while (power <= x + a.size())
-  {
-    int j = x % power;
-    if (j > 0)
-    {
-      j = power - j;
-    }
-
-    while (j < a.size())
-    {
-      a[j] += log_p;
-      j += power;
-    }
-
-    power *= p;
-  }
-}
-
-int
-next_smooth(int x)
-{
-  int    z = static_cast<int>(10 * std::log2(x));
-  double delta = 0.000001;
-
-  std::vector<double> a(z, 0.0);
-
-  handle_prime(2, x, a);
-  handle_prime(3, x, a);
-  handle_prime(5, x, a);
-  handle_prime(7, x, a);
-
-  double log_x = std::log(x);
-  for (int i = 0; i < a.size(); ++i)
-  {
-    if (a[i] >= log_x - delta)
-    {
-      return x + i;
-    }
-  }
-
-  return -1;
-}
-
-std::vector<int>
-get_next_smooth(const std::vector<int> & size)
-{
-  std::vector<int> result(size.size());
-  std::transform(size.begin(), size.end(), result.begin(), next_smooth);
-  return result;
-}
-
-std::vector<int>
-get_pad_size(const std::vector<int> & img_shape, const std::vector<int> & psf_shape)
-{
-  std::vector<int> result(img_shape.size());
-  std::transform(img_shape.begin(), img_shape.end(), psf_shape.begin(), result.begin(), [](int i, int j) {
-    return i + 2 * std::floor(j / 2);
-  });
-  return result;
-}
-
-auto
-pad(const Array::Pointer & array, const std::array<size_t, 3> & size, const float value) -> Array::Pointer
-{
-  auto width = size[0] + array->width();
-  auto height = size[1] + array->height();
-  auto depth = size[2] + array->depth();
-
-  std::array<size_t, 3> offset = { 0, 0, 0 };
-  offset[0] = size[0] / 2;
-  offset[1] = size[1] / 2;
-  offset[2] = size[2] / 2;
-
-  auto padded =
-    Array::create(width, height, depth, array->dimension(), array->dtype(), array->mtype(), array->device());
-  padded->fill(value);
-  array->copyTo(padded, { array->width(), array->height(), array->depth() }, { 0, 0, 0 }, offset);
-
-  return padded;
-}
-
-
-auto
-unpad(const Array::Pointer & array, const std::array<size_t, 3> & size) -> Array::Pointer
-{
-  auto dif_width = array->width() - size[0];
-  auto dif_height = array->height() - size[1];
-  auto dif_depth = array->depth() - size[2];
-
-  std::array<size_t, 3> offset = { 0, 0, 0 };
-  offset[0] = dif_width / 2;
-  offset[1] = dif_height / 2;
-  offset[2] = dif_depth / 2;
-
-  auto unpadded = Array::create(
-    dif_width, dif_height, dif_depth, array->dimension(), array->dtype(), array->mtype(), array->device());
-  array->copyTo(unpadded, { unpadded->width(), unpadded->height(), unpadded->depth() }, offset, { 0, 0, 0 });
-
-  return unpadded;
-}
-
-
 Array::Pointer
 create_hermitian(const Array::Pointer & real_buf)
 {
@@ -135,7 +27,7 @@ create_hermitian(const Array::Pointer & real_buf)
                        real_buf->height(),
                        real_buf->depth(),
                        real_buf->dimension(),
-                       real_buf->dtype(),
+                       dType::COMPLEX,
                        real_buf->mtype(),
                        real_buf->device());
 }
@@ -286,7 +178,7 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
 
 
 auto
-performIFFT(const Array::Pointer & input, Array::Pointer output) -> void
+performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
 {
   // fetch ocl device, context and queue
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());

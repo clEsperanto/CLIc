@@ -11,10 +11,11 @@ namespace cle::fft
 {
 
 /**
- * @brief Create a new hermitian Array::Pointer object from a real buffer
+ * @brief Create an hermitian Array::Pointer object from a real buffer
  *
- * Hermitian buffer are buffer containing the real and imaginary part of a complex number
+ * Hermitian buffer are buffer containing complex number stored
  * in an interleaved way (e.g. [real0, imag0, real1, imag1, ...])
+ * and are shaped as [ (width/2) +1, height, depth ].
  *
  * @param real_buf Array::Pointer
  * @return Array::Pointer
@@ -22,44 +23,10 @@ namespace cle::fft
 Array::Pointer
 create_hermitian(const Array::Pointer & real_buf);
 
-// /**
-//  * @brief Setup the clFFT library
-//  *
-//  * Setup procedure before using the clFFT library
-//  *
-//  * @return cl_int
-//  */
-// auto
-// SetupFFT() -> cl_int;
-
-// /**
-//  * @brief Create a forward plan for the clFFT library
-//  *
-//  * Create a forward plan for the clFFT library
-//  *
-//  * @param real Array::Pointer
-//  * @return clfftPlanHandle
-//  */
-// auto
-// bake_forward(const Array::Pointer & real) -> clfftPlanHandle;
-
-
-// /**
-//  * @brief Create a backward plan for the clFFT library
-//  *
-//  * Create a backward plan for the clFFT library
-//  *
-//  * @param real Array::Pointer
-//  * @return clfftPlanHandle
-//  */
-// auto
-// bake_backward(const Array::Pointer & real) -> clfftPlanHandle;
-
-
 /**
  * @brief Execute operation for fft kernel
  *
- * Template execute function for fft kernel
+ * Template execute function for fft kernel, to be used in other fft operations
  *
  * @param name std::string
  * @param bufferA Array::Pointer
@@ -80,7 +47,7 @@ execOperationKernel(const Device::Pointer & device,
 /**
  * @brief Execute remove small values kernel (inplace)
  *
- * Execute remove small values kernel (inplace)
+ * Execute remove small values kernel (inplace), to be used in other fft operations
  *
  * @param BufferA Array::Pointer
  * @param nElements unsigned int
@@ -93,7 +60,7 @@ execRemoveSmallValues(const Device::Pointer & device, Array::Pointer buffer, con
 /**
  * @brief Execute a total variation term
  *
- * Execute total variation term calculation
+ * Execute total variation term calculation, to be used in the deconvolution operation
  *
  * @param estimate Array::Pointer
  * @param correction Array::Pointer
@@ -124,8 +91,8 @@ execTotalVariationTerm(const Device::Pointer & device,
  *
  * Perform a forward FFT on a real buffer and store the result in a complex hermitian buffer
  * This operation takes a real array and returns a complex array in the frequency domain.
- * If provided, will store the result in the provided complex buffer otherwise will create a new one
- * and return it.
+ * The input shape can have an impact on the computation time, it is recommended to use
+ * a shape with a power of 2 for each dimension. 
  *
  * @param input Array::Pointer
  * @param output Array::Pointer
@@ -139,13 +106,14 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
  *
  * Perform a backward FFT on a complex hermitian buffer and store the result in a real buffer
  * This operation takes a complex array and returns a real array in the spatial domain.
- * The real output buffer must be provided as the second argument.
+ * The real output buffer must be provided as the second argument as the operation requires the
+ * output buffer shape to be known.
  *
  * @param input Array::Pointer
  * @param output Array::Pointer
  */
 auto
-performIFFT(const Array::Pointer & input, Array::Pointer output) -> void;
+performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void;
 
 /**
  * @brief FFT Convolution operation (vkFFT)
@@ -153,6 +121,8 @@ performIFFT(const Array::Pointer & input, Array::Pointer output) -> void;
  * Perform a convolution operation on two arrays in the frequency domain
  * It takes two real arrays, performs a forward FFT on both, multiply them in the frequency domain
  * and then perform a backward FFT on the result
+ * 
+ * Caution, this operation expect the kernel to be centered at (0, 0) and the same shape as the input
  *
  * @param input Array::Pointer
  * @param psf Array::Pointer
@@ -165,9 +135,12 @@ performConvolution(const Array::Pointer & input, const Array::Pointer & psf, Arr
   -> Array::Pointer;
 
 /**
- * @brief Richardson Lucy deconvolution (vkFFT)
+ * @brief Richardson-Lucy deconvolution (vkFFT)
  *
- * Perform a Richardson Lucy deconvolution on an observed image using a PSF kernel
+ * Perform a Richardson-Lucy deconvolution on an observed image using a PSF kernel
+ * with optional total variation regularization term.
+ * 
+ * Caution, this operation expect the kernel to be centered at (0, 0) and the same shape as the input
  *
  * @param observe Array::Pointer
  * @param psf Array::Pointer
@@ -186,68 +159,6 @@ performDeconvolution(const Array::Pointer & observe,
                      float                  regularization) -> Array::Pointer;
 
 
-// /**
-//  * @brief Fast Fourier Transform (clFFT)
-//  *
-//  * Perform a forward FFT on a real buffer and store the result in a complex buffer
-//  * This operation takes a real array and returns a complex array in the frequency domain
-//  *
-//  * @param real Array::Pointer
-//  * @param complex Array::Pointer
-//  * @return Array::Pointer
-//  */
-// auto
-// fft_forward(const Array::Pointer & real, Array::Pointer complex) -> Array::Pointer;
-
-// /**
-//  * @brief Inverse Fast Fourier Transform (clFFT)
-//  *
-//  * Perform a backward FFT on a complex buffer and store the result in a real buffer
-//  * This operation takes a complex array and returns a real array in the spatial domain
-//  *
-//  * @param complex Array::Pointer
-//  * @param real Array::Pointer
-//  */
-// auto
-// fft_backward(const Array::Pointer & complex, Array::Pointer real) -> void;
-
-// /**
-//  * @brief FFT Convolution operation
-//  *
-//  * Perform a convolution operation on two arrays in the frequency domain
-//  * It takes two real arrays, performs a forward FFT on both, multiply them in the frequency domain
-//  * and then perform a backward FFT on the result
-//  *
-//  * @param input Array::Pointer
-//  * @param psf Array::Pointer
-//  * @param output Array::Pointer
-//  * @param correlate bool
-//  * @return Array::Pointer
-//  */
-// auto
-// convolution(const Array::Pointer & input, const Array::Pointer & psf, Array::Pointer output, bool correlate)
-//   -> Array::Pointer;
-
-// /**
-//  * @brief Richardson Lucy deconvolution
-//  *
-//  * Perform a Richardson Lucy deconvolution on an observed image using a PSF kernel
-//  *
-//  * @param observe Array::Pointer
-//  * @param psf Array::Pointer
-//  * @param normal Array::Pointer
-//  * @param estimate Array::Pointer
-//  * @param iterations size_t
-//  * @param regularization float
-//  * @return Array::Pointer
-//  */
-// auto
-// deconvolution(const Array::Pointer & observe,
-//               const Array::Pointer & psf,
-//               Array::Pointer         normal,
-//               Array::Pointer         estimate,
-//               size_t                 iterations,
-//               float                  regularization) -> Array::Pointer;
 
 } // namespace cle::fft
 
