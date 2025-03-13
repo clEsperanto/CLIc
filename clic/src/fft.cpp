@@ -75,7 +75,7 @@ get_cache_path(const Array::Pointer & output, const std::shared_ptr<OpenCLDevice
 auto
 load_kernel_cache(const std::filesystem::path & binary_path, VkFFTConfiguration & configuration) -> bool
 {
-  FILE * kernelCache = fopen(binary_path.c_str(), "rb");
+  FILE * kernelCache = fopen(binary_path.string().c_str(), "rb");
   if (kernelCache == nullptr)
   {
     return false;
@@ -95,7 +95,7 @@ load_kernel_cache(const std::filesystem::path & binary_path, VkFFTConfiguration 
 auto
 save_kernel_cache(const std::filesystem::path & binary_path, const VkFFTApplication & app) -> void
 {
-  FILE * kernelCache = fopen(binary_path.c_str(), "wb");
+  FILE * kernelCache = fopen(binary_path.string().c_str(), "wb");
   fwrite(app.saveApplicationString, app.applicationStringSize, 1, kernelCache);
   fclose(kernelCache);
 }
