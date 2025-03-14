@@ -78,6 +78,37 @@ is_cache_enabled() -> bool
   return std::getenv("CLESPERANTO_NO_CACHE") == nullptr;
 }
 
+/**
+ * @brief Control the cache
+ */
+static auto
+use_cache(bool flag) -> void
+{
+  #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+  if (flag)
+  {
+    // unset the environment variable CLESPERANTO_NO_CACHE
+    _putenv("CLESPERANTO_NO_CACHE=");
+  }
+  else
+  {
+    // set the environment variable CLESPERANTO_NO_CACHE to 1
+    _putenv("CLESPERANTO_NO_CACHE=1");
+  }
+#else
+  if (flag)
+  {
+    // unset the environment variable CLESPERANTO_NO_CACHE
+    unsetenv("CLESPERANTO_NO_CACHE");
+  }
+  else
+  {
+    // set the environment variable CLESPERANTO_NO_CACHE to 1
+    setenv("CLESPERANTO_NO_CACHE", "1", 1);
+  }
+#endif
+}
+
 
 static const auto CACHE_FOLDER_PATH = get_cache_directory_path();
 

@@ -20,6 +20,8 @@ TEST_P(TestFFT, executeVKFFT)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
+  cle::use_cache(false);
+
   auto gpu_input = cle::Array::create(10, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
   auto gpu_final = cle::Array::create(gpu_input);
@@ -46,6 +48,7 @@ TEST_P(TestFFT, executeConvolution)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
+  cle::use_cache(false);
 
   std::array<float, 3 * 3 * 1> input = {
     0, 0, 0, 0, 1, 0, 0, 0, 0,
@@ -82,6 +85,8 @@ TEST_P(TestFFT, executeConvolutionCorr)
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
+  cle::use_cache(false);
+
   std::array<float, 3 * 3 * 1> input = {
     0, 0, 0, 0, 1, 0, 0, 0, 0,
   };
@@ -117,6 +122,8 @@ TEST_P(TestFFT, executeDeconvolution)
 
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
+
+  cle::use_cache(false);
 
   std::array<float, 3 * 3 * 1> valid = {
     0, 0, 0, 0, 3, 0, 0, 0, 0,
