@@ -7,17 +7,10 @@ class TestCircularShift : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<float, 4 * 3 * 1> input = {
-    1, 2, 3, 4,
-    5, 6, 7, 8,
-    9, 10, 11, 12,
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
   };
-  std::array<float, 4 * 3 * 1> valid = {
-    7, 8, 5, 6,
-    11, 12, 9, 10,
-    3, 4, 1, 2
-  };
+  std::array<float, 4 * 3 * 1> valid = { 7, 8, 5, 6, 11, 12, 9, 10, 3, 4, 1, 2 };
   std::array<float, 4 * 3 * 1> output;
-
 };
 
 TEST_P(TestCircularShift, execute)

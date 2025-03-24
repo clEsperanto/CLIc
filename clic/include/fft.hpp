@@ -28,10 +28,11 @@ create_hermitian(const Array::Pointer & real_buf);
  *
  * Get the next smooth number from a given number
  *
- * @param shape std::array<size_t, 3> 
- * @return std::array<size_t, 3> 
+ * @param shape std::array<size_t, 3>
+ * @return std::array<size_t, 3>
  */
-auto get_next_smooth(const std::array<size_t, 3>& shape) -> std::array<size_t, 3>;
+auto
+get_next_smooth(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>;
 
 /**
  * @brief Execute operation for fft kernel

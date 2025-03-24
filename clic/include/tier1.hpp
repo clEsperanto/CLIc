@@ -259,11 +259,11 @@ block_enumerate_func(const Device::Pointer & device,
  */
 auto
 circular_shift_func(const Device::Pointer & device,
-              const Array::Pointer &  src,
-              Array::Pointer          dst,
-              const int shift_x,
-              const int shift_y,
-              const int shift_z) -> Array::Pointer;
+                    const Array::Pointer &  src,
+                    Array::Pointer          dst,
+                    const int               shift_x,
+                    const int               shift_y,
+                    const int               shift_z) -> Array::Pointer;
 
 /**
  * @name convolve
@@ -2304,7 +2304,7 @@ multiply_matrix_func(const Device::Pointer & device,
 /**
  * @name pad
  * @brief Pads an image with a given size along dimensions with a given value.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
@@ -2319,17 +2319,17 @@ auto
 pad(const Device::Pointer & device,
     const Array::Pointer &  src,
     Array::Pointer          dst,
-    size_t                     pad_x,
-    size_t                     pad_y,
-    size_t                     pad_z,
+    size_t                  pad_x,
+    size_t                  pad_y,
+    size_t                  pad_z,
     float                   value,
-    bool center) -> Array::Pointer;
+    bool                    center) -> Array::Pointer;
 
 
 /**
  * @name pad
  * @brief Pads an image with a given size along dimensions with a given value.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
@@ -2342,12 +2342,12 @@ pad(const Device::Pointer & device,
  */
 auto
 unpad(const Device::Pointer & device,
-    const Array::Pointer &  src,
-    Array::Pointer          dst,
-    size_t                     pad_x,
-    size_t                     pad_y,
-    size_t                     pad_z,
-    bool center) -> Array::Pointer;    
+      const Array::Pointer &  src,
+      Array::Pointer          dst,
+      size_t                  pad_x,
+      size_t                  pad_y,
+      size_t                  pad_z,
+      bool                    center) -> Array::Pointer;
 
 /**
  * @name reciprocal

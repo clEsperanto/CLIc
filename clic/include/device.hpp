@@ -131,19 +131,19 @@ public:
   [[nodiscard]] virtual auto
   getNbDevicesFromContext() const -> size_t = 0;
 
-    /**
+  /**
    * @brief Get maximum buffer size
    * @return size_t
    */
   [[nodiscard]] virtual auto
-getMaximumBufferSize() const -> size_t =0;
+  getMaximumBufferSize() const -> size_t = 0;
 
-/**
- * @brief Get local memory size
- * @return size_t
- */
-[[nodiscard]]virtual auto
-getLocalMemorySize() const -> size_t =0;
+  /**
+   * @brief Get local memory size
+   * @return size_t
+   */
+  [[nodiscard]] virtual auto
+  getLocalMemorySize() const -> size_t = 0;
 
   /**
    * @brief operator << for Device::Type
@@ -375,15 +375,15 @@ public:
    * @brief Get maximum buffer size
    * @return size_t
    */
-  [[nodiscard]]auto
-getMaximumBufferSize() const -> size_t override;
+  [[nodiscard]] auto
+  getMaximumBufferSize() const -> size_t override;
 
-/**
- * @brief Get local memory size
- * @return size_t
- */
-[[nodiscard]] auto
-getLocalMemorySize() const -> size_t override;
+  /**
+   * @brief Get local memory size
+   * @return size_t
+   */
+  [[nodiscard]] auto
+  getLocalMemorySize() const -> size_t override;
 
 private:
   std::shared_ptr<Ressources>   clRessources = nullptr;
@@ -541,19 +541,19 @@ public:
   [[nodiscard]] auto
   getDeviceIndex() const -> size_t override;
 
-    /**
+  /**
    * @brief Get maximum buffer size
    * @return size_t
    */
-  [[nodiscard]]auto
-getMaximumBufferSize() const -> size_t override;
+  [[nodiscard]] auto
+  getMaximumBufferSize() const -> size_t override;
 
-/**
- * @brief Get local memory size
- * @return size_t
- */
-[[nodiscard]] auto
-getLocalMemorySize() const -> size_t override;
+  /**
+   * @brief Get local memory size
+   * @return size_t
+   */
+  [[nodiscard]] auto
+  getLocalMemorySize() const -> size_t override;
 
 private:
   int       cudaDeviceIndex;
