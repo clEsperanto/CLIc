@@ -13,11 +13,66 @@
 #include <array>
 #include <stdexcept>
 
+#include <iostream>
+  #include <vector>
+  #include <cmath>
+  #include <tuple>
+  #include <functional>
+
 #include "cle_fft.h"
 
 namespace cle::fft
 {
+  
+auto next_smooth(size_t x) -> size_t {
+    size_t z = static_cast<size_t>(10 * std::log2(x));
+    double delta = 0.000001;
+    std::vector<double> a(z, 0.0);
 
+    auto handle_prime = [&](int p) {
+        double log_p = std::log(p);
+        int power = p;
+
+        while (power <= x + a.size()) {
+            int j = x % power;
+            if (j > 0) {
+                j = power - j;
+            }
+
+            while (j < a.size()) {
+                a[j] += log_p;
+                j += power;
+            }
+
+            power *= p;
+        }
+    };
+
+    handle_prime(2);
+    handle_prime(3);
+    handle_prime(5);
+    handle_prime(7);
+
+    double log_x = std::log(x);
+    for (size_t i = 0; i < a.size(); ++i) {
+        if (a[i] >= log_x - delta) {
+            return x + i;
+        }
+    }
+    return std::numeric_limits<size_t>::max();
+}
+
+auto get_next_smooth(const std::array<size_t, 3>& shape) -> std::array<size_t, 3> {
+  std::array<size_t, 3> result;
+  // std::transform(shape.begin(), shape.end(), result.begin(), next_smooth);
+  for (size_t i = 0; i < shape.size(); ++i) {
+    result[i] = (shape[i] > 1)? next_smooth(shape[i]) : 1;
+  }
+  return result;
+}
+
+
+  
 Array::Pointer
 create_hermitian(const Array::Pointer & real_buf)
 {

@@ -24,6 +24,16 @@ Array::Pointer
 create_hermitian(const Array::Pointer & real_buf);
 
 /**
+ * @brief Get the next smooth shape from a given shape
+ *
+ * Get the next smooth number from a given number
+ *
+ * @param shape std::array<size_t, 3> 
+ * @return std::array<size_t, 3> 
+ */
+auto get_next_smooth(const std::array<size_t, 3>& shape) -> std::array<size_t, 3>;
+
+/**
  * @brief Execute operation for fft kernel
  *
  * Template execute function for fft kernel, to be used in other fft operations
