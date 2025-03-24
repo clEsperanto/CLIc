@@ -52,6 +52,32 @@ smooth_connected_labels_func(const Device::Pointer & device, const Array::Pointe
   -> Array::Pointer;
 
 
+
+
+
+ 
+
+  
+  
+  auto
+  fft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+    -> Array::Pointer;
+  
+  auto
+  ifft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+    -> Array::Pointer;
+  
+  auto
+  fft_convolution_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & kernel, Array::Pointer dst, bool correlate)
+    -> Array::Pointer;
+  
+  auto
+  fft_deconvolution_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & psf, Array::Pointer normalization, Array::Pointer dst, size_t interation, float regularization)
+    -> Array::Pointer;
+   
+
+
+
 } // namespace cle::tier8
 
 #endif // __INCLUDE_TIER8_HPP
