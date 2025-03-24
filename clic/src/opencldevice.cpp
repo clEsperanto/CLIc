@@ -287,13 +287,29 @@ OpenCLDevice::supportImage() const -> bool
 }
 
 auto
+OpenCLDevice::getMaximumBufferSize() const -> size_t
+{
+  size_t mem_size;
+  clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_MAX_MEM_ALLOC_SIZE, sizeof(size_t), &mem_size, nullptr);
+  return mem_size;
+}
+
+auto
+OpenCLDevice::getLocalMemorySize() const -> size_t
+{
+  size_t mem_size;
+  clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_LOCAL_MEM_SIZE, sizeof(size_t), &mem_size, nullptr);
+  return mem_size;
+}
+
+auto
 OpenCLDevice::getInfo() const -> std::string
 {
   std::ostringstream result;
   char               version[256], vendor[256], driver[256], extensions[1024], dev_type[256];
   cl_device_type     type;
   cl_uint            compute_units, max_work_group_size, max_clock_frequency, max_work_item_dimensions, image_support;
-  size_t             global_mem_size, max_mem_size;
+  size_t             global_mem_size, max_mem_size, local_mem_size;
   size_t             max_work_item_sizes[3];
 
   // Get device information
@@ -305,6 +321,7 @@ OpenCLDevice::getInfo() const -> std::string
   clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_TYPE, sizeof(cl_device_type), &type, nullptr);
   clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint), &compute_units, nullptr);
   clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(size_t), &global_mem_size, nullptr);
+  clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_LOCAL_MEM_SIZE, sizeof(size_t), &local_mem_size, nullptr);
   clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_MAX_MEM_ALLOC_SIZE, sizeof(size_t), &max_mem_size, nullptr);
   clGetDeviceInfo(
     clRessources->get_device(), CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(cl_uint), &max_work_group_size, nullptr);
@@ -326,7 +343,8 @@ OpenCLDevice::getInfo() const -> std::string
   result << std::left << std::setw(30) << "\tDevice Type: " << dev_type_str << "\n";
   result << std::left << std::setw(30) << "\tCompute Units: " << compute_units << '\n';
   result << std::left << std::setw(30) << "\tGlobal Memory Size: " << (global_mem_size / (1024 * 1024)) << " MB\n";
-  result << std::left << std::setw(30) << "\tMaximum Object Size: " << (max_mem_size / (1024 * 1024)) << " MB\n";
+  result << std::left << std::setw(30) << "\tLocal Memory Size: " << (local_mem_size / (1024 * 1024)) << " MB\n";
+  result << std::left << std::setw(30) << "\tMaximum Buffer Size: " << (max_mem_size / (1024 * 1024)) << " MB\n";
   result << std::left << std::setw(30) << "\tMax Clock Frequency: " << max_clock_frequency << " MHz\n";
   result << std::left << std::setw(30) << "\tImage Support: " << (image_support ? "Yes" : "No") << '\n';
 

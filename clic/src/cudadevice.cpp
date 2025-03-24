@@ -162,6 +162,22 @@ CUDADevice::supportImage() const -> const bool
 }
 
 auto
+CUDADevice::getMaximumBufferSize() const -> size_t
+{
+  size_t mem_size;
+  cuDeviceGetAttribute(&mem_size, CU_DEVICE_ATTRIBUTE_MAX_MEM_ALLOC_SIZE, device);
+  return mem_size;
+}
+
+auto
+CUDADevice::getLocalMemorySize() const -> size_t
+{
+  size_t mem_size;
+  cuDeviceGetAttribute(&mem_size, CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK, cudaDevice);
+  return mem_size;
+}
+
+auto
 CUDADevice::getInfo() const -> std::string
 {
   std::ostringstream result;
