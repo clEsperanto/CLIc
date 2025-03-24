@@ -243,6 +243,27 @@ block_enumerate_func(const Device::Pointer & device,
                      Array::Pointer          dst,
                      int                     blocksize) -> Array::Pointer;
 
+/**
+ * @name circular_shift
+ * @brief Apply a circular shift (roll) to the input image. Elements at the borders will be shifted to the other side
+ * of the image. The shift is specified for each dimension separately.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src0 First input image to process. [const Array::Pointer &]
+ * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'combine', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_convolve
+ */
+auto
+circular_shift_func(const Device::Pointer & device,
+              const Array::Pointer &  src,
+              Array::Pointer          dst,
+              const int shift_x,
+              const int shift_y,
+              const int shift_z) -> Array::Pointer;
 
 /**
  * @name convolve
@@ -2280,6 +2301,53 @@ multiply_matrix_func(const Device::Pointer & device,
                      const Array::Pointer &  matrix2,
                      Array::Pointer          matrix_destination) -> Array::Pointer;
 
+/**
+ * @name pad
+ * @brief Pads an image with a given size along dimensions with a given value.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param pad_x Padding size along x axis. [int ( = 0 )]
+ * @param pad_y Padding size along y axis. [int ( = 0 )]
+ * @param pad_z Padding size along z axis. [int ( = 0 )]
+ * @param value Value to pad with. [float ( = 0 )]
+ * @param center Center the image in the middle of the padded image. [bool ( = false )]
+ * @return Array::Pointer
+ */
+auto
+pad(const Device::Pointer & device,
+    const Array::Pointer &  src,
+    Array::Pointer          dst,
+    size_t                     pad_x,
+    size_t                     pad_y,
+    size_t                     pad_z,
+    float                   value,
+    bool center) -> Array::Pointer;
+
+
+/**
+ * @name pad
+ * @brief Pads an image with a given size along dimensions with a given value.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param pad_x Padding size along x axis. [int ( = 0 )]
+ * @param pad_y Padding size along y axis. [int ( = 0 )]
+ * @param pad_z Padding size along z axis. [int ( = 0 )]
+ * @param value Value to pad with. [float ( = 0 )]
+ * @param center Center the image in the middle of the padded image. [bool ( = false )]
+ * @return Array::Pointer
+ */
+auto
+unpad(const Device::Pointer & device,
+    const Array::Pointer &  src,
+    Array::Pointer          dst,
+    size_t                     pad_x,
+    size_t                     pad_y,
+    size_t                     pad_z,
+    bool center) -> Array::Pointer;    
 
 /**
  * @name reciprocal
