@@ -22,6 +22,13 @@ median_func(const Device::Pointer & device,
   auto       r_x = radius2kernelsize(radius_x);
   auto       r_y = radius2kernelsize(radius_y);
   auto       r_z = radius2kernelsize(radius_z);
+
+  auto median_size = r_x * r_y * r_z;
+  if (median_size * src->itemSize() > device->getLocalMemorySize())
+  {
+    std::cerr << "Warning: The kernel size is too large for the device local memory. Total kernel size is " << median_size * src->itemSize() << " bytes, but the device local memory size is " << device->getLocalMemorySize() << " bytes." << std::endl;
+  }
+
   KernelInfo kernel = { "median_box", kernel::median_box };
   if (connectivity == "sphere")
   {
