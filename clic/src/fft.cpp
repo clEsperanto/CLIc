@@ -24,61 +24,52 @@
 namespace cle::fft
 {
 
-auto
-next_smooth(size_t x) -> size_t
-{
-  size_t              z = static_cast<size_t>(10 * std::log2(x));
-  double              delta = 0.000001;
-  std::vector<double> a(z, 0.0);
-
-  auto handle_prime = [&](int p) {
+  auto handle_prime(size_t x, size_t z, std::vector<double>& a, int p) -> void {
     double log_p = std::log(p);
-    int    power = p;
+    int power = p;
 
-    while (power <= x + a.size())
-    {
-      int j = x % power;
-      if (j > 0)
-      {
-        j = power - j;
-      }
+    while (power <= x + z) {
+        int j = x % power;
+        if (j > 0) {
+            j = power - j;
+        }
 
-      while (j < a.size())
-      {
-        a[j] += log_p;
-        j += power;
-      }
+        while (j < z) {
+            a[j] += log_p;
+            j += power;
+        }
 
-      power *= p;
+        power *= p;
     }
-  };
-
-  handle_prime(2);
-  handle_prime(3);
-  handle_prime(5);
-  handle_prime(7);
-
-  double log_x = std::log(x);
-  for (size_t i = 0; i < a.size(); ++i)
-  {
-    if (a[i] >= log_x - delta)
-    {
-      return x + i;
-    }
-  }
-  return std::numeric_limits<size_t>::max();
 }
 
-auto
-get_next_smooth(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>
+auto next_smooth(size_t x) -> size_t{
+    size_t z = static_cast<size_t>(10 * std::log2(x));
+    double delta = 0.000001;
+    std::vector<double> a(z, 0.0);
+
+    constexpr std::array<int, 4> primes = {2, 3, 5, 7};
+    for (int p : primes) {
+        handle_prime(x, z, a, p);
+    }
+
+    double log_x = std::log(x);
+    for (size_t i = 0; i < a.size(); ++i) {
+        if (a[i] >= log_x - delta) {
+            return x + i;
+        }
+    }
+    return std::numeric_limits<size_t>::max();
+}
+
+
+auto get_next_smooth(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>
 {
-  std::array<size_t, 3> result;
-  // std::transform(shape.begin(), shape.end(), result.begin(), next_smooth);
-  for (size_t i = 0; i < shape.size(); ++i)
-  {
-    result[i] = (shape[i] > 1) ? next_smooth(shape[i]) : 1;
-  }
-  return result;
+    std::array<size_t, 3> result;
+    std::transform(shape.begin(), shape.end(), result.begin(), [](size_t value) {
+        return (value > 1) ? next_smooth(value) : 1;
+    });
+    return result;
 }
 
 
@@ -242,8 +233,13 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
 
 
 auto
-performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
+performIFFT(const Array::Pointer & input, Array::Pointer output) -> void
 {
+  if(output == nullptr)
+  {
+    throw std::runtime_error("Error: ifft output buffer is null. Please provide an output buffer.");
+  }
+
   // fetch ocl device, context and queue
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
   auto device = ocl_device->getCLDevice();
@@ -318,6 +314,7 @@ performConvolution(const Array::Pointer & input, const Array::Pointer & psf, Arr
   auto device = input->device();
   if (output == nullptr)
   {
+    std::cout << "output is null, we create one from input" << std::endl;
     output = Array::create(input);
   }
 
@@ -325,6 +322,7 @@ performConvolution(const Array::Pointer & input, const Array::Pointer & psf, Arr
   auto fft_input = performFFT(input, nullptr);
   auto fft_psf = performFFT(psf, nullptr);
   auto fft_out = Array::create(fft_psf);
+
 
   // complex multiply input and psf
   std::string kernel_name = correlate ? "vecComplexConjugateMultiply" : "vecComplexMultiply";

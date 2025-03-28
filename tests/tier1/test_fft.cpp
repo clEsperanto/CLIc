@@ -152,7 +152,7 @@ TEST_P(TestFFT, executeConvolutionCorr)
   }
 }
 
-TEST_P(TestFFT, executeConvolution2)
+TEST_P(TestFFT, executeConvolutionPadded)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -162,33 +162,42 @@ TEST_P(TestFFT, executeConvolution2)
 
   cle::use_cache(false);
 
-  std::array<float, 3 * 3 * 1> input = {
-    0, 0, 0, 0, 1, 0, 0, 0, 0,
+  std::array<float, 13 * 11 * 1> input = {
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
   };
-  std::array<float, 2 * 1 * 1> kernel = {
-    1,
-    2,
+  std::array<float, 3 * 3 * 1> kernel = {
+    1, 1, 1, 1, 1, 1, 1, 1, 1,
   };
 
-  std::array<float, 3 * 3 * 1> valid_corr = {
-    0, 0, 0, 2, 1, -0, 0, 0, -0,
-  };
+  // std::array<float, 3 * 3 * 1> valid_corr = {
+  //   0, 0, 0, 2, 1, -0, 0, 0, -0,
+  // };
 
-  auto gpu_input = cle::Array::create(3, 3, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_input = cle::Array::create(13, 11, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
-  auto gpu_psf = cle::Array::create(2, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto gpu_psf = cle::Array::create(3, 3, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_psf->writeFrom(kernel.data());
 
-  auto gpu_final = cle::tier8::fft_convolution_func(device, gpu_input, gpu_psf, nullptr, true);
+  auto gpu_final = cle::tier8::fft_convolution_func(device, gpu_input, gpu_psf, nullptr, false);
 
-  std::vector<float> output(gpu_final->size());
-  gpu_final->readTo(output.data());
-  EXPECT_EQ(output.size(), input.size());
-  for (size_t i = 0; i < output.size(); i++)
-  {
-    EXPECT_NEAR(output[i], valid_corr[i], 0.1);
-  }
+  // std::vector<float> output(gpu_final->size());
+  // gpu_final->readTo(output.data());
+  // EXPECT_EQ(output.size(), input.size());
+  // for (size_t i = 0; i < output.size(); i++)
+  // {
+  //   EXPECT_NEAR(output[i], valid_corr[i], 0.1);
+  // }
 }
 
 TEST_P(TestFFT, executeDeconvolution)

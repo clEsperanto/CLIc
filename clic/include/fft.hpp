@@ -124,7 +124,7 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
  * @param output Array::Pointer
  */
 auto
-performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void;
+performIFFT(const Array::Pointer & input, Array::Pointer output) -> void;
 
 /**
  * @brief FFT Convolution operation (vkFFT)

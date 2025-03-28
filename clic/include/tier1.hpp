@@ -2316,7 +2316,7 @@ multiply_matrix_func(const Device::Pointer & device,
  * @return Array::Pointer
  */
 auto
-pad(const Device::Pointer & device,
+pad_func(const Device::Pointer & device,
     const Array::Pointer &  src,
     Array::Pointer          dst,
     size_t                  pad_x,
@@ -2341,7 +2341,7 @@ pad(const Device::Pointer & device,
  * @return Array::Pointer
  */
 auto
-unpad(const Device::Pointer & device,
+unpad_func(const Device::Pointer & device,
       const Array::Pointer &  src,
       Array::Pointer          dst,
       size_t                  pad_x,

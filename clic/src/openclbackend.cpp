@@ -695,7 +695,7 @@ OpenCLBackend::copyMemoryBufferToBuffer(const Device::Pointer & device,
   size_t dst_row_pitch = dst_shape[1] > 1 ? dst_shape[0] : 0;
   size_t dst_slice_pitch = dst_shape[2] > 1 ? dst_shape[0] * dst_shape[1] : 0;
 
-  if (src_shape[2] > 1 || src_shape[1] > 1)
+  if (dst_shape[2] > 1 || dst_shape[1] > 1 || src_shape[2] > 1 || src_shape[1] > 1)
   {
     err = clEnqueueCopyBufferRect(opencl_device->getCLCommandQueue(),
                                   *static_cast<const cl_mem *>(*src_ptr),
