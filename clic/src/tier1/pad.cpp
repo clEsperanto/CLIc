@@ -8,17 +8,17 @@ namespace cle::tier1
 
 auto
 pad_func(const Device::Pointer & device,
-    const Array::Pointer &  src,
-    Array::Pointer          dst,
-    size_t                  pad_x,
-    size_t                  pad_y,
-    size_t                  pad_z,
-    float                   value,
-    bool                    center) -> Array::Pointer
+         const Array::Pointer &  src,
+         Array::Pointer          dst,
+         size_t                  pad_x,
+         size_t                  pad_y,
+         size_t                  pad_z,
+         float                   value,
+         bool                    center) -> Array::Pointer
 {
   if (dst == nullptr)
   {
-    std::cout << "dst is null, we create one from input" << std::endl; 
+    std::cout << "dst is null, we create one from input" << std::endl;
   }
 
   const size_t new_width = src->width() + pad_x;
@@ -38,12 +38,12 @@ pad_func(const Device::Pointer & device,
 
 auto
 unpad_func(const Device::Pointer & device,
-      const Array::Pointer &  src,
-      Array::Pointer          dst,
-      size_t                  pad_x,
-      size_t                  pad_y,
-      size_t                  pad_z,
-      bool                    center) -> Array::Pointer
+           const Array::Pointer &  src,
+           Array::Pointer          dst,
+           size_t                  pad_x,
+           size_t                  pad_y,
+           size_t                  pad_z,
+           bool                    center) -> Array::Pointer
 {
   const size_t new_width = src->width() - pad_x;
   const size_t new_height = src->height() - pad_y;

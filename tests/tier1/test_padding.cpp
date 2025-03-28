@@ -96,7 +96,7 @@ TEST_P(TestPadding, executePaddingCenter)
 
   auto gpu_pad = cle::tier1::pad_func(device, gpu_input, nullptr, 2, 3, 0, 5, true);
   auto gpu_output = cle::tier1::unpad_func(device, gpu_pad, nullptr, 2, 3, 0, true);
-  
+
   std::vector<float> output(gpu_output->size());
   gpu_output->readTo(output.data());
   EXPECT_EQ(output.size(), input.size());

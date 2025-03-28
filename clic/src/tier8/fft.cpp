@@ -82,7 +82,8 @@ fft_convolution_func(const Device::Pointer & device,
 
   // check if smooth size differs from the kernel size, if yes, pad the kernel
   Array::Pointer pad_kernel = kernel;
-  if (smoothed_shape[0] != kernel->width() || smoothed_shape[1] != kernel->height() || smoothed_shape[2] != kernel->depth())
+  if (smoothed_shape[0] != kernel->width() || smoothed_shape[1] != kernel->height() ||
+      smoothed_shape[2] != kernel->depth())
   {
     // pad kernel to the smooth size
     auto kernel_pad_x = static_cast<int>(smoothed_shape[0]) - static_cast<int>(kernel->width());
@@ -92,9 +93,9 @@ fft_convolution_func(const Device::Pointer & device,
   }
 
   // negative shift kernel to center it at (0, 0, 0)
-  auto x_center = (static_cast<int>(pad_kernel->width()) / 2) - 1 ;
-  auto y_center = (static_cast<int>(pad_kernel->height()) / 2) - 1 ;
-  auto z_center = (static_cast<int>(pad_kernel->depth()) / 2) - 1 ;
+  auto x_center = (static_cast<int>(pad_kernel->width()) / 2) - 1;
+  auto y_center = (static_cast<int>(pad_kernel->height()) / 2) - 1;
+  auto z_center = (static_cast<int>(pad_kernel->depth()) / 2) - 1;
   pad_kernel = tier1::circular_shift_func(device, pad_kernel, nullptr, -x_center, -y_center, -z_center);
 
   // perform convolution
@@ -156,7 +157,7 @@ fft_deconvolution_func(const Device::Pointer & device,
     auto pad_size_x = smoothed_shape[0] - psf->width();
     auto pad_size_y = smoothed_shape[1] - psf->height();
     auto pad_size_z = smoothed_shape[2] - psf->depth();
-    
+
     padded_psf = tier1::pad_func(device, psf, nullptr, pad_size_x, pad_size_y, pad_size_z, 0, true);
   }
 

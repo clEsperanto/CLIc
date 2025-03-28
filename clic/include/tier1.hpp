@@ -2317,13 +2317,13 @@ multiply_matrix_func(const Device::Pointer & device,
  */
 auto
 pad_func(const Device::Pointer & device,
-    const Array::Pointer &  src,
-    Array::Pointer          dst,
-    size_t                  pad_x,
-    size_t                  pad_y,
-    size_t                  pad_z,
-    float                   value,
-    bool                    center) -> Array::Pointer;
+         const Array::Pointer &  src,
+         Array::Pointer          dst,
+         size_t                  pad_x,
+         size_t                  pad_y,
+         size_t                  pad_z,
+         float                   value,
+         bool                    center) -> Array::Pointer;
 
 
 /**
@@ -2342,12 +2342,12 @@ pad_func(const Device::Pointer & device,
  */
 auto
 unpad_func(const Device::Pointer & device,
-      const Array::Pointer &  src,
-      Array::Pointer          dst,
-      size_t                  pad_x,
-      size_t                  pad_y,
-      size_t                  pad_z,
-      bool                    center) -> Array::Pointer;
+           const Array::Pointer &  src,
+           Array::Pointer          dst,
+           size_t                  pad_x,
+           size_t                  pad_y,
+           size_t                  pad_z,
+           bool                    center) -> Array::Pointer;
 
 /**
  * @name reciprocal
