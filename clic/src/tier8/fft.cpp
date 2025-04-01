@@ -176,9 +176,9 @@ fft_deconvolution_func(const Device::Pointer & device,
     }
   }
 
-  // check dst size and pad if needed, otherwise create a new buffer 
+  // check dst size and pad if needed, otherwise create a new buffer
   Array::Pointer pad_dst = dst;
-  if(pad_dst != nullptr)
+  if (pad_dst != nullptr)
   {
     if (smoothed_shape[0] != pad_dst->width() || smoothed_shape[1] != pad_dst->height() ||
         smoothed_shape[2] != pad_dst->depth())
