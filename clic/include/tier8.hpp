@@ -82,9 +82,10 @@ ifft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 /**
  * @name convolve_fft
  * @brief Perform a 1D, 2D or 3D convolution using FFT between an input image and a kernel
- * 
- * Input image, psf kernel, and normalization image are expected to be in the spatial domain. The function will automatically pad
- * the input image and psf kernel to the same size as the closest smooth size and will take care of the psf kernel centering.
+ *
+ * Input image, psf kernel, and normalization image are expected to be in the spatial domain. The function will
+ * automatically pad the input image and psf kernel to the same size as the closest smooth size and will take care of
+ * the psf kernel centering.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image [const Array::Pointer &]
@@ -97,20 +98,22 @@ ifft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
  */
 auto
 convolve_fft_func(const Device::Pointer & device,
-                     const Array::Pointer &  src,
-                     const Array::Pointer &  kernel,
-                     Array::Pointer          dst,
-                     bool                    correlate) -> Array::Pointer;
+                  const Array::Pointer &  src,
+                  const Array::Pointer &  kernel,
+                  Array::Pointer          dst,
+                  bool                    correlate) -> Array::Pointer;
 
 /**
  * @name deconvolve_fft
  * @brief Perform a 1D, 2D or 3D deconvolution using FFT between an input image and a psf kernel.
- * The deconvolution is performed using the Richardson-Lucy algorithm and will requires a maximum iteration number. 
- * User can specify a normalization image (optional) and a regularization parameter (optional) to apply a Total Variation regularization.
- * 
- * Input image, psf kernel, and normalization image are expected to be in the spatial domain. The function will automatically pad
- * the input image and psf kernel to the same size as the closest smooth size and will take care of the psf kernel centering.
- * 
+ * The deconvolution is performed using the Richardson-Lucy algorithm and will requires a maximum iteration number.
+ * User can specify a normalization image (optional) and a regularization parameter (optional) to apply a Total
+ * Variation regularization.
+ *
+ * Input image, psf kernel, and normalization image are expected to be in the spatial domain. The function will
+ * automatically pad the input image and psf kernel to the same size as the closest smooth size and will take care of
+ * the psf kernel centering.
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image [const Array::Pointer &]
  * @param psf Kernel image [const Array::Pointer &]
@@ -122,12 +125,12 @@ convolve_fft_func(const Device::Pointer & device,
  */
 auto
 deconvolve_fft_func(const Device::Pointer & device,
-                       const Array::Pointer &  src,
-                       const Array::Pointer &  psf,
-                       Array::Pointer          normalization,
-                       Array::Pointer          dst,
-                       size_t                  iteration,
-                       float                   regularization) -> Array::Pointer;
+                    const Array::Pointer &  src,
+                    const Array::Pointer &  psf,
+                    Array::Pointer          normalization,
+                    Array::Pointer          dst,
+                    size_t                  iteration,
+                    float                   regularization) -> Array::Pointer;
 
 
 } // namespace cle::tier8

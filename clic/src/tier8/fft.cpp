@@ -43,10 +43,10 @@ ifft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 
 auto
 convolve_fft_func(const Device::Pointer & device,
-                     const Array::Pointer &  src,
-                     const Array::Pointer &  kernel,
-                     Array::Pointer          dst,
-                     bool                    correlate) -> Array::Pointer
+                  const Array::Pointer &  src,
+                  const Array::Pointer &  kernel,
+                  Array::Pointer          dst,
+                  bool                    correlate) -> Array::Pointer
 {
   if (kernel->width() > src->width() || kernel->height() > src->height() || kernel->depth() > src->depth())
   {
@@ -115,12 +115,12 @@ convolve_fft_func(const Device::Pointer & device,
 
 auto
 deconvolve_fft_func(const Device::Pointer & device,
-                       const Array::Pointer &  src,
-                       const Array::Pointer &  psf,
-                       Array::Pointer          normalization,
-                       Array::Pointer          dst,
-                       size_t                  iteration,
-                       float                   regularization) -> Array::Pointer
+                    const Array::Pointer &  src,
+                    const Array::Pointer &  psf,
+                    Array::Pointer          normalization,
+                    Array::Pointer          dst,
+                    size_t                  iteration,
+                    float                   regularization) -> Array::Pointer
 {
   if (psf->width() > src->width() || psf->height() > src->height() || psf->depth() > src->depth())
   {
