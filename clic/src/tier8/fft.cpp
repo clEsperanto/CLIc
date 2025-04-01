@@ -91,11 +91,11 @@ convolve_fft_func(const Device::Pointer & device,
     auto kernel_pad_z = static_cast<int>(smoothed_shape[2]) - static_cast<int>(kernel->depth());
     pad_kernel = tier1::pad_func(device, kernel, nullptr, kernel_pad_x, kernel_pad_y, kernel_pad_z, 0, true);
   }
-
+  // check dst size and pad if needed, otherwise create a new buffer
   // negative shift kernel to center it at (0, 0, 0)
-  auto x_center = (static_cast<int>(pad_kernel->width()) / 2) - 1;
-  auto y_center = (static_cast<int>(pad_kernel->height()) / 2) - 1;
-  auto z_center = (static_cast<int>(pad_kernel->depth()) / 2) - 1;
+  auto x_center = (static_cast<int>(std::ceil(pad_kernel->width() / 2.0)) - 1);
+  auto y_center = (static_cast<int>(std::ceil(pad_kernel->height() / 2.0)) - 1);
+  auto z_center = (static_cast<int>(std::ceil(pad_kernel->depth() / 2.0)) - 1);
   pad_kernel = tier1::circular_shift_func(device, pad_kernel, nullptr, -x_center, -y_center, -z_center);
 
   // perform convolution
