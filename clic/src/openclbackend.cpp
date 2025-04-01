@@ -1104,10 +1104,12 @@ saveBinaryToCache(const std::string &     device_hash,
                   const std::string &     source_hash,
                   const cl_program &      program,
                   const Device::Pointer & device) -> void
-{ 
-  size_t   device_index = 0; // only 1 device per context since https://github.com/clEsperanto/CLIc/pull/420/commits/e246f6d065b503b61a70b423db25738d577dda0b
-  size_t   nb_devices = device->getNbDevicesFromContext();
-  
+{
+  size_t device_index =
+    0; // only 1 device per context since
+       // https://github.com/clEsperanto/CLIc/pull/420/commits/e246f6d065b503b61a70b423db25738d577dda0b
+  size_t nb_devices = device->getNbDevicesFromContext();
+
   size_t * bin_size_list = new size_t[nb_devices];
   auto err = clGetProgramInfo(program, CL_PROGRAM_BINARY_SIZES, sizeof(size_t) * nb_devices, bin_size_list, nullptr);
   if (err != CL_SUCCESS)
