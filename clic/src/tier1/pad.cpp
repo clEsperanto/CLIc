@@ -16,11 +16,6 @@ pad_func(const Device::Pointer & device,
          float                   value,
          bool                    center) -> Array::Pointer
 {
-  if (dst == nullptr)
-  {
-    std::cout << "dst is null, we create one from input" << std::endl;
-  }
-
   const size_t new_width = src->width() + pad_x;
   const size_t new_height = src->height() + pad_y;
   const size_t new_depth = src->depth() + pad_z;

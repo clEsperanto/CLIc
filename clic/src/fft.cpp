@@ -324,7 +324,6 @@ performConvolution(const Array::Pointer & input, const Array::Pointer & psf, Arr
   auto device = input->device();
   if (output == nullptr)
   {
-    std::cout << "output is null, we create one from input" << std::endl;
     output = Array::create(input);
   }
 
@@ -364,6 +363,7 @@ performDeconvolution(const Array::Pointer & observe,
   if (estimate == nullptr)
   {
     estimate = Array::create(observe);
+    observe->copyTo(estimate);
   }
   // create fft buffers
   auto fft_psf = create_hermitian(psf);
@@ -389,7 +389,6 @@ performDeconvolution(const Array::Pointer & observe,
   // Richardson Lucy - deconvolution loop
   for (size_t i = 0; i < iterations; i++)
   {
-
     // FFT of estimate
     performFFT(estimate, fft_estimate);
 
@@ -432,7 +431,7 @@ performDeconvolution(const Array::Pointer & observe,
       execOperationKernel(device, "vecDiv", estimate, normal, estimate, estimate->size());
     }
 
-    // // wait for calculations to be finished before next iteration
+    // wait for calculations to be finished before next iteration
     device->finish();
   }
 

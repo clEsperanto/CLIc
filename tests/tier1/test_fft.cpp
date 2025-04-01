@@ -194,7 +194,7 @@ TEST_P(TestFFT, executeConvolutionPadded)
   // }
 }
 
-TEST_P(TestFFT, executeDeconvolution)
+TEST_P(TestFFT, executeDeconvolutionPadded)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -214,20 +214,16 @@ TEST_P(TestFFT, executeDeconvolution)
     0, 0, 0, 0, 1, 2, 0, 0, 0,
   };
 
-
   auto gpu_input = cle::Array::create(3, 3, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
   auto gpu_psf = cle::Array::create(gpu_input);
   gpu_psf->writeFrom(kernel.data());
 
-  auto gpu_estimate = cle::Array::create(gpu_input);
-  gpu_estimate->writeFrom(input.data());
+  auto gpu_output = cle::tier8::fft_deconvolution_func(device, gpu_input, gpu_psf, nullptr, nullptr, 100, 0);
 
-  cle::fft::performDeconvolution(gpu_input, gpu_psf, nullptr, gpu_estimate, 100, 0);
-
-  std::vector<float> output(gpu_estimate->size());
-  gpu_estimate->readTo(output.data());
+  std::vector<float> output(gpu_output->size());
+  gpu_output->readTo(output.data());
   EXPECT_EQ(output.size(), valid.size());
   for (size_t i = 0; i < output.size(); i++)
   {

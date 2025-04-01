@@ -150,7 +150,7 @@ fft_deconvolution_func(const Device::Pointer & device,
   }
 
   // check if smooth size differs from the kernel size, if yes, pad the kernel
-  Array::Pointer padded_psf = psf;
+  Array::Pointer pad_psf = psf;
   if (smoothed_shape[0] != psf->width() || smoothed_shape[1] != psf->height() || smoothed_shape[2] != psf->depth())
   {
     // pad kernel to the smooth size
@@ -158,12 +158,12 @@ fft_deconvolution_func(const Device::Pointer & device,
     auto pad_size_y = smoothed_shape[1] - psf->height();
     auto pad_size_z = smoothed_shape[2] - psf->depth();
 
-    padded_psf = tier1::pad_func(device, psf, nullptr, pad_size_x, pad_size_y, pad_size_z, 0, true);
+    pad_psf = tier1::pad_func(device, psf, nullptr, pad_size_x, pad_size_y, pad_size_z, 0, true);
   }
 
   // check if smooth size differs from the kernel size, if yes, pad the kernel
-  Array::Pointer padded_norm = normalization;
-  if (padded_norm != nullptr)
+  Array::Pointer pad_norm = normalization;
+  if (pad_norm != nullptr)
   {
     if (smoothed_shape[0] != normalization->width() || smoothed_shape[1] != normalization->height() ||
         smoothed_shape[2] != normalization->depth())
@@ -172,27 +172,46 @@ fft_deconvolution_func(const Device::Pointer & device,
       auto pad_size_x = smoothed_shape[0] - normalization->width();
       auto pad_size_y = smoothed_shape[1] - normalization->height();
       auto pad_size_z = smoothed_shape[2] - normalization->depth();
-      padded_norm = tier1::pad_func(device, normalization, nullptr, pad_size_x, pad_size_y, pad_size_z, 0, true);
+      pad_norm = tier1::pad_func(device, normalization, nullptr, pad_size_x, pad_size_y, pad_size_z, 0, true);
     }
   }
 
-  // shift kenerl to center it at (0, 0)
-  auto x_center = padded_psf->width() / 2;
-  auto y_center = padded_psf->height() / 2;
-  auto z_center = padded_psf->depth() / 2;
-  padded_psf = tier1::circular_shift_func(device, padded_psf, nullptr, x_center, y_center, z_center);
+  // check dst size and pad if needed, otherwise create a new buffer 
+  Array::Pointer pad_dst = dst;
+  if(pad_dst != nullptr)
+  {
+    if (smoothed_shape[0] != pad_dst->width() || smoothed_shape[1] != pad_dst->height() ||
+        smoothed_shape[2] != pad_dst->depth())
+    {
+      auto pad_size_x = smoothed_shape[0] - pad_dst->width();
+      auto pad_size_y = smoothed_shape[1] - pad_dst->height();
+      auto pad_size_z = smoothed_shape[2] - pad_dst->depth();
+      pad_dst = tier1::pad_func(device, pad_dst, nullptr, pad_size_x, pad_size_y, pad_size_z, 0, true);
+    }
+  }
+  else
+  {
+    pad_dst = Array::create(pad_input);
+    pad_input->copyTo(pad_dst);
+  }
 
-  Array::Pointer padded_dst;
-  fft::performDeconvolution(pad_input, padded_psf, padded_norm, padded_dst, iteration, regularization);
+  // shift kenerl to center it at (0, 0), -1 because we use 0-based index
+  auto x_center = (static_cast<int>(pad_psf->width()) / 2) - 1;
+  auto y_center = (static_cast<int>(pad_psf->height()) / 2) - 1;
+  auto z_center = (static_cast<int>(pad_psf->depth()) / 2) - 1;
+  pad_psf = tier1::circular_shift_func(device, pad_psf, nullptr, x_center, y_center, z_center);
+
+  // perform deconvolution§
+  fft::performDeconvolution(pad_input, pad_psf, pad_norm, pad_dst, iteration, regularization);
 
   // unpad the result if needed
   if (padded)
   {
-    tier1::unpad_func(device, padded_dst, dst, input_pad_size_x, input_pad_size_y, input_pad_size_z, true);
+    tier1::unpad_func(device, pad_dst, dst, input_pad_size_x, input_pad_size_y, input_pad_size_z, true);
   }
   else
   {
-    dst = padded_dst;
+    dst = pad_dst;
   }
   return dst;
 }
