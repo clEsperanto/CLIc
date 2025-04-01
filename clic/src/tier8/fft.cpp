@@ -42,7 +42,7 @@ ifft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 }
 
 auto
-fft_convolution_func(const Device::Pointer & device,
+convolve_fft_func(const Device::Pointer & device,
                      const Array::Pointer &  src,
                      const Array::Pointer &  kernel,
                      Array::Pointer          dst,
@@ -114,7 +114,7 @@ fft_convolution_func(const Device::Pointer & device,
 }
 
 auto
-fft_deconvolution_func(const Device::Pointer & device,
+deconvolve_fft_func(const Device::Pointer & device,
                        const Array::Pointer &  src,
                        const Array::Pointer &  psf,
                        Array::Pointer          normalization,
