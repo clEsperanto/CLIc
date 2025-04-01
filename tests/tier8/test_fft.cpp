@@ -165,9 +165,7 @@ TEST_P(TestFFT, executeConvolutionFunction)
   std::array<float, 3 * 3 * 1> input = {
     0, 0, 0, 0, 1, 0, 0, 0, 0,
   };
-  std::array<float, 2 * 1 * 1> kernel = {
-    1, 2
-  };
+  std::array<float, 2 * 1 * 1> kernel = { 1, 2 };
 
   std::array<float, 3 * 3 * 1> valid_corr = {
     0, 0, 0, 0, 1, 2, 0, 0, 0,
