@@ -142,8 +142,10 @@ performIFFT(const Array::Pointer & input, Array::Pointer output) -> void;
  * @return Array::Pointer
  */
 auto
-performConvolution(const Array::Pointer & input, const Array::Pointer & psf, const Array::Pointer & output, bool correlate)
-  -> void;
+performConvolution(const Array::Pointer & input,
+                   const Array::Pointer & psf,
+                   const Array::Pointer & output,
+                   bool                   correlate) -> void;
 
 /**
  * @brief Richardson-Lucy deconvolution (vkFFT)

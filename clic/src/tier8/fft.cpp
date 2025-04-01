@@ -98,7 +98,7 @@ convolve_fft_func(const Device::Pointer & device,
   auto z_center = (static_cast<int>(std::ceil(pad_kernel->depth() / 2.0)) - 1);
   pad_kernel = tier1::circular_shift_func(device, pad_kernel, nullptr, -x_center, -y_center, -z_center);
 
-  
+
   // perform convolution
   tier0::create_like(pad_input, dst);
   fft::performConvolution(pad_input, pad_kernel, dst, correlate);

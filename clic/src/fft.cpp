@@ -318,8 +318,10 @@ performIFFT(const Array::Pointer & input, Array::Pointer output) -> void
 
 
 auto
-performConvolution(const Array::Pointer & input, const Array::Pointer & psf, const Array::Pointer & output, bool correlate)
-  -> void
+performConvolution(const Array::Pointer & input,
+                   const Array::Pointer & psf,
+                   const Array::Pointer & output,
+                   bool                   correlate) -> void
 {
   auto device = input->device();
 
