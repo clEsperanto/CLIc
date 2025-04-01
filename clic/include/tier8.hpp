@@ -91,7 +91,7 @@ ifft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
  * @param src Input image [const Array::Pointer &]
  * @param kernel Kernel image [const Array::Pointer &]
  * @param dst Output image [Array::Pointer ( = None )]
- * @param correlate If true, perform correlation instead of convolution. [bool ( = false )]
+ * @param correlate If true, convolution with the PSF reversed. [bool ( = false )]
  * @return Array::Pointer
  *
  * @note 'fft', 'in assistant', 'bia-bob-suggestion'
