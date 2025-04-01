@@ -51,13 +51,47 @@ auto
 smooth_connected_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
   -> Array::Pointer;
 
-
+/**
+ * @name fft
+ * @brief Perform a 1D, 2D or 3D FFT on the input image
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image [const Array::Pointer &]
+ * @param dst Output image [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *  
+ * @note 'fft', 'in assistant', 'bia-bob-suggestion'
+ */
 auto
 fft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
+/**
+ * @name ifft
+ * @brief Perform a 1D, 2D or 3D IFFT (Inverse FFT) on the input image (must be of complex type)
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image [const Array::Pointer &]
+ * @param dst Output image [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *  
+ * @note 'fft', 'in assistant', 'bia-bob-suggestion'
+ */
 auto
 ifft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
+/**
+ * @name fft_convolution
+ * @brief Perform a 1D, 2D or 3D convolution using FFT between an input image and a kernel
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image [const Array::Pointer &]
+ * @param kernel Kernel image [const Array::Pointer &]
+ * @param dst Output image [Array::Pointer ( = None )]
+ * @param correlate If true, perform correlation instead of convolution. [bool ( = false )]
+ * @return Array::Pointer
+ *  
+ * @note 'fft', 'in assistant', 'bia-bob-suggestion'
+ */
 auto
 fft_convolution_func(const Device::Pointer & device,
                      const Array::Pointer &  src,
