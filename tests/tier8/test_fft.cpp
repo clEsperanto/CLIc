@@ -103,7 +103,8 @@ TEST_P(TestFFT, executeConvolution)
   auto gpu_psf = cle::Array::create(gpu_input);
   gpu_psf->writeFrom(kernel.data());
 
-  auto gpu_final = cle::fft::performConvolution(gpu_input, gpu_psf, nullptr, false);
+  auto gpu_final = cle::Array::create(gpu_input);
+ cle::fft::performConvolution(gpu_input, gpu_psf, gpu_final, false);
 
   std::vector<float> output(gpu_final->size());
   gpu_final->readTo(output.data());
@@ -141,7 +142,10 @@ TEST_P(TestFFT, executeConvolutionCorr)
   auto gpu_psf = cle::Array::create(gpu_input);
   gpu_psf->writeFrom(kernel.data());
 
-  auto gpu_final = cle::fft::performConvolution(gpu_input, gpu_psf, nullptr, true);
+  auto gpu_final = cle::Array::create(gpu_input);
+
+
+  cle::fft::performConvolution(gpu_input, gpu_psf, gpu_final, true);
 
   std::vector<float> output(gpu_final->size());
   gpu_final->readTo(output.data());
