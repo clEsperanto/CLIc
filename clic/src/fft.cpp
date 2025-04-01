@@ -318,20 +318,15 @@ performIFFT(const Array::Pointer & input, Array::Pointer output) -> void
 
 
 auto
-performConvolution(const Array::Pointer & input, const Array::Pointer & psf, Array::Pointer output, bool correlate)
-  -> Array::Pointer
+performConvolution(const Array::Pointer & input, const Array::Pointer & psf, const Array::Pointer & output, bool correlate)
+  -> void
 {
   auto device = input->device();
-  if (output == nullptr)
-  {
-    output = Array::create(input);
-  }
 
   // forward fft of input and psf
   auto fft_input = performFFT(input, nullptr);
   auto fft_psf = performFFT(psf, nullptr);
   auto fft_out = Array::create(fft_psf);
-
 
   // complex multiply input and psf
   std::string kernel_name = correlate ? "vecComplexConjugateMultiply" : "vecComplexMultiply";
@@ -339,8 +334,6 @@ performConvolution(const Array::Pointer & input, const Array::Pointer & psf, Arr
 
   // Inverse to get convolved
   performIFFT(fft_out, output);
-
-  return output;
 }
 
 

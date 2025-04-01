@@ -98,18 +98,17 @@ convolve_fft_func(const Device::Pointer & device,
   auto z_center = (static_cast<int>(std::ceil(pad_kernel->depth() / 2.0)) - 1);
   pad_kernel = tier1::circular_shift_func(device, pad_kernel, nullptr, -x_center, -y_center, -z_center);
 
+  
   // perform convolution
-  auto padded_dst = fft::performConvolution(pad_input, pad_kernel, nullptr, correlate);
+  tier0::create_like(pad_input, dst);
+  fft::performConvolution(pad_input, pad_kernel, dst, correlate);
 
   // unpad the result if needed
   if (padded)
   {
-    tier1::unpad_func(device, padded_dst, dst, input_pad_x, input_pad_y, input_pad_z, true);
+    dst = tier1::unpad_func(device, dst, nullptr, input_pad_x, input_pad_y, input_pad_z, true);
   }
-  else
-  {
-    dst = padded_dst;
-  }
+
   return dst;
 }
 
