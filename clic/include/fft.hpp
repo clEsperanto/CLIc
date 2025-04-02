@@ -32,7 +32,7 @@ create_hermitian(const Array::Pointer & real_buf);
  * @return std::array<size_t, 3>
  */
 auto
-get_next_smooth(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>;
+fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>;
 
 /**
  * @brief Execute operation for fft kernel

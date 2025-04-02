@@ -58,7 +58,7 @@ convolve_fft_func(const Device::Pointer & device,
   }
 
   // get the next smooth shape for the input and kernel to facilitate the fft
-  auto smoothed_shape = fft::get_next_smooth({ src->width(), src->height(), src->depth() });
+  auto smoothed_shape = fft::fft_smooth_shape({ src->width(), src->height(), src->depth() });
 
   // check if smooth size differs from the input size, if yes pad input and save the padding size for unpadding
   bool           padded = false;
@@ -130,7 +130,7 @@ deconvolve_fft_func(const Device::Pointer & device,
     throw std::runtime_error(oss.str());
   }
 
-  auto smoothed_shape = fft::get_next_smooth({ src->width(), src->height(), src->depth() });
+  auto smoothed_shape = fft::fft_smooth_shape({ src->width(), src->height(), src->depth() });
 
   // check if smooth size differs from the input size, if yes pad input and save the padding size for unpadding
   bool           padded = false;
