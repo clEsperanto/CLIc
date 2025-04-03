@@ -26,13 +26,27 @@ create_hermitian(const Array::Pointer & real_buf);
 /**
  * @brief Get the next smooth shape from a given shape
  *
- * Get the next smooth number from a given number
+ * Get the next smooth number (power of 2) from a given number to insure efficient fft operations
  *
  * @param shape std::array<size_t, 3>
  * @return std::array<size_t, 3>
  */
 auto
 fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>;
+
+
+/**
+ * @brief Get the padding shape from a given image and kernel shape
+ *
+ * given an image and kernel return the extended size needed to avoid circular calculations
+ * during convolution and/or deconvolution
+ *
+ * @param image_shape std::array<size_t, 3>
+ * @param kernel_shape std::array<size_t, 3>
+ * @return std::array<size_t, 3>
+ */
+auto fft_pad_shape(const std::array<size_t, 3>& image_shape, const std::array<size_t, 3>& kernel_shape) -> std::array<size_t, 3>;
+
 
 /**
  * @brief Execute operation for fft kernel

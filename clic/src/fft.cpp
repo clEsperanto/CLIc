@@ -14,6 +14,7 @@
 #include <stdexcept>
 
 #include <cmath>
+#include <algorithm>
 #include <functional>
 #include <iostream>
 #include <tuple>
@@ -80,6 +81,17 @@ fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>
   std::transform(
     shape.begin(), shape.end(), result.begin(), [](size_t value) { return (value > 1) ? next_smooth(value) : 1; });
   return result;
+}
+
+
+auto fft_pad_shape(const std::array<size_t, 3>& image_shape, const std::array<size_t, 3>& kernel_shape) -> std::array<size_t, 3>
+{
+    std::array<size_t, 3> new_shape;
+    std::transform(image_shape.begin(), image_shape.end(), kernel_shape.begin(), new_shape.begin(),
+                   [](size_t img_dim, size_t ker_dim) {
+                       return img_dim + 2 * static_cast<size_t>(std::floor(ker_dim / 2.0));
+                   });
+    return new_shape;
 }
 
 
