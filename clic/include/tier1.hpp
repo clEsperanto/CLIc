@@ -2308,20 +2308,20 @@ multiply_matrix_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param size_x New size along x axis. [int ( = 0 )]
- * @param size_y New size along y axis. [int ( = 0 )]
- * @param size_z New size along z axis. [int ( = 0 )]
+ * @param pad_x Padding size along x axis. [int ( = 0 )]
+ * @param pad_y Padding size along y axis. [int ( = 0 )]
+ * @param pad_z Padding size along z axis. [int ( = 0 )]
  * @param value Value to pad with. [float ( = 0 )]
- * @param center If true, center the image. [bool ( = false )]
+ * @param center Center the image in the middle of the padded image. [bool ( = false )]
  * @return Array::Pointer
  */
 auto
 pad_func(const Device::Pointer & device,
          const Array::Pointer &  src,
          Array::Pointer          dst,
-         size_t                  size_x,
-         size_t                  size_y,
-         size_t                  size_z,
+         size_t                  pad_x,
+         size_t                  pad_y,
+         size_t                  pad_z,
          float                   value,
          bool                    center) -> Array::Pointer;
 
@@ -2333,9 +2333,9 @@ pad_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param size_x New size along x axis. [int ( = 0 )]
- * @param size_y New size along y axis. [int ( = 0 )]
- * @param size_z New size along z axis. [int ( = 0 )]
+ * @param pad_x Padding size along x axis. [int ( = 0 )]
+ * @param pad_y Padding size along y axis. [int ( = 0 )]
+ * @param pad_z Padding size along z axis. [int ( = 0 )]
  * @param center Center the image in the middle of the padded image. [bool ( = false )]
  * @return Array::Pointer
  */
@@ -2343,9 +2343,9 @@ auto
 unpad_func(const Device::Pointer & device,
            const Array::Pointer &  src,
            Array::Pointer          dst,
-           size_t                  size_x,
-           size_t                  size_y,
-           size_t                  size_z,
+           size_t                  pad_x,
+           size_t                  pad_y,
+           size_t                  pad_z,
            bool                    center) -> Array::Pointer;
 
 /**
