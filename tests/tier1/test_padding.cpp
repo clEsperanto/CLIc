@@ -65,8 +65,8 @@ TEST_P(TestPadding, executePadding)
   auto gpu_input = cle::Array::create(3, 3, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
-  auto gpu_pad = cle::tier1::pad_func(device, gpu_input, nullptr, 2, 3, 0, 5, false);
-  auto gpu_output = cle::tier1::unpad_func(device, gpu_pad, nullptr, 2, 3, 0, false);
+  auto gpu_pad = cle::tier1::pad_func(device, gpu_input, nullptr, 5, 6, 1, 5, false);
+  auto gpu_output = cle::tier1::unpad_func(device, gpu_pad, nullptr, 3, 3, 0, false);
 
   std::vector<float> output(gpu_output->size());
   gpu_output->readTo(output.data());
@@ -94,8 +94,8 @@ TEST_P(TestPadding, executePaddingCenter)
   auto gpu_input = cle::Array::create(3, 3, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
-  auto gpu_pad = cle::tier1::pad_func(device, gpu_input, nullptr, 2, 3, 0, 5, true);
-  auto gpu_output = cle::tier1::unpad_func(device, gpu_pad, nullptr, 2, 3, 0, true);
+  auto gpu_pad = cle::tier1::pad_func(device, gpu_input, nullptr, 5, 6, 0, 5, true);
+  auto gpu_output = cle::tier1::unpad_func(device, gpu_pad, nullptr, 3, 3, 0, true);
 
   std::vector<float> output(gpu_output->size());
   gpu_output->readTo(output.data());

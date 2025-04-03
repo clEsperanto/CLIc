@@ -8,28 +8,30 @@
 namespace cle::tier1
 {
 
+
 auto
 pad_func(const Device::Pointer & device,
-         const Array::Pointer &  src,
-         Array::Pointer          dst,
-         size_t                  pad_x,
-         size_t                  pad_y,
-         size_t                  pad_z,
-         float                   value,
-         bool                    center) -> Array::Pointer
+        const Array::Pointer &  src,
+        Array::Pointer          dst,
+        size_t                  size_x,
+        size_t                  size_y,
+        size_t                  size_z,
+        float                   value,
+        bool                    center) -> Array::Pointer
 {
-  const size_t new_width = src->width() + pad_x;
-  const size_t new_height = src->height() + pad_y;
-  const size_t new_depth = src->depth() + pad_z;
-  tier0::create_dst(src, dst, new_width, new_height, new_depth);
+  tier0::create_dst(src, dst, size_x, size_y, size_z);
   dst->fill(value);
+
+  const auto pad_x = std::abs(static_cast<float>(size_x - src->width()));
+  const auto pad_y = std::abs(static_cast<float>(size_y - src->height()));
+  const auto pad_z = std::abs(static_cast<float>(size_z - src->depth()));
 
   cle::RangeArray offset = { 0, 0, 0 };
   if (center)
   {
-    offset = { static_cast<size_t>(std::ceil(pad_x / 2.0)),
-               static_cast<size_t>(std::ceil(pad_y / 2.0)),
-               static_cast<size_t>(std::ceil(pad_z / 2.0)) };
+    offset = { (dst->width() > 1)? static_cast<size_t>(std::ceil(pad_x / 2.0)) : 0,
+      (dst->height() > 1)? static_cast<size_t>(std::ceil(pad_y / 2.0)) : 0,
+      (dst->depth() > 1)? static_cast<size_t>(std::ceil(pad_z / 2.0)) : 0 };
   }
   src->copyTo(dst, { src->width(), src->height(), src->depth() }, { 0, 0, 0 }, offset);
   return dst;
@@ -37,24 +39,25 @@ pad_func(const Device::Pointer & device,
 
 auto
 unpad_func(const Device::Pointer & device,
-           const Array::Pointer &  src,
-           Array::Pointer          dst,
-           size_t                  pad_x,
-           size_t                  pad_y,
-           size_t                  pad_z,
-           bool                    center) -> Array::Pointer
+          const Array::Pointer &  src,
+          Array::Pointer          dst,
+          size_t                  size_x,
+          size_t                  size_y,
+          size_t                  size_z,
+          bool                    center) -> Array::Pointer
 {
-  const size_t new_width = src->width() - pad_x;
-  const size_t new_height = src->height() - pad_y;
-  const size_t new_depth = src->depth() - pad_z;
-  tier0::create_dst(src, dst, new_width, new_height, new_depth);
-
+  tier0::create_dst(src, dst, size_x, size_y, size_z);
+  
+  const auto pad_x = std::abs(static_cast<float>(src->width() - size_x));
+  const auto pad_y = std::abs(static_cast<float>(src->height() - size_y));
+  const auto pad_z = std::abs(static_cast<float>(src->depth() - size_z));
+  
   cle::RangeArray offset = { 0, 0, 0 };
   if (center)
   {
-    offset = { static_cast<size_t>(std::ceil(pad_x / 2.0)),
-               static_cast<size_t>(std::ceil(pad_y / 2.0)),
-               static_cast<size_t>(std::ceil(pad_z / 2.0)) };
+    offset = { (dst->width() > 1)? static_cast<size_t>(std::ceil(pad_x / 2.0)) : 0,
+               (dst->height() > 1)? static_cast<size_t>(std::ceil(pad_y / 2.0)) : 0,
+               (dst->depth() > 1)? static_cast<size_t>(std::ceil(pad_z / 2.0)) : 0 };
   }
   src->copyTo(dst, { dst->width(), dst->height(), dst->depth() }, offset, { 0, 0, 0 });
   return dst;
