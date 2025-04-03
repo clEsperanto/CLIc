@@ -29,9 +29,9 @@ pad_func(const Device::Pointer & device,
   cle::RangeArray offset = { 0, 0, 0 };
   if (center)
   {
-    offset = { (dst->width() > 1)? static_cast<size_t>(std::ceil(pad_x / 2.0)) : 0,
-               (dst->height() > 1)? static_cast<size_t>(std::ceil(pad_y / 2.0)) : 0,
-               (dst->depth() > 1)? static_cast<size_t>(std::ceil(pad_z / 2.0)) : 0};
+    offset = { (dst->width() > 1) ? static_cast<size_t>(std::ceil(pad_x / 2.0)) : 0,
+               (dst->height() > 1) ? static_cast<size_t>(std::ceil(pad_y / 2.0)) : 0,
+               (dst->depth() > 1) ? static_cast<size_t>(std::ceil(pad_z / 2.0)) : 0 };
   }
   src->copyTo(dst, { src->width(), src->height(), src->depth() }, { 0, 0, 0 }, offset);
   return dst;
@@ -55,9 +55,9 @@ unpad_func(const Device::Pointer & device,
   cle::RangeArray offset = { 0, 0, 0 };
   if (center)
   {
-    offset = { (dst->width() > 1)? static_cast<size_t>(std::ceil(pad_x / 2.0)) : 0,
-               (dst->height() > 1)? static_cast<size_t>(std::ceil(pad_y / 2.0)) : 0,
-               (dst->depth() > 1)? static_cast<size_t>(std::ceil(pad_z / 2.0)) : 0};
+    offset = { (dst->width() > 1) ? static_cast<size_t>(std::ceil(pad_x / 2.0)) : 0,
+               (dst->height() > 1) ? static_cast<size_t>(std::ceil(pad_y / 2.0)) : 0,
+               (dst->depth() > 1) ? static_cast<size_t>(std::ceil(pad_z / 2.0)) : 0 };
   }
   src->copyTo(dst, { dst->width(), dst->height(), dst->depth() }, offset, { 0, 0, 0 });
   return dst;

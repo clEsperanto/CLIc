@@ -75,9 +75,11 @@ convolve_fft_func(const Device::Pointer & device,
 
   // check if smooth size differs from the kernel size, if yes, pad the kernel
   Array::Pointer pad_kernel = kernel;
-  if (smoothed_shape[0] != kernel_shape[0] || smoothed_shape[1] != kernel_shape[1] || smoothed_shape[2] != kernel_shape[2])
+  if (smoothed_shape[0] != kernel_shape[0] || smoothed_shape[1] != kernel_shape[1] ||
+      smoothed_shape[2] != kernel_shape[2])
   {
-    pad_kernel = tier1::pad_func(device, kernel, nullptr, smoothed_shape[0], smoothed_shape[1], smoothed_shape[2], 0, true);
+    pad_kernel =
+      tier1::pad_func(device, kernel, nullptr, smoothed_shape[0], smoothed_shape[1], smoothed_shape[2], 0, true);
   }
 
   // check dst size and pad if needed, otherwise create a new buffer
@@ -117,13 +119,13 @@ deconvolve_fft_func(const Device::Pointer & device,
         << src->depth();
     throw std::runtime_error(oss.str());
   }
-  
+
   const RangeArray image_shape = { src->width(), src->height(), src->depth() };
   const RangeArray psf_shape = { psf->width(), psf->height(), psf->depth() };
 
   // auto pad_shape = fft::fft_pad_shape(image_shape, psf_shape);
-  RangeArray pad_shape = {image_shape[0], image_shape[1], image_shape[2]};
-  auto smoothed_shape = fft::fft_smooth_shape(pad_shape);
+  RangeArray pad_shape = { image_shape[0], image_shape[1], image_shape[2] };
+  auto       smoothed_shape = fft::fft_smooth_shape(pad_shape);
 
   // check if smooth size differs from the input size, if yes pad input and save the padding size for unpadding
   bool           padded = false;
@@ -149,7 +151,8 @@ deconvolve_fft_func(const Device::Pointer & device,
     if (smoothed_shape[0] != norm_shape[0] || smoothed_shape[1] != norm_shape[1] || smoothed_shape[2] != norm_shape[2])
 
     {
-      pad_norm = tier1::pad_func(device, normalization, nullptr, smoothed_shape[0], smoothed_shape[1], smoothed_shape[2], 0, true);
+      pad_norm = tier1::pad_func(
+        device, normalization, nullptr, smoothed_shape[0], smoothed_shape[1], smoothed_shape[2], 0, true);
     }
   }
 
@@ -160,7 +163,8 @@ deconvolve_fft_func(const Device::Pointer & device,
     const RangeArray dst_shape = { dst->width(), dst->height(), dst->depth() };
     if (smoothed_shape[0] != dst_shape[0] || smoothed_shape[1] != dst_shape[1] || smoothed_shape[2] != dst_shape[2])
     {
-      pad_dst = tier1::pad_func(device, pad_dst, nullptr, smoothed_shape[0], smoothed_shape[1], smoothed_shape[2], 0, true);
+      pad_dst =
+        tier1::pad_func(device, pad_dst, nullptr, smoothed_shape[0], smoothed_shape[1], smoothed_shape[2], 0, true);
     }
   }
   else

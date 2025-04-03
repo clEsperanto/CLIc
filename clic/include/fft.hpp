@@ -45,7 +45,9 @@ fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>;
  * @param kernel_shape std::array<size_t, 3>
  * @return std::array<size_t, 3>
  */
-auto fft_pad_shape(const std::array<size_t, 3>& image_shape, const std::array<size_t, 3>& kernel_shape) -> std::array<size_t, 3>;
+auto
+fft_pad_shape(const std::array<size_t, 3> & image_shape, const std::array<size_t, 3> & kernel_shape)
+  -> std::array<size_t, 3>;
 
 
 /**
