@@ -149,7 +149,7 @@ load_kernel_cache(const std::filesystem::path & binary_path, VkFFTConfiguration 
   uint64_t str_len = ftell(kernelCache);
   fseek(kernelCache, 0, SEEK_SET);
   configuration.loadApplicationString = malloc(str_len);
-  fread(configuration.loadApplicationString, str_len, 1, kernelCache);
+  auto fsize = fread(configuration.loadApplicationString, str_len, 1, kernelCache);
   fclose(kernelCache);
 
   configuration.loadApplicationFromString = 1;
