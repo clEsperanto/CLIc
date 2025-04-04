@@ -14,10 +14,10 @@ minimum_y_projection_func(const Device::Pointer & device, const Array::Pointer &
   -> Array::Pointer
 {
   tier0::create_xz(src, dst);
-  const KernelInfo    kernel = { "minimum_y_projection", kernel::minimum_y_projection };
+  const KernelInfo    kernel_code = { "minimum_y_projection", kernel::minimum_y_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 
