@@ -2311,7 +2311,7 @@ multiply_matrix_func(const Device::Pointer & device,
  * @param size_y New size along y axis. [int ( = 0 )]
  * @param size_z New size along z axis. [int ( = 0 )]
  * @param value Value to pad with. [float ( = 0 )]
- * @param center Center the image in the middle of the padded image. [bool ( = false )]
+ * @param center Center the image in the middle of the padded image. [bool ( = False )]
  * @return Array::Pointer
  */
 auto
@@ -2335,7 +2335,7 @@ pad_func(const Device::Pointer & device,
  * @param size_x New size along x axis. [int ( = 0 )]
  * @param size_y New size along y axis. [int ( = 0 )]
  * @param size_z New size along z axis. [int ( = 0 )]
- * @param center Center the image in the middle of the padded image. [bool ( = false )]
+ * @param center Center the image in the middle of the padded image. [bool ( = False )]
  * @return Array::Pointer
  */
 auto

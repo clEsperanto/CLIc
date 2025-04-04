@@ -89,7 +89,7 @@ ifft_func(const Device::Pointer & device, const Array::Pointer & src, const Arra
  * @param src Input image [const Array::Pointer &]
  * @param kernel Kernel image [const Array::Pointer &]
  * @param dst Output image [Array::Pointer ( = None )]
- * @param correlate If true, convolution with the PSF reversed. [bool ( = false )]
+ * @param correlate If true, convolution with the PSF reversed. [bool ( = False )]
  * @return Array::Pointer
  */
 auto
@@ -115,7 +115,7 @@ convolve_fft_func(const Device::Pointer & device,
  * @param psf Kernel image [const Array::Pointer &]
  * @param normalization Normalization image [const Array::Pointer ( = None )]
  * @param dst Output image [Array::Pointer ( = None )]
- * @param iteration Maximum number of iterations [size_t ( = 100 )]
+ * @param iteration Maximum number of iterations [int ( = 100 )]
  * @param regularization Regularization parameter [float ( = 0.0 )]
  * @return Array::Pointer
  */
@@ -125,7 +125,7 @@ deconvolve_fft_func(const Device::Pointer & device,
                     const Array::Pointer &  psf,
                     Array::Pointer          normalization,
                     Array::Pointer          dst,
-                    size_t                  iteration,
+                    int                  iteration,
                     float                   regularization) -> Array::Pointer;
 
 
