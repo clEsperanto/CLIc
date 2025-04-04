@@ -364,8 +364,7 @@ to_lower(const std::string & str) -> std::string
 /**
  * @brief handle prime numbers
  */
-auto
-inline handle_prime(size_t x, size_t z, std::vector<double> & a, int p) -> void
+auto inline handle_prime(size_t x, size_t z, std::vector<double> & a, int p) -> void
 {
   double log_p = std::log(p);
   int    power = p;
@@ -391,8 +390,7 @@ inline handle_prime(size_t x, size_t z, std::vector<double> & a, int p) -> void
 /**
  * @brief find the next smooth number
  */
-auto
-inline next_smooth(size_t x) -> size_t
+auto inline next_smooth(size_t x) -> size_t
 {
   size_t              z = static_cast<size_t>(10 * std::log2(x));
   double              delta = 0.000001;
@@ -418,20 +416,13 @@ inline next_smooth(size_t x) -> size_t
 /**
  * @brief return the next smooth shape (power of 2) from a given shape for fft operations
  */
-auto
-inline fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>
+auto inline fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>
 {
   std::array<size_t, 3> result;
   std::transform(
     shape.begin(), shape.end(), result.begin(), [](size_t value) { return (value > 1) ? next_smooth(value) : 1; });
   return result;
 }
-
-
-
-
-
-
 
 
 } // namespace cle

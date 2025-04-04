@@ -105,9 +105,9 @@ create_hermitian(const Array::Pointer & input)
   auto   ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
   size_t hermitian_width = static_cast<size_t>(input->width() / 2) + 1;
   return Array::create(hermitian_width * 2,
-    input->height(),
-    input->depth(),
-    input->dimension(),
+                       input->height(),
+                       input->depth(),
+                       input->dimension(),
                        dType::COMPLEX,
                        input->mtype(),
                        input->device());
