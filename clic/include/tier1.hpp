@@ -249,13 +249,12 @@ block_enumerate_func(const Device::Pointer & device,
  * of the image. The shift is specified for each dimension separately.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 First input image to process. [const Array::Pointer &]
- * @param src1 Second input image to process. [const Array::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param shift_x Shift in x direction. [int ( = 0 )]
+ * @param shift_y Shift in y direction. [int ( = 0 )]
+ * @param shift_z Shift in z direction. [int ( = 0 )]
  * @return Array::Pointer
- *
- * @note 'filter', 'combine', 'in assistant'
- * @see https://clij.github.io/clij2-docs/reference_convolve
  */
 auto
 circular_shift_func(const Device::Pointer & device,
