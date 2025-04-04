@@ -1,9 +1,8 @@
 #ifndef __INCLUDE_UTILS_HPP
 #define __INCLUDE_UTILS_HPP
 
-#include <array>
-#include <vector>
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstdint>
 #include <fstream>
@@ -11,6 +10,7 @@
 #include <limits>
 #include <type_traits>
 #include <unordered_map>
+#include <vector>
 #ifndef M_PI
 #  define M_PI 3.14159265358979323846 /* pi */
 #endif
