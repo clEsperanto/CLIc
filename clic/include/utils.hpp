@@ -1,6 +1,8 @@
 #ifndef __INCLUDE_UTILS_HPP
 #define __INCLUDE_UTILS_HPP
 
+#include <array>
+#include <vector>
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
