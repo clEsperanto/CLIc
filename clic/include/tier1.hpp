@@ -2978,19 +2978,21 @@ z_position_of_minimum_z_projection_func(const Device::Pointer & device, const Ar
  * @name z_position_projection
  * @brief Project a defined Z-slice of a 3D stack into a 2D image.
  *  Which Z-slice is defined as the position image, which represents an altitude map.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image stack [const Array::Pointer &]
  * @param position altitude map [const Array::Pointer &]
  * @param dst Output image [Array::Pointer ( = None )]
  * @return Array::Pointer
- * 
+ *
  * @note 'projection'
  * @see https://clij.github.io/clij2-docs/reference_zPositionProjection
  */
 auto
-z_position_projection_func(const Device::Pointer & device, const Array::Pointer & src,const Array::Pointer & position, Array::Pointer dst)
-  -> Array::Pointer;
+z_position_projection_func(const Device::Pointer & device,
+                           const Array::Pointer &  src,
+                           const Array::Pointer &  position,
+                           Array::Pointer          dst) -> Array::Pointer;
 
 } // namespace cle::tier1
 

@@ -1114,12 +1114,16 @@ top_hat_func(const Device::Pointer & device,
  * @param radius_y Sphere radius filter in y axis. [float ( = 10 )]
  * @param sigma Sigma for Gaussian blur. [float ( = 5 )]
  * @return Array::Pointer
- * 
+ *
  * @note 'projection'
  */
 auto
-extended_depth_of_focus_variance_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst,
-  float radius_x, float radius_y, float sigma) -> Array::Pointer;
+extended_depth_of_focus_variance_projection_func(const Device::Pointer & device,
+                                                 const Array::Pointer &  src,
+                                                 Array::Pointer          dst,
+                                                 float                   radius_x,
+                                                 float                   radius_y,
+                                                 float                   sigma) -> Array::Pointer;
 
 } // namespace cle::tier2
 
