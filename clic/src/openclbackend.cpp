@@ -129,20 +129,44 @@ OpenCLBackend::initialiseRessources() -> void
     std::cerr << "Warning: Failed to find OpenCL compatible devices." << std::endl;
   }
 
-  // allocate ressources
+  // // allocate ressources (1 context = n devices)
+  // device_list_.reserve(device_counter);
+  // for (const auto & [platform_id, device_ids] : ressources)
+  // {
+  //   cl_uint num_devices = device_ids.size();
+  //   auto    context = std::make_shared<OpenCLDevice::Context>(
+  //     clCreateContext(nullptr, num_devices, device_ids.data(), nullptr, nullptr, nullptr));
+  //   if (context == nullptr)
+  //   {
+  //     throw std::runtime_error("Error: Failed to create OpenCL context.");
+  //   }
+  //   size_t device_index = 0;
+  //   for (const auto & device_id : device_ids)
+  //   {
+  //     auto command_queue =
+  //       std::make_shared<OpenCLDevice::CommandQueue>(clCreateCommandQueue(context->get(), device_id, 0, nullptr));
+  //     if (command_queue == nullptr)
+  //     {
+  //       throw std::runtime_error("Error: Failed to create OpenCL command queue.");
+  //     }
+  //     device_list_.emplace_back(std::make_shared<OpenCLDevice>(
+  //       std::make_shared<OpenCLDevice::Ressources>(platform_id, device_id, device_index++), context, command_queue));
+  //   }
+  // }
+
+  // allocate resources (1 context = 1 device)
   device_list_.reserve(device_counter);
   for (const auto & [platform_id, device_ids] : ressources)
   {
-    cl_uint num_devices = device_ids.size();
-    auto    context = std::make_shared<OpenCLDevice::Context>(
-      clCreateContext(nullptr, num_devices, device_ids.data(), nullptr, nullptr, nullptr));
-    if (context == nullptr)
-    {
-      throw std::runtime_error("Error: Failed to create OpenCL context.");
-    }
     size_t device_index = 0;
     for (const auto & device_id : device_ids)
     {
+      auto context =
+        std::make_shared<OpenCLDevice::Context>(clCreateContext(nullptr, 1, &device_id, nullptr, nullptr, nullptr));
+      if (context == nullptr)
+      {
+        throw std::runtime_error("Error: Failed to create OpenCL context.");
+      }
       auto command_queue =
         std::make_shared<OpenCLDevice::CommandQueue>(clCreateCommandQueue(context->get(), device_id, 0, nullptr));
       if (command_queue == nullptr)
@@ -153,6 +177,7 @@ OpenCLBackend::initialiseRessources() -> void
         std::make_shared<OpenCLDevice::Ressources>(platform_id, device_id, device_index++), context, command_queue));
     }
   }
+
 #else
   throw std::runtime_error("Error: OpenCL is not enabled");
 #endif
@@ -670,7 +695,7 @@ OpenCLBackend::copyMemoryBufferToBuffer(const Device::Pointer & device,
   size_t dst_row_pitch = dst_shape[1] > 1 ? dst_shape[0] : 0;
   size_t dst_slice_pitch = dst_shape[2] > 1 ? dst_shape[0] * dst_shape[1] : 0;
 
-  if (src_shape[2] > 1 || src_shape[1] > 1)
+  if (dst_shape[2] > 1 || dst_shape[1] > 1 || src_shape[2] > 1 || src_shape[1] > 1)
   {
     err = clEnqueueCopyBufferRect(opencl_device->getCLCommandQueue(),
                                   *static_cast<const cl_mem *>(*src_ptr),
@@ -1080,8 +1105,11 @@ saveBinaryToCache(const std::string &     device_hash,
                   const cl_program &      program,
                   const Device::Pointer & device) -> void
 {
-  size_t   device_index = device->getDeviceIndex();
-  size_t   nb_devices = device->getNbDevicesFromContext();
+  size_t device_index =
+    0; // only 1 device per context since
+       // https://github.com/clEsperanto/CLIc/pull/420/commits/e246f6d065b503b61a70b423db25738d577dda0b
+  size_t nb_devices = device->getNbDevicesFromContext();
+
   size_t * bin_size_list = new size_t[nb_devices];
   auto err = clGetProgramInfo(program, CL_PROGRAM_BINARY_SIZES, sizeof(size_t) * nb_devices, bin_size_list, nullptr);
   if (err != CL_SUCCESS)

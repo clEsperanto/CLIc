@@ -2,12 +2,15 @@
 #define __INCLUDE_UTILS_HPP
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstdint>
 #include <fstream>
+#include <iostream>
 #include <limits>
 #include <type_traits>
 #include <unordered_map>
+#include <vector>
 #ifndef M_PI
 #  define M_PI 3.14159265358979323846 /* pi */
 #endif
@@ -44,6 +47,8 @@ enum class dType
   FLOAT,
   // DOUBLE,   // not supported by GPUs
 
+  COMPLEX,
+
   UNKNOWN,
 
   INT = INT32,
@@ -59,8 +64,8 @@ inline auto
 toString(const dType & dtype) -> std::string
 {
   static const std::unordered_map<dType, std::string> dtypeToString = {
-    { dType::FLOAT, "float" }, { dType::INT32, "int" },   { dType::UINT32, "uint" },  { dType::INT8, "char" },
-    { dType::UINT8, "uchar" }, { dType::INT16, "short" }, { dType::UINT16, "ushort" }
+    { dType::FLOAT, "float" }, { dType::INT32, "int" },   { dType::UINT32, "uint" },   { dType::INT8, "char" },
+    { dType::UINT8, "uchar" }, { dType::INT16, "short" }, { dType::UINT16, "ushort" }, { dType::COMPLEX, "float" }
   };
 
   auto it = dtypeToString.find(dtype);
@@ -73,10 +78,10 @@ toString(const dType & dtype) -> std::string
 inline auto
 toShortString(const dType & dtype) -> std::string
 {
-  static const std::unordered_map<dType, std::string> dtypeToString = { { dType::FLOAT, "f" },   { dType::INT32, "i" },
-                                                                        { dType::UINT32, "ui" }, { dType::INT8, "c" },
-                                                                        { dType::UINT8, "uc" },  { dType::INT16, "s" },
-                                                                        { dType::UINT16, "us" } };
+  static const std::unordered_map<dType, std::string> dtypeToString = {
+    { dType::FLOAT, "f" },  { dType::INT32, "i" }, { dType::UINT32, "ui" }, { dType::INT8, "c" },
+    { dType::UINT8, "uc" }, { dType::INT16, "s" }, { dType::UINT16, "us" }, { dType::COMPLEX, "f" }
+  };
 
   auto it = dtypeToString.find(dtype);
   return it != dtypeToString.end() ? it->second : "?";
@@ -130,9 +135,9 @@ inline auto
 toBytes(const dType & dtype) -> size_t
 {
   static const std::unordered_map<dType, size_t> dtypeToBytes = {
-    { dType::FLOAT, sizeof(float) },    { dType::INT32, sizeof(int32_t) }, { dType::UINT32, sizeof(uint32_t) },
-    { dType::INT8, sizeof(int8_t) },    { dType::UINT8, sizeof(uint8_t) }, { dType::INT16, sizeof(int16_t) },
-    { dType::UINT16, sizeof(uint16_t) }
+    { dType::FLOAT, sizeof(float) },     { dType::INT32, sizeof(int32_t) }, { dType::UINT32, sizeof(uint32_t) },
+    { dType::INT8, sizeof(int8_t) },     { dType::UINT8, sizeof(uint8_t) }, { dType::INT16, sizeof(int16_t) },
+    { dType::UINT16, sizeof(uint16_t) }, { dType::COMPLEX, sizeof(float) }
   };
 
   auto it = dtypeToBytes.find(dtype);
@@ -187,7 +192,9 @@ castTo(const T & value, const dType & dtype) ->
   }
   else
   {
-    throw std::invalid_argument("Invalid Array::Type value");
+    std::cerr << "Error: Invalid Array::Type value, default casting into float " << std::endl;
+    return static_cast<CommonType>(value);
+    // throw std::invalid_argument("Invalid Array::Type value");
   }
 }
 
@@ -354,6 +361,71 @@ to_lower(const std::string & str) -> std::string
   std::transform(result.begin(), result.end(), result.begin(), ::tolower);
   return result;
 }
+
+
+/**
+ * @brief handle prime numbers
+ */
+auto inline handle_prime(size_t x, size_t z, std::vector<double> & a, int p) -> void
+{
+  double log_p = std::log(p);
+  int    power = p;
+
+  while (power <= x + z)
+  {
+    int j = x % power;
+    if (j > 0)
+    {
+      j = power - j;
+    }
+
+    while (j < z)
+    {
+      a[j] += log_p;
+      j += power;
+    }
+
+    power *= p;
+  }
+}
+
+/**
+ * @brief find the next smooth number
+ */
+auto inline next_smooth(size_t x) -> size_t
+{
+  size_t              z = static_cast<size_t>(10 * std::log2(x));
+  double              delta = 0.000001;
+  std::vector<double> a(z, 0.0);
+
+  constexpr std::array<int, 4> primes = { 2, 3, 5, 7 };
+  for (int p : primes)
+  {
+    handle_prime(x, z, a, p);
+  }
+
+  double log_x = std::log(x);
+  for (size_t i = 0; i < a.size(); ++i)
+  {
+    if (a[i] >= log_x - delta)
+    {
+      return x + i;
+    }
+  }
+  return std::numeric_limits<size_t>::max();
+}
+
+/**
+ * @brief return the next smooth shape (power of 2) from a given shape for fft operations
+ */
+auto inline fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>
+{
+  std::array<size_t, 3> result;
+  std::transform(
+    shape.begin(), shape.end(), result.begin(), [](size_t value) { return (value > 1) ? next_smooth(value) : 1; });
+  return result;
+}
+
 
 } // namespace cle
 

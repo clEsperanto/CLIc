@@ -255,6 +255,16 @@ execute(const Device::Pointer & device,
       args_ptr.push_back(const_cast<int *>(i));
       args_size.push_back(sizeof(int));
     }
+    else if (const auto & i = std::get_if<unsigned int>(&param.second))
+    {
+      args_ptr.push_back(const_cast<unsigned int *>(i));
+      args_size.push_back(sizeof(unsigned int));
+    }
+    else if (const auto & i = std::get_if<size_t>(&param.second))
+    {
+      args_ptr.push_back(const_cast<size_t *>(i));
+      args_size.push_back(sizeof(size_t));
+    }
     else
     {
       throw std::runtime_error("Error: Invalid parameter type provided.");
@@ -340,6 +350,16 @@ native_execute(const Device::Pointer & device,
     {
       args_ptr.push_back(const_cast<int *>(i));
       args_size.push_back(sizeof(int));
+    }
+    else if (const auto & i = std::get_if<unsigned int>(&param.second))
+    {
+      args_ptr.push_back(const_cast<unsigned int *>(i));
+      args_size.push_back(sizeof(unsigned int));
+    }
+    else if (const auto & i = std::get_if<size_t>(&param.second))
+    {
+      args_ptr.push_back(const_cast<size_t *>(i));
+      args_size.push_back(sizeof(size_t));
     }
     else
     {
