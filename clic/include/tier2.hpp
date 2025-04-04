@@ -1102,6 +1102,25 @@ top_hat_func(const Device::Pointer & device,
              float                   radius_z,
              std::string             connectivity) -> Array::Pointer;
 
+
+/**
+ * @name extended_depth_of_focus_variance_projection
+ * @brief Extended depth of focus projection maximizing local pixel intensity variance.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius_x Sphere radius filter in x axis. [float ( = 10 )]
+ * @param radius_y Sphere radius filter in y axis. [float ( = 10 )]
+ * @param sigma Sigma for Gaussian blur. [float ( = 5 )]
+ * @return Array::Pointer
+ * 
+ * @note 'projection'
+ */
+auto
+extended_depth_of_focus_variance_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst,
+  float radius_x, float radius_y, float sigma) -> Array::Pointer;
+
 } // namespace cle::tier2
 
 #endif // __INCLUDE_TIER2_HPP
