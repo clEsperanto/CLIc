@@ -22,7 +22,7 @@ histogram_func(const Device::Pointer & device,
   size_t number_of_partial_histograms = src->height();
   auto   partial_hist =
     Array::create(num_bins, 1, number_of_partial_histograms, 3, dType::INDEX, src->mtype(), src->device());
-  if (std::isnan(maximum_intensity) || std::isnan(maximum_intensity))
+  if (std::isnan(minimum_intensity) || std::isnan(maximum_intensity))
   {
     minimum_intensity = tier2::minimum_of_all_pixels_func(device, src);
     maximum_intensity = tier2::maximum_of_all_pixels_func(device, src);
