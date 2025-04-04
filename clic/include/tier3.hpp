@@ -45,7 +45,7 @@ center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) 
  * @name clahe
  * @brief Applies CLAHE (Contrast Limited Adaptive Histogram Equalization) to the input image. The algorithm is
  * adapted from the work of Hugo Raveton (https://github.com/HugoRaveton/pyopencl_clahe)
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
@@ -54,16 +54,16 @@ center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) 
  * @param min_intensity Minimum intensity value. [float ( = None )]
  * @param max_intensity Maximum intensity value. [float ( = None )]
  * @return Array::Pointer
- * 
+ *
  */
 auto
 clahe_func(const Device::Pointer & device,
            const Array::Pointer &  src,
            Array::Pointer          dst,
            int                     tile_size,
-           float                     clip_limit,
-           float                     min_intensity = NaN,
-           float                     max_intensity = NaN) -> Array::Pointer;
+           float                   clip_limit,
+           float                   min_intensity = NaN,
+           float                   max_intensity = NaN) -> Array::Pointer;
 
 /**
  * @name remove_labels
