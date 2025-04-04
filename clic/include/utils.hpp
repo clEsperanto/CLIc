@@ -360,6 +360,80 @@ to_lower(const std::string & str) -> std::string
   return result;
 }
 
+
+/**
+ * @brief handle prime numbers
+ */
+auto
+inline handle_prime(size_t x, size_t z, std::vector<double> & a, int p) -> void
+{
+  double log_p = std::log(p);
+  int    power = p;
+
+  while (power <= x + z)
+  {
+    int j = x % power;
+    if (j > 0)
+    {
+      j = power - j;
+    }
+
+    while (j < z)
+    {
+      a[j] += log_p;
+      j += power;
+    }
+
+    power *= p;
+  }
+}
+
+/**
+ * @brief find the next smooth number
+ */
+auto
+inline next_smooth(size_t x) -> size_t
+{
+  size_t              z = static_cast<size_t>(10 * std::log2(x));
+  double              delta = 0.000001;
+  std::vector<double> a(z, 0.0);
+
+  constexpr std::array<int, 4> primes = { 2, 3, 5, 7 };
+  for (int p : primes)
+  {
+    handle_prime(x, z, a, p);
+  }
+
+  double log_x = std::log(x);
+  for (size_t i = 0; i < a.size(); ++i)
+  {
+    if (a[i] >= log_x - delta)
+    {
+      return x + i;
+    }
+  }
+  return std::numeric_limits<size_t>::max();
+}
+
+/**
+ * @brief return the next smooth shape (power of 2) from a given shape for fft operations
+ */
+auto
+inline fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>
+{
+  std::array<size_t, 3> result;
+  std::transform(
+    shape.begin(), shape.end(), result.begin(), [](size_t value) { return (value > 1) ? next_smooth(value) : 1; });
+  return result;
+}
+
+
+
+
+
+
+
+
 } // namespace cle
 
 #endif // __INCLUDE_UTILS_HPP

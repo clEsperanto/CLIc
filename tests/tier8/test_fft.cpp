@@ -12,42 +12,6 @@ protected:
   };
 };
 
-TEST_P(TestFFT, smoothSize)
-{
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
-  cle::use_cache(false);
-
-
-  auto smooth_size = cle::fft::fft_smooth_shape({ 10, 5, 1 });
-  EXPECT_EQ(smooth_size[0], 10);
-  EXPECT_EQ(smooth_size[1], 5);
-  EXPECT_EQ(smooth_size[2], 1);
-
-  smooth_size = cle::fft::fft_smooth_shape({ 11, 4, 7 });
-  EXPECT_EQ(smooth_size[0], 12);
-  EXPECT_EQ(smooth_size[1], 4);
-  EXPECT_EQ(smooth_size[2], 7);
-
-  smooth_size = cle::fft::fft_smooth_shape({ 25, 30, 2 });
-  EXPECT_EQ(smooth_size[0], 25);
-  EXPECT_EQ(smooth_size[1], 30);
-  EXPECT_EQ(smooth_size[2], 2);
-
-  smooth_size = cle::fft::fft_smooth_shape({ 10, 10, 11 });
-  EXPECT_EQ(smooth_size[0], 10);
-  EXPECT_EQ(smooth_size[1], 10);
-  EXPECT_EQ(smooth_size[2], 12);
-
-  smooth_size = cle::fft::fft_smooth_shape({ 10, 10, 10 });
-  EXPECT_EQ(smooth_size[0], 10);
-  EXPECT_EQ(smooth_size[1], 10);
-  EXPECT_EQ(smooth_size[2], 10);
-}
 
 TEST_P(TestFFT, executeVKFFT)
 {

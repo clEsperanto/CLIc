@@ -25,63 +25,63 @@
 namespace cle::fft
 {
 
-auto
-handle_prime(size_t x, size_t z, std::vector<double> & a, int p) -> void
-{
-  double log_p = std::log(p);
-  int    power = p;
+// auto
+// handle_prime(size_t x, size_t z, std::vector<double> & a, int p) -> void
+// {
+//   double log_p = std::log(p);
+//   int    power = p;
 
-  while (power <= x + z)
-  {
-    int j = x % power;
-    if (j > 0)
-    {
-      j = power - j;
-    }
+//   while (power <= x + z)
+//   {
+//     int j = x % power;
+//     if (j > 0)
+//     {
+//       j = power - j;
+//     }
 
-    while (j < z)
-    {
-      a[j] += log_p;
-      j += power;
-    }
+//     while (j < z)
+//     {
+//       a[j] += log_p;
+//       j += power;
+//     }
 
-    power *= p;
-  }
-}
+//     power *= p;
+//   }
+// }
 
-auto
-next_smooth(size_t x) -> size_t
-{
-  size_t              z = static_cast<size_t>(10 * std::log2(x));
-  double              delta = 0.000001;
-  std::vector<double> a(z, 0.0);
+// auto
+// next_smooth(size_t x) -> size_t
+// {
+//   size_t              z = static_cast<size_t>(10 * std::log2(x));
+//   double              delta = 0.000001;
+//   std::vector<double> a(z, 0.0);
 
-  constexpr std::array<int, 4> primes = { 2, 3, 5, 7 };
-  for (int p : primes)
-  {
-    handle_prime(x, z, a, p);
-  }
+//   constexpr std::array<int, 4> primes = { 2, 3, 5, 7 };
+//   for (int p : primes)
+//   {
+//     handle_prime(x, z, a, p);
+//   }
 
-  double log_x = std::log(x);
-  for (size_t i = 0; i < a.size(); ++i)
-  {
-    if (a[i] >= log_x - delta)
-    {
-      return x + i;
-    }
-  }
-  return std::numeric_limits<size_t>::max();
-}
+//   double log_x = std::log(x);
+//   for (size_t i = 0; i < a.size(); ++i)
+//   {
+//     if (a[i] >= log_x - delta)
+//     {
+//       return x + i;
+//     }
+//   }
+//   return std::numeric_limits<size_t>::max();
+// }
 
 
-auto
-fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>
-{
-  std::array<size_t, 3> result;
-  std::transform(
-    shape.begin(), shape.end(), result.begin(), [](size_t value) { return (value > 1) ? next_smooth(value) : 1; });
-  return result;
-}
+// auto
+// fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>
+// {
+//   std::array<size_t, 3> result;
+//   std::transform(
+//     shape.begin(), shape.end(), result.begin(), [](size_t value) { return (value > 1) ? next_smooth(value) : 1; });
+//   return result;
+// }
 
 
 auto
@@ -100,17 +100,17 @@ fft_pad_shape(const std::array<size_t, 3> & image_shape, const std::array<size_t
 
 
 Array::Pointer
-create_hermitian(const Array::Pointer & real_buf)
+create_hermitian(const Array::Pointer & input)
 {
-  auto   ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(real_buf->device());
-  size_t hermitian_width = static_cast<size_t>(real_buf->width() / 2) + 1;
+  auto   ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
+  size_t hermitian_width = static_cast<size_t>(input->width() / 2) + 1;
   return Array::create(hermitian_width * 2,
-                       real_buf->height(),
-                       real_buf->depth(),
-                       real_buf->dimension(),
+    input->height(),
+    input->depth(),
+    input->dimension(),
                        dType::COMPLEX,
-                       real_buf->mtype(),
-                       real_buf->device());
+                       input->mtype(),
+                       input->device());
 }
 
 auto
@@ -259,7 +259,7 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
 
 
 auto
-performIFFT(const Array::Pointer & input, Array::Pointer output) -> void
+performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
 {
   if (output == nullptr)
   {

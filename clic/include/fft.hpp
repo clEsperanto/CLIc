@@ -1,9 +1,8 @@
 #ifndef __INCLUDE_FFT_HPP
 #define __INCLUDE_FFT_HPP
 
-// #include "clFFT.h"
-
-#include "vkFFT.h"
+// we rely on the vkFFT library for FFT operations in OpenCL and CUDA
+#include "vkFFT.h" 
 
 #include "array.hpp"
 #include "execution.hpp"
@@ -17,29 +16,29 @@ namespace cle::fft
  * in an interleaved way (e.g. [real0, imag0, real1, imag1, ...])
  * and are shaped as [ (width/2) +1, height, depth ].
  *
- * @param real_buf Array::Pointer
+ * @param input Array::Pointer
  * @return Array::Pointer
  */
 Array::Pointer
-create_hermitian(const Array::Pointer & real_buf);
+create_hermitian(const Array::Pointer & input);
 
-/**
- * @brief Get the next smooth shape from a given shape
- *
- * Get the next smooth number (power of 2) from a given number to insure efficient fft operations
- *
- * @param shape std::array<size_t, 3>
- * @return std::array<size_t, 3>
- */
-auto
-fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>;
+// /**
+//  * @brief Get the closest smooth shape from a given input shape
+//  *
+//  * Get the next smooth number (power of 2) from a given number to insure efficient fft operations
+//  *
+//  * @param shape std::array<size_t, 3>
+//  * @return std::array<size_t, 3>
+//  */
+// auto
+// fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>;
 
 
 /**
  * @brief Get the padding shape from a given image and kernel shape
  *
- * given an image and kernel return the extended size needed to avoid circular calculations
- * during convolution and/or deconvolution
+ * To avoid circular calculations during convolution and/or deconvolution
+ * we need to pad the image based on the kernel size
  *
  * @param image_shape std::array<size_t, 3>
  * @param kernel_shape std::array<size_t, 3>
@@ -51,9 +50,9 @@ fft_pad_shape(const std::array<size_t, 3> & image_shape, const std::array<size_t
 
 
 /**
- * @brief Execute operation for fft kernel
+ * @brief Execute a kernel operation for fft kernel
  *
- * Template execute function for fft kernel, to be used in other fft operations
+ * Template execute function for kernel to be used on fft output image
  *
  * @param name std::string
  * @param bufferA Array::Pointer
@@ -128,6 +127,7 @@ execTotalVariationTerm(const Device::Pointer & device,
 auto
 performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointer;
 
+
 /**
  * @brief Inverse Fast Fourier Transform (vkFFT)
  *
@@ -140,7 +140,8 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
  * @param output Array::Pointer
  */
 auto
-performIFFT(const Array::Pointer & input, Array::Pointer output) -> void;
+performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void;
+
 
 /**
  * @brief FFT Convolution operation (vkFFT)
@@ -162,6 +163,7 @@ performConvolution(const Array::Pointer & input,
                    const Array::Pointer & psf,
                    const Array::Pointer & output,
                    bool                   correlate) -> void;
+
 
 /**
  * @brief Richardson-Lucy deconvolution (vkFFT)

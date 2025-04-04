@@ -53,31 +53,29 @@ smooth_connected_labels_func(const Device::Pointer & device, const Array::Pointe
 
 /**
  * @name fft
- * @brief Perform a 1D, 2D or 3D FFT on the input image
+ * @brief Perform a 1D, 2D or 3D FFT (Fast Fourier Transform) on the input image
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image [const Array::Pointer &]
  * @param dst Output image [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @note 'fft', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 fft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 /**
  * @name ifft
- * @brief Perform a 1D, 2D or 3D IFFT (Inverse FFT) on the input image (must be of complex type)
+ * @brief Perform a 1D, 2D or 3D IFFT (Inverse Fast Fourier Transform) on the input image.
+ * The input image must be hermitian and the output image must be provided as the second argument.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image [const Array::Pointer &]
- * @param dst Output image [Array::Pointer ( = None )]
+ * @param dst Output image [const Array::Pointer &]
  * @return Array::Pointer
- *
- * @note 'fft', 'in assistant', 'bia-bob-suggestion'
  */
 auto
-ifft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+ifft_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & dst) -> Array::Pointer;
 
 /**
  * @name convolve_fft
@@ -93,8 +91,6 @@ ifft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
  * @param dst Output image [Array::Pointer ( = None )]
  * @param correlate If true, convolution with the PSF reversed. [bool ( = false )]
  * @return Array::Pointer
- *
- * @note 'fft', 'in assistant', 'bia-bob-suggestion'
  */
 auto
 convolve_fft_func(const Device::Pointer & device,

@@ -24,7 +24,7 @@ fft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poin
 }
 
 auto
-ifft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+ifft_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & dst) -> Array::Pointer
 {
   if (src->dtype() != dType::COMPLEX)
   {
@@ -61,8 +61,9 @@ convolve_fft_func(const Device::Pointer & device,
   const RangeArray kernel_shape = { kernel->width(), kernel->height(), kernel->depth() };
 
   // get the next smooth shape for the input and kernel to facilitate the fft
-  auto pad_shape = fft::fft_pad_shape(image_shape, kernel_shape);
-  auto smoothed_shape = fft::fft_smooth_shape(pad_shape);
+  // auto pad_shape = fft::fft_pad_shape(image_shape, kernel_shape);
+  RangeArray pad_shape = { image_shape[0], image_shape[1], image_shape[2] };
+  auto smoothed_shape = fft_smooth_shape(pad_shape);
 
   // check if smooth size differs from the input size, if yes pad input and save the padding size for unpadding
   bool           padded = false;
@@ -125,7 +126,7 @@ deconvolve_fft_func(const Device::Pointer & device,
 
   // auto pad_shape = fft::fft_pad_shape(image_shape, psf_shape);
   RangeArray pad_shape = { image_shape[0], image_shape[1], image_shape[2] };
-  auto       smoothed_shape = fft::fft_smooth_shape(pad_shape);
+  auto       smoothed_shape = fft_smooth_shape(pad_shape);
 
   // check if smooth size differs from the input size, if yes pad input and save the padding size for unpadding
   bool           padded = false;
