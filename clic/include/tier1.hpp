@@ -2326,7 +2326,7 @@ pad_func(const Device::Pointer & device,
 
 
 /**
- * @name pad
+ * @name pad_func
  * @brief Pads an image with a given size along dimensions with a given value.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
