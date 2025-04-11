@@ -125,7 +125,7 @@ deconvolve_fft_func(const Device::Pointer & device,
                     const Array::Pointer &  psf,
                     Array::Pointer          normalization,
                     Array::Pointer          dst,
-                    int                  iteration,
+                    int                     iteration,
                     float                   regularization) -> Array::Pointer;
 
 
