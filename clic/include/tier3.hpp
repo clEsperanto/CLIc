@@ -51,8 +51,8 @@ center_of_mass_func(const Device::Pointer & device, const Array::Pointer & src) 
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @param tile_size Size of the tiles to be used for CLAHE. [int ( = 8 )]
  * @param clip_limit Clip limit for CLAHE. [float ( = 0.01 )]
- * @param min_intensity Minimum intensity value. [float ( = None )]
- * @param max_intensity Maximum intensity value. [float ( = None )]
+ * @param minimum_intensity Minimum intensity value. [float ( = float('nan') )]
+ * @param maximum_intensity Maximum intensity value. [float ( = float('nan') )]
  * @return Array::Pointer
  *
  */
@@ -62,8 +62,8 @@ clahe_func(const Device::Pointer & device,
            Array::Pointer          dst,
            int                     tile_size,
            float                   clip_limit,
-           float                   min_intensity = NaN,
-           float                   max_intensity = NaN) -> Array::Pointer;
+           float                   minimum_intensity = NaN,
+           float                   maximum_intensity = NaN) -> Array::Pointer;
 
 /**
  * @name remove_labels
@@ -260,8 +260,8 @@ generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer 
  * @param src Input image to derive histogram from [const Array::Pointer &]
  * @param dst Output histogram [Array::Pointer ( = None )]
  * @param num_bins [int ( = 256 )]
- * @param minimum_intensity [float ( = None )]
- * @param maximum_intensity [float ( = None )]
+ * @param minimum_intensity [float ( = float('nan') )]
+ * @param maximum_intensity [float ( = float('nan') )]
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_histogram
