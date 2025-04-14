@@ -31,7 +31,7 @@ _statistics_per_label(const Device::Pointer & device,
     float value = (i % 2 == 0) ? max_value : min_value;
     tier1::set_plane_func(device, cumulative_stats_per_label, i, value);
   }
-  const KernelInfo kernel = { "statistics_per_label", kernel::statistics_per_label };
+  const KernelInfo kernel_code = { "statistics_per_label", kernel::statistics_per_label };
   const RangeArray range = { 1, height, 1 };
   ParameterList    params = { { "src_label", label },
                               { "src_image", intensity },
@@ -42,7 +42,7 @@ _statistics_per_label(const Device::Pointer & device,
   {
     auto it = std::find_if(params.begin(), params.end(), [](const auto & param) { return param.first == "z"; });
     it->second = z;
-    execute(device, kernel, params, range);
+    execute(device, kernel_code, params, range);
   }
 
   return cumulative_stats_per_label;
@@ -60,15 +60,15 @@ _std_per_label(const Device::Pointer & device,
 
   auto label_statistics_stack = Array::create(nb_labels, height, 6, 3, dType::FLOAT, mType::BUFFER, device);
   label_statistics_stack->fill(0);
-  const KernelInfo kernel_std = { "standard_deviation_per_label", kernel::standard_deviation_per_label };
-  const RangeArray range_std = { 1, height, 1 };
-  ParameterList params_std = { { "src_statistics", statistics },  { "src_label", label },  { "src_image", intensity },
-                               { "dst", label_statistics_stack }, { "sum_background", 0 }, { "z", 0 } };
+  const KernelInfo kernel_code = { "standard_deviation_per_label", kernel::standard_deviation_per_label };
+  const RangeArray range = { 1, height, 1 };
+  ParameterList    params = { { "src_statistics", statistics },  { "src_label", label },  { "src_image", intensity },
+                              { "dst", label_statistics_stack }, { "sum_background", 0 }, { "z", 0 } };
   for (int z = 0; z < depth; z++)
   {
-    auto it = std::find_if(params_std.begin(), params_std.end(), [](const auto & param) { return param.first == "z"; });
+    auto it = std::find_if(params.begin(), params.end(), [](const auto & param) { return param.first == "z"; });
     it->second = z;
-    execute(device, kernel_std, params_std, range_std);
+    execute(device, kernel_code, params, range);
   }
 
   return label_statistics_stack;

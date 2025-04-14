@@ -15,10 +15,10 @@ divide_scalar_by_image_func(const Device::Pointer & device,
                             float                   scalar) -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  const KernelInfo    kernel = { "divide_scalar_by_image", kernel::divide_scalar_by_image };
+  const KernelInfo    kernel_code = { "divide_scalar_by_image", kernel::divide_scalar_by_image };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar", scalar } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 
