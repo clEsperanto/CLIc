@@ -27,13 +27,13 @@ hessian_eigenvalues_func(const Device::Pointer & device,
     // no middle eigenvalue for 2D images, we replace the image by a scalar to save memory
     tier0::create_one(src, middle_eigenvalue, dType::FLOAT);
   }
-  const KernelInfo    kernel = { "hessian_eigenvalues", kernel::hessian_eigenvalues };
+  const KernelInfo    kernel_code = { "hessian_eigenvalues", kernel::hessian_eigenvalues };
   const ParameterList params = { { "src", src },
                                  { "small_eigenvalue", small_eigenvalue },
                                  { "middle_eigenvalue", middle_eigenvalue },
                                  { "large_eigenvalue", large_eigenvalue } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   if (src->depth() == 1)
   {
     return { small_eigenvalue, large_eigenvalue };
@@ -48,10 +48,10 @@ hessian_eigenvalues_func(const Device::Pointer & device,
 //   {
 //     throw std::runtime_error("inferior_superior only supports BINARY (uint8) images");
 //   }
-//   const KernelInfo    kernel = { "inferior_superior", kernel::inferior_superior };
+//   const KernelInfo    kernel_code = { "inferior_superior", kernel::inferior_superior };
 //   const ParameterList params = { { "src", src }, { "dst", dst } };
 //   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-//   execute(device, kernel, params, range);
+//   execute(device, kernel_code, params, range);
 //   return dst;
 // }
 

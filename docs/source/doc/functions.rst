@@ -245,7 +245,7 @@ Kernels in the CLIJ repository are automatically stringify and stored in a heade
         const KernelInfo kernel = {"add_images_weighted", kernel::add_images_weighted};
         const ParameterList params = {{"src0", src0}, {"src1", src1}, {"dst", dst}, {"scalar0", factor0}, {"scalar1", factor1}};
         const RangeArray range = {dst->width(), dst->height(), dst->depth()};
-        execute(device, kernel, params, range);
+        execute(device, kernel_code, params, range);
         return dst;
     }
 
@@ -278,7 +278,7 @@ The first thing to ensure is that the kernel code we will call is available in t
             {"src0", src0}, {"src1", src1}, {"dst", dst}, {"scalar0", factor0}, {"scalar1", factor1}
         };
         const RangeArray range = {dst->width(), dst->height(), dst->depth()};
-        execute(device, kernel, params, range);
+        execute(device, kernel_code, params, range);
         return dst;
     }
 
@@ -308,7 +308,7 @@ The order of the parameters is important and should match the order of the param
             {"src0", src0}, {"src1", src1}, {"dst", dst}, {"scalar0", factor0}, {"scalar1", factor1}
         };
         const RangeArray range = {dst->width(), dst->height(), dst->depth()};
-        execute(device, kernel, params, range);
+        execute(device, kernel_code, params, range);
         return dst;
     }
 
@@ -339,7 +339,7 @@ In the majority of the cases, the output will be the ``dst`` Array.
             {"src0", src0}, {"src1", src1}, {"dst", dst}, {"scalar0", factor0}, {"scalar1", factor1}
         };
         const RangeArray range = {dst->width(), dst->height(), dst->depth()};
-        execute(device, kernel, params, range);
+        execute(device, kernel_code, params, range);
         return dst;
     }
 

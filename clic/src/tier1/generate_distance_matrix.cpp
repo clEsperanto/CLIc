@@ -21,14 +21,14 @@ generate_distance_matrix_func(const Device::Pointer & device,
                     1,
                     dType::FLOAT);
   distance_matrix_destination->fill(0);
-  const KernelInfo    kernel = { "generate_distance_matrix", kernel::generate_distance_matrix };
+  const KernelInfo    kernel_code = { "generate_distance_matrix", kernel::generate_distance_matrix };
   const ParameterList params = { { "src0", coordinate_list1 },
                                  { "src1", coordinate_list2 },
                                  { "dst", distance_matrix_destination } };
   const RangeArray    range = { distance_matrix_destination->width(),
                                 distance_matrix_destination->height(),
                                 distance_matrix_destination->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return distance_matrix_destination;
 }
 

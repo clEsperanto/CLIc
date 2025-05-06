@@ -17,14 +17,14 @@ onlyzero_overwrite_maximum_func(const Device::Pointer & device,
                                 std::string             connectivity) -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  KernelInfo kernel = { "onlyzero_overwrite_maximum_box", kernel::onlyzero_overwrite_maximum_box };
+  KernelInfo kernel_code = { "onlyzero_overwrite_maximum_box", kernel::onlyzero_overwrite_maximum_box };
   if (connectivity == "sphere")
   {
-    kernel = { "onlyzero_overwrite_maximum_diamond", kernel::onlyzero_overwrite_maximum_diamond };
+    kernel_code = { "onlyzero_overwrite_maximum_diamond", kernel::onlyzero_overwrite_maximum_diamond };
   }
   const ParameterList params = { { "src", src }, { "dst0", flag }, { "dst1", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 

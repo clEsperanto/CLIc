@@ -22,10 +22,10 @@ erosion_func(const Device::Pointer & device,
     throw std::runtime_error(
       "Error: input and structuring element in erosion operator must have the same dimensionality.");
   }
-  KernelInfo          kernel = { "erosion", kernel::erosion };
+  KernelInfo          kernel_code = { "erosion", kernel::erosion };
   const ParameterList params = { { "src", src }, { "footprint", footprint }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 
@@ -42,16 +42,16 @@ binary_erode_func(const Device::Pointer & device,
   auto       r_x = radius2kernelsize(radius_x);
   auto       r_y = radius2kernelsize(radius_y);
   auto       r_z = radius2kernelsize(radius_z);
-  KernelInfo kernel = { "erode_box", kernel::erode_box };
+  KernelInfo kernel_code = { "erode_box", kernel::erode_box };
   if (connectivity == "sphere")
   {
-    kernel = { "erode_sphere", kernel::erode_sphere };
+    kernel_code = { "erode_sphere", kernel::erode_sphere };
   }
   const ParameterList params = {
     { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z }
   };
   const RangeArray range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 
