@@ -41,14 +41,6 @@ Array::create(const size_t            width,
               const mType &           mem_type,
               const Device::Pointer & device_ptr) -> Array::Pointer
 {
-
-  auto buffer_size = width * height * depth * toBytes(data_type);
-  if (buffer_size > device_ptr->getMaximumBufferSize())
-  {
-    std::cerr << "Warning: Buffer size exceeds device maximum buffer size. Expected: " << buffer_size
-              << " bytes, Device maximum buffer size: " << device_ptr->getMaximumBufferSize() << " bytes" << std::endl;
-  }
-
   auto ptr = std::shared_ptr<Array>(new Array(width, height, depth, dimension, data_type, mem_type, device_ptr));
   ptr->allocate();
   return ptr;
@@ -154,8 +146,9 @@ Array::readTo(void * host_data) const -> void
 }
 
 auto
-Array::readTo(void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin) const
-  -> void
+Array::readTo(void *                        host_data,
+              const std::array<size_t, 3> & region,
+              const std::array<size_t, 3> & buffer_origin) const -> void
 {
   if (host_data == nullptr)
   {
