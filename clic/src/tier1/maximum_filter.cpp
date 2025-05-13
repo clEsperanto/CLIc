@@ -24,12 +24,12 @@ maximum_filter_func(const Device::Pointer & device,
   auto r_z = radius2kernelsize(radius_z);
   if (connectivity == "sphere")
   {
-    const KernelInfo    kernel = { "maximum_sphere", kernel::maximum_sphere };
+    const KernelInfo    kernel_code = { "maximum_sphere", kernel::maximum_sphere };
     const ParameterList params = {
       { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z }
     };
     const RangeArray range = { dst->width(), dst->height(), dst->depth() };
-    execute(device, kernel, params, range);
+    execute(device, kernel_code, params, range);
   }
   else
   {

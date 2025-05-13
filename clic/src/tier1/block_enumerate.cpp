@@ -10,16 +10,16 @@ namespace cle::tier1
 
 auto
 block_enumerate_func(const Device::Pointer & device,
-                     const Array::Pointer &  src0,
-                     const Array::Pointer &  src1,
+                     const Array::Pointer &  src,
+                     const Array::Pointer &  sums,
                      Array::Pointer          dst,
                      int                     blocksize) -> Array::Pointer
 {
-  tier0::create_like(src0, dst, dType::FLOAT);
-  const KernelInfo    kernel = { "block_enumerate", kernel::block_enumerate };
-  const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst }, { "index", blocksize } };
-  const RangeArray    range = { src1->width(), src1->height(), src1->depth() };
-  execute(device, kernel, params, range);
+  tier0::create_like(src, dst, dType::FLOAT);
+  const KernelInfo    kernel_code = { "block_enumerate", kernel::block_enumerate };
+  const ParameterList params = { { "src0", src }, { "src1", sums }, { "dst", dst }, { "index", blocksize } };
+  const RangeArray    range = { sums->width(), sums->height(), sums->depth() };
+  execute(device, kernel_code, params, range);
   return dst;
 }
 
