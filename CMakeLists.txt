@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(CLIc VERSION 0.17.0)
+project(CLIc VERSION 0.17.1)
 
 set(kernel_version_tag "3.2.0"  CACHE STRING "clEsperanto kernel version tag") # "3.1.1"
 set(eigen_lib_version_tag "3.4.0" CACHE STRING "Eigen library version tag")
