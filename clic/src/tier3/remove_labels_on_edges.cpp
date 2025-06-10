@@ -28,11 +28,11 @@ remove_labels_on_edges_func(const Device::Pointer & device,
   auto execute_if_needed = [&](bool exclude, int dimension, const std::string & kernel_name) {
     if (exclude && dimension > 1)
     {
-      const KernelInfo kernel = { kernel_name, kernel::exclude_on_edges };
+      const KernelInfo kernel_code = { kernel_name, kernel::exclude_on_edges };
       const RangeArray range = { (dimension == 0) ? 1 : src->width(),
                                  (dimension == 1) ? 1 : src->height(),
                                  (dimension == 2) ? 1 : src->depth() };
-      execute(device, kernel, params, range);
+      execute(device, kernel_code, params, range);
     }
   };
 

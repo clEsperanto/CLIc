@@ -13,20 +13,20 @@ namespace cle::tier6
 
 auto
 erode_labels_func(const Device::Pointer & device,
-                  const Array::Pointer &  src,
+                  const Array::Pointer &  input_labels,
                   Array::Pointer          dst,
                   int                     radius,
                   bool                    relabel) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::LABEL);
+  tier0::create_like(input_labels, dst, dType::LABEL);
   if (radius <= 0)
   {
-    return tier1::copy_func(device, src, dst);
+    return tier1::copy_func(device, input_labels, dst);
   }
 
-  auto temp = tier1::detect_label_edges_func(device, src, nullptr);
+  auto temp = tier1::detect_label_edges_func(device, input_labels, nullptr);
   auto temp1 = tier1::binary_not_func(device, temp, nullptr);
-  tier1::mask_func(device, src, temp1, temp);
+  tier1::mask_func(device, input_labels, temp1, temp);
   temp1.reset();
 
   if (radius == 1)

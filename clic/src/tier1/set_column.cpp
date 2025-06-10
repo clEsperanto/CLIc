@@ -12,10 +12,10 @@ auto
 set_column_func(const Device::Pointer & device, const Array::Pointer & src, int column_index, float value)
   -> Array::Pointer
 {
-  const KernelInfo    kernel = { "set_column", kernel::set_column };
+  const KernelInfo    kernel_code = { "set_column", kernel::set_column };
   const ParameterList params = { { "dst", src }, { "index", column_index }, { "scalar", value } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return src;
 }
 
