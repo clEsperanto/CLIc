@@ -23,10 +23,10 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
     tier0::create_dst(src0, dst, max_label_0, max_label_1, 1, dType::INDEX);
   }
   dst->fill(0);
-  const KernelInfo    kernel = { "generate_binary_overlap_matrix", kernel::generate_binary_overlap_matrix };
+  const KernelInfo    kernel_code = { "generate_binary_overlap_matrix", kernel::generate_binary_overlap_matrix };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { src0->width(), src0->height(), src0->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 

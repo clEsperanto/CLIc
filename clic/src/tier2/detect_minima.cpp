@@ -20,10 +20,10 @@ detect_minima_func(const Device::Pointer & device,
 {
   tier0::create_like(src, dst, dType::BINARY);
   auto                temp = tier1::mean_filter_func(device, src, nullptr, radius_x, radius_y, radius_z, connectivity);
-  const KernelInfo    kernel = { "detect_minima", kernel::detect_minima };
+  const KernelInfo    kernel_code = { "detect_minima", kernel::detect_minima };
   const ParameterList params = { { "src", temp }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 

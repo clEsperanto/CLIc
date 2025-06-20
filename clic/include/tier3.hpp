@@ -73,8 +73,8 @@ clahe_func(const Device::Pointer & device,
  * renumbered to 1 and 2.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input label image [const Array::Pointer &]
- * @param list Vector of 0 and 1 flagging labels to remove [const Array::Pointer &]
+ * @param input_labels Input label image [const Array::Pointer &]
+ * @param label_list Vector of 0 and 1 flagging labels to remove [const Array::Pointer &]
  * @param dst Output label image [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -83,8 +83,8 @@ clahe_func(const Device::Pointer & device,
  */
 auto
 remove_labels_func(const Device::Pointer & device,
-                   const Array::Pointer &  src,
-                   const Array::Pointer &  list,
+                   const Array::Pointer &  input_labels,
+                   const Array::Pointer &  label_list,
                    Array::Pointer          dst) -> Array::Pointer;
 
 /**
@@ -95,18 +95,18 @@ remove_labels_func(const Device::Pointer & device,
  * renumbered to 1 and 2.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input label image [const Array::Pointer &]
- * @param list Vector of 0 and 1 flagging labels to remove [const Array::Pointer &]
+ * @param input_labels Input label image [const Array::Pointer &]
+ * @param label_list Vector of 0 and 1 flagging labels to remove [const Array::Pointer &]
  * @param dst Output label image [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_excludeLabels
- *
+ * @deprecated This function is deprecated. Use remove_labels() instead.
  */
 auto
 exclude_labels_func(const Device::Pointer & device,
-                    const Array::Pointer &  src,
-                    const Array::Pointer &  list,
+                    const Array::Pointer &  input_labels,
+                    const Array::Pointer &  label_list,
                     Array::Pointer          dst) -> Array::Pointer;
 
 /**
@@ -223,14 +223,14 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
  * adjacency graph
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input label image [const Array::Pointer &]
+ * @param input_labels Input label image [const Array::Pointer &]
  * @param dst Output touch matrix [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_generateTouchMatrix
  */
 auto
-generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer & input_labels, Array::Pointer dst)
   -> Array::Pointer;
 
 
@@ -302,7 +302,7 @@ jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, 
  * contains d pixels (with d = dimensionality of the original image) with the coordinates of the maxima/minima.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param label Input label image [const Array::Pointer &]
+ * @param input_labels Input label image [const Array::Pointer &]
  * @param pointlist Output coordinate list [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -310,8 +310,8 @@ jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, 
  */
 auto
 labelled_spots_to_pointlist_func(const Device::Pointer & device,
-                                 const Array::Pointer &  label,
-                                 Array::Pointer          dspointlistt) -> Array::Pointer;
+                                 const Array::Pointer &  input_labels,
+                                 Array::Pointer          pointlist) -> Array::Pointer;
 
 
 /**
@@ -389,14 +389,15 @@ morphological_chan_vese_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param intensity Intensity image. [Array::Pointer ( = None )]
- * @param label Label image to compute the statistics. [Array::Pointer ( = None )]]
+ * @param input_labels Label image to compute the statistics. [Array::Pointer ( = None )]]
  * @return StatisticsMap
  *
  * @see https://clij.github.io/clij2-docs/reference_statisticsOfLabelledPixels
  */
 auto
-statistics_of_labelled_pixels_func(const Device::Pointer & device, Array::Pointer intensity, Array::Pointer label)
-  -> StatisticsMap;
+statistics_of_labelled_pixels_func(const Device::Pointer & device,
+                                   Array::Pointer          intensity,
+                                   Array::Pointer          input_labels) -> StatisticsMap;
 
 /**
  * @name statistics_of_background_and_labelled_pixels
@@ -409,7 +410,7 @@ statistics_of_labelled_pixels_func(const Device::Pointer & device, Array::Pointe
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param intensity Intensity image. [Array::Pointer ( = None )]
- * @param label Label image to compute the statistics. [Array::Pointer ( = None )]]
+ * @param input_labels Label image to compute the statistics. [Array::Pointer ( = None )]]
  * @return StatisticsMap
  *
  * @see https://clij.github.io/clij2-docs/reference_statisticsOfBackgroundAndLabelledPixels
@@ -417,7 +418,7 @@ statistics_of_labelled_pixels_func(const Device::Pointer & device, Array::Pointe
 auto
 statistics_of_background_and_labelled_pixels_func(const Device::Pointer & device,
                                                   Array::Pointer          intensity,
-                                                  Array::Pointer          label) -> StatisticsMap;
+                                                  Array::Pointer          input_labels) -> StatisticsMap;
 
 } // namespace cle::tier3
 

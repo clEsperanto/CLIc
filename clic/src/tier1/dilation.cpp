@@ -22,10 +22,10 @@ dilation_func(const Device::Pointer & device,
     throw std::runtime_error(
       "Error: input and structuring element in dilation operator must have the same dimensionality.");
   }
-  KernelInfo          kernel = { "dilation", kernel::dilation };
+  KernelInfo          kernel_code = { "dilation", kernel::dilation };
   const ParameterList params = { { "src", src }, { "footprint", footprint }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 
@@ -42,16 +42,16 @@ binary_dilate_func(const Device::Pointer & device,
   auto       r_x = radius2kernelsize(radius_x);
   auto       r_y = radius2kernelsize(radius_y);
   auto       r_z = radius2kernelsize(radius_z);
-  KernelInfo kernel = { "dilate_box", kernel::dilate_box };
+  KernelInfo kernel_code = { "dilate_box", kernel::dilate_box };
   if (connectivity == "sphere")
   {
-    kernel = { "dilate_sphere", kernel::dilate_sphere };
+    kernel_code = { "dilate_sphere", kernel::dilate_sphere };
   }
   const ParameterList params = {
     { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z }
   };
   const RangeArray range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 

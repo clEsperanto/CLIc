@@ -13,18 +13,18 @@ namespace cle::tier4
 
 auto
 centroids_of_labels_func(const Device::Pointer & device,
-                         const Array::Pointer &  label_image,
+                         const Array::Pointer &  input_labels,
                          Array::Pointer          centroids_coordinates,
                          bool                    include_background) -> Array::Pointer
 {
   cle::StatisticsMap props;
   if (include_background)
   {
-    props = tier3::statistics_of_background_and_labelled_pixels_func(device, label_image, label_image);
+    props = tier3::statistics_of_background_and_labelled_pixels_func(device, input_labels, input_labels);
   }
   else
   {
-    props = tier3::statistics_of_labelled_pixels_func(device, label_image, label_image);
+    props = tier3::statistics_of_labelled_pixels_func(device, input_labels, input_labels);
   }
   auto centroid_x = props["centroid_x"];
   auto centroid_y = props["centroid_y"];

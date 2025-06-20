@@ -111,7 +111,7 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src intensity image [const Array::Pointer &]
- * @param labels label image [const Array::Pointer &]
+ * @param input_labels label image [const Array::Pointer &]
  * @param dst Parametric image computed[Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -121,7 +121,7 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
 auto
 mean_intensity_map_func(const Device::Pointer & device,
                         const Array::Pointer &  src,
-                        const Array::Pointer &  labels,
+                        const Array::Pointer &  input_labels,
                         Array::Pointer          dst) -> Array::Pointer;
 
 
@@ -131,7 +131,7 @@ mean_intensity_map_func(const Device::Pointer & device,
  * This results in a parametric image expressing area or volume.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Label image to measure [const Array::Pointer &]
+ * @param input_labels Label image to measure [const Array::Pointer &]
  * @param dst Parametric image computed[Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -139,7 +139,8 @@ mean_intensity_map_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_pixelCountMap
  */
 auto
-pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & input_labels, Array::Pointer dst)
+  -> Array::Pointer;
 
 /**
  * @name label_pixel_count_map
@@ -147,7 +148,7 @@ pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src,
  * This results in a parametric image expressing area or volume.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Label image to measure [const Array::Pointer &]
+ * @param input_labels Label image to measure [const Array::Pointer &]
  * @param dst Parametric image computed[Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -156,7 +157,7 @@ pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src,
  * @deprecated This function is deprecated. Use pixel_count_map_func instead.
  */
 auto
-label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & input_labels, Array::Pointer dst)
   -> Array::Pointer;
 
 
@@ -167,9 +168,8 @@ label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer 
  * where n is the number of labels and d=3 the dimensionality (x,y,z) of the original image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param label_image Label image where the centroids will be determined from. [const Array::Pointer &]
- * @param centroids_coordinates Output list of coordinates where the centroids will be written to. [Array::Pointer ( =
- * None )]
+ * @param input_labels Label image where the centroids will be determined from. [const Array::Pointer &]
+ * @param centroids_coordinates Output list of coordinates of centroids. [Array::Pointer ( = None )]
  * @param include_background Determines if the background label should be included. [bool ( = False )]
  * @return Array::Pointer
  *
@@ -177,7 +177,7 @@ label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer 
  */
 auto
 centroids_of_labels_func(const Device::Pointer & device,
-                         const Array::Pointer &  label_image,
+                         const Array::Pointer &  input_labels,
                          Array::Pointer          centroids_coordinates,
                          bool                    include_background) -> Array::Pointer;
 
@@ -188,7 +188,7 @@ centroids_of_labels_func(const Device::Pointer & device,
  * associated with the labels.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input image where labels will be filtered. [const Array::Pointer &]
+ * @param input_labels Input image where labels will be filtered. [const Array::Pointer &]
  * @param values Vector of values associated with the labels. [const Array::Pointer &]
  * @param dst Output image where labels will be written to. [Array::Pointer ( = None )]
  * @param min_value Minimum value to keep. [float ( = 0 )]
@@ -200,7 +200,7 @@ centroids_of_labels_func(const Device::Pointer & device,
  */
 auto
 remove_labels_with_map_values_out_of_range_func(const Device::Pointer & device,
-                                                const Array::Pointer &  src,
+                                                const Array::Pointer &  input_labels,
                                                 const Array::Pointer &  values,
                                                 Array::Pointer          dst,
                                                 float                   min_value,
@@ -212,7 +212,7 @@ remove_labels_with_map_values_out_of_range_func(const Device::Pointer & device,
  * associated with the labels.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input image where labels will be filtered. [const Array::Pointer &]
+ * @param input_labels Input image where labels will be filtered. [const Array::Pointer &]
  * @param values Vector of values associated with the labels. [const Array::Pointer &]
  * @param dst Output image where labels will be written to. [Array::Pointer ( = None )]
  * @param min_value Minimum value to keep. [float ( = 0 )]
@@ -224,7 +224,7 @@ remove_labels_with_map_values_out_of_range_func(const Device::Pointer & device,
  */
 auto
 remove_labels_with_map_values_within_range_func(const Device::Pointer & device,
-                                                const Array::Pointer &  src,
+                                                const Array::Pointer &  input_labels,
                                                 const Array::Pointer &  values,
                                                 Array::Pointer          dst,
                                                 float                   min_value,
@@ -289,7 +289,7 @@ exclude_labels_with_map_values_within_range_func(const Device::Pointer & device,
  * the average distance of all pixels in the label to the centroid.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input label image. [const Array::Pointer &]
+ * @param input_labels Input label image. [const Array::Pointer &]
  * @param dst Output parametric image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -297,7 +297,7 @@ exclude_labels_with_map_values_within_range_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_extensionRatioMap
  */
 auto
-extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & input_labels, Array::Pointer dst)
   -> Array::Pointer;
 
 /**
@@ -309,7 +309,7 @@ extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & 
  * the average distance of all pixels in the label to the centroid.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input label image. [const Array::Pointer &]
+ * @param input_labels Input label image. [const Array::Pointer &]
  * @param dst Output parametric image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -317,7 +317,7 @@ extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & 
  * @see https://clij.github.io/clij2-docs/reference_meanExtensionMap
  */
 auto
-mean_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+mean_extension_map_func(const Device::Pointer & device, const Array::Pointer & input_labels, Array::Pointer dst)
   -> Array::Pointer;
 
 /**
@@ -329,7 +329,7 @@ mean_extension_map_func(const Device::Pointer & device, const Array::Pointer & s
  * the average distance of all pixels in the label to the centroid.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input label image. [const Array::Pointer &]
+ * @param input_labels Input label image. [const Array::Pointer &]
  * @param dst Output parametric image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -337,7 +337,7 @@ mean_extension_map_func(const Device::Pointer & device, const Array::Pointer & s
  * @see https://clij.github.io/clij2-docs/reference_meanExtensionMap
  */
 auto
-maximum_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+maximum_extension_map_func(const Device::Pointer & device, const Array::Pointer & input_labels, Array::Pointer dst)
   -> Array::Pointer;
 
 /**
@@ -349,7 +349,7 @@ maximum_extension_map_func(const Device::Pointer & device, const Array::Pointer 
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src intensity image [const Array::Pointer &]
- * @param labels label image [const Array::Pointer &]
+ * @param input_labels label image [const Array::Pointer &]
  * @param dst Parametric image computed[Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -359,7 +359,7 @@ maximum_extension_map_func(const Device::Pointer & device, const Array::Pointer 
 auto
 minimum_intensity_map_func(const Device::Pointer & device,
                            const Array::Pointer &  src,
-                           const Array::Pointer &  labels,
+                           const Array::Pointer &  input_labels,
                            Array::Pointer          dst) -> Array::Pointer;
 
 
@@ -372,7 +372,7 @@ minimum_intensity_map_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src intensity image [const Array::Pointer &]
- * @param labels label image [const Array::Pointer &]
+ * @param input_labels label image [const Array::Pointer &]
  * @param dst Parametric image computed[Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -382,7 +382,7 @@ minimum_intensity_map_func(const Device::Pointer & device,
 auto
 maximum_intensity_map_func(const Device::Pointer & device,
                            const Array::Pointer &  src,
-                           const Array::Pointer &  labels,
+                           const Array::Pointer &  input_labels,
                            Array::Pointer          dst) -> Array::Pointer;
 
 
@@ -395,7 +395,7 @@ maximum_intensity_map_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src intensity image [const Array::Pointer &]
- * @param labels label image [const Array::Pointer &]
+ * @param input_labels label image [const Array::Pointer &]
  * @param dst Parametric image computed[Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -405,7 +405,7 @@ maximum_intensity_map_func(const Device::Pointer & device,
 auto
 standard_deviation_intensity_map_func(const Device::Pointer & device,
                                       const Array::Pointer &  src,
-                                      const Array::Pointer &  labels,
+                                      const Array::Pointer &  input_labels,
                                       Array::Pointer          dst) -> Array::Pointer;
 
 

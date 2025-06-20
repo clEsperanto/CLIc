@@ -27,7 +27,7 @@ histogram_func(const Device::Pointer & device,
     minimum_intensity = tier2::minimum_of_all_pixels_func(device, src);
     maximum_intensity = tier2::maximum_of_all_pixels_func(device, src);
   }
-  const KernelInfo    kernel = { "histogram", kernel::histogram };
+  const KernelInfo    kernel_code = { "histogram", kernel::histogram };
   const ParameterList params = { { "src", src },
                                  { "dst", partial_hist },
                                  { "minimum", minimum_intensity },
@@ -37,7 +37,7 @@ histogram_func(const Device::Pointer & device,
                                  { "step_size_z", 1 } };
   const ConstantList  consts = { { "NUMBER_OF_HISTOGRAM_BINS", num_bins } };
   const RangeArray    range = { number_of_partial_histograms, 1, 1 };
-  execute(device, kernel, params, range, consts);
+  execute(device, kernel_code, params, range, consts);
   return tier1::sum_z_projection_func(device, partial_hist, dst);
 }
 

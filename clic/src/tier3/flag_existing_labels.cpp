@@ -17,10 +17,10 @@ flag_existing_labels_func(const Device::Pointer & device, const Array::Pointer &
   auto max = tier2::maximum_of_all_pixels_func(device, src);
   tier0::create_vector(src, dst, max + 1, dType::LABEL);
   dst->fill(0);
-  const KernelInfo    kernel = { "flag_existing_labels", kernel::flag_existing_labels };
+  const KernelInfo    kernel_code = { "flag_existing_labels", kernel::flag_existing_labels };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
-  execute(device, kernel, params, range);
+  execute(device, kernel_code, params, range);
   return dst;
 }
 
