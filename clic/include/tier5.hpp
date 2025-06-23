@@ -103,8 +103,9 @@ connected_component_labeling_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_reduceLabelsToCentroids
  */
 auto
-reduce_labels_to_centroids_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+reduce_labels_to_centroids_func(const Device::Pointer & device,
+                                const Array::Pointer &  src,
+                                Array::Pointer          dst) -> Array::Pointer;
 
 /**
  * @name filter_label_by_size
@@ -147,6 +148,24 @@ exclude_labels_outside_size_range_func(const Device::Pointer & device,
                                        Array::Pointer          dst,
                                        float                   minimum_size,
                                        float                   maximum_size) -> Array::Pointer;
+
+/**
+ * @name merge_touching_labels
+ * @brief Merge touching labels of a label image and relabel the result sequentially.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input label image. [const Array::Pointer &]
+ * @param dst Output label image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'label processing', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
+ */
+auto
+merge_touching_labels_func(const Device::Pointer & device,
+                           const Array::Pointer &  src,
+                           Array::Pointer          dst) -> Array::Pointer;
+
 
 } // namespace cle::tier5
 
