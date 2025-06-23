@@ -11,9 +11,8 @@ namespace cle::tier5
 {
 
 auto
-merge_touching_labels_func(const Device::Pointer & device,
-                           const Array::Pointer &  src,
-                           Array::Pointer          dst) -> Array::Pointer
+merge_touching_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer
 {
   // generate touching matrix
   auto touching_matrix = tier3::generate_touch_matrix_func(device, src, nullptr);

@@ -170,9 +170,8 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
  *
  */
 auto
-flag_existing_labels_func(const Device::Pointer & device,
-                          const Array::Pointer &  src,
-                          Array::Pointer          dst) -> Array::Pointer;
+flag_existing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -231,9 +230,8 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_generateTouchMatrix
  */
 auto
-generate_touch_matrix_func(const Device::Pointer & device,
-                           const Array::Pointer &  src,
-                           Array::Pointer          dst_matrix) -> Array::Pointer;
+generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst_matrix)
+  -> Array::Pointer;
 
 
 /**
@@ -397,9 +395,8 @@ morphological_chan_vese_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_statisticsOfLabelledPixels
  */
 auto
-statistics_of_labelled_pixels_func(const Device::Pointer & device,
-                                   Array::Pointer          intensity,
-                                   Array::Pointer          label) -> StatisticsMap;
+statistics_of_labelled_pixels_func(const Device::Pointer & device, Array::Pointer intensity, Array::Pointer label)
+  -> StatisticsMap;
 
 /**
  * @name statistics_of_background_and_labelled_pixels
