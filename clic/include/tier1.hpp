@@ -745,6 +745,33 @@ gaussian_blur_func(const Device::Pointer & device,
                    float                   sigma_y,
                    float                   sigma_z) -> Array::Pointer;
 
+/**
+ * @name gaussian_derivative
+ * @brief Convolve the image with a gaussian derivate. The filter kernel can have nonisotropic sigma and order. 
+ * The implementation is done separable. In case a sigma equals zero, the direction is not filtered.
+ * If all orders are zero, the filtering is equivalent to a Gaussian blur.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param sigma_x Sigma value along the x axis. [float ( = 0 )]
+ * @param sigma_y Sigma value along the y axis. [float ( = 0 )]
+ * @param sigma_z Sigma value along the z axis. [float ( = 0 )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'in assistant'
+ */
+auto
+gaussian_derivative_func(const Device::Pointer & device,
+                   const Array::Pointer &  src,
+                   Array::Pointer          dst,
+                   float                   sigma_x,
+                   float                   sigma_y,
+                   float                   sigma_z,
+                   int order_x,
+                   int order_y,
+                   int order_z) -> Array::Pointer;
+
 
 /**
  * @name generate_distance_matrix
