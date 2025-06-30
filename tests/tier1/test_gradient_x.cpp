@@ -8,7 +8,7 @@ class TestGradientX : public ::testing::TestWithParam<std::string>
 protected:
   std::array<float, 9 * 1 * 1> output;
   std::array<float, 9 * 1 * 1> input = { 0, 0, 0, 0, 1, 0, 0, 0, 0 };
-  std::array<float, 9 * 1 * 1> valid = { 0, 0, 0, -1, 0, 1, 0, 0, 0 };
+  std::array<float, 9 * 1 * 1> valid = { 0, 0, 0, 0.5, 0, -0.5, 0, 0, 0 };
 };
 
 TEST_P(TestGradientX, execute)
