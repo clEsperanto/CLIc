@@ -54,9 +54,11 @@ gaussian_derivative_func(const Device::Pointer & device,
     tier1::copy_func(device, src, temp);
   }
 
+  // kernel truncation and sigma scaling 
+  // see: https://github.com/scikit-image/scikit-image/blob/be7ff3442864f8c44236c4cd50c04039a85b3ea8/skimage/feature/corner.py#L191C1-L197C51
+  // could be set outside of the function to let the user choose
   int truncate = 8;
   float sqrt_half = 1 / std::sqrt(2);
-
   std::array<float, 3> sigmas = { sigma_x * sqrt_half, sigma_y * sqrt_half, sigma_z * sqrt_half };
   std::array<int, 3>   radii = { static_cast<int>(truncate * sigmas[0] + 0.5f),
                                   static_cast<int>(truncate * sigmas[1] + 0.5f),
