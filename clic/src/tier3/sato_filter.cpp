@@ -19,11 +19,23 @@ sato_filter_func(const Device::Pointer & device,
   tier0::create_like(src, dst);
   auto is_3d = (src->depth() > 1);
 
-  auto large_eigenvalue = tier0::create_like(src, dType::FLOAT);
+  auto large_eigenvalue = Array::create(src->width(),
+                                       src->height(),
+                                       src->depth(),
+                                       src->dim(),
+                                       dType::FLOAT,
+                                       mType::BUFFER,
+                                       device);
   Array::Pointer middle_eigenvalue = nullptr;
   if (is_3d)
   {
-    middle_eigenvalue = tier0::create_like(src, dType::FLOAT);
+    middle_eigenvalue = Array::create(src->width(),
+                                       src->height(),
+                                       src->depth(),
+                                       src->dim(),
+                                       dType::FLOAT,
+                                       mType::BUFFER,
+                                       device);
   }
 
   float max = 0.0f;
@@ -44,7 +56,7 @@ sato_filter_func(const Device::Pointer & device,
       mean_eigenvalue = tier1::multiply_images_func(device, middle_eigenvalue, large_eigenvalue, nullptr);
       tier1::power_func(device, mean_eigenvalue, nullptr, 0.5f);
     }
-    auto value = tier1::multiply_by_scalar_func(device, mean_eigenvalue, nullptr, sigma_squared);
+    auto value = tier1::multiply_image_and_scalar_func(device, mean_eigenvalue, nullptr, sigma_squared);
     tier1::maximum_images_func(device, value, dst, dst);
   }
 
