@@ -297,9 +297,8 @@ execute_separable(const Device::Pointer &      device,
   auto execute_if_needed = [&](int dim, int idx, auto & input, auto & output) {
     if (dim > 1 && sigma[idx] > 0)
     {
-      const ParameterList parameters = {
-        { "src", input }, { "dst", output }, { "dim", idx }, { "N", radius[idx] }, { "s", sigma[idx] }, { "order", orders[idx] }
-      };
+      const ParameterList parameters = { { "src", input },     { "dst", output },   { "dim", idx },
+                                         { "N", radius[idx] }, { "s", sigma[idx] }, { "order", orders[idx] } };
       execute(device, kernel, parameters, global_range);
     }
     else
@@ -312,7 +311,6 @@ execute_separable(const Device::Pointer &      device,
   execute_if_needed(dst->height(), 1, tmp1, tmp2);
   execute_if_needed(dst->depth(), 2, tmp2, dst);
 }
-
 
 
 auto

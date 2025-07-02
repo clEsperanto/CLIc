@@ -53,10 +53,10 @@ execute_separable(const Device::Pointer &      device,
 
 /**
  * @brief Execution function for separable kernel operation (with with extra parameters)
- * 
+ *
  * This is currently only used for Gaussian derivative kernels.
  * to be fused / generalized with the previous function in future
- * 
+ *
  * @param device Device pointer
  * @param kernel Kernel function name and code
  * @param src Source array

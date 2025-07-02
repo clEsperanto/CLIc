@@ -1142,17 +1142,18 @@ extended_depth_of_focus_variance_projection_func(const Device::Pointer & device,
  */
 auto
 extended_depth_of_focus_sobel_projection_func(const Device::Pointer & device,
-                                                 const Array::Pointer &  src,
-                                                 Array::Pointer          dst,
-                                                 float                   sigma) -> Array::Pointer;                                                 
+                                              const Array::Pointer &  src,
+                                              Array::Pointer          dst,
+                                              float                   sigma) -> Array::Pointer;
 
 /**
  * @name hessian_gaussian_eigenvalues
  * @brief Determines the Hessian matrix eigenvalues using the gaussian derivative method and returns the small,
  * middle and large eigenvalue images.
- * 
- * The function return the list of eigenvalues as images, by decreasing order. The first image is the largest eigenvalue,
- * 
+ *
+ * The function return the list of eigenvalues as images, by decreasing order. The first image is the largest
+ * eigenvalue,
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param small_eigenvalue Output result image for the small eigenvalue. [Array::Pointer ( = None )]
@@ -1160,16 +1161,16 @@ extended_depth_of_focus_sobel_projection_func(const Device::Pointer & device,
  * @param large_eigenvalue Output result image for the large eigenvalue. [Array::Pointer ( = None )]
  * @param sigma Sigma of the Gaussian kernel. [float ( = 1 )]
  * @return std::vector<Array::Pointer>
- * 
+ *
  */
 auto
 hessian_gaussian_eigenvalues_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
-                         Array::Pointer          small_eigenvalue,
-                         Array::Pointer          middle_eigenvalue,
-                         Array::Pointer          large_eigenvalue,
-                        float sigma) -> std::vector<Array::Pointer>;   
-                                                                      
+                                  const Array::Pointer &  src,
+                                  Array::Pointer          small_eigenvalue,
+                                  Array::Pointer          middle_eigenvalue,
+                                  Array::Pointer          large_eigenvalue,
+                                  float                   sigma) -> std::vector<Array::Pointer>;
+
 
 } // namespace cle::tier2
 

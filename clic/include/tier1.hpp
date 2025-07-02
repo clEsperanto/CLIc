@@ -747,7 +747,7 @@ gaussian_blur_func(const Device::Pointer & device,
 
 /**
  * @name gaussian_derivative
- * @brief Convolve the image with a gaussian derivate. The filter kernel can have nonisotropic sigma and order. 
+ * @brief Convolve the image with a gaussian derivate. The filter kernel can have nonisotropic sigma and order.
  * The implementation is done separable. In case a sigma equals zero, the direction is not filtered.
  * If all orders are zero, the filtering is equivalent to a Gaussian blur.
  *
@@ -766,14 +766,14 @@ gaussian_blur_func(const Device::Pointer & device,
  */
 auto
 gaussian_derivative_func(const Device::Pointer & device,
-                   const Array::Pointer &  src,
-                   Array::Pointer          dst,
-                   float                   sigma_x,
-                   float                   sigma_y,
-                   float                   sigma_z,
-                   int order_x,
-                   int order_y,
-                   int order_z) -> Array::Pointer;
+                         const Array::Pointer &  src,
+                         Array::Pointer          dst,
+                         float                   sigma_x,
+                         float                   sigma_y,
+                         float                   sigma_z,
+                         int                     order_x,
+                         int                     order_y,
+                         int                     order_z) -> Array::Pointer;
 
 
 /**
@@ -939,8 +939,9 @@ greater_or_equal_constant_func(const Device::Pointer & device,
  * [Ixy, Iyy] Hessian matrix for 3D images: [Ixx, Ixy, Ixz] [Ixy, Iyy, Iyz] [Ixz, Iyz, Izz], Ixx denotes the second
  * derivative in x. Ixx and Iyy are calculated by convolving the image with the 1d kernel [1 2 1]. Ixy is calculated by
  * a convolution with the 2d kernel: [ 0.25 0 0.25] [ 0 0 0] [0.25 0 0.25]
- * 
- * The function return the list of eigenvalues as images, by decreasing order. The first image is the largest eigenvalue,
+ *
+ * The function return the list of eigenvalues as images, by decreasing order. The first image is the largest
+ * eigenvalue,
  *
  * Note: This function returns multiple images. This API might be subject to change in the future. Consider using
  * small_hessian_eigenvalue() and/or large_hessian_eigenvalue() instead which return only one image.

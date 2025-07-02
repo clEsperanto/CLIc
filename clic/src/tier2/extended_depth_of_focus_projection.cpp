@@ -22,16 +22,15 @@ extended_depth_of_focus_variance_projection_func(const Device::Pointer & device,
 }
 
 
-
 auto
 extended_depth_of_focus_sobel_projection_func(const Device::Pointer & device,
-                                                 const Array::Pointer &  src,
-                                                 Array::Pointer          dst,
-                                                 float                   sigma) -> Array::Pointer
+                                              const Array::Pointer &  src,
+                                              Array::Pointer          dst,
+                                              float                   sigma) -> Array::Pointer
 {
   Array::Pointer temp = Array::create(src);
   Array::Pointer temp_2d = Array::create(src->width(), src->height(), 1, 2, src->dtype(), src->mtype(), device);
-  for(size_t i = 0; i < src->depth(); ++i)
+  for (size_t i = 0; i < src->depth(); ++i)
   {
     tier1::copy_slice_func(device, src, temp_2d, i);
     auto sobel = tier1::sobel_func(device, temp_2d, nullptr);
