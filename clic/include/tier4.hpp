@@ -409,6 +409,20 @@ standard_deviation_intensity_map_func(const Device::Pointer & device,
                                       Array::Pointer          dst) -> Array::Pointer;
 
 
+/**
+ * @name percentile
+ * @brief Computes the percentile value of an image.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image. [const Array::Pointer &]
+ * @param percentile Percentile to compute. [float ( = 50.0 )]
+ * @return float
+ *
+ */
+auto
+percentile_func(const Device::Pointer & device, const Array::Pointer & src, const float percentile) -> float;                                      
+
+
 } // namespace cle::tier4
 
 #endif // __INCLUDE_TIER4_HPP

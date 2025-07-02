@@ -5,6 +5,7 @@
 #include "tier4.hpp"
 
 #include "utils.hpp"
+
 #include <functional>
 #include <numeric>
 
@@ -66,6 +67,57 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
   // Create binary image with threshold
   tier0::create_like(src, dst, dType::BINARY);
   return tier1::greater_constant_func(device, src, dst, static_cast<float>(threshold));
+}
+
+
+auto
+percentile_func(const Device::Pointer & device, const Array::Pointer & src, const float percentile) -> float
+{
+  // Initialize histogram
+  constexpr int bin = 256;
+  const float   min_intensity = tier2::minimum_of_all_pixels_func(device, src);
+  const float   max_intensity = tier2::maximum_of_all_pixels_func(device, src);
+  double        range = max_intensity - min_intensity;
+
+  // compute bin edges
+  std::vector<double> bin_edges(bin);
+  std::iota(bin_edges.begin(), bin_edges.end(), 0); // Fill with indices [0, 1, 2, ..., bin-1]
+  std::transform(bin_edges.begin(), bin_edges.end(), bin_edges.begin(),
+                [min_intensity, range, bin](double i) {
+                    return min_intensity + (i * range) / (bin - 1);
+                });
+
+  // Compute histogram
+  auto hist_array = Array::create(bin, 1, 1, 1, dType::FLOAT, mType::BUFFER, src->device());
+  tier3::histogram_func(device, src, hist_array, bin, min_intensity, max_intensity);
+  std::vector<float> frequency(hist_array->size());
+  hist_array->readTo(frequency.data());
+
+  // compute cumulative sum of the vector frequency
+  std::vector<double> cumulative_sum(frequency.size());
+  std::partial_sum(frequency.begin(), frequency.end(), cumulative_sum.begin());
+
+  // Calculate total frequency and target frequency
+  double total_frequency = cumulative_sum.back();
+  double target_frequency = total_frequency * (percentile / 100.0);
+
+  // Find the bin containing the target frequency using binary search
+  auto it = std::lower_bound(cumulative_sum.begin(), cumulative_sum.end(), target_frequency);
+  int index = std::distance(cumulative_sum.begin(), it);
+
+  // Compute the percentile value
+  const double lower_edge = (index == 0) ? bin_edges[index] : bin_edges[index - 1];
+  const double upper_edge = bin_edges[index];
+  const double previous_frequency = (index == 0) ? 0.0 : cumulative_sum[index - 1];
+  const double fraction = (target_frequency - previous_frequency) / frequency[index];
+
+  float res = static_cast<float>(lower_edge + fraction * (upper_edge - lower_edge));
+  if (src->dtype() != dType::FLOAT)
+  {
+    res = static_cast<float>(std::round(res)); // Round to nearest integer if not float
+  }
+
+  return res;
 }
 
 
