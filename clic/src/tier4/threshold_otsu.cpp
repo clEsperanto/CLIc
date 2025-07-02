@@ -82,10 +82,9 @@ percentile_func(const Device::Pointer & device, const Array::Pointer & src, cons
   // compute bin edges
   std::vector<double> bin_edges(bin);
   std::iota(bin_edges.begin(), bin_edges.end(), 0); // Fill with indices [0, 1, 2, ..., bin-1]
-  std::transform(bin_edges.begin(), bin_edges.end(), bin_edges.begin(),
-                [min_intensity, range, bin](double i) {
-                    return min_intensity + (i * range) / (bin - 1);
-                });
+  std::transform(bin_edges.begin(), bin_edges.end(), bin_edges.begin(), [min_intensity, range, bin](double i) {
+    return min_intensity + (i * range) / (bin - 1);
+  });
 
   // Compute histogram
   auto hist_array = Array::create(bin, 1, 1, 1, dType::FLOAT, mType::BUFFER, src->device());
@@ -103,7 +102,7 @@ percentile_func(const Device::Pointer & device, const Array::Pointer & src, cons
 
   // Find the bin containing the target frequency using binary search
   auto it = std::lower_bound(cumulative_sum.begin(), cumulative_sum.end(), target_frequency);
-  int index = std::distance(cumulative_sum.begin(), it);
+  int  index = std::distance(cumulative_sum.begin(), it);
 
   // Compute the percentile value
   const double lower_edge = (index == 0) ? bin_edges[index] : bin_edges[index - 1];

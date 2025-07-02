@@ -9,7 +9,7 @@ class TestPercentile : public ::testing::TestWithParam<std::string>
 
 TEST_P(TestPercentile, executeInteger)
 {
-  const std::array<uint32_t, 10 * 1 * 1>   input = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+  const std::array<uint32_t, 10 * 1 * 1> input = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -26,7 +26,7 @@ TEST_P(TestPercentile, executeInteger)
 
 TEST_P(TestPercentile, executeFloat)
 {
-  const std::array<float, 10 * 1 * 1>   input = {0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 };
+  const std::array<float, 10 * 1 * 1> input = { 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 };
 
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);

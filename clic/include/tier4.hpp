@@ -420,7 +420,7 @@ standard_deviation_intensity_map_func(const Device::Pointer & device,
  *
  */
 auto
-percentile_func(const Device::Pointer & device, const Array::Pointer & src, const float percentile) -> float;                                      
+percentile_func(const Device::Pointer & device, const Array::Pointer & src, const float percentile) -> float;
 
 
 } // namespace cle::tier4
