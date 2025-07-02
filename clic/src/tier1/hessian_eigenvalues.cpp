@@ -36,9 +36,9 @@ hessian_eigenvalues_func(const Device::Pointer & device,
   execute(device, kernel, params, range);
   if (src->depth() == 1)
   {
-    return { small_eigenvalue, large_eigenvalue };
+    return { large_eigenvalue, small_eigenvalue };
   }
-  return { small_eigenvalue, middle_eigenvalue, large_eigenvalue };
+  return { large_eigenvalue, middle_eigenvalue, small_eigenvalue };
 }
 
 // inferior_superior(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
