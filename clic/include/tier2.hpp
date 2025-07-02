@@ -1105,7 +1105,9 @@ top_hat_func(const Device::Pointer & device,
 
 /**
  * @name extended_depth_of_focus_variance_projection
- * @brief Extended depth of focus projection maximizing local pixel intensity variance.
+ * @brief Depth projection using the local variance maxima to determine the best focus plane.
+ * The radius parameter control the local variance calculation, and the sigma apply a
+ * gaussian blur for smoothness of the projection.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -1124,6 +1126,25 @@ extended_depth_of_focus_variance_projection_func(const Device::Pointer & device,
                                                  float                   radius_x,
                                                  float                   radius_y,
                                                  float                   sigma) -> Array::Pointer;
+
+/**
+ * @name extended_depth_of_focus_sobel_projection
+ * @brief Depth projection using the local sobel gradient magnitude maxima to determine the best focus plane.
+ * The sigma apply a gaussian blur for smoothness of the projection.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param sigma Sigma for Gaussian blur. [float ( = 5 )]
+ * @return Array::Pointer
+ *
+ * @note 'projection'
+ */
+auto
+extended_depth_of_focus_sobel_projection_func(const Device::Pointer & device,
+                                                 const Array::Pointer &  src,
+                                                 Array::Pointer          dst,
+                                                 float                   sigma) -> Array::Pointer;                                                 
 
 /**
  * @name hessian_gaussian_eigenvalues
