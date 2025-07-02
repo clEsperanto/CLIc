@@ -1130,12 +1130,14 @@ extended_depth_of_focus_variance_projection_func(const Device::Pointer & device,
  * @brief Determines the Hessian matrix eigenvalues using the gaussian derivative method and returns the small,
  * middle and large eigenvalue images.
  * 
+ * The function return the list of eigenvalues as images, by decreasing order. The first image is the largest eigenvalue,
+ * 
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param small_eigenvalue Output result image for the small eigenvalue. [Array::Pointer ( = None )]
  * @param middle_eigenvalue Output result image for the middle eigenvalue. [Array::Pointer ( = None )]
  * @param large_eigenvalue Output result image for the large eigenvalue. [Array::Pointer ( = None )]
- * @param sigma Sigma of the Gaussian kernel. [float ( = 1  )]
+ * @param sigma Sigma of the Gaussian kernel. [float ( = 1 )]
  * @return std::vector<Array::Pointer>
  * 
  */

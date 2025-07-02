@@ -757,6 +757,9 @@ gaussian_blur_func(const Device::Pointer & device,
  * @param sigma_x Sigma value along the x axis. [float ( = 0 )]
  * @param sigma_y Sigma value along the y axis. [float ( = 0 )]
  * @param sigma_z Sigma value along the z axis. [float ( = 0 )]
+ * @param order_x Order of derivation along the x axis. [int ( = 0 )]
+ * @param order_y Order of derivation along the y axis. [int ( = 0 )]
+ * @param order_z Order of derivation along the z axis. [int ( = 0 )]
  * @return Array::Pointer
  *
  * @note 'filter', 'in assistant'
@@ -933,10 +936,13 @@ greater_or_equal_constant_func(const Device::Pointer & device,
 /**
  * @name hessian_eigenvalues
  * @brief Computes the eigenvalues of the hessian matrix of a 2d or 3d image. Hessian matrix or 2D images: [Ixx, Ixy]
- * [Ixy, Iyy] Hessian matrix for 3D images: [Ixx, Ixy, Ixz] [Ixy, Iyy, Iyz] [Ixz, Iyz, Izz] Ixx denotes the second
+ * [Ixy, Iyy] Hessian matrix for 3D images: [Ixx, Ixy, Ixz] [Ixy, Iyy, Iyz] [Ixz, Iyz, Izz], Ixx denotes the second
  * derivative in x. Ixx and Iyy are calculated by convolving the image with the 1d kernel [1 2 1]. Ixy is calculated by
- * a convolution with the 2d kernel: [ 0.25 0 0.25] [ 0 0 0] [0.25 0 0.25] Note: This is the only clesperanto function
- * that returns multiple images. This API might be subject to change in the future. Consider using
+ * a convolution with the 2d kernel: [ 0.25 0 0.25] [ 0 0 0] [0.25 0 0.25]
+ * 
+ * The function return the list of eigenvalues as images, by decreasing order. The first image is the largest eigenvalue,
+ *
+ * Note: This function returns multiple images. This API might be subject to change in the future. Consider using
  * small_hessian_eigenvalue() and/or large_hessian_eigenvalue() instead which return only one image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]

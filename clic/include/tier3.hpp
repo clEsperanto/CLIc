@@ -427,9 +427,9 @@ statistics_of_background_and_labelled_pixels_func(const Device::Pointer & device
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param sigma_minimum Minimum sigma value for the filter. [int ( = 1 )]
- * @param sigma_maximum Maximum sigma value for the filter. [int ( = 3 )]
- * @param sigma_step Step size for the sigma values. [int ( = 1 )]
+ * @param sigma_minimum Minimum sigma value for the filter. [float ( = 1 )]
+ * @param sigma_maximum Maximum sigma value for the filter. [float ( = 3 )]
+ * @param sigma_step Step size for the sigma values. [float ( = 1 )]
  * @return Array::Pointer
  * 
  * @note 'filter', 'in assistant'
@@ -439,9 +439,9 @@ auto
 sato_filter_func(const Device::Pointer & device,
            const Array::Pointer &  src,
            Array::Pointer          dst,
-           int                   sigma_minimum,
-           int                   sigma_maximum,
-           int                   sigma_step) -> Array::Pointer;                                                  
+           float                   sigma_minimum,
+           float                   sigma_maximum,
+           float                   sigma_step) -> Array::Pointer;                                                  
 
 } // namespace cle::tier3
 
