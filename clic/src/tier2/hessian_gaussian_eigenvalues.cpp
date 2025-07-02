@@ -29,14 +29,35 @@ hessian_gaussian_eigenvalues_func(const Device::Pointer & device,
     tier0::create_one(src, middle_eigenvalue, dType::FLOAT);
   }
 
-  auto Ix = tier1::gaussian_derivative_func(device, src, nullptr, sigma, sigma, sigma, 1, 0, 0);
-  auto Ixx = tier1::gaussian_derivative_func(device, Ix, nullptr, sigma, sigma, sigma, 1, 0, 0);
-  auto Ixy = tier1::gaussian_derivative_func(device, Ix, nullptr, sigma, sigma, sigma, 0, 1, 0);
+  // scale sigma (https://github.com/scikit-image/scikit-image/blob/be7ff3442864f8c44236c4cd50c04039a85b3ea8/skimage/feature/corner.py#L196)
+  constexpr float one = 1.0F; // std::sqrt(2.0F);
+  constexpr int truncate = 8;
+  const float sq1_2 = 1.0F / std::sqrt(2.0F);
+  sigma *= sq1_2;
+
+  size_t radius = static_cast<size_t>(truncate * sigma + 0.5F);
+  size_t kernel_size = static_cast<size_t>(2 * radius + 1);
+  Array::Pointer dirac = Array::create( ( src->width()>1) ? kernel_size : 1,
+                                        ( src->height()>1) ? kernel_size : 1,
+                                        ( src->depth()>1) ? kernel_size : 1,
+                                        src->dimension(),
+                                        dType::FLOAT,
+                                        mType::BUFFER,
+                                        device);
+  dirac->fill(0.0F);
+  dirac->writeFrom(&one, {1,1,1}, {static_cast<size_t>(dirac->width()/2), dirac->height()/2, dirac->depth()/2});
+
+  // compute the Gaussian first derivatives along x and blur along y to get Gx
+  auto Gx = tier1::gaussian_derivative_func(device, dirac, nullptr, sigma, sigma, sigma, 1, 0, 0);
+  // compute the Gaussian second derivatives along x and blur along y to get Gxx
+  // compute the Gaussian second derivatives along y and blur along x to get Gxy
+  auto Gxx = tier1::gaussian_derivative_func(device, Gx, nullptr, sigma, sigma, sigma, 1, 0, 0);
+  auto Gxy = tier1::gaussian_derivative_func(device, Gx, nullptr, sigma, sigma, sigma, 0, 1, 0);
 
   const KernelInfo    kernel = { "hessian_gaussian_eigenvalues", kernel::hessian_gaussian_eigenvalues };
   const ParameterList params = { { "src", src },
-                                  { "g_xx", Ixx },
-                                  { "g_xy", Ixy },
+                                  { "g_xx", Gxx },
+                                  { "g_xy", Gxy },
                                  { "small_eigenvalue", small_eigenvalue },
                                  { "middle_eigenvalue", middle_eigenvalue },
                                  { "large_eigenvalue", large_eigenvalue } };
@@ -44,10 +65,11 @@ hessian_gaussian_eigenvalues_func(const Device::Pointer & device,
   execute(device, kernel, params, range);
   if (src->depth() == 1)
   {
-    return { small_eigenvalue, large_eigenvalue };
+    return { large_eigenvalue, small_eigenvalue };
   }
-  return { small_eigenvalue, middle_eigenvalue, large_eigenvalue };
+  return { large_eigenvalue, middle_eigenvalue, small_eigenvalue };
 }
 
 
 } // namespace cle::tier1
+
