@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(CLIc VERSION 0.17.1)
+project(CLIc VERSION 0.18.0)
 
-set(kernel_version_tag "3.2.0"  CACHE STRING "clEsperanto kernel version tag") # "3.1.1"
+set(kernel_version_tag "3.3.0"  CACHE STRING "clEsperanto kernel version tag")
 set(eigen_lib_version_tag "3.4.0" CACHE STRING "Eigen library version tag")
 
 # if not set, set the default build type to Release

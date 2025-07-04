@@ -419,6 +419,30 @@ statistics_of_background_and_labelled_pixels_func(const Device::Pointer & device
                                                   Array::Pointer          intensity,
                                                   Array::Pointer          label) -> StatisticsMap;
 
+/**
+ * @name sato_filter
+ * @brief Applies the multi-scale ridge detection Sato filter.
+ * This filter was first introduced by Sato et al. in 1998 (https://doi.org/10.1016/S1361-8415(98)80009-1)
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param sigma_minimum Minimum sigma value for the filter. [float ( = 1 )]
+ * @param sigma_maximum Maximum sigma value for the filter. [float ( = 3 )]
+ * @param sigma_step Step size for the sigma values. [float ( = 1 )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'in assistant'
+ * @see https://doi.org/10.1016/S1361-8415(98)80009-1
+ */
+auto
+sato_filter_func(const Device::Pointer & device,
+                 const Array::Pointer &  src,
+                 Array::Pointer          dst,
+                 float                   sigma_minimum,
+                 float                   sigma_maximum,
+                 float                   sigma_step) -> Array::Pointer;
+
 } // namespace cle::tier3
 
 #endif // __INCLUDE_TIER3_HPP

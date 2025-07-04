@@ -283,6 +283,42 @@ execute_separable(const Device::Pointer &      device,
                   const Array::Pointer &       src,
                   const Array::Pointer &       dst,
                   const std::array<float, 3> & sigma,
+                  const std::array<int, 3> &   radius,
+                  const std::array<int, 3> &   orders) -> void
+{
+  Array::check_ptr(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.");
+  Array::check_ptr(dst, "Error: 'dst' is null. Please ensure the provided parameters before calling this function.");
+
+  const RangeArray global_range = { dst->width(), dst->height(), dst->depth() };
+
+  auto tmp1 = Array::create(dst);
+  auto tmp2 = Array::create(dst);
+
+  auto execute_if_needed = [&](int dim, int idx, auto & input, auto & output) {
+    if (dim > 1 && sigma[idx] > 0)
+    {
+      const ParameterList parameters = { { "src", input },     { "dst", output },   { "dim", idx },
+                                         { "N", radius[idx] }, { "s", sigma[idx] }, { "order", orders[idx] } };
+      execute(device, kernel, parameters, global_range);
+    }
+    else
+    {
+      input->copyTo(output);
+    }
+  };
+
+  execute_if_needed(dst->width(), 0, src, tmp1);
+  execute_if_needed(dst->height(), 1, tmp1, tmp2);
+  execute_if_needed(dst->depth(), 2, tmp2, dst);
+}
+
+
+auto
+execute_separable(const Device::Pointer &      device,
+                  const KernelInfo &           kernel,
+                  const Array::Pointer &       src,
+                  const Array::Pointer &       dst,
+                  const std::array<float, 3> & sigma,
                   const std::array<int, 3> &   radius) -> void
 {
   Array::check_ptr(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.");

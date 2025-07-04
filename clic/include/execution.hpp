@@ -52,6 +52,29 @@ execute_separable(const Device::Pointer &      device,
                   const std::array<int, 3> &   radius) -> void;
 
 /**
+ * @brief Execution function for separable kernel operation (with with extra parameters)
+ *
+ * This is currently only used for Gaussian derivative kernels.
+ * to be fused / generalized with the previous function in future
+ *
+ * @param device Device pointer
+ * @param kernel Kernel function name and code
+ * @param src Source array
+ * @param dst Destination array
+ * @param sigma Sigma value for the kernel
+ * @param radius Radius value for the kernel
+ * @param orders Orders for the kernel operation
+ */
+auto
+execute_separable(const Device::Pointer &      device,
+                  const KernelInfo &           kernel,
+                  const Array::Pointer &       src,
+                  const Array::Pointer &       dst,
+                  const std::array<float, 3> & sigma,
+                  const std::array<int, 3> &   radius,
+                  const std::array<int, 3> &   orders) -> void;
+
+/**
  * @brief Execute a kernel using native framework
  * @param device Device pointer
  * @param kernel_func Kernel function name and code

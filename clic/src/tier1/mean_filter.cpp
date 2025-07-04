@@ -42,7 +42,8 @@ mean_filter_func(const Device::Pointer & device,
                       src,
                       dst,
                       { static_cast<float>(radius_x), static_cast<float>(radius_y), static_cast<float>(radius_z) },
-                      { r_x, r_y, r_z });
+                      { r_x, r_y, r_z },
+                      { 0, 0, 0 });
   }
   return dst;
 }

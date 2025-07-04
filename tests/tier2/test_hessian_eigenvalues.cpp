@@ -35,12 +35,12 @@ TEST_P(TestHessianEigenvalues, execute2D)
   gpu_output[0]->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
-    EXPECT_EQ(output[i], small_2d[i]);
+    EXPECT_EQ(output[i], large_2d[i]);
   }
   gpu_output[1]->readTo(output.data());
   for (int i = 0; i < output.size(); i++)
   {
-    EXPECT_EQ(output[i], large_2d[i]);
+    EXPECT_EQ(output[i], small_2d[i]);
   }
 }
 
