@@ -116,6 +116,14 @@ public:
   getPreamble() const -> std::string = 0;
 
   /**
+   * @brief Get number of reference count
+   *
+   * @return Cache::Pointer
+   */
+  [[nodiscard]] virtual auto
+  getRefCount(void * data_ptr) const -> int = 0;
+
+  /**
    * @brief Allocate a memory space in the device
    *
    * @param device
@@ -528,6 +536,9 @@ public:
 
   [[nodiscard]] auto
   getPreamble() const -> std::string override;
+
+  [[nodiscard]] auto
+  getRefCount(void * data_ptr) const -> int override;
 };
 
 
@@ -728,6 +739,9 @@ public:
                 const std::vector<size_t> &   sizes) const -> void override;
   [[nodiscard]] auto
   getPreamble() const -> std::string override;
+
+    [[nodiscard]] auto
+  getRefCount(void * data_ptr) const -> int override;
 };
 
 

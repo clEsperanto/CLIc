@@ -242,7 +242,8 @@ execute(const Device::Pointer & device,
   {
     if (const auto & arr = std::get_if<Array::Pointer>(&param.second))
     {
-      args_ptr.push_back(device->getType() == Device::Type::CUDA ? (*arr)->get() : *(*arr)->get());
+      auto buf = (*arr)->get();
+      args_ptr.push_back(device->getType() == Device::Type::CUDA ? buf : buf);
       args_size.push_back(GPU_MEM_PTR_SIZE);
     }
     else if (const auto & f = std::get_if<float>(&param.second))
@@ -374,7 +375,8 @@ native_execute(const Device::Pointer & device,
   {
     if (const auto & arr = std::get_if<Array::Pointer>(&param.second))
     {
-      args_ptr.push_back(device->getType() == Device::Type::CUDA ? (*arr)->get() : *(*arr)->get());
+      auto buf = (*arr)->get();
+      args_ptr.push_back(device->getType() == Device::Type::CUDA ? buf : buf);
       args_size.push_back(GPU_MEM_PTR_SIZE);
     }
     else if (const auto & f = std::get_if<float>(&param.second))

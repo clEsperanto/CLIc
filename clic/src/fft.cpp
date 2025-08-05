@@ -204,9 +204,9 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   auto psizein = static_cast<uint64_t>(input->bitsize());
   configuration.bufferSize = &psize;
   configuration.inputBufferSize = &psizein;
-  configuration.buffer = static_cast<cl_mem *>(*output->get());
-  configuration.inputBuffer = static_cast<cl_mem *>(*input->get());
-  configuration.outputBuffer = static_cast<cl_mem *>(*output->get());
+  configuration.buffer = static_cast<cl_mem *>(output->get());
+  configuration.inputBuffer = static_cast<cl_mem *>(input->get());
+  configuration.outputBuffer = static_cast<cl_mem *>(output->get());
   configuration.device = &device;
   configuration.context = &context;
   configuration.commandQueue = &queue;
@@ -280,9 +280,9 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
   auto output_size = static_cast<uint64_t>(output->bitsize());
   configuration.bufferSize = &input_size;
   configuration.inputBufferSize = &output_size;
-  configuration.buffer = static_cast<cl_mem *>(*input->get());
-  configuration.inputBuffer = static_cast<cl_mem *>(*output->get());
-  configuration.outputBuffer = static_cast<cl_mem *>(*input->get());
+  configuration.buffer = static_cast<cl_mem *>(input->get());
+  configuration.inputBuffer = static_cast<cl_mem *>(output->get());
+  configuration.outputBuffer = static_cast<cl_mem *>(input->get());
   configuration.device = &device;
   configuration.context = &context;
   configuration.commandQueue = &queue;
