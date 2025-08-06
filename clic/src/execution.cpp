@@ -1,7 +1,7 @@
 #include "execution.hpp"
 #include "backend.hpp"
 #include "clic.hpp"
-
+#include <cstring>
 namespace cle
 {
 
