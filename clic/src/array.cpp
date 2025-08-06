@@ -310,7 +310,7 @@ Array::fill(const float value) -> void
   std::array<size_t, 3> _origin = { 0, 0, 0 };
   std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
   std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
-  backend_.setMemory(device(), &data_, _shape, _origin, _region, dtype(), mtype(), value);
+  backend_.setMemory(device(), data_, _shape, _origin, _region, dtype(), mtype(), value);
 #endif
 }
 
