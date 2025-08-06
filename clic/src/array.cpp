@@ -31,7 +31,7 @@ Array::~Array()
     {
       backend_.freeMemory(device(), mtype(), &data_);
     }
-    initialized_ = false; 
+    initialized_ = false;
   }
 }
 
@@ -145,7 +145,7 @@ Array::readTo(void * host_data) const -> void
   std::array<size_t, 3> _origin = { 0, 0, 0 };
   std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
   std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
-  auto buffer_ptr = c_get();
+  auto                  buffer_ptr = c_get();
   backend_.readMemory(device(), &buffer_ptr, _shape, _origin, _region, dtype(), mtype(), host_data);
 }
 
@@ -160,7 +160,7 @@ Array::readTo(void * host_data, const std::array<size_t, 3> & region, const std:
   std::array<size_t, 3> _origin = buffer_origin;
   std::array<size_t, 3> _region = region;
   std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
-  auto buffer_ptr = c_get();
+  auto                  buffer_ptr = c_get();
   backend_.readMemory(device(), &buffer_ptr, _shape, _origin, _region, dtype(), mtype(), host_data);
 }
 
@@ -378,7 +378,7 @@ Array::initialized() const -> bool
   return initialized_;
 }
 auto
-Array::get() const -> void*
+Array::get() const -> void *
 {
   return data_;
 }

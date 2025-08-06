@@ -740,7 +740,7 @@ public:
   [[nodiscard]] auto
   getPreamble() const -> std::string override;
 
-    [[nodiscard]] auto
+  [[nodiscard]] auto
   getRefCount(void * data_ptr) const -> int override;
 };
 

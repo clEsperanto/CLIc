@@ -234,8 +234,8 @@ execute(const Device::Pointer & device,
   const std::string program_source = defines + kernel_preamble + kernel_source;
 
   // prepare parameters to be passed to the backend
-  std::vector<void *> args_ptr;
-  std::vector<size_t> args_size;
+  std::vector<void *>                  args_ptr;
+  std::vector<size_t>                  args_size;
   std::vector<std::unique_ptr<char[]>> scalar_buffers; // Keeps scalar memory alive
 
   args_ptr.reserve(parameters.size());
@@ -249,35 +249,35 @@ execute(const Device::Pointer & device,
     }
     else if (const auto & f = std::get_if<float>(&param.second))
     {
-        auto buf = std::make_unique<char[]>(sizeof(float));
-        std::memcpy(buf.get(), f, sizeof(float));
-        args_ptr.push_back(buf.get());
-        args_size.push_back(sizeof(float));
-        scalar_buffers.push_back(std::move(buf));
+      auto buf = std::make_unique<char[]>(sizeof(float));
+      std::memcpy(buf.get(), f, sizeof(float));
+      args_ptr.push_back(buf.get());
+      args_size.push_back(sizeof(float));
+      scalar_buffers.push_back(std::move(buf));
     }
     else if (const auto & i = std::get_if<int>(&param.second))
     {
-        auto buf = std::make_unique<char[]>(sizeof(int));
-        std::memcpy(buf.get(), i, sizeof(int));
-        args_ptr.push_back(buf.get());
-        args_size.push_back(sizeof(int));
-        scalar_buffers.push_back(std::move(buf));
+      auto buf = std::make_unique<char[]>(sizeof(int));
+      std::memcpy(buf.get(), i, sizeof(int));
+      args_ptr.push_back(buf.get());
+      args_size.push_back(sizeof(int));
+      scalar_buffers.push_back(std::move(buf));
     }
     else if (const auto & i = std::get_if<unsigned int>(&param.second))
     {
-        auto buf = std::make_unique<char[]>(sizeof(unsigned int));
-        std::memcpy(buf.get(), i, sizeof(unsigned int));
-        args_ptr.push_back(buf.get());
-        args_size.push_back(sizeof(unsigned int));
-        scalar_buffers.push_back(std::move(buf));
+      auto buf = std::make_unique<char[]>(sizeof(unsigned int));
+      std::memcpy(buf.get(), i, sizeof(unsigned int));
+      args_ptr.push_back(buf.get());
+      args_size.push_back(sizeof(unsigned int));
+      scalar_buffers.push_back(std::move(buf));
     }
     else if (const auto & i = std::get_if<size_t>(&param.second))
     {
-        auto buf = std::make_unique<char[]>(sizeof(size_t));
-        std::memcpy(buf.get(), i, sizeof(size_t));
-        args_ptr.push_back(buf.get());
-        args_size.push_back(sizeof(size_t));
-        scalar_buffers.push_back(std::move(buf));
+      auto buf = std::make_unique<char[]>(sizeof(size_t));
+      std::memcpy(buf.get(), i, sizeof(size_t));
+      args_ptr.push_back(buf.get());
+      args_size.push_back(sizeof(size_t));
+      scalar_buffers.push_back(std::move(buf));
     }
     else
     {
@@ -380,8 +380,8 @@ native_execute(const Device::Pointer & device,
   auto kernel_name = kernel_func.first;
 
   // prepare parameters to be passed to the backend (CUDA or OpenCL)
-  std::vector<void *> args_ptr;
-  std::vector<size_t> args_size;
+  std::vector<void *>                  args_ptr;
+  std::vector<size_t>                  args_size;
   std::vector<std::unique_ptr<char[]>> scalar_buffers; // Keeps scalar memory alive
 
   args_ptr.reserve(parameters.size());
@@ -395,35 +395,35 @@ native_execute(const Device::Pointer & device,
     }
     else if (const auto & f = std::get_if<float>(&param.second))
     {
-        auto buf = std::make_unique<char[]>(sizeof(float));
-        std::memcpy(buf.get(), f, sizeof(float));
-        args_ptr.push_back(buf.get());
-        args_size.push_back(sizeof(float));
-        scalar_buffers.push_back(std::move(buf));
+      auto buf = std::make_unique<char[]>(sizeof(float));
+      std::memcpy(buf.get(), f, sizeof(float));
+      args_ptr.push_back(buf.get());
+      args_size.push_back(sizeof(float));
+      scalar_buffers.push_back(std::move(buf));
     }
     else if (const auto & i = std::get_if<int>(&param.second))
     {
-        auto buf = std::make_unique<char[]>(sizeof(int));
-        std::memcpy(buf.get(), i, sizeof(int));
-        args_ptr.push_back(buf.get());
-        args_size.push_back(sizeof(int));
-        scalar_buffers.push_back(std::move(buf));
+      auto buf = std::make_unique<char[]>(sizeof(int));
+      std::memcpy(buf.get(), i, sizeof(int));
+      args_ptr.push_back(buf.get());
+      args_size.push_back(sizeof(int));
+      scalar_buffers.push_back(std::move(buf));
     }
     else if (const auto & i = std::get_if<unsigned int>(&param.second))
     {
-        auto buf = std::make_unique<char[]>(sizeof(unsigned int));
-        std::memcpy(buf.get(), i, sizeof(unsigned int));
-        args_ptr.push_back(buf.get());
-        args_size.push_back(sizeof(unsigned int));
-        scalar_buffers.push_back(std::move(buf));
+      auto buf = std::make_unique<char[]>(sizeof(unsigned int));
+      std::memcpy(buf.get(), i, sizeof(unsigned int));
+      args_ptr.push_back(buf.get());
+      args_size.push_back(sizeof(unsigned int));
+      scalar_buffers.push_back(std::move(buf));
     }
     else if (const auto & i = std::get_if<size_t>(&param.second))
     {
-        auto buf = std::make_unique<char[]>(sizeof(size_t));
-        std::memcpy(buf.get(), i, sizeof(size_t));
-        args_ptr.push_back(buf.get());
-        args_size.push_back(sizeof(size_t));
-        scalar_buffers.push_back(std::move(buf));
+      auto buf = std::make_unique<char[]>(sizeof(size_t));
+      std::memcpy(buf.get(), i, sizeof(size_t));
+      args_ptr.push_back(buf.get());
+      args_size.push_back(sizeof(size_t));
+      scalar_buffers.push_back(std::move(buf));
     }
     else
     {

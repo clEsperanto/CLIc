@@ -201,16 +201,16 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   configure(input, configuration);
 
   auto output_mem = static_cast<cl_mem>(output->get());
-auto input_mem = static_cast<cl_mem>(input->get());
+  auto input_mem = static_cast<cl_mem>(input->get());
 
 
   auto psize = static_cast<uint64_t>(output->bitsize());
   auto psizein = static_cast<uint64_t>(input->bitsize());
   configuration.bufferSize = &psize;
   configuration.inputBufferSize = &psizein;
-configuration.buffer = &output_mem;
-configuration.inputBuffer = &input_mem;
-configuration.outputBuffer = &output_mem;
+  configuration.buffer = &output_mem;
+  configuration.inputBuffer = &input_mem;
+  configuration.outputBuffer = &output_mem;
   configuration.device = &device;
   configuration.context = &context;
   configuration.commandQueue = &queue;

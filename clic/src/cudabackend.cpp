@@ -275,14 +275,14 @@ CUDABackend::freeMemory(const Device::Pointer & device, const mType & mtype, voi
 }
 
 auto
-  CUDABackend::getRefCount(void * data_ptr) const -> int
-  {
+CUDABackend::getRefCount(void * data_ptr) const -> int
+{
 #if USE_CUDA
-    return 1;
+  return 1;
 #else
-    throw std::runtime_error("Error: OpenCL is not enabled");
+  throw std::runtime_error("Error: OpenCL is not enabled");
 #endif
-  }
+}
 
 auto
 CUDABackend::writeMemory(const Device::Pointer & device,

@@ -7,18 +7,19 @@ class TestMemory : public ::testing::TestWithParam<std::string>
 {};
 
 
-
-void my_function2(std::vector<cle::Array::Pointer> & src)
+void
+my_function2(std::vector<cle::Array::Pointer> & src)
 {
   // loop through the vector and print the count of the shared pointer array
   for (auto & array : src)
-  {    
+  {
     std::cout << "\t\t" << array.use_count() << " -> " << array << std::endl;
   }
 }
 
 
-cle::Array::Pointer my_function(cle::Array::Pointer & src)
+cle::Array::Pointer
+my_function(cle::Array::Pointer & src)
 {
   std::vector<cle::Array::Pointer> arrays;
   for (int i = 0; i < 10; i++)
@@ -54,7 +55,6 @@ TEST_P(TestMemory, leak)
     auto array2 = my_function(array);
   }
 }
-
 
 
 std::vector<std::string>

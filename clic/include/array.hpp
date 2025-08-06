@@ -335,7 +335,7 @@ private:
   mType           memType_ = mType::BUFFER;
   Device::Pointer device_ = nullptr;
   // MemoryPointer   data_ = std::make_shared<void *>(nullptr);
-  void * data_ = nullptr; // Pointer to the device memory
+  void *          data_ = nullptr; // Pointer to the device memory
   bool            initialized_ = false;
   const Backend & backend_ = cle::BackendManager::getInstance().getBackend();
 };

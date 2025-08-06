@@ -320,22 +320,22 @@ OpenCLBackend::allocateMemory(const Device::Pointer &       device,
 
 
 auto
-  OpenCLBackend::getRefCount(void * data_ptr) const -> int
-  {
+OpenCLBackend::getRefCount(void * data_ptr) const -> int
+{
 #if USE_OPENCL
-    cl_int err;
-    cl_uint ref_count = 0;
-    err = clGetMemObjectInfo(static_cast<cl_mem>(data_ptr), CL_MEM_REFERENCE_COUNT, sizeof(int), &ref_count, nullptr);
-    if (err != CL_SUCCESS)
-    {
-      throw std::runtime_error("Error: Fail to get reference count. OpenCL error : " + getErrorString(err) + " (" +
-                               std::to_string(err) + ").");
-    }
-    return ref_count;
-#else
-    throw std::runtime_error("Error: OpenCL is not enabled");
-#endif
+  cl_int  err;
+  cl_uint ref_count = 0;
+  err = clGetMemObjectInfo(static_cast<cl_mem>(data_ptr), CL_MEM_REFERENCE_COUNT, sizeof(int), &ref_count, nullptr);
+  if (err != CL_SUCCESS)
+  {
+    throw std::runtime_error("Error: Fail to get reference count. OpenCL error : " + getErrorString(err) + " (" +
+                             std::to_string(err) + ").");
   }
+  return ref_count;
+#else
+  throw std::runtime_error("Error: OpenCL is not enabled");
+#endif
+}
 
 auto
 OpenCLBackend::allocateBuffer(const Device::Pointer & device, const size_t & size, void ** data_ptr) -> void
@@ -468,8 +468,8 @@ OpenCLBackend::writeBuffer(const Device::Pointer &       device,
   size_t  buffer_slice_pitch = buffer_shape[2] > 1 ? buffer_shape[0] * buffer_shape[1] : 0;
 
   const std::array<size_t, 3> host_origin = { 0, 0, 0 };
-auto ptr = static_cast<cl_mem>(*buffer_ptr);
-  cl_int err;
+  auto                        ptr = static_cast<cl_mem>(*buffer_ptr);
+  cl_int                      err;
   if (buffer_shape[2] > 1 || buffer_shape[1] > 1)
   {
     err = clEnqueueWriteBufferRect(opencl_device->getCLCommandQueue(),
@@ -518,8 +518,8 @@ OpenCLBackend::writeImage(const Device::Pointer &       device,
                           const void *                  host_ptr) -> void
 {
 #if USE_OPENCL
-  auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-auto ptr = static_cast<cl_mem>(*buffer_ptr);
+  auto    opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
+  auto    ptr = static_cast<cl_mem>(*buffer_ptr);
   cl_bool blocking_write = CL_TRUE;
   auto    err = clEnqueueWriteImage(opencl_device->getCLCommandQueue(),
                                  ptr,
@@ -585,8 +585,8 @@ OpenCLBackend::readBuffer(const Device::Pointer &       device,
   size_t  buffer_slice_pitch = buffer_shape[2] > 1 ? buffer_shape[0] * buffer_shape[1] : 0;
 
   const std::array<size_t, 3> host_origin = { 0, 0, 0 };
-  
-  auto ptr = static_cast<cl_mem>(const_cast<void *>(*buffer_ptr));
+
+  auto   ptr = static_cast<cl_mem>(const_cast<void *>(*buffer_ptr));
   cl_int err;
   if (buffer_shape[2] > 1 || buffer_shape[1] > 1)
   {
@@ -639,7 +639,7 @@ OpenCLBackend::readImage(const Device::Pointer &       device,
   auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
 
   cl_bool blocking_read = CL_TRUE;
-  auto ptr = static_cast<cl_mem>(const_cast<void *>(*buffer_ptr));
+  auto    ptr = static_cast<cl_mem>(const_cast<void *>(*buffer_ptr));
 
   auto err = clEnqueueReadImage(opencl_device->getCLCommandQueue(),
                                 ptr,
@@ -718,7 +718,7 @@ OpenCLBackend::copyMemoryBufferToBuffer(const Device::Pointer & device,
   size_t dst_row_pitch = dst_shape[1] > 1 ? dst_shape[0] : 0;
   size_t dst_slice_pitch = dst_shape[2] > 1 ? dst_shape[0] * dst_shape[1] : 0;
 
-    auto in_ptr = static_cast<cl_mem>(const_cast<void *>(*src_ptr));
+  auto in_ptr = static_cast<cl_mem>(const_cast<void *>(*src_ptr));
   auto out_ptr = static_cast<cl_mem>(*dst_ptr);
 
   if (dst_shape[2] > 1 || dst_shape[1] > 1 || src_shape[2] > 1 || src_shape[1] > 1)
@@ -740,8 +740,8 @@ OpenCLBackend::copyMemoryBufferToBuffer(const Device::Pointer & device,
   else
   {
     err = clEnqueueCopyBuffer(opencl_device->getCLCommandQueue(),
-                                  in_ptr,
-                                  out_ptr,
+                              in_ptr,
+                              out_ptr,
                               src_origin[0],
                               dst_origin[0],
                               region[0],
@@ -784,11 +784,11 @@ OpenCLBackend::copyMemoryBufferToImage(const Device::Pointer & device,
   size_t bufferOffset = src_origin[0] + src_origin[1] * src_row_pitch + src_origin[2] * src_slice_pitch;
 
 
-      auto in_ptr = static_cast<cl_mem>(const_cast<void *>(*src_ptr));
+  auto in_ptr = static_cast<cl_mem>(const_cast<void *>(*src_ptr));
   auto out_ptr = static_cast<cl_mem>(*dst_ptr);
   auto err = clEnqueueCopyBufferToImage(opencl_device->getCLCommandQueue(),
-                                  in_ptr,
-                                  out_ptr,
+                                        in_ptr,
+                                        out_ptr,
                                         bufferOffset,
                                         dst_origin.data(),
                                         region.data(),
@@ -827,9 +827,9 @@ OpenCLBackend::copyMemoryImageToBuffer(const Device::Pointer & device,
   size_t dst_row_pitch = dst_shape[1] > 1 ? dst_shape[0] : 0;
   size_t dst_slice_pitch = dst_shape[2] > 1 ? dst_shape[0] * dst_shape[1] : 0;
   size_t bufferOffset = src_origin[0] + src_origin[1] * dst_row_pitch + src_origin[2] * dst_slice_pitch;
-    auto in_ptr = static_cast<cl_mem>(const_cast<void *>(*src_ptr));
-  auto out_ptr = static_cast<cl_mem>(*dst_ptr);
-  auto err = clEnqueueCopyImageToBuffer(opencl_device->getCLCommandQueue(),
+  auto   in_ptr = static_cast<cl_mem>(const_cast<void *>(*src_ptr));
+  auto   out_ptr = static_cast<cl_mem>(*dst_ptr);
+  auto   err = clEnqueueCopyImageToBuffer(opencl_device->getCLCommandQueue(),
                                         in_ptr,
                                         out_ptr,
                                         src_origin.data(),
@@ -868,7 +868,7 @@ OpenCLBackend::copyMemoryImageToImage(const Device::Pointer & device,
   // src_shape[0] *= bytes;
   // dst_origin[0] *= bytes;
   // dst_shape[0] *= bytes;
-    auto in_ptr = static_cast<cl_mem>(const_cast<void *>(*src_ptr));
+  auto in_ptr = static_cast<cl_mem>(const_cast<void *>(*src_ptr));
   auto out_ptr = static_cast<cl_mem>(*dst_ptr);
   auto err = clEnqueueCopyImage(opencl_device->getCLCommandQueue(),
                                 in_ptr,
@@ -930,99 +930,50 @@ OpenCLBackend::setBuffer(const Device::Pointer &       device,
 
   const size_t size = region[0] * region[1] * region[2] * toBytes(dtype);
   cl_int       err;
-  auto ptr = static_cast<cl_mem>(*buffer_ptr);
+  auto         ptr = static_cast<cl_mem>(*buffer_ptr);
 
   switch (dtype)
   {
     case dType::FLOAT: {
       auto cval = static_cast<float>(value);
-      err = clEnqueueFillBuffer(opencl_device->getCLCommandQueue(),
-                               ptr,
-                                &cval,
-                                sizeof(cval),
-                                0,
-                                size,
-                                0,
-                                nullptr,
-                                nullptr);
+      err =
+        clEnqueueFillBuffer(opencl_device->getCLCommandQueue(), ptr, &cval, sizeof(cval), 0, size, 0, nullptr, nullptr);
       break;
     }
     case dType::INT32: {
       auto cval = static_cast<int32_t>(value);
-      err = clEnqueueFillBuffer(opencl_device->getCLCommandQueue(),
-                                ptr,
-                                &cval,
-                                sizeof(cval),
-                                0,
-                                size,
-                                0,
-                                nullptr,
-                                nullptr);
+      err =
+        clEnqueueFillBuffer(opencl_device->getCLCommandQueue(), ptr, &cval, sizeof(cval), 0, size, 0, nullptr, nullptr);
       break;
     }
     case dType::UINT32: {
       auto cval = static_cast<uint32_t>(value);
-      err = clEnqueueFillBuffer(opencl_device->getCLCommandQueue(),
-                                ptr,
-                                &cval,
-                                sizeof(cval),
-                                0,
-                                size,
-                                0,
-                                nullptr,
-                                nullptr);
+      err =
+        clEnqueueFillBuffer(opencl_device->getCLCommandQueue(), ptr, &cval, sizeof(cval), 0, size, 0, nullptr, nullptr);
       break;
     }
     case dType::INT8: {
       auto cval = static_cast<int8_t>(value);
-      err = clEnqueueFillBuffer(opencl_device->getCLCommandQueue(),
-                                ptr,
-                                &cval,
-                                sizeof(cval),
-                                0,
-                                size,
-                                0,
-                                nullptr,
-                                nullptr);
+      err =
+        clEnqueueFillBuffer(opencl_device->getCLCommandQueue(), ptr, &cval, sizeof(cval), 0, size, 0, nullptr, nullptr);
       break;
     }
     case dType::UINT8: {
       auto cval = static_cast<uint8_t>(value);
-      err = clEnqueueFillBuffer(opencl_device->getCLCommandQueue(),
-                                ptr,
-                                &cval,
-                                sizeof(cval),
-                                0,
-                                size,
-                                0,
-                                nullptr,
-                                nullptr);
+      err =
+        clEnqueueFillBuffer(opencl_device->getCLCommandQueue(), ptr, &cval, sizeof(cval), 0, size, 0, nullptr, nullptr);
       break;
     }
     case dType::INT16: {
       auto cval = static_cast<int16_t>(value);
-      err = clEnqueueFillBuffer(opencl_device->getCLCommandQueue(),
-                                ptr,
-                                &cval,
-                                sizeof(cval),
-                                0,
-                                size,
-                                0,
-                                nullptr,
-                                nullptr);
+      err =
+        clEnqueueFillBuffer(opencl_device->getCLCommandQueue(), ptr, &cval, sizeof(cval), 0, size, 0, nullptr, nullptr);
       break;
     }
     case dType::UINT16: {
       auto cval = static_cast<uint16_t>(value);
-      err = clEnqueueFillBuffer(opencl_device->getCLCommandQueue(),
-                                ptr,
-                                &cval,
-                                sizeof(cval),
-                                0,
-                                size,
-                                0,
-                                nullptr,
-                                nullptr);
+      err =
+        clEnqueueFillBuffer(opencl_device->getCLCommandQueue(), ptr, &cval, sizeof(cval), 0, size, 0, nullptr, nullptr);
       break;
     }
     default:
@@ -1051,7 +1002,7 @@ OpenCLBackend::setImage(const Device::Pointer &       device,
 #if USE_OPENCL
   auto   opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
   cl_int err;
-    auto ptr = static_cast<cl_mem>(*buffer_ptr);
+  auto   ptr = static_cast<cl_mem>(*buffer_ptr);
 
   switch (dtype)
   {
@@ -1060,14 +1011,8 @@ OpenCLBackend::setImage(const Device::Pointer &       device,
                         static_cast<cl_float>(value),
                         static_cast<cl_float>(value),
                         static_cast<cl_float>(value) };
-      err = clEnqueueFillImage(opencl_device->getCLCommandQueue(),
-                               ptr,
-                               cval,
-                               buffer_origin.data(),
-                               region.data(),
-                               0,
-                               nullptr,
-                               nullptr);
+      err = clEnqueueFillImage(
+        opencl_device->getCLCommandQueue(), ptr, cval, buffer_origin.data(), region.data(), 0, nullptr, nullptr);
       break;
     }
     case dType::INT32:
@@ -1076,14 +1021,8 @@ OpenCLBackend::setImage(const Device::Pointer &       device,
       cl_int cval[4] = {
         static_cast<cl_int>(value), static_cast<cl_int>(value), static_cast<cl_int>(value), static_cast<cl_int>(value)
       };
-      err = clEnqueueFillImage(opencl_device->getCLCommandQueue(),
-                               ptr,
-                               cval,
-                               buffer_origin.data(),
-                               region.data(),
-                               0,
-                               nullptr,
-                               nullptr);
+      err = clEnqueueFillImage(
+        opencl_device->getCLCommandQueue(), ptr, cval, buffer_origin.data(), region.data(), 0, nullptr, nullptr);
       break;
     }
     case dType::UINT32:
@@ -1093,14 +1032,8 @@ OpenCLBackend::setImage(const Device::Pointer &       device,
                           static_cast<cl_uint>(value),
                           static_cast<cl_uint>(value),
                           static_cast<cl_uint>(value) };
-      err = clEnqueueFillImage(opencl_device->getCLCommandQueue(),
-                               ptr,
-                               cval,
-                               buffer_origin.data(),
-                               region.data(),
-                               0,
-                               nullptr,
-                               nullptr);
+      err = clEnqueueFillImage(
+        opencl_device->getCLCommandQueue(), ptr, cval, buffer_origin.data(), region.data(), 0, nullptr, nullptr);
       break;
     }
     default:
@@ -1322,10 +1255,11 @@ OpenCLBackend::executeKernel(const Device::Pointer &       device,
 
   for (size_t i = 0; i < args.size(); i++)
   {
-    void* arg_ptr = args[i];
-    if (sizes[i] == sizeof(cl_mem)) {
-        // Buffer/image: pass pointer to pointer
-        arg_ptr = (void*)&args[i];
+    void * arg_ptr = args[i];
+    if (sizes[i] == sizeof(cl_mem))
+    {
+      // Buffer/image: pass pointer to pointer
+      arg_ptr = (void *)&args[i];
     }
     // Scalar: pass pointer to value
     auto err = clSetKernelArg(ocl_kernel, i, sizes[i], arg_ptr);
