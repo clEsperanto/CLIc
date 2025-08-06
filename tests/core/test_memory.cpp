@@ -42,26 +42,17 @@ TEST_P(TestMemory, leak)
   std::cout << "start" << std::endl;
 
   // Create a new Array
-  std::vector<float> data(10 * 20 * 1, 0.0f);
+  std::vector<float> data(10 * 20 * 1, 15.0f);
 
-  std::cout << "create" << std::endl;
   auto array = cle::Array::create(10, 20, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
-  std::cout << "populate" << std::endl;
   array->writeFrom(data.data());
-  std::cout << "multiply" << std::endl;
 
-  // print the count of the shared pointer array
-  // std::cout << array.use_count() << " -> " << array << std::endl;
+  cle::print<float>(array);
 
-  for (int i = 0; i < 100000; i++)
+  for (int i = 0; i < 10; i++)
   {
     auto array2 = my_function(array);
   }
-
-    std::cout << "bye bye" << std::endl;
-
-
-  // std::cout << array.use_count() << " -> " << array << std::endl;
 }
 
 

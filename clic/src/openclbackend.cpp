@@ -1322,7 +1322,13 @@ OpenCLBackend::executeKernel(const Device::Pointer &       device,
 
   for (size_t i = 0; i < args.size(); i++)
   {
-    auto err = clSetKernelArg(ocl_kernel, i, sizes[i], args[i]);
+    void* arg_ptr = args[i];
+    if (sizes[i] == sizeof(cl_mem)) {
+        // Buffer/image: pass pointer to pointer
+        arg_ptr = (void*)&args[i];
+    }
+    // Scalar: pass pointer to value
+    auto err = clSetKernelArg(ocl_kernel, i, sizes[i], arg_ptr);
     if (err != CL_SUCCESS)
     {
       throw std::runtime_error("Error: Fail to set kernel argument " + std::to_string(i) +

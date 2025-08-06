@@ -22,25 +22,13 @@ Array::Array(const size_t            width,
   , data_(nullptr)
 {}
 
-// Array::~Array()
-// {
-//   if (initialized())
-//   {
-//     backend_.freeMemory(device(), mtype(), get());
-//     data_.reset();
-//     initialized_ = false;
-//   }
-// }
-
 Array::~Array()
 {
   if (initialized())
   {
     auto count = backend_.getRefCount(data_);
-    std::cout << "Array::~Array() called, ref count: " << count << std::endl;
     if (count == 1)
     {
-      std::cout << "Freeing memory for Array" << std::endl;
       backend_.freeMemory(device(), mtype(), &data_);
     }
     initialized_ = false; 
