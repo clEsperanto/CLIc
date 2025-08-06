@@ -200,13 +200,17 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   VkFFTConfiguration configuration{};
   configure(input, configuration);
 
+  auto output_mem = static_cast<cl_mem>(output->get());
+  auto input_mem = static_cast<cl_mem>(input->get());
+
+
   auto psize = static_cast<uint64_t>(output->bitsize());
   auto psizein = static_cast<uint64_t>(input->bitsize());
   configuration.bufferSize = &psize;
   configuration.inputBufferSize = &psizein;
-  configuration.buffer = static_cast<cl_mem *>(*output->get());
-  configuration.inputBuffer = static_cast<cl_mem *>(*input->get());
-  configuration.outputBuffer = static_cast<cl_mem *>(*output->get());
+  configuration.buffer = &output_mem;
+  configuration.inputBuffer = &input_mem;
+  configuration.outputBuffer = &output_mem;
   configuration.device = &device;
   configuration.context = &context;
   configuration.commandQueue = &queue;
@@ -276,13 +280,16 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
   VkFFTConfiguration configuration{};
   configure(output, configuration);
 
+  auto input_mem = static_cast<cl_mem>(input->get());
+  auto output_mem = static_cast<cl_mem>(output->get());
+
   auto input_size = static_cast<uint64_t>(input->bitsize());
   auto output_size = static_cast<uint64_t>(output->bitsize());
   configuration.bufferSize = &input_size;
   configuration.inputBufferSize = &output_size;
-  configuration.buffer = static_cast<cl_mem *>(*input->get());
-  configuration.inputBuffer = static_cast<cl_mem *>(*output->get());
-  configuration.outputBuffer = static_cast<cl_mem *>(*input->get());
+  configuration.buffer = &input_mem;
+  configuration.inputBuffer = &output_mem;
+  configuration.outputBuffer = &input_mem;
   configuration.device = &device;
   configuration.context = &context;
   configuration.commandQueue = &queue;

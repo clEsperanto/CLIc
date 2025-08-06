@@ -268,14 +268,14 @@ public:
    * @return void **
    */
   [[nodiscard]] auto
-  get() const -> void **;
+  get() const -> void *;
 
   /**
    * @brief Get the const memory pointer of the Array
    * @return const void **
    */
   [[nodiscard]] auto
-  c_get() const -> const void **;
+  c_get() const -> const void *;
 
   /**
    * @brief destructor
@@ -309,7 +309,7 @@ public:
   print(const Array::Pointer & array) -> void;
 
 private:
-  using MemoryPointer = std::shared_ptr<void *>;
+  // using MemoryPointer = std::shared_ptr<void *>;
 
   /**
    * @brief Default constructor
@@ -334,7 +334,8 @@ private:
   dType           dataType_ = dType::FLOAT;
   mType           memType_ = mType::BUFFER;
   Device::Pointer device_ = nullptr;
-  MemoryPointer   data_ = std::make_shared<void *>(nullptr);
+  // MemoryPointer   data_ = std::make_shared<void *>(nullptr);
+  void *          data_ = nullptr; // Pointer to the device memory
   bool            initialized_ = false;
   const Backend & backend_ = cle::BackendManager::getInstance().getBackend();
 };
