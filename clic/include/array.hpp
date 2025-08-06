@@ -334,16 +334,16 @@ private:
         const mType &           mem_type,
         const Device::Pointer & device_ptr);
 
-  size_t          dim_ = 1;
-  size_t          width_ = 1;
-  size_t          height_ = 1;
-  size_t          depth_ = 1;
-  dType           dataType_ = dType::FLOAT;
-  mType           memType_ = mType::BUFFER;
-  Device::Pointer device_ = nullptr;
-  std::shared_ptr<void> data_ = nullptr; 
-  bool            initialized_ = false;
-  const Backend & backend_ = cle::BackendManager::getInstance().getBackend();
+  size_t                dim_ = 1;
+  size_t                width_ = 1;
+  size_t                height_ = 1;
+  size_t                depth_ = 1;
+  dType                 dataType_ = dType::FLOAT;
+  mType                 memType_ = mType::BUFFER;
+  Device::Pointer       device_ = nullptr;
+  std::shared_ptr<void> data_ = nullptr;
+  bool                  initialized_ = false;
+  const Backend &       backend_ = cle::BackendManager::getInstance().getBackend();
 };
 
 

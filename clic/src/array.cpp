@@ -232,7 +232,7 @@ Array::copyTo(const Array::Pointer &        dst,
   std::array<size_t, 3> _region = region;
   std::array<size_t, 3> _src_shape = { this->width(), this->height(), this->depth() };
   std::array<size_t, 3> _dst_shape = { dst->width(), dst->height(), dst->depth() };
-  
+
   auto dst_ptr = dst->get_ptr();
 
   if (mtype() == mType::BUFFER && dst->mtype() == mType::BUFFER)
@@ -388,9 +388,9 @@ Array::c_get() const -> const void *
 }
 
 auto
-  Array::get_ptr() const -> std::shared_ptr<void>
-  {
-    return data_;
-  }
+Array::get_ptr() const -> std::shared_ptr<void>
+{
+  return data_;
+}
 
 } // namespace cle
