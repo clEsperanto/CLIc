@@ -22,18 +22,19 @@ Array::Array(const size_t            width,
   , data_(nullptr)
 {}
 
-Array::~Array()
-{
-  if (initialized())
-  {
-    auto count = backend_.getRefCount(data_);
-    if (count == 1)
-    {
-      backend_.freeMemory(device(), mtype(), &data_);
-    }
-    initialized_ = false;
-  }
-}
+// Array::~Array()
+// {
+//   if (initialized())
+//   {
+//     // auto count = backend_.getRefCount(data_);
+//     // if (count == 1)
+//     // {
+//     //   backend_.freeMemory(device(), mtype(), &data_);
+//     // }
+//     // std::cout << "Array destructor called, freeing memory." << std::endl;
+//     initialized_ = false;
+//   }
+// }
 
 auto
 Array::create(const size_t            width,
@@ -97,7 +98,7 @@ Array::allocate() -> void
   {
     return;
   }
-  backend_.allocateMemory(device(), { this->width(), this->height(), this->depth() }, dtype(), mtype(), &data_);
+  backend_.allocateMemory(device(), { this->width(), this->height(), this->depth() }, dtype(), mtype(), data_);
   initialized_ = true;
 }
 
@@ -111,7 +112,7 @@ Array::writeFrom(const void * host_data) -> void
   std::array<size_t, 3> _origin = { 0, 0, 0 };
   std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
   std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
-  backend_.writeMemory(device(), &data_, _shape, _origin, _region, dtype(), mtype(), host_data);
+  backend_.writeMemory(device(), data_, _shape, _origin, _region, dtype(), mtype(), host_data);
 }
 
 auto
@@ -126,7 +127,7 @@ Array::writeFrom(const void *                  host_data,
   std::array<size_t, 3> _origin = buffer_origin;
   std::array<size_t, 3> _region = region;
   std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
-  backend_.writeMemory(device(), &data_, _shape, _origin, _region, dtype(), mtype(), host_data);
+  backend_.writeMemory(device(), data_, _shape, _origin, _region, dtype(), mtype(), host_data);
 }
 
 auto
@@ -145,8 +146,7 @@ Array::readTo(void * host_data) const -> void
   std::array<size_t, 3> _origin = { 0, 0, 0 };
   std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
   std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
-  auto                  buffer_ptr = c_get();
-  backend_.readMemory(device(), &buffer_ptr, _shape, _origin, _region, dtype(), mtype(), host_data);
+  backend_.readMemory(device(), data_, _shape, _origin, _region, dtype(), mtype(), host_data);
 }
 
 auto
@@ -160,8 +160,7 @@ Array::readTo(void * host_data, const std::array<size_t, 3> & region, const std:
   std::array<size_t, 3> _origin = buffer_origin;
   std::array<size_t, 3> _region = region;
   std::array<size_t, 3> _shape = { this->width(), this->height(), this->depth() };
-  auto                  buffer_ptr = c_get();
-  backend_.readMemory(device(), &buffer_ptr, _shape, _origin, _region, dtype(), mtype(), host_data);
+  backend_.readMemory(device(), data_, _shape, _origin, _region, dtype(), mtype(), host_data);
 }
 
 auto
@@ -188,28 +187,27 @@ Array::copyTo(const Array::Pointer & dst) const -> void
   std::array<size_t, 3> _src_shape = { this->width(), this->height(), this->depth() };
   std::array<size_t, 3> _dst_shape = { dst->width(), dst->height(), dst->depth() };
 
-  auto src_ptr = c_get();
-  auto dst_ptr = dst->get();
+  auto dst_ptr = dst->get_ptr();
 
   if (mtype() == mType::BUFFER && dst->mtype() == mType::BUFFER)
   {
     backend_.copyMemoryBufferToBuffer(
-      device(), &src_ptr, _src_origin, _src_shape, &dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::IMAGE)
   {
     backend_.copyMemoryImageToImage(
-      device(), &src_ptr, _src_origin, _src_shape, &dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::BUFFER && dst->mtype() == mType::IMAGE)
   {
     backend_.copyMemoryBufferToImage(
-      device(), &src_ptr, _src_origin, _src_shape, &dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::BUFFER)
   {
     backend_.copyMemoryImageToBuffer(
-      device(), &src_ptr, _src_origin, _src_shape, &dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else
   {
@@ -234,28 +232,28 @@ Array::copyTo(const Array::Pointer &        dst,
   std::array<size_t, 3> _region = region;
   std::array<size_t, 3> _src_shape = { this->width(), this->height(), this->depth() };
   std::array<size_t, 3> _dst_shape = { dst->width(), dst->height(), dst->depth() };
+  
+  auto dst_ptr = dst->get_ptr();
 
-  auto src_ptr = c_get();
-  auto dst_ptr = dst->get();
   if (mtype() == mType::BUFFER && dst->mtype() == mType::BUFFER)
   {
     backend_.copyMemoryBufferToBuffer(
-      device(), &src_ptr, _src_origin, _src_shape, &dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::IMAGE)
   {
     backend_.copyMemoryImageToImage(
-      device(), &src_ptr, _src_origin, _src_shape, &dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::BUFFER && dst->mtype() == mType::IMAGE)
   {
     backend_.copyMemoryBufferToImage(
-      device(), &src_ptr, _src_origin, _src_shape, &dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::BUFFER)
   {
     backend_.copyMemoryImageToBuffer(
-      device(), &src_ptr, _src_origin, _src_shape, &dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
 }
 
@@ -380,13 +378,19 @@ Array::initialized() const -> bool
 auto
 Array::get() const -> void *
 {
-  return data_;
+  return data_.get();
 }
 
 auto
 Array::c_get() const -> const void *
 {
-  return data_;
+  return data_.get();
 }
+
+auto
+  Array::get_ptr() const -> std::shared_ptr<void>
+  {
+    return data_;
+  }
 
 } // namespace cle
