@@ -353,8 +353,9 @@ OpenCLBackend::allocateBuffer(const Device::Pointer & device, const size_t & siz
 
   // store mem in data_ptr
   data_ptr = std::shared_ptr<void>(mem, [](void * p) {
-    if (p)
+    if (p) {
       clReleaseMemObject(static_cast<cl_mem>(p));
+  }
   });
 
 #else
@@ -431,8 +432,9 @@ OpenCLBackend::allocateImage(const Device::Pointer &       device,
 
   // store image in data_ptr
   data_ptr = std::shared_ptr<void>(image, [](void * p) {
-    if (p)
+    if (p) {
       clReleaseMemObject(static_cast<cl_mem>(p));
+    }
   });
 #else
   throw std::runtime_error("Error: OpenCL is not enabled");
@@ -1201,7 +1203,7 @@ loadProgramFromCache(const Device::Pointer & device, const std::string & device_
   const auto * binary_code_ptr = reinterpret_cast<const unsigned char *>(binary.data());
   auto         program = clCreateProgramWithBinary(
     opencl_device->getCLContext(), 1, &opencl_device->getCLDevice(), &binary_size, &binary_code_ptr, &status, &err);
-  if (status != CL_SUCCESS)
+  if (status != CL_SUCCESS || program == nullptr)
   {
     std::cerr << "Error: Fail to create program from binary. OpenCL error : " + getErrorString(err) + " (" +
                    std::to_string(err) + ")."
@@ -1211,8 +1213,9 @@ loadProgramFromCache(const Device::Pointer & device, const std::string & device_
 
   // store program in a shared pointer with a custom deleter
   auto program_ptr = std::shared_ptr<void>(program, [](void * p) {
-    if (p)
+    if (p){
       clReleaseProgram(static_cast<cl_program>(p));
+    }
   });
 
   try
@@ -1244,8 +1247,9 @@ CreateProgramFromSource(const Device::Pointer & device, const std::string & kern
 
   // store program in a shared pointer with a custom deleter
   auto program_ptr = std::shared_ptr<void>(program, [](void * p) {
-    if (p)
+    if (p){
       clReleaseProgram(static_cast<cl_program>(p));
+    }
   });
 
   buildProgram(device, program_ptr);
@@ -1291,8 +1295,9 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
   }
 
   kernel = std::shared_ptr<void>(ocl_kernel, [](void * p) {
-    if (p)
+    if (p) {
       clReleaseKernel(static_cast<cl_kernel>(p));
+    }
   });
 
 #else
@@ -1322,6 +1327,7 @@ OpenCLBackend::executeKernel(const Device::Pointer &                    device,
     {
       arg_ptr = (void *)&args[i];
     }
+    
     // Scalar: pass pointer to value
     auto err = clSetKernelArg(reinterpret_cast<cl_kernel>(ocl_kernel.get()), i, sizes[i], arg_ptr);
     if (err != CL_SUCCESS)

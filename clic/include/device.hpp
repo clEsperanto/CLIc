@@ -192,6 +192,22 @@ public:
     ~Context();
     auto
     get() const -> const cl_context &;
+
+        // Prevent accidental copy (double free)
+    Context(const Context&) = delete;
+    Context& operator=(const Context&) = delete;
+
+    // Allow move
+    Context(Context&& other) noexcept : ptr(other.ptr), nb_device(other.nb_device) { other.ptr = nullptr; }
+    Context& operator=(Context&& other) noexcept {
+        if (this != &other) {
+            if (ptr) clReleaseContext(ptr);
+            ptr = other.ptr;
+            nb_device = other.nb_device;
+            other.ptr = nullptr;
+        }
+        return *this;
+    }
   };
 
   struct CommandQueue
@@ -202,6 +218,21 @@ public:
     ~CommandQueue();
     auto
     get() const -> const cl_command_queue &;
+
+        // Prevent accidental copy (double free)
+    CommandQueue(const CommandQueue&) = delete;
+    CommandQueue& operator=(const CommandQueue&) = delete;
+
+    // Allow move
+    CommandQueue(CommandQueue&& other) noexcept : ptr(other.ptr) { other.ptr = nullptr; }
+    CommandQueue& operator=(CommandQueue&& other) noexcept {
+        if (this != &other) {
+            if (ptr) clReleaseCommandQueue(ptr);
+            ptr = other.ptr;
+            other.ptr = nullptr;
+        }
+        return *this;
+    }
   };
 
   struct Ressources
