@@ -353,9 +353,10 @@ OpenCLBackend::allocateBuffer(const Device::Pointer & device, const size_t & siz
 
   // store mem in data_ptr
   data_ptr = std::shared_ptr<void>(mem, [](void * p) {
-    if (p) {
+    if (p)
+    {
       clReleaseMemObject(static_cast<cl_mem>(p));
-  }
+    }
   });
 
 #else
@@ -432,7 +433,8 @@ OpenCLBackend::allocateImage(const Device::Pointer &       device,
 
   // store image in data_ptr
   data_ptr = std::shared_ptr<void>(image, [](void * p) {
-    if (p) {
+    if (p)
+    {
       clReleaseMemObject(static_cast<cl_mem>(p));
     }
   });
@@ -1213,7 +1215,8 @@ loadProgramFromCache(const Device::Pointer & device, const std::string & device_
 
   // store program in a shared pointer with a custom deleter
   auto program_ptr = std::shared_ptr<void>(program, [](void * p) {
-    if (p){
+    if (p)
+    {
       clReleaseProgram(static_cast<cl_program>(p));
     }
   });
@@ -1247,7 +1250,8 @@ CreateProgramFromSource(const Device::Pointer & device, const std::string & kern
 
   // store program in a shared pointer with a custom deleter
   auto program_ptr = std::shared_ptr<void>(program, [](void * p) {
-    if (p){
+    if (p)
+    {
       clReleaseProgram(static_cast<cl_program>(p));
     }
   });
@@ -1295,7 +1299,8 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
   }
 
   kernel = std::shared_ptr<void>(ocl_kernel, [](void * p) {
-    if (p) {
+    if (p)
+    {
       clReleaseKernel(static_cast<cl_kernel>(p));
     }
   });
@@ -1327,7 +1332,7 @@ OpenCLBackend::executeKernel(const Device::Pointer &                    device,
     {
       arg_ptr = (void *)&args[i];
     }
-    
+
     // Scalar: pass pointer to value
     auto err = clSetKernelArg(reinterpret_cast<cl_kernel>(ocl_kernel.get()), i, sizes[i], arg_ptr);
     if (err != CL_SUCCESS)
