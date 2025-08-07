@@ -278,9 +278,16 @@ public:
   c_get() const -> const void *;
 
   /**
-   * @brief destructor
+   * @brief Get the const memory pointer of the Array
+   * @return const void **
    */
-  ~Array();
+  [[nodiscard]] auto
+  get_ptr() const -> std::shared_ptr<void>;
+
+  // /**
+  //  * @brief destructor
+  //  */
+  // ~Array();
 
   /**
    * @brief copy constructor
@@ -327,17 +334,16 @@ private:
         const mType &           mem_type,
         const Device::Pointer & device_ptr);
 
-  size_t          dim_ = 1;
-  size_t          width_ = 1;
-  size_t          height_ = 1;
-  size_t          depth_ = 1;
-  dType           dataType_ = dType::FLOAT;
-  mType           memType_ = mType::BUFFER;
-  Device::Pointer device_ = nullptr;
-  // MemoryPointer   data_ = std::make_shared<void *>(nullptr);
-  void *          data_ = nullptr; // Pointer to the device memory
-  bool            initialized_ = false;
-  const Backend & backend_ = cle::BackendManager::getInstance().getBackend();
+  size_t                dim_ = 1;
+  size_t                width_ = 1;
+  size_t                height_ = 1;
+  size_t                depth_ = 1;
+  dType                 dataType_ = dType::FLOAT;
+  mType                 memType_ = mType::BUFFER;
+  Device::Pointer       device_ = nullptr;
+  std::shared_ptr<void> data_ = nullptr;
+  bool                  initialized_ = false;
+  const Backend &       backend_ = cle::BackendManager::getInstance().getBackend();
 };
 
 
