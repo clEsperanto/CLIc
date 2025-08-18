@@ -98,7 +98,7 @@ jobs:
       #     sudo apt-get update
       #     sudo apt-get -y install cuda
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: true
 
