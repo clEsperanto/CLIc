@@ -51,7 +51,8 @@ OpenCLDevice::Context::operator=(Context && other) noexcept
 {
   if (this != &other)
   {
-    if (ptr){
+    if (ptr)
+    {
       clReleaseContext(ptr);
     }
     ptr = other.ptr;
@@ -78,24 +79,25 @@ OpenCLDevice::CommandQueue::~CommandQueue()
 }
 
 OpenCLDevice::CommandQueue::CommandQueue(CommandQueue && other) noexcept
-      : ptr(other.ptr)
-    {
-      other.ptr = nullptr;
-    }
+  : ptr(other.ptr)
+{
+  other.ptr = nullptr;
+}
 
 OpenCLDevice::CommandQueue &
 OpenCLDevice::CommandQueue::operator=(CommandQueue && other) noexcept
+{
+  if (this != &other)
+  {
+    if (ptr)
     {
-      if (this != &other)
-      {
-        if (ptr){
-          clReleaseCommandQueue(ptr);
-        }
-        ptr = other.ptr;
-        other.ptr = nullptr;
-      }
-      return *this;
+      clReleaseCommandQueue(ptr);
     }
+    ptr = other.ptr;
+    other.ptr = nullptr;
+  }
+  return *this;
+}
 
 
 auto

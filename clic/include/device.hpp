@@ -248,7 +248,6 @@ public:
     Ressources(const Ressources &) = delete;
     Ressources &
     operator=(const Ressources &) = delete;
-
   };
 
 
