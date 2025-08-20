@@ -827,7 +827,7 @@ public:
 
 
 private:
-  std::shared_ptr<Backend> backend;
+  std::unique_ptr<Backend> backend;
 
   BackendManager() = default;
   BackendManager(BackendManager &&) = default;
