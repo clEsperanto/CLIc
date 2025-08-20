@@ -128,7 +128,7 @@ CUDABackend::allocateMemory(const Device::Pointer &       device,
                             const std::array<size_t, 3> & region,
                             const dType &                 dtype,
                             const mType &                 mtype,
-                            void **                       data_ptr) const -> void
+                            std::shared_ptr<void> &       data_ptr) const -> void
 {
 #if USE_CUDA
   switch (mtype)
@@ -152,7 +152,8 @@ CUDABackend::allocateMemory(const Device::Pointer &       device,
 }
 
 auto
-CUDABackend::allocateBuffer(const Device::Pointer & device, const size_t & size, void ** data_ptr) -> void
+CUDABackend::allocateBuffer(const Device::Pointer & device, const size_t & size, std::shared_ptr<void> & data_ptr)
+  -> void
 {
 #if USE_CUDA
   auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);
@@ -181,7 +182,7 @@ auto
 CUDABackend::allocateImage(const Device::Pointer &       device,
                            const std::array<size_t, 3> & region,
                            const dType &                 dtype,
-                           void **                       data_ptr) -> void
+                           const std::shared_ptr<void> &                       data_ptr) -> void
 {
 #if USE_CUDA
   auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);
@@ -252,7 +253,9 @@ CUDABackend::allocateImage(const Device::Pointer &       device,
 */
 
 auto
-CUDABackend::freeMemory(const Device::Pointer & device, const mType & mtype, void ** data_ptr) const -> void
+CUDABackend::freeMemory(const Device::Pointer &       device,
+                        const mType &                 mtype,
+                        const std::shared_ptr<void> & data_ptr) const -> void
 {
 #if USE_CUDA
   auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);
@@ -285,14 +288,14 @@ CUDABackend::getRefCount(void * data_ptr) const -> int
 }
 
 auto
-CUDABackend::writeMemory(const Device::Pointer & device,
-                         void **                 buffer_ptr,
-                         std::array<size_t, 3> & buffer_shape,
-                         std::array<size_t, 3> & buffer_origin,
-                         std::array<size_t, 3> & region,
-                         const dType &           dtype,
-                         const mType &           mtype,
-                         const void *            host_ptr) const -> void
+CUDABackend::writeMemory(const Device::Pointer &       device,
+                         const std::shared_ptr<void> & buffer_ptr,
+                         std::array<size_t, 3> &       buffer_shape,
+                         std::array<size_t, 3> &       buffer_origin,
+                         std::array<size_t, 3> &       region,
+                         const dType &                 dtype,
+                         const mType &                 mtype,
+                         const void *                  host_ptr) const -> void
 {
 #if USE_CUDA
   switch (mtype)
@@ -317,7 +320,7 @@ CUDABackend::writeMemory(const Device::Pointer & device,
 
 auto
 CUDABackend::writeBuffer(const Device::Pointer &       device,
-                         void **                       buffer_ptr,
+                         const std::shared_ptr<void> & buffer_ptr,
                          const std::array<size_t, 3> & buffer_shape,
                          const std::array<size_t, 3> & buffer_origin,
                          const std::array<size_t, 3> & region,
@@ -392,7 +395,7 @@ CUDABackend::writeBuffer(const Device::Pointer &       device,
 
 auto
 CUDABackend::readBuffer(const Device::Pointer &       device,
-                        const void **                 buffer_ptr,
+                        const std::shared_ptr<void> & buffer_ptr,
                         const std::array<size_t, 3> & buffer_shape,
                         const std::array<size_t, 3> & buffer_origin,
                         const std::array<size_t, 3> & region,
@@ -466,14 +469,14 @@ CUDABackend::readBuffer(const Device::Pointer &       device,
 }
 
 auto
-CUDABackend::readMemory(const Device::Pointer & device,
-                        const void **           buffer_ptr,
-                        std::array<size_t, 3> & buffer_shape,
-                        std::array<size_t, 3> & buffer_origin,
-                        std::array<size_t, 3> & region,
-                        const dType &           dtype,
-                        const mType &           mtype,
-                        void *                  host_ptr) const -> void
+CUDABackend::readMemory(const Device::Pointer &       device,
+                        const std::shared_ptr<void> & buffer_ptr,
+                        std::array<size_t, 3> &       buffer_shape,
+                        std::array<size_t, 3> &       buffer_origin,
+                        std::array<size_t, 3> &       region,
+                        const dType &                 dtype,
+                        const mType &                 mtype,
+                        void *                        host_ptr) const -> void
 {
 #if USE_CUDA
   switch (mtype)
@@ -497,15 +500,15 @@ CUDABackend::readMemory(const Device::Pointer & device,
 }
 
 auto
-CUDABackend::copyMemoryBufferToBuffer(const Device::Pointer & device,
-                                      const void **           src_ptr,
-                                      std::array<size_t, 3> & src_origin,
-                                      std::array<size_t, 3> & src_shape,
-                                      void **                 dst_ptr,
-                                      std::array<size_t, 3> & dst_origin,
-                                      std::array<size_t, 3> & dst_shape,
-                                      std::array<size_t, 3> & region,
-                                      const size_t &          bytes) const -> void
+CUDABackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
+                                      const std::shared_ptr<void> & src_ptr,
+                                      std::array<size_t, 3> &       src_origin,
+                                      std::array<size_t, 3> &       src_shape,
+                                      const std::shared_ptr<void> & dst_ptr,
+                                      std::array<size_t, 3> &       dst_origin,
+                                      std::array<size_t, 3> &       dst_shape,
+                                      std::array<size_t, 3> &       region,
+                                      const size_t &                bytes) const -> void
 {
 #if USE_CUDA
   auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);
@@ -583,15 +586,15 @@ CUDABackend::copyMemoryBufferToBuffer(const Device::Pointer & device,
 }
 
 auto
-CUDABackend::copyMemoryImageToBuffer(const Device::Pointer & device,
-                                     const void **           src_ptr,
-                                     std::array<size_t, 3> & src_origin,
-                                     std::array<size_t, 3> & src_shape,
-                                     void **                 dst_ptr,
-                                     std::array<size_t, 3> & dst_origin,
-                                     std::array<size_t, 3> & dst_shape,
-                                     std::array<size_t, 3> & region,
-                                     const size_t &          bytes) const -> void
+CUDABackend::copyMemoryImageToBuffer(const Device::Pointer &       device,
+                                     const std::shared_ptr<void> & src_ptr,
+                                     std::array<size_t, 3> &       src_origin,
+                                     std::array<size_t, 3> &       src_shape,
+                                     const std::shared_ptr<void> & dst_ptr,
+                                     std::array<size_t, 3> &       dst_origin,
+                                     std::array<size_t, 3> &       dst_shape,
+                                     std::array<size_t, 3> &       region,
+                                     const size_t &                bytes) const -> void
 {
 #if USE_CUDA
   copyMemoryBufferToBuffer(device, src_ptr, src_origin, src_shape, dst_ptr, dst_origin, dst_shape, region, bytes);
@@ -601,15 +604,15 @@ CUDABackend::copyMemoryImageToBuffer(const Device::Pointer & device,
 }
 
 auto
-CUDABackend::copyMemoryBufferToImage(const Device::Pointer & device,
-                                     const void **           src_ptr,
-                                     std::array<size_t, 3> & src_origin,
-                                     std::array<size_t, 3> & src_shape,
-                                     void **                 dst_ptr,
-                                     std::array<size_t, 3> & dst_origin,
-                                     std::array<size_t, 3> & dst_shape,
-                                     std::array<size_t, 3> & region,
-                                     const size_t &          bytes) const -> void
+CUDABackend::copyMemoryBufferToImage(const Device::Pointer &       device,
+                                     const std::shared_ptr<void> & src_ptr,
+                                     std::array<size_t, 3> &       src_origin,
+                                     std::array<size_t, 3> &       src_shape,
+                                     const std::shared_ptr<void> & dst_ptr,
+                                     std::array<size_t, 3> &       dst_origin,
+                                     std::array<size_t, 3> &       dst_shape,
+                                     std::array<size_t, 3> &       region,
+                                     const size_t &                bytes) const -> void
 {
 #if USE_CUDA
   copyMemoryBufferToBuffer(device, src_ptr, src_origin, src_shape, dst_ptr, dst_origin, dst_shape, region, bytes);
@@ -619,15 +622,15 @@ CUDABackend::copyMemoryBufferToImage(const Device::Pointer & device,
 }
 
 auto
-CUDABackend::copyMemoryImageToImage(const Device::Pointer & device,
-                                    const void **           src_ptr,
-                                    std::array<size_t, 3> & src_origin,
-                                    std::array<size_t, 3> & src_shape,
-                                    void **                 dst_ptr,
-                                    std::array<size_t, 3> & dst_origin,
-                                    std::array<size_t, 3> & dst_shape,
-                                    std::array<size_t, 3> & region,
-                                    const size_t &          bytes) const -> void
+CUDABackend::copyMemoryImageToImage(const Device::Pointer &       device,
+                                    const std::shared_ptr<void> & src_ptr,
+                                    std::array<size_t, 3> &       src_origin,
+                                    std::array<size_t, 3> &       src_shape,
+                                    const std::shared_ptr<void> & dst_ptr,
+                                    std::array<size_t, 3> &       dst_origin,
+                                    std::array<size_t, 3> &       dst_shape,
+                                    std::array<size_t, 3> &       region,
+                                    const size_t &                bytes) const -> void
 {
 #if USE_CUDA
   copyMemoryBufferToBuffer(device, src_ptr, src_origin, src_shape, dst_ptr, dst_origin, dst_shape, region, bytes);
@@ -638,7 +641,7 @@ CUDABackend::copyMemoryImageToImage(const Device::Pointer & device,
 
 auto
 CUDABackend::setBuffer(const Device::Pointer &       device,
-                       void **                       buffer_ptr,
+                       const std::shared_ptr<void> & buffer_ptr,
                        const std::array<size_t, 3> & buffer_shape,
                        const std::array<size_t, 3> & buffer_origin,
                        const std::array<size_t, 3> & region,
@@ -717,14 +720,14 @@ CUDABackend::setBuffer(const Device::Pointer &       device,
 }
 
 auto
-CUDABackend::setMemory(const Device::Pointer & device,
-                       void **                 buffer_ptr,
-                       std::array<size_t, 3> & buffer_shape,
-                       std::array<size_t, 3> & buffer_origin,
-                       std::array<size_t, 3> & region,
-                       const dType &           dtype,
-                       const mType &           mtype,
-                       const float &           value) const -> void
+CUDABackend::setMemory(const Device::Pointer &       device,
+                       const std::shared_ptr<void> & buffer_ptr,
+                       std::array<size_t, 3> &       buffer_shape,
+                       std::array<size_t, 3> &       buffer_origin,
+                       std::array<size_t, 3> &       region,
+                       const dType &                 dtype,
+                       const mType &                 mtype,
+                       const float &                 value) const -> void
 {
 #if USE_CUDA
   switch (mtype)
@@ -802,7 +805,7 @@ auto
 CUDABackend::buildKernel(const Device::Pointer & device,
                          const std::string &     kernel_source,
                          const std::string &     kernel_name,
-                         void *                  kernel) const -> void
+                         std::shared_ptr<void> & kernel) const -> void
 {
 #if USE_CUDA
   auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);
@@ -892,12 +895,12 @@ CUDABackend::buildKernel(const Device::Pointer & device,
 }
 
 auto
-CUDABackend::executeKernel(const Device::Pointer &       device,
-                           const std::string &           kernel_source,
-                           const std::string &           kernel_name,
-                           const std::array<size_t, 3> & global_size,
-                           const std::vector<void *> &   args,
-                           const std::vector<size_t> &   sizes) const -> void
+CUDABackend::executeKernel(const Device::Pointer &                    device,
+                           const std::string &                        kernel_source,
+                           const std::string &                        kernel_name,
+                           const std::array<size_t, 3> &              global_size,
+                           const std::vector<std::shared_ptr<void>> & args,
+                           const std::vector<size_t> &                sizes) const -> void
 {
 #if USE_CUDA
   auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);

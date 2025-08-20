@@ -192,6 +192,17 @@ public:
     ~Context();
     auto
     get() const -> const cl_context &;
+
+    // Prevent accidental copy (double free)
+    Context(const Context &) = delete;
+    Context &
+    operator=(const Context &) = delete;
+
+    // Allow move
+    Context(Context && other) noexcept;
+
+    Context &
+    operator=(Context && other) noexcept;
   };
 
   struct CommandQueue
@@ -202,6 +213,18 @@ public:
     ~CommandQueue();
     auto
     get() const -> const cl_command_queue &;
+
+    // Prevent accidental copy (double free)
+    CommandQueue(const CommandQueue &) = delete;
+
+    CommandQueue &
+    operator=(const CommandQueue &) = delete;
+
+    // Allow move
+    CommandQueue(CommandQueue && other) noexcept;
+
+    CommandQueue &
+    operator=(CommandQueue && other) noexcept;
   };
 
   struct Ressources
@@ -216,11 +239,15 @@ public:
     size_t         device_index = 0;
 
     Ressources(const cl_platform_id & platform, const cl_device_id & device, size_t index);
-    ~Ressources();
+    ~Ressources() = default;
     auto
     get_device() const -> const cl_device_id &;
     auto
     get_platform() const -> const cl_platform_id &;
+
+    Ressources(const Ressources &) = delete;
+    Ressources &
+    operator=(const Ressources &) = delete;
   };
 
 

@@ -39,6 +39,29 @@ OpenCLDevice::Context::get() const -> const cl_context &
   return ptr;
 }
 
+OpenCLDevice::Context::Context(Context && other) noexcept
+  : ptr(other.ptr)
+  , nb_device(other.nb_device)
+{
+  other.ptr = nullptr;
+}
+
+OpenCLDevice::Context &
+OpenCLDevice::Context::operator=(Context && other) noexcept
+{
+  if (this != &other)
+  {
+    if (ptr)
+    {
+      clReleaseContext(ptr);
+    }
+    ptr = other.ptr;
+    nb_device = other.nb_device;
+    other.ptr = nullptr;
+  }
+  return *this;
+}
+
 OpenCLDevice::CommandQueue::CommandQueue(const cl_command_queue & ptr)
   : ptr(ptr)
 {}
@@ -54,6 +77,29 @@ OpenCLDevice::CommandQueue::~CommandQueue()
     }
   }
 }
+
+OpenCLDevice::CommandQueue::CommandQueue(CommandQueue && other) noexcept
+  : ptr(other.ptr)
+{
+  other.ptr = nullptr;
+}
+
+OpenCLDevice::CommandQueue &
+OpenCLDevice::CommandQueue::operator=(CommandQueue && other) noexcept
+{
+  if (this != &other)
+  {
+    if (ptr)
+    {
+      clReleaseCommandQueue(ptr);
+    }
+    ptr = other.ptr;
+    other.ptr = nullptr;
+  }
+  return *this;
+}
+
+
 auto
 OpenCLDevice::CommandQueue::get() const -> const cl_command_queue &
 {
@@ -81,17 +127,17 @@ OpenCLDevice::Ressources::Ressources(const cl_platform_id & platform, const cl_d
   clGetDeviceInfo(device_ptr, CL_DEVICE_IMAGE_SUPPORT, sizeof(cl_bool), &image_support, nullptr);
 }
 
-OpenCLDevice::Ressources::~Ressources()
-{
-  if (device_ptr != nullptr)
-  {
-    cl_int err = clReleaseDevice(device_ptr);
-    if (err != CL_SUCCESS)
-    {
-      std::cerr << "Failed to release OpenCL device" << std::endl;
-    }
-  }
-}
+// OpenCLDevice::Ressources::~Ressources()
+// {
+//   if (device_ptr != nullptr)
+//   {
+//     cl_int err = clReleaseDevice(device_ptr);
+//     if (err != CL_SUCCESS)
+//     {
+//       std::cerr << "Failed to release OpenCL device" << std::endl;
+//     }
+//   }
+// }
 
 auto
 OpenCLDevice::Ressources::get_device() const -> const cl_device_id &

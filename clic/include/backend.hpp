@@ -135,7 +135,7 @@ public:
                  const std::array<size_t, 3> & region,
                  const dType &                 dtype,
                  const mType &                 mtype,
-                 void **                       data_ptr) const -> void = 0;
+                 std::shared_ptr<void> &       data_ptr) const -> void = 0;
 
   /**
    * @brief Free a memory space in the device
@@ -145,7 +145,8 @@ public:
    * @param data_ptr
    */
   virtual auto
-  freeMemory(const Device::Pointer & device, const mType & mtype, void ** data_ptr) const -> void = 0;
+  freeMemory(const Device::Pointer & device, const mType & mtype, const std::shared_ptr<void> & data_ptr) const
+    -> void = 0;
 
   /**
    * @brief Write data from host to device buffer
@@ -158,14 +159,14 @@ public:
    * @param host_ptr
    */
   virtual auto
-  writeMemory(const Device::Pointer & device,
-              void **                 buffer_ptr,
-              std::array<size_t, 3> & buffer_shape,
-              std::array<size_t, 3> & buffer_origin,
-              std::array<size_t, 3> & region,
-              const dType &           dtype,
-              const mType &           mtype,
-              const void *            host_ptr) const -> void = 0;
+  writeMemory(const Device::Pointer &       device,
+              const std::shared_ptr<void> & buffer_ptr,
+              std::array<size_t, 3> &       buffer_shape,
+              std::array<size_t, 3> &       buffer_origin,
+              std::array<size_t, 3> &       region,
+              const dType &                 dtype,
+              const mType &                 mtype,
+              const void *                  host_ptr) const -> void = 0;
 
   /**
    * @brief Read data from device buffer to host
@@ -178,14 +179,14 @@ public:
    * @param host_ptr
    */
   virtual auto
-  readMemory(const Device::Pointer & device,
-             const void **           buffer_ptr,
-             std::array<size_t, 3> & buffer_shape,
-             std::array<size_t, 3> & buffer_origin,
-             std::array<size_t, 3> & region,
-             const dType &           dtype,
-             const mType &           mtype,
-             void *                  host_ptr) const -> void = 0;
+  readMemory(const Device::Pointer &       device,
+             const std::shared_ptr<void> & buffer_ptr,
+             std::array<size_t, 3> &       buffer_shape,
+             std::array<size_t, 3> &       buffer_origin,
+             std::array<size_t, 3> &       region,
+             const dType &                 dtype,
+             const mType &                 mtype,
+             void *                        host_ptr) const -> void = 0;
 
 
   /**
@@ -202,15 +203,15 @@ public:
    * @param bytes
    */
   virtual auto
-  copyMemoryBufferToBuffer(const Device::Pointer & device,
-                           const void **           src_ptr,
-                           std::array<size_t, 3> & src_origin,
-                           std::array<size_t, 3> & src_shape,
-                           void **                 dst_ptr,
-                           std::array<size_t, 3> & dst_origin,
-                           std::array<size_t, 3> & dst_shape,
-                           std::array<size_t, 3> & region,
-                           const size_t &          bytes) const -> void = 0;
+  copyMemoryBufferToBuffer(const Device::Pointer &       device,
+                           const std::shared_ptr<void> & src_ptr,
+                           std::array<size_t, 3> &       src_origin,
+                           std::array<size_t, 3> &       src_shape,
+                           const std::shared_ptr<void> & dst_ptr,
+                           std::array<size_t, 3> &       dst_origin,
+                           std::array<size_t, 3> &       dst_shape,
+                           std::array<size_t, 3> &       region,
+                           const size_t &                bytes) const -> void = 0;
 
   /**
    * @brief Copy data from device image to device buffer
@@ -226,15 +227,15 @@ public:
    * @param bytes
    */
   virtual auto
-  copyMemoryImageToBuffer(const Device::Pointer & device,
-                          const void **           src_ptr,
-                          std::array<size_t, 3> & src_origin,
-                          std::array<size_t, 3> & src_shape,
-                          void **                 dst_ptr,
-                          std::array<size_t, 3> & dst_origin,
-                          std::array<size_t, 3> & dst_shape,
-                          std::array<size_t, 3> & region,
-                          const size_t &          bytes) const -> void = 0;
+  copyMemoryImageToBuffer(const Device::Pointer &       device,
+                          const std::shared_ptr<void> & src_ptr,
+                          std::array<size_t, 3> &       src_origin,
+                          std::array<size_t, 3> &       src_shape,
+                          const std::shared_ptr<void> & dst_ptr,
+                          std::array<size_t, 3> &       dst_origin,
+                          std::array<size_t, 3> &       dst_shape,
+                          std::array<size_t, 3> &       region,
+                          const size_t &                bytes) const -> void = 0;
 
   /**
    * @brief Copy data from device buffer to device image
@@ -250,15 +251,15 @@ public:
    * @param bytes
    */
   virtual auto
-  copyMemoryBufferToImage(const Device::Pointer & device,
-                          const void **           src_ptr,
-                          std::array<size_t, 3> & src_origin,
-                          std::array<size_t, 3> & src_shape,
-                          void **                 dst_ptr,
-                          std::array<size_t, 3> & dst_origin,
-                          std::array<size_t, 3> & dst_shape,
-                          std::array<size_t, 3> & region,
-                          const size_t &          bytes) const -> void = 0;
+  copyMemoryBufferToImage(const Device::Pointer &       device,
+                          const std::shared_ptr<void> & src_ptr,
+                          std::array<size_t, 3> &       src_origin,
+                          std::array<size_t, 3> &       src_shape,
+                          const std::shared_ptr<void> & dst_ptr,
+                          std::array<size_t, 3> &       dst_origin,
+                          std::array<size_t, 3> &       dst_shape,
+                          std::array<size_t, 3> &       region,
+                          const size_t &                bytes) const -> void = 0;
 
   /**
    * @brief Copy data from device image to device image
@@ -274,15 +275,15 @@ public:
    * @param bytes
    */
   virtual auto
-  copyMemoryImageToImage(const Device::Pointer & device,
-                         const void **           src_ptr,
-                         std::array<size_t, 3> & src_origin,
-                         std::array<size_t, 3> & src_shape,
-                         void **                 dst_ptr,
-                         std::array<size_t, 3> & dst_origin,
-                         std::array<size_t, 3> & dst_shape,
-                         std::array<size_t, 3> & region,
-                         const size_t &          bytes) const -> void = 0;
+  copyMemoryImageToImage(const Device::Pointer &       device,
+                         const std::shared_ptr<void> & src_ptr,
+                         std::array<size_t, 3> &       src_origin,
+                         std::array<size_t, 3> &       src_shape,
+                         const std::shared_ptr<void> & dst_ptr,
+                         std::array<size_t, 3> &       dst_origin,
+                         std::array<size_t, 3> &       dst_shape,
+                         std::array<size_t, 3> &       region,
+                         const size_t &                bytes) const -> void = 0;
 
   /**
    * @brief Set a memory space to a specific value
@@ -297,14 +298,14 @@ public:
    * @param value
    */
   virtual auto
-  setMemory(const Device::Pointer & device,
-            void **                 buffer_ptr,
-            std::array<size_t, 3> & buffer_shape,
-            std::array<size_t, 3> & buffer_origin,
-            std::array<size_t, 3> & region,
-            const dType &           dtype,
-            const mType &           mtype,
-            const float &           value) const -> void = 0;
+  setMemory(const Device::Pointer &       device,
+            const std::shared_ptr<void> & buffer_ptr,
+            std::array<size_t, 3> &       buffer_shape,
+            std::array<size_t, 3> &       buffer_origin,
+            std::array<size_t, 3> &       region,
+            const dType &                 dtype,
+            const mType &                 mtype,
+            const float &                 value) const -> void = 0;
 
   /**
    * @brief Build a kernel from source code
@@ -318,7 +319,7 @@ public:
   buildKernel(const Device::Pointer & device,
               const std::string &     kernel_source,
               const std::string &     kernel_name,
-              void *                  kernel) const -> void = 0;
+              std::shared_ptr<void> & kernel) const -> void = 0;
 
   /**
    * @brief Execute a kernel
@@ -331,12 +332,12 @@ public:
    * @param sizes
    */
   virtual auto
-  executeKernel(const Device::Pointer &       device,
-                const std::string &           kernel_source,
-                const std::string &           kernel_name,
-                const std::array<size_t, 3> & global_size,
-                const std::vector<void *> &   args,
-                const std::vector<size_t> &   sizes) const -> void = 0;
+  executeKernel(const Device::Pointer &                    device,
+                const std::string &                        kernel_source,
+                const std::string &                        kernel_name,
+                const std::array<size_t, 3> &              global_size,
+                const std::vector<std::shared_ptr<void>> & args,
+                const std::vector<size_t> &                sizes) const -> void = 0;
 
   /**
    * @brief Operator << to print the backend type
@@ -404,116 +405,117 @@ public:
   getType() const -> Backend::Type override;
 
   static auto
-  allocateBuffer(const Device::Pointer & device, const size_t & size, void ** data_ptr) -> void;
+  allocateBuffer(const Device::Pointer & device, const size_t & size, std::shared_ptr<void> & data_ptr) -> void;
 
   static auto
   allocateImage(const Device::Pointer &       device,
                 const std::array<size_t, 3> & region,
                 const dType &                 dtype,
-                void **                       data_ptr) -> void;
+                std::shared_ptr<void> &       data_ptr) -> void;
 
   auto
   allocateMemory(const Device::Pointer &       device,
                  const std::array<size_t, 3> & region,
                  const dType &                 dtype,
                  const mType &                 mtype,
-                 void **                       data_ptr) const -> void override;
+                 std::shared_ptr<void> &       data_ptr) const -> void override;
 
   auto
-  freeMemory(const Device::Pointer & device, const mType & mtype, void ** data_ptr) const -> void override;
+  freeMemory(const Device::Pointer & device, const mType & mtype, const std::shared_ptr<void> & data_ptr) const
+    -> void override;
 
   static auto
   writeBuffer(const Device::Pointer &       device,
-              void **                       buffer_ptr,
+              const std::shared_ptr<void> & buffer_ptr,
               const std::array<size_t, 3> & buffer_shape,
               const std::array<size_t, 3> & buffer_origin,
               const std::array<size_t, 3> & region,
               const void *                  host_ptr) -> void;
   auto
-  writeMemory(const Device::Pointer & device,
-              void **                 buffer_ptr,
-              std::array<size_t, 3> & buffer_shape,
-              std::array<size_t, 3> & buffer_origin,
-              std::array<size_t, 3> & region,
-              const dType &           dtype,
-              const mType &           mtype,
-              const void *            host_ptr) const -> void override;
+  writeMemory(const Device::Pointer &       device,
+              const std::shared_ptr<void> & buffer_ptr,
+              std::array<size_t, 3> &       buffer_shape,
+              std::array<size_t, 3> &       buffer_origin,
+              std::array<size_t, 3> &       region,
+              const dType &                 dtype,
+              const mType &                 mtype,
+              const void *                  host_ptr) const -> void override;
 
   static auto
   readBuffer(const Device::Pointer &       device,
-             const void **                 buffer_ptr,
+             const std::shared_ptr<void> & buffer_ptr,
              const std::array<size_t, 3> & buffer_shape,
              const std::array<size_t, 3> & buffer_origin,
              const std::array<size_t, 3> & region,
              void *                        host_ptr) -> void;
 
   auto
-  readMemory(const Device::Pointer & device,
-             const void **           buffer_ptr,
-             std::array<size_t, 3> & buffer_shape,
-             std::array<size_t, 3> & buffer_origin,
-             std::array<size_t, 3> & region,
-             const dType &           dtype,
-             const mType &           mtype,
-             void *                  host_ptr) const -> void override;
+  readMemory(const Device::Pointer &       device,
+             const std::shared_ptr<void> & buffer_ptr,
+             std::array<size_t, 3> &       buffer_shape,
+             std::array<size_t, 3> &       buffer_origin,
+             std::array<size_t, 3> &       region,
+             const dType &                 dtype,
+             const mType &                 mtype,
+             void *                        host_ptr) const -> void override;
 
   auto
-  copyMemoryBufferToBuffer(const Device::Pointer & device,
-                           const void **           src_ptr,
-                           std::array<size_t, 3> & src_origin,
-                           std::array<size_t, 3> & src_shape,
-                           void **                 dst_ptr,
-                           std::array<size_t, 3> & dst_origin,
-                           std::array<size_t, 3> & dst_shape,
-                           std::array<size_t, 3> & region,
-                           const size_t &          bytes) const -> void override;
+  copyMemoryBufferToBuffer(const Device::Pointer &       device,
+                           const std::shared_ptr<void> & src_ptr,
+                           std::array<size_t, 3> &       src_origin,
+                           std::array<size_t, 3> &       src_shape,
+                           const std::shared_ptr<void> & dst_ptr,
+                           std::array<size_t, 3> &       dst_origin,
+                           std::array<size_t, 3> &       dst_shape,
+                           std::array<size_t, 3> &       region,
+                           const size_t &                bytes) const -> void override;
 
   auto
-  copyMemoryImageToBuffer(const Device::Pointer & device,
-                          const void **           src_ptr,
-                          std::array<size_t, 3> & src_origin,
-                          std::array<size_t, 3> & src_shape,
-                          void **                 dst_ptr,
-                          std::array<size_t, 3> & dst_origin,
-                          std::array<size_t, 3> & dst_shape,
-                          std::array<size_t, 3> & region,
-                          const size_t &          bytes) const -> void override;
+  copyMemoryImageToBuffer(const Device::Pointer &       device,
+                          const std::shared_ptr<void> & src_ptr,
+                          std::array<size_t, 3> &       src_origin,
+                          std::array<size_t, 3> &       src_shape,
+                          const std::shared_ptr<void> & dst_ptr,
+                          std::array<size_t, 3> &       dst_origin,
+                          std::array<size_t, 3> &       dst_shape,
+                          std::array<size_t, 3> &       region,
+                          const size_t &                bytes) const -> void override;
 
   auto
-  copyMemoryBufferToImage(const Device::Pointer & device,
-                          const void **           src_ptr,
-                          std::array<size_t, 3> & src_origin,
-                          std::array<size_t, 3> & src_shape,
-                          void **                 dst_ptr,
-                          std::array<size_t, 3> & dst_origin,
-                          std::array<size_t, 3> & dst_shape,
-                          std::array<size_t, 3> & region,
-                          const size_t &          bytes) const -> void override;
+  copyMemoryBufferToImage(const Device::Pointer &       device,
+                          const std::shared_ptr<void> & src_ptr,
+                          std::array<size_t, 3> &       src_origin,
+                          std::array<size_t, 3> &       src_shape,
+                          const std::shared_ptr<void> & dst_ptr,
+                          std::array<size_t, 3> &       dst_origin,
+                          std::array<size_t, 3> &       dst_shape,
+                          std::array<size_t, 3> &       region,
+                          const size_t &                bytes) const -> void override;
 
   auto
-  copyMemoryImageToImage(const Device::Pointer & device,
-                         const void **           src_ptr,
-                         std::array<size_t, 3> & src_origin,
-                         std::array<size_t, 3> & src_shape,
-                         void **                 dst_ptr,
-                         std::array<size_t, 3> & dst_origin,
-                         std::array<size_t, 3> & dst_shape,
-                         std::array<size_t, 3> & region,
-                         const size_t &          bytes) const -> void override;
+  copyMemoryImageToImage(const Device::Pointer &       device,
+                         const std::shared_ptr<void> & src_ptr,
+                         std::array<size_t, 3> &       src_origin,
+                         std::array<size_t, 3> &       src_shape,
+                         const std::shared_ptr<void> & dst_ptr,
+                         std::array<size_t, 3> &       dst_origin,
+                         std::array<size_t, 3> &       dst_shape,
+                         std::array<size_t, 3> &       region,
+                         const size_t &                bytes) const -> void override;
 
   auto
-  setMemory(const Device::Pointer & device,
-            void **                 buffer_ptr,
-            std::array<size_t, 3> & buffer_shape,
-            std::array<size_t, 3> & buffer_origin,
-            std::array<size_t, 3> & region,
-            const dType &           dtype,
-            const mType &           mtype,
-            const float &           value) const -> void override;
+  setMemory(const Device::Pointer &       device,
+            const std::shared_ptr<void> & buffer_ptr,
+            std::array<size_t, 3> &       buffer_shape,
+            std::array<size_t, 3> &       buffer_origin,
+            std::array<size_t, 3> &       region,
+            const dType &                 dtype,
+            const mType &                 mtype,
+            const float &                 value) const -> void override;
 
   static auto
   setBuffer(const Device::Pointer &       device,
-            void **                       buffer_ptr,
+            const std::shared_ptr<void> & buffer_ptr,
             const std::array<size_t, 3> & buffer_shape,
             const std::array<size_t, 3> & buffer_origin,
             const std::array<size_t, 3> & region,
@@ -524,15 +526,15 @@ public:
   buildKernel(const Device::Pointer & device,
               const std::string &     kernel_source,
               const std::string &     kernel_name,
-              void *                  kernel) const -> void override;
+              std::shared_ptr<void> & kernel) const -> void override;
 
   auto
-  executeKernel(const Device::Pointer &       device,
-                const std::string &           kernel_source,
-                const std::string &           kernel_name,
-                const std::array<size_t, 3> & global_size,
-                const std::vector<void *> &   args,
-                const std::vector<size_t> &   sizes) const -> void override;
+  executeKernel(const Device::Pointer &                    device,
+                const std::string &                        kernel_source,
+                const std::string &                        kernel_name,
+                const std::array<size_t, 3> &              global_size,
+                const std::vector<std::shared_ptr<void>> & args,
+                const std::vector<size_t> &                sizes) const -> void override;
 
   [[nodiscard]] auto
   getPreamble() const -> std::string override;
@@ -584,25 +586,26 @@ public:
   getType() const -> Backend::Type override;
 
   static auto
-  allocateBuffer(const Device::Pointer & device, const size_t & size, void ** data_ptr) -> void;
+  allocateBuffer(const Device::Pointer & device, const size_t & size, std::shared_ptr<void> & data_ptr) -> void;
   static auto
   allocateImage(const Device::Pointer &       device,
                 const std::array<size_t, 3> & region,
                 const dType &                 dtype,
-                void **                       data_ptr) -> void;
+                std::shared_ptr<void> &       data_ptr) -> void;
   auto
   allocateMemory(const Device::Pointer &       device,
                  const std::array<size_t, 3> & region,
                  const dType &                 dtype,
                  const mType &                 mtype,
-                 void **                       data_ptr) const -> void override;
+                 std::shared_ptr<void> &       data_ptr) const -> void override;
 
   auto
-  freeMemory(const Device::Pointer & device, const mType & mtype, void ** data_ptr) const -> void override;
+  freeMemory(const Device::Pointer & device, const mType & mtype, const std::shared_ptr<void> & data_ptr) const
+    -> void override;
 
   static auto
   writeBuffer(const Device::Pointer &       device,
-              void **                       buffer_ptr,
+              const std::shared_ptr<void> & buffer_ptr,
               const std::array<size_t, 3> & buffer_shape,
               const std::array<size_t, 3> & buffer_origin,
               const std::array<size_t, 3> & region,
@@ -610,25 +613,25 @@ public:
 
   static auto
   writeImage(const Device::Pointer &       device,
-             void **                       buffer_ptr,
+             const std::shared_ptr<void> & buffer_ptr,
              const std::array<size_t, 3> & buffer_shape,
              const std::array<size_t, 3> & buffer_origin,
              const std::array<size_t, 3> & region,
              const void *                  host_ptr) -> void;
 
   auto
-  writeMemory(const Device::Pointer & device,
-              void **                 buffer_ptr,
-              std::array<size_t, 3> & buffer_shape,
-              std::array<size_t, 3> & buffer_origin,
-              std::array<size_t, 3> & region,
-              const dType &           dtype,
-              const mType &           mtype,
-              const void *            host_ptr) const -> void override;
+  writeMemory(const Device::Pointer &       device,
+              const std::shared_ptr<void> & buffer_ptr,
+              std::array<size_t, 3> &       buffer_shape,
+              std::array<size_t, 3> &       buffer_origin,
+              std::array<size_t, 3> &       region,
+              const dType &                 dtype,
+              const mType &                 mtype,
+              const void *                  host_ptr) const -> void override;
 
   static auto
   readBuffer(const Device::Pointer &       device,
-             const void **                 buffer_ptr,
+             const std::shared_ptr<void> & buffer_ptr,
              const std::array<size_t, 3> & buffer_shape,
              const std::array<size_t, 3> & buffer_origin,
              const std::array<size_t, 3> & region,
@@ -636,80 +639,80 @@ public:
 
   static auto
   readImage(const Device::Pointer &       device,
-            const void **                 buffer_ptr,
+            const std::shared_ptr<void> & buffer_ptr,
             const std::array<size_t, 3> & buffer_shape,
             const std::array<size_t, 3> & buffer_origin,
             const std::array<size_t, 3> & region,
             void *                        host_ptr) -> void;
 
   auto
-  readMemory(const Device::Pointer & device,
-             const void **           buffer_ptr,
-             std::array<size_t, 3> & buffer_shape,
-             std::array<size_t, 3> & buffer_origin,
-             std::array<size_t, 3> & region,
-             const dType &           dtype,
-             const mType &           mtype,
-             void *                  host_ptr) const -> void override;
+  readMemory(const Device::Pointer &       device,
+             const std::shared_ptr<void> & buffer_ptr,
+             std::array<size_t, 3> &       buffer_shape,
+             std::array<size_t, 3> &       buffer_origin,
+             std::array<size_t, 3> &       region,
+             const dType &                 dtype,
+             const mType &                 mtype,
+             void *                        host_ptr) const -> void override;
 
 
   auto
-  copyMemoryBufferToBuffer(const Device::Pointer & device,
-                           const void **           src_ptr,
-                           std::array<size_t, 3> & src_origin,
-                           std::array<size_t, 3> & src_shape,
-                           void **                 dst_ptr,
-                           std::array<size_t, 3> & dst_origin,
-                           std::array<size_t, 3> & dst_shape,
-                           std::array<size_t, 3> & region,
-                           const size_t &          bytes) const -> void override;
+  copyMemoryBufferToBuffer(const Device::Pointer &       device,
+                           const std::shared_ptr<void> & src_ptr,
+                           std::array<size_t, 3> &       src_origin,
+                           std::array<size_t, 3> &       src_shape,
+                           const std::shared_ptr<void> & dst_ptr,
+                           std::array<size_t, 3> &       dst_origin,
+                           std::array<size_t, 3> &       dst_shape,
+                           std::array<size_t, 3> &       region,
+                           const size_t &                bytes) const -> void override;
 
   auto
-  copyMemoryImageToBuffer(const Device::Pointer & device,
-                          const void **           src_ptr,
-                          std::array<size_t, 3> & src_origin,
-                          std::array<size_t, 3> & src_shape,
-                          void **                 dst_ptr,
-                          std::array<size_t, 3> & dst_origin,
-                          std::array<size_t, 3> & dst_shape,
-                          std::array<size_t, 3> & region,
-                          const size_t &          bytes) const -> void override;
+  copyMemoryImageToBuffer(const Device::Pointer &       device,
+                          const std::shared_ptr<void> & src_ptr,
+                          std::array<size_t, 3> &       src_origin,
+                          std::array<size_t, 3> &       src_shape,
+                          const std::shared_ptr<void> & dst_ptr,
+                          std::array<size_t, 3> &       dst_origin,
+                          std::array<size_t, 3> &       dst_shape,
+                          std::array<size_t, 3> &       region,
+                          const size_t &                bytes) const -> void override;
 
   auto
-  copyMemoryBufferToImage(const Device::Pointer & device,
-                          const void **           src_ptr,
-                          std::array<size_t, 3> & src_origin,
-                          std::array<size_t, 3> & src_shape,
-                          void **                 dst_ptr,
-                          std::array<size_t, 3> & dst_origin,
-                          std::array<size_t, 3> & dst_shape,
-                          std::array<size_t, 3> & region,
-                          const size_t &          bytes) const -> void override;
+  copyMemoryBufferToImage(const Device::Pointer &       device,
+                          const std::shared_ptr<void> & src_ptr,
+                          std::array<size_t, 3> &       src_origin,
+                          std::array<size_t, 3> &       src_shape,
+                          const std::shared_ptr<void> & dst_ptr,
+                          std::array<size_t, 3> &       dst_origin,
+                          std::array<size_t, 3> &       dst_shape,
+                          std::array<size_t, 3> &       region,
+                          const size_t &                bytes) const -> void override;
 
   auto
-  copyMemoryImageToImage(const Device::Pointer & device,
-                         const void **           src_ptr,
-                         std::array<size_t, 3> & src_origin,
-                         std::array<size_t, 3> & src_shape,
-                         void **                 dst_ptr,
-                         std::array<size_t, 3> & dst_origin,
-                         std::array<size_t, 3> & dst_shape,
-                         std::array<size_t, 3> & region,
-                         const size_t &          bytes) const -> void override;
+  copyMemoryImageToImage(const Device::Pointer &       device,
+                         const std::shared_ptr<void> & src_ptr,
+                         std::array<size_t, 3> &       src_origin,
+                         std::array<size_t, 3> &       src_shape,
+                         const std::shared_ptr<void> & dst_ptr,
+                         std::array<size_t, 3> &       dst_origin,
+                         std::array<size_t, 3> &       dst_shape,
+                         std::array<size_t, 3> &       region,
+                         const size_t &                bytes) const -> void override;
 
   auto
-  setMemory(const Device::Pointer & device,
-            void **                 buffer_ptr,
-            std::array<size_t, 3> & buffer_shape,
-            std::array<size_t, 3> & buffer_origin,
-            std::array<size_t, 3> & region,
-            const dType &           dtype,
-            const mType &           mtype,
-            const float &           value) const -> void override;
+  setMemory(const Device::Pointer &       device,
+            const std::shared_ptr<void> & buffer_ptr,
+            std::array<size_t, 3> &       buffer_shape,
+            std::array<size_t, 3> &       buffer_origin,
+            std::array<size_t, 3> &       region,
+            const dType &                 dtype,
+            const mType &                 mtype,
+            const float &                 value) const -> void override;
 
   static auto
   setImage(const Device::Pointer &       device,
-           void **                       buffer_ptr,
+           const std::shared_ptr<void> & buffer_ptr,
            const std::array<size_t, 3> & buffer_shape,
            const std::array<size_t, 3> & buffer_origin,
            const std::array<size_t, 3> & region,
@@ -718,7 +721,7 @@ public:
 
   static auto
   setBuffer(const Device::Pointer &       device,
-            void **                       buffer_ptr,
+            const std::shared_ptr<void> & buffer_ptr,
             const std::array<size_t, 3> & buffer_shape,
             const std::array<size_t, 3> & buffer_origin,
             const std::array<size_t, 3> & region,
@@ -729,14 +732,14 @@ public:
   buildKernel(const Device::Pointer & device,
               const std::string &     kernel_source,
               const std::string &     kernel_name,
-              void *                  kernel) const -> void override;
+              std::shared_ptr<void> & kernel) const -> void override;
   auto
-  executeKernel(const Device::Pointer &       device,
-                const std::string &           kernel_source,
-                const std::string &           kernel_name,
-                const std::array<size_t, 3> & global_size,
-                const std::vector<void *> &   args,
-                const std::vector<size_t> &   sizes) const -> void override;
+  executeKernel(const Device::Pointer &                    device,
+                const std::string &                        kernel_source,
+                const std::string &                        kernel_name,
+                const std::array<size_t, 3> &              global_size,
+                const std::vector<std::shared_ptr<void>> & args,
+                const std::vector<size_t> &                sizes) const -> void override;
   [[nodiscard]] auto
   getPreamble() const -> std::string override;
 
@@ -824,7 +827,7 @@ public:
 
 
 private:
-  std::shared_ptr<Backend> backend;
+  std::unique_ptr<Backend> backend;
 
   BackendManager() = default;
   BackendManager(BackendManager &&) = default;
