@@ -243,17 +243,17 @@ CUDADevice::getInfoExtended() const -> std::string
   return getInfo();
 }
 
- auto
-  CUDADevice::getProgramFromCache(const std::string & key) const -> std::shared_ptr<void>
-  {
-    return cache->getCachedProgram(key);
-  }
+auto
+CUDADevice::getProgramFromCache(const std::string & key) const -> std::shared_ptr<void>
+{
+  return cache->getCachedProgram(key);
+}
 
-  auto
-  CUDADevice::addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void
-  {
-    cache->cacheProgram(key, program);
-  }
+auto
+CUDADevice::addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void
+{
+  cache->cacheProgram(key, program);
+}
 
 
 #endif // USE_CUDA

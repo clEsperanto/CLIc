@@ -1341,7 +1341,7 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
   }
 
   device->addProgramToCache(cache_key, program);
-  
+
   auto ocl_kernel = clCreateKernel(reinterpret_cast<cl_program>(program.get()), kernel_name.c_str(), &err);
   if (err != CL_SUCCESS)
   {
