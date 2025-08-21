@@ -1263,19 +1263,23 @@ CreateProgramFromSource(const Device::Pointer & device, const std::string & kern
 #endif
 
 
-static constexpr size_t MAX_PROGRAM_CACHE_SIZE = 32;
+static constexpr size_t                                       MAX_PROGRAM_CACHE_SIZE = 32;
 static std::unordered_map<std::string, std::shared_ptr<void>> program_cache;
-static std::list<std::string> program_lru;
+static std::list<std::string>                                 program_lru;
 
-void cacheProgram(const std::string& key, std::shared_ptr<void> program) {
-  if (program_cache.find(key) != program_cache.end()) {
+void
+cacheProgram(const std::string & key, std::shared_ptr<void> program)
+{
+  if (program_cache.find(key) != program_cache.end())
+  {
     // Program already exists, update LRU
     program_lru.remove(key);
     program_lru.push_back(key);
     std::cout << "\tProgram already cached, updating LRU." << std::endl;
     return;
   }
-  if (program_cache.size() >= MAX_PROGRAM_CACHE_SIZE) {
+  if (program_cache.size() >= MAX_PROGRAM_CACHE_SIZE)
+  {
     // Remove oldest
     auto oldest = program_lru.front();
     program_lru.pop_front();
@@ -1288,12 +1292,15 @@ void cacheProgram(const std::string& key, std::shared_ptr<void> program) {
   return;
 }
 
-std::shared_ptr<void> getCachedProgram(const std::string& key) {
-    auto it = program_cache.find(key);
-    if (it != program_cache.end()) {
-        return it->second;
-    }
-    return nullptr;
+std::shared_ptr<void>
+getCachedProgram(const std::string & key)
+{
+  auto it = program_cache.find(key);
+  if (it != program_cache.end())
+  {
+    return it->second;
+  }
+  return nullptr;
 }
 
 auto
@@ -1315,7 +1322,7 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
 
   // fetch the internal cache to avoid rebuilding
   const auto cache_key = device_hash + "_" + source_hash;
-  auto program = getCachedProgram(cache_key);
+  auto       program = getCachedProgram(cache_key);
   if (program != nullptr)
   {
     std::cout << "reusing cached program." << std::endl;
