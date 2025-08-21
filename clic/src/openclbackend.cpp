@@ -1263,45 +1263,47 @@ CreateProgramFromSource(const Device::Pointer & device, const std::string & kern
 #endif
 
 
-static constexpr size_t                                       MAX_PROGRAM_CACHE_SIZE = 64;
-static std::unordered_map<std::string, std::shared_ptr<void>> program_cache;
-static std::list<std::string>                                 program_lru;
+// static constexpr size_t                                       MAX_PROGRAM_CACHE_SIZE = 64;
+// static std::unordered_map<std::string, std::shared_ptr<void>> program_cache;
+// static std::list<std::string>                                 program_lru;
 
-void
-cacheProgram(const std::string & key, std::shared_ptr<void> program)
-{
-  if (program_cache.find(key) != program_cache.end())
-  {
-    // Program already exists, update LRU
-    program_lru.remove(key);
-    program_lru.push_back(key);
-    std::cout << "\tProgram already cached, updating LRU." << std::endl;
-    return;
-  }
-  if (program_cache.size() >= MAX_PROGRAM_CACHE_SIZE)
-  {
-    // Remove oldest
-    auto oldest = program_lru.front();
-    program_lru.pop_front();
-    program_cache.erase(oldest);
-    std::cout << "\tCache full, removing oldest program" << std::endl;
-  }
-  program_cache[key] = program;
-  program_lru.push_back(key);
-  std::cout << program_cache.size() << " programs cached." << std::endl;
-  return;
-}
+// void
+// cacheProgram(const std::string & key, std::shared_ptr<void> program)
+// {
+//   std::cout << "caching program: " << key << std::endl;
+//   if (program_cache.find(key) != program_cache.end())
+//   {
+//     // Program already exists, update LRU
+//     program_lru.remove(key);
+//     program_lru.push_back(key);
+//     std::cout << "\tProgram already cached, updating LRU." << std::endl;
+//     return;
+//   }
+//   if (program_cache.size() >= MAX_PROGRAM_CACHE_SIZE)
+//   {
+//     // Remove oldest
+//     auto oldest = program_lru.front();
+//     program_lru.pop_front();
+//     program_cache.erase(oldest);
+//     std::cout << "\tCache full, removing oldest program" << std::endl;
+//   }
+//   program_cache[key] = program;
+//   program_lru.push_back(key);
+//   std::cout << program_cache.size() << " programs cached." << std::endl;
+//   return;
+// }
 
-std::shared_ptr<void>
-getCachedProgram(const std::string & key)
-{
-  auto it = program_cache.find(key);
-  if (it != program_cache.end())
-  {
-    return it->second;
-  }
-  return nullptr;
-}
+// std::shared_ptr<void>
+// getCachedProgram(const std::string & key)
+// {
+//   std::cout << "fetching program from cache: " << key << std::endl;
+//   auto it = program_cache.find(key);
+//   if (it != program_cache.end())
+//   {
+//     return it->second;
+//   }
+//   return nullptr;
+// }
 
 auto
 OpenCLBackend::buildKernel(const Device::Pointer & device,
@@ -1322,32 +1324,24 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
 
   // fetch the internal cache to avoid rebuilding
   const auto cache_key = device_hash + "_" + source_hash;
-  auto       program = getCachedProgram(cache_key);
-  if (program != nullptr)
-  {
-    std::cout << "reusing cached program." << std::endl;
-  }
+  auto       program = device->getProgramFromCache(cache_key);
 
   if (program == nullptr && use_cache)
   {
-    std::cout << "not existing in current cache, check for binaries." << std::endl;
     program = loadProgramFromCache(device, device_hash, source_hash);
-    std::cout << "save program to local cache" << std::endl;
-    cacheProgram(cache_key, program);
   }
 
   if (program == nullptr)
   {
-    std::cout << "create program from sources." << std::endl;
     program = CreateProgramFromSource(device, kernel_source);
     if (use_cache)
     {
-      std::cout << "save program to binary" << std::endl;
       saveBinaryToCache(device_hash, source_hash, program, device);
     }
-    std::cout << "save program to local cache" << std::endl;
-    cacheProgram(cache_key, program);
   }
+
+  device->addProgramToCache(cache_key, program);
+  
   auto ocl_kernel = clCreateKernel(reinterpret_cast<cl_program>(program.get()), kernel_name.c_str(), &err);
   if (err != CL_SUCCESS)
   {

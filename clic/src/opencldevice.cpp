@@ -434,6 +434,18 @@ OpenCLDevice::getInfoExtended() const -> std::string
   return result.str();
 }
 
+auto
+  OpenCLDevice::getProgramFromCache(const std::string & key) const -> std::shared_ptr<void>
+  {
+    return cache->getCachedProgram(key);
+  }
+
+auto
+  OpenCLDevice::addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void
+  {
+    cache->cacheProgram(key, program);
+  }
+
 
 #endif // USE_OPENCL
 

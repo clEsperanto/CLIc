@@ -7,9 +7,68 @@
 #include <memory>
 #include <sstream>
 #include <unordered_map>
+#include <list>
 
 namespace cle
 {
+
+struct Cache
+{
+    static constexpr size_t MAX_PROGRAM_CACHE_SIZE = 64;
+
+    // Store program and its position in LRU list
+    struct Entry {
+        std::shared_ptr<void> program;
+        std::list<std::string>::iterator lru_it;
+    };
+
+    std::unordered_map<std::string, Entry> program_cache;
+    std::list<std::string> program_lru;
+
+    Cache()
+    {
+        program_cache.reserve(MAX_PROGRAM_CACHE_SIZE);
+    }
+
+    ~Cache() = default;
+
+    auto cacheProgram(const std::string & key, const std::shared_ptr<void> & program) -> void
+    {
+        auto it = program_cache.find(key);
+        if (it != program_cache.end())
+        {
+            // Move key to back (most recently used)
+            program_lru.erase(it->second.lru_it);
+            program_lru.push_back(key);
+            it->second.lru_it = std::prev(program_lru.end());
+            it->second.program = program;
+            return;
+        }
+        if (program_cache.size() >= MAX_PROGRAM_CACHE_SIZE)
+        {
+            // Remove oldest
+            auto oldest = program_lru.front();
+            program_lru.pop_front();
+            program_cache.erase(oldest);
+        }
+        program_lru.push_back(key);
+        program_cache[key] = {program, std::prev(program_lru.end())};
+    }
+
+    auto getCachedProgram(const std::string & key) -> std::shared_ptr<void>
+    {
+        auto it = program_cache.find(key);
+        if (it != program_cache.end())
+        {
+            // Move accessed key to back (most recently used)
+            program_lru.erase(it->second.lru_it);
+            program_lru.push_back(key);
+            it->second.lru_it = std::prev(program_lru.end());
+            return it->second.program;
+        }
+        return nullptr;
+    }
+};
 
 /**
  * @brief Device class
@@ -145,6 +204,12 @@ public:
   [[nodiscard]] virtual auto
   getLocalMemorySize() const -> size_t = 0;
 
+  [[nodiscard]] virtual auto
+  getProgramFromCache(const std::string & key) const -> std::shared_ptr<void>  = 0;
+
+   virtual auto
+  addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void  = 0;
+
   /**
    * @brief operator << for Device::Type
    */
@@ -249,6 +314,8 @@ public:
     Ressources &
     operator=(const Ressources &) = delete;
   };
+
+
 
 
   /**
@@ -412,10 +479,18 @@ public:
   [[nodiscard]] auto
   getLocalMemorySize() const -> size_t override;
 
+
+  [[nodiscard]] auto
+  getProgramFromCache(const std::string & key) const -> std::shared_ptr<void> override;
+
+  auto
+  addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void override;
+
 private:
   std::shared_ptr<Ressources>   clRessources = nullptr;
   std::shared_ptr<Context>      clContext = nullptr;
   std::shared_ptr<CommandQueue> clCommandQueue = nullptr;
+  std::shared_ptr<Cache>        cache = std::make_shared<Cache>();
   bool                          initialized = false;
   bool                          waitFinish = false;
 };
@@ -430,6 +505,7 @@ private:
 class CUDADevice : public Device
 {
 public:
+
   /**
    * @brief Construct a new CUDADevice object
    */
@@ -582,11 +658,18 @@ public:
   [[nodiscard]] auto
   getLocalMemorySize() const -> size_t override;
 
+    [[nodiscard]] auto
+  getProgramFromCache(const std::string & key) const -> std::shared_ptr<void> override;
+
+   auto
+  addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void override;
+
 private:
   int       cudaDeviceIndex;
   CUdevice  cudaDevice;
   CUcontext cudaContext;
   CUstream  cudaStream;
+  shared_ptr<void> cache = std::make_shared<Cache>();
   bool      initialized = false;
   bool      waitFinish = false;
 };
