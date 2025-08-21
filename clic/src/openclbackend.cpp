@@ -1263,7 +1263,7 @@ CreateProgramFromSource(const Device::Pointer & device, const std::string & kern
 #endif
 
 
-static constexpr size_t                                       MAX_PROGRAM_CACHE_SIZE = 32;
+static constexpr size_t                                       MAX_PROGRAM_CACHE_SIZE = 64;
 static std::unordered_map<std::string, std::shared_ptr<void>> program_cache;
 static std::list<std::string>                                 program_lru;
 
