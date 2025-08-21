@@ -1,5 +1,6 @@
 #include "backend.hpp"
 #include "cle_preamble_cl.h"
+#include <list>
 
 #include <unordered_map>
 
@@ -1261,6 +1262,49 @@ CreateProgramFromSource(const Device::Pointer & device, const std::string & kern
 }
 #endif
 
+
+// static constexpr size_t                                       MAX_PROGRAM_CACHE_SIZE = 64;
+// static std::unordered_map<std::string, std::shared_ptr<void>> program_cache;
+// static std::list<std::string>                                 program_lru;
+
+// void
+// cacheProgram(const std::string & key, std::shared_ptr<void> program)
+// {
+//   std::cout << "caching program: " << key << std::endl;
+//   if (program_cache.find(key) != program_cache.end())
+//   {
+//     // Program already exists, update LRU
+//     program_lru.remove(key);
+//     program_lru.push_back(key);
+//     std::cout << "\tProgram already cached, updating LRU." << std::endl;
+//     return;
+//   }
+//   if (program_cache.size() >= MAX_PROGRAM_CACHE_SIZE)
+//   {
+//     // Remove oldest
+//     auto oldest = program_lru.front();
+//     program_lru.pop_front();
+//     program_cache.erase(oldest);
+//     std::cout << "\tCache full, removing oldest program" << std::endl;
+//   }
+//   program_cache[key] = program;
+//   program_lru.push_back(key);
+//   std::cout << program_cache.size() << " programs cached." << std::endl;
+//   return;
+// }
+
+// std::shared_ptr<void>
+// getCachedProgram(const std::string & key)
+// {
+//   std::cout << "fetching program from cache: " << key << std::endl;
+//   auto it = program_cache.find(key);
+//   if (it != program_cache.end())
+//   {
+//     return it->second;
+//   }
+//   return nullptr;
+// }
+
 auto
 OpenCLBackend::buildKernel(const Device::Pointer & device,
                            const std::string &     kernel_source,
@@ -1272,13 +1316,17 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
   cl_int     err;
   auto       opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
   const auto use_cache = is_cache_enabled();
+  // std::shared_ptr<void> program = nullptr;
 
   std::hash<std::string> hasher;
   const auto             source_hash = std::to_string(hasher(kernel_source));
   const auto             device_hash = std::to_string(hasher(opencl_device->getInfo()));
 
-  std::shared_ptr<void> program = nullptr;
-  if (use_cache)
+  // fetch the internal cache to avoid rebuilding
+  const auto cache_key = device_hash + "_" + source_hash;
+  auto       program = device->getProgramFromCache(cache_key);
+
+  if (program == nullptr && use_cache)
   {
     program = loadProgramFromCache(device, device_hash, source_hash);
   }
@@ -1291,6 +1339,9 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
       saveBinaryToCache(device_hash, source_hash, program, device);
     }
   }
+
+  device->addProgramToCache(cache_key, program);
+
   auto ocl_kernel = clCreateKernel(reinterpret_cast<cl_program>(program.get()), kernel_name.c_str(), &err);
   if (err != CL_SUCCESS)
   {
