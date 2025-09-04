@@ -7,7 +7,7 @@ ci:
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
     -   id: check-yaml
     -   id: trailing-whitespace
@@ -19,7 +19,7 @@ repos:
     -   id: mixed-line-ending
 
 -   repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v20.1.8
+    rev: v21.1.0
     hooks:
     -   id: clang-format
         types_or: [c++, c]
