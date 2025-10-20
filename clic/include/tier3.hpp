@@ -443,28 +443,25 @@ sato_filter_func(const Device::Pointer & device,
                  float                   sigma_maximum,
                  float                   sigma_step) -> Array::Pointer;
 
-                 
-                 
-  /**
-  * @name tubeness
-  * @brief Enhances filamentous structures of a specified thickness in 2D or 3D
-  * This function is a reimplementation of the Tubeness filter from Fiji/ImageJ
-  * 
-  * @param device Device to perform the operation on. [const Device::Pointer &]
-  * @param src Input image to process. [const Array::Pointer &]
-  * @param dst Output result image. [Array::Pointer ( = None )]
-  * @param sigma Standard deviation of the Gaussian kernel used in the filter. [float ( = 1 )]
-  * @return Array::Pointer
-  * 
-  * @note 'filter', 'in assistant'
-  * @see https://imagej.net/plugins/tubeness
-  */
-  auto
-  tubeness_func(const Device::Pointer & device,
-  const Array::Pointer &  src,
-  Array::Pointer          dst,
-  float                   sigma) -> Array::Pointer;
-  
+
+/**
+ * @name tubeness
+ * @brief Enhances filamentous structures of a specified thickness in 2D or 3D
+ * This function is a reimplementation of the Tubeness filter from Fiji/ImageJ
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param sigma Standard deviation of the Gaussian kernel used in the filter. [float ( = 1 )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'in assistant'
+ * @see https://imagej.net/plugins/tubeness
+ */
+auto
+tubeness_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float sigma)
+  -> Array::Pointer;
+
 } // namespace cle::tier3
 
 #endif // __INCLUDE_TIER3_HPP

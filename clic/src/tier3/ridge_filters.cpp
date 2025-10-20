@@ -57,11 +57,9 @@ sato_filter_func(const Device::Pointer & device,
 }
 
 auto
-tubeness_func(const Device::Pointer & device,
-              const Array::Pointer &  src,
-              Array::Pointer          dst,
-              float                   sigma) -> Array::Pointer
-              {
+tubeness_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float sigma)
+  -> Array::Pointer
+{
   tier0::create_like(src, dst);
   dst->fill(0.0f);
 
@@ -85,16 +83,15 @@ tubeness_func(const Device::Pointer & device,
   {
     auto min_middle = tier2::minimum_of_all_pixels_func(device, middle_eigenvalue);
     tier2::clip_func(device, middle_eigenvalue, middle_eigenvalue, min_middle, 0.0f);
-    temp = tier1::power_func(device, 
-      tier1::multiply_images_func(device, middle_eigenvalue, small_eigenvalue, nullptr), 
-      nullptr, 0.5f);
+    temp = tier1::power_func(
+      device, tier1::multiply_images_func(device, middle_eigenvalue, small_eigenvalue, nullptr), nullptr, 0.5f);
     tier1::multiply_image_and_scalar_func(device, temp, dst, sigma_squared);
   }
   else
   {
     temp = tier1::absolute_func(device, small_eigenvalue, dst);
   }
-  
+
   tier1::multiply_image_and_scalar_func(device, temp, dst, sigma_squared);
   return dst;
 }
