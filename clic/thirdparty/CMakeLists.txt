@@ -26,8 +26,10 @@ FetchContent_Declare(eigen
 
 FetchContent_MakeAvailable(cleKernels eigen ) # clFFT
 
-
-
+# test to avoid building eigen tests for fortran 
+set(EIGEN_TEST_FORTRAN OFF CACHE BOOL "" FORCE)
+set(EIGEN_LEAVE_TEST_IN_ALL_TARGET OFF CACHE BOOL "" FORCE)
+set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
 
 # Fetch vkFFT library sources
 set(VKFFT_BACKEND 3 CACHE STRING "VkFFT backend to use (1, 2, 3)")
