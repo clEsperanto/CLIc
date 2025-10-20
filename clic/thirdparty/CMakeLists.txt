@@ -26,7 +26,7 @@ FetchContent_Declare(eigen
 
 FetchContent_MakeAvailable(cleKernels eigen ) # clFFT
 
-# test to avoid building eigen tests for fortran 
+# test to avoid building eigen tests for fortran
 set(EIGEN_TEST_FORTRAN OFF CACHE BOOL "" FORCE)
 set(EIGEN_LEAVE_TEST_IN_ALL_TARGET OFF CACHE BOOL "" FORCE)
 set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
