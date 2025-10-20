@@ -26,8 +26,7 @@ FetchContent_Declare(eigen
 
 FetchContent_MakeAvailable(cleKernels eigen ) # clFFT
 
-
-
+# test to avoid building eigen tests for fortran
 
 # Fetch vkFFT library sources
 set(VKFFT_BACKEND 3 CACHE STRING "VkFFT backend to use (1, 2, 3)")
