@@ -56,4 +56,47 @@ sato_filter_func(const Device::Pointer & device,
   return dst;
 }
 
+auto
+tubeness_func(const Device::Pointer & device,
+              const Array::Pointer &  src,
+              Array::Pointer          dst,
+              float                   sigma) -> Array::Pointer
+              {
+  tier0::create_like(src, dst);
+  dst->fill(0.0f);
+
+  auto is_3d = (src->depth() > 1);
+
+  Array::Pointer temp = nullptr;
+  Array::Pointer middle_eigenvalue = nullptr;
+  auto           small_eigenvalue =
+    Array::create(src->width(), src->height(), src->depth(), src->dim(), dType::FLOAT, mType::BUFFER, device);
+  if (is_3d)
+  {
+    middle_eigenvalue =
+      Array::create(src->width(), src->height(), src->depth(), src->dim(), dType::FLOAT, mType::BUFFER, device);
+  }
+  tier2::hessian_gaussian_eigenvalues_func(device, src, small_eigenvalue, middle_eigenvalue, nullptr, sigma);
+
+  auto sigma_squared = sigma * sigma;
+  auto min_small = tier2::minimum_of_all_pixels_func(device, small_eigenvalue);
+  tier2::clip_func(device, small_eigenvalue, small_eigenvalue, min_small, 0.0f);
+  if (is_3d)
+  {
+    auto min_middle = tier2::minimum_of_all_pixels_func(device, middle_eigenvalue);
+    tier2::clip_func(device, middle_eigenvalue, middle_eigenvalue, min_middle, 0.0f);
+    temp = tier1::power_func(device, 
+      tier1::multiply_images_func(device, middle_eigenvalue, small_eigenvalue, nullptr), 
+      nullptr, 0.5f);
+    tier1::multiply_image_and_scalar_func(device, temp, dst, sigma_squared);
+  }
+  else
+  {
+    temp = tier1::absolute_func(device, small_eigenvalue, dst);
+  }
+  
+  tier1::multiply_image_and_scalar_func(device, temp, dst, sigma_squared);
+  return dst;
+}
+
 } // namespace cle::tier3
