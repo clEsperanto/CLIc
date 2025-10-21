@@ -448,6 +448,7 @@ sato_filter_func(const Device::Pointer & device,
  * @name tubeness
  * @brief Enhances filamentous structures of a specified thickness in 2D or 3D
  * This function is a reimplementation of the Tubeness filter from Fiji/ImageJ
+ * which is based on the Sato filter (https://doi.org/10.1016/S1361-8415(98)80009-1).
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -457,6 +458,7 @@ sato_filter_func(const Device::Pointer & device,
  *
  * @note 'filter', 'in assistant'
  * @see https://imagej.net/plugins/tubeness
+ * @see https://doi.org/10.1016/S1361-8415(98)80009-1
  */
 auto
 tubeness_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float sigma)
