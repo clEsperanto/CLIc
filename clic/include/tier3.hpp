@@ -422,8 +422,9 @@ statistics_of_background_and_labelled_pixels_func(const Device::Pointer & device
 /**
  * @name sato_filter
  * @brief Applies the multi-scale ridge detection Sato filter.
- * This filter was first introduced by Sato et al. in 1998 (https://doi.org/10.1016/S1361-8415(98)80009-1)
- *
+ * This filter is based on Sato et al. in 1998 (https://doi.org/10.1016/S1361-8415(98)80009-1)
+ * The filter will cumulate the maximum response over a range of [sigma_minimum, sigma_maximum[.
+ * 
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
@@ -448,7 +449,8 @@ sato_filter_func(const Device::Pointer & device,
  * @name tubeness
  * @brief Enhances filamentous structures of a specified thickness in 2D or 3D
  * This function is a reimplementation of the Tubeness filter from Fiji/ImageJ
- * which is based on the Sato filter (https://doi.org/10.1016/S1361-8415(98)80009-1).
+ * It is based on the Sato filter (https://doi.org/10.1016/S1361-8415(98)80009-1).
+ * The sigma parameter defines the thickness of the structures to be enhanced.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
