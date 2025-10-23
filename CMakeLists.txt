@@ -6,7 +6,7 @@ project(CLIc VERSION 0.18.1 LANGUAGES C CXX)
 set(CMAKE_Fortran_COMPILER NOTFOUND CACHE FILEPATH "Fortran compiler" FORCE)
 
 
-set(kernel_version_tag "clesperanto_kernels"  CACHE STRING "clEsperanto kernel version tag")
+set(kernel_version_tag " 3.3.1"  CACHE STRING "clEsperanto kernel version tag")
 set(eigen_lib_version_tag "3.4.0" CACHE STRING "Eigen library version tag")
 
 # if not set, set the default build type to Release
