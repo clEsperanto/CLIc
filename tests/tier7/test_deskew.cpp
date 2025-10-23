@@ -27,11 +27,10 @@ TEST_P(TestDeskew, deskew_y)
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
 
-  if(!device->supportImage())
+  if (!device->supportImage())
   {
     GTEST_SKIP() << "Device does not support image objects.";
   }
-
 
 
   device->setWaitToFinish(true);
