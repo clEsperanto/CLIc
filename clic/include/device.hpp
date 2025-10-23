@@ -14,7 +14,7 @@ namespace cle
 
 /**
  * @brief Cache struct for pre-compiled programs and Least Recently Used (LRU) management
- * This structure stores programs pointers in a unordered_map with a maximum size (64), allowing devices 
+ * This structure stores programs pointers in a unordered_map with a maximum size (64), allowing devices
  * to search the cache before compiling a new program. If not found, the new program is added to the cache.
  * The cache uses an LRU list to track usage and evict the least recently used program when the cache is full.
  */

@@ -191,7 +191,7 @@ translate_func(const Device::Pointer & device,
 /**
  * @name deskew_x
  * @brief Deskew a volume as acquired with oblique plane light-sheet microscopy with skew in the X direction.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to be deskewed. [const Array::Pointer &]
  * @param dst Output image. [Array::Pointer ( = None )]
@@ -215,7 +215,7 @@ deskew_x_func(const Device::Pointer & device,
 /**
  * @name deskew_x
  * @brief Deskew a volume as acquired with oblique plane light-sheet microscopy with skew in the Y direction.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to be deskewed. [const Array::Pointer &]
  * @param dst Output image. [Array::Pointer ( = None )]

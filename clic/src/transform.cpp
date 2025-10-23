@@ -1,9 +1,9 @@
 #include "transform.hpp"
 
 #include "cle_affine_transform.h"
-#include "cle_affine_transform_interpolate.h"
 #include "cle_affine_transform_deskew_x.h"
 #include "cle_affine_transform_deskew_y.h"
+#include "cle_affine_transform_interpolate.h"
 
 namespace cle
 {
@@ -107,19 +107,18 @@ apply_affine_transform(const cle::Array::Pointer &  src,
 }
 
 
-
-auto                       
+auto
 apply_affine_transform_deskew_3d(const cle::Array::Pointer &  src,
-                                cle::Array::Pointer          dst,
-                                const cle::AffineTransform & transform,
-                                float deskewing_angle,
-                                float voxel_size_x,
-                                float voxel_size_y,
-                                float voxel_size_z,
-                                int deskew_direction,
-                              bool auto_resize) -> cle::Array::Pointer
+                                 cle::Array::Pointer          dst,
+                                 const cle::AffineTransform & transform,
+                                 float                        deskewing_angle,
+                                 float                        voxel_size_x,
+                                 float                        voxel_size_y,
+                                 float                        voxel_size_z,
+                                 int                          deskew_direction,
+                                 bool                         auto_resize) -> cle::Array::Pointer
 {
-  
+
   if (src->depth() == 1)
   {
     throw std::runtime_error("Deskewing is only available for 3D images.");
@@ -130,7 +129,7 @@ apply_affine_transform_deskew_3d(const cle::Array::Pointer &  src,
   auto                 width = src->width();
   auto                 height = src->height();
   auto                 depth = src->depth();
-  
+
   // update shape and transform if auto_resize is true
   if (auto_resize)
   {
@@ -159,7 +158,9 @@ apply_affine_transform_deskew_3d(const cle::Array::Pointer &  src,
     }
     catch (const std::exception & e)
     {
-      std::cerr << "Warning: Device does not support Image type. Deskewing is not available, falling back to non-deskewed transform." << std::endl;
+      std::cerr << "Warning: Device does not support Image type. Deskewing is not available, falling back to "
+                   "non-deskewed transform."
+                << std::endl;
       dst = apply_affine_transform(src, dst, new_transform, false, false);
       return dst;
     }
@@ -170,40 +171,39 @@ apply_affine_transform_deskew_3d(const cle::Array::Pointer &  src,
   mat->writeFrom(cle::AffineTransform::toArray(new_transform.getInverseTranspose()).data());
 
   // precalculate these functions that are dependent on deskewing angle
-  float tantheta = static_cast<float>( tan(deskewing_angle * M_PI / 180.0f) );
-  float sintheta = static_cast<float>( sin(deskewing_angle * M_PI / 180.0f) );
-  float costheta = static_cast<float>( cos(deskewing_angle * M_PI / 180.0f) );
+  float tantheta = static_cast<float>(tan(deskewing_angle * M_PI / 180.0f));
+  float sintheta = static_cast<float>(sin(deskewing_angle * M_PI / 180.0f));
+  float costheta = static_cast<float>(cos(deskewing_angle * M_PI / 180.0f));
 
-  float pixel_step;
+  float      pixel_step;
   KernelInfo kernel;
   switch (deskew_direction)
   {
-  case 0: // deskew along x axis
+    case 0: // deskew along x axis
     {
       kernel = { "affine_transform_deskew_x", kernel::affine_transform_deskew_x };
       pixel_step = static_cast<float>(voxel_size_z / voxel_size_y);
       break;
     }
-  case 1: // deskew along y axis
+    case 1: // deskew along y axis
     {
       kernel = { "affine_transform_deskew_y", kernel::affine_transform_deskew_y };
       pixel_step = static_cast<float>(voxel_size_z / voxel_size_x);
       break;
     }
-  default:
-    break;
+    default:
+      break;
   }
-  
+
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const ParameterList params = { 
-    { "src", image }, { "dst", dst }, { "mat", mat },
-    { "pixel_step", pixel_step },
+  const ParameterList params = {
+    { "src", image },         { "dst", dst },           { "mat", mat },           { "pixel_step", pixel_step },
     { "tantheta", tantheta }, { "costheta", costheta }, { "sintheta", sintheta },
   };
 
   // execute the kernel
   execute(src->device(), kernel, params, range);
   return dst;
-}                                
+}
 
 } // namespace cle

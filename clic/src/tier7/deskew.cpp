@@ -23,11 +23,11 @@ deskew_x_func(const Device::Pointer & device,
               float                   voxel_size_z,
               float                   scale_factor) -> Array::Pointer
 {
-    auto transform = AffineTransform();
-    transform.deskew_x(angle, voxel_size_x, voxel_size_y, voxel_size_z, scale_factor);
+  auto transform = AffineTransform();
+  transform.deskew_x(angle, voxel_size_x, voxel_size_y, voxel_size_z, scale_factor);
 
-    return apply_affine_transform_deskew_3d(
-        src, dst, transform, angle, voxel_size_x, voxel_size_y, voxel_size_z, 0, true);
+  return apply_affine_transform_deskew_3d(
+    src, dst, transform, angle, voxel_size_x, voxel_size_y, voxel_size_z, 0, true);
 }
 
 
@@ -41,11 +41,11 @@ deskew_y_func(const Device::Pointer & device,
               float                   voxel_size_z,
               float                   scale_factor) -> Array::Pointer
 {
-    auto transform = AffineTransform();
-    transform.deskew_y(angle, voxel_size_x, voxel_size_y, voxel_size_z, scale_factor);
+  auto transform = AffineTransform();
+  transform.deskew_y(angle, voxel_size_x, voxel_size_y, voxel_size_z, scale_factor);
 
-    return apply_affine_transform_deskew_3d(
-        src, dst, transform, angle, voxel_size_x, voxel_size_y, voxel_size_z, 1, true);
+  return apply_affine_transform_deskew_3d(
+    src, dst, transform, angle, voxel_size_x, voxel_size_y, voxel_size_z, 1, true);
 }
 
 } // namespace cle::tier7

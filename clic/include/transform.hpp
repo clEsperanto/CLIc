@@ -460,16 +460,16 @@ apply_affine_transform(const cle::Array::Pointer &  src,
  * @param auto_resize Auto resize flag
  * @return cle::Array::Pointer
  */
-auto                       
+auto
 apply_affine_transform_deskew_3d(const cle::Array::Pointer &  src,
-                                cle::Array::Pointer          dst,
-                                const cle::AffineTransform & transform,
-                                float deskewing_angle,
-                                float voxel_size_x,
-                                float voxel_size_y,
-                                float voxel_size_z,
-                                int deskew_direction,
-                                bool auto_resize) -> cle::Array::Pointer;
+                                 cle::Array::Pointer          dst,
+                                 const cle::AffineTransform & transform,
+                                 float                        deskewing_angle,
+                                 float                        voxel_size_x,
+                                 float                        voxel_size_y,
+                                 float                        voxel_size_z,
+                                 int                          deskew_direction,
+                                 bool                         auto_resize) -> cle::Array::Pointer;
 
 } // namespace cle
 

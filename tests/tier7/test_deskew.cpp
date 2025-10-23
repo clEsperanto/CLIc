@@ -9,18 +9,17 @@ class TestDeskew : public ::testing::TestWithParam<std::string>
 
 TEST_P(TestDeskew, deskew_y)
 {
-  auto coord_to_index = [](size_t x, size_t y, size_t z, size_t width, size_t height) -> size_t
-  {
-      return z * height * width + y * width + x;
+  auto coord_to_index = [](size_t x, size_t y, size_t z, size_t width, size_t height) -> size_t {
+    return z * height * width + y * width + x;
   };
 
-  std::array<float, 10 * 10 * 10> input = {0.0f};
-  auto idx = coord_to_index(1, 1, 1, 10, 10);
+  std::array<float, 10 * 10 * 10> input = { 0.0f };
+  auto                            idx = coord_to_index(1, 1, 1, 10, 10);
   input[idx] = 1.0f;
 
-  std::array<float, 10 * 19 * 5> valid = {0.0f};
+  std::array<float, 10 * 19 * 5> valid = { 0.0f };
   idx = coord_to_index(1, 2, 3, 10, 19);
-  valid[idx] =  0.169872939f;
+  valid[idx] = 0.169872939f;
 
   std::array<float, 10 * 19 * 5> output;
 
