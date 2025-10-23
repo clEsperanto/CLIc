@@ -26,6 +26,14 @@ TEST_P(TestDeskew, deskew_y)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+
+  if(!device->supportImage())
+  {
+    GTEST_SKIP() << "Device does not support image objects.";
+  }
+
+
+
   device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(10, 10, 10, 3, cle::dType::FLOAT, cle::mType::IMAGE, device);
