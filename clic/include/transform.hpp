@@ -271,19 +271,21 @@ public:
   auto
   deskew_x(float angle_deg, float voxel_size_x, float voxel_size_y, float voxel_size_z, float scale_factor) -> void
   {
+    constexpr float pi180 = static_cast<float>(M_PI / 180.0);
+
     // define shear factor (different computation than the methods below)
-    float shear_factor = std::sin((90 - angle_deg) * static_cast<float>(M_PI / 180.0)) * (voxel_size_z / voxel_size_y);
+    float shear_factor = std::sin((90 - angle_deg) * pi180) * (voxel_size_z / voxel_size_x);
     m_matrix(0, 2) += shear_factor;
 
     // make voxels isotropic, calculate the new scaling factor for Z after shearing
     // https://github.com/tlambert03/napari-ndtiffs/blob/092acbd92bfdbf3ecb1eb9c7fc146411ad9e6aae/napari_ndtiffs/affine.py#L57
-    auto new_dz = std::sin(angle_deg * static_cast<float>(M_PI / 180.0)) * voxel_size_z;
-    auto scale_factor_z = (new_dz / voxel_size_y) * scale_factor;
+    auto new_dz = std::sin(angle_deg * pi180) * voxel_size_z;
+    auto scale_factor_z = (new_dz / voxel_size_x) * scale_factor;
 
     scale(scale_factor, scale_factor, scale_factor_z);
 
     // correct orientation so that the new Z-plane goes proximal-distal from the objective.
-    rotate(2, -angle_deg);
+    rotate_around_y_axis(angle_deg);
   }
 
   /**
@@ -297,19 +299,21 @@ public:
   auto
   deskew_y(float angle_deg, float voxel_size_x, float voxel_size_y, float voxel_size_z, float scale_factor) -> void
   {
+    constexpr float pi180 = static_cast<float>(M_PI / 180.0);
+
     // define shear factor (different computation than the methods below)
-    float shear_factor = std::sin((90 - angle_deg) * static_cast<float>(M_PI / 180.0)) * (voxel_size_z / voxel_size_y);
+    float shear_factor = std::sin((90 - angle_deg) * pi180) * (voxel_size_z / voxel_size_y);
     m_matrix(1, 2) += shear_factor;
 
     // make voxels isotropic, calculate the new scaling factor for Z after shearing
     // https://github.com/tlambert03/napari-ndtiffs/blob/092acbd92bfdbf3ecb1eb9c7fc146411ad9e6aae/napari_ndtiffs/affine.py#L57
-    auto new_dz = std::sin(angle_deg * static_cast<float>(M_PI / 180.0)) * voxel_size_z;
-    auto scale_factor_z = (new_dz / voxel_size_x) * scale_factor;
+    auto new_dz = std::sin(angle_deg * pi180) * voxel_size_z;
+    auto scale_factor_z = (new_dz / voxel_size_y) * scale_factor;
 
     scale(scale_factor, scale_factor, scale_factor_z);
 
     // correct orientation so that the new Z-plane goes proximal-distal from the objective.
-    rotate(1, angle_deg);
+    rotate_around_x_axis(0 - angle_deg);
   }
 
   /**
@@ -441,6 +445,31 @@ apply_affine_transform(const cle::Array::Pointer &  src,
                        const cle::AffineTransform & transform,
                        const bool                   interpolate,
                        const bool                   auto_resize) -> cle::Array::Pointer;
+
+
+/**
+ * @brief Apply deskew transform to a 3D array
+ * @param src Source array
+ * @param dst Destination array
+ * @param transform Affine transform
+ * @param deskewing_angle Deskewing angle (in degrees)
+ * @param voxel_size_x Voxel size in the x axis
+ * @param voxel_size_y Voxel size in the y axis
+ * @param voxel_size_z Voxel size in the z axis
+ * @param deskew_direction Deskewing direction (0: x, 1: y)
+ * @param auto_resize Auto resize flag
+ * @return cle::Array::Pointer
+ */
+auto                       
+apply_affine_transform_deskew_3d(const cle::Array::Pointer &  src,
+                                cle::Array::Pointer          dst,
+                                const cle::AffineTransform & transform,
+                                float deskewing_angle,
+                                float voxel_size_x,
+                                float voxel_size_y,
+                                float voxel_size_z,
+                                int deskew_direction,
+                                bool auto_resize) -> cle::Array::Pointer;
 
 } // namespace cle
 
