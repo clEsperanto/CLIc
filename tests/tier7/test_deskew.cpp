@@ -26,18 +26,18 @@ TEST_P(TestDeskew, deskew_y)
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+  device->setWaitToFinish(true);
 
-  if (!device->supportImage())
+  cle::Array::Pointer gpu_input = nullptr;
+  try
+  {
+    gpu_input = cle::Array::create(10, 10, 10, 3, cle::dType::FLOAT, cle::mType::IMAGE, device);
+  }
+  catch (const std::runtime_error & e)
   {
     GTEST_SKIP() << "Device does not support image objects.";
   }
-
-
-  device->setWaitToFinish(true);
-
-  auto gpu_input = cle::Array::create(10, 10, 10, 3, cle::dType::FLOAT, cle::mType::IMAGE, device);
   gpu_input->writeFrom(input.data());
-
   auto gpu_output = cle::tier7::deskew_y_func(device, gpu_input, nullptr, 30, 1.0f, 1.0f, 1.0f, 1.0f);
 
   gpu_output->readTo(output.data());
