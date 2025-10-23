@@ -12,6 +12,12 @@
 namespace cle
 {
 
+/**
+ * @brief Cache struct for pre-compiled programs and Least Recently Used (LRU) management
+ * This structure stores programs pointers in a unordered_map with a maximum size (64), allowing devices
+ * to search the cache before compiling a new program. If not found, the new program is added to the cache.
+ * The cache uses an LRU list to track usage and evict the least recently used program when the cache is full.
+ */
 struct Cache
 {
   static constexpr size_t MAX_PROGRAM_CACHE_SIZE = 64;
@@ -27,9 +33,13 @@ struct Cache
   std::list<std::string>                 program_lru;
 
   Cache() { program_cache.reserve(MAX_PROGRAM_CACHE_SIZE); }
-
   ~Cache() = default;
 
+  /**
+   * @brief Cache a program with a given key
+   * @param key The key to identify the program
+   * @param program The program pointer to cache
+   */
   auto
   cacheProgram(const std::string & key, const std::shared_ptr<void> & program) -> void
   {
@@ -54,6 +64,11 @@ struct Cache
     program_cache[key] = { program, std::prev(program_lru.end()) };
   }
 
+  /**
+   * @brief Retrieve a cached program by key
+   * @param key The key to identify the program
+   * @return The program pointer if found, nullptr otherwise
+   */
   auto
   getCachedProgram(const std::string & key) -> std::shared_ptr<void>
   {
@@ -204,9 +219,19 @@ public:
   [[nodiscard]] virtual auto
   getLocalMemorySize() const -> size_t = 0;
 
+  /**
+   * @brief Get program from cache by key
+   * @param key The key to identify the program
+   * @return The program pointer if found, nullptr otherwise
+   */
   [[nodiscard]] virtual auto
   getProgramFromCache(const std::string & key) const -> std::shared_ptr<void> = 0;
 
+  /**
+   * @brief Add program to cache with a given key
+   * @param key The key to identify the program
+   * @param program The program pointer to cache
+   */
   virtual auto
   addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void = 0;
 
@@ -477,10 +502,19 @@ public:
   [[nodiscard]] auto
   getLocalMemorySize() const -> size_t override;
 
-
+  /**
+   * @brief Get program from cache by key
+   * @param key The key to identify the program
+   * @return The program pointer if found, nullptr otherwise
+   */
   [[nodiscard]] auto
   getProgramFromCache(const std::string & key) const -> std::shared_ptr<void> override;
 
+  /**
+   * @brief Add program to cache with a given key
+   * @param key The key to identify the program
+   * @param program The program pointer to cache
+   */
   auto
   addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void override;
 
@@ -655,9 +689,19 @@ public:
   [[nodiscard]] auto
   getLocalMemorySize() const -> size_t override;
 
+  /**
+   * @brief Get program from cache by key
+   * @param key The key to identify the program
+   * @return The program pointer if found, nullptr otherwise
+   */
   [[nodiscard]] auto
   getProgramFromCache(const std::string & key) const -> std::shared_ptr<void> override;
 
+  /**
+   * @brief Add program to cache with a given key
+   * @param key The key to identify the program
+   * @param program The program pointer to cache
+   */
   auto
   addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void override;
 

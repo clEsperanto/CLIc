@@ -85,13 +85,6 @@ public:
   friend auto
   operator<<(std::ostream & out, const Array::Pointer & array) -> std::ostream &;
 
-  // /**
-  //  * @brief Print the Array as a matrix for debugging
-  //  */
-  // template <typename T>
-  // friend auto
-  // print(const Array::Pointer & array) -> void;
-
   /**
    * @brief Allocate memory space of the array on the device
    */
@@ -283,11 +276,6 @@ public:
    */
   [[nodiscard]] auto
   get_ptr() const -> std::shared_ptr<void>;
-
-  // /**
-  //  * @brief destructor
-  //  */
-  // ~Array();
 
   /**
    * @brief copy constructor

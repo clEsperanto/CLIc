@@ -188,6 +188,53 @@ translate_func(const Device::Pointer & device,
                float                   translate_z,
                bool                    interpolate) -> Array::Pointer;
 
+/**
+ * @name deskew_x
+ * @brief Deskew a volume as acquired with oblique plane light-sheet microscopy with skew in the X direction.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to be deskewed. [const Array::Pointer &]
+ * @param dst Output image. [Array::Pointer ( = None )]
+ * @param angle Angle (in degree) [float ( = 30 )]
+ * @param voxel_size_x Voxel size in x direction [float ( = 1.0 )]
+ * @param voxel_size_y Voxel size in y direction [float ( = 1.0 )]
+ * @param voxel_size_z Voxel size in z direction [float ( = 1.0 )]
+ * @param scale_factor Downscaling factor after deskewing [float ( = 1.0 )]
+ * @return Array::Pointer
+ */
+auto
+deskew_x_func(const Device::Pointer & device,
+              const Array::Pointer &  src,
+              Array::Pointer          dst,
+              float                   angle,
+              float                   voxel_size_x,
+              float                   voxel_size_y,
+              float                   voxel_size_z,
+              float                   scale_factor) -> Array::Pointer;
+
+/**
+ * @name deskew_x
+ * @brief Deskew a volume as acquired with oblique plane light-sheet microscopy with skew in the Y direction.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to be deskewed. [const Array::Pointer &]
+ * @param dst Output image. [Array::Pointer ( = None )]
+ * @param angle Angle (in degree) [float ( = 30 )]
+ * @param voxel_size_x Voxel size in x direction [float ( = 1.0 )]
+ * @param voxel_size_y Voxel size in y direction [float ( = 1.0 )]
+ * @param voxel_size_z Voxel size in z direction [float ( = 1.0 )]
+ * @param scale_factor Downscaling factor after deskewing [float ( = 1.0 )]
+ * @return Array::Pointer
+ */
+auto
+deskew_y_func(const Device::Pointer & device,
+              const Array::Pointer &  src,
+              Array::Pointer          dst,
+              float                   angle,
+              float                   voxel_size_x,
+              float                   voxel_size_y,
+              float                   voxel_size_z,
+              float                   scale_factor) -> Array::Pointer;
 
 /**
  * @name closing_labels
