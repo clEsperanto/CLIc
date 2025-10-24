@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(CLIc VERSION 0.18.1 LANGUAGES C CXX)
+project(CLIc VERSION 0.18.4 LANGUAGES C CXX)
 
-# set(CMAKE_Fortran_COMPILER "" CACHE FILEPATH "Fortran compiler" FORCE)
+# quick fix for windows CI
 set(CMAKE_Fortran_COMPILER NOTFOUND CACHE FILEPATH "Fortran compiler" FORCE)
-
 
 set(kernel_version_tag "3.3.1"  CACHE STRING "clEsperanto kernel version tag")
 set(eigen_lib_version_tag "3.4.0" CACHE STRING "Eigen library version tag")
