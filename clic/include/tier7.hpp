@@ -213,7 +213,7 @@ deskew_x_func(const Device::Pointer & device,
               float                   scale_factor) -> Array::Pointer;
 
 /**
- * @name deskew_x
+ * @name deskew_y
  * @brief Deskew a volume as acquired with oblique plane light-sheet microscopy with skew in the Y direction.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
