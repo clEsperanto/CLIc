@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(CLIc VERSION 0.19.0 LANGUAGES C CXX)
+project(CLIc VERSION 0.19.1 LANGUAGES C CXX)
 
 # quick fix for windows CI
 set(CMAKE_Fortran_COMPILER NOTFOUND CACHE FILEPATH "Fortran compiler" FORCE)
