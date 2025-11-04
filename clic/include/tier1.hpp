@@ -2360,7 +2360,7 @@ pad_func(const Device::Pointer & device,
 
 
 /**
- * @name unpad_func
+ * @name unpad
  * @brief Removes padding from an image along dimensions.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
