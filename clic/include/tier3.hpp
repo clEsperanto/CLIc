@@ -166,8 +166,7 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Label image. [const Array::Pointer &]
- * @param dst Binary vector; if provided, it should have size 1×n with n = maximum label + 1. [Array::Pointer ( = None
- * )]
+ * @param dst Binary vector; if provided, it should have size 1×n with n = maximum label + 1. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  */

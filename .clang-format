@@ -66,7 +66,7 @@ BreakConstructorInitializers: BeforeComma
 BreakAfterJavaFieldAnnotations: false
 BreakStringLiterals: true
 ## The following line allows larger lines in non-documentation code
-ColumnLimit: 120
+ColumnLimit: 140
 CommentPragmas: "^ IWYU pragma:"
 CompactNamespaces: false
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
