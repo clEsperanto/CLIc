@@ -258,21 +258,21 @@ public:
 
   /**
    * @brief Get the memory pointer of the Array
-   * @return void **
+   * @return void *
    */
   [[nodiscard]] auto
   get() const -> void *;
 
   /**
    * @brief Get the const memory pointer of the Array
-   * @return const void **
+   * @return const void *
    */
   [[nodiscard]] auto
   c_get() const -> const void *;
 
   /**
-   * @brief Get the const memory pointer of the Array
-   * @return const void **
+   * @brief Get the shared pointer to the Array memory
+   * @return std::shared_ptr<void>
    */
   [[nodiscard]] auto
   get_ptr() const -> std::shared_ptr<void>;

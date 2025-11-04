@@ -19,7 +19,7 @@ using KernelInfo = std::pair<std::string, std::string>;
 using RangeArray = std::array<size_t, 3>;
 
 /**
- * @brief Execute a kernel using CLE framework
+ * @brief Execute a kernel using CLIJ code
  * @param device Device pointer
  * @param kernel_func Kernel function name and code
  * @param parameters List of parameters to be passed to the kernel
@@ -75,7 +75,7 @@ execute_separable(const Device::Pointer &      device,
                   const std::array<int, 3> &   orders) -> void;
 
 /**
- * @brief Execute a kernel using native framework
+ * @brief Execute a kernel using native OpenCL code
  * @param device Device pointer
  * @param kernel_func Kernel function name and code
  * @param parameters List of parameters to be passed to the kernel

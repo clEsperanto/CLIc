@@ -5,8 +5,8 @@
 
 /**
  * @namespace cle::tier4
- * @brief Namespace container for all functions of tier 4 category
- *        Tier 4 functions are advanced functions that may rely on previous tier functions
+ * @brief Namespace container for all Tier 4 functions.
+ *        Tier 4 functions are advanced and may rely on lower-tier functions.
  */
 namespace cle::tier4
 {
@@ -14,11 +14,11 @@ namespace cle::tier4
 /**
  * @name label_bounding_box
  * @brief Determines the bounding box of the specified label from a label image. The positions are returned in
- *  an array of 6 values as follows: minX, minY, minZ, maxX, maxY, maxZ.
+ *  an array of six values as follows: minX, minY, minZ, maxX, maxY, maxZ.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Label image [const Array::Pointer &]
- * @param label_id Identifier of label [int]
+ * @param src Label image. [const Array::Pointer &]
+ * @param label_id Identifier of the label. [int]
  * @return std::vector<float>
  *
  * @see https://clij.github.io/clij2-docs/reference_boundingBox
@@ -29,12 +29,11 @@ label_bounding_box_func(const Device::Pointer & device, const Array::Pointer & s
 
 /**
  * @name mean_squared_error
- * @brief Determines the mean squared error (MSE) between two images. The MSE will be stored in a new row of ImageJs
- * Results table in the column 'MSE'.
+ * @brief Determines the mean squared error (MSE) between two images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 First image to compare [const Array::Pointer &]
- * @param src1 Second image to compare [const Array::Pointer &]
+ * @param src0 First image to compare. [const Array::Pointer &]
+ * @param src1 Second image to compare. [const Array::Pointer &]
  * @return float
  *
  * @note 'in assistant', 'combine', 'bia-bob-suggestion'
@@ -47,12 +46,12 @@ mean_squared_error_func(const Device::Pointer & device, const Array::Pointer & s
 
 /**
  * @name spots_to_pointlist
- * @brief Transforms a spots image as resulting from maximum/minimum detection in an image where every column contains d
- * pixels (with d = dimensionality of the original image) with the coordinates of the maxima/minima.
+ * @brief Transforms a spots image (e.g., from maxima/minima detection) into an image where every column contains d
+ * entries (with d = dimensionality of the original image) holding the coordinates of the maxima/minima.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input binary image of spots [const Array::Pointer &]
- * @param dst Output coordinate list of spots [Array::Pointer ( = None )]
+ * @param src Input binary image of spots. [const Array::Pointer &]
+ * @param dst Output coordinate list of spots. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @see https://clij.github.io/clij2-docs/reference_spotsToPointList
@@ -65,8 +64,8 @@ spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & s
 
 /**
  * @name relabel_sequential
- * @brief Analyses a label map and if there are gaps in the indexing (e.g. label 5 is not present) all subsequent labels
- * will be relabelled. Thus, afterwards number of labels and maximum label index are equal. This operation is mostly
+ * @brief Analyzes a label map and if there are gaps in the indexing (e.g., label 5 is not present), all subsequent labels
+ * will be relabeled. Afterward, the number of labels and maximum label index are equal. This operation is mostly
  * performed on the CPU.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -85,7 +84,7 @@ relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & s
 
 /**
  * @name threshold_otsu
- * @brief Binarizes an image using Otsu's threshold method [3] implemented in scikit-image[2] using a histogram
+ * @brief Binarizes an image using Otsu's threshold method, implemented in scikit-image, using a histogram
  * determined on the GPU to create binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -105,14 +104,14 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
 /**
  * @name mean_intensity_map
  * @brief Takes an image and a corresponding label map, determines the mean
- *   intensity per label and replaces every label with the that number.
+ *   intensity per label, and replaces every label with that number.
  *
  * This results in a parametric image expressing mean object intensity.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src intensity image [const Array::Pointer &]
- * @param labels label image [const Array::Pointer &]
- * @param dst Parametric image computed[Array::Pointer ( = None )]
+ * @param src Intensity image. [const Array::Pointer &]
+ * @param labels Label image. [const Array::Pointer &]
+ * @param dst Parametric image computed. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'label measurement', 'map', 'in assistant', 'combine'
@@ -127,12 +126,12 @@ mean_intensity_map_func(const Device::Pointer & device,
 
 /**
  * @name pixel_count_map
- * @brief Takes a label map, determines the number of pixels per label and replaces every label with the that number.
+ * @brief Takes a label map, determines the number of pixels per label, and replaces every label with that number.
  * This results in a parametric image expressing area or volume.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Label image to measure [const Array::Pointer &]
- * @param dst Parametric image computed[Array::Pointer ( = None )]
+ * @param src Label image to measure. [const Array::Pointer &]
+ * @param dst Parametric image computed. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'label measurement', 'map', 'in assistant'
@@ -143,12 +142,12 @@ pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src,
 
 /**
  * @name label_pixel_count_map
- * @brief Takes a label map, determines the number of pixels per label and replaces every label with the that number.
+ * @brief Takes a label map, determines the number of pixels per label, and replaces every label with that number.
  * This results in a parametric image expressing area or volume.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Label image to measure [const Array::Pointer &]
- * @param dst Parametric image computed[Array::Pointer ( = None )]
+ * @param src Label image to measure. [const Array::Pointer &]
+ * @param dst Parametric image computed. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'label measurement', 'map', 'in assistant'
@@ -163,12 +162,12 @@ label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer 
 /**
  * @name centroids_of_labels
  * @brief Determines the centroids of all labels in a label image or image stack.
- * It writes the resulting coordinates in point list image of dimensions n * d
- * where n is the number of labels and d=3 the dimensionality (x,y,z) of the original image.
+ * It writes the resulting coordinates into a point list image of dimensions n × d
+ * where n is the number of labels and d = 3 is the dimensionality (x, y, z) of the original image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param label_image Label image where the centroids will be determined from. [const Array::Pointer &]
- * @param centroids_coordinates Output list of coordinates where the centroids will be written to. [Array::Pointer ( =
+ * @param label_image Label image from which the centroids will be determined. [const Array::Pointer &]
+ * @param centroids_coordinates Output list of coordinates where the centroids will be written. [Array::Pointer ( =
  * None )]
  * @param include_background Determines if the background label should be included. [bool ( = False )]
  * @return Array::Pointer
@@ -282,10 +281,10 @@ exclude_labels_with_map_values_within_range_func(const Device::Pointer & device,
 
 /**
  * @name extension_ratio_map
- * @brief Determines the ratio of the extension for every label in a label map and returns it as
+ * @brief Determines the extension ratio for every label in a label map and returns it as
  * a parametric map.
  *
- * The extension ration is defined as the maximum distance of any pixel in the label to the label's centroid divided by
+ * The extension ratio is defined as the maximum distance of any pixel in the label to the label's centroid divided by
  * the average distance of all pixels in the label to the centroid.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -302,11 +301,8 @@ extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & 
 
 /**
  * @name mean_extension_map
- * @brief Determines for every label the mean distance of any pixel to the centroid in a label map and returns it as
+ * @brief Determines, for every label, the mean distance of all pixels to the centroid in a label map and returns it as
  * a parametric map.
- *
- * The extension ration is defined as the maximum distance of any pixel in the label to the label's centroid divided by
- * the average distance of all pixels in the label to the centroid.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input label image. [const Array::Pointer &]
@@ -322,11 +318,8 @@ mean_extension_map_func(const Device::Pointer & device, const Array::Pointer & s
 
 /**
  * @name maximum_extension_map
- * @brief Determines for every label the maximum distance of any pixel to the centroid in a label map and returns it as
+ * @brief Determines, for every label, the maximum distance of any pixel to the centroid in a label map and returns it as
  * a parametric map.
- *
- * The extension ration is defined as the maximum distance of any pixel in the label to the label's centroid divided by
- * the average distance of all pixels in the label to the centroid.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input label image. [const Array::Pointer &]
@@ -343,14 +336,14 @@ maximum_extension_map_func(const Device::Pointer & device, const Array::Pointer 
 /**
  * @name minimum_intensity_map
  * @brief Takes an image and a corresponding label map, determines the minimum
- *   intensity per label and replaces every label with the that number.
+ *   intensity per label, and replaces every label with that number.
  *
  * This results in a parametric image expressing minimum object intensity.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src intensity image [const Array::Pointer &]
- * @param labels label image [const Array::Pointer &]
- * @param dst Parametric image computed[Array::Pointer ( = None )]
+ * @param src Intensity image. [const Array::Pointer &]
+ * @param labels Label image. [const Array::Pointer &]
+ * @param dst Parametric image computed. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'label measurement', 'map', 'in assistant', 'combine'
@@ -366,14 +359,14 @@ minimum_intensity_map_func(const Device::Pointer & device,
 /**
  * @name maximum_intensity_map
  * @brief Takes an image and a corresponding label map, determines the maximum
- *   intensity per label and replaces every label with the that number.
+ *   intensity per label, and replaces every label with that number.
  *
  * This results in a parametric image expressing maximum object intensity.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src intensity image [const Array::Pointer &]
- * @param labels label image [const Array::Pointer &]
- * @param dst Parametric image computed[Array::Pointer ( = None )]
+ * @param src Intensity image. [const Array::Pointer &]
+ * @param labels Label image. [const Array::Pointer &]
+ * @param dst Parametric image computed. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'label measurement', 'map', 'in assistant', 'combine'
@@ -388,15 +381,15 @@ maximum_intensity_map_func(const Device::Pointer & device,
 
 /**
  * @name standard_deviation_intensity_map
- * @brief Takes an image and a corresponding label map, determines the standard deviation
- *   intensity per label and replaces every label with the that number.
+ * @brief Takes an image and a corresponding label map, determines the standard deviation of the
+ *   intensity per label, and replaces every label with that number.
  *
- * This results in a parametric image expressing std object intensity.
+ * This results in a parametric image expressing standard deviation of object intensity.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src intensity image [const Array::Pointer &]
- * @param labels label image [const Array::Pointer &]
- * @param dst Parametric image computed[Array::Pointer ( = None )]
+ * @param src Intensity image. [const Array::Pointer &]
+ * @param labels Label image. [const Array::Pointer &]
+ * @param dst Parametric image computed. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'label measurement', 'map', 'in assistant', 'combine'
@@ -420,7 +413,7 @@ standard_deviation_intensity_map_func(const Device::Pointer & device,
  *
  */
 auto
-percentile_func(const Device::Pointer & device, const Array::Pointer & src, const float percentile) -> float;
+percentile_func(const Device::Pointer & device, const Array::Pointer & src, float percentile) -> float;
 
 
 } // namespace cle::tier4
