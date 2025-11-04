@@ -5,14 +5,14 @@
 
 /**
  * @namespace cle::tier2
- * @brief Namespace container for all functions of tier 2 category
- *        Tier 2 functions are advanced functions that may rely on previous tier functions
+ * @brief Namespace container for all Tier 2 functions.
+ *        Tier 2 functions are advanced and may rely on lower-tier functions.
  */
 namespace cle::tier2
 {
 /**
  * @name absolute_difference
- * @brief Determines the absolute difference pixel by pixel between two images. <pre>f(x, y) = |x y| </pre>
+ * @brief Determines the absolute difference, pixel-by-pixel, between two images. <pre>f(x, y) = |x - y|</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src0 The input image to be subtracted from. [const Array::Pointer &]
@@ -35,7 +35,7 @@ absolute_difference_func(const Device::Pointer & device,
  * @brief Calculates the sum of pairs of pixels x and y of two images X and Y. <pre>f(x, y) = x + y</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 The first input image to added. [const Array::Pointer &]
+ * @param src0 The first input image to be added. [const Array::Pointer &]
  * @param src1 The second image to be added. [const Array::Pointer &]
  * @param dst The output image where results are written into. [Array::Pointer ( = None )]
  * @return Array::Pointer
@@ -52,7 +52,7 @@ add_images_func(const Device::Pointer & device,
 
 /**
  * @name bottom_hat_box
- * @brief Apply a bottomhat filter for background subtraction to the input image.
+ * @brief Applies a bottom-hat filter for background subtraction to the input image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image where the background is subtracted from. [const Array::Pointer &]
@@ -77,7 +77,7 @@ bottom_hat_box_func(const Device::Pointer & device,
 
 /**
  * @name bottom_hat_sphere
- * @brief Applies a bottomhat filter for background subtraction to the input image.
+ * @brief Applies a bottom-hat filter for background subtraction to the input image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image where the background is subtracted from. [const Array::Pointer &]
@@ -101,7 +101,7 @@ bottom_hat_sphere_func(const Device::Pointer & device,
 
 /**
  * @name bottom_hat
- * @brief Applies a bottomhat filter for background subtraction to the input image.
+ * @brief Applies a bottom-hat filter for background subtraction to the input image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image where the background is subtracted from. [const Array::Pointer &]
@@ -109,7 +109,7 @@ bottom_hat_sphere_func(const Device::Pointer & device,
  * @param radius_x Radius of the background determination region in X. [float ( = 1 )]
  * @param radius_y Radius of the background determination region in Y. [float ( = 1 )]
  * @param radius_z Radius of the background determination region in Z. [float ( = 1 )]
- * @param connectivity Element shape, "box" or "sphere" [std::string ( = "box" )]
+ * @param connectivity Element shape, "box" or "sphere". [std::string ( = "box" )]
  * @return Array::Pointer
  *
  * @note 'filter', 'background removal', 'in assistant'
@@ -127,14 +127,14 @@ bottom_hat_func(const Device::Pointer & device,
 
 /**
  * @name clip
- * @brief Limits the range of values in an image. This function is supposed to work similarly as its counter part in
- * numpy [1].
+ * @brief Limits the range of values in an image. This function works similarly to its counterpart in
+ * NumPy.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
- * @param dst Output result image. [Array::Pointer ( = None )]
- * @param min_intensity new, lower limit of the intensity range [float ( = None )]
- * @param max_intensity new, upper limit of the intensity range [float ( = None )]
+ * @param dst Output image. [Array::Pointer ( = None )]
+ * @param min_intensity New lower limit of the intensity range. [float ( = None )]
+ * @param max_intensity New upper limit of the intensity range. [float ( = None )]
  * @return Array::Pointer
  *
  * @note 'combine', 'in assistant'
@@ -150,15 +150,15 @@ clip_func(const Device::Pointer & device,
 
 /**
  * @name closing_box
- * @brief Closing operator, applies grayscale morphological closing to intensity images using a box shaped
+ * @brief Closing operator, applies grayscale morphological closing to intensity images using a box-shaped
  * footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Radius along the x axis. [int ( = 1 )]
- * @param radius_y Radius along the y axis. [int ( = 1 )]
- * @param radius_z Radius along the z axis. [int ( = 1 )]
+ * @param radius_x Radius along the x axis. [float ( = 1 )]
+ * @param radius_y Radius along the y axis. [float ( = 1 )]
+ * @param radius_z Radius along the z axis. [float ( = 1 )]
  * @return Array::Pointer
  * @note 'filter', 'in assistant'
  * @deprecated This method is deprecated. Consider using closing() instead.
@@ -174,7 +174,7 @@ closing_box_func(const Device::Pointer & device,
 
 /**
  * @name closing_sphere
- * @brief Closing operator, applies grayscale morphological closing to intensity images using a sphere shaped
+ * @brief Closing operator, applies grayscale morphological closing to intensity images using a sphere-shaped
  * footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -197,7 +197,7 @@ closing_sphere_func(const Device::Pointer & device,
 
 /**
  * @name grayscale_closing
- * @brief Closing operator, applies grayscale morphological closing to intensity images using a sphere or box shaped
+ * @brief Closing operator, applies grayscale morphological closing to intensity images using a box- or sphere-shaped
  * footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -240,7 +240,7 @@ closing_func(const Device::Pointer & device,
 
 /**
  * @name binary_closing
- * @brief Closing operator, applies binary morphological closing to intensity images using a sphere or box shaped
+ * @brief Closing operator, applies binary morphological closing to intensity images using a sphere- or box-shaped
  * footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -264,7 +264,7 @@ binary_closing_func(const Device::Pointer & device,
 
 /**
  * @name concatenate_along_x
- * @brief Concatenate two images or stacks along the X axis.
+ * @brief Concatenates two images or stacks along the x axis.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src0 First input image. [const Array::Pointer &]
@@ -283,7 +283,7 @@ concatenate_along_x_func(const Device::Pointer & device,
 
 /**
  * @name concatenate_along_y
- * @brief Concatenate two images or stacks along the Y axis.
+ * @brief Concatenates two images or stacks along the y axis.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src0 First input image. [const Array::Pointer &]
@@ -302,7 +302,7 @@ concatenate_along_y_func(const Device::Pointer & device,
 
 /**
  * @name concatenate_along_z
- * @brief Concatenate two images or stacks along the Z axis.
+ * @brief Concatenates two images or stacks along the z axis.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src0 First input image. [const Array::Pointer &]
@@ -321,9 +321,9 @@ concatenate_along_z_func(const Device::Pointer & device,
 
 /**
  * @name count_touching_neighbors
- * @brief Takes a touch matrix as input and delivers a vector with number of touching neighbors per label as a vector.
- * Note: Background is considered as something that can touch. To ignore touches with background, hand over a touch
- * matrix where the first column (index = 0) has been set to 0. Use set_column for that.
+ * @brief Takes a touch matrix as input and returns a vector containing the number of touching neighbors per label.
+ * Note: Background is considered touchable. To ignore touches with the background, pass a touch
+ * matrix where the first column (index = 0) is set to 0. Use set_column for that.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param touch_matrix Input touch matrix to process. [const Array::Pointer &]
@@ -342,8 +342,8 @@ count_touching_neighbors_func(const Device::Pointer & device,
 
 /**
  * @name crop_border
- * @brief Crops an image by removing the outer pixels, per default 1. Notes * To make sure the output image has the
- * right size, provide destination_image=None.
+ * @brief Crops an image by removing the outer pixels (default: 1). To ensure the output image has the
+ * expected size, set dst = None.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -383,7 +383,7 @@ divide_by_gaussian_background_func(const Device::Pointer & device,
 
 /**
  * @name degrees_to_radians
- * @brief Converts radians to degrees.
+ * @brief Converts degrees to radians.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -450,7 +450,7 @@ detect_maxima_func(const Device::Pointer & device,
 
 /**
  * @name detect_minima_box
- * @brief Detects local maxima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
+ * @brief Detects local minima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
  * is no other pixel in a given radius which has a lower intensity, and to 0 otherwise.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -475,7 +475,7 @@ detect_minima_box_func(const Device::Pointer & device,
 
 /**
  * @name detect_minima
- * @brief Detects local maxima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
+ * @brief Detects local minima in a given square/cubic neighborhood. Pixels in the resulting image are set to 1 if there
  * is no other pixel in a given radius which has a lower intensity, and to 0 otherwise.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -502,8 +502,8 @@ detect_minima_func(const Device::Pointer & device,
 
 /**
  * @name difference_of_gaussian
- * @brief Applies Gaussian blur to the input image twice with different sigma values resulting in two images which are
- * then subtracted from each other. It is recommended to apply this operation to images of type Float (32 bit) as
+ * @brief Applies Gaussian blur to the input image twice with different sigma values, producing two images, one of which
+ * is subtracted from the other. It is recommended to apply this operation to images of type float (32-bit) because
  * results might be negative.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -534,7 +534,7 @@ difference_of_gaussian_func(const Device::Pointer & device,
 
 /**
  * @name extend_labeling_via_voronoi
- * @brief Takes a label map image and dilates the regions using a octagon shape until they touch. The resulting label
+ * @brief Takes a label map image and dilates the regions using an octagon shape until they touch. The resulting label
  * map is written to the output.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -552,8 +552,8 @@ extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Po
 
 /**
  * @name invert
- * @brief Computes the negative value of all pixels in a given image. It is recommended to convert images to 32bit float
- * before applying this operation. <pre>f(x) = x</pre> For binary images, use binaryNot.
+ * @brief Computes the negative value of all pixels in a given image. It is recommended to convert images to 32-bit
+ * float before applying this operation. <pre>f(x) = -x</pre> For binary images, use binaryNot.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -569,8 +569,8 @@ invert_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
 
 /**
  * @name label_spots
- * @brief Transforms a binary image with single pixles set to 1 to a labelled spots image. Transforms a spots image as
- * resulting from maximum/minimum detection in an image of the same size where every spot has a number 1, 2,... n.
+ * @brief Transforms a binary image with single pixels set to 1 into a labeled spots image. Converts a spots image
+ * (e.g., from maxima/minima detection) into a label image of the same size, assigning IDs 1, 2, …, n.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -602,8 +602,7 @@ large_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Point
 
 /**
  * @name maximum_of_all_pixels
- * @brief Determines the maximum of all pixels in a given image. It will be stored in a new row of ImageJs Results table
- * in the column 'Max'.
+ * @brief Determines the maximum of all pixels in a given image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -618,8 +617,7 @@ maximum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer 
 
 /**
  * @name minimum_of_all_pixels
- * @brief Determines the minimum of all pixels in a given image. It will be stored in a new row of ImageJs Results table
- * in the column 'Min'.
+ * @brief Determines the minimum of all pixels in a given image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -634,8 +632,8 @@ minimum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer 
 
 /**
  * @name minimum_of_masked_pixels
- * @brief Determines the minimum intensity in a masked image. But only in pixels which have nonzero values in another
- * mask image.
+ * @brief Determines the minimum intensity in a masked image, but only over pixels that have nonzero values in a
+ * separate mask image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -652,7 +650,7 @@ minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Point
 
 /**
  * @name opening_box
- * @brief Opening operator, applies morphological opening to intensity images using a boxshaped footprint.
+ * @brief Opening operator, applies morphological opening to intensity images using a box-shaped footprint.
  * This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -676,7 +674,7 @@ opening_box_func(const Device::Pointer & device,
 
 /**
  * @name opening_sphere
- * @brief Opening operator, applies morphological opening to intensity images using a sphereshaped
+ * @brief Opening operator, applies morphological opening to intensity images using a sphere-shaped
  * footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -700,8 +698,8 @@ opening_sphere_func(const Device::Pointer & device,
 
 /**
  * @name grayscale_opening
- * @brief Opening operator, Applies morphological opening to intensity images using a sphereshaped or
- * boxshepd footprint. This operator also works with binary images.
+ * @brief Opening operator, applies morphological opening to intensity images using a sphere- or
+ * box-shaped footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -743,7 +741,7 @@ opening_func(const Device::Pointer & device,
 
 /**
  * @name binary_opening
- * @brief Closing operator, applies binary morphological opening to intensity images using a sphere or box shaped
+ * @brief Opening operator, applies binary morphological opening to intensity images using a sphere- or box-shaped
  * footprint. This operator also works with binary images.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -767,7 +765,7 @@ binary_opening_func(const Device::Pointer & device,
 
 /**
  * @name radians_to_degrees
- * @brief Converts radians to degrees
+ * @brief Converts radians to degrees.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -815,8 +813,8 @@ small_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Point
 
 /**
  * @name square
- * @brief Return the elementwise square of the input. This function is supposed to be similar to its counterpart in
- * numpy [1]
+ * @brief Returns the element-wise square of the input. This function is similar to its counterpart in
+ * NumPy.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -852,8 +850,8 @@ squared_difference_func(const Device::Pointer & device,
 
 /**
  * @name standard_deviation_box
- * @brief Computes the local standard deviation of a pixels box neighborhood. The box size is specified by its
- * halfwidth, halfheight and halfdepth (radius). If 2D images are given, radius_z will be ignored.
+ * @brief Computes the local standard deviation of each pixel's box neighborhood. The box size is specified by its
+ * half-width, half-height, and half-depth (radius). If 2D images are given, radius_z will be ignored.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -878,8 +876,8 @@ standard_deviation_box_func(const Device::Pointer & device,
 
 /**
  * @name standard_deviation_sphere
- * @brief Computes the local standard deviation of a pixels sphere neighborhood. The box size is specified by its
- * halfwidth, halfheight and halfdepth (radius). If 2D images are given, radius_z will be ignored.
+ * @brief Computes the local standard deviation of each pixel's spherical neighborhood. The neighborhood size is
+ * specified by its half-width, half-height, and half-depth (radius). If 2D images are given, radius_z will be ignored.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -903,8 +901,8 @@ standard_deviation_sphere_func(const Device::Pointer & device,
 
 /**
  * @name standard_deviation
- * @brief Computes the local standard deviation of a pixels sphere neighborhood. The box size is specified by its
- * halfwidth, halfheight and halfdepth (radius). If 2D images are given, radius_z will be ignored.
+ * @brief Computes the local standard deviation of each pixel's neighborhood. The neighborhood size is specified by its
+ * half-width, half-height, and half-depth (radius). If 2D images are given, radius_z will be ignored.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -912,7 +910,7 @@ standard_deviation_sphere_func(const Device::Pointer & device,
  * @param radius_x Radius along the x axis. [float ( = 1 )]
  * @param radius_y Radius along the y axis. [float ( = 1 )]
  * @param radius_z Radius along the z axis. [float ( = 1 )]
- * @param connectivity Neigborhood shape, "box" or "sphere" [std::string ( = "box" )]
+ * @param connectivity Neighborhood shape, "box" or "sphere". [std::string ( = "box" )]
  * @return Array::Pointer
  *
  * @note 'filter', 'edge detection', 'in assistant'
@@ -935,9 +933,9 @@ standard_deviation_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param sigma_x Radius along the x axis. [float ( = 2 )]
- * @param sigma_y Radius along the y axis. [float ( = 2 )]
- * @param sigma_z Radius along the z axis. [float ( = 2 )]
+ * @param sigma_x Gaussian sigma value along x. [float ( = 2 )]
+ * @param sigma_y Gaussian sigma value along y. [float ( = 2 )]
+ * @param sigma_z Gaussian sigma value along z. [float ( = 2 )]
  * @return Array::Pointer
  *
  * @note 'filter', 'background removal', 'in assistant', 'bia-bob-suggestion'
@@ -954,7 +952,7 @@ subtract_gaussian_background_func(const Device::Pointer & device,
 
 /**
  * @name subtract_images
- * @brief Subtracts one image X from another image Y pixel wise. <pre>f(x, y) = x y</pre>
+ * @brief Subtracts one image X from another image Y pixel-wise. <pre>f(x, y) = x - y</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src0 First input image. [const Array::Pointer &]
@@ -991,8 +989,8 @@ sub_stack_func(const Device::Pointer & device, const Array::Pointer & src, Array
 
 /**
  * @name reduce_stack
- * @brief Reduces the number of z-slices in a stack by a given factor. With the offset you have control which slices
- * stays: with a factor 3 and offset 0, slices 0,3,6, etc. are kept. with a factor 4 and offset 1, slices 1,5,9, etc.
+ * @brief Reduces the number of z-slices in a stack by a given factor. With the offset you have control over which
+ * slices stay: with factor 3 and offset 0, slices 0, 3, 6, … are kept; with factor 4 and offset 1, slices 1, 5, 9, …
  * are kept.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -1014,8 +1012,7 @@ reduce_stack_func(const Device::Pointer & device,
 
 /**
  * @name sum_of_all_pixels
- * @brief Determines the sum of all pixels in a given image. It will be stored in a new row of ImageJs Results table in
- * the column 'Sum'.
+ * @brief Determines the sum of all pixels in a given image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer & ( = None )]
@@ -1029,7 +1026,7 @@ sum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & sr
 
 /**
  * @name top_hat_box
- * @brief Applies a tophat filter for background subtraction to the input image.
+ * @brief Applies a top-hat filter for background subtraction to the input image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image where the background is subtracted from. [const Array::Pointer &]
@@ -1054,7 +1051,7 @@ top_hat_box_func(const Device::Pointer & device,
 
 /**
  * @name top_hat_sphere
- * @brief Applies a tophat filter for background subtraction to the input image.
+ * @brief Applies a top-hat filter for background subtraction to the input image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image where the background is subtracted from. [const Array::Pointer &]
@@ -1078,7 +1075,7 @@ top_hat_sphere_func(const Device::Pointer & device,
 
 /**
  * @name top_hat
- * @brief Applies a tophat filter for background subtraction to the input image.
+ * @brief Applies a top-hat filter for background subtraction to the input image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image where the background is subtracted from. [const Array::Pointer &]
@@ -1106,14 +1103,14 @@ top_hat_func(const Device::Pointer & device,
 /**
  * @name extended_depth_of_focus_variance_projection
  * @brief Depth projection using the local variance maxima to determine the best focus plane.
- * The radius parameter control the local variance calculation, and the sigma apply a
- * gaussian blur for smoothness of the projection.
+ * The radius parameter controls the local variance calculation, and sigma applies a
+ * Gaussian blur for smoothness of the projection.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param radius_x Sphere radius filter in x axis. [float ( = 10 )]
- * @param radius_y Sphere radius filter in y axis. [float ( = 10 )]
+ * @param radius_x Neighborhood radius along the x axis. [float ( = 10 )]
+ * @param radius_y Neighborhood radius along the y axis. [float ( = 10 )]
  * @param sigma Sigma for Gaussian blur. [float ( = 5 )]
  * @return Array::Pointer
  *
@@ -1129,8 +1126,8 @@ extended_depth_of_focus_variance_projection_func(const Device::Pointer & device,
 
 /**
  * @name extended_depth_of_focus_sobel_projection
- * @brief Depth projection using the local sobel gradient magnitude maxima to determine the best focus plane.
- * The sigma apply a gaussian blur for smoothness of the projection.
+ * @brief Depth projection using the local Sobel gradient magnitude maxima to determine the best focus plane.
+ * Sigma applies a Gaussian blur for smoothness of the projection.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -1148,11 +1145,11 @@ extended_depth_of_focus_sobel_projection_func(const Device::Pointer & device,
 
 /**
  * @name hessian_gaussian_eigenvalues
- * @brief Determines the Hessian matrix eigenvalues using the gaussian derivative method and returns the small,
+ * @brief Determines the Hessian matrix eigenvalues using the Gaussian-derivative method and returns the small,
  * middle and large eigenvalue images.
  *
- * The function return the list of eigenvalues as images, by decreasing order. The first image is the largest
- * eigenvalue,
+ * The function returns the list of eigenvalues as images, in decreasing order. The first image is the largest
+ * eigenvalue.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]

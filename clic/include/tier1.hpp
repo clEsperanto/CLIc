@@ -191,8 +191,8 @@ binary_xor_func(const Device::Pointer & device,
 
 /**
  * @name binary_supinf
- * @brief Compute the maximum of the erosion with plannar structuring elements.
- * Warning: This operation is only supported BINARY data type images.
+ * @brief Computes the maximum of erosions with planar structuring elements.
+ * Note: This operation supports only binary image data types.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The binary input image to be processed. [const Array::Pointer &]
@@ -207,8 +207,8 @@ binary_supinf_func(const Device::Pointer & device, const Array::Pointer & src, A
 
 /**
  * @name binary_infsup
- * @brief Compute the minimum of the dilation with plannar structuring elements.
- * Warning: This operation is only supported BINARY data type images.
+ * @brief Computes the minimum of dilations with planar structuring elements.
+ * Note: This operation supports only binary image data types.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The binary input image to be processed. [const Array::Pointer &]
@@ -222,11 +222,9 @@ binary_infsup_func(const Device::Pointer & device, const Array::Pointer & src, A
 
 /**
  * @name block_enumerate
- * @brief Enumerates pixels with value 1 in a onedimensional image For example handing over the image [0, 1, 1, 0, 1, 0,
- * 1, 1] would be processed to an image [0, 1, 2, 0, 3, 0, 4, 5] This functionality is important in connected component
- * neccessary (see also sum_reduction_x). In the above example, with blocksize 4, that would be the sum array: [2, 3]
- * labeling. Processing is accelerated by paralellization in blocks. Therefore, handing over precomputed block sums is
- * Note that the block size when calling this function and sum_reduction must be identical
+ * @brief Enumerates pixels with value 1 in a one-dimensional image. For example, [0, 1, 1, 0, 1, 0, 1, 1] becomes
+ * [0, 1, 2, 0, 3, 0, 4, 5]. This functionality is important in connected-component labeling and is accelerated by
+ * parallelization in blocks. Hand over precomputed block sums from sum_reduction_x using the same block size.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src0 input binary vector image [const Array::Pointer &]
@@ -260,9 +258,9 @@ auto
 circular_shift_func(const Device::Pointer & device,
                     const Array::Pointer &  src,
                     Array::Pointer          dst,
-                    const int               shift_x,
-                    const int               shift_y,
-                    const int               shift_z) -> Array::Pointer;
+                    int                     shift_x,
+                    int                     shift_y,
+                    int                     shift_z) -> Array::Pointer;
 
 /**
  * @name convolve
@@ -302,10 +300,8 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 
 /**
  * @name copy_slice
- * @brief This method has two purposes: It copies a 2D image to a given slice_index z position in a 3D image stack or It
- * copies a given slice_index at position z in an image stack to a 2D image. The first case is only available via ImageJ
- * macro. If you are using it, it is recommended that the target 3D image already preexists in GPU memory before calling
- * this method. Otherwise, CLIJ create the image stack with z planes.
+ * @brief This method has two purposes: It copies a 2D image to a given slice_index z position in a 3D image stack or it
+ * copies a given slice_index at position z in an image stack to a 2D image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to copy from. [const Array::Pointer &]
@@ -362,15 +358,15 @@ copy_vertical_slice_func(const Device::Pointer & device,
 
 /**
  * @name crop
- * @brief Crops a given substack out of a given image stack. Note: If the destination image preexists already, it will
- * be overwritten and keep it's dimensions.
+ * @brief Crops a given substack out of a given image stack. Note: If the destination image already exists, it will
+ * be overwritten and keep its dimensions.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param start_x Starting index coordicante x. [int ( = 0 )]
- * @param start_y Starting index coordicante y. [int ( = 0 )]
- * @param start_z Starting index coordicante z. [int ( = 0 )]
+ * @param start_x Starting index coordinate x. [int ( = 0 )]
+ * @param start_y Starting index coordinate y. [int ( = 0 )]
+ * @param start_z Starting index coordinate z. [int ( = 0 )]
  * @param width Width size of the region to crop. [int ( = 1 )]
  * @param height Height size of the region to crop. [int ( = 1 )]
  * @param depth Depth size of the region to crop. [int ( = 1 )]
@@ -425,7 +421,7 @@ detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & s
  * @name dilation
  * @brief Computes the dilation operation between an image and a structuring element. The operation is applied in
  * grayscale if the image is in grayscale. The structuring element is a binary image with pixel values 0 and 1, and must
- * have the same dimensionality as the image (3D is the image is 3D, 2D if the image is 2D).
+ * have the same dimensionality as the image (3D if the image is 3D, 2D if the image is 2D).
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -452,8 +448,8 @@ dilation_func(const Device::Pointer & device,
  * instead of 0 and 255.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input image to process. Input image to process. [const Array::Pointer &]
- * @param dst Output result image. Output result image. [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'binary processing'
@@ -471,8 +467,8 @@ dilate_box_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * image with pixel value not equal to 0 will be interpreted as 1.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input image to process. Input image to process. [const Array::Pointer &]
- * @param dst Output result image. Output result image. [Array::Pointer ( = None )]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'binary processing'
@@ -576,7 +572,7 @@ equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Ar
  * @brief Determines if an image A and a constant b are equal. <pre>f(a, b) = 1 if a == b; 0 otherwise.</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src Input omage where every pixel is compared to the constant. [const Array::Pointer &]
+ * @param src Input image where every pixel is compared to the constant. [const Array::Pointer &]
  * @param dst Output binary image. [Array::Pointer ( = None )]
  * @param scalar Scalar value to compare pixel with. [float ( = 0 )]
  * @return Array::Pointer
@@ -683,7 +679,7 @@ binary_erode_func(const Device::Pointer & device,
 
 /**
  * @name exponential
- * @brief Computes base exponential of all pixels values. f(x) = exp(x) Author(s): Peter Haub, Robert Haase
+ * @brief Computes the base-e exponential of all pixel values. f(x) = exp(x)
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -747,7 +743,7 @@ gaussian_blur_func(const Device::Pointer & device,
 
 /**
  * @name gaussian_derivative
- * @brief Convolve the image with a gaussian derivate. The filter kernel can have nonisotropic sigma and order.
+ * @brief Convolves the image with a Gaussian derivative. The filter kernel can have anisotropic sigma and order.
  * The implementation is done separable. In case a sigma equals zero, the direction is not filtered.
  * If all orders are zero, the filtering is equivalent to a Gaussian blur.
  *
@@ -778,13 +774,11 @@ gaussian_derivative_func(const Device::Pointer & device,
 
 /**
  * @name generate_distance_matrix
- * @brief Computes the distance between all point coordinates given in two point lists. Takes two images containing
- * pointlists (dimensionality n * d, n: number of points and d: dimensionality) and builds up a matrix containing the
- * distances between these points. Convention: Given two point lists with dimensionality n * d and m * d, the distance
- * matrix will be of size(n + 1) * (m + 1). The first row and column contain zeros. They represent the distance of the
- * (see generateTouchMatrix). Thus, one can threshold a distance matrix to generate a touch matrix out of it for drawing
- * objects to a theoretical background object. In that way, distance matrices are of the same size as touch matrices
- * meshes.
+ * @brief Computes distances between all points in two point lists. Takes two images containing point lists with shape
+ * n×d and m×d (n/m: number of points; d: dimensionality) and builds a matrix of pairwise distances. By convention, the
+ * distance matrix has size (n + 1) × (m + 1); the first row and column contain zeros representing distances to a
+ * background object. This matches touch-matrix conventions (see generateTouchMatrix), allowing thresholding the
+ * distance matrix to obtain a touch matrix.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param coordinate_list1 First coordinate list to process. [const Array::Pointer &]
@@ -803,9 +797,9 @@ generate_distance_matrix_func(const Device::Pointer & device,
 
 /**
  * @name gradient_x
- * @brief Computes the gradient of gray values along X. Assuming a, b and c are three adjacent pixels in X direction. In
- * the target image will be saved as:
- * <pre>b' = c a;</pre>
+ * @brief Computes the gradient of gray values along X. Assuming a, b and c are three adjacent pixels in X direction,
+ * the gradient at b is computed as:
+ * <pre>b' = c - a;</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -821,9 +815,9 @@ gradient_x_func(const Device::Pointer & device, const Array::Pointer & src, Arra
 
 /**
  * @name gradient_y
- * @brief Computes the gradient of gray values along Y. Assuming a, b and c are three adjacent pixels in Y direction. In
- * the target image will be saved as:
- * <pre>b' = c a;</pre>
+ * @brief Computes the gradient of gray values along Y. Assuming a, b and c are three adjacent pixels in Y direction,
+ * the gradient at b is computed as:
+ * <pre>b' = c - a;</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -839,9 +833,9 @@ gradient_y_func(const Device::Pointer & device, const Array::Pointer & src, Arra
 
 /**
  * @name gradient_z
- * @brief Computes the gradient of gray values along Z. Assuming a, b and c are three adjacent pixels in Z direction. In
- * the target image will be saved as:
- * <pre>b' = c a;</pre>
+ * @brief Computes the gradient of gray values along Z. Assuming a, b and c are three adjacent pixels in Z direction,
+ * the gradient at b is computed as:
+ * <pre>b' = c - a;</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -1003,7 +997,7 @@ laplace_diamond_func(const Device::Pointer & device, const Array::Pointer & src,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
- * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @param connectivity Filter neighborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
  * @note 'filter', 'edge detection'
@@ -1169,7 +1163,7 @@ maximum_box_func(const Device::Pointer & device,
  * @param radius_x Radius size along x axis. [float ( = 1 )]
  * @param radius_y Radius size along y axis. [float ( = 1 )]
  * @param radius_z Radius size along z axis. [float ( = 1 )]
- * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @param connectivity Filter neighborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
  * @note 'filter', 'in assistant'
@@ -1198,7 +1192,7 @@ maximum_filter_func(const Device::Pointer & device,
  * @param radius_x Radius size along x axis. [float ( = 1 )]
  * @param radius_y Radius size along y axis. [float ( = 1 )]
  * @param radius_z Radius size along z axis. [float ( = 1 )]
- * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @param connectivity Filter neighborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
  * @note 'filter', 'in assistant'
@@ -1328,7 +1322,7 @@ mean_sphere_func(const Device::Pointer & device,
  * @param radius_x Radius size along x axis. [float ( = 1 )]
  * @param radius_y Radius size along y axis. [float ( = 1 )]
  * @param radius_z Radius size along z axis. [float ( = 1 )]
- * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @param connectivity Filter neighborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
  * @note 'filter', 'denoise', 'in assistant'
@@ -1458,7 +1452,7 @@ median_sphere_func(const Device::Pointer & device,
  * @param radius_x Radius size along x axis. [float ( = 1 )]
  * @param radius_y Radius size along y axis. [float ( = 1 )]
  * @param radius_z Radius size along z axis. [float ( = 1 )]
- * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @param connectivity Filter neighborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
  * @note 'filter', 'denoise', 'in assistant'
@@ -1511,7 +1505,7 @@ minimum_box_func(const Device::Pointer & device,
  * @param radius_x Radius size along x axis. [float ( = 1 )]
  * @param radius_y Radius size along y axis. [float ( = 1 )]
  * @param radius_z Radius size along z axis. [float ( = 1 )]
- * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @param connectivity Filter neighborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
  * @note 'filter', 'in assistant'
@@ -1540,7 +1534,7 @@ minimum_filter_func(const Device::Pointer & device,
  * @param radius_x Radius size along x axis. [float ( = 1 )]
  * @param radius_y Radius size along y axis. [float ( = 1 )]
  * @param radius_z Radius size along z axis. [float ( = 1 )]
- * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @param connectivity Filter neighborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
  * @note 'filter', 'in assistant'
@@ -1723,7 +1717,7 @@ mode_sphere_func(const Device::Pointer & device,
  * @param radius_x Radius size along x axis. [float ( = 1 )]
  * @param radius_y Radius size along y axis. [float ( = 1 )]
  * @param radius_z Radius size along z axis. [float ( = 1 )]
- * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @param connectivity Filter neighborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  *
  * @note 'label processing', 'in assistant'
@@ -1893,7 +1887,7 @@ nonzero_maximum_diamond_func(const Device::Pointer & device,
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst0 Output flag (0 or 1). [Array::Pointer]
  * @param dst1 Output image where results are written into. [Array::Pointer ( = None )]
- * @param connectivity Filter neigborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
+ * @param connectivity Filter neighborhood connectivity, "box" or "sphere" [std::string ( = "box" )]
  * @return Array::Pointer
  * @see https://clij.github.io/clij2-docs/reference_nonzeroMaximumBox
  * @see https://clij.github.io/clij2-docs/reference_nonzeroMaximumDiamond

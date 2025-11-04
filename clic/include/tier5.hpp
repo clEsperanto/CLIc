@@ -5,19 +5,19 @@
 
 /**
  * @namespace cle::tier5
- * @brief Namespace container for all functions of tier 5 category
- *        Tier 5 functions are advanced functions that may rely on previous tier functions
+ * @brief Namespace container for all Tier 5 functions.
+ *        Tier 5 functions are advanced and may rely on lower-tier functions.
  */
 namespace cle::tier5
 {
 /**
  * @name array_equal
- * @brief Compares if all pixels of two images are identical. If shape of the images or any pixel are different, returns
- * False. True otherwise This function is supposed to work similarly like its counterpart in numpy [1].
+ * @brief Compares if all pixels of two images are identical. If the shape of the images or any pixel are different,
+ * returns false; true otherwise. This function works similarly to its counterpart in NumPy.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 First array to compare [const Array::Pointer &]
- * @param src1 Second array to compare [const Array::Pointer &]
+ * @param src0 First array to compare. [const Array::Pointer &]
+ * @param src1 Second array to compare. [const Array::Pointer &]
  * @return bool
  *
  * @note 'combine'
@@ -29,12 +29,12 @@ array_equal_func(const Device::Pointer & device, const Array::Pointer & src0, co
 
 /**
  * @name combine_labels
- * @brief Combines two label images by adding labels of a given label image to another. Labels in the second image
- * overwrite labels in the first passed image. Afterwards, labels are relabeled sequentially.
+ * @brief Combines two label images by adding labels from one label image to another. Labels in the second image
+ * overwrite labels in the first image. Afterward, labels are relabeled sequentially.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param src0 label image to add labels to. [const Array::Pointer &]
- * @param src1 label image to add labels from. [const Array::Pointer &]
+ * @param src0 Label image to add labels to. [const Array::Pointer &]
+ * @param src1 Label image to add labels from. [const Array::Pointer &]
  * @param dst Output label image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  * @note 'label processing', 'combine labels', 'in assistant', 'bia-bob-suggestion'
@@ -49,7 +49,7 @@ combine_labels_func(const Device::Pointer & device,
 
 /**
  * @name connected_components_labeling
- * @brief Performs connected components analysis inspecting the box neighborhood of every pixel to a binary image and
+ * @brief Performs connected components analysis by inspecting the neighborhood of every pixel in a binary image and
  * generates a label map.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -71,7 +71,7 @@ connected_components_labeling_func(const Device::Pointer & device,
 
 /**
  * @name connected_component_labeling
- * @brief Performs connected components analysis inspecting the box neighborhood of every pixel to a binary image and
+ * @brief Performs connected components analysis by inspecting the neighborhood of every pixel in a binary image and
  * generates a label map.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -92,7 +92,7 @@ connected_component_labeling_func(const Device::Pointer & device,
 
 /**
  * @name reduce_labels_to_centroids
- * @brief Take a label map and reduce each label to its centroid.
+ * @brief Takes a label map and reduces each label to its centroid.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Label image to reduce. [const Array::Pointer &]
@@ -108,7 +108,7 @@ reduce_labels_to_centroids_func(const Device::Pointer & device, const Array::Poi
 
 /**
  * @name filter_label_by_size
- * @brief Filter labelled objects outside of the min/max size range value.
+ * @brief Filters labelled objects outside the min/max size range.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input label image. [const Array::Pointer &]
@@ -129,7 +129,7 @@ filter_label_by_size_func(const Device::Pointer & device,
 
 /**
  * @name exclude_labels_outside_size_range
- * @brief Filter labelled objects outside of the min/max size range value.
+ * @brief Filters labelled objects outside the min/max size range.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input label image. [const Array::Pointer &]
@@ -150,7 +150,7 @@ exclude_labels_outside_size_range_func(const Device::Pointer & device,
 
 /**
  * @name merge_touching_labels
- * @brief Merge touching labels of a label image and relabel the result sequentially.
+ * @brief Merges touching labels of a label image and relabels the result sequentially.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input label image. [const Array::Pointer &]
