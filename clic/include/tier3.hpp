@@ -166,7 +166,8 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Label image. [const Array::Pointer &]
- * @param dst Binary vector; if provided, it should have size 1×n with n = maximum label + 1. [Array::Pointer ( = None )]
+ * @param dst Binary vector; if provided, it should have size 1×n with n = maximum label + 1. [Array::Pointer ( = None
+ * )]
  * @return Array::Pointer
  *
  */
@@ -197,9 +198,9 @@ gamma_correction_func(const Device::Pointer & device, const Array::Pointer & src
 
 /**
  * @name generate_binary_overlap_matrix
- * @brief Takes two label maps with n and m labels and generates an (n+1)×(m+1) matrix where all pixels are set to 0 except
- * those where labels overlap between the label maps. For example, if label 3 in labelmap1 and label 4 in labelmap2 are
- * touching, then the pixel (3, 4) in the matrix will be set to 1.
+ * @brief Takes two label maps with n and m labels and generates an (n+1)×(m+1) matrix where all pixels are set to 0
+ * except those where labels overlap between the label maps. For example, if label 3 in labelmap1 and label 4 in
+ * labelmap2 are touching, then the pixel (3, 4) in the matrix will be set to 1.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src0 First input label image. [const Array::Pointer &]
@@ -238,11 +239,11 @@ generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer 
 
 /**
  * @name histogram
- * @brief Determines the histogram of a given image. The histogram image has dimensions number_of_bins × 1 × 1 (a 3D image
- * with height = 1 and depth = 1). Histogram bins contain the number of pixels with intensity in the corresponding bin. The
- * bins are uniformly distributed between the given minimum and maximum gray-value intensities. If the flag
- * determine_min_max is set, the minimum and maximum intensities will be determined. When calling this operation many times,
- * it is recommended to determine minimum and maximum intensities once at the beginning and pass these values.
+ * @brief Determines the histogram of a given image. The histogram image has dimensions number_of_bins × 1 × 1 (a 3D
+ * image with height = 1 and depth = 1). Histogram bins contain the number of pixels with intensity in the corresponding
+ * bin. The bins are uniformly distributed between the given minimum and maximum gray-value intensities. If the flag
+ * determine_min_max is set, the minimum and maximum intensities will be determined. When calling this operation many
+ * times, it is recommended to determine minimum and maximum intensities once at the beginning and pass these values.
  * Author(s): Robert Haase; adapted work from Aaftab Munshi, Benedict Gaster, Timothy Mattson, James Fung, Dan Ginsburg
  * License: adapted code from
  * https://github.com/bgaster/openclbooksamples/blob/master/src/Chapter_14/histogram/histogram_image.cl

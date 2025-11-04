@@ -12,8 +12,8 @@ namespace cle::tier5
 {
 /**
  * @name array_equal
- * @brief Compares if all pixels of two images are identical. If the shape of the images or any pixel are different, returns
- * false; true otherwise. This function works similarly to its counterpart in NumPy.
+ * @brief Compares if all pixels of two images are identical. If the shape of the images or any pixel are different,
+ * returns false; true otherwise. This function works similarly to its counterpart in NumPy.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src0 First array to compare. [const Array::Pointer &]

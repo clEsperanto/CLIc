@@ -258,9 +258,9 @@ auto
 circular_shift_func(const Device::Pointer & device,
                     const Array::Pointer &  src,
                     Array::Pointer          dst,
-                    int               shift_x,
-                    int               shift_y,
-                    int               shift_z) -> Array::Pointer;
+                    int                     shift_x,
+                    int                     shift_y,
+                    int                     shift_z) -> Array::Pointer;
 
 /**
  * @name convolve

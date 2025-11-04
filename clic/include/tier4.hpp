@@ -64,8 +64,8 @@ spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & s
 
 /**
  * @name relabel_sequential
- * @brief Analyzes a label map and if there are gaps in the indexing (e.g., label 5 is not present), all subsequent labels
- * will be relabeled. Afterward, the number of labels and maximum label index are equal. This operation is mostly
+ * @brief Analyzes a label map and if there are gaps in the indexing (e.g., label 5 is not present), all subsequent
+ * labels will be relabeled. Afterward, the number of labels and maximum label index are equal. This operation is mostly
  * performed on the CPU.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -318,8 +318,8 @@ mean_extension_map_func(const Device::Pointer & device, const Array::Pointer & s
 
 /**
  * @name maximum_extension_map
- * @brief Determines, for every label, the maximum distance of any pixel to the centroid in a label map and returns it as
- * a parametric map.
+ * @brief Determines, for every label, the maximum distance of any pixel to the centroid in a label map and returns it
+ * as a parametric map.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input label image. [const Array::Pointer &]

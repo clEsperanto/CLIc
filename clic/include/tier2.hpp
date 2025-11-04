@@ -502,8 +502,8 @@ detect_minima_func(const Device::Pointer & device,
 
 /**
  * @name difference_of_gaussian
- * @brief Applies Gaussian blur to the input image twice with different sigma values, producing two images, one of which is
- * subtracted from the other. It is recommended to apply this operation to images of type float (32-bit) because
+ * @brief Applies Gaussian blur to the input image twice with different sigma values, producing two images, one of which
+ * is subtracted from the other. It is recommended to apply this operation to images of type float (32-bit) because
  * results might be negative.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -552,8 +552,8 @@ extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Po
 
 /**
  * @name invert
- * @brief Computes the negative value of all pixels in a given image. It is recommended to convert images to 32-bit float
- * before applying this operation. <pre>f(x) = -x</pre> For binary images, use binaryNot.
+ * @brief Computes the negative value of all pixels in a given image. It is recommended to convert images to 32-bit
+ * float before applying this operation. <pre>f(x) = -x</pre> For binary images, use binaryNot.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -602,7 +602,7 @@ large_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Point
 
 /**
  * @name maximum_of_all_pixels
- * @brief Determines the maximum of all pixels in a given image. 
+ * @brief Determines the maximum of all pixels in a given image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -617,7 +617,7 @@ maximum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer 
 
 /**
  * @name minimum_of_all_pixels
- * @brief Determines the minimum of all pixels in a given image. 
+ * @brief Determines the minimum of all pixels in a given image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -632,8 +632,8 @@ minimum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer 
 
 /**
  * @name minimum_of_masked_pixels
- * @brief Determines the minimum intensity in a masked image, but only over pixels that have nonzero values in a separate
- * mask image.
+ * @brief Determines the minimum intensity in a masked image, but only over pixels that have nonzero values in a
+ * separate mask image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -876,8 +876,8 @@ standard_deviation_box_func(const Device::Pointer & device,
 
 /**
  * @name standard_deviation_sphere
- * @brief Computes the local standard deviation of each pixel's spherical neighborhood. The neighborhood size is specified by its
- * half-width, half-height, and half-depth (radius). If 2D images are given, radius_z will be ignored.
+ * @brief Computes the local standard deviation of each pixel's spherical neighborhood. The neighborhood size is
+ * specified by its half-width, half-height, and half-depth (radius). If 2D images are given, radius_z will be ignored.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -989,8 +989,9 @@ sub_stack_func(const Device::Pointer & device, const Array::Pointer & src, Array
 
 /**
  * @name reduce_stack
- * @brief Reduces the number of z-slices in a stack by a given factor. With the offset you have control over which slices
- * stay: with factor 3 and offset 0, slices 0, 3, 6, … are kept; with factor 4 and offset 1, slices 1, 5, 9, … are kept.
+ * @brief Reduces the number of z-slices in a stack by a given factor. With the offset you have control over which
+ * slices stay: with factor 3 and offset 0, slices 0, 3, 6, … are kept; with factor 4 and offset 1, slices 1, 5, 9, …
+ * are kept.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image. [const Array::Pointer &]
@@ -1011,7 +1012,7 @@ reduce_stack_func(const Device::Pointer & device,
 
 /**
  * @name sum_of_all_pixels
- * @brief Determines the sum of all pixels in a given image. 
+ * @brief Determines the sum of all pixels in a given image.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer & ( = None )]
