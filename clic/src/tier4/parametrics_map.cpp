@@ -128,8 +128,8 @@ standard_deviation_intensity_map_func(const Device::Pointer & device,
   tier0::create_like(src, dst, dType::FLOAT);
   auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, labels);
 
-  auto values = cle::Array::create(props["std_intensity"].size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
-  values->writeFrom(props["std_intensity"].data());
+  auto values = cle::Array::create(props["standard_deviation_intensity"].size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
+  values->writeFrom(props["standard_deviation_intensity"].data());
 
   tier1::set_column_func(device, values, 0, 0);
   return tier1::replace_values_func(device, labels, values, dst);
