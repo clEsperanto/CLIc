@@ -16,8 +16,7 @@ namespace cle::tier1
 {
 
 auto
-copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice_index)
-  -> Array::Pointer
+copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice_index) -> Array::Pointer
 {
   tier0::create_like(src, dst);
   const ParameterList params = { { "src", src }, { "dst", dst }, { "index", slice_index } };
@@ -38,10 +37,8 @@ copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Arra
 }
 
 auto
-copy_horizontal_slice_func(const Device::Pointer & device,
-                           const Array::Pointer &  src,
-                           Array::Pointer          dst,
-                           int                     slice_index) -> Array::Pointer
+copy_horizontal_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice_index)
+  -> Array::Pointer
 {
   tier0::create_like(src, dst);
   const ParameterList params = { { "src", src }, { "dst", dst }, { "index", slice_index } };
@@ -62,10 +59,7 @@ copy_horizontal_slice_func(const Device::Pointer & device,
 }
 
 auto
-copy_vertical_slice_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
-                         Array::Pointer          dst,
-                         int                     slice_index) -> Array::Pointer
+copy_vertical_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice_index) -> Array::Pointer
 {
   tier0::create_like(src, dst);
   const ParameterList params = { { "src", src }, { "dst", dst }, { "index", slice_index } };

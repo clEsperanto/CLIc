@@ -205,15 +205,14 @@ OpenCLDevice::initialize() -> void
   }
 
   cl_int err = CL_SUCCESS;
-  clContext =
-    std::make_shared<Context>(clCreateContext(nullptr, 1, &clRessources->get_device(), nullptr, nullptr, &err));
+  clContext = std::make_shared<Context>(clCreateContext(nullptr, 1, &clRessources->get_device(), nullptr, nullptr, &err));
   if (err != CL_SUCCESS)
   {
     std::cerr << "Failed to create OpenCL context" << std::endl;
     return;
   }
-  clCommandQueue = std::make_shared<CommandQueue>(clCreateCommandQueue(
-    clContext->get(), clRessources->get_device(), 0, &err)); // clCreateCommandQueue deprecated in OpenCL 2.0+
+  clCommandQueue = std::make_shared<CommandQueue>(
+    clCreateCommandQueue(clContext->get(), clRessources->get_device(), 0, &err)); // clCreateCommandQueue deprecated in OpenCL 2.0+
   if (err != CL_SUCCESS)
   {
     std::cerr << "Failed to create OpenCL command queue" << std::endl;
@@ -369,10 +368,8 @@ OpenCLDevice::getInfo() const -> std::string
   clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(size_t), &global_mem_size, nullptr);
   clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_LOCAL_MEM_SIZE, sizeof(size_t), &local_mem_size, nullptr);
   clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_MAX_MEM_ALLOC_SIZE, sizeof(size_t), &max_mem_size, nullptr);
-  clGetDeviceInfo(
-    clRessources->get_device(), CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(cl_uint), &max_work_group_size, nullptr);
-  clGetDeviceInfo(
-    clRessources->get_device(), CL_DEVICE_MAX_CLOCK_FREQUENCY, sizeof(cl_uint), &max_clock_frequency, nullptr);
+  clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(cl_uint), &max_work_group_size, nullptr);
+  clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_MAX_CLOCK_FREQUENCY, sizeof(cl_uint), &max_clock_frequency, nullptr);
   clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_IMAGE_SUPPORT, sizeof(cl_uint), &image_support, nullptr);
 
   std::map<cl_device_type, std::string> deviceTypeMap = {
@@ -405,26 +402,19 @@ OpenCLDevice::getInfoExtended() const -> std::string
   cl_uint            max_work_group_size, max_work_item_dimensions;
   size_t             max_work_item_sizes[3];
   clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_EXTENSIONS, sizeof(char) * 1024, &extensions, nullptr);
-  clGetDeviceInfo(
-    clRessources->get_device(), CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(cl_uint), &max_work_group_size, nullptr);
-  clGetDeviceInfo(clRessources->get_device(),
-                  CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS,
-                  sizeof(cl_uint),
-                  &max_work_item_dimensions,
-                  nullptr);
-  clGetDeviceInfo(
-    clRessources->get_device(), CL_DEVICE_MAX_WORK_ITEM_SIZES, sizeof(size_t) * 3, &max_work_item_sizes, nullptr);
+  clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(cl_uint), &max_work_group_size, nullptr);
+  clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS, sizeof(cl_uint), &max_work_item_dimensions, nullptr);
+  clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_MAX_WORK_ITEM_SIZES, sizeof(size_t) * 3, &max_work_item_sizes, nullptr);
 
   // Split extensions string into a vector
   std::istringstream       iss((std::string(extensions)));
-  std::vector<std::string> extensionsVec((std::istream_iterator<std::string>(iss)),
-                                         std::istream_iterator<std::string>());
+  std::vector<std::string> extensionsVec((std::istream_iterator<std::string>(iss)), std::istream_iterator<std::string>());
 
   result << this->getInfo();
   result << std::left << std::setw(30) << "\tMax Work Group Size: " << max_work_group_size << '\n';
   result << std::left << std::setw(30) << "\tMax Work Item Dimensions: " << max_work_item_dimensions << '\n';
-  result << std::left << std::setw(30) << "\tMax Work Item Sizes: " << max_work_item_sizes[0] << ", "
-         << max_work_item_sizes[1] << ", " << max_work_item_sizes[2] << '\n';
+  result << std::left << std::setw(30) << "\tMax Work Item Sizes: " << max_work_item_sizes[0] << ", " << max_work_item_sizes[1] << ", "
+         << max_work_item_sizes[2] << '\n';
   result << std::left << std::setw(30) << "\tExtensions:";
   for (const auto & extension : extensionsVec)
   {

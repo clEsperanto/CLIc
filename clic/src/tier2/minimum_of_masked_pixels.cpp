@@ -8,8 +8,7 @@ namespace cle::tier2
 {
 
 auto
-minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask)
-  -> float
+minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask) -> float
 {
   Array::Pointer dst_src = nullptr;
   Array::Pointer dst_mask = nullptr;

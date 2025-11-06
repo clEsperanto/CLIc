@@ -55,9 +55,7 @@ gaussian_derivative_func(const Device::Pointer & device,
   }
 
   constexpr int        truncate = 8;
-  std::array<float, 3> sigmas = { std::max({ sigma_x, 0.0f }),
-                                  std::max({ sigma_y, 0.0f }),
-                                  std::max({ sigma_z, 0.0f }) };
+  std::array<float, 3> sigmas = { std::max({ sigma_x, 0.0f }), std::max({ sigma_y, 0.0f }), std::max({ sigma_z, 0.0f }) };
   std::array<int, 3>   radii = { static_cast<int>(truncate * sigmas[0] + 0.5f),
                                  static_cast<int>(truncate * sigmas[1] + 0.5f),
                                  static_cast<int>(truncate * sigmas[2] + 0.5f) };

@@ -39,8 +39,7 @@ check_and_set(const Array::Pointer & src, Array::Pointer & dst, dType & type) ->
  * @return void
  */
 auto
-create_dst(const Array::Pointer & src, Array::Pointer & dst, size_t width, size_t height, size_t depth, dType type)
-  -> void
+create_dst(const Array::Pointer & src, Array::Pointer & dst, size_t width, size_t height, size_t depth, dType type) -> void
 {
   if (check_and_set(src, dst, type))
   {

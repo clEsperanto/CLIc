@@ -24,18 +24,15 @@ using StatisticsMap = std::unordered_map<std::string, std::vector<float>>;
  * @return StatisticsMap
  */
 auto
-compute_statistics_per_labels(const Device::Pointer & device,
-                              const Array::Pointer &  label,
-                              const Array::Pointer &  intensity) -> StatisticsMap;
+compute_statistics_per_labels(const Device::Pointer & device, const Array::Pointer & label, const Array::Pointer & intensity)
+  -> StatisticsMap;
 
 /**
  * @brief Subfunction to compute statistics per label
  */
 auto
-_statistics_per_label(const Device::Pointer & device,
-                      const Array::Pointer &  label,
-                      const Array::Pointer &  intensity,
-                      int                     nb_labels) -> Array::Pointer;
+_statistics_per_label(const Device::Pointer & device, const Array::Pointer & label, const Array::Pointer & intensity, int nb_labels)
+  -> Array::Pointer;
 
 /**
  * @brief Subfunction to compute standard deviation per label

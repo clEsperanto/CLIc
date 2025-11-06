@@ -13,8 +13,7 @@ namespace cle::tier7
 {
 
 auto
-opening_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
-  -> Array::Pointer
+opening_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::LABEL);
   auto temp = tier6::erode_labels_func(device, src, nullptr, radius, false);

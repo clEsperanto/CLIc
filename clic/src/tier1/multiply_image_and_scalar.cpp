@@ -9,10 +9,8 @@ namespace cle::tier1
 {
 
 auto
-multiply_image_and_scalar_func(const Device::Pointer & device,
-                               const Array::Pointer &  src,
-                               Array::Pointer          dst,
-                               float                   scalar) -> Array::Pointer
+multiply_image_and_scalar_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
+  -> Array::Pointer
 {
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "multiply_image_and_scalar", kernel::multiply_image_and_scalar };

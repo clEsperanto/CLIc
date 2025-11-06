@@ -29,19 +29,15 @@ onlyzero_overwrite_maximum_func(const Device::Pointer & device,
 }
 
 auto
-onlyzero_overwrite_maximum_diamond_func(const Device::Pointer & device,
-                                        const Array::Pointer &  src,
-                                        Array::Pointer          flag,
-                                        Array::Pointer          dst) -> Array::Pointer
+onlyzero_overwrite_maximum_diamond_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer flag, Array::Pointer dst)
+  -> Array::Pointer
 {
   return onlyzero_overwrite_maximum_func(device, src, flag, dst, "sphere");
 }
 
 auto
-onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
-                                    const Array::Pointer &  src,
-                                    Array::Pointer          flag,
-                                    Array::Pointer          dst) -> Array::Pointer
+onlyzero_overwrite_maximum_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer flag, Array::Pointer dst)
+  -> Array::Pointer
 {
   return onlyzero_overwrite_maximum_func(device, src, flag, dst, "box");
 }

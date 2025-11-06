@@ -13,8 +13,7 @@ namespace cle::tier7
 {
 
 auto
-erode_connected_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
-  -> Array::Pointer
+erode_connected_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::LABEL);
   if (radius < 1)

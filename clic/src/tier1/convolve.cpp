@@ -9,10 +9,8 @@ namespace cle::tier1
 {
 
 auto
-convolve_func(const Device::Pointer & device,
-              const Array::Pointer &  src0,
-              const Array::Pointer &  src1,
-              Array::Pointer          dst) -> Array::Pointer
+convolve_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_like(src0, dst, dType::FLOAT);
   const KernelInfo    kernel = { "convolve", kernel::convolve };

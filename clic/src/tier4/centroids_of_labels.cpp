@@ -39,9 +39,8 @@ centroids_of_labels_func(const Device::Pointer & device,
   if (centroids_coordinates->width() != nb_labels || centroids_coordinates->height() != 3)
   {
     throw std::runtime_error("centroids_of_labels: Provided output array has wrong dimensions." +
-                             std::to_string(centroids_coordinates->width()) + "x" +
-                             std::to_string(centroids_coordinates->height()) + "x1 instead of " +
-                             std::to_string(nb_labels) + "x3x1");
+                             std::to_string(centroids_coordinates->width()) + "x" + std::to_string(centroids_coordinates->height()) +
+                             "x1 instead of " + std::to_string(nb_labels) + "x3x1");
   }
 
   if (centroids_coordinates->dtype() != dType::FLOAT)

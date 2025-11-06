@@ -40,8 +40,7 @@ label_bounding_box_func(const Device::Pointer & device, const Array::Pointer & s
  * @see https://clij.github.io/clij2-docs/reference_meanSquaredError
  */
 auto
-mean_squared_error_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1)
-  -> float;
+mean_squared_error_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1) -> float;
 
 
 /**
@@ -58,8 +57,7 @@ mean_squared_error_func(const Device::Pointer & device, const Array::Pointer & s
  *
  */
 auto
-spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -78,8 +76,7 @@ spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & s
  * @see https://clij.github.io/clij2-docs/reference_closeIndexGapsInLabelMap
  */
 auto
-relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int blocksize)
-  -> Array::Pointer;
+relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int blocksize) -> Array::Pointer;
 
 
 /**
@@ -118,10 +115,8 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
  * @see https://clij.github.io/clij2-docs/reference_meanIntensityMap
  */
 auto
-mean_intensity_map_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        const Array::Pointer &  labels,
-                        Array::Pointer          dst) -> Array::Pointer;
+mean_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -142,10 +137,8 @@ mean_intensity_map_func(const Device::Pointer & device,
  * @deprecated This function is deprecated. Use mean_intensity_map_func instead.
  */
 auto
-label_mean_intensity_map_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        const Array::Pointer &  labels,
-                        Array::Pointer          dst) -> Array::Pointer;
+label_mean_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -179,8 +172,7 @@ pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src,
  * @deprecated This function is deprecated. Use pixel_count_map_func instead.
  */
 auto
-label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -320,8 +312,7 @@ exclude_labels_with_map_values_within_range_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_extensionRatioMap
  */
 auto
-extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 /**
  * @name mean_extension_map
@@ -337,8 +328,7 @@ extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & 
  * @see https://clij.github.io/clij2-docs/reference_meanExtensionMap
  */
 auto
-mean_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+mean_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 /**
  * @name maximum_extension_map
@@ -354,8 +344,7 @@ mean_extension_map_func(const Device::Pointer & device, const Array::Pointer & s
  * @see https://clij.github.io/clij2-docs/reference_meanExtensionMap
  */
 auto
-maximum_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+maximum_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 /**
  * @name minimum_intensity_map
@@ -374,10 +363,8 @@ maximum_extension_map_func(const Device::Pointer & device, const Array::Pointer 
  * @see https://clij.github.io/clij2-docs/reference_minimumIntensityMap
  */
 auto
-minimum_intensity_map_func(const Device::Pointer & device,
-                           const Array::Pointer &  src,
-                           const Array::Pointer &  labels,
-                           Array::Pointer          dst) -> Array::Pointer;
+minimum_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -397,10 +384,8 @@ minimum_intensity_map_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_maximumIntensityMap
  */
 auto
-maximum_intensity_map_func(const Device::Pointer & device,
-                           const Array::Pointer &  src,
-                           const Array::Pointer &  labels,
-                           Array::Pointer          dst) -> Array::Pointer;
+maximum_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -439,8 +424,7 @@ standard_deviation_intensity_map_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_touchingNeighborCountMap
  */
 auto
-touching_neighbor_count_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer dst)
-  -> Array::Pointer;
+touching_neighbor_count_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer dst) -> Array::Pointer;
 
 
 /**

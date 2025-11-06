@@ -9,11 +9,8 @@ namespace cle::tier1
 {
 
 auto
-mask_label_func(const Device::Pointer & device,
-                const Array::Pointer &  src0,
-                const Array::Pointer &  src1,
-                Array::Pointer          dst,
-                float                   label) -> Array::Pointer
+mask_label_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst, float label)
+  -> Array::Pointer
 {
   tier0::create_like(src0, dst);
   const KernelInfo    kernel = { "mask_label", kernel::mask_label };

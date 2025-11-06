@@ -25,15 +25,13 @@ pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src,
 }
 
 auto
-label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
   return pixel_count_map_func(device, src, dst);
 }
 
 auto
-extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::FLOAT);
   auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, src);
@@ -45,8 +43,7 @@ extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & 
 }
 
 auto
-mean_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+mean_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::FLOAT);
   auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, src);
@@ -58,8 +55,7 @@ mean_extension_map_func(const Device::Pointer & device, const Array::Pointer & s
 }
 
 auto
-maximum_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+maximum_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::FLOAT);
   auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, src);
@@ -72,10 +68,8 @@ maximum_extension_map_func(const Device::Pointer & device, const Array::Pointer 
 
 
 auto
-mean_intensity_map_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        const Array::Pointer &  labels,
-                        Array::Pointer          dst) -> Array::Pointer
+mean_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::FLOAT);
   auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, labels);
@@ -88,19 +82,15 @@ mean_intensity_map_func(const Device::Pointer & device,
 }
 
 auto
-label_mean_intensity_map_func(const Device::Pointer & device,
-                        const Array::Pointer &  src,
-                        const Array::Pointer &  labels,
-                        Array::Pointer          dst) -> Array::Pointer
+label_mean_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
+  -> Array::Pointer
 {
   return mean_intensity_map_func(device, src, labels, dst);
 }
 
 auto
-minimum_intensity_map_func(const Device::Pointer & device,
-                           const Array::Pointer &  src,
-                           const Array::Pointer &  labels,
-                           Array::Pointer          dst) -> Array::Pointer
+minimum_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::FLOAT);
   auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, labels);
@@ -113,10 +103,8 @@ minimum_intensity_map_func(const Device::Pointer & device,
 }
 
 auto
-maximum_intensity_map_func(const Device::Pointer & device,
-                           const Array::Pointer &  src,
-                           const Array::Pointer &  labels,
-                           Array::Pointer          dst) -> Array::Pointer
+maximum_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::FLOAT);
   auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, labels);
@@ -145,8 +133,7 @@ standard_deviation_intensity_map_func(const Device::Pointer & device,
 }
 
 auto
-touching_neighbor_count_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer dst)
-  -> Array::Pointer
+touching_neighbor_count_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer dst) -> Array::Pointer
 {
   tier0::create_like(labels, dst, dType::FLOAT);
   auto touch_matrix = tier3::generate_touch_matrix_func(device, labels, nullptr);

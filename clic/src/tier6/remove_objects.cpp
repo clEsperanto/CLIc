@@ -13,37 +13,29 @@ namespace cle::tier6
 {
 
 auto
-remove_small_labels_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
-                         Array::Pointer          dst,
-                         float                   minimum_size) -> Array::Pointer
+remove_small_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float minimum_size)
+  -> Array::Pointer
 {
   return tier5::filter_label_by_size_func(device, src, dst, minimum_size, std::numeric_limits<float>::max());
 }
 
 auto
-remove_large_labels_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
-                         Array::Pointer          dst,
-                         float                   maximum_size) -> Array::Pointer
+remove_large_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float maximum_size)
+  -> Array::Pointer
 {
   return tier5::filter_label_by_size_func(device, src, dst, 0, maximum_size);
 }
 
 auto
-exclude_small_labels_func(const Device::Pointer & device,
-                          const Array::Pointer &  src,
-                          Array::Pointer          dst,
-                          float                   maximum_size) -> Array::Pointer
+exclude_small_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float maximum_size)
+  -> Array::Pointer
 {
   return remove_small_labels_func(device, src, dst, maximum_size);
 }
 
 auto
-exclude_large_labels_func(const Device::Pointer & device,
-                          const Array::Pointer &  src,
-                          Array::Pointer          dst,
-                          float                   minimum_size) -> Array::Pointer
+exclude_large_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float minimum_size)
+  -> Array::Pointer
 {
   return remove_large_labels_func(device, src, dst, minimum_size);
 }

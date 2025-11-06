@@ -11,8 +11,7 @@ namespace cle::tier1
 {
 
 auto
-mask_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask, Array::Pointer dst)
-  -> Array::Pointer
+mask_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask, Array::Pointer dst) -> Array::Pointer
 {
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "mask", kernel::mask };

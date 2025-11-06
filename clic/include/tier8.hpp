@@ -27,8 +27,7 @@ namespace cle::tier8
  * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
-smooth_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
-  -> Array::Pointer;
+smooth_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius) -> Array::Pointer;
 
 
 /**
@@ -46,8 +45,7 @@ smooth_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
  * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
-smooth_connected_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
-  -> Array::Pointer;
+smooth_connected_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius) -> Array::Pointer;
 
 /**
  * @name fft

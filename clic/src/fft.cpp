@@ -85,16 +85,12 @@ namespace cle::fft
 
 
 auto
-fft_pad_shape(const std::array<size_t, 3> & image_shape, const std::array<size_t, 3> & kernel_shape)
-  -> std::array<size_t, 3>
+fft_pad_shape(const std::array<size_t, 3> & image_shape, const std::array<size_t, 3> & kernel_shape) -> std::array<size_t, 3>
 {
   std::array<size_t, 3> new_shape;
-  std::transform(
-    image_shape.begin(),
-    image_shape.end(),
-    kernel_shape.begin(),
-    new_shape.begin(),
-    [](size_t img_dim, size_t ker_dim) { return img_dim + 2 * static_cast<size_t>(std::floor(ker_dim / 2.0)); });
+  std::transform(image_shape.begin(), image_shape.end(), kernel_shape.begin(), new_shape.begin(), [](size_t img_dim, size_t ker_dim) {
+    return img_dim + 2 * static_cast<size_t>(std::floor(ker_dim / 2.0));
+  });
   return new_shape;
 }
 
@@ -104,13 +100,8 @@ create_hermitian(const Array::Pointer & input)
 {
   auto   ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
   size_t hermitian_width = static_cast<size_t>(input->width() / 2) + 1;
-  return Array::create(hermitian_width * 2,
-                       input->height(),
-                       input->depth(),
-                       input->dimension(),
-                       dType::COMPLEX,
-                       input->mtype(),
-                       input->device());
+  return Array::create(
+    hermitian_width * 2, input->height(), input->depth(), input->dimension(), dType::COMPLEX, input->mtype(), input->device());
 }
 
 auto
@@ -341,10 +332,7 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
 
 
 auto
-performConvolution(const Array::Pointer & input,
-                   const Array::Pointer & psf,
-                   const Array::Pointer & output,
-                   bool                   correlate) -> void
+performConvolution(const Array::Pointer & input, const Array::Pointer & psf, const Array::Pointer & output, bool correlate) -> void
 {
   auto device = input->device();
 
@@ -423,8 +411,7 @@ performDeconvolution(const Array::Pointer & observe,
     performFFT(reblurred, fft_estimate);
 
     // Correlate above result with PSF
-    execOperationKernel(
-      device, "vecComplexConjugateMultiply", fft_estimate, fft_psf, fft_estimate, fft_estimate->size() / 2);
+    execOperationKernel(device, "vecComplexConjugateMultiply", fft_estimate, fft_psf, fft_estimate, fft_estimate->size() / 2);
 
     // Inverse FFT of estimate to get reblurred
     performIFFT(fft_estimate, reblurred);

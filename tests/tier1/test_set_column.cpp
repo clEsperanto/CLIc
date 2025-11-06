@@ -13,8 +13,7 @@ protected:
   virtual void
   SetUp()
   {
-    for (auto it = input.begin(), it_valid = valid.begin(); (it != input.end()) && (it_valid != valid.end());
-         ++it, ++it_valid)
+    for (auto it = input.begin(), it_valid = valid.begin(); (it != input.end()) && (it_valid != valid.end()); ++it, ++it_valid)
     {
       *it = static_cast<float>((int)rand() % 10);
       *it_valid = *it;

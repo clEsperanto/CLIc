@@ -27,8 +27,7 @@ private:
     Iteration();
     std::chrono::time_point<std::chrono::high_resolution_clock> end = std::chrono::high_resolution_clock::now();
 
-    timingResultWriteback.push_back(
-      (unsigned long)std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
+    timingResultWriteback.push_back((unsigned long)std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
   }
 
 protected:
@@ -103,8 +102,7 @@ public:
         Compile(cle);
         std::chrono::time_point<std::chrono::high_resolution_clock> end = std::chrono::high_resolution_clock::now();
 
-        compilationTimings.push_back(
-          (unsigned long)std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
+        compilationTimings.push_back((unsigned long)std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
       }
 
       maybeCompilationMs = getAverage<unsigned long>(compilationTimings);

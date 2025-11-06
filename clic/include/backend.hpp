@@ -145,8 +145,7 @@ public:
    * @param data_ptr
    */
   virtual auto
-  freeMemory(const Device::Pointer & device, const mType & mtype, const std::shared_ptr<void> & data_ptr) const
-    -> void = 0;
+  freeMemory(const Device::Pointer & device, const mType & mtype, const std::shared_ptr<void> & data_ptr) const -> void = 0;
 
   /**
    * @brief Write data from host to device buffer
@@ -408,10 +407,8 @@ public:
   allocateBuffer(const Device::Pointer & device, const size_t & size, std::shared_ptr<void> & data_ptr) -> void;
 
   static auto
-  allocateImage(const Device::Pointer &       device,
-                const std::array<size_t, 3> & region,
-                const dType &                 dtype,
-                std::shared_ptr<void> &       data_ptr) -> void;
+  allocateImage(const Device::Pointer & device, const std::array<size_t, 3> & region, const dType & dtype, std::shared_ptr<void> & data_ptr)
+    -> void;
 
   auto
   allocateMemory(const Device::Pointer &       device,
@@ -421,8 +418,7 @@ public:
                  std::shared_ptr<void> &       data_ptr) const -> void override;
 
   auto
-  freeMemory(const Device::Pointer & device, const mType & mtype, const std::shared_ptr<void> & data_ptr) const
-    -> void override;
+  freeMemory(const Device::Pointer & device, const mType & mtype, const std::shared_ptr<void> & data_ptr) const -> void override;
 
   static auto
   writeBuffer(const Device::Pointer &       device,
@@ -588,10 +584,8 @@ public:
   static auto
   allocateBuffer(const Device::Pointer & device, const size_t & size, std::shared_ptr<void> & data_ptr) -> void;
   static auto
-  allocateImage(const Device::Pointer &       device,
-                const std::array<size_t, 3> & region,
-                const dType &                 dtype,
-                std::shared_ptr<void> &       data_ptr) -> void;
+  allocateImage(const Device::Pointer & device, const std::array<size_t, 3> & region, const dType & dtype, std::shared_ptr<void> & data_ptr)
+    -> void;
   auto
   allocateMemory(const Device::Pointer &       device,
                  const std::array<size_t, 3> & region,
@@ -600,8 +594,7 @@ public:
                  std::shared_ptr<void> &       data_ptr) const -> void override;
 
   auto
-  freeMemory(const Device::Pointer & device, const mType & mtype, const std::shared_ptr<void> & data_ptr) const
-    -> void override;
+  freeMemory(const Device::Pointer & device, const mType & mtype, const std::shared_ptr<void> & data_ptr) const -> void override;
 
   static auto
   writeBuffer(const Device::Pointer &       device,

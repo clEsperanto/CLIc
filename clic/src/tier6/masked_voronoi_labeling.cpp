@@ -12,10 +12,8 @@ namespace cle::tier6
 {
 
 auto
-masked_voronoi_labeling_func(const Device::Pointer & device,
-                             const Array::Pointer &  src,
-                             const Array::Pointer &  mask,
-                             Array::Pointer          dst) -> Array::Pointer
+masked_voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::LABEL);
   Array::Pointer flip = nullptr;

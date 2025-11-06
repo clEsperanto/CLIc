@@ -10,28 +10,25 @@
 namespace cle::tier5
 {
 
-auto 
+auto
 proximal_neighbor_count_func(const Device::Pointer & device,
                              const Array::Pointer &  src,
                              Array::Pointer          dst,
                              float                   min_distance,
                              float                   max_distance) -> Array::Pointer
 {
-    tier0::create_like(src, dst, dType::FLOAT);
+  tier0::create_like(src, dst, dType::FLOAT);
 
-    min_distance = std::max(min_distance, 0.0f);
-    max_distance = (max_distance < 0) ? std::numeric_limits<float>::max() : max_distance;
+  min_distance = std::max(min_distance, 0.0f);
+  max_distance = (max_distance < 0) ? std::numeric_limits<float>::max() : max_distance;
 
-    auto pointlist = tier4::centroids_of_labels_func(src, nullptr, false)
-    auto distance_matrix = tier1::generate_distance_matrix_func(pointlist, pointlist, nullptr)
-    auto touch_matrix = tier2::generate_proximal_neighbors_matrix_func(distance_matrix, nullptr, min_distance, max_distance)
-    
-    tier1::count_touching_neighbors_func(touch_matrix, dst)
-    tier1::set_column_func(dst, 0, 0)
+  auto pointlist = tier4::centroids_of_labels_func(src, nullptr, false) auto distance_matrix =
+    tier1::generate_distance_matrix_func(pointlist, pointlist, nullptr) auto touch_matrix =
+      tier2::generate_proximal_neighbors_matrix_func(distance_matrix, nullptr, min_distance, max_distance)
 
-    return dst
+        tier1::count_touching_neighbors_func(touch_matrix, dst) tier1::set_column_func(dst, 0, 0)
 
-
+          return dst
 }
 
 } // namespace cle::tier5

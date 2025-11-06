@@ -19,9 +19,7 @@ protected:
     static std::default_random_engine         generator;
     std::generate(input1.begin(), input1.end(), []() { return static_cast<int8_t>(distribution(generator)); });
     std::generate(input2.begin(), input2.end(), []() { return static_cast<int8_t>(distribution(generator)); });
-    std::transform(input1.begin(), input1.end(), input2.begin(), valid.begin(), [](const int8_t & a, const int8_t & b) {
-      return a != b;
-    });
+    std::transform(input1.begin(), input1.end(), input2.begin(), valid.begin(), [](const int8_t & a, const int8_t & b) { return a != b; });
   }
 };
 

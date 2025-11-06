@@ -6,11 +6,9 @@
 class TestCentroidsOfLabels : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::array<uint32_t, 6 * 5 * 1> input = { 1, 1, 2, 0, 3, 3, 1, 1, 2, 0, 3, 3, 0, 0, 0,
-                                            0, 0, 0, 4, 4, 5, 6, 6, 6, 4, 4, 5, 6, 6, 6 };
+  std::array<uint32_t, 6 * 5 * 1> input = { 1, 1, 2, 0, 3, 3, 1, 1, 2, 0, 3, 3, 0, 0, 0, 0, 0, 0, 4, 4, 5, 6, 6, 6, 4, 4, 5, 6, 6, 6 };
 
-  std::array<float, 7 * 3 * 1> valid = { 2.625, 0.5, 2,   4.5, 0.5, 2, 4, 1.625, 0.5, 0.5, 0.5,
-                                         3.5,   3.5, 3.5, 0,   0,   0, 0, 0,     0,   0 };
+  std::array<float, 7 * 3 * 1> valid = { 2.625, 0.5, 2, 4.5, 0.5, 2, 4, 1.625, 0.5, 0.5, 0.5, 3.5, 3.5, 3.5, 0, 0, 0, 0, 0, 0, 0 };
 };
 
 TEST_P(TestCentroidsOfLabels, execute2d)
