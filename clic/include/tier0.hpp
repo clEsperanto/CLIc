@@ -23,12 +23,8 @@ namespace cle::tier0
  * @param type Data type of the destination array (optional)
  */
 auto
-create_dst(const Array::Pointer & src,
-           Array::Pointer &       dst,
-           size_t                 width,
-           size_t                 height,
-           size_t                 depth,
-           dType                  type = dType::UNKNOWN) -> void;
+create_dst(const Array::Pointer & src, Array::Pointer & dst, size_t width, size_t height, size_t depth, dType type = dType::UNKNOWN)
+  -> void;
 
 /**
  * @brief Manage the creation of a destination array similar to the source array if it does not exist already.
@@ -56,8 +52,7 @@ create_one(const Array::Pointer & src, Array::Pointer & dst, dType type = dType:
  * @param type Data type of the destination array (optional)
  */
 auto
-create_vector(const Array::Pointer & src, Array::Pointer & dst, const size_t & size = 1, dType type = dType::UNKNOWN)
-  -> void;
+create_vector(const Array::Pointer & src, Array::Pointer & dst, const size_t & size = 1, dType type = dType::UNKNOWN) -> void;
 
 /**
  * @brief Manage the creation of a destination array from XY transposed source it does not exist already.

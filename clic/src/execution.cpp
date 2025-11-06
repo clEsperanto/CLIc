@@ -28,19 +28,17 @@ translateOpenclToCuda(std::string & code) -> void
 
   // list of replacements to be performed (not exhaustive)
   // special case: 'make_' need to followed by ');' replacement, e.g. (int2){1,2}; -> make_int2(1,2);
-  const std::vector<std::pair<std::string, std::string>> replacements = {
-    { "(int2){", "make_int2(" },
-    { "(int4){", "make_int4(" },
-    { "(float4){", "make_float4(" },
-    { "(float2){", "make_float2(" },
-    { "__constant sampler_t", "__device__ int" },
-    { "inline", "__device__ inline" },
-    { "#pragma", "// #pragma" },
-    { "__kernel void", "extern \"C\" __global__ void" },
-    { "get_global_id(0)", "blockDim.x * blockIdx.x + threadIdx.x" },
-    { "get_global_id(1)", "blockDim.y * blockIdx.y + threadIdx.y" },
-    { "get_global_id(2)", "blockDim.z * blockIdx.z + threadIdx.z" }
-  };
+  const std::vector<std::pair<std::string, std::string>> replacements = { { "(int2){", "make_int2(" },
+                                                                          { "(int4){", "make_int4(" },
+                                                                          { "(float4){", "make_float4(" },
+                                                                          { "(float2){", "make_float2(" },
+                                                                          { "__constant sampler_t", "__device__ int" },
+                                                                          { "inline", "__device__ inline" },
+                                                                          { "#pragma", "// #pragma" },
+                                                                          { "__kernel void", "extern \"C\" __global__ void" },
+                                                                          { "get_global_id(0)", "blockDim.x * blockIdx.x + threadIdx.x" },
+                                                                          { "get_global_id(1)", "blockDim.y * blockIdx.y + threadIdx.y" },
+                                                                          { "get_global_id(2)", "blockDim.z * blockIdx.z + threadIdx.z" } };
 
   // perform replacements
   for (const auto & [to_replace, replace_with] : replacements)
@@ -92,8 +90,7 @@ bufferDefines(std::ostringstream &   defines,
   defines << "\n#define CONVERT_" << key << "_PIXEL_TYPE clij_convert_" << arr->dtype() << "_sat";
   defines << "\n#define IMAGE_" << key << "_PIXEL_TYPE " << arr->dtype();
   defines << "\n#define POS_" << key << "_TYPE " << pos_type;
-  const std::string prefix =
-    (device == Device::Type::OPENCL || pos_type == "int") ? "(" + pos_type + ")" : "make_" + pos_type;
+  const std::string prefix = (device == Device::Type::OPENCL || pos_type == "int") ? "(" + pos_type + ")" : "make_" + pos_type;
   defines << "\n#define POS_" << key << "_INSTANCE(pos0,pos1,pos2,pos3) " << prefix << pos;
   defines << "\n";
 
@@ -125,8 +122,7 @@ imageDefines(std::ostringstream &   defines,
   const std::string stype = toShortString(arr->dtype());
 
   std::string access_type;
-  if (key.find("dst") != std::string::npos || key.find("destination") != std::string::npos ||
-      key.find("output") != std::string::npos)
+  if (key.find("dst") != std::string::npos || key.find("destination") != std::string::npos || key.find("output") != std::string::npos)
   {
     access_type = "__write_only";
     pos_type = posIntTypeMap[dimIndex];
@@ -140,8 +136,7 @@ imageDefines(std::ostringstream &   defines,
   defines << "\n#define CONVERT_" << key << "_PIXEL_TYPE clij_convert_" << arr->dtype() << "_sat";
   defines << "\n#define IMAGE_" << key << "_PIXEL_TYPE " << arr->dtype();
   defines << "\n#define POS_" << key << "_TYPE " << pos_type;
-  const std::string prefix1 =
-    (device == Device::Type::OPENCL || pos_type == "int") ? "(" + pos_type + ")" : "make_" + pos_type;
+  const std::string prefix1 = (device == Device::Type::OPENCL || pos_type == "int") ? "(" + pos_type + ")" : "make_" + pos_type;
   defines << "\n#define POS_" << key << "_INSTANCE(pos0,pos1,pos2,pos3) " << prefix1 << pos;
   defines << "\n";
 
@@ -204,8 +199,7 @@ arrayDefines(const ParameterList & parameter_list, const Device::Type & device) 
 
 // Top function for creating defines at runtime
 auto
-generateDefines(const ParameterList & parameter_list, const ConstantList & constant_list, const Device::Type & device)
-  -> std::string
+generateDefines(const ParameterList & parameter_list, const ConstantList & constant_list, const Device::Type & device) -> std::string
 {
   std::ostringstream defines;
   defines << commonDefines(constant_list);
@@ -285,8 +279,7 @@ execute(const Device::Pointer & device,
   }
 
   // execute kernel
-  cle::BackendManager::getInstance().getBackend().executeKernel(
-    device, program_source, kernel_name, global_range, args_ptr, args_size);
+  cle::BackendManager::getInstance().getBackend().executeKernel(device, program_source, kernel_name, global_range, args_ptr, args_size);
 }
 
 
@@ -345,9 +338,7 @@ execute_separable(const Device::Pointer &      device,
   auto execute_if_needed = [&](int dim, int idx, auto & input, auto & output) {
     if (dim > 1 && sigma[idx] > 0)
     {
-      const ParameterList parameters = {
-        { "src", input }, { "dst", output }, { "dim", idx }, { "N", radius[idx] }, { "s", sigma[idx] }
-      };
+      const ParameterList parameters = { { "src", input }, { "dst", output }, { "dim", idx }, { "N", radius[idx] }, { "s", sigma[idx] } };
       execute(device, kernel, parameters, global_range);
     }
     else
@@ -429,8 +420,7 @@ native_execute(const Device::Pointer & device,
     }
   }
   // execute kernel
-  cle::BackendManager::getInstance().getBackend().executeKernel(
-    device, kernel_source, kernel_name, global_range, args_ptr, args_size);
+  cle::BackendManager::getInstance().getBackend().executeKernel(device, kernel_source, kernel_name, global_range, args_ptr, args_size);
 }
 
 } // namespace cle

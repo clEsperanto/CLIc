@@ -9,10 +9,8 @@ namespace cle::tier1
 {
 
 auto
-local_cross_correlation_func(const Device::Pointer & device,
-                             const Array::Pointer &  src,
-                             const Array::Pointer &  kernel,
-                             Array::Pointer          dst) -> Array::Pointer
+local_cross_correlation_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & kernel, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    oclkernel = { "local_cross_correlation", kernel::local_cross_correlation };

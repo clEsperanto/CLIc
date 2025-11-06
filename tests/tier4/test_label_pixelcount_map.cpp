@@ -6,11 +6,9 @@
 class TestLabelPixelCountMap : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::array<uint32_t, 6 * 5 * 1> input = { 1, 1, 2, 0, 3, 3, 1, 1, 2, 0, 3, 3, 0, 0, 0,
-                                            0, 0, 0, 4, 4, 5, 6, 6, 6, 4, 4, 5, 6, 6, 6 };
+  std::array<uint32_t, 6 * 5 * 1> input = { 1, 1, 2, 0, 3, 3, 1, 1, 2, 0, 3, 3, 0, 0, 0, 0, 0, 0, 4, 4, 5, 6, 6, 6, 4, 4, 5, 6, 6, 6 };
 
-  std::array<float, 6 * 5 * 1> valid = { 4, 4, 2, 0, 4, 4, 4, 4, 2, 0, 4, 4, 0, 0, 0,
-                                         0, 0, 0, 4, 4, 2, 6, 6, 6, 4, 4, 2, 6, 6, 6 };
+  std::array<float, 6 * 5 * 1> valid = { 4, 4, 2, 0, 4, 4, 4, 4, 2, 0, 4, 4, 0, 0, 0, 0, 0, 0, 4, 4, 2, 6, 6, 6, 4, 4, 2, 6, 6, 6 };
 };
 
 TEST_P(TestLabelPixelCountMap, execute2d)

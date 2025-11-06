@@ -11,16 +11,13 @@ namespace cle::tier1
 {
 
 auto
-erosion_func(const Device::Pointer & device,
-             const Array::Pointer &  src,
-             const Array::Pointer &  footprint,
-             Array::Pointer          dst) -> Array::Pointer
+erosion_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & footprint, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_like(src, dst);
   if (src->dimension() != footprint->dimension())
   {
-    throw std::runtime_error(
-      "Error: input and structuring element in erosion operator must have the same dimensionality.");
+    throw std::runtime_error("Error: input and structuring element in erosion operator must have the same dimensionality.");
   }
   KernelInfo          kernel = { "erosion", kernel::erosion };
   const ParameterList params = { { "src", src }, { "footprint", footprint }, { "dst", dst } };
@@ -47,10 +44,8 @@ binary_erode_func(const Device::Pointer & device,
   {
     kernel = { "erode_sphere", kernel::erode_sphere };
   }
-  const ParameterList params = {
-    { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z }
-  };
-  const RangeArray range = { dst->width(), dst->height(), dst->depth() };
+  const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
 }

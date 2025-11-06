@@ -214,11 +214,8 @@ TEST_P(TestStatisticsOfLabelledPixels, execute3D)
     ASSERT_NEAR(region_props["mean_distance_to_mass_center"][i], expected_mean_distance_to_mass_center[i], 0.001);
     ASSERT_NEAR(region_props["max_distance_to_centroid"][i], expected_max_distance_to_centroid[i], 0.001);
     ASSERT_NEAR(region_props["max_distance_to_mass_center"][i], expected_max_distance_to_mass_center[i], 0.001);
-    ASSERT_NEAR(
-      region_props["mean_max_distance_to_centroid_ratio"][i], expected_mean_max_distance_to_centroid_ratio[i], 0.001);
-    ASSERT_NEAR(region_props["mean_max_distance_to_mass_center_ratio"][i],
-                expected_mean_max_distance_to_mass_center_ratio[i],
-                0.001);
+    ASSERT_NEAR(region_props["mean_max_distance_to_centroid_ratio"][i], expected_mean_max_distance_to_centroid_ratio[i], 0.001);
+    ASSERT_NEAR(region_props["mean_max_distance_to_mass_center_ratio"][i], expected_mean_max_distance_to_mass_center_ratio[i], 0.001);
   }
 }
 
@@ -279,12 +276,9 @@ TEST_P(TestStatisticsOfLabelledPixels, shape)
   std::vector<float> expected_max_distance_to_mass_center = { 2.0 };
   ASSERT_NEAR(region_props["max_distance_to_mass_center"][0], expected_max_distance_to_mass_center[0], 0.001);
   std::vector<float> expected_mean_max_distance_to_centroid_ratio = { 1.472516 };
-  ASSERT_NEAR(
-    region_props["mean_max_distance_to_centroid_ratio"][0], expected_mean_max_distance_to_centroid_ratio[0], 0.001);
+  ASSERT_NEAR(region_props["mean_max_distance_to_centroid_ratio"][0], expected_mean_max_distance_to_centroid_ratio[0], 0.001);
   std::vector<float> expected_mean_max_distance_to_mass_center_ratio = { 1.472516 };
-  ASSERT_NEAR(region_props["mean_max_distance_to_mass_center_ratio"][0],
-              expected_mean_max_distance_to_mass_center_ratio[0],
-              0.001);
+  ASSERT_NEAR(region_props["mean_max_distance_to_mass_center_ratio"][0], expected_mean_max_distance_to_mass_center_ratio[0], 0.001);
 }
 
 

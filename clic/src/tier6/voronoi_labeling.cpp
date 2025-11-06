@@ -12,8 +12,7 @@ namespace cle::tier6
 {
 
 auto
-voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & input_binary, Array::Pointer output_labels)
-  -> Array::Pointer
+voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & input_binary, Array::Pointer output_labels) -> Array::Pointer
 {
   tier0::create_like(input_binary, output_labels, dType::LABEL);
   auto flip = tier5::connected_component_labeling_func(device, input_binary, nullptr, "box");

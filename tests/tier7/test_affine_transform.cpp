@@ -8,13 +8,9 @@ class TestAffineTransform : public ::testing::TestWithParam<std::string>
 
 TEST_P(TestAffineTransform, affineTransform)
 {
-  const std::array<float, 5 * 5 * 1> input = {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  };
-  const std::array<float, 5 * 5 * 1> valid = {
-    0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  };
-  std::array<float, 5 * 5 * 1> output;
+  const std::array<float, 5 * 5 * 1> input = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  const std::array<float, 5 * 5 * 1> valid = { 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  std::array<float, 5 * 5 * 1>       output;
 
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -39,9 +35,7 @@ TEST_P(TestAffineTransform, affineTransformInterpolate)
 {
   GTEST_SKIP();
 
-  const std::array<float, 5 * 5 * 1> input = {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  };
+  const std::array<float, 5 * 5 * 1>   input = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   const std::array<float, 10 * 10 * 1> valid = {
     0, 0, 0, 0,      0,      0,      0,      0, 0, 0, 0, 0, 0, 0,      0,      0,      0,      0, 0, 0,
     0, 0, 0, 0,      0,      0,      0,      0, 0, 0, 0, 0, 0, 0.0625, 0.1875, 0.1875, 0.0625, 0, 0, 0,

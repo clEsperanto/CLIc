@@ -26,9 +26,8 @@ median_func(const Device::Pointer & device,
   auto median_size = r_x * r_y * r_z;
   if (median_size * src->itemSize() > device->getLocalMemorySize())
   {
-    std::cerr << "Warning: The kernel size is too large for the device local memory. Total kernel size is "
-              << median_size * src->itemSize() << " bytes, but the device local memory size is "
-              << device->getLocalMemorySize() << " bytes." << std::endl;
+    std::cerr << "Warning: The kernel size is too large for the device local memory. Total kernel size is " << median_size * src->itemSize()
+              << " bytes, but the device local memory size is " << device->getLocalMemorySize() << " bytes." << std::endl;
   }
 
   KernelInfo kernel = { "median_box", kernel::median_box };
@@ -36,11 +35,9 @@ median_func(const Device::Pointer & device,
   {
     kernel = { "median_sphere", kernel::median_sphere };
   }
-  const ParameterList params = {
-    { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z }
-  };
-  const ConstantList constants = { { "MAX_ARRAY_SIZE", r_x * r_y * r_z } };
-  const RangeArray   range = { dst->width(), dst->height(), dst->depth() };
+  const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z } };
+  const ConstantList  constants = { { "MAX_ARRAY_SIZE", r_x * r_y * r_z } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range, constants);
   return dst;
 }

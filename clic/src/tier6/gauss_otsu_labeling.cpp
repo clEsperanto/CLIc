@@ -12,10 +12,8 @@ namespace cle::tier6
 {
 
 auto
-gauss_otsu_labeling_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
-                         Array::Pointer          dst,
-                         float                   outline_sigma) -> Array::Pointer
+gauss_otsu_labeling_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float outline_sigma)
+  -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::LABEL);
   auto temp = tier1::gaussian_blur_func(device, src, nullptr, outline_sigma, outline_sigma, outline_sigma);

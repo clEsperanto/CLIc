@@ -251,8 +251,7 @@ deskew_y_func(const Device::Pointer & device,
  * @note 'label processing', 'in assistant'
  */
 auto
-closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
-  -> Array::Pointer;
+closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius) -> Array::Pointer;
 
 
 /**
@@ -270,8 +269,7 @@ closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, 
  * @note 'label processing', 'in assistant'
  */
 auto
-erode_connected_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
-  -> Array::Pointer;
+erode_connected_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius) -> Array::Pointer;
 
 /**
  * @name opening_labels
@@ -288,8 +286,7 @@ erode_connected_labels_func(const Device::Pointer & device, const Array::Pointer
  * @note 'label processing', 'in assistant'
  */
 auto
-opening_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
-  -> Array::Pointer;
+opening_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius) -> Array::Pointer;
 
 
 /**

@@ -8,8 +8,7 @@ class TestVoronoiOtsuLabeling : public ::testing::TestWithParam<std::string>
 protected:
   const std::array<float, 6 * 7 * 1> input = {
 
-    0, 0, 1, 1, 0, 0, 0, 1, 8, 9, 1, 0, 0, 1, 7, 6, 1, 0, 0, 0, 1,
-    1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 8, 7, 1, 0, 0, 1, 1, 1, 0
+    0, 0, 1, 1, 0, 0, 0, 1, 8, 9, 1, 0, 0, 1, 7, 6, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 8, 7, 1, 0, 0, 1, 1, 1, 0
 
 
   };

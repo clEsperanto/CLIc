@@ -34,9 +34,8 @@ range_func(const Device::Pointer & device,
   correct_range(&start_z, &stop_z, &step_z, static_cast<int>(src->depth()));
 
   const KernelInfo    kernel = { "range", kernel::range };
-  const ParameterList params = { { "src", src },         { "dst", dst },         { "start_x", start_x },
-                                 { "step_x", step_x },   { "start_y", start_y }, { "step_y", step_y },
-                                 { "start_z", start_z }, { "step_z", step_z } };
+  const ParameterList params = { { "src", src },         { "dst", dst },       { "start_x", start_x }, { "step_x", step_x },
+                                 { "start_y", start_y }, { "step_y", step_y }, { "start_z", start_z }, { "step_z", step_z } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;

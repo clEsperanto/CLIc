@@ -37,8 +37,7 @@ CUDABackend::getDevices(const std::string & type) const -> std::vector<Device::P
   auto error = cuDeviceGetCount(&deviceCount);
   if (error != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to found devices. CUDA error : " + getErrorString(error) + " (" +
-                             std::to_string(error) + ").");
+    throw std::runtime_error("Error: Fail to found devices. CUDA error : " + getErrorString(error) + " (" + std::to_string(error) + ").");
   }
   std::vector<Device::Pointer> devices;
   for (int i = 0; i < deviceCount; i++)
@@ -152,23 +151,22 @@ CUDABackend::allocateMemory(const Device::Pointer &       device,
 }
 
 auto
-CUDABackend::allocateBuffer(const Device::Pointer & device, const size_t & size, std::shared_ptr<void> & data_ptr)
-  -> void
+CUDABackend::allocateBuffer(const Device::Pointer & device, const size_t & size, std::shared_ptr<void> & data_ptr) -> void
 {
 #if USE_CUDA
   auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);
   auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" +
-                             std::to_string(err) + ").");
+    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
+                             ").");
   }
   CUdeviceptr mem;
   err = cuMemAlloc(&mem, size);
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to allocate buffer memory. CUDA error : " + getErrorString(err) + " (" +
-                             std::to_string(err) + ").");
+    throw std::runtime_error("Error: Fail to allocate buffer memory. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
+                             ").");
   }
   *data_ptr = reinterpret_cast<void *>(mem);
 #else
@@ -253,24 +251,21 @@ CUDABackend::allocateImage(const Device::Pointer &       device,
 */
 
 auto
-CUDABackend::freeMemory(const Device::Pointer &       device,
-                        const mType &                 mtype,
-                        const std::shared_ptr<void> & data_ptr) const -> void
+CUDABackend::freeMemory(const Device::Pointer & device, const mType & mtype, const std::shared_ptr<void> & data_ptr) const -> void
 {
 #if USE_CUDA
   auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);
   auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" +
-                             std::to_string(err) + ").");
+    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
+                             ").");
   }
   // @StRigaud TODO: implement image support for CUDA
   err = cuMemFree(reinterpret_cast<CUdeviceptr>(*data_ptr));
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to free memory. CUDA error : " + getErrorString(err) + " (" +
-                             std::to_string(err) + ").");
+    throw std::runtime_error("Error: Fail to free memory. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) + ").");
   }
 #else
   throw std::runtime_error("Error: CUDA is not enabled");
@@ -331,8 +326,8 @@ CUDABackend::writeBuffer(const Device::Pointer &       device,
   auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" +
-                             std::to_string(err) + ").");
+    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
+                             ").");
   }
 
   size_t buffer_row_pitch = buffer_shape[1] > 1 ? buffer_shape[0] : 0;
@@ -385,8 +380,8 @@ CUDABackend::writeBuffer(const Device::Pointer &       device,
   }
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to write on device from host to buffer. CUDA error : " + getErrorString(err) +
-                             " (" + std::to_string(err) + ").");
+    throw std::runtime_error("Error: Fail to write on device from host to buffer. CUDA error : " + getErrorString(err) + " (" +
+                             std::to_string(err) + ").");
   }
 #else
   throw std::runtime_error("Error: CUDA is not enabled");
@@ -406,8 +401,8 @@ CUDABackend::readBuffer(const Device::Pointer &       device,
   auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" +
-                             std::to_string(err) + ").");
+    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
+                             ").");
   }
   size_t buffer_row_pitch = buffer_shape[1] > 1 ? buffer_shape[0] : 0;
   size_t buffer_slice_pitch = buffer_shape[2] > 1 ? buffer_shape[1] : 0;
@@ -454,14 +449,13 @@ CUDABackend::readBuffer(const Device::Pointer &       device,
   {
     void * cast_host_ptr = const_cast<void *>(host_ptr);
     cast_host_ptr = static_cast<char *>(cast_host_ptr) + (host_origin[0]);
-    CUdeviceptr devicePtr =
-      reinterpret_cast<CUdeviceptr>(reinterpret_cast<const char *>(*buffer_ptr) + buffer_origin[0]);
+    CUdeviceptr devicePtr = reinterpret_cast<CUdeviceptr>(reinterpret_cast<const char *>(*buffer_ptr) + buffer_origin[0]);
     err = cuMemcpy((CUdeviceptr)cast_host_ptr, devicePtr, region[0]);
   }
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to read memory from buffer to host. CUDA error : " + getErrorString(err) +
-                             " (" + std::to_string(err) + ").");
+    throw std::runtime_error("Error: Fail to read memory from buffer to host. CUDA error : " + getErrorString(err) + " (" +
+                             std::to_string(err) + ").");
   }
 #else
   throw std::runtime_error("Error: CUDA is not enabled");
@@ -515,8 +509,8 @@ CUDABackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
   auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" +
-                             std::to_string(err) + ").");
+    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
+                             ").");
   }
 
   region[0] *= bytes;
@@ -577,8 +571,8 @@ CUDABackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
   }
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to copy memory from buffer to buffer. CUDA error : " + getErrorString(err) +
-                             " (" + std::to_string(err) + ").");
+    throw std::runtime_error("Error: Fail to copy memory from buffer to buffer. CUDA error : " + getErrorString(err) + " (" +
+                             std::to_string(err) + ").");
   }
 #else
   throw std::runtime_error("Error: CUDA is not enabled");
@@ -653,8 +647,8 @@ CUDABackend::setBuffer(const Device::Pointer &       device,
   auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" +
-                             std::to_string(err) + ").");
+    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
+                             ").");
   }
   const auto count = region[0] * region[1] * region[2];
   const auto dev_ptr = reinterpret_cast<CUdeviceptr>(*buffer_ptr);
@@ -711,8 +705,7 @@ CUDABackend::setBuffer(const Device::Pointer &       device,
   }
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to fill memory. CUDA error : " + getErrorString(err) + " (" +
-                             std::to_string(err) + ").");
+    throw std::runtime_error("Error: Fail to fill memory. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) + ").");
   }
 #else
   throw std::runtime_error("Error: CUDA is not enabled");
@@ -750,8 +743,7 @@ CUDABackend::setMemory(const Device::Pointer &       device,
 static auto
 saveBinaryToCache(const std::string & device_hash, const std::string & source_hash, const std::string & program) -> void
 {
-  std::filesystem::path binary_path =
-    CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".ptx");
+  std::filesystem::path binary_path = CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".ptx");
   std::filesystem::create_directories(binary_path.parent_path());
 
   std::ofstream outfile(binary_path);
@@ -767,11 +759,9 @@ saveBinaryToCache(const std::string & device_hash, const std::string & source_ha
 }
 
 static auto
-loadBinaryFromCache(const Device::Pointer & device, const std::string & device_hash, const std::string & source_hash)
-  -> std::string
+loadBinaryFromCache(const Device::Pointer & device, const std::string & device_hash, const std::string & source_hash) -> std::string
 {
-  std::filesystem::path binary_path =
-    CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".ptx");
+  std::filesystem::path binary_path = CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".ptx");
 
   if (!std::filesystem::exists(binary_path))
   {
@@ -812,8 +802,8 @@ CUDABackend::buildKernel(const Device::Pointer & device,
   auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" +
-                             std::to_string(err) + ").");
+    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
+                             ").");
   }
   std::hash<std::string> hasher;
   const auto             source_hash = std::to_string(hasher(kernel_source));
@@ -832,8 +822,8 @@ CUDABackend::buildKernel(const Device::Pointer & device,
     auto         res = nvrtcCreateProgram(&prog, kernel_source.c_str(), nullptr, 0, nullptr, nullptr);
     if (res != NVRTC_SUCCESS)
     {
-      throw std::runtime_error("Error: Fail to create kernel program from source. CUDA error : " + getErrorString(res) +
-                               " (" + std::to_string(res) + ").");
+      throw std::runtime_error("Error: Fail to create kernel program from source. CUDA error : " + getErrorString(res) + " (" +
+                               std::to_string(res) + ").");
     }
     const std::string                 arch_comp = "--gpu-architecture=compute_" + cuda_device->getArch();
     const std::string                 woff = "--disable-warnings";
@@ -846,22 +836,21 @@ CUDABackend::buildKernel(const Device::Pointer & device,
       std::string log(log_size, '\0');
       nvrtcGetProgramLog(prog, &log[0]);
       std::cerr << "Build log: " << log << std::endl;
-      throw std::runtime_error("Error: Fail to build kernel program. CUDA error : " + getErrorString(res) + " (" +
-                               std::to_string(res) + ").");
+      throw std::runtime_error("Error: Fail to build kernel program. CUDA error : " + getErrorString(res) + " (" + std::to_string(res) +
+                               ").");
     }
     size_t      ptxSize;
     nvrtcResult result = nvrtcGetPTXSize(prog, &ptxSize);
     if (result != NVRTC_SUCCESS)
     {
-      throw std::runtime_error("Error: Fail to get PTX size. CUDA error : " + getErrorString(result) + " (" +
-                               std::to_string(result) + ").");
+      throw std::runtime_error("Error: Fail to get PTX size. CUDA error : " + getErrorString(result) + " (" + std::to_string(result) +
+                               ").");
     }
     ptx.resize(ptxSize + 1); // +1 for null terminator
     result = nvrtcGetPTX(prog, &ptx[0]);
     if (result != NVRTC_SUCCESS)
     {
-      throw std::runtime_error("Error: Fail to get PTX. CUDA error : " + getErrorString(result) + " (" +
-                               std::to_string(result) + ").");
+      throw std::runtime_error("Error: Fail to get PTX. CUDA error : " + getErrorString(result) + " (" + std::to_string(result) + ").");
     }
     result = nvrtcDestroyProgram(&prog);
     if (result != NVRTC_SUCCESS)
@@ -878,15 +867,14 @@ CUDABackend::buildKernel(const Device::Pointer & device,
   err = cuModuleLoadData(&cuModule, ptx.c_str());
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to load module. CUDA error : " + getErrorString(err) + " (" +
-                             std::to_string(err) + ").");
+    throw std::runtime_error("Error: Fail to load module. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) + ").");
   }
   CUfunction cuFunction;
   err = cuModuleGetFunction(&cuFunction, cuModule, kernel_name.c_str());
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to build function from module. CUDA error : " + getErrorString(err) + " (" +
-                             std::to_string(err) + ").");
+    throw std::runtime_error("Error: Fail to build function from module. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
+                             ").");
   }
   *(reinterpret_cast<CUfunction *>(kernel)) = cuFunction;
 #else
@@ -931,18 +919,15 @@ CUDABackend::executeKernel(const Device::Pointer &                    device,
   {
     case 1:
       // Warning: Ensure that the third dimension of the block size does not exceed 64.
-      std::transform(block_size.begin(), block_size.end(), block_size.begin(), [](size_t value) {
-        return (value == 0) ? (1) : (value * 512);
-      });
+      std::transform(
+        block_size.begin(), block_size.end(), block_size.begin(), [](size_t value) { return (value == 0) ? (1) : (value * 512); });
       break;
     case 2:
-      std::transform(block_size.begin(), block_size.end(), block_size.begin(), [](size_t value) {
-        return (value == 0) ? (1) : (value * 16);
-      });
+      std::transform(
+        block_size.begin(), block_size.end(), block_size.begin(), [](size_t value) { return (value == 0) ? (1) : (value * 16); });
       break;
     case 3:
-      std::transform(
-        block_size.begin(), block_size.end(), block_size.begin(), [](size_t value) { return (value * 8); });
+      std::transform(block_size.begin(), block_size.end(), block_size.begin(), [](size_t value) { return (value * 8); });
       break;
     default:
       block_size = { 1, 1, 1 };
@@ -970,8 +955,7 @@ CUDABackend::executeKernel(const Device::Pointer &                    device,
 
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail launching kernel. CUDA error : " + getErrorString(err) + " (" +
-                             std::to_string(err) + ").");
+    throw std::runtime_error("Error: Fail launching kernel. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) + ").");
   }
   cuda_device->finish();
 #else

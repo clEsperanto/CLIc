@@ -6,13 +6,9 @@
 class TestTranslation : public ::testing::TestWithParam<std::string>
 {
 protected:
-  const std::array<float, 5 * 5 * 1> input = {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  };
-  const std::array<float, 5 * 5 * 1> valid = {
-    0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  };
-  std::array<float, 5 * 5 * 1> output;
+  const std::array<float, 5 * 5 * 1> input = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  const std::array<float, 5 * 5 * 1> valid = { 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  std::array<float, 5 * 5 * 1>       output;
 };
 
 TEST_P(TestTranslation, executeInterpolationOff)

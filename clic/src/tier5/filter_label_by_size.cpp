@@ -25,8 +25,7 @@ filter_label_by_size_func(const Device::Pointer & device,
   auto       list_of_area = Array::create(nb_labels, 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
   list_of_area->writeFrom(stats["area"].data());
 
-  return tier4::remove_labels_with_map_values_out_of_range_func(
-    device, src, list_of_area, dst, minimum_size, maximum_size);
+  return tier4::remove_labels_with_map_values_out_of_range_func(device, src, list_of_area, dst, minimum_size, maximum_size);
 }
 
 auto

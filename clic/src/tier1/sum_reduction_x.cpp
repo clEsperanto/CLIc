@@ -9,8 +9,7 @@ namespace cle::tier1
 {
 
 auto
-sum_reduction_x_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int blocksize)
-  -> Array::Pointer
+sum_reduction_x_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int blocksize) -> Array::Pointer
 {
   // WARNING: function is not tested for 2D and 3D data. exepecting 1D only for now.
   if (dst == nullptr)

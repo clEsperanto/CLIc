@@ -9,10 +9,8 @@ namespace cle::tier1
 {
 
 auto
-minimum_images_func(const Device::Pointer & device,
-                    const Array::Pointer &  src0,
-                    const Array::Pointer &  src1,
-                    Array::Pointer          dst) -> Array::Pointer
+minimum_images_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_like(src0, dst);
   const KernelInfo    kernel = { "minimum_images", kernel::minimum_images };

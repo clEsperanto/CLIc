@@ -8,8 +8,9 @@ class TestSobel : public ::testing::TestWithParam<std::string>
 protected:
   std::array<float, 5 * 5 * 1> output;
   std::array<float, 5 * 5 * 1> input = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-  std::array<float, 5 * 5 * 1> valid = { 0, 0, 0, 0,       0, 0,       1.41421, 2, 1.41421, 0, 0, 2, 0,
-                                         2, 0, 0, 1.41421, 2, 1.41421, 0,       0, 0,       0, 0, 0 };
+  std::array<float, 5 * 5 * 1> valid = {
+    0, 0, 0, 0, 0, 0, 1.41421, 2, 1.41421, 0, 0, 2, 0, 2, 0, 0, 1.41421, 2, 1.41421, 0, 0, 0, 0, 0, 0
+  };
 };
 TEST_P(TestSobel, execute)
 {

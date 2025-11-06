@@ -46,8 +46,7 @@ hessian_gaussian_eigenvalues_func(const Device::Pointer & device,
                                        mType::BUFFER,
                                        device);
   dirac->fill(0.0F);
-  dirac->writeFrom(
-    &one, { 1, 1, 1 }, { static_cast<size_t>(dirac->width() / 2), dirac->height() / 2, dirac->depth() / 2 });
+  dirac->writeFrom(&one, { 1, 1, 1 }, { static_cast<size_t>(dirac->width() / 2), dirac->height() / 2, dirac->depth() / 2 });
 
   // compute the Gaussian first derivatives along x and blur along y to get Gx
   auto Gx = tier1::gaussian_derivative_func(device, dirac, nullptr, sigma, sigma, sigma, 1, 0, 0);

@@ -15,8 +15,7 @@ binary_infsup_func(const Device::Pointer & device, const Array::Pointer & src, A
   cle::Array::Pointer in = nullptr;
   if (src->dtype() != dType::BINARY)
   {
-    std::cerr << "Warning: Source image of binary_infsup expected to be binary, " << src->dtype() << " given."
-              << std::endl;
+    std::cerr << "Warning: Source image of binary_infsup expected to be binary, " << src->dtype() << " given." << std::endl;
     tier0::create_like(src, in, dType::BINARY);
     tier1::copy_func(device, src, in);
   }
