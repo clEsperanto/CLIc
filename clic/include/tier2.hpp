@@ -1168,6 +1168,29 @@ hessian_gaussian_eigenvalues_func(const Device::Pointer & device,
                                   Array::Pointer          large_eigenvalue,
                                   float                   sigma) -> std::vector<Array::Pointer>;
 
+/**
+ * @name generate_proximal_neighbors_matrix
+ * @brief Generates a touch-matrix where the neighbors within a given distance range are marked as touching.
+ * It take as input a distance matrix (e.g. from a pointlist of centroids) and marks for every column the neighbors
+ * within the given distance range as 1, others as 0. The results is a touch-matrix (adjacency matrix) that can be used
+ * for further analysis.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_matrix Input distance matrix. [const Array::Pointer &]
+ * @param dst_matrix Output touch-matrix. [Array::Pointer ( = None )]
+ * @param min_distance Minimum distance to consider a neighbor. [float ( = -1 )]
+ * @param max_distance Maximum distance to consider a neighbor. [float ( = -1 )]
+ * @return Array::Pointer
+ */
+auto
+generate_proximal_neighbors_matrix_func(const Device::Pointer & device,
+                                      const Array::Pointer &  src_matrix,
+                                      Array::Pointer          dst_matrix,
+                                      float                   min_distance,
+                                      float                   max_distance) -> Array::Pointer;
+
+
+
 
 } // namespace cle::tier2
 

@@ -191,6 +191,27 @@ exclude_large_labels_func(const Device::Pointer & device,
                           Array::Pointer          dst,
                           float                   minimum_size) -> Array::Pointer;
 
+/**
+ * @name proximal_neighbor_count_map
+ * @brief From a label map, generates a map where each label is replaced by the count of neighboring labels within a specified distance range.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param labels Input label image. [const Array::Pointer &]
+ * @param dst Output parametric image. [Array::Pointer ( = None )]
+ * @param min_distance Minimum distance to consider a neighbor. [float ( = -1 )]
+ * @param max_distance Maximum distance to consider a neighbor. [float ( = -1 )]
+ * @return Array::Pointer
+ * 
+ * @note 'label measurement', 'map', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_proximalNeighborCountMap
+ */
+auto
+proximal_neighbor_count_map_func(const Device::Pointer & device,
+                                 const Array::Pointer &  labels,
+                                 Array::Pointer          dst,
+                                 float                   min_distance,
+                                 float                   max_distance) -> Array::Pointer;                          
+
 
 } // namespace cle::tier6
 
