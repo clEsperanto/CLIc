@@ -15,21 +15,19 @@ prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::A
   using point = Eigen::Vector4f;
   using bounding_box = std::array<point, 8>;
 
-  bounding_box bbox = {
-    point{ 0.0F, 0.0F, 0.0F, 1.0F },
-    point{ 0.0F, 0.0F, static_cast<float>(src->depth()), 1.0F },
-    point{ 0.0F, static_cast<float>(src->height()), 0.0F, 1.0F },
-    point{ static_cast<float>(src->width()), 0.0F, 0.0F, 1.0F },
-    point{ static_cast<float>(src->width()), static_cast<float>(src->height()), 0.0F, 1.0F },
-    point{ 0.0F, static_cast<float>(src->height()), static_cast<float>(src->depth()), 1.0F },
-    point{ static_cast<float>(src->width()), 0.0F, static_cast<float>(src->depth()), 1.0F },
-    point{ static_cast<float>(src->width()), static_cast<float>(src->height()), static_cast<float>(src->depth()), 1.0F }
-  };
+  bounding_box bbox = { point{ 0.0F, 0.0F, 0.0F, 1.0F },
+                        point{ 0.0F, 0.0F, static_cast<float>(src->depth()), 1.0F },
+                        point{ 0.0F, static_cast<float>(src->height()), 0.0F, 1.0F },
+                        point{ static_cast<float>(src->width()), 0.0F, 0.0F, 1.0F },
+                        point{ static_cast<float>(src->width()), static_cast<float>(src->height()), 0.0F, 1.0F },
+                        point{ 0.0F, static_cast<float>(src->height()), static_cast<float>(src->depth()), 1.0F },
+                        point{ static_cast<float>(src->width()), 0.0F, static_cast<float>(src->depth()), 1.0F },
+                        point{
+                          static_cast<float>(src->width()), static_cast<float>(src->height()), static_cast<float>(src->depth()), 1.0F } };
 
   // apply the transform matrix to all the point of the bounding box
   bounding_box updated_bbox;
-  std::transform(
-    bbox.begin(), bbox.end(), updated_bbox.begin(), [&](const point & p) { return transform.getMatrix() * p; });
+  std::transform(bbox.begin(), bbox.end(), updated_bbox.begin(), [&](const point & p) { return transform.getMatrix() * p; });
 
   // find the min and max values for each axis
   point min = updated_bbox[0];
@@ -85,8 +83,7 @@ apply_affine_transform(const cle::Array::Pointer &  src,
     // interpolate is only available for image type, we copy src into an image if it is not already
     try
     {
-      image = cle::Array::create(
-        src->width(), src->height(), src->depth(), src->dimension(), src->dtype(), mType::IMAGE, src->device());
+      image = cle::Array::create(src->width(), src->height(), src->depth(), src->dimension(), src->dtype(), mType::IMAGE, src->device());
       src->copyTo(image);
     }
     catch (const std::exception & e)
@@ -97,9 +94,9 @@ apply_affine_transform(const cle::Array::Pointer &  src,
 
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   const ParameterList params = { { "src", image }, { "dst", dst }, { "mat", mat } };
-  const KernelInfo    kernel = (interpolate && image->mtype() == mType::IMAGE
-                                  ? KernelInfo{ "affine_transform_interpolate", kernel::affine_transform_interpolate }
-                                  : KernelInfo{ "affine_transform", kernel::affine_transform });
+  const KernelInfo    kernel =
+    (interpolate && image->mtype() == mType::IMAGE ? KernelInfo{ "affine_transform_interpolate", kernel::affine_transform_interpolate }
+                                                   : KernelInfo{ "affine_transform", kernel::affine_transform });
 
   // execute the kernel
   execute(src->device(), kernel, params, range);
@@ -152,8 +149,7 @@ apply_affine_transform_deskew_3d(const cle::Array::Pointer &  src,
   {
     try
     {
-      image = cle::Array::create(
-        src->width(), src->height(), src->depth(), src->dimension(), src->dtype(), mType::IMAGE, src->device());
+      image = cle::Array::create(src->width(), src->height(), src->depth(), src->dimension(), src->dtype(), mType::IMAGE, src->device());
       src->copyTo(image);
     }
     catch (const std::exception & e)

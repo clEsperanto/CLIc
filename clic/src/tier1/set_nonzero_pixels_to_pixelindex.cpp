@@ -9,10 +9,8 @@ namespace cle::tier1
 {
 
 auto
-set_nonzero_pixels_to_pixelindex_func(const Device::Pointer & device,
-                                      const Array::Pointer &  src,
-                                      Array::Pointer          dst,
-                                      int                     offset) -> Array::Pointer
+set_nonzero_pixels_to_pixelindex_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int offset)
+  -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::INDEX);
   const KernelInfo    kernel = { "set_nonzero_pixels_to_pixelindex", kernel::set_nonzero_pixels_to_pixelindex };

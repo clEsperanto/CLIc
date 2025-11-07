@@ -9,8 +9,7 @@ namespace cle::tier1
 {
 
 auto
-detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::BINARY);
   const KernelInfo    kernel = { "detect_label_edges", kernel::detect_label_edges };

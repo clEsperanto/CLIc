@@ -45,8 +45,7 @@ create_hermitian(const Array::Pointer & input);
  * @return std::array<size_t, 3>
  */
 auto
-fft_pad_shape(const std::array<size_t, 3> & image_shape, const std::array<size_t, 3> & kernel_shape)
-  -> std::array<size_t, 3>;
+fft_pad_shape(const std::array<size_t, 3> & image_shape, const std::array<size_t, 3> & kernel_shape) -> std::array<size_t, 3>;
 
 
 /**
@@ -159,10 +158,7 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
  * @return Array::Pointer
  */
 auto
-performConvolution(const Array::Pointer & input,
-                   const Array::Pointer & psf,
-                   const Array::Pointer & output,
-                   bool                   correlate) -> void;
+performConvolution(const Array::Pointer & input, const Array::Pointer & psf, const Array::Pointer & output, bool correlate) -> void;
 
 
 /**

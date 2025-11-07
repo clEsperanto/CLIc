@@ -18,10 +18,8 @@ circular_shift_func(const Device::Pointer & device,
 {
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "circular_shift", kernel::circular_shift };
-  const ParameterList params = {
-    { "src", src }, { "dst", dst }, { "index_x", shift_x }, { "index_y", shift_y }, { "index_z", shift_z }
-  };
-  const RangeArray range = { src->width(), src->height(), src->depth() };
+  const ParameterList params = { { "src", src }, { "dst", dst }, { "index_x", shift_x }, { "index_y", shift_y }, { "index_z", shift_z } };
+  const RangeArray    range = { src->width(), src->height(), src->depth() };
   execute(device, kernel, params, range);
   return dst;
 }

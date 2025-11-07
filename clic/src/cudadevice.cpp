@@ -182,9 +182,8 @@ CUDADevice::getInfo() const -> std::string
 {
   std::ostringstream result;
   size_t             totalGlobalMem;
-  int driverVersion, sharedMemPerBlock, runtimeVersion, regsPerBlock, warpSize, maxThreadsPerBlock, totalConstMem,
-    major, minor, clockRate, textureAlignment, multiProcessorCount, maxBlockDimX, maxBlockDimY, maxBlockDimZ,
-    maxGridDimX, maxGridDimY, maxGridDimZ;
+  int driverVersion, sharedMemPerBlock, runtimeVersion, regsPerBlock, warpSize, maxThreadsPerBlock, totalConstMem, major, minor, clockRate,
+    textureAlignment, multiProcessorCount, maxBlockDimX, maxBlockDimY, maxBlockDimZ, maxGridDimX, maxGridDimY, maxGridDimZ;
 
   cudaRuntimeGetVersion(&runtimeVersion);
   cuDriverGetVersion(&driverVersion);
@@ -227,10 +226,8 @@ CUDADevice::getInfo() const -> std::string
   result << std::left << std::setw(30) << "\tRegisters per block:" << regsPerBlock << "\n";
   result << std::left << std::setw(30) << "\tWarp size:" << warpSize << "\n";
   result << std::left << std::setw(30) << "\tMax threads per block:" << maxThreadsPerBlock << "\n";
-  result << std::left << std::setw(30) << "\tMax block dimension:" << maxBlockDimX << ", " << maxBlockDimY << ", "
-         << maxBlockDimZ << "\n";
-  result << std::left << std::setw(30) << "\tMax grid dimension:" << maxGridDimX << ", " << maxGridDimY << ", "
-         << maxGridDimZ << "\n";
+  result << std::left << std::setw(30) << "\tMax block dimension:" << maxBlockDimX << ", " << maxBlockDimY << ", " << maxBlockDimZ << "\n";
+  result << std::left << std::setw(30) << "\tMax grid dimension:" << maxGridDimX << ", " << maxGridDimY << ", " << maxGridDimZ << "\n";
   result << std::left << std::setw(30) << "\tCompute capability version:" << major << "." << minor << "\n";
   result << std::left << std::setw(30) << "\tTexture alignment:" << textureAlignment << "\n";
 

@@ -9,10 +9,8 @@ namespace cle::tier1
 {
 
 auto
-divide_images_func(const Device::Pointer & device,
-                   const Array::Pointer &  dividend,
-                   const Array::Pointer &  divisor,
-                   Array::Pointer          dst) -> Array::Pointer
+divide_images_func(const Device::Pointer & device, const Array::Pointer & dividend, const Array::Pointer & divisor, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_like(dividend, dst);
   const KernelInfo    kernel = { "divide_images", kernel::divide_images };

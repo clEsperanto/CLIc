@@ -11,10 +11,8 @@ namespace cle::tier5
 {
 
 auto
-combine_labels_func(const Device::Pointer & device,
-                    const Array::Pointer &  src0,
-                    const Array::Pointer &  src1,
-                    Array::Pointer          dst) -> Array::Pointer
+combine_labels_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_like(src0, dst, dType::LABEL);
   auto max_label = tier2::maximum_of_all_pixels_func(device, src0);

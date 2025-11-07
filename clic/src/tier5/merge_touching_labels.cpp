@@ -11,8 +11,7 @@ namespace cle::tier5
 {
 
 auto
-merge_touching_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+merge_touching_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
   // generate touching matrix
   auto touching_matrix = tier3::generate_touch_matrix_func(device, src, nullptr);
@@ -34,8 +33,7 @@ merge_touching_labels_func(const Device::Pointer & device, const Array::Pointer 
   // make a touch-matrix where intensities correspond to the label-ID
   auto label_id_vector = Array::create(1, touching_matrix->height(), 1, 1, dType::LABEL, mType::BUFFER, device);
   tier1::set_ramp_y_func(device, label_id_vector);
-  auto touching_matrix_id =
-    Array::create(touching_matrix->width(), touching_matrix->height(), 1, 2, dType::LABEL, mType::BUFFER, device);
+  auto touching_matrix_id = Array::create(touching_matrix->width(), touching_matrix->height(), 1, 2, dType::LABEL, mType::BUFFER, device);
   tier1::multiply_images_func(device, touching_matrix, label_id_vector, touching_matrix_id);
 
   // new list of labels corresponding to maximum x projection of touching matrix

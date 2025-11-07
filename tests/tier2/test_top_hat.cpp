@@ -8,8 +8,7 @@ class TestTopHat : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<float, 5 * 5 * 1> output;
-  std::array<float, 5 * 5 * 1> input = { 0,  0, 0, 0,  0,  0,  50, 50, 50, 0, 0, 50, 100,
-                                         50, 0, 0, 50, 50, 50, 0,  0,  0,  0, 0, 0 };
+  std::array<float, 5 * 5 * 1> input = { 0, 0, 0, 0, 0, 0, 50, 50, 50, 0, 0, 50, 100, 50, 0, 0, 50, 50, 50, 0, 0, 0, 0, 0, 0 };
 };
 
 TEST_P(TestTopHat, executeBox)

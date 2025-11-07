@@ -72,8 +72,7 @@ BackendManager::setBackend(const std::string & backend) -> void
   // Define a map to associate backend names with their types and creation functions
   static std::map<std::string, std::pair<Backend::Type, std::function<std::unique_ptr<Backend>()>>> backendMap = {
     { "cuda", { Backend::Type::CUDA, []() -> std::unique_ptr<Backend> { return std::make_unique<CUDABackend>(); } } },
-    { "opencl",
-      { Backend::Type::OPENCL, []() -> std::unique_ptr<Backend> { return std::make_unique<OpenCLBackend>(); } } }
+    { "opencl", { Backend::Type::OPENCL, []() -> std::unique_ptr<Backend> { return std::make_unique<OpenCLBackend>(); } } }
   };
 
   // Check if the requested backend is known

@@ -31,19 +31,15 @@ nonzero_maximum_func(const Device::Pointer & device,
 }
 
 auto
-nonzero_maximum_diamond_func(const Device::Pointer & device,
-                             const Array::Pointer &  src,
-                             Array::Pointer          dst0,
-                             Array::Pointer          dst1) -> Array::Pointer
+nonzero_maximum_diamond_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst0, Array::Pointer dst1)
+  -> Array::Pointer
 {
   return nonzero_maximum_func(device, src, dst0, dst1, "sphere");
 }
 
 auto
-nonzero_maximum_box_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
-                         Array::Pointer          dst0,
-                         Array::Pointer          dst1) -> Array::Pointer
+nonzero_maximum_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst0, Array::Pointer dst1)
+  -> Array::Pointer
 {
   return nonzero_maximum_func(device, src, dst0, dst1, "box");
 }

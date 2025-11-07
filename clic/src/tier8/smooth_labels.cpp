@@ -14,8 +14,7 @@ namespace cle::tier8
 {
 
 auto
-smooth_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
-  -> Array::Pointer
+smooth_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::LABEL);
   if (radius < 1)

@@ -11,13 +11,9 @@ protected:
 
   std::array<float, 5 * 5 * 1> input = { 0, 0, 0, 0, 0, 0, 1, 1, 2, 0, 0, 2, 2, 3, 0, 0, 3, 3, 4, 0, 0, 0, 0, 0, 0 };
 
-  std::array<float, 5 * 5 * 1> valid_box = {
-    0, 0, 0, 0, 0, 0, 2, 3, 3, 0, 0, 3, 4, 4, 0, 0, 3, 4, 4, 0, 0, 0, 0, 0, 0
-  };
+  std::array<float, 5 * 5 * 1> valid_box = { 0, 0, 0, 0, 0, 0, 2, 3, 3, 0, 0, 3, 4, 4, 0, 0, 3, 4, 4, 0, 0, 0, 0, 0, 0 };
 
-  std::array<float, 5 * 5 * 1> valid_diam = {
-    0, 0, 0, 0, 0, 0, 2, 2, 3, 0, 0, 3, 3, 4, 0, 0, 3, 4, 4, 0, 0, 0, 0, 0, 0
-  };
+  std::array<float, 5 * 5 * 1> valid_diam = { 0, 0, 0, 0, 0, 0, 2, 2, 3, 0, 0, 3, 3, 4, 0, 0, 3, 4, 4, 0, 0, 0, 0, 0, 0 };
 };
 
 TEST_P(TestNonzeroMaximum, executeDeprecatedBox)

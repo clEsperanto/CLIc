@@ -9,10 +9,8 @@ namespace cle::tier1
 {
 
 auto
-read_values_from_positions_func(const Device::Pointer & device,
-                                const Array::Pointer &  src,
-                                const Array::Pointer &  list,
-                                Array::Pointer          dst) -> Array::Pointer
+read_values_from_positions_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & list, Array::Pointer dst)
+  -> Array::Pointer
 {
   // TODO: check list shape
   // if (list->height() < src->dim())

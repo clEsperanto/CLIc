@@ -111,10 +111,7 @@ TEST_P(TestExecution, execute)
 	  WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(value));
 	})";
 
-  execute(device,
-          { name, source },
-          { { "src", arr_a }, { "dst", arr_b } },
-          { arr_a->width(), arr_a->height(), arr_a->depth() });
+  execute(device, { name, source }, { { "src", arr_a }, { "dst", arr_b } }, { arr_a->width(), arr_a->height(), arr_a->depth() });
 
 
   std::vector<float> h_c(10);

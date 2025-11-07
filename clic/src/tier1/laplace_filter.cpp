@@ -10,8 +10,7 @@ namespace cle::tier1
 {
 
 auto
-laplace_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, std::string connectivity)
-  -> Array::Pointer
+laplace_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, std::string connectivity) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::FLOAT);
   KernelInfo kernel = { "laplace_box", kernel::laplace_box };

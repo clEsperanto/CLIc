@@ -8,8 +8,7 @@ namespace cle::tier2
 {
 
 auto
-sub_stack_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int start_z, int end_z)
-  -> Array::Pointer
+sub_stack_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int start_z, int end_z) -> Array::Pointer
 {
   auto nb_slice = end_z - start_z + 1;
   nb_slice = nb_slice < 1 ? 1 : nb_slice;
@@ -17,11 +16,8 @@ sub_stack_func(const Device::Pointer & device, const Array::Pointer & src, Array
 }
 
 auto
-reduce_stack_func(const Device::Pointer & device,
-                  const Array::Pointer &  src,
-                  Array::Pointer          dst,
-                  int                     reduction_factor,
-                  int                     offset) -> Array::Pointer
+reduce_stack_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int reduction_factor, int offset)
+  -> Array::Pointer
 {
   reduction_factor = reduction_factor < 1 ? 1 : reduction_factor;
   auto num_slice = static_cast<int>(src->depth() / reduction_factor);

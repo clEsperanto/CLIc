@@ -31,10 +31,8 @@ mode_func(const Device::Pointer & device,
   {
     kernel = { "mode_sphere", kernel::mode_sphere };
   }
-  const ParameterList params = {
-    { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z }
-  };
-  const RangeArray range = { dst->width(), dst->height(), dst->depth() };
+  const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
 }

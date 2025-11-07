@@ -24,10 +24,8 @@ namespace cle::tier2
  * @see https://clij.github.io/clij2-docs/reference_absoluteDifference
  */
 auto
-absolute_difference_func(const Device::Pointer & device,
-                         const Array::Pointer &  src0,
-                         const Array::Pointer &  src1,
-                         Array::Pointer          dst) -> Array::Pointer;
+absolute_difference_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -44,10 +42,8 @@ absolute_difference_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_addImages
  */
 auto
-add_images_func(const Device::Pointer & device,
-                const Array::Pointer &  src0,
-                const Array::Pointer &  src1,
-                Array::Pointer          dst) -> Array::Pointer;
+add_images_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -141,11 +137,8 @@ bottom_hat_func(const Device::Pointer & device,
  * @see https://numpy.org/doc/stable/reference/generated/numpy.clip.html
  */
 auto
-clip_func(const Device::Pointer & device,
-          const Array::Pointer &  src,
-          Array::Pointer          dst,
-          float                   min_intensity,
-          float                   max_intensity) -> Array::Pointer;
+clip_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float min_intensity, float max_intensity)
+  -> Array::Pointer;
 
 
 /**
@@ -233,10 +226,8 @@ grayscale_closing_func(const Device::Pointer & device,
  * @note 'filter', 'in assistant'
  */
 auto
-closing_func(const Device::Pointer & device,
-             const Array::Pointer &  src,
-             const Array::Pointer &  footprint,
-             Array::Pointer          dst) -> Array::Pointer;
+closing_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & footprint, Array::Pointer dst)
+  -> Array::Pointer;
 
 /**
  * @name binary_closing
@@ -276,10 +267,8 @@ binary_closing_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_combineHorizontally
  */
 auto
-concatenate_along_x_func(const Device::Pointer & device,
-                         const Array::Pointer &  src0,
-                         const Array::Pointer &  src1,
-                         Array::Pointer          dst) -> Array::Pointer;
+concatenate_along_x_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 /**
  * @name concatenate_along_y
@@ -295,10 +284,8 @@ concatenate_along_x_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_combineVertically
  */
 auto
-concatenate_along_y_func(const Device::Pointer & device,
-                         const Array::Pointer &  src0,
-                         const Array::Pointer &  src1,
-                         Array::Pointer          dst) -> Array::Pointer;
+concatenate_along_y_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 /**
  * @name concatenate_along_z
@@ -314,10 +301,8 @@ concatenate_along_y_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_concatenateStacks
  */
 auto
-concatenate_along_z_func(const Device::Pointer & device,
-                         const Array::Pointer &  src0,
-                         const Array::Pointer &  src1,
-                         Array::Pointer          dst) -> Array::Pointer;
+concatenate_along_z_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 /**
  * @name count_touching_neighbors
@@ -353,8 +338,7 @@ count_touching_neighbors_func(const Device::Pointer & device,
  *
  */
 auto
-crop_border_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int border_size)
-  -> Array::Pointer;
+crop_border_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int border_size) -> Array::Pointer;
 
 
 /**
@@ -392,8 +376,7 @@ divide_by_gaussian_background_func(const Device::Pointer & device,
  *
  */
 auto
-degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+degrees_to_radians_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 /**
  * @name detect_maxima_box
@@ -546,8 +529,7 @@ difference_of_gaussian_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_extendLabelingViaVoronoi
  */
 auto
-extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+extend_labeling_via_voronoi_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -596,8 +578,7 @@ label_spots_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  *
  */
 auto
-large_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+large_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -644,8 +625,7 @@ minimum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer 
  *
  */
 auto
-minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask)
-  -> float;
+minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask) -> float;
 
 
 /**
@@ -734,10 +714,8 @@ grayscale_opening_func(const Device::Pointer & device,
  * @note 'filter', 'in assistant'
  */
 auto
-opening_func(const Device::Pointer & device,
-             const Array::Pointer &  src,
-             const Array::Pointer &  footprint,
-             Array::Pointer          dst) -> Array::Pointer;
+opening_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & footprint, Array::Pointer dst)
+  -> Array::Pointer;
 
 /**
  * @name binary_opening
@@ -774,8 +752,7 @@ binary_opening_func(const Device::Pointer & device,
  *
  */
 auto
-radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -791,8 +768,7 @@ radians_to_degrees_func(const Device::Pointer & device, const Array::Pointer & s
  * @see https://clij.github.io/clij2-docs/reference_reduceLabelsToLabelEdges
  */
 auto
-reduce_labels_to_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+reduce_labels_to_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -807,8 +783,7 @@ reduce_labels_to_label_edges_func(const Device::Pointer & device, const Array::P
  *
  */
 auto
-small_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+small_hessian_eigenvalue_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -842,10 +817,8 @@ square_func(const Device::Pointer & device, const Array::Pointer & src, Array::P
  * @see https://clij.github.io/clij2-docs/reference_squaredDifference
  */
 auto
-squared_difference_func(const Device::Pointer & device,
-                        const Array::Pointer &  src0,
-                        const Array::Pointer &  src1,
-                        Array::Pointer          dst) -> Array::Pointer;
+squared_difference_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -964,10 +937,8 @@ subtract_gaussian_background_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_subtractImages
  */
 auto
-subtract_images_func(const Device::Pointer & device,
-                     const Array::Pointer &  src0,
-                     const Array::Pointer &  src1,
-                     Array::Pointer          dst) -> Array::Pointer;
+subtract_images_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 /**
  * @name sub_stack
@@ -984,8 +955,7 @@ subtract_images_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_subStack
  */
 auto
-sub_stack_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int start_z, int end_z)
-  -> Array::Pointer;
+sub_stack_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int start_z, int end_z) -> Array::Pointer;
 
 /**
  * @name reduce_stack
@@ -1004,11 +974,8 @@ sub_stack_func(const Device::Pointer & device, const Array::Pointer & src, Array
  * @see https://clij.github.io/clij2-docs/reference_reduceStack
  */
 auto
-reduce_stack_func(const Device::Pointer & device,
-                  const Array::Pointer &  src,
-                  Array::Pointer          dst,
-                  int                     reduction_factor,
-                  int                     offset) -> Array::Pointer;
+reduce_stack_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int reduction_factor, int offset)
+  -> Array::Pointer;
 
 /**
  * @name sum_of_all_pixels
@@ -1138,10 +1105,8 @@ extended_depth_of_focus_variance_projection_func(const Device::Pointer & device,
  * @note 'projection'
  */
 auto
-extended_depth_of_focus_sobel_projection_func(const Device::Pointer & device,
-                                              const Array::Pointer &  src,
-                                              Array::Pointer          dst,
-                                              float                   sigma) -> Array::Pointer;
+extended_depth_of_focus_sobel_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float sigma)
+  -> Array::Pointer;
 
 /**
  * @name hessian_gaussian_eigenvalues

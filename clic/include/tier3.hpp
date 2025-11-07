@@ -83,10 +83,8 @@ clahe_func(const Device::Pointer & device,
  *
  */
 auto
-remove_labels_func(const Device::Pointer & device,
-                   const Array::Pointer &  src,
-                   const Array::Pointer &  list,
-                   Array::Pointer          dst) -> Array::Pointer;
+remove_labels_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & list, Array::Pointer dst)
+  -> Array::Pointer;
 
 /**
  * @name exclude_labels
@@ -106,10 +104,8 @@ remove_labels_func(const Device::Pointer & device,
  *
  */
 auto
-exclude_labels_func(const Device::Pointer & device,
-                    const Array::Pointer &  src,
-                    const Array::Pointer &  list,
-                    Array::Pointer          dst) -> Array::Pointer;
+exclude_labels_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & list, Array::Pointer dst)
+  -> Array::Pointer;
 
 /**
  * @name remove_labels_on_edges
@@ -171,8 +167,7 @@ exclude_labels_on_edges_func(const Device::Pointer & device,
  *
  */
 auto
-flag_existing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+flag_existing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -191,8 +186,7 @@ flag_existing_labels_func(const Device::Pointer & device, const Array::Pointer &
  * @see https://clij.github.io/clij2-docs/reference_gammaCorrection
  */
 auto
-gamma_correction_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float gamma)
-  -> Array::Pointer;
+gamma_correction_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float gamma) -> Array::Pointer;
 
 
 /**
@@ -232,8 +226,7 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_generateTouchMatrix
  */
 auto
-generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst_matrix)
-  -> Array::Pointer;
+generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst_matrix) -> Array::Pointer;
 
 
 /**
@@ -311,9 +304,8 @@ jaccard_index_func(const Device::Pointer & device, const Array::Pointer & src0, 
  * @see https://clij.github.io/clij2-docs/reference_labelledSpotsToPointList
  */
 auto
-labelled_spots_to_pointlist_func(const Device::Pointer & device,
-                                 const Array::Pointer &  label,
-                                 Array::Pointer          dspointlistt) -> Array::Pointer;
+labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & label, Array::Pointer dspointlistt)
+  -> Array::Pointer;
 
 
 /**
@@ -397,8 +389,7 @@ morphological_chan_vese_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_statisticsOfLabelledPixels
  */
 auto
-statistics_of_labelled_pixels_func(const Device::Pointer & device, Array::Pointer intensity, Array::Pointer label)
-  -> StatisticsMap;
+statistics_of_labelled_pixels_func(const Device::Pointer & device, Array::Pointer intensity, Array::Pointer label) -> StatisticsMap;
 
 /**
  * @name statistics_of_background_and_labelled_pixels
@@ -417,9 +408,8 @@ statistics_of_labelled_pixels_func(const Device::Pointer & device, Array::Pointe
  * @see https://clij.github.io/clij2-docs/reference_statisticsOfBackgroundAndLabelledPixels
  */
 auto
-statistics_of_background_and_labelled_pixels_func(const Device::Pointer & device,
-                                                  Array::Pointer          intensity,
-                                                  Array::Pointer          label) -> StatisticsMap;
+statistics_of_background_and_labelled_pixels_func(const Device::Pointer & device, Array::Pointer intensity, Array::Pointer label)
+  -> StatisticsMap;
 
 /**
  * @name sato_filter
@@ -465,12 +455,11 @@ sato_filter_func(const Device::Pointer & device,
  * @see https://doi.org/10.1016/S1361-8415(98)80009-1
  */
 auto
-tubeness_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float sigma)
-  -> Array::Pointer;
+tubeness_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float sigma) -> Array::Pointer;
 
 /**
  * @name read_map_values
- * @brief Reads values from a parametric map using its corresponding labels and 
+ * @brief Reads values from a parametric map using its corresponding labels and
  * return it as a vector of values.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -480,11 +469,12 @@ tubeness_func(const Device::Pointer & device, const Array::Pointer & src, Array:
  * @return Array::Pointer
  */
 auto
-read_map_values_func(const Device::Pointer & device, const Array::Pointer & label, const Array::Pointer & map, Array::Pointer & dst) -> Array::Pointer;
+read_map_values_func(const Device::Pointer & device, const Array::Pointer & label, const Array::Pointer & map, Array::Pointer & dst)
+  -> Array::Pointer;
 
 /**
  * @name read_intensities_from_map
- * @brief Reads values from a parametric map using its corresponding labels and 
+ * @brief Reads values from a parametric map using its corresponding labels and
  * return it as a vector of values.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
