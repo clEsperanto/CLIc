@@ -416,6 +416,95 @@ auto
 percentile_func(const Device::Pointer & device, const Array::Pointer & src, float percentile) -> float;
 
 
+
+
+/**
+ * @name mean_of_touching_neighbors_map
+ * @brief Compute the mean value of touching neighbors for each label and generates 
+ * a parametric map based on these mean values where the labels are replaced by the
+ * mean value of their touching neighbors.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param labels Input vector image. [const Array::Pointer &]
+ * @param dst Output parametric image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto 
+mean_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer & dst) -> Array::Pointer;
+
+/**
+ * @name median_of_touching_neighbors_map
+ * @brief Computes the median value of touching neighbors for each label and generates
+ * a parametric map based on these median values where the labels are replaced by the
+ * median value of their touching neighbors.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param labels Input label image. [const Array::Pointer &]
+ * @param dst Output parametric image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto 
+median_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer & dst) -> Array::Pointer;
+
+/**
+ * @name minimum_of_touching_neighbors_map
+ * @brief Computes the minimum value of touching neighbors for each label and generates
+ * a parametric map based on these minimum values where the labels are replaced by the
+ * minimum value of their touching neighbors.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param labels Input label image. [const Array::Pointer &]
+ * @param dst Output parametric image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto 
+minimum_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer & dst) -> Array::Pointer;
+
+/**
+ * @name maximum_of_touching_neighbors_map
+ * @brief Computes the maximum value of touching neighbors for each label and generates
+ * a parametric map based on these maximum values where the labels are replaced by the
+ * maximum value of their touching neighbors.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param labels Input label image. [const Array::Pointer &]
+ * @param dst Output parametric image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto 
+maximum_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer & dst) -> Array::Pointer;
+
+/**
+ * @name standard_deviation_of_touching_neighbors_map
+ * @brief Computes the standard deviation of touching neighbors for each label and generates
+ * a parametric map based on these standard deviation values where the labels are replaced by the
+ * standard deviation value of their touching neighbors.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param labels Input label image. [const Array::Pointer &]
+ * @param dst Output parametric image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto 
+standard_deviation_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer & dst) -> Array::Pointer;
+
+/**
+ * @name mode_of_touching_neighbors_map
+ * @brief Computes the mode value of touching neighbors for each label and generates
+ * a parametric map based on these mode values where the labels are replaced by the
+ * mode value of their touching neighbors.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param labels Input label image. [const Array::Pointer &]
+ * @param dst Output parametric image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto 
+mode_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer & dst) -> Array::Pointer;
+
+
+
+
 } // namespace cle::tier4
 
 #endif // __INCLUDE_TIER4_HPP

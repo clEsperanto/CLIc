@@ -148,4 +148,77 @@ touching_neighbor_count_map_func(const Device::Pointer & device, const Array::Po
 }
 
 
+auto 
+mean_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer & dst) -> Array::Pointer
+{
+  tier0::create_like(labels, dst, dType::FLOAT);
+  auto touch_matrix = tier3::generate_touch_matrix_func(device, labels, nullptr);
+  auto neighbor_count = tier2::count_touching_neighbors_func(device, touch_matrix, nullptr, true);
+  auto count = tier1::mean_of_touching_neighbors_func(device, neighbor_count, touch_matrix, nullptr);
+  tier1::replace_intensities_func(device, labels, count, dst);
+  return dst;
+}
+
+
+auto 
+median_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer & dst) -> Array::Pointer
+{
+  tier0::create_like(labels, dst, dType::FLOAT);
+  auto touch_matrix = tier3::generate_touch_matrix_func(device, labels, nullptr);
+  auto neighbor_count = tier2::count_touching_neighbors_func(device, touch_matrix, nullptr, true);
+  auto count = tier1::median_of_touching_neighbors_func(device, neighbor_count, touch_matrix, nullptr);
+  tier1::replace_intensities_func(device, labels, count, dst);
+  return dst;
+}
+
+
+auto 
+minimum_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer & dst) -> Array::Pointer
+{
+  tier0::create_like(labels, dst, dType::FLOAT);
+  auto touch_matrix = tier3::generate_touch_matrix_func(device, labels, nullptr);
+  auto neighbor_count = tier2::count_touching_neighbors_func(device, touch_matrix, nullptr, true);
+  auto count = tier1::minimum_of_touching_neighbors_func(device, neighbor_count, touch_matrix, nullptr);
+  tier1::replace_intensities_func(device, labels, count, dst);
+  return dst;
+}
+
+
+auto 
+maximum_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer & dst) -> Array::Pointer
+{
+  tier0::create_like(labels, dst, dType::FLOAT);
+  auto touch_matrix = tier3::generate_touch_matrix_func(device, labels, nullptr);
+  auto neighbor_count = tier2::count_touching_neighbors_func(device, touch_matrix, nullptr, true);
+  auto count = tier1::maximum_of_touching_neighbors_func(device, neighbor_count, touch_matrix, nullptr);
+  tier1::replace_intensities_func(device, labels, count, dst);
+  return dst;
+}
+
+
+auto 
+standard_deviation_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer & dst) -> Array::Pointer
+{
+  tier0::create_like(labels, dst, dType::FLOAT);
+  auto touch_matrix = tier3::generate_touch_matrix_func(device, labels, nullptr);
+  auto neighbor_count = tier2::count_touching_neighbors_func(device, touch_matrix, nullptr, true);
+  auto count = tier1::standard_deviation_of_touching_neighbors_func(device, neighbor_count, touch_matrix, nullptr);
+  tier1::replace_intensities_func(device, labels, count, dst);
+  return dst;
+}
+
+
+auto 
+mode_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer & dst) -> Array::Pointer
+{
+  tier0::create_like(labels, dst, dType::FLOAT);
+  auto touch_matrix = tier3::generate_touch_matrix_func(device, labels, nullptr);
+  auto neighbor_count = tier2::count_touching_neighbors_func(device, touch_matrix, nullptr, true);
+  auto count = tier1::mode_of_touching_neighbors_func(device, neighbor_count, touch_matrix, nullptr);
+  tier1::replace_intensities_func(device, labels, count, dst);
+  return dst;
+}
+
+
+
 } // namespace cle::tier4
