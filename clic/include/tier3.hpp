@@ -468,6 +468,36 @@ auto
 tubeness_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float sigma)
   -> Array::Pointer;
 
+
+/** 
+ * @name artificial_tissue
+ * @brief Generates 2D or 3D artificial tissue-like image by generating a regular grid point and
+ * introducing Gaussian noise.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param width Width of the generated image. [int ( = 256) ]
+ * @param height Height of the generated image. [int ( = 256 ) ]
+ * @param depth Depth of the generated image. [int ( = 1 ) ]
+ * @param delta_x Spacing between pixels in x. [float ( = 1.0 )]
+ * @param delta_y Spacing between pixels in y. [float ( = 1.0 )]
+ * @param delta_z Spacing between pixels in z. [float ( = 1.0 )]
+ * @param sigma_x Standard deviation of the Gaussian noise in x. [float ( = 1.0 )]
+ * @param sigma_y Standard deviation of the Gaussian noise in y. [float ( = 1.0 )]
+ * @param sigma_z Standard deviation of the Gaussian noise in z. [float ( = 1.0 )]
+ * @return Array::Pointer
+ */
+auto
+artificial_tissue_func(const Device::Pointer & device,
+                       int                     width,
+                       int                     height,
+                       int                     depth,
+                       float                   delta_x,
+                       float                   delta_y,
+                       float                   delta_z,
+                       float                   sigma_x,
+                       float                   sigma_y,
+                       float                   sigma_z) -> Array::Pointer;
+
 } // namespace cle::tier3
 
 #endif // __INCLUDE_TIER3_HPP
