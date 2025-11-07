@@ -9,10 +9,7 @@ namespace cle::tier1
 {
 
 auto
-divide_scalar_by_image_func(const Device::Pointer & device,
-                            const Array::Pointer &  src,
-                            Array::Pointer          dst,
-                            float                   scalar) -> Array::Pointer
+divide_scalar_by_image_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar) -> Array::Pointer
 {
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "divide_scalar_by_image", kernel::divide_scalar_by_image };

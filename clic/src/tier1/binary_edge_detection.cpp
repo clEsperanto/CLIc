@@ -9,8 +9,7 @@ namespace cle::tier1
 {
 
 auto
-binary_edge_detection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer
+binary_edge_detection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::BINARY);
   const KernelInfo    kernel = { "binary_edge_detection", kernel::binary_edge_detection };

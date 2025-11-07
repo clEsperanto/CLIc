@@ -208,9 +208,8 @@ TEST_P(TestArray, regionOperation)
   array->readTo(read_array.data());
 
   // Check that the data was written and read correctly
-  std::array<float, 7 * 7 * 1> valid = { -7, -7, -7, -7, -7, -7, -7, -7, -1, -1, -1, -1, -1, -7, -7, -1, -1,
-                                         -1, -1, -1, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7,
-                                         -7, -7, -7, -7, -7, -7, 19, -7, -7, -7, -7, -7, -7, -7, -7 };
+  std::array<float, 7 * 7 * 1> valid = { -7, -7, -7, -7, -7, -7, -7, -7, -1, -1, -1, -1, -1, -7, -7, -1, -1, -1, -1, -1, -7, -7, -7, -7, -7,
+                                         -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, -7, 19, -7, -7, -7, -7, -7, -7, -7, -7 };
   for (int i = 0; i < valid.size(); i++)
   {
     EXPECT_EQ(valid[i], read_array[i]);

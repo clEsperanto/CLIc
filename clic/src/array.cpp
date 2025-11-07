@@ -68,13 +68,7 @@ Array::create(const size_t            width,
 auto
 Array::create(const Array::Pointer & array) -> Array::Pointer
 {
-  auto ptr = create(array->width(),
-                    array->height(),
-                    array->depth(),
-                    array->dimension(),
-                    array->dtype(),
-                    array->mtype(),
-                    array->device());
+  auto ptr = create(array->width(), array->height(), array->depth(), array->dimension(), array->dtype(), array->mtype(), array->device());
   return ptr;
 }
 
@@ -116,9 +110,7 @@ Array::writeFrom(const void * host_data) -> void
 }
 
 auto
-Array::writeFrom(const void *                  host_data,
-                 const std::array<size_t, 3> & region,
-                 const std::array<size_t, 3> & buffer_origin) -> void
+Array::writeFrom(const void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin) -> void
 {
   if (host_data == nullptr)
   {
@@ -150,8 +142,7 @@ Array::readTo(void * host_data) const -> void
 }
 
 auto
-Array::readTo(void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin) const
-  -> void
+Array::readTo(void * host_data, const std::array<size_t, 3> & region, const std::array<size_t, 3> & buffer_origin) const -> void
 {
   if (host_data == nullptr)
   {
@@ -196,18 +187,15 @@ Array::copyTo(const Array::Pointer & dst) const -> void
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::IMAGE)
   {
-    backend_.copyMemoryImageToImage(
-      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+    backend_.copyMemoryImageToImage(device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::BUFFER && dst->mtype() == mType::IMAGE)
   {
-    backend_.copyMemoryBufferToImage(
-      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+    backend_.copyMemoryBufferToImage(device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::BUFFER)
   {
-    backend_.copyMemoryImageToBuffer(
-      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+    backend_.copyMemoryImageToBuffer(device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else
   {
@@ -242,18 +230,15 @@ Array::copyTo(const Array::Pointer &        dst,
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::IMAGE)
   {
-    backend_.copyMemoryImageToImage(
-      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+    backend_.copyMemoryImageToImage(device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::BUFFER && dst->mtype() == mType::IMAGE)
   {
-    backend_.copyMemoryBufferToImage(
-      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+    backend_.copyMemoryBufferToImage(device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::BUFFER)
   {
-    backend_.copyMemoryImageToBuffer(
-      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+    backend_.copyMemoryImageToBuffer(device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
 }
 

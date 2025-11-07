@@ -7,9 +7,7 @@ class TestGradient : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<float, 3 * 3 * 3> output;
-  std::array<float, 3 * 3 * 3> input = {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  };
+  std::array<float, 3 * 3 * 3> input = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
   std::array<float, 3 * 3 * 3> valid_x = { 0, 0, 0, 0, 0, 0,  0, 0, 0,
 

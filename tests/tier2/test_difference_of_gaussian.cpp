@@ -9,14 +9,12 @@ protected:
   std::array<float, 3 * 3 * 3> output;
   std::array<float, 3 * 3 * 3> input;
   std::array<float, 3 * 3 * 3> valid = {
-    static_cast<float>(1.217670321), static_cast<float>(2.125371218), static_cast<float>(1.217670321),
-    static_cast<float>(2.125371456), static_cast<float>(3.62864542),  static_cast<float>(2.125371456),
-    static_cast<float>(1.217670321), static_cast<float>(2.125371218), static_cast<float>(1.217670321),
-    static_cast<float>(2.125371456), static_cast<float>(3.62864542),  static_cast<float>(2.125371456),
-    static_cast<float>(3.628645658), static_cast<float>(6.114237785), static_cast<float>(3.628645658),
-    static_cast<float>(2.125371456), static_cast<float>(3.62864542),  static_cast<float>(2.125371456),
-    static_cast<float>(1.217670321), static_cast<float>(2.125371218), static_cast<float>(1.217670321),
-    static_cast<float>(2.125371456), static_cast<float>(3.62864542),  static_cast<float>(2.125371456),
+    static_cast<float>(1.217670321), static_cast<float>(2.125371218), static_cast<float>(1.217670321), static_cast<float>(2.125371456),
+    static_cast<float>(3.62864542),  static_cast<float>(2.125371456), static_cast<float>(1.217670321), static_cast<float>(2.125371218),
+    static_cast<float>(1.217670321), static_cast<float>(2.125371456), static_cast<float>(3.62864542),  static_cast<float>(2.125371456),
+    static_cast<float>(3.628645658), static_cast<float>(6.114237785), static_cast<float>(3.628645658), static_cast<float>(2.125371456),
+    static_cast<float>(3.62864542),  static_cast<float>(2.125371456), static_cast<float>(1.217670321), static_cast<float>(2.125371218),
+    static_cast<float>(1.217670321), static_cast<float>(2.125371456), static_cast<float>(3.62864542),  static_cast<float>(2.125371456),
     static_cast<float>(1.217670321), static_cast<float>(2.125371218), static_cast<float>(1.217670321)
   };
 

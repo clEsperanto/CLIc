@@ -14,10 +14,8 @@ namespace cle
 
 
 auto
-_statistics_per_label(const Device::Pointer & device,
-                      const Array::Pointer &  label,
-                      const Array::Pointer &  intensity,
-                      int                     nb_labels) -> Array::Pointer
+_statistics_per_label(const Device::Pointer & device, const Array::Pointer & label, const Array::Pointer & intensity, int nb_labels)
+  -> Array::Pointer
 {
   constexpr float min_value = std::numeric_limits<float>::lowest();
   constexpr float max_value = std::numeric_limits<float>::max();
@@ -33,11 +31,9 @@ _statistics_per_label(const Device::Pointer & device,
   }
   const KernelInfo kernel = { "statistics_per_label", kernel::statistics_per_label };
   const RangeArray range = { 1, height, 1 };
-  ParameterList    params = { { "src_label", label },
-                              { "src_image", intensity },
-                              { "dst", cumulative_stats_per_label },
-                              { "sum_background", 0 },
-                              { "z", 0 } };
+  ParameterList    params = {
+    { "src_label", label }, { "src_image", intensity }, { "dst", cumulative_stats_per_label }, { "sum_background", 0 }, { "z", 0 }
+  };
   for (int z = 0; z < depth; z++)
   {
     auto it = std::find_if(params.begin(), params.end(), [](const auto & param) { return param.first == "z"; });
@@ -62,8 +58,8 @@ _std_per_label(const Device::Pointer & device,
   label_statistics_stack->fill(0);
   const KernelInfo kernel_std = { "standard_deviation_per_label", kernel::standard_deviation_per_label };
   const RangeArray range_std = { 1, height, 1 };
-  ParameterList params_std = { { "src_statistics", statistics },  { "src_label", label },  { "src_image", intensity },
-                               { "dst", label_statistics_stack }, { "sum_background", 0 }, { "z", 0 } };
+  ParameterList    params_std = { { "src_statistics", statistics },  { "src_label", label },  { "src_image", intensity },
+                                  { "dst", label_statistics_stack }, { "sum_background", 0 }, { "z", 0 } };
   for (int z = 0; z < depth; z++)
   {
     auto it = std::find_if(params_std.begin(), params_std.end(), [](const auto & param) { return param.first == "z"; });
@@ -75,9 +71,8 @@ _std_per_label(const Device::Pointer & device,
 }
 
 auto
-compute_statistics_per_labels(const Device::Pointer & device,
-                              const Array::Pointer &  label,
-                              const Array::Pointer &  intensity) -> StatisticsMap
+compute_statistics_per_labels(const Device::Pointer & device, const Array::Pointer & label, const Array::Pointer & intensity)
+  -> StatisticsMap
 {
 
 
@@ -257,8 +252,7 @@ compute_statistics_per_labels(const Device::Pointer & device,
   std::vector<float> mean_max_distance_to_mass_center_ratio(nb_measurements);
   for (int i = 0; i < nb_measurements; ++i)
   {
-    mean_max_distance_to_centroid_ratio[i] =
-      region_props["max_distance_to_centroid"][i] / region_props["mean_distance_to_centroid"][i];
+    mean_max_distance_to_centroid_ratio[i] = region_props["max_distance_to_centroid"][i] / region_props["mean_distance_to_centroid"][i];
     mean_max_distance_to_mass_center_ratio[i] =
       region_props["max_distance_to_mass_center"][i] / region_props["mean_distance_to_mass_center"][i];
   }

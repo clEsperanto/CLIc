@@ -6,13 +6,11 @@ namespace cle::tier3
 {
 
 auto
-statistics_of_labelled_pixels_func(const Device::Pointer & device, Array::Pointer intensity, Array::Pointer label)
-  -> StatisticsMap
+statistics_of_labelled_pixels_func(const Device::Pointer & device, Array::Pointer intensity, Array::Pointer label) -> StatisticsMap
 {
   if (intensity == nullptr && label == nullptr)
   {
-    throw std::runtime_error(
-      "Error: no intensity nor label was provided to the 'statistics_of_labelled_pixels' function.");
+    throw std::runtime_error("Error: no intensity nor label was provided to the 'statistics_of_labelled_pixels' function.");
   }
   if (label == nullptr)
   {
@@ -30,14 +28,12 @@ statistics_of_labelled_pixels_func(const Device::Pointer & device, Array::Pointe
 
 
 auto
-statistics_of_background_and_labelled_pixels_func(const Device::Pointer & device,
-                                                  Array::Pointer          intensity,
-                                                  Array::Pointer          label) -> StatisticsMap
+statistics_of_background_and_labelled_pixels_func(const Device::Pointer & device, Array::Pointer intensity, Array::Pointer label)
+  -> StatisticsMap
 {
   if (intensity == nullptr && label == nullptr)
   {
-    throw std::runtime_error(
-      "Error: no intensity nor label was provided to the 'statistics_of_labelled_pixels' function.");
+    throw std::runtime_error("Error: no intensity nor label was provided to the 'statistics_of_labelled_pixels' function.");
   }
   if (label == nullptr)
   {

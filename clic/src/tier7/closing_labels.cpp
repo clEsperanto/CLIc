@@ -13,8 +13,7 @@ namespace cle::tier7
 {
 
 auto
-closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
-  -> Array::Pointer
+closing_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::LABEL);
   if (radius == 0)

@@ -9,10 +9,8 @@ namespace cle::tier1
 {
 
 auto
-subtract_image_from_scalar_func(const Device::Pointer & device,
-                                const Array::Pointer &  src,
-                                Array::Pointer          dst,
-                                float                   scalar) -> Array::Pointer
+subtract_image_from_scalar_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
+  -> Array::Pointer
 {
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "subtract_image_from_scalar", kernel::subtract_image_from_scalar };

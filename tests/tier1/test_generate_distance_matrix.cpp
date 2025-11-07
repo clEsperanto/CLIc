@@ -8,9 +8,9 @@ class TestGenerateDistanceMatrix : public ::testing::TestWithParam<std::string>
 protected:
   std::array<float, 5 * 5 * 1> output;
   std::array<float, 5 * 5 * 1> input = { 0, 0, 0, 0, 0, 0, 1, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 4 };
-  std::array<float, 5 * 5 * 1> valid = { 0, 0,         0,        0,         0,        0, 0., 2.236068, 2, 4.2426405,
-                                         0, 2.236068,  0,        2.236068,  2.236068, 0, 2,  2.236068, 0, 3.1622777,
-                                         0, 4.2426405, 2.236068, 3.1622777, 0 };
+  std::array<float, 5 * 5 * 1> valid = { 0,         0,         0,        0,         0,        0,         0., 2.236068, 2,
+                                         4.2426405, 0,         2.236068, 0,         2.236068, 2.236068,  0,  2,        2.236068,
+                                         0,         3.1622777, 0,        4.2426405, 2.236068, 3.1622777, 0 };
 };
 
 TEST_P(TestGenerateDistanceMatrix, execute)

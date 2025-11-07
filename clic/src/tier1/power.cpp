@@ -10,8 +10,7 @@ namespace cle::tier1
 {
 
 auto
-power_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
-  -> Array::Pointer
+power_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "power", kernel::power };
