@@ -23,12 +23,10 @@ sato_filter_func(const Device::Pointer & device,
 
   Array::Pointer temporary = nullptr;
   Array::Pointer middle_eigenvalue = nullptr;
-  auto           small_eigenvalue =
-    Array::create(src->width(), src->height(), src->depth(), src->dim(), dType::FLOAT, mType::BUFFER, device);
+  auto small_eigenvalue = Array::create(src->width(), src->height(), src->depth(), src->dim(), dType::FLOAT, mType::BUFFER, device);
   if (is_3d)
   {
-    middle_eigenvalue =
-      Array::create(src->width(), src->height(), src->depth(), src->dim(), dType::FLOAT, mType::BUFFER, device);
+    middle_eigenvalue = Array::create(src->width(), src->height(), src->depth(), src->dim(), dType::FLOAT, mType::BUFFER, device);
   }
 
   for (float sigma = sigma_minimum; sigma < sigma_maximum; sigma += sigma_step)
@@ -59,8 +57,7 @@ sato_filter_func(const Device::Pointer & device,
 }
 
 auto
-tubeness_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float sigma)
-  -> Array::Pointer
+tubeness_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float sigma) -> Array::Pointer
 {
   return sato_filter_func(device, src, dst, sigma, sigma + 0.1f, 0.1f);
 }

@@ -24,8 +24,7 @@ namespace cle::tier6
  * @note 'label processing', 'in assistant', 'bia-bob-suggestion'
  */
 auto
-dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius)
-  -> Array::Pointer;
+dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius) -> Array::Pointer;
 
 
 /**
@@ -44,11 +43,8 @@ dilate_labels_func(const Device::Pointer & device, const Array::Pointer & src, A
  * @note 'label processing', 'in assistant'
  */
 auto
-erode_labels_func(const Device::Pointer & device,
-                  const Array::Pointer &  src,
-                  Array::Pointer          dst,
-                  int                     radius,
-                  bool                    relabel) -> Array::Pointer;
+erode_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius, bool relabel)
+  -> Array::Pointer;
 
 
 /**
@@ -70,10 +66,8 @@ erode_labels_func(const Device::Pointer & device,
  * @see https://en.wikipedia.org/wiki/Connected-component_labeling
  */
 auto
-gauss_otsu_labeling_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
-                         Array::Pointer          dst,
-                         float                   outline_sigma) -> Array::Pointer;
+gauss_otsu_labeling_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float outline_sigma)
+  -> Array::Pointer;
 
 
 /**
@@ -91,10 +85,8 @@ gauss_otsu_labeling_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_maskedVoronoiLabeling
  */
 auto
-masked_voronoi_labeling_func(const Device::Pointer & device,
-                             const Array::Pointer &  src,
-                             const Array::Pointer &  mask,
-                             Array::Pointer          dst) -> Array::Pointer;
+masked_voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -111,8 +103,7 @@ masked_voronoi_labeling_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_voronoiLabeling
  */
 auto
-voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & input_binary, Array::Pointer output_labels)
-  -> Array::Pointer;
+voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & input_binary, Array::Pointer output_labels) -> Array::Pointer;
 
 
 /**
@@ -129,10 +120,8 @@ voronoi_labeling_func(const Device::Pointer & device, const Array::Pointer & inp
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
  */
 auto
-remove_small_labels_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
-                         Array::Pointer          dst,
-                         float                   minimum_size) -> Array::Pointer;
+remove_small_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float minimum_size)
+  -> Array::Pointer;
 
 /**
  * @name exclude_small_labels
@@ -148,10 +137,8 @@ remove_small_labels_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
  */
 auto
-exclude_small_labels_func(const Device::Pointer & device,
-                          const Array::Pointer &  src,
-                          Array::Pointer          dst,
-                          float                   maximum_size) -> Array::Pointer;
+exclude_small_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float maximum_size)
+  -> Array::Pointer;
 
 /**
  * @name remove_large_labels
@@ -167,10 +154,8 @@ exclude_small_labels_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
  */
 auto
-remove_large_labels_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
-                         Array::Pointer          dst,
-                         float                   maximum_size) -> Array::Pointer;
+remove_large_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float maximum_size)
+  -> Array::Pointer;
 
 /**
  * @name exclude_large_labels
@@ -186,10 +171,30 @@ remove_large_labels_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
  */
 auto
-exclude_large_labels_func(const Device::Pointer & device,
-                          const Array::Pointer &  src,
-                          Array::Pointer          dst,
-                          float                   minimum_size) -> Array::Pointer;
+exclude_large_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float minimum_size)
+  -> Array::Pointer;
+
+/**
+ * @name proximal_neighbor_count_map
+ * @brief From a label map, generates a map where each label is replaced by the count of neighboring labels within a specified distance
+ * range.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param labels Input label image. [const Array::Pointer &]
+ * @param dst Output parametric image. [Array::Pointer ( = None )]
+ * @param min_distance Minimum distance to consider a neighbor. [float ( = -1 )]
+ * @param max_distance Maximum distance to consider a neighbor. [float ( = -1 )]
+ * @return Array::Pointer
+ *
+ * @note 'label measurement', 'map', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_proximalNeighborCountMap
+ */
+auto
+proximal_neighbor_count_map_func(const Device::Pointer & device,
+                                 const Array::Pointer &  labels,
+                                 Array::Pointer          dst,
+                                 float                   min_distance,
+                                 float                   max_distance) -> Array::Pointer;
 
 
 } // namespace cle::tier6

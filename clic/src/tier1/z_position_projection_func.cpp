@@ -9,10 +9,8 @@ namespace cle::tier1
 {
 
 auto
-z_position_projection_func(const Device::Pointer & device,
-                           const Array::Pointer &  src,
-                           const Array::Pointer &  position,
-                           Array::Pointer          dst) -> Array::Pointer
+z_position_projection_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & position, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_xy(src, dst);
   const KernelInfo    kernel = { "z_position_projection", kernel::z_position_projection };

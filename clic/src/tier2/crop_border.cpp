@@ -8,8 +8,7 @@ namespace cle::tier2
 {
 
 auto
-crop_border_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int border_size)
-  -> Array::Pointer
+crop_border_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int border_size) -> Array::Pointer
 {
   std::array<int, 3> region = { static_cast<int>(src->width()) - 2 * border_size,
                                 static_cast<int>(src->height()) - 2 * border_size,

@@ -65,8 +65,7 @@ add_images_weighted_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_addImageAndScalar
  */
 auto
-add_image_and_scalar_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
-  -> Array::Pointer;
+add_image_and_scalar_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar) -> Array::Pointer;
 
 
 /**
@@ -85,10 +84,8 @@ add_image_and_scalar_func(const Device::Pointer & device, const Array::Pointer &
  * @see https://clij.github.io/clij2-docs/reference_binaryAnd
  */
 auto
-binary_and_func(const Device::Pointer & device,
-                const Array::Pointer &  src0,
-                const Array::Pointer &  src1,
-                Array::Pointer          dst) -> Array::Pointer;
+binary_and_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -105,8 +102,7 @@ binary_and_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_binaryEdgeDetection
  */
 auto
-binary_edge_detection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+binary_edge_detection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -142,10 +138,8 @@ binary_not_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @see https://clij.github.io/clij2-docs/reference_binaryOr
  */
 auto
-binary_or_func(const Device::Pointer & device,
-               const Array::Pointer &  src0,
-               const Array::Pointer &  src1,
-               Array::Pointer          dst) -> Array::Pointer;
+binary_or_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -162,10 +156,8 @@ binary_or_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_binarySubtract
  */
 auto
-binary_subtract_func(const Device::Pointer & device,
-                     const Array::Pointer &  src0,
-                     const Array::Pointer &  src1,
-                     Array::Pointer          dst) -> Array::Pointer;
+binary_subtract_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -184,10 +176,8 @@ binary_subtract_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_binaryXOr
  */
 auto
-binary_xor_func(const Device::Pointer & device,
-                const Array::Pointer &  src0,
-                const Array::Pointer &  src1,
-                Array::Pointer          dst) -> Array::Pointer;
+binary_xor_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 /**
  * @name binary_supinf
@@ -255,12 +245,8 @@ block_enumerate_func(const Device::Pointer & device,
  * @return Array::Pointer
  */
 auto
-circular_shift_func(const Device::Pointer & device,
-                    const Array::Pointer &  src,
-                    Array::Pointer          dst,
-                    int                     shift_x,
-                    int                     shift_y,
-                    int                     shift_z) -> Array::Pointer;
+circular_shift_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int shift_x, int shift_y, int shift_z)
+  -> Array::Pointer;
 
 /**
  * @name convolve
@@ -277,10 +263,8 @@ circular_shift_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_convolve
  */
 auto
-convolve_func(const Device::Pointer & device,
-              const Array::Pointer &  src0,
-              const Array::Pointer &  src1,
-              Array::Pointer          dst) -> Array::Pointer;
+convolve_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -312,8 +296,7 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
  *
  */
 auto
-copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice_index)
-  -> Array::Pointer;
+copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice_index) -> Array::Pointer;
 
 
 /**
@@ -330,10 +313,8 @@ copy_slice_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  *
  */
 auto
-copy_horizontal_slice_func(const Device::Pointer & device,
-                           const Array::Pointer &  src,
-                           Array::Pointer          dst,
-                           int                     slice_index) -> Array::Pointer;
+copy_horizontal_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice_index)
+  -> Array::Pointer;
 
 
 /**
@@ -350,10 +331,7 @@ copy_horizontal_slice_func(const Device::Pointer & device,
  *
  */
 auto
-copy_vertical_slice_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
-                         Array::Pointer          dst,
-                         int                     slice_index) -> Array::Pointer;
+copy_vertical_slice_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int slice_index) -> Array::Pointer;
 
 
 /**
@@ -414,8 +392,7 @@ cubic_root_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @see https://clij.github.io/clij2-docs/reference_detectLabelEdges
  */
 auto
-detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 /**
  * @name dilation
@@ -434,10 +411,8 @@ detect_label_edges_func(const Device::Pointer & device, const Array::Pointer & s
  * @deprecated This function is deprecated. Consider using erode() instead.
  */
 auto
-dilation_func(const Device::Pointer & device,
-              const Array::Pointer &  src,
-              const Array::Pointer &  footprint,
-              Array::Pointer          dst) -> Array::Pointer;
+dilation_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & footprint, Array::Pointer dst)
+  -> Array::Pointer;
 
 /**
  * @name dilate_box
@@ -525,10 +500,8 @@ binary_dilate_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_divideImages
  */
 auto
-divide_images_func(const Device::Pointer & device,
-                   const Array::Pointer &  dividend,
-                   const Array::Pointer &  divisor,
-                   Array::Pointer          dst) -> Array::Pointer;
+divide_images_func(const Device::Pointer & device, const Array::Pointer & dividend, const Array::Pointer & divisor, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -544,10 +517,7 @@ divide_images_func(const Device::Pointer & device,
  * @note 'filter', 'in assistant'
  */
 auto
-divide_scalar_by_image_func(const Device::Pointer & device,
-                            const Array::Pointer &  src,
-                            Array::Pointer          dst,
-                            float                   scalar) -> Array::Pointer;
+divide_scalar_by_image_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar) -> Array::Pointer;
 
 /**
  * @name equal
@@ -563,8 +533,7 @@ divide_scalar_by_image_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_equal
  */
 auto
-equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
-  -> Array::Pointer;
+equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -581,8 +550,7 @@ equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Ar
  * @see https://clij.github.io/clij2-docs/reference_equalConstant
  */
 auto
-equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
-  -> Array::Pointer;
+equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar) -> Array::Pointer;
 
 /**
  * @name erosion
@@ -600,10 +568,8 @@ equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, 
  * @see https://clij.github.io/clij2-docs/reference_erodeBox
  */
 auto
-erosion_func(const Device::Pointer & device,
-             const Array::Pointer &  src,
-             const Array::Pointer &  footprint,
-             Array::Pointer          dst) -> Array::Pointer;
+erosion_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & footprint, Array::Pointer dst)
+  -> Array::Pointer;
 
 /**
  * @name erode_box
@@ -708,12 +674,8 @@ exponential_func(const Device::Pointer & device, const Array::Pointer & src, Arr
  *
  */
 auto
-flip_func(const Device::Pointer & device,
-          const Array::Pointer &  src,
-          Array::Pointer          dst,
-          bool                    flip_x,
-          bool                    flip_y,
-          bool                    flip_z) -> Array::Pointer;
+flip_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, bool flip_x, bool flip_y, bool flip_z)
+  -> Array::Pointer;
 
 
 /**
@@ -863,10 +825,8 @@ gradient_z_func(const Device::Pointer & device, const Array::Pointer & src, Arra
  * @see https://clij.github.io/clij2-docs/reference_greater
  */
 auto
-greater_func(const Device::Pointer & device,
-             const Array::Pointer &  src0,
-             const Array::Pointer &  src1,
-             Array::Pointer          dst) -> Array::Pointer;
+greater_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -883,8 +843,7 @@ greater_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_greaterConstant
  */
 auto
-greater_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
-  -> Array::Pointer;
+greater_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar) -> Array::Pointer;
 
 
 /**
@@ -901,10 +860,8 @@ greater_constant_func(const Device::Pointer & device, const Array::Pointer & src
  * @see https://clij.github.io/clij2-docs/reference_greaterOrEqual
  */
 auto
-greater_or_equal_func(const Device::Pointer & device,
-                      const Array::Pointer &  src0,
-                      const Array::Pointer &  src1,
-                      Array::Pointer          dst) -> Array::Pointer;
+greater_or_equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -921,10 +878,8 @@ greater_or_equal_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_greaterOrEqualConstant
  */
 auto
-greater_or_equal_constant_func(const Device::Pointer & device,
-                               const Array::Pointer &  src,
-                               Array::Pointer          dst,
-                               float                   scalar) -> Array::Pointer;
+greater_or_equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
+  -> Array::Pointer;
 
 
 /**
@@ -1004,8 +959,7 @@ laplace_diamond_func(const Device::Pointer & device, const Array::Pointer & src,
  * @see https://clij.github.io/clij2-docs/reference_laplaceDiamond
  */
 auto
-laplace_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, std::string connectivity)
-  -> Array::Pointer;
+laplace_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, std::string connectivity) -> Array::Pointer;
 
 
 /**
@@ -1021,10 +975,8 @@ laplace_func(const Device::Pointer & device, const Array::Pointer & src, Array::
  *
  */
 auto
-local_cross_correlation_func(const Device::Pointer & device,
-                             const Array::Pointer &  src,
-                             const Array::Pointer &  kernel,
-                             Array::Pointer          dst) -> Array::Pointer;
+local_cross_correlation_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & kernel, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -1058,8 +1010,7 @@ logarithm_func(const Device::Pointer & device, const Array::Pointer & src, Array
  * @see https://clij.github.io/clij2-docs/reference_mask
  */
 auto
-mask_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask, Array::Pointer dst)
-  -> Array::Pointer;
+mask_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -1078,11 +1029,8 @@ mask_func(const Device::Pointer & device, const Array::Pointer & src, const Arra
  * @see https://clij.github.io/clij2-docs/reference_maskLabel
  */
 auto
-mask_label_func(const Device::Pointer & device,
-                const Array::Pointer &  src0,
-                const Array::Pointer &  src1,
-                Array::Pointer          dst,
-                float                   label) -> Array::Pointer;
+mask_label_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst, float label)
+  -> Array::Pointer;
 
 
 /**
@@ -1100,10 +1048,8 @@ mask_label_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_maximumImageAndScalar
  */
 auto
-maximum_image_and_scalar_func(const Device::Pointer & device,
-                              const Array::Pointer &  src,
-                              Array::Pointer          dst,
-                              float                   scalar) -> Array::Pointer;
+maximum_image_and_scalar_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
+  -> Array::Pointer;
 
 
 /**
@@ -1121,10 +1067,8 @@ maximum_image_and_scalar_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_maximumImages
  */
 auto
-maximum_images_func(const Device::Pointer & device,
-                    const Array::Pointer &  src0,
-                    const Array::Pointer &  src1,
-                    Array::Pointer          dst) -> Array::Pointer;
+maximum_images_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -1222,8 +1166,7 @@ grayscale_dilate_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_maximumXProjection
  */
 auto
-maximum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+maximum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -1239,8 +1182,7 @@ maximum_x_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @see https://clij.github.io/clij2-docs/reference_maximumYProjection
  */
 auto
-maximum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+maximum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -1256,8 +1198,7 @@ maximum_y_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @see https://clij.github.io/clij2-docs/reference_maximumZProjection
  */
 auto
-maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -1351,8 +1292,7 @@ mean_filter_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_meanXProjection
  */
 auto
-mean_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+mean_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -1368,8 +1308,7 @@ mean_x_projection_func(const Device::Pointer & device, const Array::Pointer & sr
  * @see https://clij.github.io/clij2-docs/reference_meanYProjection
  */
 auto
-mean_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+mean_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -1385,8 +1324,7 @@ mean_y_projection_func(const Device::Pointer & device, const Array::Pointer & sr
  * @see https://clij.github.io/clij2-docs/reference_meanZProjection
  */
 auto
-mean_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+mean_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -1566,10 +1504,8 @@ grayscale_erode_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_minimumImageAndScalar
  */
 auto
-minimum_image_and_scalar_func(const Device::Pointer & device,
-                              const Array::Pointer &  src,
-                              Array::Pointer          dst,
-                              float                   scalar) -> Array::Pointer;
+minimum_image_and_scalar_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
+  -> Array::Pointer;
 
 
 /**
@@ -1587,10 +1523,8 @@ minimum_image_and_scalar_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_minimumImages
  */
 auto
-minimum_images_func(const Device::Pointer & device,
-                    const Array::Pointer &  src0,
-                    const Array::Pointer &  src1,
-                    Array::Pointer          dst) -> Array::Pointer;
+minimum_images_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -1606,8 +1540,7 @@ minimum_images_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_minimumXProjection
  */
 auto
-minimum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+minimum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -1623,8 +1556,7 @@ minimum_x_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @see https://clij.github.io/clij2-docs/reference_minimumYProjection
  */
 auto
-minimum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+minimum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -1640,8 +1572,7 @@ minimum_y_projection_func(const Device::Pointer & device, const Array::Pointer &
  * @see https://clij.github.io/clij2-docs/reference_minimumZProjection
  */
 auto
-minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 auto
@@ -1745,10 +1676,8 @@ mode_func(const Device::Pointer & device,
  *
  */
 auto
-modulo_images_func(const Device::Pointer & device,
-                   const Array::Pointer &  src0,
-                   const Array::Pointer &  src1,
-                   Array::Pointer          dst) -> Array::Pointer;
+modulo_images_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -1764,10 +1693,8 @@ modulo_images_func(const Device::Pointer & device,
  *
  */
 auto
-multiply_image_and_position_func(const Device::Pointer & device,
-                                 const Array::Pointer &  src,
-                                 Array::Pointer          dst,
-                                 int                     dimension) -> Array::Pointer;
+multiply_image_and_position_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int dimension)
+  -> Array::Pointer;
 
 /**
  * @name multiply_image_and_scalar
@@ -1783,10 +1710,8 @@ multiply_image_and_position_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_multiplyImageAndScalar
  */
 auto
-multiply_image_and_scalar_func(const Device::Pointer & device,
-                               const Array::Pointer &  src,
-                               Array::Pointer          dst,
-                               float                   scalar) -> Array::Pointer;
+multiply_image_and_scalar_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
+  -> Array::Pointer;
 
 
 /**
@@ -1803,10 +1728,8 @@ multiply_image_and_scalar_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_multiplyImages
  */
 auto
-multiply_images_func(const Device::Pointer & device,
-                     const Array::Pointer &  src0,
-                     const Array::Pointer &  src1,
-                     Array::Pointer          dst) -> Array::Pointer;
+multiply_images_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -1850,10 +1773,8 @@ nan_to_num_func(const Device::Pointer & device,
  * @deprecated This function is deprecated. Consider using nonzero_maximum() instead.
  */
 auto
-nonzero_maximum_box_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
-                         Array::Pointer          dst0,
-                         Array::Pointer          dst1) -> Array::Pointer;
+nonzero_maximum_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst0, Array::Pointer dst1)
+  -> Array::Pointer;
 
 
 /**
@@ -1871,10 +1792,8 @@ nonzero_maximum_box_func(const Device::Pointer & device,
  * @deprecated This function is deprecated. Consider using nonzero_maximum() instead.
  */
 auto
-nonzero_maximum_diamond_func(const Device::Pointer & device,
-                             const Array::Pointer &  src,
-                             Array::Pointer          dst0,
-                             Array::Pointer          dst1) -> Array::Pointer;
+nonzero_maximum_diamond_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst0, Array::Pointer dst1)
+  -> Array::Pointer;
 
 /**
  * @name nonzero_maximum
@@ -1915,10 +1834,8 @@ nonzero_maximum_func(const Device::Pointer & device,
  * @deprecated This function is deprecated. Consider using nonzero_minimum() instead.
  */
 auto
-nonzero_minimum_box_func(const Device::Pointer & device,
-                         const Array::Pointer &  src,
-                         Array::Pointer          dst0,
-                         Array::Pointer          dst1) -> Array::Pointer;
+nonzero_minimum_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst0, Array::Pointer dst1)
+  -> Array::Pointer;
 
 
 /**
@@ -1936,10 +1853,8 @@ nonzero_minimum_box_func(const Device::Pointer & device,
  * @deprecated This function is deprecated. Consider using nonzero_minimum() instead.
  */
 auto
-nonzero_minimum_diamond_func(const Device::Pointer & device,
-                             const Array::Pointer &  src,
-                             Array::Pointer          dst0,
-                             Array::Pointer          dst1) -> Array::Pointer;
+nonzero_minimum_diamond_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst0, Array::Pointer dst1)
+  -> Array::Pointer;
 
 /**
  * @name nonzero_minimum
@@ -1979,10 +1894,8 @@ nonzero_minimum_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_notEqual
  */
 auto
-not_equal_func(const Device::Pointer & device,
-               const Array::Pointer &  src0,
-               const Array::Pointer &  src1,
-               Array::Pointer          dst) -> Array::Pointer;
+not_equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -1999,8 +1912,7 @@ not_equal_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_notEqualConstant
  */
 auto
-not_equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
-  -> Array::Pointer;
+not_equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar) -> Array::Pointer;
 
 
 /**
@@ -2040,10 +1952,8 @@ paste_func(const Device::Pointer & device,
  * @deprecated This function is deprecated. Consider using onlyzero_overwrite_maximum() instead.
  */
 auto
-onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
-                                    const Array::Pointer &  src,
-                                    Array::Pointer          flag,
-                                    Array::Pointer          dst) -> Array::Pointer;
+onlyzero_overwrite_maximum_box_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer flag, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -2059,10 +1969,8 @@ onlyzero_overwrite_maximum_box_func(const Device::Pointer & device,
  * @deprecated This function is deprecated. Consider using onlyzero_overwrite_maximum() instead.
  */
 auto
-onlyzero_overwrite_maximum_diamond_func(const Device::Pointer & device,
-                                        const Array::Pointer &  src,
-                                        Array::Pointer          flag,
-                                        Array::Pointer          dst) -> Array::Pointer;
+onlyzero_overwrite_maximum_diamond_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer flag, Array::Pointer dst)
+  -> Array::Pointer;
 
 /**
  * @name onlyzero_overwrite_maximum
@@ -2099,8 +2007,7 @@ onlyzero_overwrite_maximum_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_power
  */
 auto
-power_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
-  -> Array::Pointer;
+power_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar) -> Array::Pointer;
 
 
 /**
@@ -2117,10 +2024,8 @@ power_func(const Device::Pointer & device, const Array::Pointer & src, Array::Po
  * @see https://clij.github.io/clij2-docs/reference_powerImages
  */
 auto
-power_images_func(const Device::Pointer & device,
-                  const Array::Pointer &  src0,
-                  const Array::Pointer &  src1,
-                  Array::Pointer          dst) -> Array::Pointer;
+power_images_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -2171,10 +2076,8 @@ range_func(const Device::Pointer & device,
  *
  */
 auto
-read_values_from_positions_func(const Device::Pointer & device,
-                                const Array::Pointer &  src,
-                                const Array::Pointer &  list,
-                                Array::Pointer          dst) -> Array::Pointer;
+read_values_from_positions_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & list, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -2192,10 +2095,8 @@ read_values_from_positions_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_replaceIntensities
  */
 auto
-replace_values_func(const Device::Pointer & device,
-                    const Array::Pointer &  src0,
-                    const Array::Pointer &  src1,
-                    Array::Pointer          dst) -> Array::Pointer;
+replace_values_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -2253,10 +2154,8 @@ replace_intensity_func(const Device::Pointer & device,
  * @deprecated This function is deprecated. Consider using replace_values() instead.
  */
 auto
-replace_intensities_func(const Device::Pointer & device,
-                         const Array::Pointer &  src0,
-                         const Array::Pointer &  src1,
-                         Array::Pointer          dst) -> Array::Pointer;
+replace_intensities_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 /**
  * @name maximum_sphere
@@ -2420,8 +2319,7 @@ set_func(const Device::Pointer & device, const Array::Pointer & src, float scala
  *
  */
 auto
-set_column_func(const Device::Pointer & device, const Array::Pointer & src, int column_index, float value)
-  -> Array::Pointer;
+set_column_func(const Device::Pointer & device, const Array::Pointer & src, int column_index, float value) -> Array::Pointer;
 
 
 /**
@@ -2452,8 +2350,7 @@ set_image_borders_func(const Device::Pointer & device, const Array::Pointer & sr
  *
  */
 auto
-set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int plane_index, float value)
-  -> Array::Pointer;
+set_plane_func(const Device::Pointer & device, const Array::Pointer & src, int plane_index, float value) -> Array::Pointer;
 
 
 /**
@@ -2526,10 +2423,8 @@ set_row_func(const Device::Pointer & device, const Array::Pointer & src, int row
  *
  */
 auto
-set_nonzero_pixels_to_pixelindex_func(const Device::Pointer & device,
-                                      const Array::Pointer &  src,
-                                      Array::Pointer          dst,
-                                      int                     offset) -> Array::Pointer;
+set_nonzero_pixels_to_pixelindex_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int offset)
+  -> Array::Pointer;
 
 /**
  * @name set_where_x_equals_y
@@ -2560,8 +2455,7 @@ set_where_x_equals_y_func(const Device::Pointer & device, const Array::Pointer &
  *
  */
 auto
-set_where_x_greater_than_y_func(const Device::Pointer & device, const Array::Pointer & src, float value)
-  -> Array::Pointer;
+set_where_x_greater_than_y_func(const Device::Pointer & device, const Array::Pointer & src, float value) -> Array::Pointer;
 
 
 /**
@@ -2577,8 +2471,7 @@ set_where_x_greater_than_y_func(const Device::Pointer & device, const Array::Poi
  *
  */
 auto
-set_where_x_smaller_than_y_func(const Device::Pointer & device, const Array::Pointer & src, float value)
-  -> Array::Pointer;
+set_where_x_smaller_than_y_func(const Device::Pointer & device, const Array::Pointer & src, float value) -> Array::Pointer;
 
 
 /**
@@ -2610,10 +2503,8 @@ sign_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
  * @see https://clij.github.io/clij2-docs/reference_smaller
  */
 auto
-smaller_func(const Device::Pointer & device,
-             const Array::Pointer &  src0,
-             const Array::Pointer &  src1,
-             Array::Pointer          dst) -> Array::Pointer;
+smaller_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -2630,8 +2521,7 @@ smaller_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_smallerConstant
  */
 auto
-smaller_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
-  -> Array::Pointer;
+smaller_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar) -> Array::Pointer;
 
 
 /**
@@ -2648,10 +2538,8 @@ smaller_constant_func(const Device::Pointer & device, const Array::Pointer & src
  * @see https://clij.github.io/clij2-docs/reference_smallerOrEqual
  */
 auto
-smaller_or_equal_func(const Device::Pointer & device,
-                      const Array::Pointer &  src0,
-                      const Array::Pointer &  src1,
-                      Array::Pointer          dst) -> Array::Pointer;
+smaller_or_equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -2668,10 +2556,8 @@ smaller_or_equal_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_smallerOrEqualConstant
  */
 auto
-smaller_or_equal_constant_func(const Device::Pointer & device,
-                               const Array::Pointer &  src,
-                               Array::Pointer          dst,
-                               float                   scalar) -> Array::Pointer;
+smaller_or_equal_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
+  -> Array::Pointer;
 
 
 /**
@@ -2735,10 +2621,8 @@ std_z_projection_func(const Device::Pointer & device, const Array::Pointer & src
  * @see https://clij.github.io/clij2-docs/reference_subtractImageFromScalar
  */
 auto
-subtract_image_from_scalar_func(const Device::Pointer & device,
-                                const Array::Pointer &  src,
-                                Array::Pointer          dst,
-                                float                   scalar) -> Array::Pointer;
+subtract_image_from_scalar_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
+  -> Array::Pointer;
 
 
 /**
@@ -2755,8 +2639,7 @@ subtract_image_from_scalar_func(const Device::Pointer & device,
  *
  */
 auto
-sum_reduction_x_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int blocksize)
-  -> Array::Pointer;
+sum_reduction_x_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int blocksize) -> Array::Pointer;
 
 
 /**
@@ -2867,8 +2750,7 @@ transpose_yz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
  *
  */
 auto
-undefined_to_zero_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+undefined_to_zero_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -2963,8 +2845,7 @@ variance_filter_func(const Device::Pointer & device,
  *
  */
 auto
-write_values_to_positions_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+write_values_to_positions_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -2980,8 +2861,7 @@ write_values_to_positions_func(const Device::Pointer & device, const Array::Poin
  *
  */
 auto
-x_position_of_maximum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+x_position_of_maximum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -2997,8 +2877,7 @@ x_position_of_maximum_x_projection_func(const Device::Pointer & device, const Ar
  *
  */
 auto
-x_position_of_minimum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+x_position_of_minimum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -3014,8 +2893,7 @@ x_position_of_minimum_x_projection_func(const Device::Pointer & device, const Ar
  *
  */
 auto
-y_position_of_maximum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+y_position_of_maximum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -3031,8 +2909,7 @@ y_position_of_maximum_y_projection_func(const Device::Pointer & device, const Ar
  *
  */
 auto
-y_position_of_minimum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+y_position_of_minimum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -3048,8 +2925,7 @@ y_position_of_minimum_y_projection_func(const Device::Pointer & device, const Ar
  *
  */
 auto
-z_position_of_maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+z_position_of_maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 /**
@@ -3065,8 +2941,7 @@ z_position_of_maximum_z_projection_func(const Device::Pointer & device, const Ar
  *
  */
 auto
-z_position_of_minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+z_position_of_minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 /**
  * @name z_position_projection
@@ -3083,10 +2958,9 @@ z_position_of_minimum_z_projection_func(const Device::Pointer & device, const Ar
  * @see https://clij.github.io/clij2-docs/reference_zPositionProjection
  */
 auto
-z_position_projection_func(const Device::Pointer & device,
-                           const Array::Pointer &  src,
-                           const Array::Pointer &  position,
-                           Array::Pointer          dst) -> Array::Pointer;
+z_position_projection_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & position, Array::Pointer dst)
+  -> Array::Pointer;
+
 
 } // namespace cle::tier1
 

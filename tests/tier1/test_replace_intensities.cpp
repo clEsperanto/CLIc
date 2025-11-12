@@ -19,8 +19,7 @@ protected:
     {
       *it = static_cast<float>((int)rand() % 10 + 10);
     }
-    for (auto it = input.begin(), it_valid = valid.begin(); (it != input.end()) && (it_valid != valid.end());
-         ++it, ++it_valid)
+    for (auto it = input.begin(), it_valid = valid.begin(); (it != input.end()) && (it_valid != valid.end()); ++it, ++it_valid)
     {
       value = static_cast<float>((int)rand() % 10);
       *it = value;

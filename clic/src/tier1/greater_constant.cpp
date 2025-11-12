@@ -9,8 +9,7 @@ namespace cle::tier1
 {
 
 auto
-greater_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
-  -> Array::Pointer
+greater_constant_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::BINARY);
   const KernelInfo    kernel = { "greater_constant", kernel::greater_constant };

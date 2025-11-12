@@ -8,13 +8,9 @@ class TestScale : public ::testing::TestWithParam<std::string>
 
 TEST_P(TestScale, scaleCentered)
 {
-  const std::array<float, 5 * 5 * 1> input = {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  };
-  const std::array<float, 5 * 5 * 1> valid = {
-    0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  };
-  std::array<float, 5 * 5 * 1> output;
+  const std::array<float, 5 * 5 * 1> input = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  const std::array<float, 5 * 5 * 1> valid = { 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  std::array<float, 5 * 5 * 1>       output;
 
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -35,13 +31,9 @@ TEST_P(TestScale, scaleCentered)
 
 TEST_P(TestScale, scaleNotCentered)
 {
-  const std::array<float, 5 * 5 * 1> input = {
-    0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  };
-  const std::array<float, 5 * 5 * 1> valid = {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0
-  };
-  std::array<float, 5 * 5 * 1> output;
+  const std::array<float, 5 * 5 * 1> input = { 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  const std::array<float, 5 * 5 * 1> valid = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0 };
+  std::array<float, 5 * 5 * 1>       output;
 
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -63,14 +55,11 @@ TEST_P(TestScale, scaleNotCentered)
 
 TEST_P(TestScale, scaleResized)
 {
-  const std::array<float, 5 * 5 * 1> input = {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  };
-  const std::array<float, 10 * 10 * 1> valid = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0,
-                                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  const std::array<float, 5 * 5 * 1>   input = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  const std::array<float, 10 * 10 * 1> valid = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0,
+                                                 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   std::array<float, 10 * 10 * 1>       output;
 
   std::string param = GetParam();

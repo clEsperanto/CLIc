@@ -8,15 +8,12 @@ namespace cle::tier2
 {
 
 auto
-opening_func(const Device::Pointer & device,
-             const Array::Pointer &  src,
-             const Array::Pointer &  footprint,
-             Array::Pointer          dst) -> Array::Pointer
+opening_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & footprint, Array::Pointer dst)
+  -> Array::Pointer
 {
   if (src->dimension() != footprint->dimension())
   {
-    throw std::runtime_error(
-      "Error: input and structuring element in opening operator must have the same dimensionality.");
+    throw std::runtime_error("Error: input and structuring element in opening operator must have the same dimensionality.");
   }
   auto temp = tier1::erosion_func(device, src, footprint, nullptr);
   return tier1::dilation_func(device, temp, footprint, dst);

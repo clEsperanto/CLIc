@@ -10,8 +10,7 @@ namespace cle::tier4
 {
 
 auto
-relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int blocksize)
-  -> Array::Pointer
+relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int blocksize) -> Array::Pointer
 {
   tier0::create_like(src, dst);
   auto max_label = static_cast<int>(tier2::maximum_of_all_pixels_func(device, src));
@@ -19,8 +18,7 @@ relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & s
   flagged->fill(0);
   tier3::flag_existing_labels_func(device, src, flagged);
   tier1::set_column_func(device, flagged, 0, 0);
-  auto block_sums =
-    Array::create(((max_label + 1) / blocksize) + 1, 1, 1, 1, flagged->dtype(), flagged->mtype(), flagged->device());
+  auto block_sums = Array::create(((max_label + 1) / blocksize) + 1, 1, 1, 1, flagged->dtype(), flagged->mtype(), flagged->device());
   tier1::sum_reduction_x_func(device, flagged, block_sums, blocksize);
   auto new_indices = Array::create(max_label + 1, 1, 1, 1, flagged->dtype(), flagged->mtype(), flagged->device());
   tier1::block_enumerate_func(device, flagged, block_sums, new_indices, blocksize);

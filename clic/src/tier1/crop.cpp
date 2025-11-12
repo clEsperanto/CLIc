@@ -21,10 +21,8 @@ crop_func(const Device::Pointer & device,
 {
   tier0::create_dst(src, dst, width, height, depth);
   const KernelInfo    kernel = { "crop", kernel::crop };
-  const ParameterList params = {
-    { "src", src }, { "dst", dst }, { "index0", start_x }, { "index1", start_y }, { "index2", start_z }
-  };
-  const RangeArray range = { dst->width(), dst->height(), dst->depth() };
+  const ParameterList params = { { "src", src }, { "dst", dst }, { "index0", start_x }, { "index1", start_y }, { "index2", start_z } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   execute(device, kernel, params, range);
   return dst;
 }

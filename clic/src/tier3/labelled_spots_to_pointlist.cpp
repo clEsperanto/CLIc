@@ -11,8 +11,7 @@ namespace cle::tier3
 {
 
 auto
-labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & label, Array::Pointer pointlist)
-  -> Array::Pointer
+labelled_spots_to_pointlist_func(const Device::Pointer & device, const Array::Pointer & label, Array::Pointer pointlist) -> Array::Pointer
 {
   auto max_label = tier2::maximum_of_all_pixels_func(device, label);
   auto dim = shape_to_dimension(label->width(), label->height(), label->depth());

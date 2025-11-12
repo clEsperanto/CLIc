@@ -8,11 +8,9 @@ class TestVariance : public ::testing::TestWithParam<std::string>
 protected:
   std::array<float, 5 * 5 * 1> output;
   std::array<float, 5 * 5 * 1> input = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-  std::array<float, 5 * 5 * 1> valid_box = { 0,      0, 0,      0,      0,      0, 0.0987, 0.0987, 0.0987,
-                                             0,      0, 0.0987, 0.0987, 0.0987, 0, 0,      0.0987, 0.0987,
-                                             0.0987, 0, 0,      0,      0,      0, 0 };
-  std::array<float, 5 * 5 * 1> valid_sphere = { 0,    0, 0, 0, 0,    0, 0, 0.16, 0, 0, 0, 0.16, 0.16,
-                                                0.16, 0, 0, 0, 0.16, 0, 0, 0,    0, 0, 0, 0 };
+  std::array<float, 5 * 5 * 1> valid_box = { 0,      0, 0, 0,      0,      0,      0.0987, 0.0987, 0.0987, 0, 0, 0.0987, 0.0987,
+                                             0.0987, 0, 0, 0.0987, 0.0987, 0.0987, 0,      0,      0,      0, 0, 0 };
+  std::array<float, 5 * 5 * 1> valid_sphere = { 0, 0, 0, 0, 0, 0, 0, 0.16, 0, 0, 0, 0.16, 0.16, 0.16, 0, 0, 0, 0.16, 0, 0, 0, 0, 0, 0, 0 };
 };
 
 TEST_P(TestVariance, executeDeprecatedBox)

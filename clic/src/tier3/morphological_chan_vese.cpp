@@ -33,10 +33,7 @@ create_checkerboard_init(const Array::Pointer & src, Array::Pointer dst, int squ
 
 
 auto
-compute_contour_score(const Device::Pointer & device,
-                      const Array::Pointer &  image,
-                      const Array::Pointer &  contour,
-                      float &                 c) -> void
+compute_contour_score(const Device::Pointer & device, const Array::Pointer & image, const Array::Pointer & contour, float & c) -> void
 {
   auto masked = tier1::mask_func(device, image, contour, nullptr);
   auto sum_image_value = tier2::sum_of_all_pixels_func(device, masked);
@@ -45,9 +42,7 @@ compute_contour_score(const Device::Pointer & device,
 }
 
 auto
-compute_gradient_magnitude(const Device::Pointer & device,
-                           const Array::Pointer &  contour,
-                           Array::Pointer          gradient_magnitude) -> void
+compute_gradient_magnitude(const Device::Pointer & device, const Array::Pointer & contour, Array::Pointer gradient_magnitude) -> void
 {
   auto gradient_along_axis = Array::create(gradient_magnitude);
   auto absolute_gradient_along_axis = Array::create(gradient_magnitude);
@@ -93,8 +88,7 @@ compute_contour_evolution(const Device::Pointer & device,
 }
 
 auto
-apply_contour_evolution(const Device::Pointer & device, const Array::Pointer & evolution, Array::Pointer contour)
-  -> void
+apply_contour_evolution(const Device::Pointer & device, const Array::Pointer & evolution, Array::Pointer contour) -> void
 {
   auto evolution_pos = tier1::greater_constant_func(device, evolution, nullptr, 0);
   auto evolution_neg = tier1::smaller_constant_func(device, evolution, nullptr, 0);
@@ -151,8 +145,7 @@ morphological_chan_vese_func(const Device::Pointer & device,
   float c0 = 0;
   float c1 = 0;
   auto  outside_contour = Array::create(dst);
-  auto  gradient_magnitude =
-    Array::create(dst->width(), dst->height(), dst->depth(), dst->dimension(), dType::FLOAT, mType::BUFFER, device);
+  auto gradient_magnitude = Array::create(dst->width(), dst->height(), dst->depth(), dst->dimension(), dType::FLOAT, mType::BUFFER, device);
 
   int ite = 0;
   while (ite < num_iter)

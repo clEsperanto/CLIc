@@ -12,11 +12,8 @@ namespace cle::tier6
 {
 
 auto
-erode_labels_func(const Device::Pointer & device,
-                  const Array::Pointer &  src,
-                  Array::Pointer          dst,
-                  int                     radius,
-                  bool                    relabel) -> Array::Pointer
+erode_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius, bool relabel)
+  -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::LABEL);
   if (radius <= 0)

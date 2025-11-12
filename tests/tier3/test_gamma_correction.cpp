@@ -9,9 +9,7 @@
 class TestExistingLabels : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::array<float, 5 * 5 * 1> input = {
-    0, 0, 0, 0, 0, 0, 50, 0, 5, 0, 0, 0, 100, 0, 0, 0, 30, 0, 10, 0, 0, 0, 0, 0, 0
-  };
+  std::array<float, 5 * 5 * 1> input = { 0, 0, 0, 0, 0, 0, 50, 0, 5, 0, 0, 0, 100, 0, 0, 0, 30, 0, 10, 0, 0, 0, 0, 0, 0 };
   std::array<float, 5 * 5 * 1> output;
 };
 

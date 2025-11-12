@@ -41,10 +41,8 @@ array_equal_func(const Device::Pointer & device, const Array::Pointer & src0, co
  *
  */
 auto
-combine_labels_func(const Device::Pointer & device,
-                    const Array::Pointer &  src0,
-                    const Array::Pointer &  src1,
-                    Array::Pointer          dst) -> Array::Pointer;
+combine_labels_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer;
 
 
 /**
@@ -103,8 +101,7 @@ connected_component_labeling_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_reduceLabelsToCentroids
  */
 auto
-reduce_labels_to_centroids_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+reduce_labels_to_centroids_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 /**
  * @name filter_label_by_size
@@ -161,8 +158,29 @@ exclude_labels_outside_size_range_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_excludeLabelsOutsideSizeRange
  */
 auto
-merge_touching_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst)
-  -> Array::Pointer;
+merge_touching_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+
+/**
+ * @name proximal_neighbor_count
+ * @brief From a label map, determines which labels are whithin a given distance range of each other
+ * and returns the number of those in vector.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input label image. [const Array::Pointer &]
+ * @param dst Output parametric image. [Array::Pointer ( = None )]
+ * @param min_distance Minimum distance to consider a neighbor. [float ( = -1 )]
+ * @param max_distance Maximum distance to consider a neighbor. [float ( = -1 )]
+ * @return Array::Pointer
+ *
+ * @note 'label measurement'
+ */
+auto
+proximal_neighbor_count_func(const Device::Pointer & device,
+                             const Array::Pointer &  src,
+                             Array::Pointer          dst,
+                             float                   min_distance,
+                             float                   max_distance) -> Array::Pointer;
 
 
 } // namespace cle::tier5

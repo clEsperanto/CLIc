@@ -28,8 +28,7 @@ ifft_func(const Device::Pointer & device, const Array::Pointer & src, const Arra
 {
   if (src->dtype() != dType::COMPLEX)
   {
-    std::cerr << "Warning: ifft input buffer expect COMPLEX type, but got " << toString(src->dtype()) << "."
-              << std::endl;
+    std::cerr << "Warning: ifft input buffer expect COMPLEX type, but got " << toString(src->dtype()) << "." << std::endl;
   }
   if (dst == nullptr)
   {
@@ -51,9 +50,8 @@ convolve_fft_func(const Device::Pointer & device,
   if (kernel->width() > src->width() || kernel->height() > src->height() || kernel->depth() > src->depth())
   {
     std::ostringstream oss;
-    oss << "Error: Kernel size is larger than the input buffer size. Kernel size: " << kernel->width() << "x"
-        << kernel->height() << "x" << kernel->depth() << " Input size: " << src->width() << "x" << src->height() << "x"
-        << src->depth();
+    oss << "Error: Kernel size is larger than the input buffer size. Kernel size: " << kernel->width() << "x" << kernel->height() << "x"
+        << kernel->depth() << " Input size: " << src->width() << "x" << src->height() << "x" << src->depth();
     throw std::runtime_error(oss.str());
   }
 
@@ -76,11 +74,9 @@ convolve_fft_func(const Device::Pointer & device,
 
   // check if smooth size differs from the kernel size, if yes, pad the kernel
   Array::Pointer pad_kernel = kernel;
-  if (smoothed_shape[0] != kernel_shape[0] || smoothed_shape[1] != kernel_shape[1] ||
-      smoothed_shape[2] != kernel_shape[2])
+  if (smoothed_shape[0] != kernel_shape[0] || smoothed_shape[1] != kernel_shape[1] || smoothed_shape[2] != kernel_shape[2])
   {
-    pad_kernel =
-      tier1::pad_func(device, kernel, nullptr, smoothed_shape[0], smoothed_shape[1], smoothed_shape[2], 0, true);
+    pad_kernel = tier1::pad_func(device, kernel, nullptr, smoothed_shape[0], smoothed_shape[1], smoothed_shape[2], 0, true);
   }
 
   // check dst size and pad if needed, otherwise create a new buffer
@@ -115,9 +111,8 @@ deconvolve_fft_func(const Device::Pointer & device,
   if (psf->width() > src->width() || psf->height() > src->height() || psf->depth() > src->depth())
   {
     std::ostringstream oss;
-    oss << "Error: Kernel size is larger than the input buffer size. Kernel size: " << psf->width() << "x"
-        << psf->height() << "x" << psf->depth() << " Input size: " << src->width() << "x" << src->height() << "x"
-        << src->depth();
+    oss << "Error: Kernel size is larger than the input buffer size. Kernel size: " << psf->width() << "x" << psf->height() << "x"
+        << psf->depth() << " Input size: " << src->width() << "x" << src->height() << "x" << src->depth();
     throw std::runtime_error(oss.str());
   }
 
@@ -152,8 +147,7 @@ deconvolve_fft_func(const Device::Pointer & device,
     if (smoothed_shape[0] != norm_shape[0] || smoothed_shape[1] != norm_shape[1] || smoothed_shape[2] != norm_shape[2])
 
     {
-      pad_norm = tier1::pad_func(
-        device, normalization, nullptr, smoothed_shape[0], smoothed_shape[1], smoothed_shape[2], 0, true);
+      pad_norm = tier1::pad_func(device, normalization, nullptr, smoothed_shape[0], smoothed_shape[1], smoothed_shape[2], 0, true);
     }
   }
 
@@ -164,8 +158,7 @@ deconvolve_fft_func(const Device::Pointer & device,
     const RangeArray dst_shape = { dst->width(), dst->height(), dst->depth() };
     if (smoothed_shape[0] != dst_shape[0] || smoothed_shape[1] != dst_shape[1] || smoothed_shape[2] != dst_shape[2])
     {
-      pad_dst =
-        tier1::pad_func(device, pad_dst, nullptr, smoothed_shape[0], smoothed_shape[1], smoothed_shape[2], 0, true);
+      pad_dst = tier1::pad_func(device, pad_dst, nullptr, smoothed_shape[0], smoothed_shape[1], smoothed_shape[2], 0, true);
     }
   }
   else

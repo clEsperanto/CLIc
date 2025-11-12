@@ -9,8 +9,7 @@ namespace cle::tier1
 {
 
 auto
-write_values_to_positions_func(const Device::Pointer & device, const Array::Pointer & list, Array::Pointer dst)
-  -> Array::Pointer
+write_values_to_positions_func(const Device::Pointer & device, const Array::Pointer & list, Array::Pointer dst) -> Array::Pointer
 {
   // TODO: check list shape
   // if (list->dim() != 2)

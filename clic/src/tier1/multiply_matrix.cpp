@@ -17,7 +17,7 @@ multiply_matrix_func(const Device::Pointer & device,
   tier0::create_dst(matrix1, matrix_destination, matrix2->width(), matrix1->height(), matrix1->depth(), dType::FLOAT);
   const KernelInfo    kernel = { "multiply_matrix", kernel::multiply_matrix };
   const ParameterList params = { { "src0", matrix1 }, { "src1", matrix2 }, { "dst", matrix_destination } };
-  const RangeArray range = { matrix_destination->width(), matrix_destination->height(), matrix_destination->depth() };
+  const RangeArray    range = { matrix_destination->width(), matrix_destination->height(), matrix_destination->depth() };
   execute(device, kernel, params, range);
   return matrix_destination;
 }

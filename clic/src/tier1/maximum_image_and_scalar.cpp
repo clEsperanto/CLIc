@@ -9,10 +9,8 @@ namespace cle::tier1
 {
 
 auto
-maximum_image_and_scalar_func(const Device::Pointer & device,
-                              const Array::Pointer &  src,
-                              Array::Pointer          dst,
-                              float                   scalar) -> Array::Pointer
+maximum_image_and_scalar_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
+  -> Array::Pointer
 {
   tier0::create_like(src, dst);
   const KernelInfo    kernel = { "maximum_image_and_scalar", kernel::maximum_image_and_scalar };

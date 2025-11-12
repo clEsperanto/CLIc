@@ -10,10 +10,8 @@ namespace cle::tier1
 {
 
 auto
-smaller_or_equal_func(const Device::Pointer & device,
-                      const Array::Pointer &  src0,
-                      const Array::Pointer &  src1,
-                      Array::Pointer          dst) -> Array::Pointer
+smaller_or_equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer
 {
   tier0::create_like(src0, dst, dType::BINARY);
   const KernelInfo    kernel = { "smaller_or_equal", kernel::smaller_or_equal };
