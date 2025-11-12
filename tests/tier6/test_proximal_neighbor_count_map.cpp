@@ -6,16 +6,10 @@
 class TestProximalNeighborCount : public ::testing::TestWithParam<std::string>
 {
 protected:
-const std::array<uint32_t, 5 * 5 * 1> valid = { 
-        1, 0, 0, 0, 1,
-        0, 0, 0, 0, 0,
-        0, 0, 4, 0, 0,
-        0, 0, 0, 0, 0,
-        1, 0, 0, 0, 1
-  };
+  const std::array<uint32_t, 5 * 5 * 1> valid = { 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1 };
 
-  const std::array<uint32_t, 5 * 5 * 1> input = {1, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 5};
-  std::array<uint32_t, 5 * 5 * 1> output;
+  const std::array<uint32_t, 5 * 5 * 1> input = { 1, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 5 };
+  std::array<uint32_t, 5 * 5 * 1>       output;
 };
 
 TEST_P(TestProximalNeighborCount, executeBox)
