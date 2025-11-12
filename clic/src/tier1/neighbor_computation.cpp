@@ -21,7 +21,7 @@ mean_of_touching_neighbors_func(const Device::Pointer & device,
                                 Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(vector, dst, dType::FLOAT);
-  int x_corr = (matrix->width() == vector->size() + 1) ? -1 : 0;
+  int                 x_corr = (matrix->width() == vector->size() + 1) ? -1 : 0;
   const KernelInfo    kernel = { "mean_touching_neighbors", kernel::mean_touching_neighbors };
   const ParameterList params = { { "src_vector", vector }, { "src_matrix", matrix }, { "dst", dst }, { "x_correction", x_corr } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -37,7 +37,7 @@ median_of_touching_neighbors_func(const Device::Pointer & device,
                                   Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(vector, dst, dType::FLOAT);
-  int x_corr = (matrix->width() == vector->size() + 1) ? -1 : 0;
+  int                 x_corr = (matrix->width() == vector->size() + 1) ? -1 : 0;
   const KernelInfo    kernel = { "median_touching_neighbors", kernel::median_touching_neighbors };
   const ParameterList params = { { "src_vector", vector }, { "src_matrix", matrix }, { "dst", dst }, { "x_correction", x_corr } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -53,7 +53,7 @@ minimum_of_touching_neighbors_func(const Device::Pointer & device,
                                    Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(vector, dst, dType::FLOAT);
-  int x_corr = (matrix->width() == vector->size() + 1) ? -1 : 0;
+  int                 x_corr = (matrix->width() == vector->size() + 1) ? -1 : 0;
   const KernelInfo    kernel = { "minimum_touching_neighbors", kernel::minimum_touching_neighbors };
   const ParameterList params = { { "src_vector", vector }, { "src_matrix", matrix }, { "dst", dst }, { "x_correction", x_corr } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -69,7 +69,7 @@ maximum_of_touching_neighbors_func(const Device::Pointer & device,
                                    Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(vector, dst, dType::FLOAT);
-  int x_corr = (matrix->width() == vector->size() + 1) ? -1 : 0;
+  int                 x_corr = (matrix->width() == vector->size() + 1) ? -1 : 0;
   const KernelInfo    kernel = { "maximum_touching_neighbors", kernel::maximum_touching_neighbors };
   const ParameterList params = { { "src_vector", vector }, { "src_matrix", matrix }, { "dst", dst }, { "x_correction", x_corr } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -85,7 +85,7 @@ standard_deviation_of_touching_neighbors_func(const Device::Pointer & device,
                                               Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(vector, dst, dType::FLOAT);
-  int x_corr = (matrix->width() == vector->size() + 1) ? -1 : 0;
+  int                 x_corr = (matrix->width() == vector->size() + 1) ? -1 : 0;
   const KernelInfo    kernel = { "standard_deviation_touching_neighbors", kernel::standard_deviation_touching_neighbors };
   const ParameterList params = { { "src_vector", vector }, { "src_matrix", matrix }, { "dst", dst }, { "x_correction", x_corr } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
@@ -101,7 +101,7 @@ mode_of_touching_neighbors_func(const Device::Pointer & device,
                                 Array::Pointer          dst) -> Array::Pointer
 {
   tier0::create_like(vector, dst, dType::FLOAT);
-  int x_corr = (matrix->width() == vector->size() + 1) ? -1 : 0;
+  int                 x_corr = (matrix->width() == vector->size() + 1) ? -1 : 0;
   const KernelInfo    kernel = { "mode_touching_neighbors", kernel::mode_touching_neighbors };
   const ParameterList params = { { "src_vector", vector }, { "src_matrix", matrix }, { "dst", dst }, { "x_correction", x_corr } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };

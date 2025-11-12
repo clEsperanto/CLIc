@@ -407,7 +407,7 @@ percentile_func(const Device::Pointer & device, const Array::Pointer & src, floa
  * @name mean_of_touching_neighbors_map
  * @brief Compute the mean value of touching neighbors from a parametric map and a label image.
  * Generates a new parametric map where each label is replaced by the mean value of its touching
- * neighbors. The radius parameter allows considering neighbors of neighbors 
+ * neighbors. The radius parameter allows considering neighbors of neighbors
  * (e.g. radius 1 = direct neighbors, radius 2 = neighbors of neighbors, etc.).
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -416,13 +416,18 @@ percentile_func(const Device::Pointer & device, const Array::Pointer & src, floa
  * @return Array::Pointer
  */
 auto
-mean_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & map, const Array::Pointer & labels, Array::Pointer  dst, int radius, bool ignore_background) -> Array::Pointer;
+mean_of_touching_neighbors_map_func(const Device::Pointer & device,
+                                    const Array::Pointer &  map,
+                                    const Array::Pointer &  labels,
+                                    Array::Pointer          dst,
+                                    int                     radius,
+                                    bool                    ignore_background) -> Array::Pointer;
 
 /**
  * @name median_of_touching_neighbors_map
  * @brief Computes the median value of touching neighbors from a parametric map and a label image.
  * Generates a new parametric map where each label is replaced by the mean value of its touching
- * neighbors. The radius parameter allows considering neighbors of neighbors 
+ * neighbors. The radius parameter allows considering neighbors of neighbors
  * (e.g. radius 1 = direct neighbors, radius 2 = neighbors of neighbors, etc.).
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -434,14 +439,18 @@ mean_of_touching_neighbors_map_func(const Device::Pointer & device, const Array:
  * @return Array::Pointer
  */
 auto
-median_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & map, const Array::Pointer & labels, Array::Pointer  dst, int radius, bool ignore_background)
-  -> Array::Pointer;
+median_of_touching_neighbors_map_func(const Device::Pointer & device,
+                                      const Array::Pointer &  map,
+                                      const Array::Pointer &  labels,
+                                      Array::Pointer          dst,
+                                      int                     radius,
+                                      bool                    ignore_background) -> Array::Pointer;
 
 /**
  * @name minimum_of_touching_neighbors_map
  * @brief Computes the minimum value of touching neighbors from a parametric map and a label image.
  * Generates a new parametric map where each label is replaced by the mean value of its touching
- * neighbors. The radius parameter allows considering neighbors of neighbors 
+ * neighbors. The radius parameter allows considering neighbors of neighbors
  * (e.g. radius 1 = direct neighbors, radius 2 = neighbors of neighbors, etc.).
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -453,14 +462,18 @@ median_of_touching_neighbors_map_func(const Device::Pointer & device, const Arra
  * @return Array::Pointer
  */
 auto
-minimum_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & map, const Array::Pointer & labels, Array::Pointer  dst, int radius, bool ignore_background)
-  -> Array::Pointer;
+minimum_of_touching_neighbors_map_func(const Device::Pointer & device,
+                                       const Array::Pointer &  map,
+                                       const Array::Pointer &  labels,
+                                       Array::Pointer          dst,
+                                       int                     radius,
+                                       bool                    ignore_background) -> Array::Pointer;
 
 /**
  * @name maximum_of_touching_neighbors_map
  * @brief Computes the maximum value of touching neighbors from a parametric map and a label image.
  * Generates a new parametric map where each label is replaced by the mean value of its touching
- * neighbors. The radius parameter allows considering neighbors of neighbors 
+ * neighbors. The radius parameter allows considering neighbors of neighbors
  * (e.g. radius 1 = direct neighbors, radius 2 = neighbors of neighbors, etc.).
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -472,14 +485,18 @@ minimum_of_touching_neighbors_map_func(const Device::Pointer & device, const Arr
  * @return Array::Pointer
  */
 auto
-maximum_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & map, const Array::Pointer & labels, Array::Pointer  dst, int radius, bool ignore_background)
-  -> Array::Pointer;
+maximum_of_touching_neighbors_map_func(const Device::Pointer & device,
+                                       const Array::Pointer &  map,
+                                       const Array::Pointer &  labels,
+                                       Array::Pointer          dst,
+                                       int                     radius,
+                                       bool                    ignore_background) -> Array::Pointer;
 
 /**
  * @name standard_deviation_of_touching_neighbors_map
  * @brief Computes the standard deviation of touching neighbors from a parametric map and a label image.
  * Generates a new parametric map where each label is replaced by the mean value of its touching
- * neighbors. The radius parameter allows considering neighbors of neighbors 
+ * neighbors. The radius parameter allows considering neighbors of neighbors
  * (e.g. radius 1 = direct neighbors, radius 2 = neighbors of neighbors, etc.).
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -491,14 +508,18 @@ maximum_of_touching_neighbors_map_func(const Device::Pointer & device, const Arr
  * @return Array::Pointer
  */
 auto
-standard_deviation_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & map, const Array::Pointer & labels, Array::Pointer  dst, int radius, bool ignore_background)
-  -> Array::Pointer;
+standard_deviation_of_touching_neighbors_map_func(const Device::Pointer & device,
+                                                  const Array::Pointer &  map,
+                                                  const Array::Pointer &  labels,
+                                                  Array::Pointer          dst,
+                                                  int                     radius,
+                                                  bool                    ignore_background) -> Array::Pointer;
 
 /**
  * @name mode_of_touching_neighbors_map
  * @brief Computes the mode value of touching neighbors from a parametric map and a label image.
  * Generates a new parametric map where each label is replaced by the mean value of its touching
- * neighbors. The radius parameter allows considering neighbors of neighbors 
+ * neighbors. The radius parameter allows considering neighbors of neighbors
  * (e.g. radius 1 = direct neighbors, radius 2 = neighbors of neighbors, etc.).
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -510,7 +531,12 @@ standard_deviation_of_touching_neighbors_map_func(const Device::Pointer & device
  * @return Array::Pointer
  */
 auto
-mode_of_touching_neighbors_map_func(const Device::Pointer & device, const Array::Pointer & map, const Array::Pointer & labels, Array::Pointer  dst, int radius, bool ignore_background) -> Array::Pointer;
+mode_of_touching_neighbors_map_func(const Device::Pointer & device,
+                                    const Array::Pointer &  map,
+                                    const Array::Pointer &  labels,
+                                    Array::Pointer          dst,
+                                    int                     radius,
+                                    bool                    ignore_background) -> Array::Pointer;
 
 
 } // namespace cle::tier4

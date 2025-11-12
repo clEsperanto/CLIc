@@ -485,7 +485,8 @@ read_map_values_func(const Device::Pointer & device, const Array::Pointer & map,
  * @deprecated This function is deprecated. Consider using read_map_values() instead.
  */
 auto
-read_intensities_from_map_func(const Device::Pointer & device, const Array::Pointer & label, const Array::Pointer & map, Array::Pointer dst) -> Array::Pointer;
+read_intensities_from_map_func(const Device::Pointer & device, const Array::Pointer & label, const Array::Pointer & map, Array::Pointer dst)
+  -> Array::Pointer;
 
 } // namespace cle::tier3
 

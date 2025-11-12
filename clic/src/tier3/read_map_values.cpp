@@ -27,9 +27,10 @@ read_map_values_func(const Device::Pointer & device, const Array::Pointer & map,
 }
 
 auto
-read_intensities_from_map_func(const Device::Pointer & device, const Array::Pointer & label, const Array::Pointer & map, Array::Pointer dst) -> Array::Pointer
+read_intensities_from_map_func(const Device::Pointer & device, const Array::Pointer & label, const Array::Pointer & map, Array::Pointer dst)
+  -> Array::Pointer
 {
   return read_map_values_func(device, map, label, dst);
 }
 
-} // namespace cle::tier1
+} // namespace cle::tier3

@@ -6,46 +6,17 @@
 class TestLabelNeighbortMap : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::array<uint32_t, 4 * 4 * 1> label = { 
-        1, 1, 2, 2,
-        1, 0, 0, 2,
-        3, 0, 0, 4,
-        3, 3, 4, 4
-   };
-    std::array<float, 4 * 4 * 1> intensity = { 
-        1, 1, 2, 2,
-        1, 0, 0, 2,
-        4, 0, 0, 6,
-        4, 4, 6, 6
-   };
+  std::array<uint32_t, 4 * 4 * 1> label = { 1, 1, 2, 2, 1, 0, 0, 2, 3, 0, 0, 4, 3, 3, 4, 4 };
+  std::array<float, 4 * 4 * 1>    intensity = { 1, 1, 2, 2, 1, 0, 0, 2, 4, 0, 0, 6, 4, 4, 6, 6 };
 
-  std::array<float, 4 * 4 * 1> valid_mean = { 
-        2.3333, 2.3333, 3, 3,
-        2.3333, 0, 0, 3,
-        3.6666, 0, 0, 4,
-        3.6666, 3.6666, 4, 4
-   };
+  std::array<float, 4 * 4 * 1> valid_mean = { 2.3333, 2.3333, 3, 3, 2.3333, 0, 0, 3, 3.6666, 0, 0, 4, 3.6666, 3.6666, 4, 4 };
 
-    std::array<float, 4 * 4 * 1> valid_max = { 
-        4, 4, 6, 6,
-        4, 0, 0, 6,
-        6, 0, 0, 6,
-        6, 6, 6, 6
-   };
+  std::array<float, 4 * 4 * 1> valid_max = { 4, 4, 6, 6, 4, 0, 0, 6, 6, 0, 0, 6, 6, 6, 6, 6 };
 
-    std::array<float, 4 * 4 * 1> valid_min = { 
-        1, 1, 1, 1,
-        1, 0, 0, 1,
-        1, 0, 0, 2,
-        1, 1, 2, 2
-   };
+  std::array<float, 4 * 4 * 1> valid_min = { 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 2, 1, 1, 2, 2 };
 
-  std::array<float, 4 * 4 * 1> valid_std = { 
-        0.9660918, 0.9660918, 1.67332, 1.67332,
-        0.9660918, 0, 0, 1.67332,
-        1.5916449, 0, 0, 1.264911,
-        1.5916449, 1.5916449, 1.264911, 1.264911
-   };
+  std::array<float, 4 * 4 * 1> valid_std = { 0.9660918, 0.9660918, 1.67332, 1.67332,  0.9660918, 0,         0,        1.67332,
+                                             1.5916449, 0,         0,       1.264911, 1.5916449, 1.5916449, 1.264911, 1.264911 };
 };
 
 TEST_P(TestLabelNeighbortMap, mean)
@@ -140,24 +111,9 @@ TEST_P(TestLabelNeighbortMap, standard_deviation)
 TEST_P(TestLabelNeighbortMap, mode)
 {
 
-  std::array<uint32_t, 4 * 4 * 1> label = { 
-        0, 0, 2, 5,
-        0, 3, 1, 2,
-        0, 4, 3, 0,
-        0, 0, 0, 0
-   };
-    std::array<float, 4 * 4 * 1> intensity = { 
-        0, 0, 2, 5,
-        0, 3, 1, 2,
-        0, 4, 3, 0,
-        0, 0, 0, 0
-   };
-  std::array<float, 4 * 4 * 1> valid_mode = { 
-        0, 0, 1, 2,
-        0, 1, 2, 1,
-        0, 3, 1, 0,
-        0, 0, 0, 0
-   };
+  std::array<uint32_t, 4 * 4 * 1> label = { 0, 0, 2, 5, 0, 3, 1, 2, 0, 4, 3, 0, 0, 0, 0, 0 };
+  std::array<float, 4 * 4 * 1>    intensity = { 0, 0, 2, 5, 0, 3, 1, 2, 0, 4, 3, 0, 0, 0, 0, 0 };
+  std::array<float, 4 * 4 * 1>    valid_mode = { 0, 0, 1, 2, 0, 1, 2, 1, 0, 3, 1, 0, 0, 0, 0, 0 };
 
 
   std::string param = GetParam();
