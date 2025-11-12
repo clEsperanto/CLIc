@@ -2961,7 +2961,6 @@ auto
 z_position_projection_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & position, Array::Pointer dst)
   -> Array::Pointer;
 
-
 } // namespace cle::tier1
 
 #endif // __INCLUDE_TIER1_HPP
