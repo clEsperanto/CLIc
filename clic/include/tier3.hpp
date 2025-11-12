@@ -457,7 +457,6 @@ sato_filter_func(const Device::Pointer & device,
 auto
 tubeness_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float sigma) -> Array::Pointer;
 
-
 /**
  * @name artificial_tissue
  * @brief Generates 2D or 3D artificial tissue-like image by generating a regular grid point and

@@ -120,6 +120,28 @@ mean_intensity_map_func(const Device::Pointer & device, const Array::Pointer & s
 
 
 /**
+ * @name label_mean_intensity_map
+ * @brief Takes an image and a corresponding label map, determines the mean
+ *   intensity per label, and replaces every label with that number.
+ *
+ * This results in a parametric image expressing mean object intensity.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Intensity image. [const Array::Pointer &]
+ * @param labels Label image. [const Array::Pointer &]
+ * @param dst Parametric image computed. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'label measurement', 'map', 'in assistant', 'combine'
+ * @see https://clij.github.io/clij2-docs/reference_meanIntensityMap
+ * @deprecated This function is deprecated. Use mean_intensity_map_func instead.
+ */
+auto
+label_mean_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
+  -> Array::Pointer;
+
+
+/**
  * @name pixel_count_map
  * @brief Takes a label map, determines the number of pixels per label, and replaces every label with that number.
  * This results in a parametric image expressing area or volume.
@@ -388,6 +410,22 @@ standard_deviation_intensity_map_func(const Device::Pointer & device,
                                       const Array::Pointer &  labels,
                                       Array::Pointer          dst) -> Array::Pointer;
 
+/**
+ * @name touching_neighbor_count_map
+ * @brief For each label in a label map, determines how many other labels it is touching
+ * and creates a parametric map where each label is replaced by that number.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param labels Input label image. [const Array::Pointer &]
+ * @param dst Output parametric image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'label processing', 'in assistant', 'map'
+ * @see https://clij.github.io/clij2-docs/reference_touchingNeighborCountMap
+ */
+auto
+touching_neighbor_count_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer dst) -> Array::Pointer;
+
 
 /**
  * @name percentile
@@ -401,7 +439,6 @@ standard_deviation_intensity_map_func(const Device::Pointer & device,
  */
 auto
 percentile_func(const Device::Pointer & device, const Array::Pointer & src, float percentile) -> float;
-
 
 } // namespace cle::tier4
 
