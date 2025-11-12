@@ -567,6 +567,21 @@ label_spots_func(const Device::Pointer & device, const Array::Pointer & src, Arr
 
 
 /**
+ * @name pointlist_to_labelled_spots
+ * @brief Converts a pointlist image (x,y,z) into a labelled spots in a label image.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input pointlist image to process. [const Array::Pointer &]
+ * @param dst Output result label image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @see https://clij.github.io/clij2-docs/reference_pointlistToLabelledSpots
+ */
+auto
+pointlist_to_labelled_spots_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+
+/**
  * @name large_hessian_eigenvalue
  * @brief Determines the Hessian eigenvalues and returns the large eigenvalue image.
  *

@@ -118,6 +118,7 @@ auto
 mean_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
   -> Array::Pointer;
 
+
 /**
  * @name label_mean_intensity_map
  * @brief Takes an image and a corresponding label map, determines the mean

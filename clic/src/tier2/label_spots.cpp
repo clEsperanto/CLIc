@@ -25,4 +25,42 @@ label_spots_func(const Device::Pointer & device, const Array::Pointer & src, Arr
   return dst;
 }
 
+auto
+pointlist_to_labelled_spots_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+{
+  if (dst == nullptr)
+  {
+    // Determine the number of dimensions of the pointlist n x ndims x 1
+    auto               ndims = src->height();
+    std::vector<float> max_value(ndims, 0.0f);
+
+    // Determine the maximum in each dimension, it should return a 1 x ndims x 1 array
+    auto max = tier1::maximum_x_projection_func(device, src, nullptr);
+    max->readTo(max_value.data(), { 1, ndims, 1 }, { 0, 0, 0 });
+
+    int width = (ndims > 0) ? static_cast<int>(max_value[0]) + 1 : 1;
+    int height = (ndims > 1) ? static_cast<int>(max_value[1]) + 1 : 1;
+    int depth = (ndims > 2) ? static_cast<int>(max_value[2]) + 1 : 1;
+
+    // Create destination with given dimensions
+    dst = Array::create(static_cast<size_t>(width),
+                        static_cast<size_t>(height),
+                        static_cast<size_t>(depth),
+                        src->height(),
+                        dType::LABEL,
+                        mType::BUFFER,
+                        device);
+  }
+  dst->fill(0);
+
+  auto temp1 = Array::create(src->width(), src->height(), 1, 2, dType::FLOAT, mType::BUFFER, device);
+  auto temp2 = Array::create(src->width(), src->height(), 1, 2, dType::FLOAT, mType::BUFFER, device);
+
+  tier1::set_ramp_x_func(device, temp1);
+  tier1::add_image_and_scalar_func(device, temp1, temp2, 1);
+  tier1::write_values_to_positions_func(device, temp2, dst);
+
+  return dst;
+}
+
 } // namespace cle::tier2
