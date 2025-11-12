@@ -463,13 +463,13 @@ tubeness_func(const Device::Pointer & device, const Array::Pointer & src, Array:
  * return it as a vector of values.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param label Input label image. [const Array::Pointer &]
  * @param map Input map image. [const Array::Pointer &]
+ * @param label Input label image. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  */
 auto
-read_map_values_func(const Device::Pointer & device, const Array::Pointer & label, const Array::Pointer & map, Array::Pointer & dst)
+read_map_values_func(const Device::Pointer & device, const Array::Pointer & map, const Array::Pointer & label, Array::Pointer dst)
   -> Array::Pointer;
 
 /**
@@ -485,7 +485,7 @@ read_map_values_func(const Device::Pointer & device, const Array::Pointer & labe
  * @deprecated This function is deprecated. Consider using read_map_values() instead.
  */
 auto
-read_intensities_from_map_func(const Device::Pointer & device, const Array::Pointer & map, Array::Pointer & dst) -> Array::Pointer;
+read_intensities_from_map_func(const Device::Pointer & device, const Array::Pointer & label, const Array::Pointer & map, Array::Pointer dst) -> Array::Pointer;
 
 } // namespace cle::tier3
 
