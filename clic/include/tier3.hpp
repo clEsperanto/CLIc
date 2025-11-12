@@ -488,6 +488,7 @@ auto
 read_intensities_from_map_func(const Device::Pointer & device, const Array::Pointer & label, const Array::Pointer & map, Array::Pointer dst)
   -> Array::Pointer;
 
+
 } // namespace cle::tier3
 
 #endif // __INCLUDE_TIER3_HPP

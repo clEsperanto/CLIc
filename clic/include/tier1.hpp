@@ -2961,7 +2961,6 @@ auto
 z_position_projection_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & position, Array::Pointer dst)
   -> Array::Pointer;
 
-
 /**
  * @name mean_of_touching_neighbors_func
  * @brief Compute the mean_of_touching_neighbors
