@@ -82,6 +82,13 @@ mean_intensity_map_func(const Device::Pointer & device, const Array::Pointer & s
 }
 
 auto
+label_mean_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
+  -> Array::Pointer
+{
+  return mean_intensity_map_func(device, src, labels, dst);
+}
+
+auto
 minimum_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
   -> Array::Pointer
 {
@@ -124,7 +131,6 @@ standard_deviation_intensity_map_func(const Device::Pointer & device,
   tier1::set_column_func(device, values, 0, 0);
   return tier1::replace_values_func(device, labels, values, dst);
 }
-
 
 auto
 touching_neighbor_count_map_func(const Device::Pointer & device, const Array::Pointer & labels, Array::Pointer dst) -> Array::Pointer
