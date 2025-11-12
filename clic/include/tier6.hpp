@@ -173,7 +173,7 @@ remove_large_labels_func(const Device::Pointer & device, const Array::Pointer & 
 auto
 exclude_large_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float minimum_size)
   -> Array::Pointer;
-  
+
 
 /**
  * @name proximal_neighbor_count_map

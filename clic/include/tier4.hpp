@@ -439,7 +439,7 @@ touching_neighbor_count_map_func(const Device::Pointer & device, const Array::Po
 auto
 percentile_func(const Device::Pointer & device, const Array::Pointer & src, float percentile) -> float;
 
-  
+
 /**
  * @name mean_of_touching_neighbors_map
  * @brief Compute the mean value of touching neighbors from a parametric map and a label image.
