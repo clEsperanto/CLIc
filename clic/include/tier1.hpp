@@ -2961,6 +2961,108 @@ auto
 z_position_projection_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & position, Array::Pointer dst)
   -> Array::Pointer;
 
+/**
+ * @name mean_of_touching_neighbors_func
+ * @brief Compute the mean_of_touching_neighbors
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param vector Input vector to process. [const Array::Pointer &]
+ * @param matrix Input adjacency matrix to process. [const Array::Pointer &]
+ * @param dst Output result vector. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+mean_of_touching_neighbors_func(const Device::Pointer & device,
+                                const Array::Pointer &  vector,
+                                const Array::Pointer &  matrix,
+                                Array::Pointer          dst) -> Array::Pointer;
+
+
+/**
+ * @name median_of_touching_neighbors_func
+ * @brief Compute the median_of_touching_neighbors
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param vector Input vector to process. [const Array::Pointer &]
+ * @param matrix Input adjacency matrix to process. [const Array::Pointer &]
+ * @param dst Output result vector. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+median_of_touching_neighbors_func(const Device::Pointer & device,
+                                  const Array::Pointer &  vector,
+                                  const Array::Pointer &  matrix,
+                                  Array::Pointer          dst) -> Array::Pointer;
+
+
+/**
+ * @name minimum_of_touching_neighbors_func
+ * @brief Compute the minimum_of_touching_neighbors
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param vector Input vector to process. [const Array::Pointer &]
+ * @param matrix Input adjacency matrix to process. [const Array::Pointer &]
+ * @param dst Output result vector. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+minimum_of_touching_neighbors_func(const Device::Pointer & device,
+                                   const Array::Pointer &  vector,
+                                   const Array::Pointer &  matrix,
+                                   Array::Pointer          dst) -> Array::Pointer;
+
+
+/**
+ * @name maximum_of_touching_neighbors_func
+ * @brief Compute the maximum_of_touching_neighbors
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param vector Input vector to process. [const Array::Pointer &]
+ * @param matrix Input adjacency matrix to process. [const Array::Pointer &]
+ * @param dst Output result vector. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+maximum_of_touching_neighbors_func(const Device::Pointer & device,
+                                   const Array::Pointer &  vector,
+                                   const Array::Pointer &  matrix,
+                                   Array::Pointer          dst) -> Array::Pointer;
+
+
+/**
+ * @name standard_deviation_of_touching_neighbors_func
+ * @brief Compute the standard_deviation_of_touching_neighbors
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param vector Input vector to process. [const Array::Pointer &]
+ * @param matrix Input adjacency matrix to process. [const Array::Pointer &]
+ * @param dst Output result vector. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+standard_deviation_of_touching_neighbors_func(const Device::Pointer & device,
+                                              const Array::Pointer &  vector,
+                                              const Array::Pointer &  matrix,
+                                              Array::Pointer          dst) -> Array::Pointer;
+
+
+/**
+ * @name mode_of_touching_neighbors_func
+ * @brief Compute the mode_of_touching_neighbors
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param vector Input vector to process. [const Array::Pointer &]
+ * @param matrix Input adjacency matrix to process. [const Array::Pointer &]
+ * @param dst Output result vector. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+mode_of_touching_neighbors_func(const Device::Pointer & device,
+                                const Array::Pointer &  vector,
+                                const Array::Pointer &  matrix,
+                                Array::Pointer          dst) -> Array::Pointer;
+
+
 } // namespace cle::tier1
 
 #endif // __INCLUDE_TIER1_HPP

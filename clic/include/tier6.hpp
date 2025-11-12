@@ -197,7 +197,6 @@ proximal_neighbor_count_map_func(const Device::Pointer & device,
                                  float                   min_distance,
                                  float                   max_distance) -> Array::Pointer;
 
-
 } // namespace cle::tier6
 
 #endif // __INCLUDE_TIER6_HPP
