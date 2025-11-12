@@ -160,6 +160,7 @@ exclude_labels_outside_size_range_func(const Device::Pointer & device,
 auto
 merge_touching_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
+
 /**
  * @name proximal_neighbor_count
  * @brief From a label map, determines which labels are whithin a given distance range of each other
@@ -180,7 +181,6 @@ proximal_neighbor_count_func(const Device::Pointer & device,
                              Array::Pointer          dst,
                              float                   min_distance,
                              float                   max_distance) -> Array::Pointer;
-
 
 } // namespace cle::tier5
 

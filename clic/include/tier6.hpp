@@ -174,6 +174,7 @@ auto
 exclude_large_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float minimum_size)
   -> Array::Pointer;
 
+
 /**
  * @name proximal_neighbor_count_map
  * @brief From a label map, generates a map where each label is replaced by the count of neighboring labels within a specified distance
@@ -195,7 +196,6 @@ proximal_neighbor_count_map_func(const Device::Pointer & device,
                                  Array::Pointer          dst,
                                  float                   min_distance,
                                  float                   max_distance) -> Array::Pointer;
-
 
 } // namespace cle::tier6
 
