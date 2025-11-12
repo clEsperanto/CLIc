@@ -17,7 +17,7 @@ proximal_neighbor_count_func(const Device::Pointer & device,
                              float                   min_distance,
                              float                   max_distance) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::FLOAT);
+  tier0::create_like(src, dst, dType::UINT32);
 
   min_distance = std::max(min_distance, 0.0f);
   max_distance = (max_distance < 0) ? std::numeric_limits<float>::max() : max_distance;

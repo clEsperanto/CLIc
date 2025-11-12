@@ -19,13 +19,14 @@ proximal_neighbor_count_map_func(const Device::Pointer & device,
                                  float                   min_distance,
                                  float                   max_distance) -> Array::Pointer
 {
-  tier0::create_like(labels, dst, dType::FLOAT);
+  tier0::create_like(labels, dst, dType::UINT32);
 
   min_distance = std::max(min_distance, 0.0f);
   max_distance = (max_distance < 0) ? std::numeric_limits<float>::max() : max_distance;
 
-  auto nb_touching_neighbors = tier5::proximal_neighbor_count_func(device, labels, nullptr, max_distance, min_distance);
+  auto nb_touching_neighbors = tier5::proximal_neighbor_count_func(device, labels, nullptr, min_distance, max_distance);
   tier1::replace_intensities_func(device, labels, nb_touching_neighbors, dst);
+
   return dst;
 }
 
