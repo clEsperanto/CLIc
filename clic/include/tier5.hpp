@@ -182,6 +182,27 @@ proximal_neighbor_count_func(const Device::Pointer & device,
                              float                   min_distance,
                              float                   max_distance) -> Array::Pointer;
 
+
+/**
+ * @name normalize
+ * @brief Normalizes the pixel values of an image to the range [0, 1].
+ * This function normalize the pixel values between [0, 1] following the linear normalization formula:
+ * <pre>I_normalized = (I - I_min) * (new_max - new_min) / (I_max - I_min) + new_min</pre>
+ * where the I_min and I_max are determined by the low_percentile and high_percentile parameters, respectively.
+ * If not specified, the minimum and maximum pixel values of the image are used.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to normalize. [const Array::Pointer &]
+ * @param dst Output normalized image. [Array::Pointer ( = None )]
+ * @param low_percentile Low percentile to determine the minimum pixel value. [float ( = -1 )]
+ * @param high_percentile High percentile to determine the maximum pixel value. [float ( = -1 )]
+ * @return Array::Pointer
+ */
+auto
+normalize_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float low_percentile, float high_percentile)
+  -> Array::Pointer;
+
+
 } // namespace cle::tier5
 
 #endif // __INCLUDE_TIER5_HPP
