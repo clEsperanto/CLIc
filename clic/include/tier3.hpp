@@ -463,7 +463,7 @@ tubeness_func(const Device::Pointer & device, const Array::Pointer & src, Array:
  * introducing Gaussian noise.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param width Width of the generated image. [int ( = 256) ]
+ * @param width Width of the generated image. [int ( = 256 ) ]
  * @param height Height of the generated image. [int ( = 256 ) ]
  * @param depth Depth of the generated image. [int ( = 1 ) ]
  * @param delta_x Spacing between pixels in x. [float ( = 1.0 )]
