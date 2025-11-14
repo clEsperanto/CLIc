@@ -451,6 +451,8 @@ percentile_func(const Device::Pointer & device, const Array::Pointer & src, floa
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param labels Input vector image. [const Array::Pointer &]
  * @param dst Output parametric image. [Array::Pointer ( = None )]
+ * @param radius Radius of touching neighbors to consider. [int ( = 1 )]
+ * @param ignore_background Whether to ignore the background label. [bool ( = True )]
  * @return Array::Pointer
  */
 auto
