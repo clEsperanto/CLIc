@@ -449,6 +449,7 @@ percentile_func(const Device::Pointer & device, const Array::Pointer & src, floa
  * (e.g. radius 1 = direct neighbors, radius 2 = neighbors of neighbors, etc.).
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param map Input parametric map image. [const Array::Pointer &]
  * @param labels Input vector image. [const Array::Pointer &]
  * @param dst Output parametric image. [Array::Pointer ( = None )]
  * @param radius Radius of touching neighbors to consider. [int ( = 1 )]
