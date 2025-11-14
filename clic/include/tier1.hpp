@@ -2961,8 +2961,9 @@ auto
 z_position_projection_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & position, Array::Pointer dst)
   -> Array::Pointer;
 
+
 /**
- * @name mean_of_touching_neighbors_func
+ * @name mean_of_touching_neighbors
  * @brief Compute the mean_of_touching_neighbors
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -2977,9 +2978,8 @@ mean_of_touching_neighbors_func(const Device::Pointer & device,
                                 const Array::Pointer &  matrix,
                                 Array::Pointer          dst) -> Array::Pointer;
 
-
 /**
- * @name median_of_touching_neighbors_func
+ * @name median_of_touching_neighbors
  * @brief Compute the median_of_touching_neighbors
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -2994,9 +2994,8 @@ median_of_touching_neighbors_func(const Device::Pointer & device,
                                   const Array::Pointer &  matrix,
                                   Array::Pointer          dst) -> Array::Pointer;
 
-
 /**
- * @name minimum_of_touching_neighbors_func
+ * @name minimum_of_touching_neighbors
  * @brief Compute the minimum_of_touching_neighbors
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -3011,9 +3010,8 @@ minimum_of_touching_neighbors_func(const Device::Pointer & device,
                                    const Array::Pointer &  matrix,
                                    Array::Pointer          dst) -> Array::Pointer;
 
-
 /**
- * @name maximum_of_touching_neighbors_func
+ * @name maximum_of_touching_neighbors
  * @brief Compute the maximum_of_touching_neighbors
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -3030,7 +3028,7 @@ maximum_of_touching_neighbors_func(const Device::Pointer & device,
 
 
 /**
- * @name standard_deviation_of_touching_neighbors_func
+ * @name standard_deviation_of_touching_neighbors
  * @brief Compute the standard_deviation_of_touching_neighbors
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
@@ -3047,7 +3045,7 @@ standard_deviation_of_touching_neighbors_func(const Device::Pointer & device,
 
 
 /**
- * @name mode_of_touching_neighbors_func
+ * @name mode_of_touching_neighbors
  * @brief Compute the mode_of_touching_neighbors
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
