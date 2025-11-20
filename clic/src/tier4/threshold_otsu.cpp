@@ -12,7 +12,7 @@
 namespace cle::tier4
 {
 
-  auto
+auto
 threshold_mean_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
   const float mean_intensity = tier3::mean_of_all_pixels_func(device, src);
