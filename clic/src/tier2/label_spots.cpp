@@ -53,13 +53,13 @@ pointlist_to_labelled_spots_func(const Device::Pointer & device, const Array::Po
   }
   dst->fill(0);
 
-  auto temp1 = Array::create(src->width(), src->height(), 1, 2, dType::FLOAT, mType::BUFFER, device);
-  auto temp2 = Array::create(src->width(), src->height(), 1, 2, dType::FLOAT, mType::BUFFER, device);
+  auto temp1 = Array::create(src->width(), src->height() + 1, 1, 2, dType::FLOAT, mType::BUFFER, device);
+  auto temp2 = Array::create(src->width(), src->height() + 1, 1, 2, dType::FLOAT, mType::BUFFER, device);
 
   tier1::set_ramp_x_func(device, temp1);
   tier1::add_image_and_scalar_func(device, temp1, temp2, 1);
+  src->copyTo(temp2, { src->width(), src->height(), 1 }, { 0, 0, 0 }, { 0, 0, 0 });
   tier1::write_values_to_positions_func(device, temp2, dst);
-
   return dst;
 }
 

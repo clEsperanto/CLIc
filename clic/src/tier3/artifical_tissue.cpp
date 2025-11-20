@@ -43,29 +43,18 @@ coordinate_generator(int   width,
     for (float y = 0; y < height; y += delta_y)
     {
       // Alternate offset pattern for hexagonal/honeycomb structure
-      float offset_x = 0.0f;
-      if (i % 2 != 0)
-      {
-        offset_x = delta_x / 2.0f;
-      }
-      if (k % 2 != 0)
-      {
-        offset_x += delta_x / 4.0f;
-      }
+      float offset_x = (i % 2 != 0) ? delta_x / 2.0f : 0.0f;
 
       // Generate coordinates for this row
       std::vector<float> x_coords;
-      std::vector<float> y_coords;
-      std::vector<float> z_coords;
-
       for (float x = offset_x; x < width; x += delta_x)
       {
         x_coords.push_back(x);
       }
 
-      size_t num_coords = x_coords.size();
-      y_coords.resize(num_coords, y);
-      z_coords.resize(num_coords, z);
+      size_t             num_coords = x_coords.size();
+      std::vector<float> y_coords(num_coords, static_cast<float>(y));
+      std::vector<float> z_coords(num_coords, static_cast<float>(z));
 
       // Add random noise to coordinates
       for (size_t j = 0; j < num_coords; ++j)

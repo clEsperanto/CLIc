@@ -99,6 +99,21 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
 
 
 /**
+ * @name threshold_mean
+ * @brief Binarizes an image using the global average intensity in the image
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to threshold. [const Array::Pointer &]
+ * @param dst Output binary image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'binarize', 'in assistant', 'bia-bob-suggestion'
+ */
+auto
+threshold_mean_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+
+/**
  * @name mean_intensity_map
  * @brief Takes an image and a corresponding label map, determines the mean
  *   intensity per label, and replaces every label with that number.
