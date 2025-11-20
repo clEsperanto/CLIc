@@ -51,8 +51,8 @@ coordinate_generator(int   width,
       {
         x_coords.push_back(x);
       }
-      
-      size_t num_coords = x_coords.size();
+
+      size_t             num_coords = x_coords.size();
       std::vector<float> y_coords(num_coords, static_cast<float>(y));
       std::vector<float> z_coords(num_coords, static_cast<float>(z));
 
