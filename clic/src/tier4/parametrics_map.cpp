@@ -13,12 +13,12 @@ namespace cle::tier4
 
 auto
 parametric_map_func(const Device::Pointer & device,
-  const Array::Pointer & labels,
-                Array::Pointer intensity,
-               const std::string & property,
-               Array::Pointer dst) -> Array::Pointer
+                    const Array::Pointer &  labels,
+                    Array::Pointer          intensity,
+                    const std::string &     property,
+                    Array::Pointer          dst) -> Array::Pointer
 {
-  if(intensity == nullptr)
+  if (intensity == nullptr)
   {
     intensity = labels;
   }
@@ -29,16 +29,17 @@ parametric_map_func(const Device::Pointer & device,
   // force property name to lower case
   std::string lower_property_name;
   std::transform(property.begin(), property.end(), std::back_inserter(lower_property_name), ::tolower);
-  
+
   // Check if property exists
-  if (props.find(lower_property_name) == props.end()) {
+  if (props.find(lower_property_name) == props.end())
+  {
     throw std::runtime_error("Property '" + property + "' not found in statistics");
   }
-  
+
   auto & vector = props[lower_property_name];
-  auto values = Array::create(vector.size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
+  auto   values = Array::create(vector.size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
   values->writeFrom(vector.data());
-  
+
   tier1::set_column_func(device, values, 0, 0);
   return tier1::replace_values_func(device, labels, values, dst);
 }

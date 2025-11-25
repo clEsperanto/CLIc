@@ -118,7 +118,7 @@ threshold_mean_func(const Device::Pointer & device, const Array::Pointer & src, 
  * @brief Takes an image, a corresponding label map, and maps a specified property (e.g., 'mean_intensity')
  * determined per label onto a new image where every label is replaced by the corresponding property value.
  * The property name must be available from the statistics_labelled_pixels function.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param labels Label image. [const Array::Pointer &]
  * @param intensity Intensity image. [Array::Pointer ( = None )]
@@ -135,10 +135,10 @@ threshold_mean_func(const Device::Pointer & device, const Array::Pointer & src, 
  */
 auto
 parametric_map_func(const Device::Pointer & device,
-                const Array::Pointer & labels,
-                Array::Pointer intensity,
-               const std::string & property,
-               Array::Pointer dst) -> Array::Pointer;
+                    const Array::Pointer &  labels,
+                    Array::Pointer          intensity,
+                    const std::string &     property,
+                    Array::Pointer          dst) -> Array::Pointer;
 
 
 /**
