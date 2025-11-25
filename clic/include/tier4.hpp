@@ -114,6 +114,34 @@ threshold_mean_func(const Device::Pointer & device, const Array::Pointer & src, 
 
 
 /**
+ * @name parametric_map
+ * @brief Takes an image, a corresponding label map, and maps a specified property (e.g., 'mean_intensity')
+ * determined per label onto a new image where every label is replaced by the corresponding property value.
+ * The property name must be available from the statistics_labelled_pixels function.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param labels Label image. [const Array::Pointer &]
+ * @param intensity Intensity image. [Array::Pointer ( = None )]
+ * @param property Name of the property to map. [std::string ( = "label" )]
+ * @param dst Parametric image computed. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'label measurement', 'map', 'in assistant', 'combine'
+ * @see https://clij.github.io/clij2-docs/reference_meanIntensityMap
+ * @see https://clij.github.io/clij2-docs/reference_pixelCountMap
+ * @see https://clij.github.io/clij2-docs/reference_minimumIntensityMap
+ * @see https://clij.github.io/clij2-docs/reference_maximumIntensityMap
+ * @see https://clij.github.io/clij2-docs/reference_standardDeviationIntensityMap
+ */
+auto
+parametric_map_func(const Device::Pointer & device,
+                const Array::Pointer & labels,
+                Array::Pointer intensity,
+               const std::string & property,
+               Array::Pointer dst) -> Array::Pointer;
+
+
+/**
  * @name mean_intensity_map
  * @brief Takes an image and a corresponding label map, determines the mean
  *   intensity per label, and replaces every label with that number.

@@ -12,16 +12,41 @@ namespace cle::tier4
 {
 
 auto
+parametric_map_func(const Device::Pointer & device,
+  const Array::Pointer & labels,
+                Array::Pointer intensity,
+               const std::string & property,
+               Array::Pointer dst) -> Array::Pointer
+{
+  if(intensity == nullptr)
+  {
+    intensity = labels;
+  }
+
+  tier0::create_like(labels, dst, dType::FLOAT);
+  auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, intensity, labels);
+
+  // force property name to lower case
+  std::string lower_property_name;
+  std::transform(property.begin(), property.end(), std::back_inserter(lower_property_name), ::tolower);
+  
+  // Check if property exists
+  if (props.find(lower_property_name) == props.end()) {
+    throw std::runtime_error("Property '" + property + "' not found in statistics");
+  }
+  
+  auto & vector = props[lower_property_name];
+  auto values = Array::create(vector.size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
+  values->writeFrom(vector.data());
+  
+  tier1::set_column_func(device, values, 0, 0);
+  return tier1::replace_values_func(device, labels, values, dst);
+}
+
+auto
 pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::FLOAT);
-  auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, src);
-
-  auto values = cle::Array::create(props["area"].size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
-  values->writeFrom(props["area"].data());
-
-  tier1::set_column_func(device, values, 0, 0);
-  return tier1::replace_values_func(device, src, values, dst);
+  return parametric_map_func(device, src, nullptr, std::string("area"), dst);
 }
 
 auto
@@ -33,37 +58,19 @@ label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer 
 auto
 extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::FLOAT);
-  auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, src);
-  auto vector = props["mean_max_distance_to_centroid_ratio"];
-  auto values = Array::create(vector.size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
-  values->writeFrom(vector.data());
-  tier1::set_column_func(device, values, 0, 0);
-  return tier1::replace_values_func(device, src, values, dst);
+  return parametric_map_func(device, src, nullptr, std::string("mean_max_distance_to_centroid_ratio"), dst);
 }
 
 auto
 mean_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::FLOAT);
-  auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, src);
-  auto vector = props["mean_distance_to_centroid"];
-  auto values = Array::create(vector.size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
-  values->writeFrom(vector.data());
-  tier1::set_column_func(device, values, 0, 0);
-  return tier1::replace_values_func(device, src, values, dst);
+  return parametric_map_func(device, src, nullptr, std::string("mean_distance_to_centroid"), dst);
 }
 
 auto
 maximum_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::FLOAT);
-  auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, src);
-  auto vector = props["max_distance_to_centroid"];
-  auto values = Array::create(vector.size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
-  values->writeFrom(vector.data());
-  tier1::set_column_func(device, values, 0, 0);
-  return tier1::replace_values_func(device, src, values, dst);
+  return parametric_map_func(device, src, nullptr, std::string("max_distance_to_centroid"), dst);
 }
 
 
@@ -71,14 +78,7 @@ auto
 mean_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::FLOAT);
-  auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, labels);
-
-  auto values = cle::Array::create(props["mean_intensity"].size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
-  values->writeFrom(props["mean_intensity"].data());
-
-  tier1::set_column_func(device, values, 0, 0);
-  return tier1::replace_values_func(device, labels, values, dst);
+  return parametric_map_func(device, src, labels, std::string("mean_intensity"), dst);
 }
 
 auto
@@ -92,28 +92,14 @@ auto
 minimum_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::FLOAT);
-  auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, labels);
-
-  auto values = cle::Array::create(props["min_intensity"].size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
-  values->writeFrom(props["min_intensity"].data());
-
-  tier1::set_column_func(device, values, 0, 0);
-  return tier1::replace_values_func(device, labels, values, dst);
+  return parametric_map_func(device, src, labels, std::string("min_intensity"), dst);
 }
 
 auto
 maximum_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
   -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::FLOAT);
-  auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, labels);
-
-  auto values = cle::Array::create(props["max_intensity"].size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
-  values->writeFrom(props["max_intensity"].data());
-
-  tier1::set_column_func(device, values, 0, 0);
-  return tier1::replace_values_func(device, labels, values, dst);
+  return parametric_map_func(device, src, labels, std::string("max_intensity"), dst);
 }
 
 auto
@@ -122,14 +108,7 @@ standard_deviation_intensity_map_func(const Device::Pointer & device,
                                       const Array::Pointer &  labels,
                                       Array::Pointer          dst) -> Array::Pointer
 {
-  tier0::create_like(src, dst, dType::FLOAT);
-  auto props = tier3::statistics_of_background_and_labelled_pixels_func(device, src, labels);
-
-  auto values = cle::Array::create(props["standard_deviation_intensity"].size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
-  values->writeFrom(props["standard_deviation_intensity"].data());
-
-  tier1::set_column_func(device, values, 0, 0);
-  return tier1::replace_values_func(device, labels, values, dst);
+  return parametric_map_func(device, src, labels, std::string("standard_deviation_intensity"), dst);
 }
 
 auto
