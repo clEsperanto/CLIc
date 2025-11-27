@@ -6,10 +6,10 @@
 
 #include "utils.hpp"
 
-#include <functional>
-#include <numeric>
 #include <cmath>
+#include <functional>
 #include <limits>
+#include <numeric>
 
 namespace cle::tier4
 {
@@ -112,9 +112,7 @@ threshold_yen_func(const Device::Pointer & device, const Array::Pointer & src, A
     return dst;
   }
   std::vector<double> pmf(bin);
-  std::transform(counts.begin(), counts.end(), pmf.begin(), [total_counts](double count) {
-    return count / total_counts;
-  });
+  std::transform(counts.begin(), counts.end(), pmf.begin(), [total_counts](double count) { return count / total_counts; });
 
   // P1 = np.cumsum(pmf)
   std::vector<double> P1(bin);
@@ -122,9 +120,7 @@ threshold_yen_func(const Device::Pointer & device, const Array::Pointer & src, A
 
   // P1_sq = np.cumsum(pmf**2)
   std::vector<double> pmf_squared(bin);
-  std::transform(pmf.begin(), pmf.end(), pmf_squared.begin(), [](double value) {
-    return value * value;
-  });
+  std::transform(pmf.begin(), pmf.end(), pmf_squared.begin(), [](double value) { return value * value; });
   std::vector<double> P1_sq(bin);
   std::partial_sum(pmf_squared.begin(), pmf_squared.end(), P1_sq.begin());
 
@@ -152,7 +148,7 @@ threshold_yen_func(const Device::Pointer & device, const Array::Pointer & src, A
   }
 
   // bin_centers[crit.argmax()]
-  auto max_it = std::max_element(crit.begin(), crit.end());
+  auto   max_it = std::max_element(crit.begin(), crit.end());
   size_t idx = std::distance(crit.begin(), max_it);
   double threshold = bin_centers[idx];
 

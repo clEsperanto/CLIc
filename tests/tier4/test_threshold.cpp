@@ -7,8 +7,6 @@
 class TestThreshold : public ::testing::TestWithParam<std::string>
 {
 protected:
-
-
 };
 
 TEST_P(TestThreshold, otsu)
@@ -79,8 +77,6 @@ TEST_P(TestThreshold, yen)
     EXPECT_EQ(output[i], valid[i]);
   }
 }
-
-
 
 
 std::vector<std::string>
