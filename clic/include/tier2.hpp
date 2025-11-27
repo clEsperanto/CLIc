@@ -254,6 +254,27 @@ binary_closing_func(const Device::Pointer & device,
                     std::string             connectivity) -> Array::Pointer;
 
 /**
+ * @name concatenate
+ * @brief Concatenates two arrays along a specified axis (0:x, 1:y, 2:z).
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src0 First input array. [const Array::Pointer &]
+ * @param src1 Second input array. [const Array::Pointer &]
+ * @param dst Output result array. [Array::Pointer ( = None )]
+ * @param axis Axis along which to concatenate (0:x, 1:y, 2:z). [int ( = 0 )]
+ * @return Array::Pointer
+ * 
+ * @note 'combine', 'transform', 'in assistant', 'bia-bob-suggestion'
+ * @see https://clij.github.io/clij2-docs/reference_combineHorizontally
+ */
+auto
+concatenate(const Device::Pointer & device,
+            const Array::Pointer &  src0,
+            const Array::Pointer &  src1,
+            Array::Pointer          dst,
+            const int               axis) -> Array::Pointer;
+
+/**
  * @name concatenate_along_x
  * @brief Concatenates two images or stacks along the x axis.
  *
