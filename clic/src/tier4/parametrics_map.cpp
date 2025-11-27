@@ -79,7 +79,7 @@ auto
 mean_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
   -> Array::Pointer
 {
-  return parametric_map_func(device, src, labels, std::string("mean_intensity"), dst);
+  return parametric_map_func(device, labels, src, std::string("mean_intensity"), dst);
 }
 
 auto
@@ -93,14 +93,14 @@ auto
 minimum_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
   -> Array::Pointer
 {
-  return parametric_map_func(device, src, labels, std::string("min_intensity"), dst);
+  return parametric_map_func(device, labels, src, std::string("min_intensity"), dst);
 }
 
 auto
 maximum_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
   -> Array::Pointer
 {
-  return parametric_map_func(device, src, labels, std::string("max_intensity"), dst);
+  return parametric_map_func(device, labels, src, std::string("max_intensity"), dst);
 }
 
 auto
@@ -109,7 +109,7 @@ standard_deviation_intensity_map_func(const Device::Pointer & device,
                                       const Array::Pointer &  labels,
                                       Array::Pointer          dst) -> Array::Pointer
 {
-  return parametric_map_func(device, src, labels, std::string("standard_deviation_intensity"), dst);
+  return parametric_map_func(device, labels, src, std::string("standard_deviation_intensity"), dst);
 }
 
 auto
