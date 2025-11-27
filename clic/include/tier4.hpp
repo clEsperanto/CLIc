@@ -81,8 +81,7 @@ relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & s
 
 /**
  * @name threshold_otsu
- * @brief Binarizes an image using Otsu's threshold method, implemented in scikit-image, using a histogram
- * determined on the GPU to create binary images.
+ * @brief Binarizes an image using Otsu's threshold method (Otsu et. al. 1979)
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to threshold. [const Array::Pointer &]
@@ -97,6 +96,21 @@ relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & s
 auto
 threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
+/**
+ * @name threshold_yen
+ * @brief Binarizes an image using Yen's threshold method (Yen et. al. 1995)
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to threshold. [const Array::Pointer &]
+ * @param dst Output binary image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'binarize', 'in assistant', 'bia-bob-suggestion'
+ * @see https://scikit-image.org/docs/dev/api/skimage.filters.html#skimage.filters.threshold_yen
+ * @see https://ieeexplore.ieee.org/document/366472
+ */
+auto
+threshold_yen_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 /**
  * @name threshold_mean
