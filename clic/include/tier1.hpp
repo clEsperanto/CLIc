@@ -28,7 +28,7 @@ absolute_func(const Device::Pointer & device, const Array::Pointer & src, Array:
 /**
  * @name sin
  * @brief Compute the sin(x) for each element x in the array.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image to be processed. [const Array::Pointer &]
  * @param dst Output image where results are written into. [Array::Pointer ( = None )]
@@ -40,7 +40,7 @@ sin_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poin
 /**
  * @name cos
  * @brief Compute the cos(x) for each element x in the array.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image to be processed. [const Array::Pointer &]
  * @param dst Output image where results are written into. [Array::Pointer ( = None )]
@@ -52,7 +52,7 @@ cos_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poin
 /**
  * @name tan
  * @brief Compute the tan(x) for each element x in the array.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image to be processed. [const Array::Pointer &]
  * @param dst Output image where results are written into. [Array::Pointer ( = None )]
@@ -64,7 +64,7 @@ tan_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poin
 /**
  * @name asin
  * @brief Compute the asin(x) for each element x in the array.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image to be processed. [const Array::Pointer &]
  * @param dst Output image where results are written into. [Array::Pointer ( = None )]
@@ -76,7 +76,7 @@ asin_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 /**
  * @name acos
  * @brief Compute the acos(x) for each element x in the array.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image to be processed. [const Array::Pointer &]
  * @param dst Output image where results are written into. [Array::Pointer ( = None )]
@@ -88,7 +88,7 @@ acos_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 /**
  * @name atan
  * @brief Compute the atan(x) for each element x in the array.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image to be processed. [const Array::Pointer &]
  * @param dst Output image where results are written into. [Array::Pointer ( = None )]
@@ -100,7 +100,7 @@ atan_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 /**
  * @name sinh
  * @brief Compute the sinh(x) for each element x in the array.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image to be processed. [const Array::Pointer &]
  * @param dst Output image where results are written into. [Array::Pointer ( = None )]
@@ -112,7 +112,7 @@ sinh_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 /**
  * @name cosh
  * @brief Compute the cosh(x) for each element x in the array.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image to be processed. [const Array::Pointer &]
  * @param dst Output image where results are written into. [Array::Pointer ( = None )]
@@ -124,7 +124,7 @@ cosh_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 /**
  * @name tanh
  * @brief Compute the tanh(x) for each element x in the array.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src The input image to be processed. [const Array::Pointer &]
  * @param dst Output image where results are written into. [Array::Pointer ( = None )]
