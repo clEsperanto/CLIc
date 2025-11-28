@@ -25,6 +25,113 @@ namespace cle::tier1
 auto
 absolute_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
+/**
+ * @name sin
+ * @brief Compute the sin(x) for each element x in the array.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src The input image to be processed. [const Array::Pointer &]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+sin_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+/**
+ * @name cos
+ * @brief Compute the cos(x) for each element x in the array.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src The input image to be processed. [const Array::Pointer &]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+cos_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+/**
+ * @name tan
+ * @brief Compute the tan(x) for each element x in the array.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src The input image to be processed. [const Array::Pointer &]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+tan_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+/**
+ * @name asin
+ * @brief Compute the asin(x) for each element x in the array.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src The input image to be processed. [const Array::Pointer &]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+asin_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+/**
+ * @name acos
+ * @brief Compute the acos(x) for each element x in the array.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src The input image to be processed. [const Array::Pointer &]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+acos_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+/**
+ * @name atan
+ * @brief Compute the atan(x) for each element x in the array.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src The input image to be processed. [const Array::Pointer &]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+atan_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+/**
+ * @name sinh
+ * @brief Compute the sinh(x) for each element x in the array.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src The input image to be processed. [const Array::Pointer &]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+sinh_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+/**
+ * @name cosh
+ * @brief Compute the cosh(x) for each element x in the array.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src The input image to be processed. [const Array::Pointer &]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+cosh_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+/**
+ * @name tanh
+ * @brief Compute the tanh(x) for each element x in the array.
+ * 
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src The input image to be processed. [const Array::Pointer &]
+ * @param dst Output image where results are written into. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+tanh_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 /**
  * @name add_images_weighted
