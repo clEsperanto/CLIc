@@ -35,7 +35,7 @@ concatenate(const Device::Pointer & device, const Array::Pointer & src0, const A
       break;
     }
     default:
-      throw std::invalid_argument("concatenate: axis must be 0, 1 or 2");
+    throw std::invalid_argument("concatenate: axis must be 0, 1 or 2");
   }
   return dst;
 }
@@ -44,24 +44,21 @@ auto
 concatenate_along_x_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
   -> Array::Pointer
 {
-  concatenate(device, src0, src1, dst, 0);
-  return dst;
+  return concatenate(device, src0, src1, dst, 0);
 }
 
 auto
 concatenate_along_y_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
   -> Array::Pointer
 {
-  concatenate(device, src0, src1, dst, 1);
-  return dst;
+  return concatenate(device, src0, src1, dst, 1);
 }
 
 auto
 concatenate_along_z_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
   -> Array::Pointer
 {
-  concatenate(device, src0, src1, dst, 2);
-  return dst;
+  return concatenate(device, src0, src1, dst, 2);
 }
 
 } // namespace cle::tier2
