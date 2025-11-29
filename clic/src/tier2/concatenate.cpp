@@ -35,7 +35,7 @@ concatenate(const Device::Pointer & device, const Array::Pointer & src0, const A
       break;
     }
     default:
-    throw std::invalid_argument("concatenate: axis must be 0, 1 or 2");
+      throw std::invalid_argument("concatenate: axis must be 0, 1 or 2");
   }
   return dst;
 }
