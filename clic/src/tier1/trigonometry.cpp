@@ -12,7 +12,7 @@ sin_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poin
 {
   constexpr const char * kernel_source =
     R"CLC(__constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
-__kernel void sin(
+__kernel void cle_sin(
     IMAGE_src_TYPE  src,
     IMAGE_dst_TYPE  dst
 )
@@ -24,7 +24,7 @@ __kernel void sin(
   WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(sin(value)));
 })CLC";
   tier0::create_like(src, dst);
-  const KernelInfo    kernel_info = { "sin", kernel_source };
+  const KernelInfo    kernel_info = { "cle_sin", kernel_source };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
   execute(device, kernel_info, params, range);
@@ -36,7 +36,7 @@ cos_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poin
 {
   constexpr const char * kernel_source_cos =
     R"CLC(__constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
-__kernel void cos(
+__kernel void cle_cos(
     IMAGE_src_TYPE  src,
     IMAGE_dst_TYPE  dst
 )
@@ -48,7 +48,7 @@ __kernel void cos(
   WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(cos(value)));
 })CLC";
   tier0::create_like(src, dst);
-  const KernelInfo    kernel_info = { "cos", kernel_source_cos };
+  const KernelInfo    kernel_info = { "cle_cos", kernel_source_cos };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
   execute(device, kernel_info, params, range);
@@ -60,7 +60,7 @@ tan_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poin
 {
   constexpr const char * kernel_source_tan =
     R"CLC(__constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
-__kernel void tan(
+__kernel void cle_tan(
     IMAGE_src_TYPE  src,
     IMAGE_dst_TYPE  dst
 )
@@ -72,7 +72,7 @@ __kernel void tan(
   WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(tan(value)));
 })CLC";
   tier0::create_like(src, dst);
-  const KernelInfo    kernel_info = { "tan", kernel_source_tan };
+  const KernelInfo    kernel_info = { "cle_tan", kernel_source_tan };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
   execute(device, kernel_info, params, range);
@@ -84,7 +84,7 @@ asin_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 {
   constexpr const char * kernel_source =
     R"CLC(__constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
-__kernel void asin(
+__kernel void cle_asin(
     IMAGE_src_TYPE  src,
     IMAGE_dst_TYPE  dst
 )
@@ -96,7 +96,7 @@ __kernel void asin(
   WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(asin(value)));
 })CLC";
   tier0::create_like(src, dst);
-  const KernelInfo    kernel_info = { "asin", kernel_source };
+  const KernelInfo    kernel_info = { "cle_asin", kernel_source };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
   execute(device, kernel_info, params, range);
@@ -108,7 +108,7 @@ acos_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 {
   constexpr const char * kernel_source =
     R"CLC(__constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
-__kernel void acos(
+__kernel void cle_acos(
     IMAGE_src_TYPE  src,
     IMAGE_dst_TYPE  dst
 )
@@ -120,7 +120,7 @@ __kernel void acos(
   WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(acos(value)));
 })CLC";
   tier0::create_like(src, dst);
-  const KernelInfo    kernel_info = { "acos", kernel_source };
+  const KernelInfo    kernel_info = { "cle_acos", kernel_source };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
   execute(device, kernel_info, params, range);
@@ -132,7 +132,7 @@ atan_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 {
   constexpr const char * kernel_source =
     R"CLC(__constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
-__kernel void atan(
+__kernel void cle_atan(
     IMAGE_src_TYPE  src,
     IMAGE_dst_TYPE  dst
 )
@@ -144,7 +144,7 @@ __kernel void atan(
   WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(atan(value)));
 })CLC";
   tier0::create_like(src, dst);
-  const KernelInfo    kernel_info = { "atan", kernel_source };
+  const KernelInfo    kernel_info = { "cle_atan", kernel_source };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
   execute(device, kernel_info, params, range);
@@ -156,7 +156,7 @@ sinh_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 {
   constexpr const char * kernel_source =
     R"CLC(__constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
-__kernel void sinh(
+__kernel void cle_sinh(
     IMAGE_src_TYPE  src,
     IMAGE_dst_TYPE  dst
 )
@@ -168,7 +168,7 @@ __kernel void sinh(
   WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(sinh(value)));
 })CLC";
   tier0::create_like(src, dst);
-  const KernelInfo    kernel_info = { "sinh", kernel_source };
+  const KernelInfo    kernel_info = { "cle_sinh", kernel_source };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
   execute(device, kernel_info, params, range);
@@ -180,7 +180,7 @@ cosh_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 {
   constexpr const char * kernel_source =
     R"CLC(__constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
-__kernel void cosh(
+__kernel void cle_cosh(
     IMAGE_src_TYPE  src,
     IMAGE_dst_TYPE  dst
 )
@@ -192,7 +192,7 @@ __kernel void cosh(
   WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(cosh(value)));
 })CLC";
   tier0::create_like(src, dst);
-  const KernelInfo    kernel_info = { "cosh", kernel_source };
+  const KernelInfo    kernel_info = { "cle_cosh", kernel_source };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
   execute(device, kernel_info, params, range);
@@ -204,7 +204,7 @@ tanh_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 {
   constexpr const char * kernel_source =
     R"CLC(__constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
-__kernel void tanh(
+__kernel void cle_tanh(
     IMAGE_src_TYPE  src,
     IMAGE_dst_TYPE  dst
 )
@@ -216,7 +216,7 @@ __kernel void tanh(
   WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(tanh(value)));
 })CLC";
   tier0::create_like(src, dst);
-  const KernelInfo    kernel_info = { "tanh", kernel_source };
+  const KernelInfo    kernel_info = { "cle_tanh", kernel_source };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
   execute(device, kernel_info, params, range);
