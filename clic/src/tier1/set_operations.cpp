@@ -4,17 +4,17 @@
 #include "utils.hpp"
 
 #include "cle_set.h"
-#include "cle_set_row.h"
 #include "cle_set_column.h"
+#include "cle_set_image_borders.h"
+#include "cle_set_nonzero_pixels_to_pixelindex.h"
 #include "cle_set_plane.h"
 #include "cle_set_ramp_x.h"
 #include "cle_set_ramp_y.h"
 #include "cle_set_ramp_z.h"
+#include "cle_set_row.h"
 #include "cle_set_where_x_equals_y.h"
 #include "cle_set_where_x_greater_than_y.h"
 #include "cle_set_where_x_smaller_than_y.h"
-#include "cle_set_image_borders.h"
-#include "cle_set_nonzero_pixels_to_pixelindex.h"
 
 namespace cle::tier1
 {

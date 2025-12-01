@@ -4,15 +4,15 @@
 #include "utils.hpp"
 
 #include "cle_binary_and.h"
-#include "cle_binary_or.h"
+#include "cle_binary_edge_detection.h"
 #include "cle_binary_not.h"
-#include "cle_binary_xor.h"
+#include "cle_binary_or.h"
 #include "cle_binary_subtract.h"
-#include "cle_superior_inferior_2d.h"
-#include "cle_superior_inferior_3d.h"
+#include "cle_binary_xor.h"
 #include "cle_inferior_superior_2d.h"
 #include "cle_inferior_superior_3d.h"
-#include "cle_binary_edge_detection.h"
+#include "cle_superior_inferior_2d.h"
+#include "cle_superior_inferior_3d.h"
 
 namespace cle::tier1
 {
