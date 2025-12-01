@@ -6,7 +6,9 @@
 
 #include "utils.hpp"
 
+#include <cmath>
 #include <functional>
+#include <limits>
 #include <numeric>
 
 namespace cle::tier4
@@ -74,6 +76,83 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
 
   // Create binary image with threshold
   tier0::create_like(src, dst, dType::BINARY);
+  tier1::greater_constant_func(device, src, dst, static_cast<float>(threshold));
+  return dst;
+}
+
+auto
+threshold_yen_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+{
+  tier0::create_like(src, dst, dType::BINARY);
+
+  // Initialize histogram
+  constexpr int bin = 256;
+  const float   min_intensity = tier2::minimum_of_all_pixels_func(device, src);
+  const float   max_intensity = tier2::maximum_of_all_pixels_func(device, src);
+  double        range = max_intensity - min_intensity;
+
+  // Compute histogram
+  auto hist_array = Array::create(bin, 1, 1, 1, dType::FLOAT, mType::BUFFER, src->device());
+  tier3::histogram_func(device, src, hist_array, bin, min_intensity, max_intensity);
+  std::vector<float> counts(hist_array->size());
+  hist_array->readTo(counts.data());
+
+  // Compute bin centers
+  std::vector<double> bin_centers(bin);
+  std::iota(bin_centers.begin(), bin_centers.end(), 0.0);
+  std::transform(bin_centers.begin(), bin_centers.end(), bin_centers.begin(), [range, min_intensity, bin](double value) {
+    return (value * range) / (bin - 1) + static_cast<double>(min_intensity);
+  });
+
+  // pmf = counts.astype('float32', copy=False) / counts.sum()
+  double total_counts = std::accumulate(counts.begin(), counts.end(), 0.0);
+  if (total_counts <= 0.0)
+  {
+    tier1::greater_constant_func(device, src, dst, min_intensity);
+    return dst;
+  }
+  std::vector<double> pmf(bin);
+  std::transform(counts.begin(), counts.end(), pmf.begin(), [total_counts](double count) { return count / total_counts; });
+
+  // P1 = np.cumsum(pmf)
+  std::vector<double> P1(bin);
+  std::partial_sum(pmf.begin(), pmf.end(), P1.begin());
+
+  // P1_sq = np.cumsum(pmf**2)
+  std::vector<double> pmf_squared(bin);
+  std::transform(pmf.begin(), pmf.end(), pmf_squared.begin(), [](double value) { return value * value; });
+  std::vector<double> P1_sq(bin);
+  std::partial_sum(pmf_squared.begin(), pmf_squared.end(), P1_sq.begin());
+
+  // P2_sq = np.cumsum(pmf[::-1] ** 2)[::-1]
+  std::vector<double> reversed_pmf_squared(pmf_squared.rbegin(), pmf_squared.rend());
+  std::vector<double> P2_sq(bin);
+  std::partial_sum(reversed_pmf_squared.begin(), reversed_pmf_squared.end(), P2_sq.rbegin());
+
+  // crit = np.log(((P1_sq[:-1] * P2_sq[1:]) ** -1) * (P1[:-1] * (1.0 - P1[:-1])) ** 2)
+  std::vector<double> crit(bin - 1);
+  for (size_t i = 0; i < static_cast<size_t>(bin - 1); ++i)
+  {
+    double term1 = P1_sq[i] * P2_sq[i + 1];
+    double term2 = P1[i] * (1.0 - P1[i]);
+    if (term1 > 0.0 && term2 > 0.0)
+    {
+      double value = (term2 * term2) / term1;
+      double logv = std::log(value);
+      crit[i] = (std::isfinite(logv)) ? logv : -std::numeric_limits<double>::infinity();
+    }
+    else
+    {
+      crit[i] = -std::numeric_limits<double>::infinity();
+    }
+  }
+
+  // bin_centers[crit.argmax()]
+  auto   max_it = std::max_element(crit.begin(), crit.end());
+  size_t idx = std::distance(crit.begin(), max_it);
+  double threshold = bin_centers[idx];
+
+  // Create binary image with threshold
   tier1::greater_constant_func(device, src, dst, static_cast<float>(threshold));
   return dst;
 }
