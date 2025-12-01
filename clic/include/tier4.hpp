@@ -622,6 +622,17 @@ mode_of_touching_neighbors_map_func(const Device::Pointer & device,
                                     int                     radius,
                                     bool                    ignore_background) -> Array::Pointer;
 
+/**
+ * @name std_of_all_pixels
+ * @brief Computes the standard deviation of all pixel values in an image.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image. [const Array::Pointer &]
+ * @return float
+ */
+auto
+standard_deviation_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
+
 } // namespace cle::tier4
 
 #endif // __INCLUDE_TIER4_HPP
