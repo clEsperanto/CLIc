@@ -4,8 +4,8 @@
 #include "utils.hpp"
 
 #include "cle_gaussian_blur_separable.h"
-#include "cle_gaussian_derivative_separable.h"
 #include "cle_gaussian_blur_separable_shared.h"
+#include "cle_gaussian_derivative_separable.h"
 #include "cle_gaussian_derivative_separable_shared.h"
 
 namespace cle::tier1
@@ -52,17 +52,19 @@ gaussian_blur_func(const Device::Pointer & device,
     temp = Array::create(dst);
     tier1::copy_func(device, src, temp);
   }
-  try {
-  const KernelInfo kernel = { "gaussian_blur_separable_shared", kernel::gaussian_blur_separable_shared };
-  execute_separable(device,
-                    kernel,
-                    temp,
-                    dst,
-                    { sigma_x, sigma_y, sigma_z },
-                    { sigma2kernelsize(sigma_x), sigma2kernelsize(sigma_y), sigma2kernelsize(sigma_z) },
-                    { 0, 0, 0 });
-  } 
-  catch (const std::runtime_error & e) {
+  try
+  {
+    const KernelInfo kernel = { "gaussian_blur_separable_shared", kernel::gaussian_blur_separable_shared };
+    execute_separable(device,
+                      kernel,
+                      temp,
+                      dst,
+                      { sigma_x, sigma_y, sigma_z },
+                      { sigma2kernelsize(sigma_x), sigma2kernelsize(sigma_y), sigma2kernelsize(sigma_z) },
+                      { 0, 0, 0 });
+  }
+  catch (const std::runtime_error & e)
+  {
     std::cerr << e.what() << std::endl;
     const KernelInfo kernel_global = { "gaussian_blur_separable", kernel::gaussian_blur_separable };
     execute_separable(device,
@@ -133,11 +135,12 @@ gaussian_derivative_func(const Device::Pointer & device,
                                  static_cast<int>(truncate * sigmas[2] + 0.5f) };
   std::array<int, 3>   orders = { std::min(order_x, 2), std::min(order_y, 2), std::min(order_z, 2) };
 
-  try {
+  try
+  {
     const KernelInfo kernel = { "gaussian_derivative_separable_shared", kernel::gaussian_derivative_separable_shared };
     execute_separable(device, kernel, temp, dst, sigmas, radii, orders);
-  } 
-  catch (const std::runtime_error & e) 
+  }
+  catch (const std::runtime_error & e)
   {
     std::cerr << e.what() << std::endl;
     const KernelInfo kernel = { "gaussian_derivative_separable", kernel::gaussian_derivative_separable };
