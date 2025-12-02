@@ -31,6 +31,7 @@ execute(const Device::Pointer & device,
         const KernelInfo &      kernel_func,
         const ParameterList &   parameters,
         const RangeArray &      global_range = { 1, 1, 1 },
+        const RangeArray &      local_range = { 1, 1, 1 },
         const ConstantList &    constants = {}) -> void;
 
 

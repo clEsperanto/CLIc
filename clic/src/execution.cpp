@@ -213,6 +213,7 @@ execute(const Device::Pointer & device,
         const KernelInfo &      kernel_func,
         const ParameterList &   parameters,
         const RangeArray &      global_range,
+        const RangeArray &      local_range,
         const ConstantList &    constants) -> void
 {
   // prepare kernel source for compilation and execution
@@ -279,9 +280,10 @@ execute(const Device::Pointer & device,
   }
 
   // execute kernel
-  cle::BackendManager::getInstance().getBackend().executeKernel(device, program_source, kernel_name, global_range, args_ptr, args_size);
+  cle::BackendManager::getInstance().getBackend().executeKernel(device, program_source, kernel_name, global_range, local_range, args_ptr, args_size);
 }
 
+size_t round_up(size_t v, size_t tile) { return ((v + tile - 1) / tile) * tile; }
 
 auto
 execute_separable(const Device::Pointer &      device,
@@ -295,17 +297,81 @@ execute_separable(const Device::Pointer &      device,
   Array::check_ptr(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.");
   Array::check_ptr(dst, "Error: 'dst' is null. Please ensure the provided parameters before calling this function.");
 
-  const RangeArray global_range = { dst->width(), dst->height(), dst->depth() };
+  // Round up global size to multiple of TILE_SIZE in filtering dimension
+  size_t TILE_SIZE = 1;
+  size_t MAX_RADIUS = 1;
+  RangeArray global_size = {dst->width(), dst->height(), dst->depth()};
+  RangeArray local_size = {1, 1, 1};
+  ConstantList constants = {};
 
+  // if kernel.first contains the substring "shared", use shared memory optimization
+  // throw an error if shared memory configuration fails to fallback to global memory version
+  if (kernel.first.find("shared") != std::string::npos) {
+    const size_t max_shared_mem = device->getLocalMemorySize();
+    const size_t usable_shared_mem = (max_shared_mem * 9) / 10;  // Reserve 10% for kernel overhead
+    auto max_radius = static_cast<size_t>(std::max({ radius[0], radius[1], radius[2] }) * 0.5f);
+
+    // Lambda to calculate shared memory requirement for a given configuration
+    auto calc_shared_mem = [](size_t tile_size, size_t max_radius) -> size_t {
+      return (tile_size + 2 * max_radius) * sizeof(float);
+    };
+
+    const std::array<std::pair<size_t, size_t>, 7> candidates = {{
+        {512, 16},   // Best for small radii
+        {256, 32},   // Good for moderate radii
+        {256, 64},   // Balanced approach
+        {128, 64},   // Lower parallelism, moderate radii
+        {128, 128},  // Lower parallelism, large radii
+        {64, 128},   // Minimal parallelism, large radii
+        {64, 256}    // Last resort for very large radii
+      }};
+
+    for (const auto& [tile, max_r] : candidates) {
+        // Ensure MAX_RADIUS can accommodate the actual radius (rounded up to multiple of 16)
+        size_t required_max_radius = std::max(max_r, round_up(max_radius, 16));
+        size_t required_mem = calc_shared_mem(tile, required_max_radius);
+        
+        // Check if this configuration fits in available shared memory
+        if (required_mem <= usable_shared_mem) {
+          TILE_SIZE = tile;
+          MAX_RADIUS = required_max_radius;
+          break;
+        }
+      }
+
+    constants = { { "TILE_SIZE", TILE_SIZE }, { "MAX_RADIUS", MAX_RADIUS } };
+
+    if (TILE_SIZE == 1 || MAX_RADIUS == 1) {
+      throw std::runtime_error("Error: Unable to configure shared memory parameters for separable filter. Falling back to global memory version.");
+    }
+    
+  }
+
+
+  
   auto tmp1 = Array::create(dst);
   auto tmp2 = Array::create(dst);
 
   auto execute_if_needed = [&](int dim, int idx, auto & input, auto & output) {
     if (dim > 1 && sigma[idx] > 0)
     {
+      if (idx == 0) {
+          // Filter along X
+          global_size = {round_up(dst->width(), TILE_SIZE),dst->height(), dst->depth()};
+          local_size = {TILE_SIZE, 1, 1};
+      } else if (idx == 1) {
+          // Filter along Y
+          global_size = {dst->width(), round_up(dst->height(), TILE_SIZE), dst->depth()};
+          local_size = {1, TILE_SIZE, 1};
+      } else {
+          // Filter along Z
+          global_size = {dst->width(), dst->height(), round_up(dst->depth(), TILE_SIZE)};
+          local_size = {1, 1, TILE_SIZE};
+      }
+
       const ParameterList parameters = { { "src", input },     { "dst", output },   { "dim", idx },
                                          { "N", radius[idx] }, { "s", sigma[idx] }, { "order", orders[idx] } };
-      execute(device, kernel, parameters, global_range);
+      execute(device, kernel, parameters, global_size, local_size, constants);
     }
     else
     {
@@ -331,6 +397,7 @@ execute_separable(const Device::Pointer &      device,
   Array::check_ptr(dst, "Error: 'dst' is null. Please ensure the provided parameters before calling this function.");
 
   const RangeArray global_range = { dst->width(), dst->height(), dst->depth() };
+  const RangeArray local_range = { 16, 16, 1 };
 
   auto tmp1 = Array::create(dst);
   auto tmp2 = Array::create(dst);
@@ -339,7 +406,7 @@ execute_separable(const Device::Pointer &      device,
     if (dim > 1 && sigma[idx] > 0)
     {
       const ParameterList parameters = { { "src", input }, { "dst", output }, { "dim", idx }, { "N", radius[idx] }, { "s", sigma[idx] } };
-      execute(device, kernel, parameters, global_range);
+      execute(device, kernel, parameters, global_range, local_range);
     }
     else
     {
@@ -420,7 +487,7 @@ native_execute(const Device::Pointer & device,
     }
   }
   // execute kernel
-  cle::BackendManager::getInstance().getBackend().executeKernel(device, kernel_source, kernel_name, global_range, args_ptr, args_size);
+  cle::BackendManager::getInstance().getBackend().executeKernel(device, kernel_source, kernel_name, global_range, local_range, args_ptr, args_size);
 }
 
 } // namespace cle
