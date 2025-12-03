@@ -213,6 +213,7 @@ execute(const Device::Pointer & device,
         const KernelInfo &      kernel_func,
         const ParameterList &   parameters,
         const RangeArray &      global_range,
+        const RangeArray &      local_range,
         const ConstantList &    constants) -> void
 {
   // prepare kernel source for compilation and execution
@@ -279,7 +280,7 @@ execute(const Device::Pointer & device,
   }
 
   // execute kernel
-  cle::BackendManager::getInstance().getBackend().executeKernel(device, program_source, kernel_name, global_range, args_ptr, args_size);
+  cle::BackendManager::getInstance().getBackend().executeKernel(device, program_source, kernel_name, global_range, local_range, args_ptr, args_size);
 }
 
 
@@ -420,7 +421,7 @@ native_execute(const Device::Pointer & device,
     }
   }
   // execute kernel
-  cle::BackendManager::getInstance().getBackend().executeKernel(device, kernel_source, kernel_name, global_range, args_ptr, args_size);
+  cle::BackendManager::getInstance().getBackend().executeKernel(device, kernel_source, kernel_name, global_range, local_range, args_ptr, args_size);
 }
 
 } // namespace cle
