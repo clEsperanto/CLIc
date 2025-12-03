@@ -33,7 +33,8 @@ histogram_func(const Device::Pointer & device,
   };
   const ConstantList consts = { { "NUMBER_OF_HISTOGRAM_BINS", num_bins } };
   const RangeArray   range = { number_of_partial_histograms, 1, 1 };
-  execute(device, kernel, params, range, consts);
+  const RangeArray   local_range = { 1, 1, 1 };
+  execute(device, kernel, params, range, local_range, consts);
   return tier1::sum_z_projection_func(device, partial_hist, dst);
 }
 

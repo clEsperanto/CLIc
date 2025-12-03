@@ -25,12 +25,14 @@ using RangeArray = std::array<size_t, 3>;
  * @param parameters List of parameters to be passed to the kernel
  * @param global_range Global range of the kernel
  * @param local_range Local range of the kernel
+ * @param constants List of constants to be defined in the kernel
  */
 auto
 execute(const Device::Pointer & device,
         const KernelInfo &      kernel_func,
         const ParameterList &   parameters,
         const RangeArray &      global_range = { 1, 1, 1 },
+        const RangeArray &      local_range = { 1, 1, 1 },
         const ConstantList &    constants = {}) -> void;
 
 

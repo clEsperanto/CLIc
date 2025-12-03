@@ -2,6 +2,7 @@
 #include "cle_preamble_cl.h"
 #include <list>
 
+#include <numeric>
 #include <unordered_map>
 
 namespace cle
@@ -1262,6 +1263,7 @@ OpenCLBackend::executeKernel(const Device::Pointer &                    device,
                              const std::string &                        kernel_source,
                              const std::string &                        kernel_name,
                              const std::array<size_t, 3> &              global_size,
+                             const std::array<size_t, 3> &              local_size,
                              const std::vector<std::shared_ptr<void>> & args,
                              const std::vector<size_t> &                sizes) const -> void
 {
@@ -1294,7 +1296,7 @@ OpenCLBackend::executeKernel(const Device::Pointer &                    device,
                                     3,
                                     nullptr,
                                     global_size.data(),
-                                    nullptr,
+                                    local_size.data(),
                                     0,
                                     nullptr,
                                     nullptr);

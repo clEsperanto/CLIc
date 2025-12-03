@@ -335,6 +335,7 @@ public:
                 const std::string &                        kernel_source,
                 const std::string &                        kernel_name,
                 const std::array<size_t, 3> &              global_size,
+                const std::array<size_t, 3> &              local_size,
                 const std::vector<std::shared_ptr<void>> & args,
                 const std::vector<size_t> &                sizes) const -> void = 0;
 
@@ -529,6 +530,7 @@ public:
                 const std::string &                        kernel_source,
                 const std::string &                        kernel_name,
                 const std::array<size_t, 3> &              global_size,
+                const std::array<size_t, 3> &              local_size,
                 const std::vector<std::shared_ptr<void>> & args,
                 const std::vector<size_t> &                sizes) const -> void override;
 
@@ -731,6 +733,7 @@ public:
                 const std::string &                        kernel_source,
                 const std::string &                        kernel_name,
                 const std::array<size_t, 3> &              global_size,
+                const std::array<size_t, 3> &              local_size,
                 const std::vector<std::shared_ptr<void>> & args,
                 const std::vector<size_t> &                sizes) const -> void override;
   [[nodiscard]] auto
