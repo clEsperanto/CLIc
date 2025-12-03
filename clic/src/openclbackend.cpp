@@ -2,8 +2,8 @@
 #include "cle_preamble_cl.h"
 #include <list>
 
-#include <unordered_map>
 #include <numeric>
+#include <unordered_map>
 
 namespace cle
 {
