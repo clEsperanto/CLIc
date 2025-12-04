@@ -598,8 +598,8 @@ binary_dilate_func(const Device::Pointer & device,
  * @brief Divides two images X and Y by each other pixel wise. <pre>f(x, y) = x / y</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
- * @param dividend Input image to process. [const Array::Pointer &]
- * @param divisor Second input image to process. [const Array::Pointer &]
+ * @param src0 The dividend input image to process. [const Array::Pointer &]
+ * @param src1 The divisor input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
@@ -607,7 +607,7 @@ binary_dilate_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_divideImages
  */
 auto
-divide_images_func(const Device::Pointer & device, const Array::Pointer & dividend, const Array::Pointer & divisor, Array::Pointer dst)
+divide_images_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
   -> Array::Pointer;
 
 
@@ -761,16 +761,48 @@ binary_erode_func(const Device::Pointer & device,
  *
  * @note 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_exponential
+ * @see https://registry.khronos.org/OpenCL/sdk/3.0/docs/man/html/exp.html
  */
 auto
 exponential_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
+/**
+ * @name exponential2
+ * @brief Computes the base-2 exponential of all pixel values. f(x) = exp2(x)
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_exponential
+ * @see https://registry.khronos.org/OpenCL/sdk/3.0/docs/man/html/exp.html
+ */
+auto
+exponential2_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+/**
+ * @name exponential10
+ * @brief Computes the base-10 exponential of all pixel values. f(x) = exp10(x)
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_exponential
+ * @see https://registry.khronos.org/OpenCL/sdk/3.0/docs/man/html/exp.html
+ */
+auto
+exponential10_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 /**
  * @name flip
  * @brief Flips an image in X, Y and/or Z direction depending on boolean flags.
  *
- * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param device Device to perform the operation on. [const Device::Pointer &]  
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @param flip_x Flip along the x axis if true. [bool ( = True )]
@@ -1097,10 +1129,42 @@ local_cross_correlation_func(const Device::Pointer & device, const Array::Pointe
  *
  * @note 'filter', 'in assistant'
  * @see https://clij.github.io/clij2-docs/reference_logarithm
+ * @see https://registry.khronos.org/OpenCL/sdk/3.0/docs/man/html/log.html
  */
 auto
 logarithm_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
+/**
+ * @name logarithm2
+ * @brief Computes base 2 logarithm of all pixels values. f(x) = log2(x) Author(s): Peter Haub, Robert Haase
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_logarithm
+ * @see https://registry.khronos.org/OpenCL/sdk/3.0/docs/man/html/log.html
+ */
+auto
+logarithm2_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+/**
+ * @name logarithm10
+ * @brief Computes base 10 logarithm of all pixels values. f(x) = log10(x) Author(s): Peter Haub, Robert Haase
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'in assistant'
+ * @see https://clij.github.io/clij2-docs/reference_logarithm
+ * @see https://registry.khronos.org/OpenCL/sdk/3.0/docs/man/html/log.html
+ */
+auto
+logarithm10_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 /**
  * @name mask
@@ -2383,8 +2447,7 @@ unpad_func(const Device::Pointer & device,
 
 /**
  * @name reciprocal
- * @brief Computes 1/x for every pixel value This function is supposed to work similarly to its counter part in numpy
- * [1]
+ * @brief Computes 1/x for every pixel value x in a given image X. <pre>f(x) = 1 / x</pre>
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
@@ -3166,6 +3229,58 @@ mode_of_touching_neighbors_func(const Device::Pointer & device,
                                 const Array::Pointer &  vector,
                                 const Array::Pointer &  matrix,
                                 Array::Pointer          dst) -> Array::Pointer;
+
+/**
+ * @name ceil
+ * @brief Computes each values to integral values using the round to positive infinity rounding mode.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ * @note 'filter', 'in assistant'
+ */
+auto
+ceil_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+/**
+ * @name floor
+ * @brief Computes each values to integral values using the round to negative infinity rounding mode.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ * @note 'filter', 'in assistant'
+ */
+auto
+floor_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+/**
+ * @name round
+ * @brief Computes each values to integral values using the round to nearest integer rounding mode.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ * @note 'filter', 'in assistant'
+ */
+auto
+round_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+/**
+ * @name truncate
+ * @brief Computes each values to integral values by removing the fractional part.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ * @note 'filter', 'in assistant'
+ */
+auto
+truncate_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 
 } // namespace cle::tier1
