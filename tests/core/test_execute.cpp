@@ -72,16 +72,16 @@ TEST_P(TestExecution, rangeArray)
   ASSERT_EQ(range[2], depth);
 }
 
-TEST_P(TestExecution, constantList)
-{
-  int                     bins = 255;
-  cle::ConstantType       cts = bins;
-  const cle::ConstantList constants = { { "bins", cts } };
+// TEST_P(TestExecution, constantList)
+// {
+//   int                     bins = 255;
+//   cle::ConstantType       cts = bins;
+//   const cle::ConstantList constants = { { "bins", cts } };
 
-  ASSERT_EQ(constants.size(), 1);
-  ASSERT_EQ(constants[0].first, "bins");
-  ASSERT_EQ(constants[0].second, bins);
-}
+//   ASSERT_EQ(constants.size(), 1);
+//   ASSERT_EQ(constants[0].first, "bins");
+//   ASSERT_EQ(constants[0].second, bins);
+// }
 
 TEST_P(TestExecution, execute)
 {

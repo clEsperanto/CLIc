@@ -55,7 +55,11 @@ commonDefines(const ConstantList & constant_list) -> std::string
   std::ostringstream defines;
   for (const auto & [key, value] : constant_list)
   {
-    defines << "#define " << key << " " << value << "\n";
+    std::visit(
+      [&](const auto & v) {
+        defines << "#define " << key << " " << v << "\n";
+      },
+      value);
   }
   defines << "\n";
   defines << "\n#define GET_IMAGE_WIDTH(image_key) IMAGE_SIZE_ ## image_key ## _WIDTH";

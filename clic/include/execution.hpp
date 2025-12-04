@@ -11,7 +11,7 @@
 namespace cle
 {
 
-using ConstantType = int;
+using ConstantType = std::variant<int, float, std::string>;
 using ParameterType = std::variant<Array::Pointer, float, int, unsigned int, size_t>;
 using ParameterList = std::vector<std::pair<std::string, ParameterType>>;
 using ConstantList = std::vector<std::pair<std::string, ConstantType>>;
