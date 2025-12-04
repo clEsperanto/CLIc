@@ -156,7 +156,7 @@ auto
 binary_subtract_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
   -> Array::Pointer
 {
-  return apply_images_math_operation(device, src0, src1, dst, "((x != 0) && (y != 0)) ? 0 : 1");
+  return apply_images_math_operation(device, src0, src1, dst, "(x != 0 && y == 0) ? 1 : 0");
 }
 
 } // namespace cle::tier1
