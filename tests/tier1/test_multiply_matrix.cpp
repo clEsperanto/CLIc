@@ -37,13 +37,9 @@ TEST_P(TestMultiplyMatrix, execute)
 TEST_P(TestMultiplyMatrix, vectors)
 {
 
-  std::array<float, 1 * 5 * 1> input1 = { 1,2,3,4,5 };
-  std::array<float, 5 * 1 * 1> input2 = { 6,7,8,9,10 };
-  std::array<float, 5 * 5 * 1> valid = { 6,7,8,9,10,
-                                        12,14,16,18,20,
-                                        18,21,24,27,30,
-                                        24,28,32,36,40,
-                                        30,35,40,45,50 };
+  std::array<float, 1 * 5 * 1> input1 = { 1, 2, 3, 4, 5 };
+  std::array<float, 5 * 1 * 1> input2 = { 6, 7, 8, 9, 10 };
+  std::array<float, 5 * 5 * 1> valid = { 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 18, 21, 24, 27, 30, 24, 28, 32, 36, 40, 30, 35, 40, 45, 50 };
 
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
