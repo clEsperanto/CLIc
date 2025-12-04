@@ -802,7 +802,7 @@ exponential10_func(const Device::Pointer & device, const Array::Pointer & src, A
  * @name flip
  * @brief Flips an image in X, Y and/or Z direction depending on boolean flags.
  *
- * @param device Device to perform the operation on. [const Device::Pointer &]  
+ * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output result image. [Array::Pointer ( = None )]
  * @param flip_x Flip along the x axis if true. [bool ( = True )]

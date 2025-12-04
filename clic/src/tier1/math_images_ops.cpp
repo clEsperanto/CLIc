@@ -9,7 +9,7 @@ namespace cle::tier1
 
 namespace
 {
-  constexpr const char* kernel_source = R"CLC(
+constexpr const char * kernel_source = R"CLC(
 
   __constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE |
                                  CLK_ADDRESS_CLAMP_TO_EDGE |
@@ -32,38 +32,41 @@ namespace
     WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(res));
   })CLC";
 
-  auto
-  apply_images_math_operation(const Device::Pointer & device, 
-                         const Array::Pointer & src0, 
-                         const Array::Pointer & src1,
-                         Array::Pointer dst,
-                         const std::string & op_define) -> Array::Pointer
-  {
-    tier0::create_like(src0, dst);
-    const KernelInfo    kernel_info = {"cle_image_operation", kernel_source};
-    const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
-    const RangeArray    range = { src0->width(), src0->height(), src0->depth() };
-    const ConstantList  constants = { { "APPLY_OP(x,y)", op_define } };
-    execute(device, kernel_info, params, range, { 1, 1, 1 }, constants);
-    return dst;
-  }
+auto
+apply_images_math_operation(const Device::Pointer & device,
+                            const Array::Pointer &  src0,
+                            const Array::Pointer &  src1,
+                            Array::Pointer          dst,
+                            const std::string &     op_define) -> Array::Pointer
+{
+  tier0::create_like(src0, dst);
+  const KernelInfo    kernel_info = { "cle_image_operation", kernel_source };
+  const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
+  const RangeArray    range = { src0->width(), src0->height(), src0->depth() };
+  const ConstantList  constants = { { "APPLY_OP(x,y)", op_define } };
+  execute(device, kernel_info, params, range, { 1, 1, 1 }, constants);
+  return dst;
+}
 
 } // namespace
 
 auto
-power_images_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst) -> Array::Pointer
+power_images_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer
 {
   return apply_images_math_operation(device, src0, src1, dst, "pow(x, y)");
 }
 
 auto
-maximum_images_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst) -> Array::Pointer
+maximum_images_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer
 {
   return apply_images_math_operation(device, src0, src1, dst, "fmax(x, y)");
 }
 
 auto
-minimum_images_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst) -> Array::Pointer
+minimum_images_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer
 {
   return apply_images_math_operation(device, src0, src1, dst, "fmin(x, y)");
 }
@@ -102,18 +105,17 @@ greater_or_equal_func(const Device::Pointer & device, const Array::Pointer & src
   return apply_images_math_operation(device, src0, src1, dst, "(x >= y) ? 1 : 0");
 }
 
-auto 
-smaller_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst) 
-  -> Array::Pointer
+auto
+smaller_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst) -> Array::Pointer
 {
   return apply_images_math_operation(device, src0, src1, dst, "(x < y) ? 1 : 0");
 }
 
-auto 
-smaller_or_equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst) 
+auto
+smaller_or_equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
   -> Array::Pointer
 {
-  return apply_images_math_operation(device, src0, src1, dst, "(x <= y) ? 1 : 0");   
+  return apply_images_math_operation(device, src0, src1, dst, "(x <= y) ? 1 : 0");
 }
 
 auto
@@ -123,28 +125,32 @@ equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Ar
 }
 
 auto
-not_equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst) -> Array::Pointer
+not_equal_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer
 {
-  return apply_images_math_operation(device, src0, src1, dst, "(x != y) ? 1 : 0");  
+  return apply_images_math_operation(device, src0, src1, dst, "(x != y) ? 1 : 0");
 }
 
 auto
-binary_and_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst) -> Array::Pointer
+binary_and_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer
 {
   return apply_images_math_operation(device, src0, src1, dst, "(x != 0 && y != 0) ? 1 : 0");
 }
 
 auto
-binary_or_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst) -> Array::Pointer
+binary_or_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer
 {
   return apply_images_math_operation(device, src0, src1, dst, "(x != 0 || y != 0) ? 1 : 0");
 }
 
 auto
-binary_xor_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst) -> Array::Pointer
+binary_xor_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
+  -> Array::Pointer
 {
   return apply_images_math_operation(device, src0, src1, dst, "((x != 0) != (y != 0)) ? 1 : 0");
-} 
+}
 
 auto
 binary_subtract_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst)
