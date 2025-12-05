@@ -3,9 +3,7 @@
 
 #include "utils.hpp"
 
-#include "cle_transpose_xy.h"
-#include "cle_transpose_xz.h"
-#include "cle_transpose_yz.h"
+#include "cle_transpose.h"
 
 namespace cle::tier1
 {
@@ -18,10 +16,12 @@ transpose_xy_func(const Device::Pointer & device, const Array::Pointer & src, Ar
     auto dim = shape_to_dimension(src->height(), src->width(), src->depth());
     dst = Array::create(src->height(), src->width(), src->depth(), dim, src->dtype(), src->mtype(), src->device());
   }
-  const KernelInfo    kernel = { "transpose_xy", kernel::transpose_xy };
+  const KernelInfo    kernel = { "transpose", kernel::transpose };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  const RangeArray    local = { 1 , 1 , 1 };
+  const ConstantList  constants = { { "TRANSPOSE_MODE", "XY" } };
+  execute(device, kernel, params, range, local, constants);
   return dst;
 }
 
@@ -33,10 +33,12 @@ transpose_xz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
     auto dim = shape_to_dimension(src->depth(), src->height(), src->width());
     dst = Array::create(src->depth(), src->height(), src->width(), dim, src->dtype(), src->mtype(), src->device());
   }
-  const KernelInfo    kernel = { "transpose_xz", kernel::transpose_xz };
+  const KernelInfo    kernel = { "transpose", kernel::transpose };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  const RangeArray    local = { 1 , 1 , 1 };
+  const ConstantList  constants = { { "TRANSPOSE_MODE", "XZ" } };
+  execute(device, kernel, params, range, local, constants);  
   return dst;
 }
 
@@ -48,10 +50,12 @@ transpose_yz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
     auto dim = shape_to_dimension(src->width(), src->depth(), src->height());
     dst = Array::create(src->width(), src->depth(), src->height(), 3, src->dtype(), src->mtype(), src->device());
   }
-  const KernelInfo    kernel = { "transpose_yz", kernel::transpose_yz };
+  const KernelInfo    kernel = { "transpose", kernel::transpose };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  execute(device, kernel, params, range);
+  const RangeArray    local = { 1 , 1 , 1 };
+  const ConstantList  constants = { { "TRANSPOSE_MODE", "YZ" } };
+  execute(device, kernel, params, range, local, constants);
   return dst;
 }
 
