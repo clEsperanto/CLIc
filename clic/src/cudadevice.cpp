@@ -178,6 +178,14 @@ CUDADevice::getLocalMemorySize() const -> size_t
 }
 
 auto
+CUDADevice::getMaximumWorkGroupSize() const -> size_t
+{
+  int max_threads_per_block;
+  cuDeviceGetAttribute(&max_threads_per_block, CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK, cudaDevice);
+  return static_cast<size_t>(max_threads_per_block);
+}
+
+auto
 CUDADevice::getInfo() const -> std::string
 {
   std::ostringstream result;

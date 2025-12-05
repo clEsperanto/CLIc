@@ -213,6 +213,13 @@ public:
   getMaximumBufferSize() const -> size_t = 0;
 
   /**
+   * @brief Get maximum work group size
+   * @return size_t
+   */
+  [[nodiscard]] virtual auto
+  getMaximumWorkGroupSize() const -> size_t = 0;
+
+  /**
    * @brief Get local memory size
    * @return size_t
    */
@@ -503,6 +510,13 @@ public:
   getLocalMemorySize() const -> size_t override;
 
   /**
+   * @brief Get maximum work group size
+   * @return size_t
+   */
+  [[nodiscard]] virtual auto
+  getMaximumWorkGroupSize() const -> size_t override;
+
+  /**
    * @brief Get program from cache by key
    * @param key The key to identify the program
    * @return The program pointer if found, nullptr otherwise
@@ -688,6 +702,13 @@ public:
    */
   [[nodiscard]] auto
   getLocalMemorySize() const -> size_t override;
+
+  /**
+   * @brief Get maximum work group size
+   * @return size_t
+   */
+  [[nodiscard]] virtual auto
+  getMaximumWorkGroupSize() const -> size_t override;
 
   /**
    * @brief Get program from cache by key

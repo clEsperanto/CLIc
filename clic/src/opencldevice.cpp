@@ -348,6 +348,14 @@ OpenCLDevice::getLocalMemorySize() const -> size_t
 }
 
 auto
+OpenCLDevice::getMaximumWorkGroupSize() const -> size_t
+{
+  size_t max_work_group_size;
+  clGetDeviceInfo(clRessources->get_device(), CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(size_t), &max_work_group_size, nullptr);
+  return max_work_group_size;
+}
+
+auto
 OpenCLDevice::getInfo() const -> std::string
 {
   std::ostringstream result;
