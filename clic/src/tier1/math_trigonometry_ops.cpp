@@ -1,26 +1,26 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
 
-#include "utils.hpp"
 #include "cle_trigonometry_operation.h"
+#include "utils.hpp"
 
 namespace cle::tier1
 {
 
 namespace
 {
-  auto
-  apply_trigonometric_op(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, const std::string & op_define)
-    -> Array::Pointer
-  {
-    tier0::create_like(src, dst);
-    const KernelInfo    kernel_info = { "trigonometry_operation", kernel::trigonometry_operation };
-    const ParameterList params = { { "src", src }, { "dst", dst } };
-    const RangeArray    range = { src->width(), src->height(), src->depth() };
-    const ConstantList  constants = { { "APPLY_OP(x)", op_define } };
-    execute(device, kernel_info, params, range, { 1, 1, 1 }, constants);
-    return dst;
-  }
+auto
+apply_trigonometric_op(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, const std::string & op_define)
+  -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+  const KernelInfo    kernel_info = { "trigonometry_operation", kernel::trigonometry_operation };
+  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { src->width(), src->height(), src->depth() };
+  const ConstantList  constants = { { "APPLY_OP(x)", op_define } };
+  execute(device, kernel_info, params, range, { 1, 1, 1 }, constants);
+  return dst;
+}
 } // namespace
 
 auto

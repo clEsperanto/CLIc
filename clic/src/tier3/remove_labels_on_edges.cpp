@@ -32,8 +32,8 @@ remove_labels_on_edges_func(const Device::Pointer & device,
       const RangeArray range = { (dimension == 0) ? 1 : src->width(),
                                  (dimension == 1) ? 1 : src->height(),
                                  (dimension == 2) ? 1 : src->depth() };
-      const RangeArray    local = {1, 1, 1};
-      const ConstantList  constants = {{"EXCLUDE_AXIS", axis}}; // 0 for X axis, 1 for Y axis, 2 for Z axis
+      const RangeArray   local = { 1, 1, 1 };
+      const ConstantList constants = { { "EXCLUDE_AXIS", axis } }; // 0 for X axis, 1 for Y axis, 2 for Z axis
       execute(device, kernel, params, range, local, constants);
     }
   };

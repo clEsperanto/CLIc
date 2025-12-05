@@ -19,7 +19,7 @@ transpose_xy_func(const Device::Pointer & device, const Array::Pointer & src, Ar
   const KernelInfo    kernel = { "transpose", kernel::transpose };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const RangeArray    local = { 1 , 1 , 1 };
+  const RangeArray    local = { 1, 1, 1 };
   const ConstantList  constants = { { "TRANSPOSE_MODE", "XY" } };
   execute(device, kernel, params, range, local, constants);
   return dst;
@@ -36,9 +36,9 @@ transpose_xz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
   const KernelInfo    kernel = { "transpose", kernel::transpose };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const RangeArray    local = { 1 , 1 , 1 };
+  const RangeArray    local = { 1, 1, 1 };
   const ConstantList  constants = { { "TRANSPOSE_MODE", "XZ" } };
-  execute(device, kernel, params, range, local, constants);  
+  execute(device, kernel, params, range, local, constants);
   return dst;
 }
 
@@ -53,7 +53,7 @@ transpose_yz_func(const Device::Pointer & device, const Array::Pointer & src, Ar
   const KernelInfo    kernel = { "transpose", kernel::transpose };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const RangeArray    local = { 1 , 1 , 1 };
+  const RangeArray    local = { 1, 1, 1 };
   const ConstantList  constants = { { "TRANSPOSE_MODE", "YZ" } };
   execute(device, kernel, params, range, local, constants);
   return dst;

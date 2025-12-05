@@ -4,24 +4,18 @@
 #include <cstring>
 namespace cle
 {
-  namespace
-  {
-    static const std::unordered_map<int, std::string> dimension_defines = {
-      { 1, "#define USE_1D" },
-      { 2, "#define USE_2D" },
-      { 3, "#define USE_3D" }
-    };
+namespace
+{
+static const std::unordered_map<int, std::string> dimension_defines = { { 1, "#define USE_1D" },
+                                                                        { 2, "#define USE_2D" },
+                                                                        { 3, "#define USE_3D" } };
 
-    static const std::unordered_map<dType, std::string> dtype_defines = {
-      { dType::INT8, "#define USE_CHAR" },
-      { dType::UINT8, "#define USE_UCHAR" },
-      { dType::INT16, "#define USE_SHORT" },
-      { dType::UINT16, "#define USE_USHORT" },
-      { dType::INT32, "#define USE_INT" },
-      { dType::UINT32, "#define USE_UINT" },
-      { dType::FLOAT, "#define USE_FLOAT" }
-    };
-  } // namespace
+static const std::unordered_map<dType, std::string> dtype_defines = {
+  { dType::INT8, "#define USE_CHAR" },     { dType::UINT8, "#define USE_UCHAR" }, { dType::INT16, "#define USE_SHORT" },
+  { dType::UINT16, "#define USE_USHORT" }, { dType::INT32, "#define USE_INT" },   { dType::UINT32, "#define USE_UINT" },
+  { dType::FLOAT, "#define USE_FLOAT" }
+};
+} // namespace
 
 // Function for translating OpenCL code to CUDA code
 // @StRigaud TODO: function is not exhaustive and needs to be improved to support more features
@@ -226,7 +220,6 @@ generateDefines(const ParameterList & parameter_list, const ConstantList & const
 }
 
 
-
 auto
 execute(const Device::Pointer & device,
         const KernelInfo &      kernel_func,
@@ -251,11 +244,11 @@ execute(const Device::Pointer & device,
   std::vector<int>   used_dimensions;
   used_dtypes.reserve(parameters.size());
   used_dimensions.reserve(parameters.size());
-  
+
   // prepare parameters to be passed to the backend
   std::vector<std::shared_ptr<void>> args_ptr;
   std::vector<size_t>                args_size;
-  
+
   args_ptr.reserve(parameters.size());
   args_size.reserve(parameters.size());
   for (const auto & param : parameters)
@@ -321,7 +314,7 @@ execute(const Device::Pointer & device,
     defines += "\n" + dimension_defines.at(dim);
   }
   defines += "\n\n";
-  
+
   const std::string program_source = defines + kernel_preamble + kernel_source;
 
   // execute kernel
@@ -466,7 +459,7 @@ native_execute(const Device::Pointer & device,
       throw std::runtime_error("Error: Invalid parameter type provided.");
     }
   }
-  
+
   // execute kernel
   cle::BackendManager::getInstance().getBackend().executeKernel(
     device, kernel_source, kernel_name, global_range, local_range, args_ptr, args_size);

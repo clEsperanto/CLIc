@@ -10,30 +10,30 @@ namespace cle::tier1
 
 namespace
 {
-  auto
-  suggest_tile_size(const Device::Pointer & device) -> int
-  {
-    auto local_mem = device->getLocalMemorySize();
-    auto max_work_group = device->getMaximumWorkGroupSize();
+auto
+suggest_tile_size(const Device::Pointer & device) -> int
+{
+  auto local_mem = device->getLocalMemorySize();
+  auto max_work_group = device->getMaximumWorkGroupSize();
 
-    // 2 tiles (src0 + src1) × 4 bytes per float
-    int max_tile_from_memory = sqrt(local_mem / (2 * 4));
-    // TILE_SIZE² work-items needed, so sqrt(max_work_group)
-    int max_tile_from_workgroup = sqrt(max_work_group);
-    // Take the minimum of both constraints
-    int suggested = (max_tile_from_memory < max_tile_from_workgroup) ? max_tile_from_memory : max_tile_from_workgroup;
-    // Round down to power of 2 for efficiency
-    while ((suggested & (suggested - 1)) != 0)
-      suggested--;
+  // 2 tiles (src0 + src1) × 4 bytes per float
+  int max_tile_from_memory = sqrt(local_mem / (2 * 4));
+  // TILE_SIZE² work-items needed, so sqrt(max_work_group)
+  int max_tile_from_workgroup = sqrt(max_work_group);
+  // Take the minimum of both constraints
+  int suggested = (max_tile_from_memory < max_tile_from_workgroup) ? max_tile_from_memory : max_tile_from_workgroup;
+  // Round down to power of 2 for efficiency
+  while ((suggested & (suggested - 1)) != 0)
+    suggested--;
 
-    // Safety cap: never exceed reasonable limits
-    if (suggested > 32)
-      suggested = 32;
-    if (suggested < 4)
-      suggested = 4;
+  // Safety cap: never exceed reasonable limits
+  if (suggested > 32)
+    suggested = 32;
+  if (suggested < 4)
+    suggested = 4;
 
-    return suggested;
-  }
+  return suggested;
+}
 } // namespace
 
 auto

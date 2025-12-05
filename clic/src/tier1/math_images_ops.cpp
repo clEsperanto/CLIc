@@ -10,21 +10,21 @@ namespace cle::tier1
 
 namespace
 {
-  auto
-  apply_images_math_operation(const Device::Pointer & device,
-                              const Array::Pointer &  src0,
-                              const Array::Pointer &  src1,
-                              Array::Pointer          dst,
-                              const std::string &     op_define) -> Array::Pointer
-  {
-    tier0::create_like(src0, dst);
-    const KernelInfo    kernel_info = { "image_operation", kernel::image_operation };
-    const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
-    const RangeArray    range = { src0->width(), src0->height(), src0->depth() };
-    const ConstantList  constants = { { "APPLY_OP(x,y)", op_define } };
-    execute(device, kernel_info, params, range, { 1, 1, 1 }, constants);
-    return dst;
-  }
+auto
+apply_images_math_operation(const Device::Pointer & device,
+                            const Array::Pointer &  src0,
+                            const Array::Pointer &  src1,
+                            Array::Pointer          dst,
+                            const std::string &     op_define) -> Array::Pointer
+{
+  tier0::create_like(src0, dst);
+  const KernelInfo    kernel_info = { "image_operation", kernel::image_operation };
+  const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
+  const RangeArray    range = { src0->width(), src0->height(), src0->depth() };
+  const ConstantList  constants = { { "APPLY_OP(x,y)", op_define } };
+  execute(device, kernel_info, params, range, { 1, 1, 1 }, constants);
+  return dst;
+}
 } // namespace
 
 auto

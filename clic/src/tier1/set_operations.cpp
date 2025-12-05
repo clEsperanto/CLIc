@@ -7,8 +7,8 @@
 #include "cle_set_image_borders.h"
 #include "cle_set_nonzero_pixels_to_pixelindex.h"
 
-#include "cle_set_slice.h"
 #include "cle_set_ramp.h"
+#include "cle_set_slice.h"
 #include "cle_set_where_x_compare_y.h"
 
 namespace cle::tier1
@@ -68,7 +68,7 @@ auto
 set_ramp_z_func(const Device::Pointer & device, const Array::Pointer & src) -> Array::Pointer
 {
   const KernelInfo    kernel = { "set_ramp", kernel::set_ramp };
-  const ParameterList params = { { "dst", src } , { "dimension", 2 } };
+  const ParameterList params = { { "dst", src }, { "dimension", 2 } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
   execute(device, kernel, params, range);
   return src;
@@ -80,8 +80,8 @@ set_where_x_equals_y_func(const Device::Pointer & device, const Array::Pointer &
   const KernelInfo    kernel = { "set_where_x_compare_y", kernel::set_where_x_compare_y };
   const ParameterList params = { { "dst", src }, { "scalar", value } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
-  const RangeArray    local = { 1 , 1 , 1 };
-  const ConstantList  constants = { { "COMPARISON_OP(x,y)" , "(x == y)" } };
+  const RangeArray    local = { 1, 1, 1 };
+  const ConstantList  constants = { { "COMPARISON_OP(x,y)", "(x == y)" } };
   execute(device, kernel, params, range, local, constants);
   return src;
 }
@@ -92,8 +92,8 @@ set_where_x_greater_than_y_func(const Device::Pointer & device, const Array::Poi
   const KernelInfo    kernel = { "set_where_x_compare_y", kernel::set_where_x_compare_y };
   const ParameterList params = { { "dst", src }, { "scalar", value } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
-  const RangeArray    local = { 1 , 1 , 1 };
-  const ConstantList  constants = { { "COMPARISON_OP(x,y)" , "(x > y)" } };
+  const RangeArray    local = { 1, 1, 1 };
+  const ConstantList  constants = { { "COMPARISON_OP(x,y)", "(x > y)" } };
   execute(device, kernel, params, range, local, constants);
   return src;
 }
@@ -104,8 +104,8 @@ set_where_x_smaller_than_y_func(const Device::Pointer & device, const Array::Poi
   const KernelInfo    kernel = { "set_where_x_compare_y", kernel::set_where_x_compare_y };
   const ParameterList params = { { "dst", src }, { "scalar", value } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
-  const RangeArray    local = { 1 , 1 , 1 };
-  const ConstantList  constants = { { "COMPARISON_OP(x,y)" , "(x < y)" } };
+  const RangeArray    local = { 1, 1, 1 };
+  const ConstantList  constants = { { "COMPARISON_OP(x,y)", "(x < y)" } };
   execute(device, kernel, params, range, local, constants);
   return src;
 }
