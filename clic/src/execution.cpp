@@ -4,6 +4,18 @@
 #include <cstring>
 namespace cle
 {
+namespace
+{
+static const std::unordered_map<int, std::string> dimension_defines = { { 1, "#define USE_1D" },
+                                                                        { 2, "#define USE_2D" },
+                                                                        { 3, "#define USE_3D" } };
+
+static const std::unordered_map<dType, std::string> dtype_defines = {
+  { dType::INT8, "#define USE_CHAR" },     { dType::UINT8, "#define USE_UCHAR" }, { dType::INT16, "#define USE_SHORT" },
+  { dType::UINT16, "#define USE_USHORT" }, { dType::INT32, "#define USE_INT" },   { dType::UINT32, "#define USE_UINT" },
+  { dType::FLOAT, "#define USE_FLOAT" }
+};
+} // namespace
 
 // Function for translating OpenCL code to CUDA code
 // @StRigaud TODO: function is not exhaustive and needs to be improved to support more features
@@ -226,7 +238,12 @@ execute(const Device::Pointer & device,
     cle::translateOpenclToCuda(kernel_source);
   }
   platform_options(device, &kernel_preamble);
-  const std::string program_source = defines + kernel_preamble + kernel_source;
+
+
+  std::vector<dType> used_dtypes;
+  std::vector<int>   used_dimensions;
+  used_dtypes.reserve(parameters.size());
+  used_dimensions.reserve(parameters.size());
 
   // prepare parameters to be passed to the backend
   std::vector<std::shared_ptr<void>> args_ptr;
@@ -240,6 +257,8 @@ execute(const Device::Pointer & device,
     {
       args_ptr.push_back(arr->get()->get_ptr());
       args_size.push_back(GPU_MEM_PTR_SIZE);
+      used_dtypes.push_back(arr->get()->dtype());
+      used_dimensions.push_back(arr->get()->dim());
     }
     else if (const auto & f = std::get_if<float>(&param.second))
     {
@@ -278,6 +297,25 @@ execute(const Device::Pointer & device,
       throw std::runtime_error("Error: Invalid parameter type provided.");
     }
   }
+
+  // remove duplicate dtypes and dimensions
+  std::sort(used_dtypes.begin(), used_dtypes.end());
+  used_dtypes.erase(std::unique(used_dtypes.begin(), used_dtypes.end()), used_dtypes.end());
+  std::sort(used_dimensions.begin(), used_dimensions.end());
+  used_dimensions.erase(std::unique(used_dimensions.begin(), used_dimensions.end()), used_dimensions.end());
+
+  // add dtype and dimension defines
+  for (const auto & dtype : used_dtypes)
+  {
+    defines += "\n" + dtype_defines.at(dtype);
+  }
+  for (const auto & dim : used_dimensions)
+  {
+    defines += "\n" + dimension_defines.at(dim);
+  }
+  defines += "\n\n";
+
+  const std::string program_source = defines + kernel_preamble + kernel_source;
 
   // execute kernel
   cle::BackendManager::getInstance().getBackend().executeKernel(
@@ -421,6 +459,7 @@ native_execute(const Device::Pointer & device,
       throw std::runtime_error("Error: Invalid parameter type provided.");
     }
   }
+
   // execute kernel
   cle::BackendManager::getInstance().getBackend().executeKernel(
     device, kernel_source, kernel_name, global_range, local_range, args_ptr, args_size);
