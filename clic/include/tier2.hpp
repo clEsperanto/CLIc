@@ -137,8 +137,11 @@ bottom_hat_func(const Device::Pointer & device,
  * @see https://numpy.org/doc/stable/reference/generated/numpy.clip.html
  */
 auto
-clip_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float min_intensity = NaN, float max_intensity = NaN)
-  -> Array::Pointer;
+clip_func(const Device::Pointer & device,
+          const Array::Pointer &  src,
+          Array::Pointer          dst,
+          float                   min_intensity = NaN,
+          float                   max_intensity = NaN) -> Array::Pointer;
 
 
 /**
