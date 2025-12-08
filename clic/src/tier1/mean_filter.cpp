@@ -5,9 +5,6 @@
 
 #include "cle_mean_separable.h"
 #include "cle_mean_sphere.h"
-#include "cle_mean_x_projection.h"
-#include "cle_mean_y_projection.h"
-#include "cle_mean_z_projection.h"
 
 namespace cle::tier1
 {
