@@ -22,11 +22,10 @@ suggest_tile_size(const Device::Pointer & device) -> int
   int max_tile_from_workgroup = sqrt(max_work_group);
   // Take the minimum of both constraints
   int suggested = (max_tile_from_memory < max_tile_from_workgroup) ? max_tile_from_memory : max_tile_from_workgroup;
-  // Round down to power of 2 for efficiency
-  while ((suggested & (suggested - 1)) != 0)
-    suggested--;
+  // Round down to multiple of 4 for efficiency
+  suggested = (suggested / 4) * 4;
 
-  // Safety cap: never exceed reasonable limits
+  // Clamp between 4 and 32
   if (suggested > 32)
     suggested = 32;
   if (suggested < 4)
@@ -67,7 +66,7 @@ multiply_matrix_func(const Device::Pointer & device,
     // std::cerr << "Warning: multiply_matrix kernel execution failed with TILE_SIZE=" << TILE_SIZE << ". Fall back to TILE_SIZE=1.\n"
     //           << "Original error: " << e.what() << std::endl;
     range = { static_cast<size_t>(matrix_destination->width()), static_cast<size_t>(matrix_destination->height()), 1 };
-    local = { static_cast<size_t>(1), static_cast<size_t>(1), 1 };
+    local = { 1, 1, 1 };
     constants = { { "TILE_SIZE", 1 } };
     execute(device, kernel, params, range, local, constants);
   }
