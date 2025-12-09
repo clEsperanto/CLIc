@@ -129,16 +129,19 @@ bottom_hat_func(const Device::Pointer & device,
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src Input image to process. [const Array::Pointer &]
  * @param dst Output image. [Array::Pointer ( = None )]
- * @param min_intensity New lower limit of the intensity range. [float ( = None )]
- * @param max_intensity New upper limit of the intensity range. [float ( = None )]
+ * @param min_intensity New lower limit of the intensity range. [float ( = float('nan') )]
+ * @param max_intensity New upper limit of the intensity range. [float ( = float('nan') )]
  * @return Array::Pointer
  *
  * @note 'combine', 'in assistant'
  * @see https://numpy.org/doc/stable/reference/generated/numpy.clip.html
  */
 auto
-clip_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float min_intensity, float max_intensity)
-  -> Array::Pointer;
+clip_func(const Device::Pointer & device,
+          const Array::Pointer &  src,
+          Array::Pointer          dst,
+          float                   min_intensity = NaN,
+          float                   max_intensity = NaN) -> Array::Pointer;
 
 
 /**
