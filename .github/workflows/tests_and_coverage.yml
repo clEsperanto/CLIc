@@ -17,7 +17,7 @@ jobs:
         os: [macos-14] #, macos-latest]
         cxx: [clang++]
         cc: [clang]
-        packages: [lcov gcovr pocl]
+        packages: [lcov gcovr pocl clinfo]
 
     steps:
       - name: Checkout
@@ -27,6 +27,13 @@ jobs:
         shell: bash
         run: |
           brew install ${{ matrix.packages }}
+
+      - name: Set OpenCL CPU runtime environment variables
+        run: |
+          echo "OCL_ICD_VENDORS=/opt/homebrew/etc/OpenCL/vendors" >> $GITHUB_ENV
+          echo "POCL_DEVICES=cpu" >> $GITHUB_ENV
+          echo "DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib:/opt/homebrew/opt/pocl/lib" >> $GITHUB_ENV
+          clinfo | grep -i pocl || true    
 
       - name: Cmake configure
         shell: bash
