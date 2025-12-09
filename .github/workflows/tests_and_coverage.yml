@@ -48,7 +48,6 @@ jobs:
           echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> $GITHUB_ENV
           echo "DYLD_FALLBACK_LIBRARY_PATH=$DYLD_FALLBACK_LIBRARY_PATH" >> $GITHUB_ENV
 
-          # verify we see the pocl platform, not Apple
           clinfo
 
       - name: Cmake configure
