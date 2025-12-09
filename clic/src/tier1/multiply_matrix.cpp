@@ -54,16 +54,23 @@ multiply_matrix_func(const Device::Pointer & device,
 
   tier0::create_dst(matrix1, matrix_destination, matrix2->width(), matrix1->height(), 1, dType::FLOAT);
 
-  
-  int TILE_SIZE = static_cast<int>(suggest_tile_size(device));
+
+  int                 TILE_SIZE = static_cast<int>(suggest_tile_size(device));
   const KernelInfo    kernel = { "multiply_matrix", kernel::multiply_matrix };
   const ParameterList params = { { "src0", matrix1 }, { "src1", matrix2 }, { "dst", matrix_destination } };
-  RangeArray          range = { 
-    ((matrix_destination->width() + TILE_SIZE - 1) / TILE_SIZE) * TILE_SIZE,
-    ((matrix_destination->height() + TILE_SIZE - 1) / TILE_SIZE) * TILE_SIZE,
-    1 };
-  RangeArray   local = { static_cast<size_t>(TILE_SIZE), static_cast<size_t>(TILE_SIZE), 1 };
-  ConstantList constants = { { "TILE_SIZE", TILE_SIZE } };
+  RangeArray          range = { ((matrix_destination->width() + TILE_SIZE - 1) / TILE_SIZE) * TILE_SIZE,
+                                ((matrix_destination->height() + TILE_SIZE - 1) / TILE_SIZE) * TILE_SIZE,
+                                1 };
+  RangeArray          local = { static_cast<size_t>(TILE_SIZE), static_cast<size_t>(TILE_SIZE), 1 };
+  ConstantList        constants = { { "TILE_SIZE", TILE_SIZE } };
+  if (device->getDeviceType() == "cpu")
+  {
+    // On CPU, use no optimization by default
+    TILE_SIZE = 1;
+    range = { static_cast<size_t>(matrix_destination->width()), static_cast<size_t>(matrix_destination->height()), 1 };
+    local = { 1, 1, 1 };
+    constants = { { "TILE_SIZE", 1 } };
+  }
   try
   {
     execute(device, kernel, params, range, local, constants);
@@ -71,15 +78,10 @@ multiply_matrix_func(const Device::Pointer & device,
   catch (const std::runtime_error & e)
   {
     /// Fallback to TILE_SIZE = 1 no optimization
-    // std::cerr << "Warning: multiply_matrix kernel execution failed with TILE_SIZE=" << TILE_SIZE << ". Fall back to TILE_SIZE=1.\n"
-    //           << "Original error: " << e.what() << std::endl;
-    range = { static_cast<size_t>(matrix_destination->width()), static_cast<size_t>(matrix_destination->height()), 1 };
-    local = { 1, 1, 1 };
-    constants = { { "TILE_SIZE", 1 } };
-    execute(device, kernel, params, range, local, constants);
+    std::cerr << "Warning: multiply_matrix kernel execution failed with TILE_SIZE=" << TILE_SIZE << ".\n"
+              << "Original error: " << e.what() << std::endl;
   }
   return matrix_destination;
 }
 
 } // namespace cle::tier1
-
