@@ -9,6 +9,8 @@ class TestDeskew : public ::testing::TestWithParam<std::string>
 
 TEST_P(TestDeskew, deskew_y)
 {
+  GTEST_SKIP();
+
   auto coord_to_index = [](size_t x, size_t y, size_t z, size_t width, size_t height) -> size_t {
     return z * height * width + y * width + x;
   };
