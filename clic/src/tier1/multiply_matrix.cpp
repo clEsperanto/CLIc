@@ -54,16 +54,15 @@ multiply_matrix_func(const Device::Pointer & device,
 
   tier0::create_dst(matrix1, matrix_destination, matrix2->width(), matrix1->height(), 1, dType::FLOAT);
 
-  
-  int TILE_SIZE = static_cast<int>(suggest_tile_size(device));
+
+  int                 TILE_SIZE = static_cast<int>(suggest_tile_size(device));
   const KernelInfo    kernel = { "multiply_matrix", kernel::multiply_matrix };
   const ParameterList params = { { "src0", matrix1 }, { "src1", matrix2 }, { "dst", matrix_destination } };
-  RangeArray          range = { 
-    ((matrix_destination->width() + TILE_SIZE - 1) / TILE_SIZE) * TILE_SIZE,
-    ((matrix_destination->height() + TILE_SIZE - 1) / TILE_SIZE) * TILE_SIZE,
-    1 };
-  RangeArray   local = { static_cast<size_t>(TILE_SIZE), static_cast<size_t>(TILE_SIZE), 1 };
-  ConstantList constants = { { "TILE_SIZE", TILE_SIZE } };
+  RangeArray          range = { ((matrix_destination->width() + TILE_SIZE - 1) / TILE_SIZE) * TILE_SIZE,
+                                ((matrix_destination->height() + TILE_SIZE - 1) / TILE_SIZE) * TILE_SIZE,
+                                1 };
+  RangeArray          local = { static_cast<size_t>(TILE_SIZE), static_cast<size_t>(TILE_SIZE), 1 };
+  ConstantList        constants = { { "TILE_SIZE", TILE_SIZE } };
   try
   {
     execute(device, kernel, params, range, local, constants);
@@ -82,4 +81,3 @@ multiply_matrix_func(const Device::Pointer & device,
 }
 
 } // namespace cle::tier1
-

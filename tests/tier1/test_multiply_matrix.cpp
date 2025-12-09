@@ -37,7 +37,7 @@ TEST_P(TestMultiplyMatrix, execute)
 TEST_P(TestMultiplyMatrix, vectors)
 {
 
-  std::array<float, 3 * 1 * 1> input1 = { 1, 2, 3};
+  std::array<float, 3 * 1 * 1> input1 = { 1, 2, 3 };
   std::array<float, 2 * 3 * 1> input2 = { 4, 5, 6, 7, 8, 9 };
   std::array<float, 2 * 1 * 1> valid = { 40, 46 };
 
