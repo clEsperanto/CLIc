@@ -28,12 +28,21 @@ jobs:
         run: |
           brew install ${{ matrix.packages }}
 
-      - name: Set OpenCL CPU runtime environment variables
+      - name: Set OpenCL CPU runtime environment
         run: |
-          echo "OCL_ICD_VENDORS=/opt/homebrew/etc/OpenCL/vendors" >> $GITHUB_ENV
-          echo "POCL_DEVICES=cpu" >> $GITHUB_ENV
-          echo "DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib:/opt/homebrew/opt/pocl/lib" >> $GITHUB_ENV
-          clinfo | grep -i pocl || true
+          export OCL_ICD_VENDORS=/opt/homebrew/etc/OpenCL/vendors
+          export OCL_ICD_FILENAMES=pocl.icd
+          export POCL_DEVICES=cpu
+          export POCL_TARGETS=host
+          export DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib:/opt/homebrew/opt/pocl/lib
+
+          echo "OCL_ICD_VENDORS=$OCL_ICD_VENDORS" >> $GITHUB_ENV
+          echo "OCL_ICD_FILENAMES=$OCL_ICD_FILENAMES" >> $GITHUB_ENV
+          echo "POCL_DEVICES=$POCL_DEVICES" >> $GITHUB_ENV
+          echo "POCL_TARGETS=$POCL_TARGETS" >> $GITHUB_ENV
+          echo "DYLD_FALLBACK_LIBRARY_PATH=$DYLD_FALLBACK_LIBRARY_PATH" >> $GITHUB_ENV
+
+          clinfo
 
       - name: Cmake configure
         shell: bash
