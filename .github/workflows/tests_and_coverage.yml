@@ -35,7 +35,7 @@ jobs:
             opencl-headers \
             clinfo \
             libpocl-dev
-          
+
           # Ensure pocl ICD is properly registered
           sudo mkdir -p /etc/OpenCL/vendors
           if [ ! -f /etc/OpenCL/vendors/pocl.icd ]; then
@@ -63,7 +63,7 @@ jobs:
           echo "Checking pocl installation..."
           dpkg -l | grep pocl || echo "pocl not found via dpkg"
           ls -la /usr/lib/x86_64-linux-gnu/libpocl* 2>/dev/null || echo "pocl libraries not found"
-          
+
           echo "Testing OpenCL device detection..."
           clinfo || echo "clinfo failed - will attempt build anyway"
 
