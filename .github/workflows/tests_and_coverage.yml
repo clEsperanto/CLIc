@@ -14,10 +14,9 @@ jobs:
       max-parallel: 1
       matrix:
         buildtype: [Debug]
-        os: [macos-14] #, macos-latest]
+        os: [ubuntu-22.04]
         cxx: [clang++]
         cc: [clang]
-        packages: [lcov gcovr pocl clinfo]
 
     steps:
       - name: Checkout
@@ -26,35 +25,38 @@ jobs:
       - name: Install packages
         shell: bash
         run: |
-          brew install ${{ matrix.packages }}
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            clang \
+            lcov \
+            gcovr \
+            pocl-opencl-icd \
+            ocl-icd-opencl-dev \
+            opencl-headers \
+            clinfo
 
       - name: Set OpenCL CPU runtime environment
         run: |
-          export OCL_ICD_VENDORS=/opt/homebrew/etc/OpenCL/vendors
-          export OPENCL_VENDOR_PATH=/opt/homebrew/etc/OpenCL/vendors
+          export OCL_ICD_VENDORS=/etc/OpenCL/vendors
+          export OPENCL_VENDOR_PATH=/etc/OpenCL/vendors
           export OCL_ICD_FILENAMES=pocl.icd
           export POCL_DEVICES=cpu
           export POCL_TARGETS=host
-          export DYLD_LIBRARY_PATH=/opt/homebrew/opt/pocl/lib
-          export LD_LIBRARY_PATH=/opt/homebrew/opt/pocl/lib
-          export DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib:/opt/homebrew/opt/pocl/lib
+          export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
 
           echo "OCL_ICD_VENDORS=$OCL_ICD_VENDORS" >> $GITHUB_ENV
           echo "OPENCL_VENDOR_PATH=$OPENCL_VENDOR_PATH" >> $GITHUB_ENV
           echo "OCL_ICD_FILENAMES=$OCL_ICD_FILENAMES" >> $GITHUB_ENV
           echo "POCL_DEVICES=$POCL_DEVICES" >> $GITHUB_ENV
           echo "POCL_TARGETS=$POCL_TARGETS" >> $GITHUB_ENV
-          echo "DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
           echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> $GITHUB_ENV
-          echo "DYLD_FALLBACK_LIBRARY_PATH=$DYLD_FALLBACK_LIBRARY_PATH" >> $GITHUB_ENV
 
-          otool -L "$(which clinfo)" || true
-          DYLD_LIBRARY_PATH=/opt/homebrew/opt/pocl/lib clinfo || true
+          clinfo || true
 
       - name: Cmake configure
         shell: bash
         run: |
-          cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARY=/opt/homebrew/opt/pocl/lib/libOpenCL.1.dylib -DOpenCL_INCLUDE_DIR=/opt/homebrew/include
+          cmake -S ${{ github.workspace }} -B ${{ runner.workspace }}/build -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} -DBUILD_COVERAGE=ON -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARY=/usr/lib/x86_64-linux-gnu/libOpenCL.so -DOpenCL_INCLUDE_DIR=/usr/include
 
       - name: Cmake build
         shell: bash
