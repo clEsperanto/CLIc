@@ -63,6 +63,14 @@ multiply_matrix_func(const Device::Pointer & device,
                                 1 };
   RangeArray          local = { static_cast<size_t>(TILE_SIZE), static_cast<size_t>(TILE_SIZE), 1 };
   ConstantList        constants = { { "TILE_SIZE", TILE_SIZE } };
+  if (device->getDeviceType() == "cpu")
+  {
+    // On CPU, use no optimization by default
+    TILE_SIZE = 1;
+    range = { static_cast<size_t>(matrix_destination->width()), static_cast<size_t>(matrix_destination->height()), 1 };
+    local = { 1, 1, 1 };
+    constants = { { "TILE_SIZE", 1 } };
+  }
   try
   {
     execute(device, kernel, params, range, local, constants);
@@ -70,12 +78,8 @@ multiply_matrix_func(const Device::Pointer & device,
   catch (const std::runtime_error & e)
   {
     /// Fallback to TILE_SIZE = 1 no optimization
-    // std::cerr << "Warning: multiply_matrix kernel execution failed with TILE_SIZE=" << TILE_SIZE << ". Fall back to TILE_SIZE=1.\n"
-    //           << "Original error: " << e.what() << std::endl;
-    range = { static_cast<size_t>(matrix_destination->width()), static_cast<size_t>(matrix_destination->height()), 1 };
-    local = { 1, 1, 1 };
-    constants = { { "TILE_SIZE", 1 } };
-    execute(device, kernel, params, range, local, constants);
+    std::cerr << "Warning: multiply_matrix kernel execution failed with TILE_SIZE=" << TILE_SIZE << ".\n"
+              << "Original error: " << e.what() << std::endl;
   }
   return matrix_destination;
 }
