@@ -17,7 +17,7 @@ jobs:
         os: [macos-14] #, macos-latest]
         cxx: [clang++]
         cc: [clang]
-        packages: [lcov gcovr, pocl]
+        packages: [lcov gcovr pocl]
 
     steps:
       - name: Checkout
