@@ -70,7 +70,8 @@ apply_affine_transform(const cle::Array::Pointer &  src,
   // prepare output if dst is nullptr
   if (dst == nullptr)
   {
-    dst = cle::Array::create(width, height, depth, src->dimension(), src->dtype(), src->mtype(), src->device());
+    auto dtype = (interpolate) ? cle::dType::FLOAT : src->dtype();
+    dst = cle::Array::create(width, height, depth, src->dimension(), dtype, src->mtype(), src->device());
   }
 
   // push the matrix on gpu as the inverse transposed transform matrix
@@ -83,8 +84,8 @@ apply_affine_transform(const cle::Array::Pointer &  src,
     // interpolate is only available for image type, we copy src into an image if it is not already
     try
     {
-      image = cle::Array::create(src->width(), src->height(), src->depth(), src->dimension(), src->dtype(), mType::IMAGE, src->device());
-      src->copyTo(image);
+      image = cle::Array::create(src->width(), src->height(), src->depth(), src->dimension(), dType::FLOAT, mType::IMAGE, src->device());
+      cle::tier1::copy_func(src->device(), src, image);
     }
     catch (const std::exception & e)
     {

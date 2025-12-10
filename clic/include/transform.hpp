@@ -6,6 +6,7 @@
 #include "Eigen/Dense"
 #include "array.hpp"
 #include "execution.hpp"
+#include "tier1.hpp"
 
 namespace cle
 {
