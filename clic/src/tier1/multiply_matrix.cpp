@@ -48,7 +48,7 @@ multiply_matrix_func(const Device::Pointer & device,
 
   if (matrix1->width() != matrix2->height())
   {
-    std::cerr << "Warning: matrix dimensions are not compatible for multiplication, we expect (k,n?),(m?,k)->(m?,n?) but got ("
+    std::cerr << "Warning: matrix dimensions are not compatible for multiplication, we expect (n?,k),(k,m?)->(m?,n?) but got ("
               << matrix1->height() << "," << matrix1->width() << "),(" << matrix2->height() << "," << matrix2->width() << ")" << std::endl;
   }
 
