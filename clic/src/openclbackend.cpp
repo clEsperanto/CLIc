@@ -1302,7 +1302,11 @@ OpenCLBackend::executeKernel(const Device::Pointer &                    device,
                                     nullptr);
   if (err != CL_SUCCESS)
   {
-    throw std::runtime_error("Error: Fail to launch kernel. OpenCL error : " + getErrorString(err) + " (" + std::to_string(err) + ").");
+    throw std::runtime_error(
+      "Error: Failed to launch kernel '" + kernel_name + "' with OpenCL error: " + getErrorString(err) + " (" + std::to_string(err) +
+      ").\nGlobal size: [" + std::to_string(global_size[0]) + ", " + std::to_string(global_size[1]) + ", " +
+      std::to_string(global_size[2]) + "]\nLocal size: [" + std::to_string(local_size[0]) + ", " + std::to_string(local_size[1]) +
+      ", " + std::to_string(local_size[2]) + "]");
   }
 
   opencl_device->finish();
