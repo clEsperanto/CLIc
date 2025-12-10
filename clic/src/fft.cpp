@@ -452,7 +452,7 @@ execOperationKernel(const Device::Pointer & device,
                     Array::Pointer          output,
                     const unsigned int      nElements) -> Array::Pointer
 {
-  constexpr size_t LOCAL_ITEM_SIZE = 64;
+  const size_t LOCAL_ITEM_SIZE = std::min(256, static_cast<int>(device->getMaximumWorkGroupSize()));
   size_t           globalItemSize =
     static_cast<size_t>(ceil(static_cast<double>(nElements) / static_cast<double>(LOCAL_ITEM_SIZE)) * LOCAL_ITEM_SIZE);
 
@@ -468,7 +468,7 @@ execOperationKernel(const Device::Pointer & device,
 auto
 execRemoveSmallValues(const Device::Pointer & device, Array::Pointer buffer, const unsigned int nElements) -> void
 {
-  constexpr size_t LOCAL_ITEM_SIZE = 64;
+  const size_t LOCAL_ITEM_SIZE = std::min(256, static_cast<int>(device->getMaximumWorkGroupSize()));
   size_t           globalItemSize =
     static_cast<size_t>(ceil(static_cast<double>(nElements) / static_cast<double>(LOCAL_ITEM_SIZE)) * LOCAL_ITEM_SIZE);
   const RangeArray    global_range = { globalItemSize, 1, 1 };
@@ -477,6 +477,67 @@ execRemoveSmallValues(const Device::Pointer & device, Array::Pointer buffer, con
   const ParameterList params = { { "a", buffer }, { "n", nElements } };
   native_execute(device, kernel, params, global_range, local_range);
 }
+
+namespace
+{
+  typedef struct {
+    size_t x, y, z;
+  } LocalSize3D;
+
+// Helper function to clamp value to nearest power of 2
+static inline size_t clamp_to_power_of_2(size_t max_size, size_t target) {
+    return (max_size >= target) ? target : 
+           (max_size >= target/2) ? target/2 : 
+           (max_size >= target/4) ? target/4 : max_size;
+}
+
+RangeArray determine_local_size(size_t max_work_group_size, int dim) {
+    const LocalSize3D configs_2d[] = {
+        {16, 16, 1},  // 256 work items
+        {8, 8, 1},    // 64 work items
+        {4, 4, 1}     // 16 work items
+    };
+    
+    const LocalSize3D configs_3d[] = {
+        {8, 8, 8},    // 512 work items
+        {8, 8, 4},    // 256 work items
+        {8, 4, 4},    // 128 work items
+        {4, 4, 4}     // 64 work items
+    };
+    
+    // Initialize to 1
+    RangeArray local_size = {1,1,1};
+    switch (dim) {
+        case 1: {
+            local_size[0] = clamp_to_power_of_2(max_work_group_size, 256);
+            break;
+        }
+        case 2: {
+            for (int i = 0; i < sizeof(configs_2d)/sizeof(configs_2d[0]); i++) {
+                if (max_work_group_size >= configs_2d[i].x * configs_2d[i].y) {
+                    local_size[0] = configs_2d[i].x;
+                    local_size[1] = configs_2d[i].y;
+                    local_size[2] = configs_2d[i].z;
+                    break;
+                }
+            }
+            break;
+        }
+        case 3: {
+            for (int i = 0; i < sizeof(configs_3d)/sizeof(configs_3d[0]); i++) {
+                if (max_work_group_size >= configs_3d[i].x * configs_3d[i].y * configs_3d[i].z) {
+                    local_size[0] = configs_3d[i].x;
+                    local_size[1] = configs_3d[i].y;
+                    local_size[2] = configs_3d[i].z;
+                    break;
+                }
+            }
+            break;
+          }
+    }
+    return local_size;
+}
+} // namespace
 
 auto
 execTotalVariationTerm(const Device::Pointer & device,
@@ -492,9 +553,14 @@ execTotalVariationTerm(const Device::Pointer & device,
   unsigned int nx = estimate->width();
   unsigned int ny = estimate->height();
   unsigned int nz = estimate->depth();
+  
+  const RangeArray local_range = determine_local_size(device->getMaximumWorkGroupSize(), estimate->dim());
 
-  const RangeArray    global_range = { static_cast<size_t>(nx), static_cast<size_t>(ny), static_cast<size_t>(nz) };
-  const RangeArray    local_range = { 512, 512, 64 };
+  const RangeArray    global_range = { 
+    (static_cast<size_t>(nx) + local_range[0] - 1) / local_range[0] * local_range[0], 
+    (static_cast<size_t>(ny) + local_range[1] - 1) / local_range[1] * local_range[1], 
+    (static_cast<size_t>(nz) + local_range[2] - 1) / local_range[2] * local_range[2] 
+  };
   KernelInfo          kernel = { "totalVariationTerm", kernel::fft };
   const ParameterList params = { { "estimate", estimate },
                                  { "correction", correction },
