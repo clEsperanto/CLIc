@@ -49,7 +49,7 @@ multiply_matrix_func(const Device::Pointer & device,
   if (matrix1->width() != matrix2->height())
   {
     std::cerr << "Warning: matrix dimensions are not compatible for multiplication, we expect (k,n?),(m?,k)->(m?,n?) but got ("
-              << matrix1->width() << "," << matrix1->height() << "),(" << matrix2->width() << "," << matrix2->height() << ")" << std::endl;
+              << matrix1->height() << "," << matrix1->width() << "),(" << matrix2->height() << "," << matrix2->width() << ")" << std::endl;
   }
 
   tier0::create_dst(matrix1, matrix_destination, matrix2->width(), matrix1->height(), 1, dType::FLOAT);
