@@ -8,8 +8,11 @@ namespace cle::tier2
 {
 
 auto
-concatenate_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst, const int axis)
-  -> Array::Pointer
+concatenate_func(const Device::Pointer & device,
+                 const Array::Pointer &  src0,
+                 const Array::Pointer &  src1,
+                 Array::Pointer          dst,
+                 const int               axis) -> Array::Pointer
 {
   switch (axis)
   {

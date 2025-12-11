@@ -18,7 +18,7 @@ auto
 copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  if(src->dtype() == dst->dtype())
+  if (src->dtype() == dst->dtype())
   {
     src->copyTo(dst);
   }
