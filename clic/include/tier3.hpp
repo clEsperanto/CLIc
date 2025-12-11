@@ -486,7 +486,7 @@ artificial_tissue_func(const Device::Pointer & device,
                        float                   sigma_y,
                        float                   sigma_z) -> Array::Pointer;
 
-/*
+/**
  * @name read_map_values
  * @brief Reads values from a parametric map using its corresponding labels and
  * return it as a vector of values.

@@ -453,7 +453,7 @@ execOperationKernel(const Device::Pointer & device,
                     const unsigned int      nElements) -> Array::Pointer
 {
   const size_t LOCAL_ITEM_SIZE = std::min(256, static_cast<int>(device->getMaximumWorkGroupSize()));
-  size_t           globalItemSize =
+  size_t       globalItemSize =
     static_cast<size_t>(ceil(static_cast<double>(nElements) / static_cast<double>(LOCAL_ITEM_SIZE)) * LOCAL_ITEM_SIZE);
 
   const RangeArray    global_range = { globalItemSize, 1, 1 };
@@ -469,7 +469,7 @@ auto
 execRemoveSmallValues(const Device::Pointer & device, Array::Pointer buffer, const unsigned int nElements) -> void
 {
   const size_t LOCAL_ITEM_SIZE = std::min(256, static_cast<int>(device->getMaximumWorkGroupSize()));
-  size_t           globalItemSize =
+  size_t       globalItemSize =
     static_cast<size_t>(ceil(static_cast<double>(nElements) / static_cast<double>(LOCAL_ITEM_SIZE)) * LOCAL_ITEM_SIZE);
   const RangeArray    global_range = { globalItemSize, 1, 1 };
   const RangeArray    local_range = { LOCAL_ITEM_SIZE, 1, 1 };
@@ -492,13 +492,13 @@ execTotalVariationTerm(const Device::Pointer & device,
   unsigned int nx = estimate->width();
   unsigned int ny = estimate->height();
   unsigned int nz = estimate->depth();
-  
+
   /// use normal global range and set local to default to avoid local size optimization
   // const RangeArray local_range = determine_local_size(device->getMaximumWorkGroupSize(), estimate->dim());
-  // const RangeArray    global_range = { 
-  //   (static_cast<size_t>(nx) + local_range[0] - 1) / local_range[0] * local_range[0], 
-  //   (static_cast<size_t>(ny) + local_range[1] - 1) / local_range[1] * local_range[1], 
-  //   (static_cast<size_t>(nz) + local_range[2] - 1) / local_range[2] * local_range[2] 
+  // const RangeArray    global_range = {
+  //   (static_cast<size_t>(nx) + local_range[0] - 1) / local_range[0] * local_range[0],
+  //   (static_cast<size_t>(ny) + local_range[1] - 1) / local_range[1] * local_range[1],
+  //   (static_cast<size_t>(nz) + local_range[2] - 1) / local_range[2] * local_range[2]
   // };
   const RangeArray local_range = { 0, 0, 0 };
   const RangeArray global_range = { static_cast<size_t>(nx), static_cast<size_t>(ny), static_cast<size_t>(nz) };
