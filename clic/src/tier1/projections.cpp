@@ -27,7 +27,7 @@ maximum_x_projection_func(const Device::Pointer & device, const Array::Pointer &
   const KernelInfo    kernel = { "maximum_projection", kernel::maximum_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const RangeArray    local = { 1, 1, 1 };
+  const RangeArray    local = { 0, 0, 0 };
   const ConstantList  constants = { { "PROJECTION_AXIS", 0 } }; // 0 for X axis
   execute(device, kernel, params, range, local, constants);
   return dst;
@@ -40,7 +40,7 @@ maximum_y_projection_func(const Device::Pointer & device, const Array::Pointer &
   const KernelInfo    kernel = { "maximum_projection", kernel::maximum_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const RangeArray    local = { 1, 1, 1 };
+  const RangeArray    local = { 0, 0, 0 };
   const ConstantList  constants = { { "PROJECTION_AXIS", 1 } }; // 1 for Y axis
   execute(device, kernel, params, range, local, constants);
   return dst;
@@ -53,7 +53,7 @@ maximum_z_projection_func(const Device::Pointer & device, const Array::Pointer &
   const KernelInfo    kernel = { "maximum_projection", kernel::maximum_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const RangeArray    local = { 1, 1, 1 };
+  const RangeArray    local = { 0, 0, 0 };
   const ConstantList  constants = { { "PROJECTION_AXIS", 2 } }; // 2 for Z axis
   execute(device, kernel, params, range, local, constants);
   return dst;
@@ -66,7 +66,7 @@ mean_x_projection_func(const Device::Pointer & device, const Array::Pointer & sr
   const KernelInfo    kernel = { "mean_projection", kernel::mean_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const RangeArray    local = { 1, 1, 1 };
+  const RangeArray    local = { 0, 0, 0 };
   const ConstantList  constants = { { "PROJECTION_AXIS", 0 } }; // 0 for X axis
   execute(device, kernel, params, range, local, constants);
   return dst;
@@ -79,7 +79,7 @@ mean_y_projection_func(const Device::Pointer & device, const Array::Pointer & sr
   const KernelInfo    kernel = { "mean_projection", kernel::mean_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const RangeArray    local = { 1, 1, 1 };
+  const RangeArray    local = { 0, 0, 0 };
   const ConstantList  constants = { { "PROJECTION_AXIS", 1 } }; // 1 for Y axis
   execute(device, kernel, params, range, local, constants);
   return dst;
@@ -92,7 +92,7 @@ mean_z_projection_func(const Device::Pointer & device, const Array::Pointer & sr
   const KernelInfo    kernel = { "mean_projection", kernel::mean_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const RangeArray    local = { 1, 1, 1 };
+  const RangeArray    local = { 0, 0, 0 };
   const ConstantList  constants = { { "PROJECTION_AXIS", 2 } }; // 2 for Z axis
   execute(device, kernel, params, range, local, constants);
   return dst;
@@ -105,7 +105,7 @@ minimum_x_projection_func(const Device::Pointer & device, const Array::Pointer &
   const KernelInfo    kernel = { "minimum_projection", kernel::minimum_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const RangeArray    local = { 1, 1, 1 };
+  const RangeArray    local = { 0, 0, 0 };
   const ConstantList  constants = { { "PROJECTION_AXIS", 0 } }; // 0 for X axis
   execute(device, kernel, params, range, local, constants);
   return dst;
@@ -117,7 +117,7 @@ minimum_y_projection_func(const Device::Pointer & device, const Array::Pointer &
   const KernelInfo    kernel = { "minimum_projection", kernel::minimum_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const RangeArray    local = { 1, 1, 1 };
+  const RangeArray    local = { 0, 0, 0 };
   const ConstantList  constants = { { "PROJECTION_AXIS", 1 } }; // 1 for Y axis
   execute(device, kernel, params, range, local, constants);
   return dst;
@@ -130,7 +130,7 @@ minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer &
   const KernelInfo    kernel = { "minimum_projection", kernel::minimum_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const RangeArray    local = { 1, 1, 1 };
+  const RangeArray    local = { 0, 0, 0 };
   const ConstantList  constants = { { "PROJECTION_AXIS", 2 } }; // 2 for Z axis
   execute(device, kernel, params, range, local, constants);
   return dst;
@@ -143,7 +143,7 @@ sum_x_projection_func(const Device::Pointer & device, const Array::Pointer & src
   const KernelInfo    kernel = { "sum_projection", kernel::sum_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const RangeArray    local = { 1, 1, 1 };
+  const RangeArray    local = { 0, 0, 0 };
   const ConstantList  constants = { { "PROJECTION_AXIS", 0 } }; // 0 for X axis
   execute(device, kernel, params, range, local, constants);
   return dst;
@@ -156,7 +156,7 @@ sum_y_projection_func(const Device::Pointer & device, const Array::Pointer & src
   const KernelInfo    kernel = { "sum_projection", kernel::sum_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const RangeArray    local = { 1, 1, 1 };
+  const RangeArray    local = { 0, 0, 0 };
   const ConstantList  constants = { { "PROJECTION_AXIS", 1 } }; // 1 for Y axis
   execute(device, kernel, params, range, local, constants);
   return dst;
@@ -169,7 +169,7 @@ sum_z_projection_func(const Device::Pointer & device, const Array::Pointer & src
   const KernelInfo    kernel = { "sum_projection", kernel::sum_projection };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const RangeArray    local = { 1, 1, 1 };
+  const RangeArray    local = { 0, 0, 0 };
   const ConstantList  constants = { { "PROJECTION_AXIS", 2 } }; // 2 for Z axis
   execute(device, kernel, params, range, local, constants);
   return dst;
