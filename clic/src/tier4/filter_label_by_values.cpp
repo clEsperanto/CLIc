@@ -40,7 +40,7 @@ remove_labels_with_map_values_within_range_func(const Device::Pointer & device,
   auto above = tier1::greater_or_equal_constant_func(device, values, nullptr, min_value);
   auto below = tier1::smaller_or_equal_constant_func(device, values, nullptr, max_value);
   auto flaglist = Array::create(values->size(), 1, 1, 1, dType::LABEL, mType::BUFFER, device);
-  tier1::binary_or_func(device, below, above, flaglist);
+  tier1::binary_and_func(device, below, above, flaglist);
   return tier3::remove_labels_func(device, src, flaglist, dst);
 }
 
