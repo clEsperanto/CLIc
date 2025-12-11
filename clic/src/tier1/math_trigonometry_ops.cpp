@@ -18,7 +18,7 @@ apply_trigonometric_op(const Device::Pointer & device, const Array::Pointer & sr
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
   const ConstantList  constants = { { "APPLY_OP(x)", op_define } };
-  execute(device, kernel_info, params, range, { 1, 1, 1 }, constants);
+  execute(device, kernel_info, params, range, { 0, 0, 0 }, constants);
   return dst;
 }
 } // namespace
