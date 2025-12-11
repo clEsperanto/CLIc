@@ -32,7 +32,7 @@ execute(const Device::Pointer & device,
         const KernelInfo &      kernel_func,
         const ParameterList &   parameters,
         const RangeArray &      global_range = { 1, 1, 1 },
-        const RangeArray &      local_range = { 1, 1, 1 },
+        const RangeArray &      local_range = { 0, 0, 0 },
         const ConstantList &    constants = {}) -> void;
 
 
@@ -89,7 +89,7 @@ native_execute(const Device::Pointer & device,
                const KernelInfo &      kernel_func,
                const ParameterList &   parameters,
                const RangeArray &      global_range = { 1, 1, 1 },
-               const RangeArray &      local_range = { 1, 1, 1 }) -> void;
+               const RangeArray &      local_range = { 0, 0, 0 }) -> void;
 
 } // namespace cle
 

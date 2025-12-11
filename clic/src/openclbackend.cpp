@@ -1296,7 +1296,7 @@ OpenCLBackend::executeKernel(const Device::Pointer &                    device,
                                     3,
                                     nullptr,
                                     global_size.data(),
-                                    local_size.data(),
+                                    (local_size[0] > 0) ? local_size.data() : nullptr,
                                     0,
                                     nullptr,
                                     nullptr);
