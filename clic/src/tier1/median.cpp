@@ -38,7 +38,7 @@ median_func(const Device::Pointer & device,
   const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar0", r_x }, { "scalar1", r_y }, { "scalar2", r_z } };
   const ConstantList  constants = { { "MAX_ARRAY_SIZE", r_x * r_y * r_z } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const RangeArray    local_range = { 1, 1, 1 };
+  const RangeArray    local_range = { 0, 0, 0 }; // default
   execute(device, kernel, params, range, local_range, constants);
   return dst;
 }
