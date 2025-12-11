@@ -11,8 +11,8 @@ static const std::unordered_map<int, std::string> dimension_defines = { { 1, "#d
                                                                         { 3, "#define USE_3D" } };
 
 static const std::unordered_map<dType, std::string> dtype_defines = {
-  { dType::INT8, "#define USE_CHAR" },     { dType::UINT8, "#define USE_UCHAR" }, { dType::INT16, "#define USE_SHORT" },
-  { dType::UINT16, "#define USE_USHORT" }, { dType::INT32, "#define USE_INT" },   { dType::UINT32, "#define USE_UINT" },
+  { dType::INT8, "#define USE_CHAR" },     { dType::UINT8, "#define USE_UCHAR" },  { dType::INT16, "#define USE_SHORT" },
+  { dType::UINT16, "#define USE_USHORT" }, { dType::INT32, "#define USE_INT" },    { dType::UINT32, "#define USE_UINT" },
   { dType::FLOAT, "#define USE_FLOAT" },   { dType::COMPLEX, "#define USE_FLOAT" }
 };
 } // namespace
