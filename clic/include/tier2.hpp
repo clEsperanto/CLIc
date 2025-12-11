@@ -271,7 +271,7 @@ binary_closing_func(const Device::Pointer & device,
  * @see https://clij.github.io/clij2-docs/reference_combineHorizontally
  */
 auto
-concatenate(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst, const int axis)
+concatenate_func(const Device::Pointer & device, const Array::Pointer & src0, const Array::Pointer & src1, Array::Pointer dst, const int axis)
   -> Array::Pointer;
 
 /**
