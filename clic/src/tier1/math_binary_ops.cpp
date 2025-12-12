@@ -43,7 +43,7 @@ apply_binary_math_operation(const Device::Pointer & device,
   const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar", scalar } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
   const ConstantList  constants = { { "APPLY_OP(x, y)", op_define } };
-  execute(device, kernel_info, params, range, { 1, 1, 1 }, constants);
+  execute(device, kernel_info, params, range, { 0, 0, 0 }, constants);
   return dst;
 }
 
