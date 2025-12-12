@@ -466,11 +466,11 @@ tubeness_func(const Device::Pointer & device, const Array::Pointer & src, Array:
  * @param width Width of the generated image. [int ( = 256 ) ]
  * @param height Height of the generated image. [int ( = 256 ) ]
  * @param depth Depth of the generated image. [int ( = 1 ) ]
- * @param delta_x Spacing between pixels in x. [float ( = 1.0 )]
- * @param delta_y Spacing between pixels in y. [float ( = 1.0 )]
+ * @param delta_x Spacing between pixels in x. [float ( = 10.0 )]
+ * @param delta_y Spacing between pixels in y. [float ( = 10.0 )]
  * @param delta_z Spacing between pixels in z. [float ( = 0.0 )]
- * @param sigma_x Standard deviation of the Gaussian noise in x. [float ( = 1.0 )]
- * @param sigma_y Standard deviation of the Gaussian noise in y. [float ( = 1.0 )]
+ * @param sigma_x Standard deviation of the Gaussian noise in x. [float ( = 3.0 )]
+ * @param sigma_y Standard deviation of the Gaussian noise in y. [float ( = 3.0 )]
  * @param sigma_z Standard deviation of the Gaussian noise in z. [float ( = 0.0 )]
  * @return Array::Pointer
  */
