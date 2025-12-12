@@ -59,9 +59,9 @@ coordinate_generator(int   width,
       // Add random noise to coordinates
       for (size_t j = 0; j < num_coords; ++j)
       {
-        x_coords[j] += dist_x(gen);
-        y_coords[j] += dist_y(gen);
-        z_coords[j] += dist_z(gen);
+        x_coords[j] += ( width > 1) ? dist_x(gen) : 0;
+        y_coords[j] += ( height > 1) ? dist_y(gen) : 0;
+        z_coords[j] += ( depth > 1) ? dist_z(gen) : 0;
       }
 
       // Append to all coordinates
