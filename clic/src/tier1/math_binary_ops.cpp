@@ -52,7 +52,7 @@ apply_binary_math_operation(const Device::Pointer & device,
 auto
 power_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar) -> Array::Pointer
 {
-  return apply_binary_math_operation(device, src, dst, scalar, "pow(x, y)");
+  return apply_binary_math_operation(device, src, dst, scalar, "native_powr(x, y)");
 }
 
 auto
@@ -98,13 +98,13 @@ subtract_image_from_scalar_func(const Device::Pointer & device, const Array::Poi
 auto
 divide_image_by_scalar_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar) -> Array::Pointer
 {
-  return apply_binary_math_operation(device, src, dst, scalar, "(x / y)");
+  return apply_binary_math_operation(device, src, dst, scalar, "native_divide(x, y)");
 }
 
 auto
 divide_scalar_by_image_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar) -> Array::Pointer
 {
-  return apply_binary_math_operation(device, src, dst, scalar, "(y / x)");
+  return apply_binary_math_operation(device, src, dst, scalar, "native_divide(y, x)");
 }
 
 auto

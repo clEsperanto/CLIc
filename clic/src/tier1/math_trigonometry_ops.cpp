@@ -26,19 +26,19 @@ apply_trigonometric_op(const Device::Pointer & device, const Array::Pointer & sr
 auto
 sin_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_trigonometric_op(device, src, dst, "sin(x)");
+  return apply_trigonometric_op(device, src, dst, "native_sin(x)");
 }
 
 auto
 cos_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_trigonometric_op(device, src, dst, "cos(x)");
+  return apply_trigonometric_op(device, src, dst, "native_cos(x)");
 }
 
 auto
 tan_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_trigonometric_op(device, src, dst, "tan(x)");
+  return apply_trigonometric_op(device, src, dst, "native_tan(x)");
 }
 
 auto
