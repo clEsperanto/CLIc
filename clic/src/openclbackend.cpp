@@ -996,8 +996,11 @@ buildProgram(const Device::Pointer & device, const std::shared_ptr<void> & progr
   {
     throw std::runtime_error("Error: Program is null.");
   }
+
+  std::string build_flags = "-w  -cl-mad-enable  -cl-unsafe-math-optimizations"; // enable unsafe math optimizations
+
   cl_int buildStatus =
-    clBuildProgram(reinterpret_cast<cl_program>(program.get()), 1, &opencl_device->getCLDevice(), "-w", nullptr, nullptr);
+    clBuildProgram(reinterpret_cast<cl_program>(program.get()), 1, &opencl_device->getCLDevice(), build_flags.c_str(), nullptr, nullptr);
 
   if (buildStatus != CL_SUCCESS)
   {
