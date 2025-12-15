@@ -41,8 +41,8 @@ median_of_touching_neighbors_func(const Device::Pointer & device,
   const KernelInfo    kernel = { "median_touching_neighbors", kernel::median_touching_neighbors };
   const ParameterList params = { { "src_vector", vector }, { "src_matrix", matrix }, { "dst", dst }, { "x_correction", x_corr } };
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-  const ConstantList constants = { { "MAX_ARRAY_SIZE", 256 } };
-  execute(device, kernel, params, range, {0,0,0}, constants);
+  const ConstantList  constants = { { "MAX_ARRAY_SIZE", 256 } };
+  execute(device, kernel, params, range, { 0, 0, 0 }, constants);
   return dst;
 }
 
