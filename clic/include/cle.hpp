@@ -4,6 +4,7 @@
 #include "backend.hpp"
 #include "clic.hpp"
 #include "device.hpp"
+#include "execution.hpp"
 
 #include "fft.hpp"
 

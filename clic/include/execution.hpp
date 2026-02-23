@@ -4,6 +4,7 @@
 #include "device.hpp"
 
 #include <array>
+#include <set>
 #include <variant>
 #include <vector>
 
@@ -89,6 +90,39 @@ native_execute(const Device::Pointer & device,
                const ParameterList &   parameters,
                const RangeArray &      global_range = { 1, 1, 1 },
                const RangeArray &      local_range = { 0, 0, 0 }) -> void;
+
+
+
+
+
+
+
+/**
+ * @brief Evaluate a mathematical expression element-wise on GPU arrays
+ *
+ * Generates and executes a pure OpenCL/CUDA 1D kernel from the given expression.
+ * Variable names in the expression are automatically mapped by position to the
+ * parameters vector. All values (array elements and scalars) are cast to float
+ * for computation, and the result is cast to the output array's data type.
+ *
+ * The expression uses standard C/OpenCL math syntax. Built-in math functions
+ * (sin, cos, exp, pow, sqrt, fabs, fmin, fmax, etc.) are supported.
+ *
+ * Variable names are extracted from the expression in order of first appearance
+ * and bound to parameters by index:
+ *   evaluate(device, "a + b * s", {img1, img2, 2.5f}, result);
+ *   // a -> img1 (index 0), b -> img2 (index 1), s -> 2.5f (index 2)
+ *
+ * @param device Device pointer
+ * @param expression Mathematical expression string (e.g. "a + b * s")
+ * @param parameters Positional list of input arrays and scalars
+ * @param output Destination array (must be pre-allocated, same size as input arrays)
+ */
+auto
+evaluate(const Device::Pointer &            device,
+         const std::string &                expression,
+         const std::vector<ParameterType> & parameters,
+         const Array::Pointer &             output) -> void;
 
 } // namespace cle
 
