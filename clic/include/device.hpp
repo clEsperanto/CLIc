@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_DEVICE_HPP
-#define __INCLUDE_DEVICE_HPP
+#pragma once
 
 #include "clic.hpp"
 
@@ -739,4 +738,3 @@ private:
 
 } // namespace cle
 
-#endif // __INCLUDE_DEVICE_HPP

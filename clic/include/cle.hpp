@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_CLE_HPP
-#define __INCLUDE_CLE_HPP
+#pragma once
 
 #include "array.hpp"
 #include "backend.hpp"
@@ -17,4 +16,3 @@
 #include "tier7.hpp"
 #include "tier8.hpp"
 
-#endif // __INCLUDE_CLE_HPP

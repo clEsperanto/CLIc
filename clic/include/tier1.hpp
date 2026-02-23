@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_TIER1_HPP
-#define __INCLUDE_TIER1_HPP
+#pragma once
 
 #include "tier0.hpp"
 
@@ -3285,4 +3284,3 @@ truncate_func(const Device::Pointer & device, const Array::Pointer & src, Array:
 
 } // namespace cle::tier1
 
-#endif // __INCLUDE_TIER1_HPP

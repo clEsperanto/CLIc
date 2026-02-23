@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_TIER6_HPP
-#define __INCLUDE_TIER6_HPP
+#pragma once
 
 #include "tier0.hpp"
 
@@ -199,4 +198,3 @@ proximal_neighbor_count_map_func(const Device::Pointer & device,
 
 } // namespace cle::tier6
 
-#endif // __INCLUDE_TIER6_HPP

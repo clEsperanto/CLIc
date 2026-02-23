@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_TIER5_HPP
-#define __INCLUDE_TIER5_HPP
+#pragma once
 
 #include "tier0.hpp"
 
@@ -205,4 +204,3 @@ normalize_func(const Device::Pointer & device, const Array::Pointer & src, Array
 
 } // namespace cle::tier5
 
-#endif // __INCLUDE_TIER5_HPP

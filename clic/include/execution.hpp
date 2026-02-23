@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_EXECUTION_HPP
-#define __INCLUDE_EXECUTION_HPP
+#pragma once
 
 #include "array.hpp"
 #include "device.hpp"
@@ -93,4 +92,3 @@ native_execute(const Device::Pointer & device,
 
 } // namespace cle
 
-#endif // __INCLUDE_EXECUTION_HPP

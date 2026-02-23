@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_CACHE_HPP
-#define __INCLUDE_CACHE_HPP
+#pragma once
 
 #include <cstdlib>
 #include <filesystem>
@@ -114,4 +113,3 @@ static const auto CACHE_FOLDER_PATH = get_cache_directory_path();
 
 } // namespace cle
 
-#endif // __INCLUDE_CACHE_HPP

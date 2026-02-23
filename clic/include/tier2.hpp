@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_TIER2_HPP
-#define __INCLUDE_TIER2_HPP
+#pragma once
 
 #include "tier0.hpp"
 
@@ -1196,4 +1195,3 @@ generate_proximal_neighbors_matrix_func(const Device::Pointer & device,
 
 } // namespace cle::tier2
 
-#endif // __INCLUDE_TIER2_HPP

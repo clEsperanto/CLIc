@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_FFT_HPP
-#define __INCLUDE_FFT_HPP
+#pragma once
 
 // we rely on the vkFFT library for FFT operations in OpenCL and CUDA
 #include "vkFFT.h"
@@ -188,4 +187,3 @@ performDeconvolution(const Array::Pointer & observe,
 
 } // namespace cle::fft
 
-#endif // __INCLUDE_FFT_HPP

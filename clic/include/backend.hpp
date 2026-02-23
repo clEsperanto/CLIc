@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_BACKEND_HPP
-#define __INCLUDE_BACKEND_HPP
+#pragma once
 
 #include "cache.hpp"
 #include "clic.hpp"
@@ -833,4 +832,3 @@ private:
 
 } // namespace cle
 
-#endif // __INCLUDE_BACKEND_HPP

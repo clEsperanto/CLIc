@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_TRANSFORM_HPP
-#define __INCLUDE_TRANSFORM_HPP
+#pragma once
 
 #include <array>
 
@@ -474,4 +473,3 @@ apply_affine_transform_deskew_3d(const cle::Array::Pointer &  src,
 
 } // namespace cle
 
-#endif // __INCLUDE_TRANSFORM_HPP

@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_UTILS_HPP
-#define __INCLUDE_UTILS_HPP
+#pragma once
 
 #include <algorithm>
 #include <array>
@@ -426,4 +425,3 @@ auto inline fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<
 
 } // namespace cle
 
-#endif // __INCLUDE_UTILS_HPP

@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_ARRAY_HPP
-#define __INCLUDE_ARRAY_HPP
+#pragma once
 
 #include "backend.hpp"
 #include "device.hpp"
@@ -375,4 +374,3 @@ print(const Array::Pointer & array, const char * name = "Array::Pointer") -> voi
 } // namespace cle
 
 
-#endif // __INCLUDE_ARRAY_HPP
