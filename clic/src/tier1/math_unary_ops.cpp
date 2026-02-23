@@ -1,7 +1,6 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
 
-#include "cle_unary_operation.h"
 #include "utils.hpp"
 
 namespace cle::tier1
@@ -10,15 +9,43 @@ namespace cle::tier1
 namespace
 {
 auto
-apply_unary_math_operation(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, const std::string & op_define)
-  -> Array::Pointer
+apply_unary_math_operation(const Device::Pointer & device,
+                           const Array::Pointer &  src,
+                           Array::Pointer          dst,
+                           const std::string &     op_name,
+                           const std::string &     op_expr) -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  const KernelInfo    kernel_info = { "unary_operation", kernel::unary_operation };
-  const ParameterList params = { { "src", src }, { "dst", dst } };
-  const RangeArray    range = { src->width(), src->height(), src->depth() };
-  const ConstantList  constants = { { "APPLY_OP(x)", op_define } };
-  execute(device, kernel_info, params, range, { 0, 0, 0 }, constants);
+
+  const bool        is_opencl = (device->getType() == Device::Type::OPENCL);
+  const std::string src_type = toString(src->dtype());
+  const std::string dst_type = toString(dst->dtype());
+  const std::string addr = is_opencl ? "__global " : "";
+  const std::string kw = is_opencl ? "__kernel" : "extern \"C\" __global__";
+  const std::string gid = is_opencl ? "get_global_id(0)" : "blockDim.x * blockIdx.x + threadIdx.x";
+  const std::string kernel_name = op_name + "_" + src_type + "_" + dst_type;
+
+  const std::string kernel_source =
+    kw + " void " + kernel_name + "(\n"
+    "  " + addr + "const " + src_type + "* src,\n"
+    "  " + addr + dst_type + "* dst,\n"
+    "  const int size\n"
+    ") {\n"
+    "  const int idx = " + gid + ";\n"
+    "  if (idx >= size) return;\n"
+    "  const float x = (float)src[idx];\n"
+    "  dst[idx] = (" + dst_type + ")(" + op_expr + ");\n"
+    "}\n";
+
+  const int        total_size = static_cast<int>(src->size());
+  const size_t     max_local = device->getMaximumWorkGroupSize();
+  const size_t     global_padded = ((total_size + max_local - 1) / max_local) * max_local;
+  const RangeArray global_range = { global_padded, 1, 1 };
+  const RangeArray local_range = { max_local, 1, 1 };
+
+  const KernelInfo    kernel = { kernel_name, kernel_source };
+  const ParameterList params = { { "src", src }, { "dst", dst }, { "size", total_size } };
+  native_execute(device, kernel, params, global_range, local_range);
   return dst;
 }
 } // namespace
@@ -26,91 +53,91 @@ apply_unary_math_operation(const Device::Pointer & device, const Array::Pointer 
 auto
 absolute_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_unary_math_operation(device, src, dst, "fabs(x)");
+  return apply_unary_math_operation(device, src, dst, "absolute", "fabs(x)");
 }
 
 auto
 cubic_root_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_unary_math_operation(device, src, dst, "cbrt(x)");
+  return apply_unary_math_operation(device, src, dst, "cbrt", "cbrt(x)");
 }
 
 auto
 square_root_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_unary_math_operation(device, src, dst, "sqrt(x)");
+  return apply_unary_math_operation(device, src, dst, "sqrt", "sqrt(x)");
 }
 
 auto
 exponential_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_unary_math_operation(device, src, dst, "exp(x)");
+  return apply_unary_math_operation(device, src, dst, "exp", "exp(x)");
 }
 
 auto
 exponential2_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_unary_math_operation(device, src, dst, "exp2(x)");
+  return apply_unary_math_operation(device, src, dst, "exp2", "exp2(x)");
 }
 
 auto
 exponential10_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_unary_math_operation(device, src, dst, "exp10(x)");
+  return apply_unary_math_operation(device, src, dst, "exp10", "exp10(x)");
 }
 
 auto
 logarithm_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_unary_math_operation(device, src, dst, "log(x)");
+  return apply_unary_math_operation(device, src, dst, "log", "log(x)");
 }
 
 auto
 logarithm2_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_unary_math_operation(device, src, dst, "log2(x)");
+  return apply_unary_math_operation(device, src, dst, "log2", "log2(x)");
 }
 
 auto
 logarithm10_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_unary_math_operation(device, src, dst, "log10(x)");
+  return apply_unary_math_operation(device, src, dst, "log10", "log10(x)");
 }
 
 auto
 reciprocal_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_unary_math_operation(device, src, dst, "1.0 / x");
+  return apply_unary_math_operation(device, src, dst, "reciprocal", "1.0f / x");
 }
 
 auto
 ceil_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_unary_math_operation(device, src, dst, "ceil(x)");
+  return apply_unary_math_operation(device, src, dst, "ceil", "ceil(x)");
 }
 
 auto
 floor_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_unary_math_operation(device, src, dst, "floor(x)");
+  return apply_unary_math_operation(device, src, dst, "floor", "floor(x)");
 }
 
 auto
 round_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_unary_math_operation(device, src, dst, "round(x)");
+  return apply_unary_math_operation(device, src, dst, "round", "round(x)");
 }
 
 auto
 truncate_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_unary_math_operation(device, src, dst, "trunc(x)");
+  return apply_unary_math_operation(device, src, dst, "trunc", "trunc(x)");
 }
 
 auto
 binary_not_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  return apply_unary_math_operation(device, src, dst, "(x != 0) ? 0 : 1");
+  return apply_unary_math_operation(device, src, dst, "binary_not", "(x != 0) ? 0 : 1");
 }
 
 
