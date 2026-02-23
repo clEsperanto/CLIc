@@ -7,6 +7,7 @@ set(CMAKE_Fortran_COMPILER NOTFOUND CACHE FILEPATH "Fortran compiler" FORCE)
 
 set(kernel_version_tag "3.5.1"  CACHE STRING "clEsperanto kernel version tag")
 set(eigen_lib_version_tag "3.4.0" CACHE STRING "Eigen library version tag")
+set(vkFFT_version_tag "v1.3.4" CACHE STRING "vkFFT library version tag")
 
 # if not set, set the default build type to Release
 if(NOT CLE_BACKEND_TYPE)
