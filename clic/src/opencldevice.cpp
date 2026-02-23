@@ -435,13 +435,13 @@ OpenCLDevice::getInfoExtended() const -> std::string
 auto
 OpenCLDevice::getProgramFromCache(const std::string & key) const -> std::shared_ptr<void>
 {
-  return cache->getCachedProgram(key);
+  return cache->get(key);
 }
 
 auto
 OpenCLDevice::addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void
 {
-  cache->cacheProgram(key, program);
+  cache->put(key, program);
 }
 
 

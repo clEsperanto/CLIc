@@ -2,114 +2,223 @@
 
 #include <cstdlib>
 #include <filesystem>
+#include <functional>
 #include <iostream>
+#include <list>
+#include <memory>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
-#include "device.hpp"
-
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-#  define NOMINMAX
-#  include <ShlObj.h>
-#  include <windows.h>
-#endif
 
 namespace cle
 {
 
-constexpr std::string_view CACHE_FOLDER = "clesperanto";
-constexpr std::string_view CACHE_DIR_WIN = "AppData\\Local";
-constexpr std::string_view CACHE_DIR_UNIX = ".cache";
-
 /**
- * @brief Get the path to the cache folder
- * @param base_path the home directory of the user
- * @return the path to the cache folder
+ * @brief In-memory LRU cache for compiled programs
+ *
+ * Stores compiled program objects (as shared_ptr<void>) keyed by a string hash.
+ * Uses a least-recently-used eviction policy with a configurable maximum size.
+ * Each device should own its own ProgramCache instance since compiled programs
+ * are device-specific.
  */
-static auto
-get_path_with_cache_folder(const std::filesystem::path & base_path) -> std::filesystem::path
+class ProgramCache
 {
-  return base_path / std::filesystem::u8path(CACHE_FOLDER);
-}
+public:
+  static constexpr size_t MAX_CACHE_SIZE = 128;
 
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+  ProgramCache();
+  ~ProgramCache() = default;
 
-/**
- * @brief Get the path to the cache folder
- * @return the path to the cache folder
- */
-static auto
-get_cache_directory_path() -> std::filesystem::path
-{
-  TCHAR path[MAX_PATH];
-  if (FAILED(SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, path)))
+  // Non-copyable, movable
+  ProgramCache(const ProgramCache &) = delete;
+  ProgramCache &
+  operator=(const ProgramCache &) = delete;
+  ProgramCache(ProgramCache &&) = default;
+  ProgramCache &
+  operator=(ProgramCache &&) = default;
+
+  /**
+   * @brief Cache a compiled program with a given key
+   * @param key The key to identify the program (typically device_hash + source_hash)
+   * @param program The compiled program pointer to cache
+   */
+  auto
+  put(const std::string & key, const std::shared_ptr<void> & program) -> void;
+
+  /**
+   * @brief Retrieve a cached program by key, updating its LRU position
+   * @param key The key to identify the program
+   * @return The program pointer if found, nullptr otherwise
+   */
+  auto
+  get(const std::string & key) -> std::shared_ptr<void>;
+
+  /**
+   * @brief Check if a key exists in the cache
+   * @param key The key to check
+   * @return true if the key exists, false otherwise
+   */
+  [[nodiscard]] auto
+  contains(const std::string & key) const -> bool;
+
+  /**
+   * @brief Get the number of cached programs
+   * @return The number of entries in the cache
+   */
+  [[nodiscard]] auto
+  size() const -> size_t;
+
+  /**
+   * @brief Clear all cached programs
+   */
+  auto
+  clear() -> void;
+
+private:
+  struct Entry
   {
-    std::cerr << "Failed to get " << CACHE_DIR_WIN << " directory\n";
-    return get_path_with_cache_folder(std::filesystem::current_path());
-  }
-  return get_path_with_cache_folder(std::filesystem::u8path(path));
-}
-#else
+    std::shared_ptr<void>            program;
+    std::list<std::string>::iterator lru_it;
+  };
+
+  std::unordered_map<std::string, Entry> cache_;
+  std::list<std::string>                 lru_;
+};
 
 /**
- * @brief Get the path to the cache folder
- * @return the path to the cache folder
+ * @brief Disk cache manager for compiled kernel binaries
+ *
+ * Manages saving and loading compiled kernel binaries (OpenCL .bin, CUDA .ptx, etc.)
+ * to/from disk. The cache directory is organized as:
+ *   <cache_root>/<device_hash>/<source_hash>.<extension>
+ *
+ * The disk cache can be disabled via the CLESPERANTO_NO_CACHE environment variable
+ * or programmatically via setEnabled().
+ *
+ * Cache directory locations:
+ *   - Unix/macOS: $HOME/.cache/clesperanto/
+ *   - Windows:    %LOCALAPPDATA%\clesperanto\
+ *   - Fallback:   $(pwd)/.cache/clesperanto/
  */
-static auto
-get_cache_directory_path() -> std::filesystem::path
+class DiskCache
 {
-  if (char * home_dir = std::getenv("HOME"); home_dir != nullptr)
-  {
-    return get_path_with_cache_folder(std::filesystem::u8path(home_dir) / std::filesystem::u8path(CACHE_DIR_UNIX));
-  }
-  std::cerr << "Failed to get user home directory\n";
-  return get_path_with_cache_folder(std::filesystem::current_path() / std::filesystem::path(CACHE_DIR_UNIX));
-}
-#endif
+public:
+  /**
+   * @brief Get the singleton DiskCache instance
+   * @return Reference to the DiskCache singleton
+   */
+  static auto
+  instance() -> DiskCache &;
+
+  /**
+   * @brief Check if the disk cache is enabled
+   * @return true if caching is enabled, false otherwise
+   */
+  [[nodiscard]] auto
+  isEnabled() const -> bool;
+
+  /**
+   * @brief Enable or disable the disk cache
+   * @param flag true to enable, false to disable
+   */
+  auto
+  setEnabled(bool flag) -> void;
+
+  /**
+   * @brief Get the root cache directory path
+   * @return The cache directory path
+   */
+  [[nodiscard]] auto
+  getCacheDirectory() const -> const std::filesystem::path &;
+
+  /**
+   * @brief Build the full file path for a cached binary
+   * @param device_hash Hash string identifying the device
+   * @param source_hash Hash string identifying the kernel source
+   * @param extension File extension (e.g., "bin", "ptx")
+   * @return The full path to the cache file
+   */
+  [[nodiscard]] auto
+  getFilePath(const std::string & device_hash, const std::string & source_hash, const std::string & extension) const
+    -> std::filesystem::path;
+
+  /**
+   * @brief Save binary data to the disk cache
+   * @param device_hash Hash string identifying the device
+   * @param source_hash Hash string identifying the kernel source
+   * @param extension File extension (e.g., "bin", "ptx")
+   * @param data Pointer to binary data
+   * @param size Size of the binary data in bytes
+   */
+  auto
+  saveBinary(const std::string & device_hash,
+             const std::string & source_hash,
+             const std::string & extension,
+             const void *        data,
+             size_t              size) -> void;
+
+  /**
+   * @brief Load binary data from the disk cache
+   * @param device_hash Hash string identifying the device
+   * @param source_hash Hash string identifying the kernel source
+   * @param extension File extension (e.g., "bin", "ptx")
+   * @return The binary data as a vector of bytes, or empty if not found
+   */
+  [[nodiscard]] auto
+  loadBinary(const std::string & device_hash, const std::string & source_hash, const std::string & extension) const
+    -> std::vector<unsigned char>;
+
+  /**
+   * @brief Check if a cached binary exists on disk
+   * @param device_hash Hash string identifying the device
+   * @param source_hash Hash string identifying the kernel source
+   * @param extension File extension (e.g., "bin", "ptx")
+   * @return true if the file exists, false otherwise
+   */
+  [[nodiscard]] auto
+  exists(const std::string & device_hash, const std::string & source_hash, const std::string & extension) const -> bool;
+
+  /**
+   * @brief Compute a hash string for the given input
+   * @param input The string to hash
+   * @return The hash as a string
+   */
+  [[nodiscard]] static auto
+  hash(const std::string & input) -> std::string;
+
+private:
+  DiskCache();
+  ~DiskCache() = default;
+  DiskCache(const DiskCache &) = delete;
+  DiskCache &
+  operator=(const DiskCache &) = delete;
+
+  static auto
+  resolveCacheDirectory() -> std::filesystem::path;
+
+  std::filesystem::path cacheDir_;
+};
 
 /**
- * @brief Check if the cache is enabled
- *        The cache can be disabled by setting the environment variable CLESPERANTO_NO_CACHE
- * @return true if the cache is enabled, false otherwise
+ * @brief Convenience function to enable/disable the disk cache
+ * @param flag true to enable, false to disable
  */
-static auto
-is_cache_enabled() -> bool
-{
-  return std::getenv("CLESPERANTO_NO_CACHE") == nullptr;
-}
-
-/**
- * @brief Control the cache
- */
-static auto
+inline auto
 use_cache(bool flag) -> void
 {
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-  if (flag)
-  {
-    // unset the environment variable CLESPERANTO_NO_CACHE
-    _putenv("CLESPERANTO_NO_CACHE=");
-  }
-  else
-  {
-    // set the environment variable CLESPERANTO_NO_CACHE to 1
-    _putenv("CLESPERANTO_NO_CACHE=1");
-  }
-#else
-  if (flag)
-  {
-    // unset the environment variable CLESPERANTO_NO_CACHE
-    unsetenv("CLESPERANTO_NO_CACHE");
-  }
-  else
-  {
-    // set the environment variable CLESPERANTO_NO_CACHE to 1
-    setenv("CLESPERANTO_NO_CACHE", "1", 1);
-  }
-#endif
+  DiskCache::instance().setEnabled(flag);
 }
 
-
-static const auto CACHE_FOLDER_PATH = get_cache_directory_path();
+/**
+ * @brief Convenience function to check if the disk cache is enabled
+ * @return true if caching is enabled, false otherwise
+ */
+inline auto
+is_cache_enabled() -> bool
+{
+  return DiskCache::instance().isEnabled();
+}
 
 } // namespace cle
 

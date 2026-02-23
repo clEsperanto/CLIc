@@ -743,50 +743,18 @@ CUDABackend::setMemory(const Device::Pointer &       device,
 static auto
 saveBinaryToCache(const std::string & device_hash, const std::string & source_hash, const std::string & program) -> void
 {
-  std::filesystem::path binary_path = CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".ptx");
-  std::filesystem::create_directories(binary_path.parent_path());
-
-  std::ofstream outfile(binary_path);
-  if (!outfile)
-  {
-    throw std::runtime_error("Error: Fail to open binary cache file.");
-  }
-  outfile.write(program.c_str(), program.size());
-  if (!outfile.good())
-  {
-    throw std::runtime_error("Error: Fail to write binary cache file.");
-  }
+  DiskCache::instance().saveBinary(device_hash, source_hash, "ptx", program.c_str(), program.size());
 }
 
 static auto
 loadBinaryFromCache(const Device::Pointer & device, const std::string & device_hash, const std::string & source_hash) -> std::string
 {
-  std::filesystem::path binary_path = CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".ptx");
-
-  if (!std::filesystem::exists(binary_path))
+  auto binary = DiskCache::instance().loadBinary(device_hash, source_hash, "ptx");
+  if (binary.empty())
   {
     return {};
   }
-  std::ifstream ptx_file(binary_path);
-  if (!ptx_file.is_open())
-  {
-    throw std::runtime_error("Error: Fail to open binary cache file.");
-  }
-  ptx_file.seekg(0, std::ios::end);
-  size_t size = ptx_file.tellg();
-  if (size < 1)
-  {
-    throw std::runtime_error("Error: Problem encountered while reading the file");
-  }
-
-  ptx_file.seekg(0, std::ios::beg);
-  std::string ptx(size, '\0');
-  ptx.assign((std::istreambuf_iterator<char>(ptx_file)), std::istreambuf_iterator<char>());
-  if (ptx_file.fail())
-  {
-    throw std::runtime_error("Error: Fail to read PTX file.");
-  }
-  return ptx;
+  return std::string(binary.begin(), binary.end());
 }
 #endif
 
@@ -805,14 +773,22 @@ CUDABackend::buildKernel(const Device::Pointer & device,
     throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
                              ").");
   }
-  std::hash<std::string> hasher;
-  const auto             source_hash = std::to_string(hasher(kernel_source));
-  const auto             device_hash = std::to_string(hasher(cuda_device->getInfo()));
 
-  const auto  use_cache = is_cache_enabled();
+  const auto source_hash = DiskCache::hash(kernel_source);
+  const auto device_hash = DiskCache::hash(cuda_device->getInfo());
+  auto &     disk_cache = DiskCache::instance();
+
+  // Try in-memory cache first to avoid recompilation and disk access
+  const auto cache_key = device_hash + "_" + source_hash + "_" + kernel_name;
+  auto       cached = device->getProgramFromCache(cache_key);
+  if (cached != nullptr)
+  {
+    *(reinterpret_cast<CUfunction *>(kernel)) = *(reinterpret_cast<CUfunction *>(cached.get()));
+    return;
+  }
+
   std::string ptx;
-
-  if (use_cache)
+  if (disk_cache.isEnabled())
   {
     ptx = loadBinaryFromCache(device, device_hash, source_hash);
   }
@@ -858,7 +834,7 @@ CUDABackend::buildKernel(const Device::Pointer & device,
       throw std::runtime_error("Error: Fail to destroy kernel program. CUDA error : " + getErrorString(result) + " (" +
                                std::to_string(result) + ").");
     }
-    if (use_cache)
+    if (disk_cache.isEnabled())
     {
       saveBinaryToCache(device_hash, source_hash, ptx);
     }
@@ -876,6 +852,11 @@ CUDABackend::buildKernel(const Device::Pointer & device,
     throw std::runtime_error("Error: Fail to build function from module. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
                              ").");
   }
+
+  // Store function in in-memory cache for reuse
+  auto function_ptr = std::shared_ptr<void>(new CUfunction(cuFunction), [](void * p) { delete reinterpret_cast<CUfunction *>(p); });
+  device->addProgramToCache(cache_key, function_ptr);
+
   *(reinterpret_cast<CUfunction *>(kernel)) = cuFunction;
 #else
   throw std::runtime_error("Error: CUDA is not enabled");

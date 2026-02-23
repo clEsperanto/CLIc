@@ -138,10 +138,9 @@ get_cache_path(const Array::Pointer & output, const std::shared_ptr<OpenCLDevice
 {
   std::ostringstream hashStream;
   hashStream << output->width() << "," << output->height() << "," << output->depth() << "," << output->dimension();
-  std::hash<std::string> hasher;
-  const auto             source_hash = std::to_string(hasher(hashStream.str()));
-  const auto             device_hash = std::to_string(hasher(ocl_device->getInfo()));
-  return CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".bin");
+  const auto source_hash = DiskCache::hash(hashStream.str());
+  const auto device_hash = DiskCache::hash(ocl_device->getInfo());
+  return DiskCache::instance().getFilePath(device_hash, source_hash, "bin");
 }
 
 auto
@@ -167,6 +166,7 @@ load_kernel_cache(const std::filesystem::path & binary_path, VkFFTConfiguration 
 auto
 save_kernel_cache(const std::filesystem::path & binary_path, const VkFFTApplication & app) -> void
 {
+  std::filesystem::create_directories(binary_path.parent_path());
   FILE * kernelCache = fopen(binary_path.string().c_str(), "wb");
   fwrite(app.saveApplicationString, app.applicationStringSize, 1, kernelCache);
   fclose(kernelCache);
@@ -207,7 +207,7 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   configuration.commandQueue = &queue;
 
   // manage jit-cache system
-  const auto            use_cache = is_cache_enabled();
+  const auto            use_cache = DiskCache::instance().isEnabled();
   std::filesystem::path binary_path;
   if (use_cache)
   {
@@ -286,7 +286,7 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
   configuration.commandQueue = &queue;
 
   // manage jit-cache system
-  const auto            use_cache = is_cache_enabled();
+  const auto            use_cache = DiskCache::instance().isEnabled();
   std::filesystem::path binary_path;
   if (use_cache)
   {

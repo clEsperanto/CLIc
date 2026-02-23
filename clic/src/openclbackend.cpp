@@ -1,9 +1,7 @@
 #include "backend.hpp"
 #include "cle_preamble_cl.h"
-#include <list>
 
 #include <numeric>
-#include <unordered_map>
 
 namespace cle
 {
@@ -1028,12 +1026,13 @@ saveBinaryToCache(const std::string &           device_hash,
     reinterpret_cast<cl_program>(program.get()), CL_PROGRAM_BINARY_SIZES, sizeof(size_t) * nb_devices, bin_size_list, nullptr);
   if (err != CL_SUCCESS)
   {
+    delete[] bin_size_list;
     throw std::runtime_error("Error: Fail to fetch program binary size. OpenCL error : " + getErrorString(err) + " (" +
                              std::to_string(err) + ").");
   }
 
   char ** bin_value_list = new char *[nb_devices];
-  for (int i = 0; i < nb_devices; i++)
+  for (size_t i = 0; i < nb_devices; i++)
   {
     bin_value_list[i] = new char[bin_size_list[i]];
   }
@@ -1042,27 +1041,21 @@ saveBinaryToCache(const std::string &           device_hash,
     reinterpret_cast<cl_program>(program.get()), CL_PROGRAM_BINARIES, sizeof(unsigned char *) * nb_devices, bin_value_list, nullptr);
   if (err != CL_SUCCESS)
   {
+    for (size_t i = 0; i < nb_devices; i++)
+    {
+      delete[] bin_value_list[i];
+    }
+    delete[] bin_value_list;
+    delete[] bin_size_list;
     throw std::runtime_error("Error: Fail to fetch program binary. OpenCL error : " + getErrorString(err) + " (" + std::to_string(err) +
                              ").");
   }
 
-  std::filesystem::path binary_path = CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".bin");
-  std::filesystem::create_directories(binary_path.parent_path());
-  std::ofstream outfile(binary_path, std::ios::binary);
-  if (!outfile)
-  {
-    throw std::runtime_error("Error: Fail to open binary cache file.");
-  }
-
-  outfile.write(reinterpret_cast<char *>(bin_value_list[device_index]), bin_size_list[device_index]);
-  if (!outfile.good())
-  {
-    throw std::runtime_error("Error: Fail to write binary cache file.");
-  }
+  DiskCache::instance().saveBinary(device_hash, source_hash, "bin", bin_value_list[device_index], bin_size_list[device_index]);
 
   // properly deallocate the memory
   delete[] bin_size_list;
-  for (int i = 0; i < nb_devices; i++)
+  for (size_t i = 0; i < nb_devices; i++)
   {
     delete[] bin_value_list[i];
   }
@@ -1076,33 +1069,15 @@ loadProgramFromCache(const Device::Pointer & device, const std::string & device_
   cl_int err;
   cl_int status;
 
-  std::filesystem::path binary_path = CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".bin");
-  if (!std::filesystem::exists(binary_path))
+  auto binary = DiskCache::instance().loadBinary(device_hash, source_hash, "bin");
+  if (binary.empty())
   {
-    return nullptr;
-  }
-  std::ifstream binary_file(binary_path, std::ios::binary | std::ios::ate);
-  if (!binary_file.is_open())
-  {
-    std::cerr << "Error: Fail to open binary cache file." << std::endl;
-    return nullptr;
-  }
-  size_t binary_size = binary_file.tellg();
-  if (binary_size <= 0)
-  {
-    std::cerr << "Error: Fail to read binary file size. Reading size: " << binary_size << std::endl;
-    return nullptr;
-  }
-  binary_file.seekg(0, std::ios::beg);
-  std::vector<unsigned char> binary(binary_size);
-  if (!binary_file.read((char *)binary.data(), binary_size))
-  {
-    std::cerr << "Error: Fail to read binary file." << std::endl;
     return nullptr;
   }
 
   auto         opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  const auto * binary_code_ptr = reinterpret_cast<const unsigned char *>(binary.data());
+  auto         binary_size = binary.size();
+  const auto * binary_code_ptr = binary.data();
   auto         program = clCreateProgramWithBinary(
     opencl_device->getCLContext(), 1, &opencl_device->getCLDevice(), &binary_size, &binary_code_ptr, &status, &err);
   if (status != CL_SUCCESS || program == nullptr)
@@ -1161,48 +1136,6 @@ CreateProgramFromSource(const Device::Pointer & device, const std::string & kern
 #endif
 
 
-// static constexpr size_t                                       MAX_PROGRAM_CACHE_SIZE = 64;
-// static std::unordered_map<std::string, std::shared_ptr<void>> program_cache;
-// static std::list<std::string>                                 program_lru;
-
-// void
-// cacheProgram(const std::string & key, std::shared_ptr<void> program)
-// {
-//   std::cout << "caching program: " << key << std::endl;
-//   if (program_cache.find(key) != program_cache.end())
-//   {
-//     // Program already exists, update LRU
-//     program_lru.remove(key);
-//     program_lru.push_back(key);
-//     std::cout << "\tProgram already cached, updating LRU." << std::endl;
-//     return;
-//   }
-//   if (program_cache.size() >= MAX_PROGRAM_CACHE_SIZE)
-//   {
-//     // Remove oldest
-//     auto oldest = program_lru.front();
-//     program_lru.pop_front();
-//     program_cache.erase(oldest);
-//     std::cout << "\tCache full, removing oldest program" << std::endl;
-//   }
-//   program_cache[key] = program;
-//   program_lru.push_back(key);
-//   std::cout << program_cache.size() << " programs cached." << std::endl;
-//   return;
-// }
-
-// std::shared_ptr<void>
-// getCachedProgram(const std::string & key)
-// {
-//   std::cout << "fetching program from cache: " << key << std::endl;
-//   auto it = program_cache.find(key);
-//   if (it != program_cache.end())
-//   {
-//     return it->second;
-//   }
-//   return nullptr;
-// }
-
 auto
 OpenCLBackend::buildKernel(const Device::Pointer & device,
                            const std::string &     kernel_source,
@@ -1213,18 +1146,16 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
 
   cl_int     err;
   auto       opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  const auto use_cache = is_cache_enabled();
-  // std::shared_ptr<void> program = nullptr;
+  auto &     disk_cache = DiskCache::instance();
 
-  std::hash<std::string> hasher;
-  const auto             source_hash = std::to_string(hasher(kernel_source));
-  const auto             device_hash = std::to_string(hasher(opencl_device->getInfo()));
+  const auto source_hash = DiskCache::hash(kernel_source);
+  const auto device_hash = DiskCache::hash(opencl_device->getInfo());
 
-  // fetch the internal cache to avoid rebuilding
+  // Try in-memory cache first to avoid rebuilding and disk access
   const auto cache_key = device_hash + "_" + source_hash;
   auto       program = device->getProgramFromCache(cache_key);
 
-  if (program == nullptr && use_cache)
+  if (program == nullptr && disk_cache.isEnabled())
   {
     program = loadProgramFromCache(device, device_hash, source_hash);
   }
@@ -1232,7 +1163,7 @@ OpenCLBackend::buildKernel(const Device::Pointer & device,
   if (program == nullptr)
   {
     program = CreateProgramFromSource(device, kernel_source);
-    if (use_cache)
+    if (disk_cache.isEnabled())
     {
       saveBinaryToCache(device_hash, source_hash, program, device);
     }
