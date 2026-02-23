@@ -12,11 +12,11 @@ clip_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
   -> Array::Pointer
 {
 
+  tier0::create_like(src, dst);
   min_intensity = std::isnan(min_intensity) ? tier2::minimum_of_all_pixels_func(device, src) : min_intensity;
   max_intensity = std::isnan(max_intensity) ? tier2::maximum_of_all_pixels_func(device, src) : max_intensity;
-
-  auto temp = tier1::maximum_image_and_scalar_func(device, src, nullptr, min_intensity);
-  return tier1::minimum_image_and_scalar_func(device, temp, dst, max_intensity);
+  evaluate(device, "clamp(a, lo, hi)", {src, min_intensity, max_intensity}, dst);
+  return dst;
 }
 
 } // namespace cle::tier2

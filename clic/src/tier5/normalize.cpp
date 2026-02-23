@@ -23,11 +23,7 @@ normalize_func(const Device::Pointer & device, const Array::Pointer & src, Array
   const auto max =
     (high_percentile > 0) ? roundf(tier4::percentile_func(device, src, high_percentile)) : tier2::maximum_of_all_pixels_func(device, src);
   const auto constant = -(new_max - new_min) / (max - min);
-
-  auto temp = tier1::subtract_image_from_scalar_func(device, src, nullptr, min);
-  tier1::multiply_image_and_scalar_func(device, temp, dst, constant);
-  tier2::clip_func(device, dst, dst, new_min, new_max);
-
+  evaluate(device, "fmin(fmax((lo - a) * c, 0.0f), 1.0f)", {min, src, constant}, dst);
   return dst;
 }
 
