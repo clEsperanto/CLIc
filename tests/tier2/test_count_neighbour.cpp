@@ -7,19 +7,24 @@
 class TestCountNeighbor : public ::testing::TestWithParam<std::string>
 {
 protected:
+  std::string backend;
+  cle::Device::Pointer device;
   std::array<uint32_t, 6 * 1 * 1> output;
   std::array<float, 5 * 5 * 1>    input = { 1, 1, 0, 3, 3, 1, 1, 2, 3, 3, 0, 2, 2, 2, 0, 4, 4, 2, 5, 5, 4, 4, 0, 5, 5 };
+
+  virtual void
+  SetUp()
+  {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
+  }
 };
 
 TEST_P(TestCountNeighbor, ignoreBG)
 {
   std::array<uint32_t, 6 * 1 * 1> valid = { 0, 1, 4, 1, 1, 1 };
-
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
@@ -37,12 +42,6 @@ TEST_P(TestCountNeighbor, ignoreBG)
 TEST_P(TestCountNeighbor, includeBG)
 {
   std::array<uint32_t, 6 * 1 * 1> valid = { 5, 2, 5, 2, 2, 2 };
-
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());

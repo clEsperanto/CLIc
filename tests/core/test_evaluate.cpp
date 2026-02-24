@@ -6,13 +6,24 @@
 #include "test_utils.hpp"
 
 class TestEvaluate : public ::testing::TestWithParam<std::string>
-{};
+{
+  protected:
+  std::string backend;
+  cle::Device::Pointer device;
+
+  virtual void
+  SetUp()
+  {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
+  }
+};
 
 TEST_P(TestEvaluate, addTwoArrays)
 {
-  cle::BackendManager::getInstance().setBackend(GetParam());
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   auto a = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto b = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -33,9 +44,7 @@ TEST_P(TestEvaluate, addTwoArrays)
 
 TEST_P(TestEvaluate, expressionWithScalar)
 {
-  cle::BackendManager::getInstance().setBackend(GetParam());
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   auto a = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto b = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -57,9 +66,7 @@ TEST_P(TestEvaluate, expressionWithScalar)
 
 TEST_P(TestEvaluate, mathFunctions)
 {
-  cle::BackendManager::getInstance().setBackend(GetParam());
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   auto a = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto out = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -79,9 +86,7 @@ TEST_P(TestEvaluate, mathFunctions)
 
 TEST_P(TestEvaluate, complexExpression)
 {
-  cle::BackendManager::getInstance().setBackend(GetParam());
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   auto a = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto b = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -103,9 +108,7 @@ TEST_P(TestEvaluate, complexExpression)
 
 TEST_P(TestEvaluate, array2D)
 {
-  cle::BackendManager::getInstance().setBackend(GetParam());
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   auto a = cle::Array::create(5, 4, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto b = cle::Array::create(5, 4, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -126,9 +129,7 @@ TEST_P(TestEvaluate, array2D)
 
 TEST_P(TestEvaluate, array3D)
 {
-  cle::BackendManager::getInstance().setBackend(GetParam());
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   auto a = cle::Array::create(4, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto out = cle::Array::create(4, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -148,9 +149,7 @@ TEST_P(TestEvaluate, array3D)
 
 TEST_P(TestEvaluate, mixedDtypes)
 {
-  cle::BackendManager::getInstance().setBackend(GetParam());
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   auto a = cle::Array::create(10, 1, 1, 1, cle::dType::UINT8, cle::mType::BUFFER, device);
   auto b = cle::Array::create(10, 1, 1, 1, cle::dType::INT16, cle::mType::BUFFER, device);
@@ -173,9 +172,7 @@ TEST_P(TestEvaluate, mixedDtypes)
 
 TEST_P(TestEvaluate, multipleScalars)
 {
-  cle::BackendManager::getInstance().setBackend(GetParam());
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   auto a = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto out = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);

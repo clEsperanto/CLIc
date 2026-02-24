@@ -7,19 +7,25 @@
 class TestConcatenate : public ::testing::TestWithParam<std::string>
 {
 protected:
+  std::string backend;
+  cle::Device::Pointer device;
   std::array<float, 2 * 2 * 2> output;
   std::array<float, 2 * 2 * 1> input1 = { 1, 1, 1, 1 };
   std::array<float, 2 * 2 * 1> input2 = { 2, 2, 2, 2 };
+
+  virtual void
+  SetUp()
+  {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
+  }
 };
 
 TEST_P(TestConcatenate, alongX_withDst)
 {
   std::array<float, 4 * 2 * 1> valid = { 1, 1, 2, 2, 1, 1, 2, 2 };
-
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   auto gpu_input1 = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(gpu_input1);
@@ -44,11 +50,6 @@ TEST_P(TestConcatenate, alongX)
 {
   std::array<float, 4 * 2 * 1> valid = { 1, 1, 2, 2, 1, 1, 2, 2 };
 
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   auto gpu_input1 = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(gpu_input1);
   gpu_input1->writeFrom(input1.data());
@@ -70,11 +71,6 @@ TEST_P(TestConcatenate, alongY)
 {
   std::array<float, 2 * 2 * 2> valid = { 1, 1, 1, 1, 2, 2, 2, 2 };
 
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   auto gpu_input1 = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(gpu_input1);
   gpu_input1->writeFrom(input1.data());
@@ -95,11 +91,6 @@ TEST_P(TestConcatenate, alongY)
 TEST_P(TestConcatenate, alongZ)
 {
   std::array<float, 2 * 2 * 2> valid = { 1, 1, 1, 1, 2, 2, 2, 2 };
-
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   auto gpu_input1 = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(gpu_input1);

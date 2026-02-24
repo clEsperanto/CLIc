@@ -6,17 +6,25 @@
 #include <numeric>
 
 class TestCopyHorizontalSlice : public ::testing::TestWithParam<std::string>
-{};
+{
+protected:
+  std::string backend;
+  cle::Device::Pointer device;
+
+  virtual void
+  SetUp()
+  {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
+  }
+};
 
 TEST_P(TestCopyHorizontalSlice, executeFrom)
 {
   std::array<float, 2 * 2 * 2> input = { 1, 4, 0, 4, 1, 3, 1, 2 };
   std::array<float, 2 * 2 * 1> output;
-
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(2, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_output = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -36,11 +44,6 @@ TEST_P(TestCopyHorizontalSlice, executeTo)
 {
   std::array<float, 2 * 2 * 1> input = { 3, 4, 4, 5 };
   std::array<float, 2 * 2 * 2> output;
-
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(2, 2, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_output = cle::Array::create(2, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -62,12 +65,6 @@ TEST_P(TestCopyHorizontalSlice, executeIMG)
   };
   std::array<float, 3 * 3 * 1> valid = { 3, 4, 5, 13, 14, 15, 23, 24, 25 };
   std::array<float, 3 * 3 * 1> output;
-
-
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(3, 3, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_output = cle::Array::create(3, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);

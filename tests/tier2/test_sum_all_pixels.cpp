@@ -8,12 +8,18 @@
 class TestSumAllPixel : public ::testing::TestWithParam<std::string>
 {
 protected:
+  std::string backend;
+  cle::Device::Pointer device;
   std::array<float, 10 * 20 * 30> input;
   float                           valid;
 
   virtual void
   SetUp()
   {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
     std::fill(input.begin(), input.end(), 1.0f);
     valid = std::accumulate(input.begin(), input.end(), 0.0f);
   }
@@ -21,11 +27,6 @@ protected:
 
 TEST_P(TestSumAllPixel, execute)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   array->writeFrom(input.data());
 

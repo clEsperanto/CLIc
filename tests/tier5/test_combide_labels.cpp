@@ -7,19 +7,25 @@
 class TestCombineLabels : public ::testing::TestWithParam<std::string>
 {
 protected:
+  std::string backend;
+  cle::Device::Pointer device;
   std::array<uint32_t, 6 * 2 * 1> input1 = { 1, 1, 0, 0, 3, 3, 1, 1, 0, 2, 3, 3 };
   std::array<uint32_t, 6 * 2 * 1> input2 = { 0, 1, 1, 2, 2, 0, 0, 1, 1, 2, 2, 0 };
   std::array<uint32_t, 6 * 2 * 1> valid = { 1, 3, 3, 4, 4, 2, 1, 3, 3, 4, 4, 2 };
   std::array<uint32_t, 6 * 2 * 1> output;
+
+  virtual void
+  SetUp()
+  {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
+  }
 };
 
 TEST_P(TestCombineLabels, execute)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   auto gpu_input1 = cle::Array::create(6, 2, 1, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
   auto gpu_input2 = cle::Array::create(gpu_input1);
   gpu_input1->writeFrom(input1.data());

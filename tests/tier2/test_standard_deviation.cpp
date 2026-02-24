@@ -8,20 +8,26 @@
 class TestStandardDeviation : public ::testing::TestWithParam<std::string>
 {
 protected:
+  std::string backend;
+  cle::Device::Pointer device;
   std::array<float, 5 * 5 * 1> output;
   std::array<float, 5 * 5 * 1> input = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   std::array<float, 5 * 5 * 1> valid_box = { 0,     0, 0, 0,     0,     0,     0.314, 0.314, 0.314, 0, 0, 0.314, 0.314,
                                              0.314, 0, 0, 0.314, 0.314, 0.314, 0,     0,     0,     0, 0, 0 };
   std::array<float, 5 * 5 * 1> valid_sphere = { 0, 0, 0, 0, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0.4, 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0, 0, 0, 0 };
+
+  virtual void
+  SetUp()
+  {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
+  }
 };
 
 TEST_P(TestStandardDeviation, executeBox)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
@@ -36,11 +42,6 @@ TEST_P(TestStandardDeviation, executeBox)
 
 TEST_P(TestStandardDeviation, executeSphere)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 

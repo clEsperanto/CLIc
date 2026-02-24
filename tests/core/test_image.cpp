@@ -5,14 +5,24 @@
 #include "test_utils.hpp"
 
 class TestImage : public ::testing::TestWithParam<std::string>
-{};
+{
+  protected:
+  std::string backend;
+  cle::Device::Pointer device;
+
+  virtual void
+  SetUp()
+  {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
+  }
+};
 
 TEST_P(TestImage, allocate)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   if (!device->supportImage())
   {
@@ -45,10 +55,7 @@ TEST_P(TestImage, allocate)
 
 TEST_P(TestImage, typeDataMemory)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   if (!device->supportImage())
   {
@@ -68,10 +75,7 @@ TEST_P(TestImage, typeDataMemory)
 
 TEST_P(TestImage, allocateWrite)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   if (!device->supportImage())
   {
@@ -102,10 +106,7 @@ TEST_P(TestImage, allocateWrite)
 
 TEST_P(TestImage, readWrite)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   if (!device->supportImage())
   {
@@ -140,10 +141,7 @@ TEST_P(TestImage, readWrite)
 
 TEST_P(TestImage, copyFill)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   if (!device->supportImage())
   {
@@ -191,10 +189,7 @@ TEST_P(TestImage, copyFill)
 
 TEST_P(TestImage, stringCout)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   if (!device->supportImage())
   {
@@ -218,10 +213,7 @@ TEST_P(TestImage, stringCout)
 
 TEST_P(TestImage, regionOperation)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   if (!device->supportImage())
   {
@@ -298,10 +290,7 @@ TEST_P(TestImage, regionOperation)
 
 TEST_P(TestImage, throwErrors)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   if (!device->supportImage())
   {

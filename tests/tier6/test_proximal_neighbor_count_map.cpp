@@ -7,19 +7,25 @@
 class TestProximalNeighborCount : public ::testing::TestWithParam<std::string>
 {
 protected:
+  std::string backend;
+  cle::Device::Pointer device;
   const std::array<uint32_t, 5 * 5 * 1> valid = { 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1 };
 
   const std::array<uint32_t, 5 * 5 * 1> input = { 1, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 5 };
   std::array<uint32_t, 5 * 5 * 1>       output;
+
+  virtual void
+  SetUp()
+  {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
+  }
 };
 
 TEST_P(TestProximalNeighborCount, executeBox)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   auto gpu_input = cle::Array::create(5, 5, 1, 2, cle::dType::UINT32, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 

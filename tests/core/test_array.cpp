@@ -5,14 +5,24 @@
 #include "test_utils.hpp"
 
 class TestArray : public ::testing::TestWithParam<std::string>
-{};
+{
+  protected:
+  std::string backend;
+  cle::Device::Pointer device;
+
+  virtual void
+  SetUp()
+  {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
+  }
+};
 
 TEST_P(TestArray, allocate)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -39,10 +49,7 @@ TEST_P(TestArray, allocate)
 
 TEST_P(TestArray, typeDataMemory)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -56,10 +63,7 @@ TEST_P(TestArray, typeDataMemory)
 
 TEST_P(TestArray, allocateWrite)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   // Write some data to the array
   std::array<float, 10 * 20 * 30> data;
@@ -84,10 +88,7 @@ TEST_P(TestArray, allocateWrite)
 
 TEST_P(TestArray, readWrite)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -116,10 +117,7 @@ TEST_P(TestArray, readWrite)
 
 TEST_P(TestArray, copyFill)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -161,10 +159,7 @@ TEST_P(TestArray, copyFill)
 
 TEST_P(TestArray, stringCout)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -182,10 +177,7 @@ TEST_P(TestArray, stringCout)
 
 TEST_P(TestArray, regionOperation)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   // Create a new Array
   auto array = cle::Array::create(7, 7, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -256,10 +248,7 @@ TEST_P(TestArray, regionOperation)
 
 TEST_P(TestArray, throwErrors)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+
 
   // Create a new Array
   auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);

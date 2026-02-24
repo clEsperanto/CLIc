@@ -7,6 +7,8 @@
 class TestLabeling : public ::testing::TestWithParam<std::string>
 {
 protected:
+  std::string backend;
+  cle::Device::Pointer device;
   const std::array<uint32_t, 5 * 3 * 2> valid_diamond = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
                                                           2, 0, 0, 1, 0, 0, 3, 0, 1, 1, 0, 3, 0, 0, 0 };
   const std::array<uint32_t, 5 * 3 * 2> valid_box = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
@@ -15,15 +17,19 @@ protected:
     0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0
   };
   std::array<uint32_t, 5 * 3 * 2> output;
+
+  virtual void
+  SetUp()
+  {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
+  }
 };
 
 TEST_P(TestLabeling, executeBox)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   auto gpu_input = cle::Array::create(5, 3, 2, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
@@ -38,11 +44,6 @@ TEST_P(TestLabeling, executeBox)
 
 TEST_P(TestLabeling, executeDiamond)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   auto gpu_input = cle::Array::create(5, 3, 2, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
