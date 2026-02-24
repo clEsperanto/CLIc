@@ -6,7 +6,7 @@
 namespace cle::tier1
 {
 
-namespace
+namespace kernel
 {
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -40,6 +40,9 @@ __kernel void multiply_matrix(
 
   const int row_base = get_group_id(1) * TILE_SIZE + local_y;
 
+  // tile_src0 is stored TRANSPOSED: [k][m] instead of [m][k]
+  // This means the compute loop reads sequential memory addresses
+  // when iterating over the m (row) dimension within a tile.
   __local float tile_src0[TILE_SIZE][LM_STRIDE];
   __local float tile_src1[TILE_SIZE][LM_STRIDE];
 
@@ -61,11 +64,15 @@ __kernel void multiply_matrix(
       const int a_row = get_group_id(1) * TILE_SIZE + load_row;
       const int a_col = tile_offset + local_x;
 
+      // TRANSPOSED store: swap indices so A is stored as [k][m]
+      // local_x corresponds to the k dimension within the tile
+      // load_row corresponds to the m dimension within the tile
       if (a_row < M && a_col < K)
-        tile_src0[load_row][local_x] = READ_IMAGE(src0, sampler, POS_src0_INSTANCE(a_col, a_row, 0, 0)).x;
+        tile_src0[local_x][load_row] = READ_IMAGE(src0, sampler, POS_src0_INSTANCE(a_col, a_row, 0, 0)).x;
       else
-        tile_src0[load_row][local_x] = 0.0f;
+        tile_src0[local_x][load_row] = 0.0f;
 
+      // B tile unchanged: stored as [k][n]
       const int b_row = tile_offset + load_row;
       const int b_col = col;
 
@@ -85,7 +92,11 @@ __kernel void multiply_matrix(
       #pragma unroll
       for (int w = 0; w < WPT_M; ++w)
       {
-        acc[w] += tile_src0[local_y + w * RTS_M][k] * b_val;
+        // TRANSPOSED read: tile_src0[k][m] instead of tile_src0[m][k]
+        // Adjacent threads (different w values) now read adjacent memory
+        // addresses tile_src0[k][local_y], tile_src0[k][local_y+RTS_M], ...
+        // which are consecutive in the row, eliminating bank conflicts.
+        acc[w] += tile_src0[k][local_y + w * RTS_M] * b_val;
       }
     }
 
@@ -103,6 +114,11 @@ __kernel void multiply_matrix(
   }
 }
 )CLC";
+
+}
+
+namespace
+{
 
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -386,7 +402,7 @@ multiply_matrix_func(const Device::Pointer & device,
   // ── Select configuration ────────────────────────────────────────────
   const MatmulConfig config = build_config(M, K, N, device);
 
-  const KernelInfo    kernel  = { "multiply_matrix", kernel::multiply_matrix };
+  const KernelInfo    kernel  = { "multiply_matrix", kernel::kernel_code };
   const ParameterList params  = { { "src0", matrix1 }, { "src1", matrix2 }, { "dst", matrix_destination } };
   const ConstantList  constants = {
     { "TILE_SIZE", config.tile_size },
