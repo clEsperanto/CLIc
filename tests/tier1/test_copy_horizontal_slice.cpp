@@ -1,14 +1,14 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 #include <numeric>
 
 class TestCopyHorizontalSlice : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
+  std::string          backend;
   cle::Device::Pointer device;
 
   virtual void

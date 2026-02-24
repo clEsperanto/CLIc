@@ -1,15 +1,15 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <algorithm>
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestStandardDeviation : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
-  cle::Device::Pointer device;
+  std::string                  backend;
+  cle::Device::Pointer         device;
   std::array<float, 5 * 5 * 1> output;
   std::array<float, 5 * 5 * 1> input = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   std::array<float, 5 * 5 * 1> valid_box = { 0,     0, 0, 0,     0,     0,     0.314, 0.314, 0.314, 0, 0, 0.314, 0.314,

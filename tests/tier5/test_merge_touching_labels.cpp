@@ -1,14 +1,14 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestMergeTouchingLabels : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
-  cle::Device::Pointer device;
+  std::string                           backend;
+  cle::Device::Pointer                  device;
   const std::array<uint32_t, 5 * 3 * 1> input = {
     1, 1, 0, 0, 0, 0, 2, 2, 0, 3, 0, 0, 2, 0, 3,
   };

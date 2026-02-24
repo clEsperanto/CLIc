@@ -1,14 +1,14 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestArrayComparisons : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
-  cle::Device::Pointer device;
+  std::string                    backend;
+  cle::Device::Pointer           device;
   std::array<int32_t, 3 * 1 * 1> input1 = { 1, 2, 3 };
   std::array<int16_t, 3 * 1 * 1> input2 = { 4, 5, 6 };
   std::array<int8_t, 4 * 1 * 1>  input3 = { 1, 2, 3, 3 };

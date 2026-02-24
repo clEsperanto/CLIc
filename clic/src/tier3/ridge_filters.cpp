@@ -35,11 +35,12 @@ sato_filter_func(const Device::Pointer & device,
 
     if (is_3d)
     {
-      evaluate(device, "fmax(sqrt(fmin(a, 0.0f) * fmin(b, 0.0f)) * s, out)", {middle_eigenvalue, small_eigenvalue, sigma_squared, dst}, dst);
+      evaluate(
+        device, "fmax(sqrt(fmin(a, 0.0f) * fmin(b, 0.0f)) * s, out)", { middle_eigenvalue, small_eigenvalue, sigma_squared, dst }, dst);
     }
     else
     {
-      evaluate(device, "fmax(fabs(fmin(a, 0.0f)) * s, out)", {small_eigenvalue, sigma_squared, dst}, dst);
+      evaluate(device, "fmax(fabs(fmin(a, 0.0f)) * s, out)", { small_eigenvalue, sigma_squared, dst }, dst);
     }
   }
 

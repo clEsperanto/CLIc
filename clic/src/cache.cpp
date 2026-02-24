@@ -99,19 +99,16 @@ DiskCache::resolveCacheDirectory() -> std::filesystem::path
 #else
   if (const char * home_dir = std::getenv("HOME"); home_dir != nullptr)
   {
-    return std::filesystem::u8path(home_dir) / std::filesystem::u8path(CACHE_DIR_UNIX) /
-           std::filesystem::u8path(CACHE_FOLDER_NAME);
+    return std::filesystem::u8path(home_dir) / std::filesystem::u8path(CACHE_DIR_UNIX) / std::filesystem::u8path(CACHE_FOLDER_NAME);
   }
   std::cerr << "Failed to get user home directory\n";
-  return std::filesystem::current_path() / std::filesystem::u8path(CACHE_DIR_UNIX) /
-         std::filesystem::u8path(CACHE_FOLDER_NAME);
+  return std::filesystem::current_path() / std::filesystem::u8path(CACHE_DIR_UNIX) / std::filesystem::u8path(CACHE_FOLDER_NAME);
 #endif
 }
 
 DiskCache::DiskCache()
   : cacheDir_(resolveCacheDirectory())
-{
-}
+{}
 
 auto
 DiskCache::instance() -> DiskCache &
@@ -157,9 +154,8 @@ DiskCache::getCacheDirectory() const -> const std::filesystem::path &
 }
 
 auto
-DiskCache::getFilePath(const std::string & device_hash,
-                       const std::string & source_hash,
-                       const std::string & extension) const -> std::filesystem::path
+DiskCache::getFilePath(const std::string & device_hash, const std::string & source_hash, const std::string & extension) const
+  -> std::filesystem::path
 {
   return cacheDir_ / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + "." + extension);
 }
@@ -186,9 +182,8 @@ DiskCache::saveBinary(const std::string & device_hash,
 }
 
 auto
-DiskCache::loadBinary(const std::string & device_hash,
-                      const std::string & source_hash,
-                      const std::string & extension) const -> std::vector<unsigned char>
+DiskCache::loadBinary(const std::string & device_hash, const std::string & source_hash, const std::string & extension) const
+  -> std::vector<unsigned char>
 {
   auto binary_path = getFilePath(device_hash, source_hash, extension);
   if (!std::filesystem::exists(binary_path))
@@ -218,9 +213,7 @@ DiskCache::loadBinary(const std::string & device_hash,
 }
 
 auto
-DiskCache::exists(const std::string & device_hash,
-                  const std::string & source_hash,
-                  const std::string & extension) const -> bool
+DiskCache::exists(const std::string & device_hash, const std::string & source_hash, const std::string & extension) const -> bool
 {
   return std::filesystem::exists(getFilePath(device_hash, source_hash, extension));
 }

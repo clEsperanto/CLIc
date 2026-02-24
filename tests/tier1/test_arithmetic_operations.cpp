@@ -1,8 +1,8 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 // Consolidated arithmetic operations tests
 // Tests: ADD_IMAGE_AND_SCALAR, SUBTRACT_IMAGE_AND_SCALAR, MULTIPLY_IMAGE_AND_SCALAR,
@@ -12,7 +12,7 @@
 class TestArithmeticOperations : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
+  std::string          backend;
   cle::Device::Pointer device;
 
   virtual void

@@ -1,9 +1,9 @@
 
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 #include <random>
 
 class TestDilate : public ::testing::TestWithParam<std::string>

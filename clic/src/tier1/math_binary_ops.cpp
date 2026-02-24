@@ -10,7 +10,7 @@ namespace cle::tier1
 namespace
 {
 
-// Note: stick to CLIJ macro because it handles broadcasting between images  
+// Note: stick to CLIJ macro because it handles broadcasting between images
 constexpr const char * kernel_source = R"CLC(
   __constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE |
                                 CLK_ADDRESS_CLAMP_TO_EDGE |

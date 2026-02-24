@@ -1,15 +1,15 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 #include <numeric>
 
 class TestSumAllPixel : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
-  cle::Device::Pointer device;
+  std::string                     backend;
+  cle::Device::Pointer            device;
   std::array<float, 10 * 20 * 30> input;
   float                           valid;
 

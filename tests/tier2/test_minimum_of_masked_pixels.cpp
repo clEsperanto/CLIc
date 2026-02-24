@@ -1,15 +1,15 @@
 
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestMinMaskPixel : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
-  cle::Device::Pointer device;
+  std::string                  backend;
+  cle::Device::Pointer         device;
   std::array<float, 5 * 3 * 2> input;
   std::array<float, 5 * 3 * 2> mask;
   float                        valid = 3;

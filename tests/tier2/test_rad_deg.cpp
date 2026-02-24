@@ -1,9 +1,9 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <algorithm>
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestRadDeg : public ::testing::TestWithParam<std::string>
 {

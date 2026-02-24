@@ -1,14 +1,14 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestHessianEigenvalues : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
-  cle::Device::Pointer device;
+  std::string                  backend;
+  cle::Device::Pointer         device;
   std::array<float, 2 * 2 * 1> input_2d = { 1, -1, 1, -1 };
   std::array<float, 2 * 2 * 1> small_2d = { -2, 0, -2, 0 };
   std::array<float, 2 * 2 * 1> large_2d = { 0, 2, 0, 2 };

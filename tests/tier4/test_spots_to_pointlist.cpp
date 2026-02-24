@@ -1,9 +1,9 @@
 
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestSpotToPointList : public ::testing::TestWithParam<std::string>
 {

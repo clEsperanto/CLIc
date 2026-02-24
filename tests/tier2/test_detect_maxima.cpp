@@ -1,14 +1,14 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestDetectMaxima : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
-  cle::Device::Pointer device;
+  std::string                     backend;
+  cle::Device::Pointer            device;
   std::array<uint8_t, 10 * 5 * 1> output;
   std::array<uint8_t, 10 * 5 * 1> valid;
   std::array<uint8_t, 10 * 5 * 1> input;

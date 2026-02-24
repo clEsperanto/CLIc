@@ -1,13 +1,13 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestSlicing : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
+  std::string          backend;
   cle::Device::Pointer device;
 
   virtual void
@@ -18,7 +18,6 @@ protected:
     device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
     device->setWaitToFinish(true);
   }
-
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -172,9 +171,9 @@ TEST_P(TestSlicing, slice_single_index_x)
   // Slice [1, :, :] — select X=1, keep Y and Z
   auto dst = cle::slice(src, { cle::Slice(1), cle::Slice(), cle::Slice() });
 
-  EXPECT_EQ(dst->width(), 1);   // X dimension collapsed
-  EXPECT_EQ(dst->height(), 4);  // Y dimension full
-  EXPECT_EQ(dst->depth(), 5);   // Z dimension full
+  EXPECT_EQ(dst->width(), 1);  // X dimension collapsed
+  EXPECT_EQ(dst->height(), 4); // Y dimension full
+  EXPECT_EQ(dst->depth(), 5);  // Z dimension full
 
   std::array<float, 1 * 4 * 5> result;
   dst->readTo(result.data());
@@ -205,10 +204,10 @@ TEST_P(TestSlicing, slice_single_index_z)
   // Slice [:, :, 2] — select Z=2, keep X and Y
   auto dst = cle::slice(src, { cle::Slice(), cle::Slice(), cle::Slice(2) });
 
-  EXPECT_EQ(dst->width(), 3);   // X dimension full
-  EXPECT_EQ(dst->height(), 4);  // Y dimension full
-  EXPECT_EQ(dst->depth(), 1);   // Z dimension collapsed
-  EXPECT_EQ(dst->dim(), 2); // Should be 2D
+  EXPECT_EQ(dst->width(), 3);  // X dimension full
+  EXPECT_EQ(dst->height(), 4); // Y dimension full
+  EXPECT_EQ(dst->depth(), 1);  // Z dimension collapsed
+  EXPECT_EQ(dst->dim(), 2);    // Should be 2D
 
   std::array<float, 3 * 4 * 1> result;
   dst->readTo(result.data());
@@ -240,9 +239,9 @@ TEST_P(TestSlicing, slice_multiple_indices)
   // Slice [1, :, 2] — select X=1 and Z=2, keep only Y
   auto dst = cle::slice(src, { cle::Slice(1), cle::Slice(), cle::Slice(2) });
 
-  EXPECT_EQ(dst->width(), 1);   // X dimension collapsed
-  EXPECT_EQ(dst->height(), 4);  // Y dimension full
-  EXPECT_EQ(dst->depth(), 1);   // Z dimension collapsed
+  EXPECT_EQ(dst->width(), 1);  // X dimension collapsed
+  EXPECT_EQ(dst->height(), 4); // Y dimension full
+  EXPECT_EQ(dst->depth(), 1);  // Z dimension collapsed
 
   std::array<float, 1 * 4 * 1> result;
   dst->readTo(result.data());

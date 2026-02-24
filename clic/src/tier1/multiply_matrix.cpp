@@ -115,7 +115,7 @@ __kernel void multiply_matrix(
 }
 )CLC";
 
-}
+} // namespace kernel
 
 namespace
 {
@@ -129,10 +129,10 @@ struct MatmulConfig
 {
   int    tile_size;
   int    wpt_m;
-  size_t local_x;    // = tile_size
-  size_t local_y;    // = tile_size / wpt_m
-  size_t global_x;   // = ceil(N / tile_size) * tile_size
-  size_t global_y;   // = ceil(M / tile_size) * tile_size / wpt_m
+  size_t local_x;  // = tile_size
+  size_t local_y;  // = tile_size / wpt_m
+  size_t global_x; // = ceil(N / tile_size) * tile_size
+  size_t global_y; // = ceil(M / tile_size) * tile_size / wpt_m
 };
 
 
@@ -166,11 +166,10 @@ local_mem_required(int tile_size) -> size_t
 // ── Validate a config against device limits ────────────────────────────
 
 static auto
-validate_config(const MatmulConfig &    config,
-                const Device::Pointer & device) -> bool
+validate_config(const MatmulConfig & config, const Device::Pointer & device) -> bool
 {
-  const auto max_wg_size   = device->getMaximumWorkGroupSize();
-  const auto local_mem     = device->getLocalMemorySize();
+  const auto max_wg_size = device->getMaximumWorkGroupSize();
+  const auto local_mem = device->getLocalMemorySize();
 
   // Work group must not exceed device limit
   const size_t wg_size = config.local_x * config.local_y;
@@ -234,7 +233,7 @@ static auto
 select_tile_size(size_t M, size_t K, size_t N, const Device::Pointer & device) -> int
 {
   const auto max_wg_size = device->getMaximumWorkGroupSize();
-  const auto local_mem   = device->getLocalMemorySize();
+  const auto local_mem = device->getLocalMemorySize();
 
   // Heuristic: tile should relate to matrix inner dimension
   // and not be larger than the output dimensions
@@ -280,11 +279,11 @@ build_config(size_t M, size_t K, size_t N, const Device::Pointer & device) -> Ma
   if (device->getDeviceType() == "cpu")
   {
     config.tile_size = 1;
-    config.wpt_m     = 1;
-    config.local_x   = 1;
-    config.local_y   = 1;
-    config.global_x  = N;
-    config.global_y  = M;
+    config.wpt_m = 1;
+    config.local_x = 1;
+    config.local_y = 1;
+    config.global_x = N;
+    config.global_y = M;
     return config;
   }
 
@@ -292,23 +291,23 @@ build_config(size_t M, size_t K, size_t N, const Device::Pointer & device) -> Ma
   if (M <= 4 && K <= 4 && N <= 4)
   {
     config.tile_size = 1;
-    config.wpt_m     = 1;
-    config.local_x   = 1;
-    config.local_y   = 1;
-    config.global_x  = N;
-    config.global_y  = M;
+    config.wpt_m = 1;
+    config.local_x = 1;
+    config.local_y = 1;
+    config.global_x = N;
+    config.global_y = M;
     return config;
   }
 
   // ── Normal path: select tile size then WPT_M ──
   config.tile_size = select_tile_size(M, K, N, device);
-  config.wpt_m     = select_wpt_m(config.tile_size, device);
+  config.wpt_m = select_wpt_m(config.tile_size, device);
 
   const size_t ts = static_cast<size_t>(config.tile_size);
   const size_t rts_m = ts / static_cast<size_t>(config.wpt_m);
 
-  config.local_x  = ts;
-  config.local_y  = rts_m;
+  config.local_x = ts;
+  config.local_y = rts_m;
   config.global_x = ((N + ts - 1) / ts) * ts;
   config.global_y = ((M + ts - 1) / ts) * ts / static_cast<size_t>(config.wpt_m);
 
@@ -316,7 +315,7 @@ build_config(size_t M, size_t K, size_t N, const Device::Pointer & device) -> Ma
   if (!validate_config(config, device))
   {
     // Try WPT_M = 1 (larger work group but simpler)
-    config.wpt_m  = 1;
+    config.wpt_m = 1;
     config.local_y = ts;
     config.global_y = ((M + ts - 1) / ts) * ts;
 
@@ -325,9 +324,9 @@ build_config(size_t M, size_t K, size_t N, const Device::Pointer & device) -> Ma
       // Fall back to smaller tile size
       config.tile_size = std::min(config.tile_size, 4);
       const size_t ts2 = static_cast<size_t>(config.tile_size);
-      config.wpt_m    = 1;
-      config.local_x  = ts2;
-      config.local_y  = ts2;
+      config.wpt_m = 1;
+      config.local_x = ts2;
+      config.local_y = ts2;
       config.global_x = ((N + ts2 - 1) / ts2) * ts2;
       config.global_y = ((M + ts2 - 1) / ts2) * ts2;
 
@@ -335,11 +334,11 @@ build_config(size_t M, size_t K, size_t N, const Device::Pointer & device) -> Ma
       {
         // Absolute safe fallback: no tiling
         config.tile_size = 1;
-        config.wpt_m     = 1;
-        config.local_x   = 1;
-        config.local_y   = 1;
-        config.global_x  = N;
-        config.global_y  = M;
+        config.wpt_m = 1;
+        config.local_x = 1;
+        config.local_y = 1;
+        config.global_x = N;
+        config.global_y = M;
       }
     }
   }
@@ -380,16 +379,15 @@ multiply_matrix_func(const Device::Pointer & device,
   // ── Input validation ────────────────────────────────────────────────
   if (matrix1->dim() > 2 || matrix2->dim() > 2)
   {
-    std::cerr << "Warning: multiply_matrix expected 2D arrays but got "
-              << matrix1->dim() << "D and " << matrix2->dim() << "D." << std::endl;
+    std::cerr << "Warning: multiply_matrix expected 2D arrays but got " << matrix1->dim() << "D and " << matrix2->dim() << "D."
+              << std::endl;
   }
 
   if (matrix1->width() != matrix2->height())
   {
     std::cerr << "Warning: matrix dimensions are not compatible for multiplication. "
-              << "Expected (M,K)×(K,N) but got ("
-              << matrix1->height() << "," << matrix1->width() << ")×("
-              << matrix2->height() << "," << matrix2->width() << ")." << std::endl;
+              << "Expected (M,K)×(K,N) but got (" << matrix1->height() << "," << matrix1->width() << ")×(" << matrix2->height() << ","
+              << matrix2->width() << ")." << std::endl;
   }
 
   // ── Create output ───────────────────────────────────────────────────
@@ -402,14 +400,11 @@ multiply_matrix_func(const Device::Pointer & device,
   // ── Select configuration ────────────────────────────────────────────
   const MatmulConfig config = build_config(M, K, N, device);
 
-  const KernelInfo    kernel  = { "multiply_matrix", kernel::kernel_code };
-  const ParameterList params  = { { "src0", matrix1 }, { "src1", matrix2 }, { "dst", matrix_destination } };
-  const ConstantList  constants = {
-    { "TILE_SIZE", config.tile_size },
-    { "WPT_M",     config.wpt_m }
-  };
-  const RangeArray range = { config.global_x, config.global_y, 1 };
-  const RangeArray local = { config.local_x,  config.local_y,  1 };
+  const KernelInfo    kernel = { "multiply_matrix", kernel::kernel_code };
+  const ParameterList params = { { "src0", matrix1 }, { "src1", matrix2 }, { "dst", matrix_destination } };
+  const ConstantList  constants = { { "TILE_SIZE", config.tile_size }, { "WPT_M", config.wpt_m } };
+  const RangeArray    range = { config.global_x, config.global_y, 1 };
+  const RangeArray    local = { config.local_x, config.local_y, 1 };
 
   // ── Execute with fallback chain ─────────────────────────────────────
   try
@@ -421,17 +416,14 @@ multiply_matrix_func(const Device::Pointer & device,
     // ── Fallback 1: TILE_SIZE with WPT_M=1 ──
     if (config.wpt_m > 1)
     {
-      std::cerr << "Warning: multiply_matrix failed with TILE_SIZE=" << config.tile_size
-                << ", WPT_M=" << config.wpt_m << ". Retrying with WPT_M=1.\n"
+      std::cerr << "Warning: multiply_matrix failed with TILE_SIZE=" << config.tile_size << ", WPT_M=" << config.wpt_m
+                << ". Retrying with WPT_M=1.\n"
                 << "  Error: " << e.what() << std::endl;
 
-      const size_t ts = static_cast<size_t>(config.tile_size);
-      const ConstantList fallback_constants = {
-        { "TILE_SIZE", config.tile_size },
-        { "WPT_M",     1 }
-      };
-      const RangeArray fallback_range = { ((N + ts - 1) / ts) * ts, ((M + ts - 1) / ts) * ts, 1 };
-      const RangeArray fallback_local = { ts, ts, 1 };
+      const size_t       ts = static_cast<size_t>(config.tile_size);
+      const ConstantList fallback_constants = { { "TILE_SIZE", config.tile_size }, { "WPT_M", 1 } };
+      const RangeArray   fallback_range = { ((N + ts - 1) / ts) * ts, ((M + ts - 1) / ts) * ts, 1 };
+      const RangeArray   fallback_local = { ts, ts, 1 };
 
       try
       {
@@ -446,8 +438,7 @@ multiply_matrix_func(const Device::Pointer & device,
     }
     else if (config.tile_size > 1)
     {
-      std::cerr << "Warning: multiply_matrix failed with TILE_SIZE=" << config.tile_size
-                << ". Falling back to TILE_SIZE=1.\n"
+      std::cerr << "Warning: multiply_matrix failed with TILE_SIZE=" << config.tile_size << ". Falling back to TILE_SIZE=1.\n"
                 << "  Error: " << e.what() << std::endl;
     }
 
@@ -455,12 +446,9 @@ multiply_matrix_func(const Device::Pointer & device,
     if (config.tile_size > 1)
     {
       const MatmulConfig safe = build_fallback_config(M, N);
-      const ConstantList safe_constants = {
-        { "TILE_SIZE", 1 },
-        { "WPT_M",     1 }
-      };
-      const RangeArray safe_range = { safe.global_x, safe.global_y, 1 };
-      const RangeArray safe_local = { safe.local_x,  safe.local_y,  1 };
+      const ConstantList safe_constants = { { "TILE_SIZE", 1 }, { "WPT_M", 1 } };
+      const RangeArray   safe_range = { safe.global_x, safe.global_y, 1 };
+      const RangeArray   safe_local = { safe.local_x, safe.local_y, 1 };
 
       try
       {
@@ -468,17 +456,17 @@ multiply_matrix_func(const Device::Pointer & device,
       }
       catch (const std::runtime_error & e3)
       {
-        throw std::runtime_error(
-          "multiply_matrix: all kernel configurations failed. "
-          "Last error: " + std::string(e3.what()));
+        throw std::runtime_error("multiply_matrix: all kernel configurations failed. "
+                                 "Last error: " +
+                                 std::string(e3.what()));
       }
     }
     else
     {
       // TILE_SIZE was already 1 and it still failed — nothing left to try
-      throw std::runtime_error(
-        "multiply_matrix: kernel execution failed with TILE_SIZE=1. "
-        "Error: " + std::string(e.what()));
+      throw std::runtime_error("multiply_matrix: kernel execution failed with TILE_SIZE=1. "
+                               "Error: " +
+                               std::string(e.what()));
     }
   }
 

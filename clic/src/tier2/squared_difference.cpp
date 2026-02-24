@@ -12,7 +12,7 @@ squared_difference_func(const Device::Pointer & device, const Array::Pointer & s
   -> Array::Pointer
 {
   tier0::create_like(src0, dst, dType::FLOAT);
-  evaluate(device, "pow(src0 - src1, 2)", {src0, src1}, dst);
+  evaluate(device, "pow(src0 - src1, 2)", { src0, src1 }, dst);
   return dst;
 }
 

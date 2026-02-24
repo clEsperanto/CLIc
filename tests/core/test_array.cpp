@@ -1,13 +1,13 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestArray : public ::testing::TestWithParam<std::string>
 {
-  protected:
-  std::string backend;
+protected:
+  std::string          backend;
   cle::Device::Pointer device;
 
   virtual void

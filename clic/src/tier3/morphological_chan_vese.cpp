@@ -76,7 +76,7 @@ compute_contour_evolution(const Device::Pointer & device,
                           float                   lambda2) -> void
 {
   // magnitude * (lambda1 * (image - c1) ** 2 - lambda2 * (image - c0) ** 2)
-  evaluate(device, "e * (l1 * pow(a + c1, 2.0f) - l2 * pow(a + c0, 2.0f))", {evolution, lambda1, image, c1, lambda2, c0}, evolution);
+  evaluate(device, "e * (l1 * pow(a + c1, 2.0f) - l2 * pow(a + c0, 2.0f))", { evolution, lambda1, image, c1, lambda2, c0 }, evolution);
 }
 
 auto
@@ -89,7 +89,7 @@ apply_contour_evolution(const Device::Pointer & device, const Array::Pointer & e
   // auto masked_evolution = tier1::mask_func(device, contour, mask, nullptr);
   // tier1::add_images_weighted_func(device, masked_evolution, evolution_neg, contour, 1, 1);
 
-  evaluate(device, "b * (a == 0.0f) + (a < 0.0f)", {contour, evolution}, contour);
+  evaluate(device, "b * (a == 0.0f) + (a < 0.0f)", { contour, evolution }, contour);
 }
 
 auto

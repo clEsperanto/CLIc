@@ -78,8 +78,6 @@ get_device_type_map(bool uppercase = true)
 } // namespace
 
 
-
-
 OpenCLDevice::Context::Context(const cl_context & ptr)
   : ptr(ptr)
 {
@@ -182,8 +180,8 @@ OpenCLDevice::Resources::Resources(const cl_platform_id & platform, const cl_dev
 {
   // Get platform information
   platform_name = safe_get_device_info(device, CL_DEVICE_PLATFORM, OPENCL_NAME_BUFFER_SIZE);
-  
-  char platform_vendor_buffer[OPENCL_NAME_BUFFER_SIZE] = {};
+
+  char   platform_vendor_buffer[OPENCL_NAME_BUFFER_SIZE] = {};
   cl_int err = clGetPlatformInfo(platform_ptr, CL_PLATFORM_VENDOR, OPENCL_NAME_BUFFER_SIZE, platform_vendor_buffer, nullptr);
   if (err == CL_SUCCESS)
   {
@@ -198,7 +196,7 @@ OpenCLDevice::Resources::Resources(const cl_platform_id & platform, const cl_dev
 
   // Get device information
   device_name = safe_get_device_info(device, CL_DEVICE_NAME, OPENCL_NAME_BUFFER_SIZE);
-  
+
   cl_device_type type_buffer = 0;
   err = clGetDeviceInfo(device_ptr, CL_DEVICE_TYPE, sizeof(cl_device_type), &type_buffer, nullptr);
   if (err == CL_SUCCESS)
@@ -243,7 +241,7 @@ OpenCLDevice::OpenCLDevice(const cl_platform_id & platform, const cl_device_id &
   initialize();
 }
 
-OpenCLDevice::OpenCLDevice(const std::shared_ptr<Resources> &   resources,
+OpenCLDevice::OpenCLDevice(const std::shared_ptr<Resources> &    resources,
                            const std::shared_ptr<Context> &      context,
                            const std::shared_ptr<CommandQueue> & command_queue)
   : clResources(resources)
@@ -382,7 +380,7 @@ auto
 OpenCLDevice::getDeviceType() const -> std::string
 {
   const auto & type_map = get_device_type_map(false);
-  auto         it       = type_map.find(clResources->device_type);
+  auto         it = type_map.find(clResources->device_type);
   return it != type_map.end() ? it->second : "unknown";
 }
 
@@ -428,19 +426,19 @@ OpenCLDevice::getInfo() const -> std::string
   std::ostringstream result;
 
   // Get device information safely
-  std::string version   = safe_get_device_info(clResources->get_device(), CL_DEVICE_VERSION, OPENCL_NAME_BUFFER_SIZE);
-  std::string vendor    = safe_get_device_info(clResources->get_device(), CL_DEVICE_VENDOR, OPENCL_NAME_BUFFER_SIZE);
-  std::string driver    = safe_get_device_info(clResources->get_device(), CL_DRIVER_VERSION, OPENCL_NAME_BUFFER_SIZE);
-  const auto & name     = getName();
-  
+  std::string  version = safe_get_device_info(clResources->get_device(), CL_DEVICE_VERSION, OPENCL_NAME_BUFFER_SIZE);
+  std::string  vendor = safe_get_device_info(clResources->get_device(), CL_DEVICE_VENDOR, OPENCL_NAME_BUFFER_SIZE);
+  std::string  driver = safe_get_device_info(clResources->get_device(), CL_DRIVER_VERSION, OPENCL_NAME_BUFFER_SIZE);
+  const auto & name = getName();
+
   // Get numeric device information
-  cl_uint       compute_units        = 0;
-  cl_uint       max_clock_frequency  = 0;
-  cl_uint       image_support        = 0;
-  size_t        global_mem_size      = 0;
-  size_t        max_mem_size         = 0;
-  size_t        local_mem_size       = 0;
-  cl_device_type device_type         = CL_DEVICE_TYPE_DEFAULT;
+  cl_uint        compute_units = 0;
+  cl_uint        max_clock_frequency = 0;
+  cl_uint        image_support = 0;
+  size_t         global_mem_size = 0;
+  size_t         max_mem_size = 0;
+  size_t         local_mem_size = 0;
+  cl_device_type device_type = CL_DEVICE_TYPE_DEFAULT;
 
   clGetDeviceInfo(clResources->get_device(), CL_DEVICE_TYPE, sizeof(cl_device_type), &device_type, nullptr);
   clGetDeviceInfo(clResources->get_device(), CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint), &compute_units, nullptr);
@@ -451,8 +449,8 @@ OpenCLDevice::getInfo() const -> std::string
   clGetDeviceInfo(clResources->get_device(), CL_DEVICE_IMAGE_SUPPORT, sizeof(cl_uint), &image_support, nullptr);
 
   // Get device type string
-  const auto & type_map      = get_device_type_map(true);
-  auto         type_it       = type_map.find(device_type);
+  const auto & type_map = get_device_type_map(true);
+  auto         type_it = type_map.find(device_type);
   std::string  device_type_str = type_it != type_map.end() ? type_it->second : "Unknown";
 
   // Format output
@@ -477,11 +475,11 @@ OpenCLDevice::getInfoExtended() const -> std::string
 
   // Get extended device information
   std::string extensions = safe_get_device_info(clResources->get_device(), CL_DEVICE_EXTENSIONS, OPENCL_EXTENSIONS_BUFFER_SIZE);
-  
-  cl_uint max_work_group_size      = 0;
+
+  cl_uint max_work_group_size = 0;
   cl_uint max_work_item_dimensions = 0;
-  size_t  max_work_item_sizes[3]   = { 0, 0, 0 };
-  
+  size_t  max_work_item_sizes[3] = { 0, 0, 0 };
+
   clGetDeviceInfo(clResources->get_device(), CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(cl_uint), &max_work_group_size, nullptr);
   clGetDeviceInfo(clResources->get_device(), CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS, sizeof(cl_uint), &max_work_item_dimensions, nullptr);
   clGetDeviceInfo(clResources->get_device(), CL_DEVICE_MAX_WORK_ITEM_SIZES, sizeof(size_t) * 3, &max_work_item_sizes, nullptr);
@@ -496,7 +494,7 @@ OpenCLDevice::getInfoExtended() const -> std::string
   result << std::left << std::setw(30) << "\tMax Work Item Sizes: " << max_work_item_sizes[0] << ", " << max_work_item_sizes[1] << ", "
          << max_work_item_sizes[2] << '\n';
   result << std::left << std::setw(30) << "\tExtensions:";
-  
+
   if (extensions_vec.empty())
   {
     result << " (none)\n";

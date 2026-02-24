@@ -372,5 +372,3 @@ print(const Array::Pointer & array, const char * name = "Array::Pointer") -> voi
 }
 
 } // namespace cle
-
-

@@ -1,15 +1,15 @@
 
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestMaxAllPixel : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
-  cle::Device::Pointer device;
+  std::string                     backend;
+  cle::Device::Pointer            device;
   const float                     max = 100;
   const float                     min = 42;
   std::array<float, 10 * 20 * 30> input;

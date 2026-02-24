@@ -1,15 +1,15 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestCreate : public ::testing::TestWithParam<std::string>
 {
 protected:
-  cle::Array::Pointer output;
-  cle::Array::Pointer input;
-  std::string backend;
+  cle::Array::Pointer  output;
+  cle::Array::Pointer  input;
+  std::string          backend;
   cle::Device::Pointer device;
 
   virtual void

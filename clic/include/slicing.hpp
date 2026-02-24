@@ -99,8 +99,8 @@ struct Slice
         idx += len;
       if (idx < 0 || idx >= len)
       {
-        throw std::out_of_range("Slice index " + std::to_string(start.value()) +
-                                " is out of range for axis of length " + std::to_string(len));
+        throw std::out_of_range("Slice index " + std::to_string(start.value()) + " is out of range for axis of length " +
+                                std::to_string(len));
       }
       return { static_cast<size_t>(idx), static_cast<size_t>(idx + 1), 1 };
     }
@@ -108,7 +108,7 @@ struct Slice
     if (step > 0)
     {
       r_start = start.has_value() ? clamp(start.value(), 0, len) : 0;
-      r_stop  = stop.has_value()  ? clamp(stop.value(), 0, len)  : len;
+      r_stop = stop.has_value() ? clamp(stop.value(), 0, len) : len;
       if (r_stop < r_start)
         r_stop = r_start; // empty range
     }
@@ -116,13 +116,13 @@ struct Slice
     {
       // Negative step (e.g. [::-1])
       r_start = start.has_value() ? clamp(start.value(), -1, len - 1) : (len - 1);
-      r_stop  = stop.has_value()  ? clamp(stop.value(), -1, len - 1)  : -1;
+      r_stop = stop.has_value() ? clamp(stop.value(), -1, len - 1) : -1;
       if (r_stop > r_start)
         r_stop = r_start; // empty range
     }
 
     return { static_cast<size_t>(std::max(r_start, 0)),
-             static_cast<size_t>(std::max(r_stop, -1)),  // -1 is valid sentinel for neg step
+             static_cast<size_t>(std::max(r_stop, -1)), // -1 is valid sentinel for neg step
              step };
   }
 
@@ -154,16 +154,29 @@ struct Slice
 // ─── Convenience free-function constructors (short names) ───────────────────
 
 /** Full axis [:] */
-inline auto S_() -> Slice { return Slice(); }
+inline auto
+S_() -> Slice
+{
+  return Slice();
+}
 
 /** Single index [i] */
-inline auto S_(int index) -> Slice { return Slice(index); }
+inline auto
+S_(int index) -> Slice
+{
+  return Slice(index);
+}
 
 /** Range [start:stop] */
-inline auto S_(std::optional<int> start, std::optional<int> stop) -> Slice { return Slice(start, stop); }
+inline auto
+S_(std::optional<int> start, std::optional<int> stop) -> Slice
+{
+  return Slice(start, stop);
+}
 
 /** Range with step [start:stop:step] */
-inline auto S_(std::optional<int> start, std::optional<int> stop, int step) -> Slice
+inline auto
+S_(std::optional<int> start, std::optional<int> stop, int step) -> Slice
 {
   return Slice(start, stop, step);
 }
@@ -192,8 +205,8 @@ struct ResolvedSlice
   size_t start;
   size_t stop;
   int    step;
-  size_t length;     // number of output elements
-  bool   is_index;   // if true, this axis is collapsed in the output
+  size_t length;   // number of output elements
+  bool   is_index; // if true, this axis is collapsed in the output
 };
 
 
@@ -231,10 +244,8 @@ slice(const Array::Pointer & src, const std::vector<Slice> & slices) -> Array::P
 
 /** Overload with up to 3 individual Slice arguments (most common usage) */
 auto
-slice(const Array::Pointer & src,
-      const Slice &          x_slice = Slice(),
-      const Slice &          y_slice = Slice(),
-      const Slice &          z_slice = Slice()) -> Array::Pointer;
+slice(const Array::Pointer & src, const Slice & x_slice = Slice(), const Slice & y_slice = Slice(), const Slice & z_slice = Slice())
+  -> Array::Pointer;
 
 
 } // namespace cle

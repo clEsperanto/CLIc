@@ -12,7 +12,7 @@ absolute_difference_func(const Device::Pointer & device, const Array::Pointer & 
   -> Array::Pointer
 {
   tier0::create_like(src0, dst);
-  evaluate(device, "fabs(src0 - src1)", {src0, src1}, dst);
+  evaluate(device, "fabs(src0 - src1)", { src0, src1 }, dst);
   return dst;
 }
 

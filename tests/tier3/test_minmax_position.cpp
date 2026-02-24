@@ -1,14 +1,14 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestMinMaxPosition : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
-  cle::Device::Pointer device;
+  std::string                  backend;
+  cle::Device::Pointer         device;
   std::array<float, 4 * 3 * 2> input = { 1, 2, 3, 10, 4, 16, 6, 11, 7, 8, 9, 12, 1, 2, 3, 13, 4, 0, 6, 16, 7, 8, 9, 15 };
 
   virtual void

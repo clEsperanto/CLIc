@@ -186,4 +186,3 @@ performDeconvolution(const Array::Pointer & observe,
 
 
 } // namespace cle::fft
-

@@ -647,4 +647,3 @@ auto
 standard_deviation_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
 
 } // namespace cle::tier4
-

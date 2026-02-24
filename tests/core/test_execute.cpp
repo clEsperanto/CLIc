@@ -2,13 +2,13 @@
 #include "cle.hpp"
 #include "execution.hpp"
 
-#include <gtest/gtest.h>
 #include "test_utils.hpp"
+#include <gtest/gtest.h>
 
 class TestExecution : public ::testing::TestWithParam<std::string>
 {
-  protected:
-  std::string backend;
+protected:
+  std::string          backend;
   cle::Device::Pointer device;
 
   virtual void

@@ -1,8 +1,8 @@
 
 #include "cle.hpp"
 
-#include <gtest/gtest.h>
 #include "test_utils.hpp"
+#include <gtest/gtest.h>
 
 class TestBackends : public ::testing::TestWithParam<std::string>
 {};

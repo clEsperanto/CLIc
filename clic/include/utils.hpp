@@ -91,8 +91,7 @@ toShortString(const dType & dtype) -> std::string
  * Single-pass O(n) scan, suitable for generating kernel source strings.
  */
 inline auto
-renderTemplate(const std::string &                                  tmpl,
-               const std::unordered_map<std::string, std::string> & vars) -> std::string
+renderTemplate(const std::string & tmpl, const std::unordered_map<std::string, std::string> & vars) -> std::string
 {
   std::string result;
   result.reserve(tmpl.size() * 2);
@@ -456,4 +455,3 @@ auto inline fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<
 
 
 } // namespace cle
-

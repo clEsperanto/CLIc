@@ -1,9 +1,9 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <cmath>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 // Consolidated unary math operations tests
 // Tests: ABSOLUTE, CUBIC_ROOT, SQUARE_ROOT, SIGN
@@ -11,7 +11,7 @@
 class TestUnaryMathOperations : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
+  std::string          backend;
   cle::Device::Pointer device;
 
   virtual void
@@ -91,7 +91,9 @@ TEST_P(TestUnaryMathOperations, square_root)
 TEST_P(TestUnaryMathOperations, sign)
 {
   std::array<float, 30> output;
-  std::array<float, 30> input = { -5, -1, 0, 1, 5, -2, -10, 0, 10, 2, -7, -3, 0, 3, 7, -6, -11, 0, 11, 6, -8, -4, 0, 4, 8, -9, -12, 0, 12, 9 };
+  std::array<float, 30> input = {
+    -5, -1, 0, 1, 5, -2, -10, 0, 10, 2, -7, -3, 0, 3, 7, -6, -11, 0, 11, 6, -8, -4, 0, 4, 8, -9, -12, 0, 12, 9
+  };
   std::array<float, 30> valid = { -1, -1, 0, 1, 1, -1, -1, 0, 1, 1, -1, -1, 0, 1, 1, -1, -1, 0, 1, 1, -1, -1, 0, 1, 1, -1, -1, 0, 1, 1 };
 
   auto gpu_input = cle::Array::create(10, 3, 1, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);

@@ -1,21 +1,21 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestSetCreateOperations : public ::testing::TestWithParam<std::tuple<std::string, int>>
 {
 protected:
-  std::array<float, 10 * 5 * 3> output_float;
-  std::array<int16_t, 5 * 5 * 1> output_int16;
-  std::array<int32_t, 3 * 3 * 2> output_int32;
+  std::array<float, 10 * 5 * 3>   output_float;
+  std::array<int16_t, 5 * 5 * 1>  output_int16;
+  std::array<int32_t, 3 * 3 * 2>  output_int32;
   std::array<uint32_t, 5 * 3 * 2> output_uint32;
 
-  std::array<float, 10 * 5 * 3> input_float;
+  std::array<float, 10 * 5 * 3>  input_float;
   std::array<int16_t, 5 * 5 * 1> input_int16;
   std::array<int32_t, 3 * 3 * 2> input_int32;
-  std::array<float, 5 * 3 * 2> input_pixelindex;
+  std::array<float, 5 * 3 * 2>   input_pixelindex;
 
   virtual void
   SetUp()
@@ -53,7 +53,7 @@ TEST_P(TestSetCreateOperations, execute)
     case 0: // set_ramp_x
     {
       std::array<int32_t, 3 * 3 * 2> expected_x = { 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2 };
-      auto gpu_input = cle::Array::create(3, 3, 2, 3, cle::dType::INT32, cle::mType::BUFFER, device);
+      auto                           gpu_input = cle::Array::create(3, 3, 2, 3, cle::dType::INT32, cle::mType::BUFFER, device);
       gpu_input->writeFrom(input_int32.data());
       cle::tier1::set_ramp_x_func(device, gpu_input);
       gpu_input->readTo(output_int32.data());
@@ -66,7 +66,7 @@ TEST_P(TestSetCreateOperations, execute)
     case 1: // set_ramp_y
     {
       std::array<int32_t, 3 * 3 * 2> expected_y = { 0, 0, 0, 1, 1, 1, 2, 2, 2, 0, 0, 0, 1, 1, 1, 2, 2, 2 };
-      auto gpu_input = cle::Array::create(3, 3, 2, 3, cle::dType::INT32, cle::mType::BUFFER, device);
+      auto                           gpu_input = cle::Array::create(3, 3, 2, 3, cle::dType::INT32, cle::mType::BUFFER, device);
       gpu_input->writeFrom(input_int32.data());
       cle::tier1::set_ramp_y_func(device, gpu_input);
       gpu_input->readTo(output_int32.data());
@@ -79,7 +79,7 @@ TEST_P(TestSetCreateOperations, execute)
     case 2: // set_ramp_z
     {
       std::array<int32_t, 3 * 3 * 2> expected_z = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-      auto gpu_input = cle::Array::create(3, 3, 2, 3, cle::dType::INT32, cle::mType::BUFFER, device);
+      auto                           gpu_input = cle::Array::create(3, 3, 2, 3, cle::dType::INT32, cle::mType::BUFFER, device);
       gpu_input->writeFrom(input_int32.data());
       cle::tier1::set_ramp_z_func(device, gpu_input);
       gpu_input->readTo(output_int32.data());
@@ -95,7 +95,7 @@ TEST_P(TestSetCreateOperations, execute)
       gpu_input->writeFrom(input_float.data());
       cle::tier1::set_row_func(device, gpu_input, 1, 100);
       gpu_input->readTo(output_float.data());
-      
+
       // Verify that row 1 is set to 100
       for (int z = 0; z < 3; z++)
       {
@@ -103,7 +103,7 @@ TEST_P(TestSetCreateOperations, execute)
         {
           for (int x = 0; x < 10; x++)
           {
-            int idx = z * 50 + y * 10 + x;
+            int    idx = z * 50 + y * 10 + x;
             size_t row_index = y;
             if (row_index == 1)
             {
@@ -124,7 +124,7 @@ TEST_P(TestSetCreateOperations, execute)
       gpu_input->writeFrom(input_float.data());
       cle::tier1::set_column_func(device, gpu_input, 1, 100);
       gpu_input->readTo(output_float.data());
-      
+
       // Verify that column 1 is set to 100
       for (int z = 0; z < 3; z++)
       {
@@ -149,11 +149,11 @@ TEST_P(TestSetCreateOperations, execute)
     case 5: // set_plane
     {
       std::array<float, 5 * 5 * 2> expected_plane = { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-                                                       4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };
+                                                      4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 };
       std::array<float, 5 * 5 * 2> input_plane = { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
                                                    3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 };
       std::array<float, 5 * 5 * 2> output_plane;
-      auto gpu_input = cle::Array::create(5, 5, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+      auto                         gpu_input = cle::Array::create(5, 5, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
       gpu_input->writeFrom(input_plane.data());
       cle::tier1::set_plane_func(device, gpu_input, 1, 4);
       gpu_input->readTo(output_plane.data());
@@ -166,7 +166,7 @@ TEST_P(TestSetCreateOperations, execute)
     case 6: // set_image_borders
     {
       std::array<int16_t, 5 * 5 * 1> expected_border = { 4, 4, 4, 4, 4, 4, 3, 3, 3, 4, 4, 3, 3, 3, 4, 4, 3, 3, 3, 4, 4, 4, 4, 4, 4 };
-      auto gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::INT16, cle::mType::BUFFER, device);
+      auto                           gpu_input = cle::Array::create(5, 5, 1, 3, cle::dType::INT16, cle::mType::BUFFER, device);
       gpu_input->writeFrom(input_int16.data());
       cle::tier1::set_image_borders_func(device, gpu_input, 4);
       gpu_input->readTo(output_int16.data());
@@ -205,11 +205,12 @@ TEST_P(TestSetCreateOperations, execute)
   }
 }
 
-std::vector<std::tuple<std::string, int>> getSetCreateParameters()
+std::vector<std::tuple<std::string, int>>
+getSetCreateParameters()
 {
   std::vector<std::tuple<std::string, int>> params;
-  auto backends = getParameters();
-  for (const auto& backend : backends)
+  auto                                      backends = getParameters();
+  for (const auto & backend : backends)
   {
     for (int i = 0; i < 8; i++)
     {

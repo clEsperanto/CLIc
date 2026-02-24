@@ -1,9 +1,9 @@
 #include "cle.hpp"
 
-#include <array>
-#include <random>
-#include <gtest/gtest.h>
 #include "test_utils.hpp"
+#include <array>
+#include <gtest/gtest.h>
+#include <random>
 
 // Consolidated binary logic operations tests
 // Tests: AND, OR, XOR, NOT, SUBTRACT, INF_SUP, SUP_INF
@@ -11,7 +11,7 @@
 class TestBinaryLogicOperations : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
+  std::string          backend;
   cle::Device::Pointer device;
 
   virtual void

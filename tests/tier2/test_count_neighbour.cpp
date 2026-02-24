@@ -1,14 +1,14 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestCountNeighbor : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
-  cle::Device::Pointer device;
+  std::string                     backend;
+  cle::Device::Pointer            device;
   std::array<uint32_t, 6 * 1 * 1> output;
   std::array<float, 5 * 5 * 1>    input = { 1, 1, 0, 3, 3, 1, 1, 2, 3, 3, 0, 2, 2, 2, 0, 4, 4, 2, 5, 5, 4, 4, 0, 5, 5 };
 

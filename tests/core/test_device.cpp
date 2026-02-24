@@ -1,12 +1,12 @@
 
 #include "cle.hpp"
 
-#include <gtest/gtest.h>
 #include "test_utils.hpp"
+#include <gtest/gtest.h>
 
 class TestDevice : public ::testing::TestWithParam<std::string>
 {
-  protected:
+protected:
   std::string backend;
 
   virtual void

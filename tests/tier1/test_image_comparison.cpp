@@ -1,9 +1,9 @@
 #include "cle.hpp"
 
-#include <array>
-#include <random>
-#include <gtest/gtest.h>
 #include "test_utils.hpp"
+#include <array>
+#include <gtest/gtest.h>
+#include <random>
 
 // Consolidated image comparison operations tests
 // Tests: EQUAL, GREATER, SMALLER, GREATER_OR_EQUAL, SMALLER_OR_EQUAL, NOT_EQUAL
@@ -12,7 +12,7 @@
 class TestImageComparison : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
+  std::string          backend;
   cle::Device::Pointer device;
 
   virtual void

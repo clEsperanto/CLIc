@@ -71,11 +71,6 @@ native_execute(const Device::Pointer & device,
                const RangeArray &      local_range = { 0, 0, 0 }) -> void;
 
 
-
-
-
-
-
 /**
  * @brief Evaluate a mathematical expression element-wise on GPU arrays
  *
@@ -104,4 +99,3 @@ evaluate(const Device::Pointer &            device,
          const Array::Pointer &             output) -> void;
 
 } // namespace cle
-

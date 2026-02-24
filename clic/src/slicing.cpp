@@ -14,7 +14,7 @@ namespace kernel
 {
 
 // OpenCL kernel for strided slicing (non-contiguous) with type-generic data access (using DTYPE and item_size)
-const char* slice_strided_kernel = R"CLC(
+const char * slice_strided_kernel = R"CLC(
 __kernel void slice_strided_kernel(
     __global const DTYPE * src,
     __global       DTYPE * dst,
@@ -57,8 +57,7 @@ __kernel void slice_strided_kernel(
 // ── internal: resolve all 3 axes ────────────────────────────────────────────
 
 static auto
-resolve_slices(const Array::Pointer &     src,
-               const std::vector<Slice> & slices) -> std::array<ResolvedSlice, 3>
+resolve_slices(const Array::Pointer & src, const std::vector<Slice> & slices) -> std::array<ResolvedSlice, 3>
 {
   const std::array<size_t, 3> src_shape = { src->width(), src->height(), src->depth() };
 
@@ -104,22 +103,13 @@ is_contiguous(const std::array<ResolvedSlice, 3> & resolved) -> bool
 }
 
 static auto
-slice_contiguous(const Array::Pointer &               src,
-                 const std::array<ResolvedSlice, 3> & resolved) -> Array::Pointer
+slice_contiguous(const Array::Pointer & src, const std::array<ResolvedSlice, 3> & resolved) -> Array::Pointer
 {
   // Source origin
-  const std::array<size_t, 3> src_origin = {
-    resolved[0].start,
-    resolved[1].start,
-    resolved[2].start
-  };
+  const std::array<size_t, 3> src_origin = { resolved[0].start, resolved[1].start, resolved[2].start };
 
   // Region to copy
-  const std::array<size_t, 3> region = {
-    resolved[0].length,
-    resolved[1].length,
-    resolved[2].length
-  };
+  const std::array<size_t, 3> region = { resolved[0].length, resolved[1].length, resolved[2].length };
 
   // Destination dimensions
   const size_t out_dim = compute_output_dim(resolved);
@@ -129,8 +119,7 @@ slice_contiguous(const Array::Pointer &               src,
   const size_t out_h = resolved[1].is_index ? 1 : resolved[1].length;
   const size_t out_d = resolved[2].is_index ? 1 : resolved[2].length;
 
-  auto dst = Array::create(out_w, out_h, out_d, out_dim,
-                           src->dtype(), src->mtype(), src->device());
+  auto dst = Array::create(out_w, out_h, out_d, out_dim, src->dtype(), src->mtype(), src->device());
   dst->allocate();
 
   const std::array<size_t, 3> dst_origin = { 0, 0, 0 };
@@ -143,8 +132,7 @@ slice_contiguous(const Array::Pointer &               src,
 // ── GPU kernel path: arbitrary strides using OpenCL kernel ────────────────────
 
 static auto
-slice_strided(const Array::Pointer &               src,
-              const std::array<ResolvedSlice, 3> & resolved) -> Array::Pointer
+slice_strided(const Array::Pointer & src, const std::array<ResolvedSlice, 3> & resolved) -> Array::Pointer
 {
   const size_t item = src->itemSize();
   const size_t src_w = src->width();
@@ -159,14 +147,13 @@ slice_strided(const Array::Pointer &               src,
   const size_t out_dim = compute_output_dim(resolved);
 
   // Create and allocate destination array
-  auto dst = Array::create(out_w, out_h, out_d, out_dim,
-                           src->dtype(), src->mtype(), src->device());
+  auto dst = Array::create(out_w, out_h, out_d, out_dim, src->dtype(), src->mtype(), src->device());
   dst->allocate();
 
   // Get the source dtype string and replace placeholder in kernel
   std::string dtype_str = toString(src->dtype());
   std::string kernel_code(kernel::slice_strided_kernel);
-  size_t pos = 0;
+  size_t      pos = 0;
   while ((pos = kernel_code.find("DTYPE", pos)) != std::string::npos)
   {
     kernel_code.replace(pos, 5, dtype_str);
@@ -221,8 +208,7 @@ slice(const Array::Pointer & src, const std::vector<Slice> & slices) -> Array::P
   {
     if (resolved[axis].length == 0)
     {
-      throw std::out_of_range("slice(): axis " + std::to_string(axis) +
-                              " produces an empty selection.");
+      throw std::out_of_range("slice(): axis " + std::to_string(axis) + " produces an empty selection.");
     }
   }
 
@@ -238,10 +224,7 @@ slice(const Array::Pointer & src, const std::vector<Slice> & slices) -> Array::P
 
 
 auto
-slice(const Array::Pointer & src,
-      const Slice &          x_slice,
-      const Slice &          y_slice,
-      const Slice &          z_slice) -> Array::Pointer
+slice(const Array::Pointer & src, const Slice & x_slice, const Slice & y_slice, const Slice & z_slice) -> Array::Pointer
 {
   return slice(src, { x_slice, y_slice, z_slice });
 }

@@ -1,12 +1,12 @@
 #include "cle.hpp"
 
-#include <array>
-#include <random>
-#include <gtest/gtest.h>
 #include "test_utils.hpp"
+#include <array>
+#include <gtest/gtest.h>
+#include <random>
 
 // Consolidated scalar comparison operations tests
-// Tests: EQUAL_CONSTANT, GREATER_CONSTANT, SMALLER_CONSTANT, 
+// Tests: EQUAL_CONSTANT, GREATER_CONSTANT, SMALLER_CONSTANT,
 // GREATER_OR_EQUAL_CONSTANT, SMALLER_OR_EQUAL_CONSTANT, NOT_EQUAL_CONSTANT
 // Compares image with a scalar constant
 
@@ -14,8 +14,8 @@ class TestScalarComparison : public ::testing::TestWithParam<std::string>
 {
 protected:
   static constexpr int8_t CONSTANT_VALUE = 5;
-  std::string backend;
-  cle::Device::Pointer device;
+  std::string             backend;
+  cle::Device::Pointer    device;
 
   virtual void
   SetUp()

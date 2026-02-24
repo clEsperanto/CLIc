@@ -44,4 +44,3 @@ _std_per_label(const Device::Pointer & device,
                int                     nb_labels) -> Array::Pointer;
 
 } // namespace cle
-

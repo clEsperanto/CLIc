@@ -1,15 +1,15 @@
 
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestMeanSquareError : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
-  cle::Device::Pointer device;
+  std::string                        backend;
+  cle::Device::Pointer               device;
   const std::array<float, 3 * 1 * 1> input1 = { 1, 2, 3 };
   const std::array<float, 3 * 1 * 1> input2 = { 4, 5, 7 };
 

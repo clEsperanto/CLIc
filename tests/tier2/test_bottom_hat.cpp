@@ -1,15 +1,15 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <algorithm>
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestBottomHat : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
-  cle::Device::Pointer device;
+  std::string                  backend;
+  cle::Device::Pointer         device;
   std::array<float, 5 * 5 * 1> output;
   std::array<float, 5 * 5 * 1> input = { 0, 0, 0, 0, 0, 0, 50, 50, 50, 0, 0, 50, 100, 50, 0, 0, 50, 50, 50, 0, 0, 0, 0, 0, 0 };
 

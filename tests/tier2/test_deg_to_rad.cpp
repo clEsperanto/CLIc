@@ -1,14 +1,14 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestDegreeToRadiant : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
-  cle::Device::Pointer device;
+  std::string                  backend;
+  cle::Device::Pointer         device;
   std::array<float, 3 * 1 * 1> output;
   std::array<float, 3 * 1 * 1> input = { 180, 0, -90 };
   std::array<float, 3 * 1 * 1> valid = { M_PI, 0, -0.5 * M_PI };

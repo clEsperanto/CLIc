@@ -316,4 +316,3 @@ voronoi_otsu_labeling_func(const Device::Pointer & device,
 
 
 } // namespace cle::tier7
-

@@ -14,7 +14,7 @@ standard_deviation_of_all_pixels_func(const Device::Pointer & device, const Arra
 {
   float mean = tier3::mean_of_all_pixels_func(device, src);
   auto  diff = Array::create(src->width(), src->height(), src->depth(), src->dimension(), dType::FLOAT, src->mtype(), device);
-  evaluate(device, "pow(src - mean, 2)", {src, mean}, diff);
+  evaluate(device, "pow(src - mean, 2)", { src, mean }, diff);
   float variance = tier3::mean_of_all_pixels_func(device, diff);
   return std::sqrt(variance);
 }

@@ -1,8 +1,8 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestReciprocal : public ::testing::TestWithParam<std::string>
 {

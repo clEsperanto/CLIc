@@ -1,9 +1,9 @@
 #include "cle.hpp"
 
-#include <array>
-#include <numeric>
-#include <gtest/gtest.h>
 #include "test_utils.hpp"
+#include <array>
+#include <gtest/gtest.h>
+#include <numeric>
 
 // Consolidated copy and slice operations tests
 // Tests: COPY, COPY_SLICE, COPY_HORIZONTAL_SLICE, COPY_VERTICAL_SLICE
@@ -11,7 +11,7 @@
 class TestCopySliceOperations : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
+  std::string          backend;
   cle::Device::Pointer device;
 
   virtual void

@@ -124,4 +124,3 @@ deconvolve_fft_func(const Device::Pointer & device,
 
 
 } // namespace cle::tier8
-

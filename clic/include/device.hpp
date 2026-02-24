@@ -290,7 +290,7 @@ public:
    * @param nb_device
    * @return OpenCLDevice
    */
-  OpenCLDevice(const std::shared_ptr<Resources> &   resources,
+  OpenCLDevice(const std::shared_ptr<Resources> &    resources,
                const std::shared_ptr<Context> &      context,
                const std::shared_ptr<CommandQueue> & command_queue);
 
@@ -652,10 +652,10 @@ public:
   addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void override;
 
 private:
-  int              cudaDeviceIndex;
-  CUdevice         cudaDevice;
-  CUcontext        cudaContext;
-  CUstream         cudaStream;
+  int                           cudaDeviceIndex;
+  CUdevice                      cudaDevice;
+  CUcontext                     cudaContext;
+  CUstream                      cudaStream;
   std::shared_ptr<ProgramCache> cache = std::make_shared<ProgramCache>();
   bool                          initialized = false;
   bool                          waitFinish = false;
@@ -663,4 +663,3 @@ private:
 #endif // USE_CUDA
 
 } // namespace cle
-

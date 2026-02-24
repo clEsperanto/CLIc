@@ -1194,4 +1194,3 @@ generate_proximal_neighbors_matrix_func(const Device::Pointer & device,
 
 
 } // namespace cle::tier2
-

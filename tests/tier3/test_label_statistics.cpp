@@ -5,8 +5,8 @@
 #include <array>
 #include <cmath>
 
-#include <gtest/gtest.h>
 #include "test_utils.hpp"
+#include <gtest/gtest.h>
 
 class TestStatisticsOfLabelledPixels : public ::testing::TestWithParam<std::string>
 {

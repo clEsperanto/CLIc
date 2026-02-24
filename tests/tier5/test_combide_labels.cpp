@@ -1,14 +1,14 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestCombineLabels : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
-  cle::Device::Pointer device;
+  std::string                     backend;
+  cle::Device::Pointer            device;
   std::array<uint32_t, 6 * 2 * 1> input1 = { 1, 1, 0, 0, 3, 3, 1, 1, 0, 2, 3, 3 };
   std::array<uint32_t, 6 * 2 * 1> input2 = { 0, 1, 1, 2, 2, 0, 0, 1, 1, 2, 2, 0 };
   std::array<uint32_t, 6 * 2 * 1> valid = { 1, 3, 3, 4, 4, 2, 1, 3, 3, 4, 4, 2 };

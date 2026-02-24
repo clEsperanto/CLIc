@@ -472,4 +472,3 @@ apply_affine_transform_deskew_3d(const cle::Array::Pointer &  src,
                                  bool                         auto_resize) -> cle::Array::Pointer;
 
 } // namespace cle
-

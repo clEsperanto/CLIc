@@ -1,14 +1,14 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestLabelNeighbortMap : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
-  cle::Device::Pointer device;
+  std::string                     backend;
+  cle::Device::Pointer            device;
   std::array<uint32_t, 4 * 4 * 1> label = { 1, 1, 2, 2, 1, 0, 0, 2, 3, 0, 0, 4, 3, 3, 4, 4 };
   std::array<float, 4 * 4 * 1>    intensity = { 1, 1, 2, 2, 1, 0, 0, 2, 4, 0, 0, 6, 4, 4, 6, 6 };
 

@@ -517,4 +517,3 @@ read_intensities_from_map_func(const Device::Pointer & device, const Array::Poin
   -> Array::Pointer;
 
 } // namespace cle::tier3
-

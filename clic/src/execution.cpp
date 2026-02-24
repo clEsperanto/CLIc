@@ -219,9 +219,7 @@ generateDefines(const ParameterList & parameter_list, const ConstantList & const
 
 // Marshal ParameterList into flat argument arrays for backend execution
 static auto
-marshalParameters(const ParameterList &                parameters,
-                  std::vector<std::shared_ptr<void>> & args_ptr,
-                  std::vector<size_t> &                args_size) -> void
+marshalParameters(const ParameterList & parameters, std::vector<std::shared_ptr<void>> & args_ptr, std::vector<size_t> & args_size) -> void
 {
   args_ptr.reserve(parameters.size());
   args_size.reserve(parameters.size());
@@ -369,29 +367,117 @@ extractVariableNames(const std::string & expr) -> std::vector<std::string>
 {
   static const std::set<std::string> builtins = {
     // Math functions
-    "sin", "cos", "tan", "asin", "acos", "atan", "atan2",
-    "sinh", "cosh", "tanh", "asinh", "acosh", "atanh",
-    "exp", "exp2", "exp10", "log", "log2", "log10",
-    "pow", "pown", "powr", "sqrt", "rsqrt", "cbrt",
-    "fabs", "abs", "fmin", "fmax", "fmod", "remainder",
-    "ceil", "floor", "round", "trunc", "rint",
-    "clamp", "mix", "step", "smoothstep",
-    "sign", "min", "max", "mad", "fma",
-    "copysign", "fdim", "hypot", "ldexp", "frexp",
-    "native_sin", "native_cos", "native_exp", "native_log", "native_sqrt",
-    "native_tan", "native_recip", "native_rsqrt", "native_powr",
-    "half_sin", "half_cos", "half_exp", "half_log", "half_sqrt",
-    "half_tan", "half_recip", "half_rsqrt", "half_powr",
-    "isnan", "isinf", "isfinite", "isnormal", "signbit",
-    "select", "bitselect",
-    "convert_float", "convert_int", "convert_uint",
-    "convert_char", "convert_uchar", "convert_short", "convert_ushort",
-    "as_float", "as_int", "as_uint",
+    "sin",
+    "cos",
+    "tan",
+    "asin",
+    "acos",
+    "atan",
+    "atan2",
+    "sinh",
+    "cosh",
+    "tanh",
+    "asinh",
+    "acosh",
+    "atanh",
+    "exp",
+    "exp2",
+    "exp10",
+    "log",
+    "log2",
+    "log10",
+    "pow",
+    "pown",
+    "powr",
+    "sqrt",
+    "rsqrt",
+    "cbrt",
+    "fabs",
+    "abs",
+    "fmin",
+    "fmax",
+    "fmod",
+    "remainder",
+    "ceil",
+    "floor",
+    "round",
+    "trunc",
+    "rint",
+    "clamp",
+    "mix",
+    "step",
+    "smoothstep",
+    "sign",
+    "min",
+    "max",
+    "mad",
+    "fma",
+    "copysign",
+    "fdim",
+    "hypot",
+    "ldexp",
+    "frexp",
+    "native_sin",
+    "native_cos",
+    "native_exp",
+    "native_log",
+    "native_sqrt",
+    "native_tan",
+    "native_recip",
+    "native_rsqrt",
+    "native_powr",
+    "half_sin",
+    "half_cos",
+    "half_exp",
+    "half_log",
+    "half_sqrt",
+    "half_tan",
+    "half_recip",
+    "half_rsqrt",
+    "half_powr",
+    "isnan",
+    "isinf",
+    "isfinite",
+    "isnormal",
+    "signbit",
+    "select",
+    "bitselect",
+    "convert_float",
+    "convert_int",
+    "convert_uint",
+    "convert_char",
+    "convert_uchar",
+    "convert_short",
+    "convert_ushort",
+    "as_float",
+    "as_int",
+    "as_uint",
     // Types and keywords
-    "float", "double", "half", "int", "uint", "char", "uchar",
-    "short", "ushort", "long", "ulong", "bool", "void", "const", "unsigned",
-    "return", "if", "else", "for", "while", "do", "break", "continue",
-    "true", "false",
+    "float",
+    "double",
+    "half",
+    "int",
+    "uint",
+    "char",
+    "uchar",
+    "short",
+    "ushort",
+    "long",
+    "ulong",
+    "bool",
+    "void",
+    "const",
+    "unsigned",
+    "return",
+    "if",
+    "else",
+    "for",
+    "while",
+    "do",
+    "break",
+    "continue",
+    "true",
+    "false",
   };
 
   std::vector<std::string> vars;
@@ -425,8 +511,7 @@ extractVariableNames(const std::string & expr) -> std::vector<std::string>
         }
       }
       // Consume type suffix (f, F, l, L, u, U)
-      while (i < len && (expr[i] == 'f' || expr[i] == 'F' || expr[i] == 'l' || expr[i] == 'L' ||
-                         expr[i] == 'u' || expr[i] == 'U'))
+      while (i < len && (expr[i] == 'f' || expr[i] == 'F' || expr[i] == 'l' || expr[i] == 'L' || expr[i] == 'u' || expr[i] == 'U'))
         ++i;
       continue;
     }
@@ -475,10 +560,8 @@ promoteBuiltinsToFloat(const std::string & expr) -> std::string
       const size_t end = pos + from.size();
 
       // Check it's a standalone identifier (not part of a longer word)
-      const bool preceded_by_id =
-        pos > 0 && (std::isalnum(static_cast<unsigned char>(result[pos - 1])) || result[pos - 1] == '_');
-      const bool followed_by_id =
-        end < result.size() && (std::isalnum(static_cast<unsigned char>(result[end])) || result[end] == '_');
+      const bool preceded_by_id = pos > 0 && (std::isalnum(static_cast<unsigned char>(result[pos - 1])) || result[pos - 1] == '_');
+      const bool followed_by_id = end < result.size() && (std::isalnum(static_cast<unsigned char>(result[end])) || result[end] == '_');
 
       if (!preceded_by_id && !followed_by_id)
       {
@@ -497,7 +580,7 @@ promoteBuiltinsToFloat(const std::string & expr) -> std::string
 
 
 auto
-evaluate(const Device::Pointer &           device,
+evaluate(const Device::Pointer &            device,
          const std::string &                expression,
          const std::vector<ParameterType> & parameters,
          const Array::Pointer &             output) -> void
@@ -517,9 +600,8 @@ evaluate(const Device::Pointer &           device,
   auto var_names = extractVariableNames(expression);
   if (var_names.size() != parameters.size())
   {
-    throw std::invalid_argument(
-      "Error: expression has " + std::to_string(var_names.size()) + " variable(s) but " +
-      std::to_string(parameters.size()) + " parameter(s) were provided.");
+    throw std::invalid_argument("Error: expression has " + std::to_string(var_names.size()) + " variable(s) but " +
+                                std::to_string(parameters.size()) + " parameter(s) were provided.");
   }
 
   // Promote integer math builtins to float equivalents (abs->fabs, min->fmin, max->fmax)
@@ -670,8 +752,8 @@ evaluate(const Device::Pointer &           device,
   args_size.push_back(sizeof(int));
 
   // Execute as 1D kernel with max local work group size
-  const size_t max_local = device->getMaximumWorkGroupSize();
-  const size_t global_size_padded = ((total_size + max_local - 1) / max_local) * max_local;
+  const size_t     max_local = device->getMaximumWorkGroupSize();
+  const size_t     global_size_padded = ((total_size + max_local - 1) / max_local) * max_local;
   const RangeArray global_range = { global_size_padded, 1, 1 };
   const RangeArray local_range = { max_local, 1, 1 };
 

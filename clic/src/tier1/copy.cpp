@@ -34,10 +34,15 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
     const std::string kw = is_opencl ? "__kernel" : "extern \"C\" __global__";
     const std::string gid = is_opencl ? "get_global_id(0)" : "blockDim.x * blockIdx.x + threadIdx.x";
 
-    const std::string kernel_source = kw + " void copy_" + src_type + "_to_" + dst_type + "(" + addr + "const " +
-                                      src_type + "* src, " + addr + dst_type + "* dst, const int size) {\n"
-                                      "  const int idx = " + gid + ";\n"
-                                      "  if (idx < size) { dst[idx] = (" + dst_type + ")src[idx]; }\n"
+    const std::string kernel_source = kw + " void copy_" + src_type + "_to_" + dst_type + "(" + addr + "const " + src_type + "* src, " +
+                                      addr + dst_type +
+                                      "* dst, const int size) {\n"
+                                      "  const int idx = " +
+                                      gid +
+                                      ";\n"
+                                      "  if (idx < size) { dst[idx] = (" +
+                                      dst_type +
+                                      ")src[idx]; }\n"
                                       "}\n";
     const std::string kernel_name = "copy_" + src_type + "_to_" + dst_type;
 

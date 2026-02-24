@@ -1,14 +1,14 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
-#include "test_utils.hpp"
 
 class TestConcatenate : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string backend;
-  cle::Device::Pointer device;
+  std::string                  backend;
+  cle::Device::Pointer         device;
   std::array<float, 2 * 2 * 2> output;
   std::array<float, 2 * 2 * 1> input1 = { 1, 1, 1, 1 };
   std::array<float, 2 * 2 * 1> input2 = { 2, 2, 2, 2 };

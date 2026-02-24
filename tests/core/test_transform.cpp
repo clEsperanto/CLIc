@@ -2,8 +2,8 @@
 #include "cle.hpp"
 #include "transform.hpp"
 
-#include <gtest/gtest.h>
 #include "test_utils.hpp"
+#include <gtest/gtest.h>
 
 class TestTransform : public ::testing::TestWithParam<std::string>
 {

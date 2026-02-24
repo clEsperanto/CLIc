@@ -13,7 +13,7 @@ gamma_correction_func(const Device::Pointer & device, const Array::Pointer & src
 {
   tier0::create_like(src, dst);
   auto max_intensity = tier2::maximum_of_all_pixels_func(device, src);
-  evaluate(device, "pow(a / m, g) * m", {src, max_intensity, gamma}, dst);
+  evaluate(device, "pow(a / m, g) * m", { src, max_intensity, gamma }, dst);
   return dst;
 }
 

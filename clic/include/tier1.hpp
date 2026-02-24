@@ -3315,4 +3315,3 @@ truncate_func(const Device::Pointer & device, const Array::Pointer & src, Array:
 
 
 } // namespace cle::tier1
-
