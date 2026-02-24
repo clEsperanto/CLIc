@@ -2,6 +2,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestConcatenate : public ::testing::TestWithParam<std::string>
 {
@@ -116,19 +117,4 @@ TEST_P(TestConcatenate, alongZ)
   EXPECT_EQ(gpu_output->height(), 2);
   EXPECT_EQ(gpu_output->depth(), 2);
 }
-
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestConcatenate, ::testing::ValuesIn(getParameters()));

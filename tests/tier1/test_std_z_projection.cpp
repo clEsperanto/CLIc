@@ -2,6 +2,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestStdProjectionZ : public ::testing::TestWithParam<std::string>
 {
@@ -34,18 +35,4 @@ TEST_P(TestStdProjectionZ, execute)
     EXPECT_NEAR(output[i], valid[i], 0.01);
   }
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestStdProjectionZ, ::testing::ValuesIn(getParameters()));

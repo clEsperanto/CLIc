@@ -3,6 +3,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestNonzeroMaximum : public ::testing::TestWithParam<std::string>
 {
@@ -107,18 +108,4 @@ TEST_P(TestNonzeroMaximum, executeSphere)
     EXPECT_EQ(output[i], valid_diam[i]);
   }
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestNonzeroMaximum, ::testing::ValuesIn(getParameters()));

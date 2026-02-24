@@ -3,6 +3,7 @@
 #include "transform.hpp"
 
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestTransform : public ::testing::TestWithParam<std::string>
 {
@@ -136,18 +137,4 @@ TEST_P(TestTransform, centerRotate)
 }
 
 // TODO: test shear and deskew
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestTransform, ::testing::ValuesIn(getParameters()));

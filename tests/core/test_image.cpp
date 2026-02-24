@@ -2,18 +2,22 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
-class TestArray : public ::testing::TestWithParam<std::string>
+class TestImage : public ::testing::TestWithParam<std::string>
 {};
 
-TEST_P(TestArray, allocate)
+TEST_P(TestImage, allocate)
 {
-  GTEST_SKIP();
-
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
+
+  if (!device->supportImage())
+  {
+    GTEST_SKIP() << "Device does not support image objects.";
+  }
 
 
   // Create a new Array
@@ -39,14 +43,17 @@ TEST_P(TestArray, allocate)
   EXPECT_EQ(array_other->itemSize(), sizeof(uint8_t));
 }
 
-TEST_P(TestArray, typeDataMemory)
+TEST_P(TestImage, typeDataMemory)
 {
-  GTEST_SKIP();
-
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
+
+  if (!device->supportImage())
+  {
+    GTEST_SKIP() << "Device does not support image objects.";
+  }
 
 
   // Create a new Array
@@ -59,14 +66,17 @@ TEST_P(TestArray, typeDataMemory)
   EXPECT_EQ(array->mtype(), cle::mType::IMAGE);
 }
 
-TEST_P(TestArray, allocateWrite)
+TEST_P(TestImage, allocateWrite)
 {
-  GTEST_SKIP();
-
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
+
+  if (!device->supportImage())
+  {
+    GTEST_SKIP() << "Device does not support image objects.";
+  }
 
 
   // Write some data to the array
@@ -90,14 +100,17 @@ TEST_P(TestArray, allocateWrite)
   }
 }
 
-TEST_P(TestArray, readWrite)
+TEST_P(TestImage, readWrite)
 {
-  GTEST_SKIP();
-
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
+
+  if (!device->supportImage())
+  {
+    GTEST_SKIP() << "Device does not support image objects.";
+  }
 
 
   // Create a new Array
@@ -125,14 +138,17 @@ TEST_P(TestArray, readWrite)
   }
 }
 
-TEST_P(TestArray, copyFill)
+TEST_P(TestImage, copyFill)
 {
-  GTEST_SKIP();
-
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
+
+  if (!device->supportImage())
+  {
+    GTEST_SKIP() << "Device does not support image objects.";
+  }
 
 
   // Create a new Array
@@ -173,14 +189,17 @@ TEST_P(TestArray, copyFill)
   }
 }
 
-TEST_P(TestArray, stringCout)
+TEST_P(TestImage, stringCout)
 {
-  GTEST_SKIP();
-
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
+
+  if (!device->supportImage())
+  {
+    GTEST_SKIP() << "Device does not support image objects.";
+  }
 
 
   // Create a new Array
@@ -197,14 +216,17 @@ TEST_P(TestArray, stringCout)
   EXPECT_EQ(output, expected_output.str());
 }
 
-TEST_P(TestArray, regionOperation)
+TEST_P(TestImage, regionOperation)
 {
-  GTEST_SKIP();
-
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
+
+  if (!device->supportImage())
+  {
+    GTEST_SKIP() << "Device does not support image objects.";
+  }
 
 
   // Create a new Array
@@ -274,14 +296,17 @@ TEST_P(TestArray, regionOperation)
   }
 }
 
-TEST_P(TestArray, throwErrors)
+TEST_P(TestImage, throwErrors)
 {
-  GTEST_SKIP();
-
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
+
+  if (!device->supportImage())
+  {
+    GTEST_SKIP() << "Device does not support image objects.";
+  }
 
 
   // Create a new Array
@@ -315,19 +340,4 @@ TEST_P(TestArray, throwErrors)
   auto array_other = cle::Array::create(30, 20, 10, 3, cle::dType::FLOAT, cle::mType::IMAGE, device);
   EXPECT_THROW(array->copyTo(array_other), std::runtime_error);
 }
-
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestArray, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestImage, ::testing::ValuesIn(getParameters()));

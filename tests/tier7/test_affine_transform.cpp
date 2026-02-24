@@ -2,6 +2,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestAffineTransform : public ::testing::TestWithParam<std::string>
 {};
@@ -33,7 +34,15 @@ TEST_P(TestAffineTransform, affineTransform)
 
 TEST_P(TestAffineTransform, affineTransformInterpolate)
 {
-  GTEST_SKIP();
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+  device->setWaitToFinish(true);
+
+  if (!device->supportImage())
+  {
+    GTEST_SKIP() << "Device does not support image objects.";
+  }
 
   const std::array<float, 5 * 5 * 1>   input = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   const std::array<float, 10 * 10 * 1> valid = {
@@ -44,11 +53,6 @@ TEST_P(TestAffineTransform, affineTransformInterpolate)
     0, 0, 0, 0,      0,      0,      0,      0, 0, 0, 0, 0, 0, 0,      0,      0,      0,      0, 0, 0,
   };
   std::array<float, 10 * 10 * 1> output;
-
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
@@ -62,18 +66,4 @@ TEST_P(TestAffineTransform, affineTransformInterpolate)
     EXPECT_EQ(output[i], valid[i]);
   }
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestAffineTransform, ::testing::ValuesIn(getParameters()));

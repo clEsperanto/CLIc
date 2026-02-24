@@ -2,6 +2,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestReciprocal : public ::testing::TestWithParam<std::string>
 {
@@ -37,18 +38,4 @@ TEST_P(TestReciprocal, execute)
     EXPECT_EQ(output[i], valid[i]);
   }
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestReciprocal, ::testing::ValuesIn(getParameters()));

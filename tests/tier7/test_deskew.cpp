@@ -2,6 +2,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 
 class TestDeskew : public ::testing::TestWithParam<std::string>
@@ -9,7 +10,15 @@ class TestDeskew : public ::testing::TestWithParam<std::string>
 
 TEST_P(TestDeskew, deskew_y)
 {
-  GTEST_SKIP();
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+  device->setWaitToFinish(true);
+
+  if (!device->supportImage())
+  {
+    GTEST_SKIP() << "Device does not support image objects.";
+  }
 
   auto coord_to_index = [](size_t x, size_t y, size_t z, size_t width, size_t height) -> size_t {
     return z * height * width + y * width + x;
@@ -24,11 +33,6 @@ TEST_P(TestDeskew, deskew_y)
   valid[idx] = 0.169872939f;
 
   std::array<float, 10 * 19 * 5> output;
-
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   cle::Array::Pointer gpu_input = nullptr;
   try
@@ -48,19 +52,4 @@ TEST_P(TestDeskew, deskew_y)
     EXPECT_NEAR(output[i], valid[i], 0.00001);
   }
 }
-
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDeskew, ::testing::ValuesIn(getParameters()));

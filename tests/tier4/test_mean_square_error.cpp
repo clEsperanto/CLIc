@@ -3,6 +3,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestMeanSquareError : public ::testing::TestWithParam<std::string>
 {
@@ -26,18 +27,4 @@ TEST_P(TestMeanSquareError, execute)
   auto output = cle::tier4::mean_squared_error_func(device, gpu_input1, gpu_input2);
   EXPECT_NEAR(output, 11.333, 0.001);
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestMeanSquareError, ::testing::ValuesIn(getParameters()));

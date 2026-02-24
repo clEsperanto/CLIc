@@ -2,6 +2,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestHessianEigenvalues : public ::testing::TestWithParam<std::string>
 {
@@ -87,18 +88,4 @@ TEST_P(TestHessianEigenvalues, executeSmall2D)
     EXPECT_EQ(output[i], small_2d[i]);
   }
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestHessianEigenvalues, ::testing::ValuesIn(getParameters()));

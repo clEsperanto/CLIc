@@ -2,6 +2,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestLabelNeighbortMap : public ::testing::TestWithParam<std::string>
 {
@@ -135,19 +136,4 @@ TEST_P(TestLabelNeighbortMap, mode)
     EXPECT_NEAR(output[i], valid_mode[i], 0.0001);
   }
 }
-
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestLabelNeighbortMap, ::testing::ValuesIn(getParameters()));

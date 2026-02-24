@@ -3,6 +3,7 @@
 #include "execution.hpp"
 
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestExecution : public ::testing::TestWithParam<std::string>
 {};
@@ -160,18 +161,4 @@ TEST_P(TestExecution, executeNative)
     EXPECT_EQ(h_c[i], 3);
   }
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestExecution, ::testing::ValuesIn(getParameters()));

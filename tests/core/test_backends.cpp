@@ -2,6 +2,7 @@
 #include "cle.hpp"
 
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestBackends : public ::testing::TestWithParam<std::string>
 {};
@@ -21,18 +22,4 @@ TEST_P(TestBackends, manager)
   auto backend_type = cle::BackendManager::getInstance().getBackend().getType();
   EXPECT_TRUE(backend_type == cle::Backend::Type::CUDA || backend_type == cle::Backend::Type::OPENCL);
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestBackends, ::testing::ValuesIn(getParameters()));

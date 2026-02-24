@@ -2,6 +2,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestFFT : public ::testing::TestWithParam<std::string>
 {
@@ -192,19 +193,4 @@ TEST_P(TestFFT, executeDeconvolutionFunction)
     EXPECT_NEAR(output[i], valid[i], 0.1);
   }
 }
-
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestFFT, ::testing::ValuesIn(getParameters()));

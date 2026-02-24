@@ -2,15 +2,16 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
-class TestBoundingBox : public ::testing::TestWithParam<std::string>
+class TestLabelBoundingBox : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<float, 7 * 7 * 1> input = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
                                          0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0 };
 };
 
-TEST_P(TestBoundingBox, execute2d)
+TEST_P(TestLabelBoundingBox, execute2d)
 {
 
   std::string param = GetParam();
@@ -29,19 +30,4 @@ TEST_P(TestBoundingBox, execute2d)
     EXPECT_EQ(output[i], valid[i]);
   }
 }
-
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestBoundingBox, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestLabelBoundingBox, ::testing::ValuesIn(getParameters()));

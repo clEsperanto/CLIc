@@ -2,8 +2,9 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
-class TestPaste : public ::testing::TestWithParam<std::string>
+class TestSetImageBorder : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<int16_t, 5 * 5 * 1> output;
@@ -11,7 +12,7 @@ protected:
   std::array<int16_t, 5 * 5 * 1> valid = { 4, 4, 4, 4, 4, 4, 3, 3, 3, 4, 4, 3, 3, 3, 4, 4, 3, 3, 3, 4, 4, 4, 4, 4, 4 };
 };
 
-TEST_P(TestPaste, execute)
+TEST_P(TestSetImageBorder, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -29,18 +30,4 @@ TEST_P(TestPaste, execute)
     EXPECT_EQ(output[i], valid[i]);
   }
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestPaste, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestSetImageBorder, ::testing::ValuesIn(getParameters()));

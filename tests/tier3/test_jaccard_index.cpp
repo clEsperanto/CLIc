@@ -2,6 +2,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestJaccardIndex : public ::testing::TestWithParam<std::string>
 {};
@@ -45,18 +46,4 @@ TEST_P(TestJaccardIndex, execute3D)
 
   EXPECT_EQ(output, 0.5);
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestJaccardIndex, ::testing::ValuesIn(getParameters()));

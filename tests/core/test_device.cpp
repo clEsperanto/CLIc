@@ -2,6 +2,7 @@
 #include "cle.hpp"
 
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestDevice : public ::testing::TestWithParam<std::string>
 {};
@@ -249,18 +250,4 @@ TEST_P(TestDevice, clInfo)
   // // Check that the output is correct
   // EXPECT_FALSE(output.empty());
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDevice, ::testing::ValuesIn(getParameters()));

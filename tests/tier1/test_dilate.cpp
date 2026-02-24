@@ -3,6 +3,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 #include <random>
 
 class TestDilate : public ::testing::TestWithParam<std::string>
@@ -98,18 +99,4 @@ TEST_P(TestDilate, executeSphere)
     EXPECT_EQ(output[i], validSphere[i]);
   }
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDilate, ::testing::ValuesIn(getParameters()));

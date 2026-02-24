@@ -2,6 +2,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestDetectMinima : public ::testing::TestWithParam<std::string>
 {
@@ -64,18 +65,4 @@ TEST_P(TestDetectMinima, boundaries)
     EXPECT_EQ(output_bound[i], valid_bound[i]);
   }
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDetectMinima, ::testing::ValuesIn(getParameters()));

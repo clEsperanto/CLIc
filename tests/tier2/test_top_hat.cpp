@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestTopHat : public ::testing::TestWithParam<std::string>
 {
@@ -44,18 +45,4 @@ TEST_P(TestTopHat, executeSphere)
   EXPECT_EQ(*std::min_element(output.begin(), output.end()), 0);
   EXPECT_EQ(*std::max_element(output.begin(), output.end()), 50);
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestTopHat, ::testing::ValuesIn(getParameters()));

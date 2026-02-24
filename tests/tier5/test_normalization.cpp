@@ -2,6 +2,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestNormalize : public ::testing::TestWithParam<std::string>
 {
@@ -29,18 +30,4 @@ TEST_P(TestNormalize, execute)
     EXPECT_NEAR(output[i], valid[i], 0.01);
   }
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestNormalize, ::testing::ValuesIn(getParameters()));

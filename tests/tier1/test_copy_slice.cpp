@@ -2,6 +2,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 #include <numeric>
 
 class TestCopySlice : public ::testing::TestWithParam<std::string>
@@ -121,18 +122,4 @@ TEST_P(TestCopySlice, executeCopySliceMinY)
   EXPECT_EQ(*std::max_element(output.begin(), output.end()), 4.0);
   EXPECT_EQ(std::accumulate(output.begin(), output.end(), 0.0) / output.size(), 2.5);
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestCopySlice, ::testing::ValuesIn(getParameters()));

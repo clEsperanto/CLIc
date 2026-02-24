@@ -2,6 +2,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestArray : public ::testing::TestWithParam<std::string>
 {};
@@ -291,19 +292,4 @@ TEST_P(TestArray, throwErrors)
   auto array_other = cle::Array::create(30, 20, 10, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   EXPECT_THROW(array->copyTo(array_other), std::runtime_error);
 }
-
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestArray, ::testing::ValuesIn(getParameters()));

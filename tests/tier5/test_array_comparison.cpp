@@ -2,6 +2,7 @@
 
 #include <array>
 #include <gtest/gtest.h>
+#include "test_utils.hpp"
 
 class TestArrayComparisons : public ::testing::TestWithParam<std::string>
 {
@@ -36,18 +37,4 @@ TEST_P(TestArrayComparisons, execute)
   EXPECT_TRUE(cle::tier5::array_equal_func(device, gpu_input1, gpu_input4));
   EXPECT_FALSE(cle::tier5::array_equal_func(device, gpu_input1, gpu_input5));
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestArrayComparisons, ::testing::ValuesIn(getParameters()));
