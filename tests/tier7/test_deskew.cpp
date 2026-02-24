@@ -8,8 +8,8 @@
 class TestDeskew : public ::testing::TestWithParam<std::string>
 {
 protected:
-  std::string                  backend;
-  cle::Device::Pointer         device;
+  std::string          backend;
+  cle::Device::Pointer device;
 
   virtual void
   SetUp()
@@ -29,7 +29,7 @@ TEST_P(TestDeskew, deskew_y)
     GTEST_SKIP() << "Device does not support image objects.";
   }
 
-  if(device->vendorName().find("POCL") != std::string::npos)
+  if (device->vendorName().find("POCL") != std::string::npos)
   {
     GTEST_SKIP() << "POCL does not reliably support image interpolation for deskew operations.";
   }
