@@ -58,10 +58,13 @@ __kernel void std_projection(
   
   const float std_value = (n > 1) ? sqrt(m2 / (float)(n - 1)) : 0;
   
-  // Output coordinates: collapse the projected axis to 0
-  const int ox = (axis == 0) ? 0   : id0;
-  const int oy = (axis == 0) ? id0 : (axis == 1) ? 0 : id1;
-  const int oz = (axis == 2) ? 0   : id1;
+  // Output coordinates based on create_* output layout:
+  // X projection: create_zy -> (depth, height, 1) range {height, width, 1}
+  // Y projection: create_xz -> (width, depth, 1) range {width, depth, 1}
+  // Z projection: create_xy -> (width, height, 1) range {width, height, 1}
+  const int ox = (axis == 0) ? id1 : id0;
+  const int oy = (axis == 0) ? id0 : id1;
+  const int oz = 0;
   
   WRITE_IMAGE(dst, POS_dst_INSTANCE(ox, oy, oz, 0), CONVERT_dst_PIXEL_TYPE(std_value));
 }
@@ -78,7 +81,7 @@ std_x_projection_func(const Device::Pointer & device, const Array::Pointer & src
   tier0::create_zy(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "std_projection", kernel::std_projection_kernel };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "axis", 0 } };
-  const RangeArray    range = { dst->height(), dst->depth(), 1 };
+  const RangeArray    range = { dst->width(), dst->height(), 1 };
   execute(device, kernel, params, range);
   return dst;
 }
@@ -89,7 +92,7 @@ std_y_projection_func(const Device::Pointer & device, const Array::Pointer & src
   tier0::create_xz(src, dst, dType::FLOAT);
   const KernelInfo    kernel = { "std_projection", kernel::std_projection_kernel };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "axis", 1 } };
-  const RangeArray    range = { dst->width(), dst->depth(), 1 };
+  const RangeArray    range = { dst->width(), dst->height(), 1 };
   execute(device, kernel, params, range);
   return dst;
 }
