@@ -67,7 +67,7 @@ getErrorString(const cl_int & error) -> std::string
 OpenCLBackend::OpenCLBackend()
 {
 #if USE_OPENCL
-  OpenCLBackend::initialiseRessources();
+  OpenCLBackend::initialiseResources();
 #else
   throw std::runtime_error("Error: OpenCL is not enabled");
 #endif
@@ -86,12 +86,12 @@ OpenCLBackend::~OpenCLBackend()
 }
 
 auto
-OpenCLBackend::initialiseRessources() -> void
+OpenCLBackend::initialiseResources() -> void
 {
 #if USE_OPENCL
 
-  // explore ressources available
-  std::unordered_map<cl_platform_id, std::vector<cl_device_id>> ressources;
+  // explore resources available
+  std::unordered_map<cl_platform_id, std::vector<cl_device_id>> resources;
   size_t                                                        device_counter = 0;
 
   cl_uint platformCount = 0;
@@ -121,17 +121,17 @@ OpenCLBackend::initialiseRessources() -> void
     {
       continue;
     }
-    ressources[platform_id] = deviceIds;
+    resources[platform_id] = deviceIds;
     device_counter += deviceCount;
   }
-  if (ressources.empty())
+  if (resources.empty())
   {
     std::cerr << "Warning: Failed to find OpenCL compatible devices." << std::endl;
   }
 
-  // // allocate ressources (1 context = n devices)
+  // // allocate resources (1 context = n devices)
   // device_list_.reserve(device_counter);
-  // for (const auto & [platform_id, device_ids] : ressources)
+  // for (const auto & [platform_id, device_ids] : resources)
   // {
   //   cl_uint num_devices = device_ids.size();
   //   auto    context = std::make_shared<OpenCLDevice::Context>(
@@ -150,13 +150,13 @@ OpenCLBackend::initialiseRessources() -> void
   //       throw std::runtime_error("Error: Failed to create OpenCL command queue.");
   //     }
   //     device_list_.emplace_back(std::make_shared<OpenCLDevice>(
-  //       std::make_shared<OpenCLDevice::Ressources>(platform_id, device_id, device_index++), context, command_queue));
+  //       std::make_shared<OpenCLDevice::Resources>(platform_id, device_id, device_index++), context, command_queue));
   //   }
   // }
 
   // allocate resources (1 context = 1 device)
   device_list_.reserve(device_counter);
-  for (const auto & [platform_id, device_ids] : ressources)
+  for (const auto & [platform_id, device_ids] : resources)
   {
     size_t device_index = 0;
     for (const auto & device_id : device_ids)
@@ -172,7 +172,7 @@ OpenCLBackend::initialiseRessources() -> void
         throw std::runtime_error("Error: Failed to create OpenCL command queue.");
       }
       device_list_.emplace_back(std::make_shared<OpenCLDevice>(
-        std::make_shared<OpenCLDevice::Ressources>(platform_id, device_id, device_index++), context, command_queue));
+        std::make_shared<OpenCLDevice::Resources>(platform_id, device_id, device_index++), context, command_queue));
     }
   }
 

@@ -249,7 +249,7 @@ public:
     operator=(CommandQueue && other) noexcept;
   };
 
-  struct Ressources
+  struct Resources
   {
     cl_device_id   device_ptr = nullptr;
     cl_platform_id platform_ptr = nullptr;
@@ -260,16 +260,16 @@ public:
     bool           image_support = false;
     size_t         device_index = 0;
 
-    Ressources(const cl_platform_id & platform, const cl_device_id & device, size_t index);
-    ~Ressources() = default;
+    Resources(const cl_platform_id & platform, const cl_device_id & device, size_t index);
+    ~Resources() = default;
     auto
     get_device() const -> const cl_device_id &;
     auto
     get_platform() const -> const cl_platform_id &;
 
-    Ressources(const Ressources &) = delete;
-    Ressources &
-    operator=(const Ressources &) = delete;
+    Resources(const Resources &) = delete;
+    Resources &
+    operator=(const Resources &) = delete;
   };
 
 
@@ -283,14 +283,14 @@ public:
 
   /**
    * @brief Construct a new Device object
-   * @param ressources
+   * @param resources
    * @param context
    * @param command_queue
    * @param device_index
    * @param nb_device
    * @return OpenCLDevice
    */
-  OpenCLDevice(const std::shared_ptr<Ressources> &   ressources,
+  OpenCLDevice(const std::shared_ptr<Resources> &   resources,
                const std::shared_ptr<Context> &      context,
                const std::shared_ptr<CommandQueue> & command_queue);
 
@@ -458,7 +458,7 @@ public:
   addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void override;
 
 private:
-  std::shared_ptr<Ressources>   clRessources = nullptr;
+  std::shared_ptr<Resources>    clResources = nullptr;
   std::shared_ptr<Context>      clContext = nullptr;
   std::shared_ptr<CommandQueue> clCommandQueue = nullptr;
   std::shared_ptr<ProgramCache> cache = std::make_shared<ProgramCache>();

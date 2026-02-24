@@ -565,7 +565,7 @@ public:
   operator=(OpenCLBackend &&) -> OpenCLBackend & = default;
 
   auto
-  initialiseRessources() -> void;
+  initialiseResources() -> void;
 
   [[nodiscard]] auto
   getDevices(const std::string & type) const -> std::vector<Device::Pointer> override;
