@@ -8,30 +8,25 @@
 // Consolidated unary math operations tests
 // Tests: ABSOLUTE, CUBIC_ROOT, SQUARE_ROOT, SIGN
 
-class TestUnaryMathOperations : public ::testing::TestWithParam<std::tuple<std::string, int>>
+class TestUnaryMathOperations : public ::testing::TestWithParam<std::string>
 {
 protected:
-  int operation_type;
   std::string backend;
+  cle::Device::Pointer device;
 
   virtual void
   SetUp()
   {
-    backend = std::get<0>(GetParam());
-    operation_type = std::get<1>(GetParam());
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
   }
 };
 
 // 0 = ABSOLUTE
 TEST_P(TestUnaryMathOperations, absolute)
 {
-  if (operation_type != 0)
-    GTEST_SKIP();
-
-  cle::BackendManager::getInstance().setBackend(backend);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   std::array<float, 10 * 5 * 3> output;
   std::array<float, 10 * 5 * 3> input;
   std::array<float, 10 * 5 * 3> valid;
@@ -53,13 +48,6 @@ TEST_P(TestUnaryMathOperations, absolute)
 // 1 = CUBIC_ROOT
 TEST_P(TestUnaryMathOperations, cubic_root)
 {
-  if (operation_type != 1)
-    GTEST_SKIP();
-
-  cle::BackendManager::getInstance().setBackend(backend);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   std::array<float, 10 * 5 * 3> output;
   std::array<float, 10 * 5 * 3> input;
   std::array<float, 10 * 5 * 3> valid;
@@ -81,13 +69,6 @@ TEST_P(TestUnaryMathOperations, cubic_root)
 // 2 = SQUARE_ROOT
 TEST_P(TestUnaryMathOperations, square_root)
 {
-  if (operation_type != 2)
-    GTEST_SKIP();
-
-  cle::BackendManager::getInstance().setBackend(backend);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   std::array<float, 10 * 5 * 3> output;
   std::array<float, 10 * 5 * 3> input;
   std::array<float, 10 * 5 * 3> valid;
@@ -109,13 +90,6 @@ TEST_P(TestUnaryMathOperations, square_root)
 // 3 = SIGN
 TEST_P(TestUnaryMathOperations, sign)
 {
-  if (operation_type != 3)
-    GTEST_SKIP();
-
-  cle::BackendManager::getInstance().setBackend(backend);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   std::array<float, 30> output;
   std::array<float, 30> input = { -5, -1, 0, 1, 5, -2, -10, 0, 10, 2, -7, -3, 0, 3, 7, -6, -11, 0, 11, 6, -8, -4, 0, 4, 8, -9, -12, 0, 12, 9 };
   std::array<float, 30> valid = { -1, -1, 0, 1, 1, -1, -1, 0, 1, 1, -1, -1, 0, 1, 1, -1, -1, 0, 1, 1, -1, -1, 0, 1, 1, -1, -1, 0, 1, 1 };
@@ -131,22 +105,5 @@ TEST_P(TestUnaryMathOperations, sign)
   }
 }
 
-std::vector<std::tuple<std::string, int>>
-generate_unary_math_test_params()
-{
-  std::vector<std::tuple<std::string, int>> params;
-  std::vector<std::string> backends = getParameters();
-  int operation_types[] = { 0, 1, 2, 3 };
 
-  for (const auto& backend : backends)
-  {
-    for (int type : operation_types)
-    {
-      params.push_back(std::make_tuple(backend, type));
-    }
-  }
-  return params;
-}
-
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestUnaryMathOperations,
-                         ::testing::ValuesIn(generate_unary_math_test_params()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestUnaryMathOperations, ::testing::ValuesIn(getParameters()));

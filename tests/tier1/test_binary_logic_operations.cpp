@@ -8,30 +8,25 @@
 // Consolidated binary logic operations tests
 // Tests: AND, OR, XOR, NOT, SUBTRACT, INF_SUP, SUP_INF
 
-class TestBinaryLogicOperations : public ::testing::TestWithParam<std::tuple<std::string, int>>
+class TestBinaryLogicOperations : public ::testing::TestWithParam<std::string>
 {
 protected:
-  int operation_type;
   std::string backend;
+  cle::Device::Pointer device;
 
   virtual void
   SetUp()
   {
-    backend = std::get<0>(GetParam());
-    operation_type = std::get<1>(GetParam());
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
   }
 };
 
 // 0 = AND
 TEST_P(TestBinaryLogicOperations, binary_and)
 {
-  if (operation_type != 0)
-    GTEST_SKIP();
-
-  cle::BackendManager::getInstance().setBackend(backend);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   std::array<uint8_t, 10 * 5 * 3> output;
   std::array<uint8_t, 10 * 5 * 3> input1;
   std::array<uint8_t, 10 * 5 * 3> input2;
@@ -60,13 +55,6 @@ TEST_P(TestBinaryLogicOperations, binary_and)
 // 1 = OR
 TEST_P(TestBinaryLogicOperations, binary_or)
 {
-  if (operation_type != 1)
-    GTEST_SKIP();
-
-  cle::BackendManager::getInstance().setBackend(backend);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   std::array<uint8_t, 10 * 5 * 3> output;
   std::array<uint8_t, 10 * 5 * 3> input1;
   std::array<uint8_t, 10 * 5 * 3> input2;
@@ -95,13 +83,6 @@ TEST_P(TestBinaryLogicOperations, binary_or)
 // 2 = XOR
 TEST_P(TestBinaryLogicOperations, binary_xor)
 {
-  if (operation_type != 2)
-    GTEST_SKIP();
-
-  cle::BackendManager::getInstance().setBackend(backend);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   std::array<uint8_t, 10 * 5 * 3> output;
   std::array<uint8_t, 10 * 5 * 3> input1;
   std::array<uint8_t, 10 * 5 * 3> input2;
@@ -130,13 +111,6 @@ TEST_P(TestBinaryLogicOperations, binary_xor)
 // 3 = NOT
 TEST_P(TestBinaryLogicOperations, binary_not)
 {
-  if (operation_type != 3)
-    GTEST_SKIP();
-
-  cle::BackendManager::getInstance().setBackend(backend);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   std::array<uint8_t, 10 * 5 * 3> output;
   std::array<uint8_t, 10 * 5 * 3> input;
   std::array<uint8_t, 10 * 5 * 3> valid;
@@ -159,13 +133,6 @@ TEST_P(TestBinaryLogicOperations, binary_not)
 // 4 = SUBTRACT
 TEST_P(TestBinaryLogicOperations, binary_subtract)
 {
-  if (operation_type != 4)
-    GTEST_SKIP();
-
-  cle::BackendManager::getInstance().setBackend(backend);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   std::array<uint8_t, 10 * 5 * 3> output;
   std::array<uint8_t, 10 * 5 * 3> input1;
   std::array<uint8_t, 10 * 5 * 3> input2;
@@ -192,23 +159,4 @@ TEST_P(TestBinaryLogicOperations, binary_subtract)
 }
 
 
-
-std::vector<std::tuple<std::string, int>>
-generate_binary_logic_test_params()
-{
-  std::vector<std::tuple<std::string, int>> params;
-  std::vector<std::string> backends = getParameters();
-  int operation_types[] = { 0, 1, 2, 3, 4 };
-
-  for (const auto& backend : backends)
-  {
-    for (int type : operation_types)
-    {
-      params.push_back(std::make_tuple(backend, type));
-    }
-  }
-  return params;
-}
-
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestBinaryLogicOperations,
-                         ::testing::ValuesIn(generate_binary_logic_test_params()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestBinaryLogicOperations, ::testing::ValuesIn(getParameters()));
