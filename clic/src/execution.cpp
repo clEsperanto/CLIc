@@ -4,6 +4,7 @@
 #include <cctype>
 #include <cstring>
 #include <set>
+
 namespace cle
 {
 namespace
@@ -19,46 +20,40 @@ static const std::unordered_map<dType, std::string> dtype_defines = {
 };
 } // namespace
 
-// Function for translating OpenCL code to CUDA code
+// Translate OpenCL kernel code to CUDA.
 // @StRigaud TODO: function is not exhaustive and needs to be improved to support more features
 static auto
 translateOpenclToCuda(std::string & code) -> void
 {
-  // nested lambda function to find and replace all occurrences of a string
-  auto findAndReplace = [](std::string & str, const std::string & to_find, const std::string & to_replace) -> void {
-    size_t pos = 0;
-    while ((pos = str.find(to_find, pos)) != std::string::npos)
-    {
-      str.replace(pos, to_find.length(), to_replace);
-      pos += to_replace.length();
+  auto replaceAll = [](std::string & str, const std::string & from, const std::string & to) {
+    for (size_t pos = 0; (pos = str.find(from, pos)) != std::string::npos; pos += to.size())
+      str.replace(pos, from.size(), to);
+  };
 
-      if (to_find.find("int") != std::string::npos || to_find.find("float") != std::string::npos)
-      {
-        size_t pos2 = str.find("};", pos);
-        str.replace(pos2, 2, ");");
-      }
+  // Vector type constructors:  (typeN){...}; → make_typeN(...);
+  auto replaceVecCtor = [&code](const std::string & from, const std::string & to) {
+    for (size_t pos = 0; (pos = code.find(from, pos)) != std::string::npos;)
+    {
+      code.replace(pos, from.size(), to);
+      pos += to.size();
+      auto end = code.find("};", pos);
+      if (end != std::string::npos)
+        code.replace(end, 2, ");");
     }
   };
 
-  // list of replacements to be performed (not exhaustive)
-  // special case: 'make_' need to followed by ');' replacement, e.g. (int2){1,2}; -> make_int2(1,2);
-  const std::vector<std::pair<std::string, std::string>> replacements = { { "(int2){", "make_int2(" },
-                                                                          { "(int4){", "make_int4(" },
-                                                                          { "(float4){", "make_float4(" },
-                                                                          { "(float2){", "make_float2(" },
-                                                                          { "__constant sampler_t", "__device__ int" },
-                                                                          { "inline", "__device__ inline" },
-                                                                          { "#pragma", "// #pragma" },
-                                                                          { "__kernel void", "extern \"C\" __global__ void" },
-                                                                          { "get_global_id(0)", "blockDim.x * blockIdx.x + threadIdx.x" },
-                                                                          { "get_global_id(1)", "blockDim.y * blockIdx.y + threadIdx.y" },
-                                                                          { "get_global_id(2)", "blockDim.z * blockIdx.z + threadIdx.z" } };
+  replaceVecCtor("(int2){", "make_int2(");
+  replaceVecCtor("(int4){", "make_int4(");
+  replaceVecCtor("(float2){", "make_float2(");
+  replaceVecCtor("(float4){", "make_float4(");
 
-  // perform replacements
-  for (const auto & [to_replace, replace_with] : replacements)
-  {
-    findAndReplace(code, to_replace, replace_with);
-  }
+  replaceAll(code, "__constant sampler_t", "__device__ int");
+  replaceAll(code, "inline", "__device__ inline");
+  replaceAll(code, "#pragma", "// #pragma");
+  replaceAll(code, "__kernel void", "extern \"C\" __global__ void");
+  replaceAll(code, "get_global_id(0)", "blockDim.x * blockIdx.x + threadIdx.x");
+  replaceAll(code, "get_global_id(1)", "blockDim.y * blockIdx.y + threadIdx.y");
+  replaceAll(code, "get_global_id(2)", "blockDim.z * blockIdx.z + threadIdx.z");
 }
 
 
@@ -222,6 +217,49 @@ generateDefines(const ParameterList & parameter_list, const ConstantList & const
 }
 
 
+// Marshal ParameterList into flat argument arrays for backend execution
+static auto
+marshalParameters(const ParameterList &                parameters,
+                  std::vector<std::shared_ptr<void>> & args_ptr,
+                  std::vector<size_t> &                args_size) -> void
+{
+  args_ptr.reserve(parameters.size());
+  args_size.reserve(parameters.size());
+  for (const auto & [key, value] : parameters)
+  {
+    if (const auto * arr = std::get_if<Array::Pointer>(&value))
+    {
+      args_ptr.push_back((*arr)->get_ptr());
+      args_size.push_back(GPU_MEM_PTR_SIZE);
+    }
+    else if (const auto * f = std::get_if<float>(&value))
+    {
+      args_ptr.push_back(std::static_pointer_cast<void>(std::make_shared<float>(*f)));
+      args_size.push_back(sizeof(float));
+    }
+    else if (const auto * i = std::get_if<int>(&value))
+    {
+      args_ptr.push_back(std::static_pointer_cast<void>(std::make_shared<int>(*i)));
+      args_size.push_back(sizeof(int));
+    }
+    else if (const auto * u = std::get_if<unsigned int>(&value))
+    {
+      args_ptr.push_back(std::static_pointer_cast<void>(std::make_shared<unsigned int>(*u)));
+      args_size.push_back(sizeof(unsigned int));
+    }
+    else if (const auto * s = std::get_if<size_t>(&value))
+    {
+      args_ptr.push_back(std::static_pointer_cast<void>(std::make_shared<size_t>(*s)));
+      args_size.push_back(sizeof(size_t));
+    }
+    else
+    {
+      throw std::runtime_error("Error: Invalid parameter type.");
+    }
+  }
+}
+
+
 auto
 execute(const Device::Pointer & device,
         const KernelInfo &      kernel_func,
@@ -230,7 +268,6 @@ execute(const Device::Pointer & device,
         const RangeArray &      local_range,
         const ConstantList &    constants) -> void
 {
-  // prepare kernel source for compilation and execution
   auto kernel_source = kernel_func.second;
   auto kernel_name = kernel_func.first;
   auto kernel_preamble = cle::BackendManager::getInstance().getBackend().getPreamble();
@@ -241,72 +278,22 @@ execute(const Device::Pointer & device,
   }
   platform_options(device, &kernel_preamble);
 
-
-  std::vector<dType> used_dtypes;
-  std::vector<int>   used_dimensions;
-  used_dtypes.reserve(parameters.size());
-  used_dimensions.reserve(parameters.size());
-
-  // prepare parameters to be passed to the backend
-  std::vector<std::shared_ptr<void>> args_ptr;
-  std::vector<size_t>                args_size;
-
-  args_ptr.reserve(parameters.size());
-  args_size.reserve(parameters.size());
-  for (const auto & param : parameters)
+  // Collect unique array dtypes and dimensions for CLIJ defines
+  std::set<dType> used_dtypes;
+  std::set<int>   used_dimensions;
+  for (const auto & [key, value] : parameters)
   {
-    if (const auto & arr = std::get_if<Array::Pointer>(&param.second))
+    if (const auto * arr = std::get_if<Array::Pointer>(&value))
     {
-      args_ptr.push_back(arr->get()->get_ptr());
-      args_size.push_back(GPU_MEM_PTR_SIZE);
-      used_dtypes.push_back(arr->get()->dtype());
-      used_dimensions.push_back(arr->get()->dim());
-    }
-    else if (const auto & f = std::get_if<float>(&param.second))
-    {
-      // Allocate memory for a float and copy the value
-      auto float_ptr = std::make_shared<float>(*f);
-      // Cast to shared_ptr<void>
-      args_ptr.push_back(std::static_pointer_cast<void>(float_ptr));
-      args_size.push_back(sizeof(float));
-    }
-    else if (const auto & i = std::get_if<int>(&param.second))
-    {
-      // Allocate memory for an int and copy the value
-      auto int_ptr = std::make_shared<int>(*i);
-      // Cast to shared_ptr<void>
-      args_ptr.push_back(std::static_pointer_cast<void>(int_ptr));
-      args_size.push_back(sizeof(int));
-    }
-    else if (const auto & i = std::get_if<unsigned int>(&param.second))
-    {
-      // Allocate memory for an unsigned int and copy the value
-      auto uint_ptr = std::make_shared<unsigned int>(*i);
-      // Cast to shared_ptr<void>
-      args_ptr.push_back(std::static_pointer_cast<void>(uint_ptr));
-      args_size.push_back(sizeof(unsigned int));
-    }
-    else if (const auto & i = std::get_if<size_t>(&param.second))
-    {
-      // Allocate memory for a size_t and copy the value
-      auto size_ptr = std::make_shared<size_t>(*i);
-      // Cast to shared_ptr<void>
-      args_ptr.push_back(std::static_pointer_cast<void>(size_ptr));
-      args_size.push_back(sizeof(size_t));
-    }
-    else
-    {
-      throw std::runtime_error("Error: Invalid parameter type provided.");
+      used_dtypes.insert((*arr)->dtype());
+      used_dimensions.insert((*arr)->dim());
     }
   }
 
-  // remove duplicate dtypes and dimensions
-  std::sort(used_dtypes.begin(), used_dtypes.end());
-  used_dtypes.erase(std::unique(used_dtypes.begin(), used_dtypes.end()), used_dtypes.end());
-  std::sort(used_dimensions.begin(), used_dimensions.end());
-  used_dimensions.erase(std::unique(used_dimensions.begin(), used_dimensions.end()), used_dimensions.end());
+  std::vector<std::shared_ptr<void>> args_ptr;
+  std::vector<size_t>                args_size;
+  marshalParameters(parameters, args_ptr, args_size);
 
-  // add dtype and dimension defines
   for (const auto & dtype : used_dtypes)
   {
     defines += "\n" + dtype_defines.at(dtype);
@@ -318,8 +305,6 @@ execute(const Device::Pointer & device,
   defines += "\n\n";
 
   const std::string program_source = defines + kernel_preamble + kernel_source;
-
-  // execute kernel
   cle::BackendManager::getInstance().getBackend().executeKernel(
     device, program_source, kernel_name, global_range, local_range, args_ptr, args_size);
 }
@@ -362,109 +347,18 @@ execute_separable(const Device::Pointer &      device,
 
 
 auto
-execute_separable(const Device::Pointer &      device,
-                  const KernelInfo &           kernel,
-                  const Array::Pointer &       src,
-                  const Array::Pointer &       dst,
-                  const std::array<float, 3> & sigma,
-                  const std::array<int, 3> &   radius) -> void
-{
-  Array::check_ptr(src, "Error: 'src' is null. Please ensure the provided parameters before calling this function.");
-  Array::check_ptr(dst, "Error: 'dst' is null. Please ensure the provided parameters before calling this function.");
-
-  const RangeArray global_range = { dst->width(), dst->height(), dst->depth() };
-
-  auto tmp1 = Array::create(dst);
-  auto tmp2 = Array::create(dst);
-
-  auto execute_if_needed = [&](int dim, int idx, auto & input, auto & output) {
-    if (dim > 1 && sigma[idx] > 0)
-    {
-      const ParameterList parameters = { { "src", input }, { "dst", output }, { "dim", idx }, { "N", radius[idx] }, { "s", sigma[idx] } };
-      execute(device, kernel, parameters, global_range);
-    }
-    else
-    {
-      input->copyTo(output);
-    }
-  };
-
-  execute_if_needed(dst->width(), 0, src, tmp1);
-  execute_if_needed(dst->height(), 1, tmp1, tmp2);
-  execute_if_needed(dst->depth(), 2, tmp2, dst);
-}
-
-
-auto
 native_execute(const Device::Pointer & device,
                const KernelInfo &      kernel_func,
                const ParameterList &   parameters,
                const RangeArray &      global_range,
                const RangeArray &      local_range) -> void
 {
-  // this is very similar to the execute function. However, this function is used for native kernels.
-  // No preamble or code conversion is done here. The kernel source is expected to be in the correct format from the
-  // user. We still however need to rely on the Array class to handle arrays (float * etc.). For now, we only support 1D
-  // arrays and int and float parameters.
-
-  // get raw kernel source and name from user
-  auto kernel_source = kernel_func.second;
-  auto kernel_name = kernel_func.first;
-
-  // prepare parameters to be passed to the backend
   std::vector<std::shared_ptr<void>> args_ptr;
   std::vector<size_t>                args_size;
+  marshalParameters(parameters, args_ptr, args_size);
 
-  args_ptr.reserve(parameters.size());
-  args_size.reserve(parameters.size());
-  for (const auto & param : parameters)
-  {
-    if (const auto & arr = std::get_if<Array::Pointer>(&param.second))
-    {
-      args_ptr.push_back(arr->get()->get_ptr());
-      args_size.push_back(GPU_MEM_PTR_SIZE);
-    }
-    else if (const auto & f = std::get_if<float>(&param.second))
-    {
-      // Allocate memory for a float and copy the value
-      auto float_ptr = std::make_shared<float>(*f);
-      // Cast to shared_ptr<void>
-      args_ptr.push_back(std::static_pointer_cast<void>(float_ptr));
-      args_size.push_back(sizeof(float));
-    }
-    else if (const auto & i = std::get_if<int>(&param.second))
-    {
-      // Allocate memory for an int and copy the value
-      auto int_ptr = std::make_shared<int>(*i);
-      // Cast to shared_ptr<void>
-      args_ptr.push_back(std::static_pointer_cast<void>(int_ptr));
-      args_size.push_back(sizeof(int));
-    }
-    else if (const auto & i = std::get_if<unsigned int>(&param.second))
-    {
-      // Allocate memory for an unsigned int and copy the value
-      auto uint_ptr = std::make_shared<unsigned int>(*i);
-      // Cast to shared_ptr<void>
-      args_ptr.push_back(std::static_pointer_cast<void>(uint_ptr));
-      args_size.push_back(sizeof(unsigned int));
-    }
-    else if (const auto & i = std::get_if<size_t>(&param.second))
-    {
-      // Allocate memory for a size_t and copy the value
-      auto size_ptr = std::make_shared<size_t>(*i);
-      // Cast to shared_ptr<void>
-      args_ptr.push_back(std::static_pointer_cast<void>(size_ptr));
-      args_size.push_back(sizeof(size_t));
-    }
-    else
-    {
-      throw std::runtime_error("Error: Invalid parameter type provided.");
-    }
-  }
-
-  // execute kernel
   cle::BackendManager::getInstance().getBackend().executeKernel(
-    device, kernel_source, kernel_name, global_range, local_range, args_ptr, args_size);
+    device, kernel_func.second, kernel_func.first, global_range, local_range, args_ptr, args_size);
 }
 
 

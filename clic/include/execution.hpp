@@ -44,28 +44,7 @@ execute(const Device::Pointer & device,
  * @param dst Destination array
  * @param sigma Sigma value for the kernel
  * @param radius Radius value for the kernel
- */
-auto
-execute_separable(const Device::Pointer &      device,
-                  const KernelInfo &           kernel,
-                  const Array::Pointer &       src,
-                  const Array::Pointer &       dst,
-                  const std::array<float, 3> & sigma,
-                  const std::array<int, 3> &   radius) -> void;
-
-/**
- * @brief Execution function for separable kernel operation (with with extra parameters)
- *
- * This is currently only used for Gaussian derivative kernels.
- * to be fused / generalized with the previous function in future
- *
- * @param device Device pointer
- * @param kernel Kernel function name and code
- * @param src Source array
- * @param dst Destination array
- * @param sigma Sigma value for the kernel
- * @param radius Radius value for the kernel
- * @param orders Orders for the kernel operation
+ * @param orders Orders for the kernel operation (default: {0,0,0})
  */
 auto
 execute_separable(const Device::Pointer &      device,
@@ -74,7 +53,7 @@ execute_separable(const Device::Pointer &      device,
                   const Array::Pointer &       dst,
                   const std::array<float, 3> & sigma,
                   const std::array<int, 3> &   radius,
-                  const std::array<int, 3> &   orders) -> void;
+                  const std::array<int, 3> &   orders = { 0, 0, 0 }) -> void;
 
 /**
  * @brief Execute a kernel using native OpenCL code
