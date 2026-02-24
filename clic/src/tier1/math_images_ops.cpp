@@ -3,13 +3,38 @@
 
 #include "utils.hpp"
 
-#include "cle_image_operation.h"
-
 namespace cle::tier1
 {
 
 namespace
 {
+
+// Note: stick to CLIJ macro because it handles broadcasting between images
+constexpr const char * kernel_source = R"CLC(
+__constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
+
+#ifndef APPLY_OP
+  #error "APPLY_OP must be defined as a macro (e.g., #define APPLY_OP(x,y) (x+y))"
+#endif
+
+__kernel void image_operation(
+    IMAGE_src0_TYPE src0,
+    IMAGE_src1_TYPE src1,
+    IMAGE_dst_TYPE  dst
+)
+{
+    int x = get_global_id(0);
+    int y = get_global_id(1);
+    int z = get_global_id(2);
+
+    const float value0 = (float) READ_IMAGE(src0, sampler, POS_src0_INSTANCE(x,y,z,0)).x;
+    const float value1 = (float) READ_IMAGE(src1, sampler, POS_src1_INSTANCE(x,y,z,0)).x;
+    const float res = APPLY_OP(value0, value1);
+
+    WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(res));
+}
+)CLC";
+
 auto
 apply_images_math_operation(const Device::Pointer & device,
                             const Array::Pointer &  src0,
@@ -18,7 +43,7 @@ apply_images_math_operation(const Device::Pointer & device,
                             const std::string &     op_define) -> Array::Pointer
 {
   tier0::create_like(src0, dst);
-  const KernelInfo    kernel_info = { "image_operation", kernel::image_operation };
+  const KernelInfo    kernel_info = { "image_operation", kernel_source };
   const ParameterList params = { { "src0", src0 }, { "src1", src1 }, { "dst", dst } };
   const RangeArray    range = { src0->width(), src0->height(), src0->depth() };
   const ConstantList  constants = { { "APPLY_OP(x,y)", op_define } };
