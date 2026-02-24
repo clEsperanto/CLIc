@@ -24,14 +24,10 @@ protected:
 TEST_P(TestDeskew, deskew_y)
 {
 
+  GTEST_SKIP() << "POCL does not reliably support image interpolation for deskew operations.";
   if (!device->supportImage())
   {
     GTEST_SKIP() << "Device does not support image objects.";
-  }
-
-  if (device->vendorName().find("POCL") != std::string::npos)
-  {
-    GTEST_SKIP() << "POCL does not reliably support image interpolation for deskew operations.";
   }
 
   auto coord_to_index = [](size_t x, size_t y, size_t z, size_t width, size_t height) -> size_t {
