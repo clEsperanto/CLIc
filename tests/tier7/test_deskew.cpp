@@ -6,18 +6,32 @@
 
 
 class TestDeskew : public ::testing::TestWithParam<std::string>
-{};
+{
+protected:
+  std::string                  backend;
+  cle::Device::Pointer         device;
+
+  virtual void
+  SetUp()
+  {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
+  }
+};
 
 TEST_P(TestDeskew, deskew_y)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   if (!device->supportImage())
   {
     GTEST_SKIP() << "Device does not support image objects.";
+  }
+
+  if(device->vendorName().find("POCL") != std::string::npos)
+  {
+    GTEST_SKIP() << "POCL does not reliably support image interpolation for deskew operations.";
   }
 
   auto coord_to_index = [](size_t x, size_t y, size_t z, size_t width, size_t height) -> size_t {
