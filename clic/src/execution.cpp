@@ -281,7 +281,7 @@ execute(const Device::Pointer & device,
   platform_options(device, &kernel_preamble);
   if (device->getType() == Device::Type::CUDA)
   {
-        kernel_source = cle::translateOpenclToCuda(kernel_source);
+    kernel_source = cle::translateOpenclToCuda(kernel_source);
   }
 
   // Collect unique array dtypes and dimensions for CLIJ defines
