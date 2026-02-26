@@ -23,15 +23,14 @@ namespace cle
 [[nodiscard]] static auto
 queryDeviceAttribute(CUdevice_attribute attrib, CUdevice device) -> int
 {
-  int value = 0;
+  int      value = 0;
   CUresult err = cuDeviceGetAttribute(&value, attrib, device);
   if (err != CUDA_SUCCESS)
   {
     const char * err_str = nullptr;
     cuGetErrorString(err, &err_str);
-    std::cerr << "Warning: cuDeviceGetAttribute failed for attribute "
-              << attrib << ": " << (err_str ? err_str : "unknown error")
-              << " (" << err << ")" << std::endl;
+    std::cerr << "Warning: cuDeviceGetAttribute failed for attribute " << attrib << ": " << (err_str ? err_str : "unknown error") << " ("
+              << err << ")" << std::endl;
   }
   return value;
 }
@@ -78,15 +77,13 @@ CUDADevice::initialize() -> void
   CUresult err = cuDeviceGet(&cudaDevice, cudaDeviceIndex);
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error(
-      "Error: Failed to get CUDA device at index " + std::to_string(cudaDeviceIndex));
+    throw std::runtime_error("Error: Failed to get CUDA device at index " + std::to_string(cudaDeviceIndex));
   }
 
   err = cuCtxCreate(&cudaContext, 0, cudaDevice);
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error(
-      "Error: Failed to create CUDA context for device " + std::to_string(cudaDeviceIndex));
+    throw std::runtime_error("Error: Failed to create CUDA context for device " + std::to_string(cudaDeviceIndex));
   }
 
   err = cuStreamCreate(&cudaStream, CU_STREAM_DEFAULT);
@@ -95,8 +92,7 @@ CUDADevice::initialize() -> void
     // Clean up the context we just created before throwing
     cuCtxDestroy(cudaContext);
     cudaContext = nullptr;
-    throw std::runtime_error(
-      "Error: Failed to create CUDA stream for device " + std::to_string(cudaDeviceIndex));
+    throw std::runtime_error("Error: Failed to create CUDA stream for device " + std::to_string(cudaDeviceIndex));
   }
 
   initialized = true;
@@ -179,7 +175,7 @@ CUDADevice::getPlatform() const -> const std::string
 auto
 CUDADevice::getName(bool lowercase) const -> std::string
 {
-  char device_name[256] = {};  // Zero-initialise for guaranteed null termination
+  char     device_name[256] = {}; // Zero-initialise for guaranteed null termination
   CUresult err = cuDeviceGetName(device_name, sizeof(device_name), cudaDevice);
   if (err != CUDA_SUCCESS)
   {
@@ -208,7 +204,7 @@ CUDADevice::getMaximumBufferSize() const -> size_t
 {
   // cuDeviceTotalMem gives the total GPU memory, which is a better proxy for
   // maximum allocation than the attribute (which may not exist on all drivers).
-  size_t total_mem = 0;
+  size_t   total_mem = 0;
   CUresult err = cuDeviceTotalMem_v2(&total_mem, cudaDevice);
   if (err != CUDA_SUCCESS)
   {
@@ -220,15 +216,13 @@ CUDADevice::getMaximumBufferSize() const -> size_t
 auto
 CUDADevice::getLocalMemorySize() const -> size_t
 {
-  return static_cast<size_t>(
-    queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK, cudaDevice));
+  return static_cast<size_t>(queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK, cudaDevice));
 }
 
 auto
 CUDADevice::getMaximumWorkGroupSize() const -> size_t
 {
-  return static_cast<size_t>(
-    queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK, cudaDevice));
+  return static_cast<size_t>(queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK, cudaDevice));
 }
 
 // ============================================================================
@@ -277,49 +271,47 @@ CUDADevice::getInfo() const -> std::string
   cuDeviceTotalMem_v2(&totalGlobalMem, cudaDevice);
 
   // ── Device attributes ──
-  const int sharedMemPerBlock  = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK, cudaDevice);
-  const int regsPerBlock       = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_REGISTERS_PER_BLOCK, cudaDevice);
-  const int warpSize           = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_WARP_SIZE, cudaDevice);
+  const int sharedMemPerBlock = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK, cudaDevice);
+  const int regsPerBlock = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_REGISTERS_PER_BLOCK, cudaDevice);
+  const int warpSize = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_WARP_SIZE, cudaDevice);
   const int maxThreadsPerBlock = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK, cudaDevice);
-  const int totalConstMem      = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_TOTAL_CONSTANT_MEMORY, cudaDevice);
-  const int major              = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, cudaDevice);
-  const int minor              = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, cudaDevice);
-  const int clockRate          = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_CLOCK_RATE, cudaDevice);
-  const int textureAlignment   = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_TEXTURE_ALIGNMENT, cudaDevice);
-  const int multiProcCount     = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT, cudaDevice);
-  const int maxBlockDimX       = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X, cudaDevice);
-  const int maxBlockDimY       = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Y, cudaDevice);
-  const int maxBlockDimZ       = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Z, cudaDevice);
-  const int maxGridDimX        = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_X, cudaDevice);
-  const int maxGridDimY        = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Y, cudaDevice);
-  const int maxGridDimZ        = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Z, cudaDevice);
+  const int totalConstMem = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_TOTAL_CONSTANT_MEMORY, cudaDevice);
+  const int major = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, cudaDevice);
+  const int minor = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, cudaDevice);
+  const int clockRate = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_CLOCK_RATE, cudaDevice);
+  const int textureAlignment = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_TEXTURE_ALIGNMENT, cudaDevice);
+  const int multiProcCount = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT, cudaDevice);
+  const int maxBlockDimX = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X, cudaDevice);
+  const int maxBlockDimY = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Y, cudaDevice);
+  const int maxBlockDimZ = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Z, cudaDevice);
+  const int maxGridDimX = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_X, cudaDevice);
+  const int maxGridDimY = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Y, cudaDevice);
+  const int maxGridDimZ = queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Z, cudaDevice);
 
   // ── Format output ──
   const float driverVersionF = static_cast<float>(driverVersion) / 1000.0f;
 
-  result << "(" << this->getType() << ") " << getName()
-         << " (driver " << std::fixed << std::setprecision(1) << driverVersionF << ")\n";
+  result << "(" << this->getType() << ") " << getName() << " (driver " << std::fixed << std::setprecision(1) << driverVersionF << ")\n";
 
-  infoLine(result, "Vendor:",                  "NVIDIA Corporation");
-  infoLine(result, "Device index:",            std::to_string(cudaDeviceIndex));
-  infoLine(result, "Driver version:",          std::to_string(driverVersionF));
-  infoLine(result, "Device type:",             "GPU");
-  infoLine(result, "Multiprocessor count:",    std::to_string(multiProcCount));
-  infoLine(result, "Total global memory:",     std::to_string(totalGlobalMem / (1024 * 1024)) + " MB");
+  infoLine(result, "Vendor:", "NVIDIA Corporation");
+  infoLine(result, "Device index:", std::to_string(cudaDeviceIndex));
+  infoLine(result, "Driver version:", std::to_string(driverVersionF));
+  infoLine(result, "Device type:", "GPU");
+  infoLine(result, "Multiprocessor count:", std::to_string(multiProcCount));
+  infoLine(result, "Total global memory:", std::to_string(totalGlobalMem / (1024 * 1024)) + " MB");
   infoLine(result, "Shared memory per block:", std::to_string(sharedMemPerBlock / 1024) + " KB");
-  infoLine(result, "Clock rate:",              std::to_string(clockRate / 1000) + " MHz");
-  infoLine(result, "Total constant memory:",   std::to_string(totalConstMem / 1024) + " KB");
-  infoLine(result, "Registers per block:",     std::to_string(regsPerBlock));
-  infoLine(result, "Warp size:",               std::to_string(warpSize));
-  infoLine(result, "Max threads per block:",   std::to_string(maxThreadsPerBlock));
-  infoLine(result, "Max block dimension:",     std::to_string(maxBlockDimX) + ", " +
-                                               std::to_string(maxBlockDimY) + ", " +
-                                               std::to_string(maxBlockDimZ));
-  infoLine(result, "Max grid dimension:",      std::to_string(maxGridDimX) + ", " +
-                                               std::to_string(maxGridDimY) + ", " +
-                                               std::to_string(maxGridDimZ));
-  infoLine(result, "Compute capability:",      std::to_string(major) + "." + std::to_string(minor));
-  infoLine(result, "Texture alignment:",       std::to_string(textureAlignment));
+  infoLine(result, "Clock rate:", std::to_string(clockRate / 1000) + " MHz");
+  infoLine(result, "Total constant memory:", std::to_string(totalConstMem / 1024) + " KB");
+  infoLine(result, "Registers per block:", std::to_string(regsPerBlock));
+  infoLine(result, "Warp size:", std::to_string(warpSize));
+  infoLine(result, "Max threads per block:", std::to_string(maxThreadsPerBlock));
+  infoLine(result,
+           "Max block dimension:",
+           std::to_string(maxBlockDimX) + ", " + std::to_string(maxBlockDimY) + ", " + std::to_string(maxBlockDimZ));
+  infoLine(
+    result, "Max grid dimension:", std::to_string(maxGridDimX) + ", " + std::to_string(maxGridDimY) + ", " + std::to_string(maxGridDimZ));
+  infoLine(result, "Compute capability:", std::to_string(major) + "." + std::to_string(minor));
+  infoLine(result, "Texture alignment:", std::to_string(textureAlignment));
 
   return result.str();
 }

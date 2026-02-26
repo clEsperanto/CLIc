@@ -591,9 +591,9 @@ computeBlockSize(const std::array<size_t, 3> & global_size) -> std::array<size_t
     }
     case 2: {
       // Prefer wider x for coalescing: 32×8 instead of 16×16
-      constexpr size_t kBlockDimX_2D = 32;     // <- changed
-      constexpr size_t kBlockDimOther_2D = 8;   // <- changed
-      bool first_active = true;
+      constexpr size_t kBlockDimX_2D = 32;    // <- changed
+      constexpr size_t kBlockDimOther_2D = 8; // <- changed
+      bool             first_active = true;
       for (size_t i = 0; i < 3; ++i)
       {
         if (global_size[i] > 1)
@@ -613,7 +613,7 @@ computeBlockSize(const std::array<size_t, 3> & global_size) -> std::array<size_t
     }
     case 3: {
       // x=32 for coalescing, y=8, z=1 in block (z goes to grid)
-      constexpr std::array<size_t, 3> kBlockDim3D = { 32, 8, 1 };  // <- changed
+      constexpr std::array<size_t, 3> kBlockDim3D = { 32, 8, 1 }; // <- changed
       for (size_t i = 0; i < 3; ++i)
       {
         block[i] = std::min(global_size[i], kBlockDim3D[i]);

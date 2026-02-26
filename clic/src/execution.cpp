@@ -311,7 +311,7 @@ execute(const Device::Pointer & device,
   auto sources = defines + kernel_source;
   if (device->getType() == Device::Type::CUDA)
   {
-        sources = cle::translateOpenclToCuda(sources);
+    sources = cle::translateOpenclToCuda(sources);
   }
   const std::string program_source = kernel_preamble + sources;
   cle::BackendManager::getInstance().getBackend().executeKernel(
