@@ -1,119 +1,641 @@
 #include "backend.hpp"
 #include "cle_preamble_cu.h"
 
+#include <algorithm>
+#include <array>
+#include <cstring>
+#include <numeric>
 #include <string>
+#include <vector>
 
 namespace cle
 {
 
-CUDABackend::CUDABackend()
+// ============================================================================
+// Compile-time CUDA guard
+// ============================================================================
+
+#if !USE_CUDA
+
+// ── Stub implementations when CUDA is disabled ──────────────────────────────
+
+CUDABackend::CUDABackend() {}
+
+auto CUDABackend::getDevices(const std::string &) const -> std::vector<Device::Pointer>
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::getDevice(const std::string &, const std::string &) const -> Device::Pointer
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::getDeviceFromIndex(size_t, const std::string &) const -> Device::Pointer
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::getDevicesList(const std::string &) const -> std::vector<std::string>
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::getType() const -> Backend::Type { return Backend::Type::CUDA; }
+
+auto CUDABackend::allocateMemory(const Device::Pointer &, const std::array<size_t, 3> &,
+  const dType &, const mType &, std::shared_ptr<void> &) const -> void
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::freeMemory(const Device::Pointer &, const mType &,
+  const std::shared_ptr<void> &) const -> void
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::getRefCount(void *) const -> int
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::writeMemory(const Device::Pointer &, const std::shared_ptr<void> &,
+  std::array<size_t, 3> &, std::array<size_t, 3> &, std::array<size_t, 3> &,
+  const dType &, const mType &, const void *) const -> void
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::readMemory(const Device::Pointer &, const std::shared_ptr<void> &,
+  std::array<size_t, 3> &, std::array<size_t, 3> &, std::array<size_t, 3> &,
+  const dType &, const mType &, void *) const -> void
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::copyMemoryBufferToBuffer(const Device::Pointer &,
+  const std::shared_ptr<void> &, std::array<size_t, 3> &, std::array<size_t, 3> &,
+  const std::shared_ptr<void> &, std::array<size_t, 3> &, std::array<size_t, 3> &,
+  std::array<size_t, 3> &, const size_t &) const -> void
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::copyMemoryImageToBuffer(const Device::Pointer &,
+  const std::shared_ptr<void> &, std::array<size_t, 3> &, std::array<size_t, 3> &,
+  const std::shared_ptr<void> &, std::array<size_t, 3> &, std::array<size_t, 3> &,
+  std::array<size_t, 3> &, const size_t &) const -> void
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::copyMemoryBufferToImage(const Device::Pointer &,
+  const std::shared_ptr<void> &, std::array<size_t, 3> &, std::array<size_t, 3> &,
+  const std::shared_ptr<void> &, std::array<size_t, 3> &, std::array<size_t, 3> &,
+  std::array<size_t, 3> &, const size_t &) const -> void
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::copyMemoryImageToImage(const Device::Pointer &,
+  const std::shared_ptr<void> &, std::array<size_t, 3> &, std::array<size_t, 3> &,
+  const std::shared_ptr<void> &, std::array<size_t, 3> &, std::array<size_t, 3> &,
+  std::array<size_t, 3> &, const size_t &) const -> void
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::setMemory(const Device::Pointer &, const std::shared_ptr<void> &,
+  std::array<size_t, 3> &, std::array<size_t, 3> &, std::array<size_t, 3> &,
+  const dType &, const mType &, const float &) const -> void
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::buildKernel(const Device::Pointer &, const std::string &,
+  const std::string &, std::shared_ptr<void> &) const -> void
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::executeKernel(const Device::Pointer &, const std::string &,
+  const std::string &, const std::array<size_t, 3> &, const std::array<size_t, 3> &,
+  const std::vector<std::shared_ptr<void>> &, const std::vector<size_t> &) const -> void
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::getPreamble() const -> std::string
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::allocateBuffer(const Device::Pointer &, const size_t &,
+  std::shared_ptr<void> &) -> void
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::writeBuffer(const Device::Pointer &, const std::shared_ptr<void> &,
+  const std::array<size_t, 3> &, const std::array<size_t, 3> &,
+  const std::array<size_t, 3> &, const void *) -> void
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::readBuffer(const Device::Pointer &, const std::shared_ptr<void> &,
+  const std::array<size_t, 3> &, const std::array<size_t, 3> &,
+  const std::array<size_t, 3> &, void *) -> void
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+auto CUDABackend::setBuffer(const Device::Pointer &, const std::shared_ptr<void> &,
+  const std::array<size_t, 3> &, const std::array<size_t, 3> &,
+  const std::array<size_t, 3> &, const dType &, const float &) -> void
+{ throw std::runtime_error("Error: CUDA is not enabled"); }
+
+#else // USE_CUDA ═════════════════════════════════════════════════════════════
+
+// ============================================================================
+// Error Handling
+// ============================================================================
+
+/**
+ * @brief Convert a CUresult error code to a human-readable string.
+ *        Returns "Unknown CUDA error" if the driver provides no string.
+ */
+[[nodiscard]] static auto
+getErrorString(CUresult error) -> std::string
 {
-#if USE_CUDA
-  cuInit(0);
-#endif
+  const char * str = nullptr;
+  cuGetErrorString(error, &str);
+  return (str != nullptr) ? std::string(str) : "Unknown CUDA error";
 }
 
-#if USE_CUDA
+/**
+ * @brief Convert an nvrtcResult error code to a human-readable string.
+ */
 [[nodiscard]] static auto
-getErrorString(const CUresult & error) -> std::string
-{
-  const char * error_string;
-  cuGetErrorString(error, &error_string);
-  return std::string(error_string);
-}
-
-[[nodiscard]] static auto
-getErrorString(const nvrtcResult & error) -> std::string
+getErrorString(nvrtcResult error) -> std::string
 {
   return std::string(nvrtcGetErrorString(error));
 }
-#endif
+
+/// Check a CUDA driver API call; throw with context on failure.
+#define CU_CHECK(call, msg)                                                    \
+  do                                                                           \
+  {                                                                            \
+    CUresult err_ = (call);                                                    \
+    if (err_ != CUDA_SUCCESS)                                                  \
+    {                                                                          \
+      throw std::runtime_error(std::string(msg) + " CUDA error: " +           \
+                               getErrorString(err_) + " (" +                  \
+                               std::to_string(err_) + ")");                    \
+    }                                                                          \
+  } while (0)
+
+/// Check an NVRTC call; throw with context on failure.
+#define NVRTC_CHECK(call, msg)                                                 \
+  do                                                                           \
+  {                                                                            \
+    nvrtcResult err_ = (call);                                                 \
+    if (err_ != NVRTC_SUCCESS)                                                 \
+    {                                                                          \
+      throw std::runtime_error(std::string(msg) + " NVRTC error: " +          \
+                               getErrorString(err_) + " (" +                  \
+                               std::to_string(err_) + ")");                    \
+    }                                                                          \
+  } while (0)
+
+// ============================================================================
+// RAII Context Guard
+// ============================================================================
+
+/**
+ * @brief RAII helper that sets the CUDA context for the given device on
+ *        construction. Performs dynamic_pointer_cast and validates once.
+ *
+ * Eliminates the repeated 3-line boilerplate (cast + validate + set context)
+ * from every method.
+ */
+class CUDAContextGuard
+{
+public:
+  explicit CUDAContextGuard(const Device::Pointer & device)
+    : cuda_device_(std::dynamic_pointer_cast<const CUDADevice>(device))
+  {
+    if (!cuda_device_)
+    {
+      throw std::runtime_error("Error: Failed to cast device to CUDADevice");
+    }
+    CU_CHECK(cuCtxSetCurrent(cuda_device_->getCUDAContext()),
+             "Error: Failed to set CUDA context");
+  }
+
+  [[nodiscard]] auto
+  device() const -> const std::shared_ptr<const CUDADevice> &
+  {
+    return cuda_device_;
+  }
+
+  [[nodiscard]] auto
+  context() const -> CUcontext
+  {
+    return cuda_device_->getCUDAContext();
+  }
+
+  [[nodiscard]] auto
+  stream() const -> CUstream
+  {
+    return cuda_device_->getCUDAStream();
+  }
+
+private:
+  std::shared_ptr<const CUDADevice> cuda_device_;
+};
+
+// ============================================================================
+// Memcpy Helpers (unified 1D/2D/3D logic)
+// ============================================================================
+
+/// Direction of a memcpy operation.
+enum class MemcpyDirection
+{
+  HostToDevice,
+  DeviceToHost,
+  DeviceToDevice
+};
+
+/**
+ * @brief Perform a 1D, 2D, or 3D memory copy between host and/or device.
+ *
+ * Selects cuMemcpy / cuMemcpy2D / cuMemcpy3D based on the shape, eliminating
+ * the triplicated branching logic that was in writeBuffer/readBuffer/copyBuffer.
+ *
+ * @param src_type        Source memory type (host or device).
+ * @param src_ptr         Source pointer (host void* or CUdeviceptr cast).
+ * @param src_origin      Byte offset origin for the source.
+ * @param src_row_pitch   Row pitch in bytes for the source (0 for 1D).
+ * @param src_slice_pitch Slice pitch (height) for the source (0 for 1D/2D).
+ * @param dst_type        Destination memory type.
+ * @param dst_ptr         Destination pointer.
+ * @param dst_origin      Byte offset origin for the destination.
+ * @param dst_row_pitch   Row pitch in bytes for the destination.
+ * @param dst_slice_pitch Slice pitch for the destination.
+ * @param region          Size of the region to copy {widthBytes, height, depth}.
+ * @param shape           Full buffer shape to determine dimensionality.
+ */
+static auto
+performMemcpy(CUmemorytype                  src_type,
+              const void *                  src_ptr,
+              const std::array<size_t, 3> & src_origin,
+              size_t                        src_row_pitch,
+              size_t                        src_slice_pitch,
+              CUmemorytype                  dst_type,
+              const void *                  dst_ptr,
+              const std::array<size_t, 3> & dst_origin,
+              size_t                        dst_row_pitch,
+              size_t                        dst_slice_pitch,
+              const std::array<size_t, 3> & region,
+              const std::array<size_t, 3> & shape) -> void
+{
+  CUresult err;
+
+  if (shape[2] > 1)
+  {
+    // ── 3D copy ──
+    CUDA_MEMCPY3D params = {};
+
+    params.srcMemoryType = src_type;
+    if (src_type == CU_MEMORYTYPE_HOST)
+    {
+      params.srcHost = src_ptr;
+    }
+    else
+    {
+      params.srcDevice = reinterpret_cast<CUdeviceptr>(src_ptr);
+    }
+    params.srcXInBytes = src_origin[0];
+    params.srcY = src_origin[1];
+    params.srcZ = src_origin[2];
+    params.srcPitch = src_row_pitch;
+    params.srcHeight = src_slice_pitch;
+
+    params.dstMemoryType = dst_type;
+    if (dst_type == CU_MEMORYTYPE_HOST)
+    {
+      params.dstHost = const_cast<void *>(dst_ptr);
+    }
+    else
+    {
+      params.dstDevice = reinterpret_cast<CUdeviceptr>(dst_ptr);
+    }
+    params.dstXInBytes = dst_origin[0];
+    params.dstY = dst_origin[1];
+    params.dstZ = dst_origin[2];
+    params.dstPitch = dst_row_pitch;
+    params.dstHeight = dst_slice_pitch;
+
+    params.WidthInBytes = region[0];
+    params.Height = region[1];
+    params.Depth = region[2];
+
+    err = cuMemcpy3D(&params);
+  }
+  else if (shape[1] > 1)
+  {
+    // ── 2D copy ──
+    CUDA_MEMCPY2D params = {};
+
+    params.srcMemoryType = src_type;
+    if (src_type == CU_MEMORYTYPE_HOST)
+    {
+      params.srcHost = src_ptr;
+    }
+    else
+    {
+      params.srcDevice = reinterpret_cast<CUdeviceptr>(src_ptr);
+    }
+    params.srcXInBytes = src_origin[0];
+    params.srcY = src_origin[1];
+    params.srcPitch = src_row_pitch;
+
+    params.dstMemoryType = dst_type;
+    if (dst_type == CU_MEMORYTYPE_HOST)
+    {
+      params.dstHost = const_cast<void *>(dst_ptr);
+    }
+    else
+    {
+      params.dstDevice = reinterpret_cast<CUdeviceptr>(dst_ptr);
+    }
+    params.dstXInBytes = dst_origin[0];
+    params.dstY = dst_origin[1];
+    params.dstPitch = dst_row_pitch;
+
+    params.WidthInBytes = region[0];
+    params.Height = region[1];
+
+    err = cuMemcpy2D(&params);
+  }
+  else
+  {
+    // ── 1D copy ──
+    auto src_addr = reinterpret_cast<CUdeviceptr>(
+      reinterpret_cast<const char *>(src_ptr) + src_origin[0]);
+    auto dst_addr = reinterpret_cast<CUdeviceptr>(
+      reinterpret_cast<const char *>(dst_ptr) + dst_origin[0]);
+
+    err = cuMemcpy(dst_addr, src_addr, region[0]);
+  }
+
+  CU_CHECK(err, "Error: Memory copy failed");
+}
+
+// ============================================================================
+// Disk cache helpers
+// ============================================================================
+
+static auto
+savePtxToCache(const std::string & device_hash,
+               const std::string & source_hash,
+               const std::string & ptx) -> void
+{
+  DiskCache::instance().saveBinary(device_hash, source_hash, "ptx",
+                                   ptx.c_str(), ptx.size());
+}
+
+[[nodiscard]] static auto
+loadPtxFromCache(const std::string & device_hash,
+                 const std::string & source_hash) -> std::string
+{
+  auto binary = DiskCache::instance().loadBinary(device_hash, source_hash, "ptx");
+  if (binary.empty())
+  {
+    return {};
+  }
+  return std::string(binary.begin(), binary.end());
+}
+
+// ============================================================================
+// Bit-cast helper (safe type-punning without UB)
+// ============================================================================
+
+/**
+ * @brief Safely reinterpret the bits of one type as another of the same size.
+ *        Equivalent to std::bit_cast (C++20) but works in C++17.
+ */
+template <typename To, typename From>
+static auto
+bitCast(const From & src) -> To
+{
+  static_assert(sizeof(To) == sizeof(From), "bit_cast: size mismatch");
+  To dst;
+  std::memcpy(&dst, &src, sizeof(To));
+  return dst;
+}
+
+// ============================================================================
+// Kernel compilation helper
+// ============================================================================
+
+/**
+ * @brief Compile an NVRTC program to PTX.
+ *
+ * On failure, retrieves and logs the build log before throwing.
+ */
+[[nodiscard]] static auto
+compileToPtx(const std::string & kernel_source,
+             const std::string & arch) -> std::string
+{
+  nvrtcProgram prog;
+  NVRTC_CHECK(nvrtcCreateProgram(&prog, kernel_source.c_str(),
+                                  nullptr, 0, nullptr, nullptr),
+              "Error: Failed to create NVRTC program");
+
+  // RAII cleanup for the program handle
+  struct ProgramGuard
+  {
+    nvrtcProgram * p;
+    ~ProgramGuard() { nvrtcDestroyProgram(p); }
+  } guard{ &prog };
+
+  const std::string                 arch_opt = "--gpu-architecture=compute_" + arch;
+  const std::string                 warn_opt = "--disable-warnings";
+  const std::array<const char *, 2> options = { arch_opt.c_str(), warn_opt.c_str() };
+
+  nvrtcResult res = nvrtcCompileProgram(prog, static_cast<int>(options.size()),
+                                         options.data());
+  if (res != NVRTC_SUCCESS)
+  {
+    // Retrieve and report the build log
+    size_t log_size = 0;
+    nvrtcGetProgramLogSize(prog, &log_size);
+    std::string log(log_size, '\0');
+    nvrtcGetProgramLog(prog, log.data());
+    throw std::runtime_error(
+      "Error: Failed to compile kernel. NVRTC error: " +
+      getErrorString(res) + " (" + std::to_string(res) + ")\nBuild log:\n" + log);
+  }
+
+  size_t ptx_size = 0;
+  NVRTC_CHECK(nvrtcGetPTXSize(prog, &ptx_size),
+              "Error: Failed to get PTX size");
+
+  // NVRTC includes the null terminator in ptx_size
+  std::string ptx(ptx_size, '\0');
+  NVRTC_CHECK(nvrtcGetPTX(prog, ptx.data()),
+              "Error: Failed to get PTX");
+
+  return ptx;
+}
+
+// ============================================================================
+// Block size calculation helper
+// ============================================================================
+
+/**
+ * @brief Compute a reasonable CUDA block (thread) size for the given global size.
+ *
+ * Strategy:
+ *   - Determine the active dimensions (global_size[i] > 1).
+ *   - Distribute threads per block across active dimensions, capped at 1024 total
+ *     and 64 in the z-dimension (hardware limit on many architectures).
+ *   - Inactive dimensions get block size = 1.
+ */
+[[nodiscard]] static auto
+computeBlockSize(const std::array<size_t, 3> & global_size) -> std::array<size_t, 3>
+{
+  // Count active dimensions
+  int dim = 0;
+  for (size_t i = 0; i < 3; ++i)
+  {
+    if (global_size[i] > 1)
+    {
+      ++dim;
+    }
+  }
+
+  std::array<size_t, 3> block = { 1, 1, 1 };
+
+  switch (dim)
+  {
+    case 0:
+      // Degenerate case: all dimensions are 1
+      break;
+    case 1: {
+      // One active dimension gets up to 256 threads
+      // (conservative to leave room for registers/shared memory)
+      constexpr size_t kMaxThreads1D = 256;
+      for (size_t i = 0; i < 3; ++i)
+      {
+        if (global_size[i] > 1)
+        {
+          block[i] = std::min(global_size[i], kMaxThreads1D);
+        }
+      }
+      break;
+    }
+    case 2: {
+      // Two active dimensions: 16×16 = 256 threads
+      constexpr size_t kBlockDim2D = 16;
+      for (size_t i = 0; i < 3; ++i)
+      {
+        if (global_size[i] > 1)
+        {
+          block[i] = std::min(global_size[i], kBlockDim2D);
+        }
+      }
+      break;
+    }
+    case 3: {
+      // Three active dimensions: 8×8×4 = 256 threads (z capped at 64)
+      constexpr std::array<size_t, 3> kBlockDim3D = { 8, 8, 4 };
+      for (size_t i = 0; i < 3; ++i)
+      {
+        block[i] = std::min(global_size[i], kBlockDim3D[i]);
+      }
+      break;
+    }
+  }
+
+  // Hardware constraint: z-dimension must not exceed 64
+  block[2] = std::min(block[2], size_t{ 64 });
+
+  // Ensure total threads per block does not exceed 1024
+  size_t total = block[0] * block[1] * block[2];
+  while (total > 1024)
+  {
+    // Shrink the largest dimension
+    auto max_it = std::max_element(block.begin(), block.end());
+    *max_it = (*max_it + 1) / 2;
+    total = block[0] * block[1] * block[2];
+  }
+
+  return block;
+}
+
+/**
+ * @brief Compute grid size from global size and block size (ceiling division).
+ */
+[[nodiscard]] static auto
+computeGridSize(const std::array<size_t, 3> & global_size,
+                const std::array<size_t, 3> & block_size) -> std::array<size_t, 3>
+{
+  return { (global_size[0] + block_size[0] - 1) / block_size[0],
+           (global_size[1] + block_size[1] - 1) / block_size[1],
+           (global_size[2] + block_size[2] - 1) / block_size[2] };
+}
+
+// ============================================================================
+// CUDABackend Implementation
+// ============================================================================
+
+CUDABackend::CUDABackend()
+{
+  CU_CHECK(cuInit(0), "Error: Failed to initialize CUDA");
+}
+
+// ── Device enumeration ──────────────────────────────────────────────────────
 
 auto
 CUDABackend::getDevices(const std::string & type) const -> std::vector<Device::Pointer>
 {
-#if USE_CUDA
-  int  deviceCount;
-  auto error = cuDeviceGetCount(&deviceCount);
-  if (error != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to found devices. CUDA error : " + getErrorString(error) + " (" + std::to_string(error) + ").");
-  }
+  int deviceCount = 0;
+  CU_CHECK(cuDeviceGetCount(&deviceCount), "Error: Failed to get device count");
+
   std::vector<Device::Pointer> devices;
-  for (int i = 0; i < deviceCount; i++)
+  devices.reserve(static_cast<size_t>(deviceCount));
+  for (int i = 0; i < deviceCount; ++i)
   {
     devices.push_back(std::make_shared<CUDADevice>(i));
   }
 
   if (devices.empty())
   {
-    std::cerr << "Warning: Fail to find '" << type << "' CUDA compatible devices." << std::endl;
+    std::cerr << "Warning: Failed to find '" << type
+              << "' CUDA compatible devices." << std::endl;
   }
-
   return devices;
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
 }
 
 auto
-CUDABackend::getDevice(const std::string & name, const std::string & type) const -> Device::Pointer
+CUDABackend::getDevice(const std::string & name, const std::string & type) const
+  -> Device::Pointer
 {
-#if USE_CUDA
-  auto devices = getDevices(type);
-  auto lower_case_name = to_lower(name);
-  auto ite = std::find_if(devices.begin(), devices.end(), [&lower_case_name](const Device::Pointer & dev) {
-    return dev->getName(true).find(lower_case_name) != std::string::npos;
-  });
-  if (ite != devices.end())
+  auto       devices = getDevices(type);
+  const auto lower_name = to_lower(name);
+
+  auto it = std::find_if(devices.begin(), devices.end(),
+    [&lower_name](const Device::Pointer & dev) {
+      return dev->getName(true).find(lower_name) != std::string::npos;
+    });
+
+  if (it != devices.end())
   {
-    return std::move(*ite);
+    return *it;
   }
   if (!devices.empty())
   {
-    return std::move(devices.back());
+    return devices.back();
   }
+
   std::cerr << "Warning: No CUDA compatible devices found." << std::endl;
   return nullptr;
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
 }
 
 auto
-CUDABackend::getDeviceFromIndex(size_t index, const std::string & type) const -> Device::Pointer
+CUDABackend::getDeviceFromIndex(size_t index, const std::string & type) const
+  -> Device::Pointer
 {
-#if USE_CUDA
   auto devices = getDevices(type);
+
   if (index < devices.size())
   {
-    return std::move(devices[index]);
+    return devices[index];
   }
   if (!devices.empty())
   {
-    return std::move(devices.back());
+    return devices.back();
   }
+
   std::cerr << "Warning: No CUDA compatible devices found." << std::endl;
   return nullptr;
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
 }
 
 auto
 CUDABackend::getDevicesList(const std::string & type) const -> std::vector<std::string>
 {
-#if USE_CUDA
   auto                     devices = getDevices(type);
-  std::vector<std::string> deviceList;
-  for (size_t i = 0; i < devices.size(); i++)
+  std::vector<std::string> names;
+  names.reserve(devices.size());
+  for (const auto & dev : devices)
   {
-    deviceList.emplace_back(devices[i]->getName());
+    names.emplace_back(dev->getName());
   }
-  return deviceList;
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
+  return names;
 }
 
 auto
@@ -122,6 +644,8 @@ CUDABackend::getType() const -> Backend::Type
   return Backend::Type::CUDA;
 }
 
+// ── Memory allocation ───────────────────────────────────────────────────────
+
 auto
 CUDABackend::allocateMemory(const Device::Pointer &       device,
                             const std::array<size_t, 3> & region,
@@ -129,158 +653,44 @@ CUDABackend::allocateMemory(const Device::Pointer &       device,
                             const mType &                 mtype,
                             std::shared_ptr<void> &       data_ptr) const -> void
 {
-#if USE_CUDA
-  switch (mtype)
-  {
-    case mType::BUFFER: {
-      const size_t size = region[0] * region[1] * region[2] * toBytes(dtype);
-      allocateBuffer(device, size, data_ptr);
-      break;
-    }
-    case mType::IMAGE: {
-      // @StRigaud TODO: implement image support for CUDA
-      // allocateImage(device, region, dtype, data_ptr);
-      const size_t size = region[0] * region[1] * region[2] * toBytes(dtype);
-      allocateBuffer(device, size, data_ptr);
-      break;
-    }
-  }
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
+  // @StRigaud TODO: implement true image support for CUDA
+  // For now, both BUFFER and IMAGE allocate linear memory.
+  const size_t size = region[0] * region[1] * region[2] * toBytes(dtype);
+  allocateBuffer(device, size, data_ptr);
 }
 
 auto
-CUDABackend::allocateBuffer(const Device::Pointer & device, const size_t & size, std::shared_ptr<void> & data_ptr) -> void
+CUDABackend::allocateBuffer(const Device::Pointer & device,
+                            const size_t &          size,
+                            std::shared_ptr<void> & data_ptr) -> void
 {
-#if USE_CUDA
-  auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);
-  auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
-                             ").");
-  }
-  CUdeviceptr mem;
-  err = cuMemAlloc(&mem, size);
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to allocate buffer memory. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
-                             ").");
-  }
+  CUDAContextGuard ctx(device);
+
+  CUdeviceptr mem = 0;
+  CU_CHECK(cuMemAlloc(&mem, size), "Error: Failed to allocate buffer memory");
   *data_ptr = reinterpret_cast<void *>(mem);
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
 }
 
-/*
-// @StRigaud TODO: implement image support for CUDA
 auto
-CUDABackend::allocateImage(const Device::Pointer &       device,
-                           const std::array<size_t, 3> & region,
-                           const dType &                 dtype,
-                           const std::shared_ptr<void> &                       data_ptr) -> void
+CUDABackend::freeMemory(const Device::Pointer &       device,
+                        const mType &                 mtype,
+                        const std::shared_ptr<void> & data_ptr) const -> void
 {
-#if USE_CUDA
-  auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);
-  auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to get context from device (" + std::to_string(err) + ").");
-  }
-  CUarray        array;
-  CUarray_format format;
-  switch (dtype)
-  {
-    case dType::FLOAT:
-      format = CU_AD_FORMAT_FLOAT;
-      break;
-    case dType::INT8:
-      format = CU_AD_FORMAT_SIGNED_INT8;
-      break;
-    case dType::UINT8:
-      format = CU_AD_FORMAT_UNSIGNED_INT8;
-      break;
-    case dType::INT16:
-      format = CU_AD_FORMAT_SIGNED_INT16;
-      break;
-    case dType::UINT16:
-      format = CU_AD_FORMAT_UNSIGNED_INT16;
-      break;
-    case dType::INT32:
-      format = CU_AD_FORMAT_SIGNED_INT32;
-      break;
-    case dType::UINT32:
-      format = CU_AD_FORMAT_UNSIGNED_INT32;
-      break;
-    default:
-      format = CU_AD_FORMAT_FLOAT;
-      std::cerr << "Warning: Unsupported data type for 'image', default type 'float' will be used." << std::endl;
-      break;
-  }
-  if (depth > 1)
-  {
-    CUDA_ARRAY3D_DESCRIPTOR desc;
-    desc.Width = region[0];
-    desc.Height = region[1];
-    desc.Depth = region[2];
-    desc.Format = format;
-    desc.NumChannels = 1;
-    desc.Flags = 0;
-    err = cuArray3DCreate(&array, &desc);
-  }
-  else
-  {
-    CUDA_ARRAY_DESCRIPTOR desc;
-    desc.Width = region[0];
-    desc.Height = region[1];
-    desc.Format = format;
-    desc.NumChannels = 1;
-    err = cuArrayCreate(&array, &desc);
-  }
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to allocate memory (image) with error code " + std::to_string(err));
-  }
-  *data_ptr = reinterpret_cast<void *>(array);
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
-}
-*/
+  CUDAContextGuard ctx(device);
 
-auto
-CUDABackend::freeMemory(const Device::Pointer & device, const mType & mtype, const std::shared_ptr<void> & data_ptr) const -> void
-{
-#if USE_CUDA
-  auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);
-  auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
-                             ").");
-  }
-  // @StRigaud TODO: implement image support for CUDA
-  err = cuMemFree(reinterpret_cast<CUdeviceptr>(*data_ptr));
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to free memory. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) + ").");
-  }
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
+  // @StRigaud TODO: differentiate image vs buffer free when image support lands
+  CU_CHECK(cuMemFree(reinterpret_cast<CUdeviceptr>(*data_ptr)),
+           "Error: Failed to free memory");
 }
 
 auto
 CUDABackend::getRefCount(void * data_ptr) const -> int
 {
-#if USE_CUDA
+  // CUDA driver API does not provide reference counting for allocations.
   return 1;
-#else
-  throw std::runtime_error("Error: OpenCL is not enabled");
-#endif
 }
+
+// ── Memory read / write ─────────────────────────────────────────────────────
 
 auto
 CUDABackend::writeMemory(const Device::Pointer &       device,
@@ -292,25 +702,14 @@ CUDABackend::writeMemory(const Device::Pointer &       device,
                          const mType &                 mtype,
                          const void *                  host_ptr) const -> void
 {
-#if USE_CUDA
-  switch (mtype)
-  {
-    case mType::BUFFER: {
-      buffer_shape[0] *= toBytes(dtype);
-      buffer_origin[0] *= toBytes(dtype);
-      region[0] *= toBytes(dtype);
-      writeBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
-      break;
-    }
-    case mType::IMAGE: {
-      // @StRigaud TODO: implement image support for CUDA
-      writeBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
-      break;
-    }
-  }
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
+  // Convert element counts to byte counts for the first dimension
+  const size_t elem_size = toBytes(dtype);
+  buffer_shape[0] *= elem_size;
+  buffer_origin[0] *= elem_size;
+  region[0] *= elem_size;
+
+  // @StRigaud TODO: differentiate IMAGE path when image support lands
+  writeBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
 }
 
 auto
@@ -321,145 +720,16 @@ CUDABackend::writeBuffer(const Device::Pointer &       device,
                          const std::array<size_t, 3> & region,
                          const void *                  host_ptr) -> void
 {
-#if USE_CUDA
-  auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);
-  auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
-                             ").");
-  }
+  CUDAContextGuard ctx(device);
 
-  size_t buffer_row_pitch = buffer_shape[1] > 1 ? buffer_shape[0] : 0;
-  size_t buffer_slice_pitch = buffer_shape[2] > 1 ? buffer_shape[1] : 0;
-
+  const size_t                dst_row_pitch = (buffer_shape[1] > 1) ? buffer_shape[0] : 0;
+  const size_t                dst_slice_pitch = (buffer_shape[2] > 1) ? buffer_shape[1] : 0;
   const std::array<size_t, 3> host_origin = { 0, 0, 0 };
-  if (buffer_shape[2] > 1)
-  {
-    CUDA_MEMCPY3D copyParams = { 0 };
 
-    copyParams.srcMemoryType = CU_MEMORYTYPE_HOST; // Source memory type.
-    copyParams.srcHost = host_ptr;
-
-    copyParams.dstMemoryType = CU_MEMORYTYPE_DEVICE; // Destination memory type.
-    copyParams.dstDevice = reinterpret_cast<CUdeviceptr>(*buffer_ptr);
-    copyParams.dstPitch = buffer_row_pitch;
-    copyParams.dstHeight = buffer_slice_pitch;
-    copyParams.dstXInBytes = buffer_origin[0];
-    copyParams.dstY = buffer_origin[1];
-    copyParams.dstZ = buffer_origin[2];
-
-    copyParams.WidthInBytes = region[0];
-    copyParams.Height = region[1];
-    copyParams.Depth = region[2];
-    err = cuMemcpy3D(&copyParams);
-  }
-  else if (buffer_shape[1] > 1)
-  {
-    CUDA_MEMCPY2D copyParams = { 0 };
-
-    copyParams.srcMemoryType = CU_MEMORYTYPE_HOST; // Source memory type.
-    copyParams.srcHost = host_ptr;
-
-    copyParams.dstMemoryType = CU_MEMORYTYPE_DEVICE; // Destination memory type.
-    copyParams.dstDevice = reinterpret_cast<CUdeviceptr>(*buffer_ptr);
-    copyParams.dstPitch = buffer_row_pitch;
-    copyParams.dstXInBytes = buffer_origin[0];
-    copyParams.dstY = buffer_origin[1];
-
-    copyParams.WidthInBytes = region[0];
-    copyParams.Height = region[1];
-    err = cuMemcpy2D(&copyParams);
-  }
-  else
-  {
-    void * cast_host_ptr = const_cast<void *>(host_ptr);
-    cast_host_ptr = static_cast<char *>(cast_host_ptr) + (host_origin[0]);
-    CUdeviceptr devicePtr = reinterpret_cast<CUdeviceptr>(reinterpret_cast<char *>(*buffer_ptr) + buffer_origin[0]);
-    err = cuMemcpy(devicePtr, reinterpret_cast<CUdeviceptr>(cast_host_ptr), region[0]);
-  }
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to write on device from host to buffer. CUDA error : " + getErrorString(err) + " (" +
-                             std::to_string(err) + ").");
-  }
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
-}
-
-auto
-CUDABackend::readBuffer(const Device::Pointer &       device,
-                        const std::shared_ptr<void> & buffer_ptr,
-                        const std::array<size_t, 3> & buffer_shape,
-                        const std::array<size_t, 3> & buffer_origin,
-                        const std::array<size_t, 3> & region,
-                        void *                        host_ptr) -> void
-{
-#if USE_CUDA
-  auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);
-  auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
-                             ").");
-  }
-  size_t buffer_row_pitch = buffer_shape[1] > 1 ? buffer_shape[0] : 0;
-  size_t buffer_slice_pitch = buffer_shape[2] > 1 ? buffer_shape[1] : 0;
-
-  const std::array<size_t, 3> host_origin = { 0, 0, 0 };
-  if (buffer_shape[2] > 1)
-  {
-    CUDA_MEMCPY3D copyParams = { 0 };
-
-    copyParams.dstMemoryType = CU_MEMORYTYPE_HOST; // Source memory type.
-    copyParams.dstHost = host_ptr;
-
-    copyParams.srcMemoryType = CU_MEMORYTYPE_DEVICE; // Destination memory type.
-    copyParams.srcDevice = reinterpret_cast<CUdeviceptr>(*buffer_ptr);
-    copyParams.srcPitch = buffer_row_pitch;
-    copyParams.srcHeight = buffer_slice_pitch;
-    copyParams.srcXInBytes = buffer_origin[0];
-    copyParams.srcY = buffer_origin[1];
-    copyParams.srcZ = buffer_origin[2];
-
-    copyParams.WidthInBytes = region[0];
-    copyParams.Height = region[1];
-    copyParams.Depth = region[2];
-    err = cuMemcpy3D(&copyParams);
-  }
-  else if (buffer_shape[1] > 1)
-  {
-    CUDA_MEMCPY2D copyParams = { 0 };
-
-    copyParams.dstMemoryType = CU_MEMORYTYPE_HOST; // Source memory type.
-    copyParams.dstHost = host_ptr;
-
-    copyParams.srcMemoryType = CU_MEMORYTYPE_DEVICE; // Destination memory type.
-    copyParams.srcDevice = reinterpret_cast<CUdeviceptr>(*buffer_ptr);
-    copyParams.srcPitch = buffer_row_pitch;
-    copyParams.srcXInBytes = buffer_origin[0];
-    copyParams.srcY = buffer_origin[1];
-
-    copyParams.WidthInBytes = region[0];
-    copyParams.Height = region[1];
-    err = cuMemcpy2D(&copyParams);
-  }
-  else
-  {
-    void * cast_host_ptr = const_cast<void *>(host_ptr);
-    cast_host_ptr = static_cast<char *>(cast_host_ptr) + (host_origin[0]);
-    CUdeviceptr devicePtr = reinterpret_cast<CUdeviceptr>(reinterpret_cast<const char *>(*buffer_ptr) + buffer_origin[0]);
-    err = cuMemcpy((CUdeviceptr)cast_host_ptr, devicePtr, region[0]);
-  }
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to read memory from buffer to host. CUDA error : " + getErrorString(err) + " (" +
-                             std::to_string(err) + ").");
-  }
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
+  performMemcpy(
+    CU_MEMORYTYPE_HOST, host_ptr, host_origin, 0, 0,
+    CU_MEMORYTYPE_DEVICE, *buffer_ptr, buffer_origin, dst_row_pitch, dst_slice_pitch,
+    region, buffer_shape);
 }
 
 auto
@@ -472,26 +742,36 @@ CUDABackend::readMemory(const Device::Pointer &       device,
                         const mType &                 mtype,
                         void *                        host_ptr) const -> void
 {
-#if USE_CUDA
-  switch (mtype)
-  {
-    case mType::BUFFER: {
-      buffer_shape[0] *= toBytes(dtype);
-      buffer_origin[0] *= toBytes(dtype);
-      region[0] *= toBytes(dtype);
-      readBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
-      break;
-    }
-    case mType::IMAGE: {
-      // @StRigaud TODO: implement image support for CUDA
-      readBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
-      break;
-    }
-  }
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
+  const size_t elem_size = toBytes(dtype);
+  buffer_shape[0] *= elem_size;
+  buffer_origin[0] *= elem_size;
+  region[0] *= elem_size;
+
+  // @StRigaud TODO: differentiate IMAGE path when image support lands
+  readBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
 }
+
+auto
+CUDABackend::readBuffer(const Device::Pointer &       device,
+                        const std::shared_ptr<void> & buffer_ptr,
+                        const std::array<size_t, 3> & buffer_shape,
+                        const std::array<size_t, 3> & buffer_origin,
+                        const std::array<size_t, 3> & region,
+                        void *                        host_ptr) -> void
+{
+  CUDAContextGuard ctx(device);
+
+  const size_t                src_row_pitch = (buffer_shape[1] > 1) ? buffer_shape[0] : 0;
+  const size_t                src_slice_pitch = (buffer_shape[2] > 1) ? buffer_shape[1] : 0;
+  const std::array<size_t, 3> host_origin = { 0, 0, 0 };
+
+  performMemcpy(
+    CU_MEMORYTYPE_DEVICE, *buffer_ptr, buffer_origin, src_row_pitch, src_slice_pitch,
+    CU_MEMORYTYPE_HOST, host_ptr, host_origin, 0, 0,
+    region, buffer_shape);
+}
+
+// ── Memory copy (device-to-device) ──────────────────────────────────────────
 
 auto
 CUDABackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
@@ -504,79 +784,24 @@ CUDABackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
                                       std::array<size_t, 3> &       region,
                                       const size_t &                bytes) const -> void
 {
-#if USE_CUDA
-  auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);
-  auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
-                             ").");
-  }
+  CUDAContextGuard ctx(device);
 
+  // Convert element counts to byte counts
   region[0] *= bytes;
   src_origin[0] *= bytes;
   src_shape[0] *= bytes;
   dst_origin[0] *= bytes;
   dst_shape[0] *= bytes;
 
-  size_t src_row_pitch = src_shape[1] > 1 ? src_shape[0] : 0;
-  size_t dst_row_pitch = dst_shape[1] > 1 ? dst_shape[0] : 0;
+  const size_t src_row_pitch = (src_shape[1] > 1) ? src_shape[0] : 0;
+  const size_t dst_row_pitch = (dst_shape[1] > 1) ? dst_shape[0] : 0;
+  const size_t src_slice_pitch = (src_shape[2] > 1) ? src_shape[1] : 0;
+  const size_t dst_slice_pitch = (dst_shape[2] > 1) ? dst_shape[1] : 0;
 
-  if (src_shape[2] > 1)
-  {
-    CUDA_MEMCPY3D copyParams = { 0 };
-
-    copyParams.dstMemoryType = CU_MEMORYTYPE_DEVICE;
-    copyParams.dstDevice = reinterpret_cast<CUdeviceptr>(*dst_ptr);
-    copyParams.dstXInBytes = dst_origin[0];
-    copyParams.dstY = dst_origin[1];
-    copyParams.dstPitch = dst_row_pitch;
-
-    copyParams.srcMemoryType = CU_MEMORYTYPE_DEVICE;
-    copyParams.srcDevice = reinterpret_cast<CUdeviceptr>(*src_ptr);
-    copyParams.srcXInBytes = src_origin[0];
-    copyParams.srcY = src_origin[1];
-    copyParams.srcPitch = src_row_pitch;
-
-    copyParams.WidthInBytes = region[0];
-    copyParams.Height = region[1];
-    copyParams.Depth = region[2];
-    err = cuMemcpy3D(&copyParams);
-  }
-  else if (src_shape[1] > 1)
-  {
-    CUDA_MEMCPY2D copyParams = { 0 };
-
-    copyParams.dstMemoryType = CU_MEMORYTYPE_DEVICE;
-    copyParams.dstDevice = reinterpret_cast<CUdeviceptr>(*dst_ptr);
-    copyParams.dstXInBytes = dst_origin[0];
-    copyParams.dstY = dst_origin[1];
-    copyParams.dstPitch = dst_row_pitch;
-
-    copyParams.srcMemoryType = CU_MEMORYTYPE_DEVICE;
-    copyParams.srcDevice = reinterpret_cast<CUdeviceptr>(*src_ptr);
-    copyParams.srcXInBytes = src_origin[0];
-    copyParams.srcY = src_origin[1];
-    copyParams.srcPitch = src_row_pitch;
-
-    copyParams.WidthInBytes = region[0];
-    copyParams.Height = region[1];
-    err = cuMemcpy2D(&copyParams);
-  }
-  else
-  {
-    auto new_dst_ptr = reinterpret_cast<CUdeviceptr>(reinterpret_cast<const char *>(*dst_ptr) + dst_origin[0]);
-    auto new_src_ptr = reinterpret_cast<CUdeviceptr>(reinterpret_cast<const char *>(*src_ptr) + src_origin[0]);
-    err = cuMemcpy(new_dst_ptr, new_src_ptr, region[0]);
-  }
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to copy memory from buffer to buffer. CUDA error : " + getErrorString(err) + " (" +
-                             std::to_string(err) + ").");
-  }
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
+  performMemcpy(
+    CU_MEMORYTYPE_DEVICE, *src_ptr, src_origin, src_row_pitch, src_slice_pitch,
+    CU_MEMORYTYPE_DEVICE, *dst_ptr, dst_origin, dst_row_pitch, dst_slice_pitch,
+    region, src_shape);
 }
 
 auto
@@ -590,11 +815,9 @@ CUDABackend::copyMemoryImageToBuffer(const Device::Pointer &       device,
                                      std::array<size_t, 3> &       region,
                                      const size_t &                bytes) const -> void
 {
-#if USE_CUDA
-  copyMemoryBufferToBuffer(device, src_ptr, src_origin, src_shape, dst_ptr, dst_origin, dst_shape, region, bytes);
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
+  // @StRigaud TODO: implement proper image-to-buffer copy when image support lands
+  copyMemoryBufferToBuffer(device, src_ptr, src_origin, src_shape,
+                           dst_ptr, dst_origin, dst_shape, region, bytes);
 }
 
 auto
@@ -608,11 +831,9 @@ CUDABackend::copyMemoryBufferToImage(const Device::Pointer &       device,
                                      std::array<size_t, 3> &       region,
                                      const size_t &                bytes) const -> void
 {
-#if USE_CUDA
-  copyMemoryBufferToBuffer(device, src_ptr, src_origin, src_shape, dst_ptr, dst_origin, dst_shape, region, bytes);
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
+  // @StRigaud TODO: implement proper buffer-to-image copy when image support lands
+  copyMemoryBufferToBuffer(device, src_ptr, src_origin, src_shape,
+                           dst_ptr, dst_origin, dst_shape, region, bytes);
 }
 
 auto
@@ -626,12 +847,12 @@ CUDABackend::copyMemoryImageToImage(const Device::Pointer &       device,
                                     std::array<size_t, 3> &       region,
                                     const size_t &                bytes) const -> void
 {
-#if USE_CUDA
-  copyMemoryBufferToBuffer(device, src_ptr, src_origin, src_shape, dst_ptr, dst_origin, dst_shape, region, bytes);
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
+  // @StRigaud TODO: implement proper image-to-image copy when image support lands
+  copyMemoryBufferToBuffer(device, src_ptr, src_origin, src_shape,
+                           dst_ptr, dst_origin, dst_shape, region, bytes);
 }
+
+// ── Memory fill ─────────────────────────────────────────────────────────────
 
 auto
 CUDABackend::setBuffer(const Device::Pointer &       device,
@@ -642,74 +863,55 @@ CUDABackend::setBuffer(const Device::Pointer &       device,
                        const dType &                 dtype,
                        const float &                 value) -> void
 {
-#if USE_CUDA
-  auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);
-  auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
-                             ").");
-  }
-  const auto count = region[0] * region[1] * region[2];
-  const auto dev_ptr = reinterpret_cast<CUdeviceptr>(*buffer_ptr);
+  CUDAContextGuard ctx(device);
+
+  const auto       count = region[0] * region[1] * region[2];
+  const CUdeviceptr dev_ptr = reinterpret_cast<CUdeviceptr>(*buffer_ptr);
+  CUresult          err = CUDA_SUCCESS;
+
   switch (dtype)
   {
     case dType::FLOAT: {
-      auto cval = static_cast<float>(value);
-      err = cuMemsetD32(dev_ptr, *(reinterpret_cast<uint32_t *>(&cval)), count);
+      const auto cval = static_cast<float>(value);
+      err = cuMemsetD32(dev_ptr, bitCast<uint32_t>(cval), count);
       break;
     }
-    // case dType::INT64: {
-    //   std::vector<int64_t> host_buffer(count, static_cast<int64_t>(value));
-    //   writeBuffer(device, buffer_ptr, region, origin, dType::INT64, host_buffer.data());
-    //   break;
-    // }
-    // case dType::UINT64: {
-    //   std::vector<uint64_t> host_buffer(count, static_cast<uint64_t>(value));
-    //   writeBuffer(device, buffer_ptr, region, origin, dType::UINT64, host_buffer.data());
-    //   break;
-    // }
     case dType::INT32: {
-      auto cval = static_cast<int32_t>(value);
-      err = cuMemsetD32(dev_ptr, *(reinterpret_cast<uint32_t *>(&cval)), count);
+      const auto cval = static_cast<int32_t>(value);
+      err = cuMemsetD32(dev_ptr, bitCast<uint32_t>(cval), count);
       break;
     }
     case dType::UINT32: {
-      auto cval = static_cast<uint32_t>(value);
-      err = cuMemsetD32(dev_ptr, *(reinterpret_cast<uint32_t *>(&cval)), count);
+      const auto cval = static_cast<uint32_t>(value);
+      err = cuMemsetD32(dev_ptr, cval, count);
       break;
     }
     case dType::INT16: {
-      auto cval = static_cast<int16_t>(value);
-      err = cuMemsetD16(dev_ptr, *(reinterpret_cast<uint16_t *>(&cval)), count);
+      const auto cval = static_cast<int16_t>(value);
+      err = cuMemsetD16(dev_ptr, bitCast<uint16_t>(cval), count);
       break;
     }
     case dType::UINT16: {
-      auto cval = static_cast<uint16_t>(value);
-      err = cuMemsetD16(dev_ptr, *(reinterpret_cast<uint16_t *>(&cval)), count);
+      const auto cval = static_cast<uint16_t>(value);
+      err = cuMemsetD16(dev_ptr, cval, count);
       break;
     }
     case dType::INT8: {
-      auto cval = static_cast<int8_t>(value);
-      err = cuMemsetD8(dev_ptr, *(reinterpret_cast<uint8_t *>(&cval)), count);
+      const auto cval = static_cast<int8_t>(value);
+      err = cuMemsetD8(dev_ptr, bitCast<uint8_t>(cval), count);
       break;
     }
     case dType::UINT8: {
-      auto cval = static_cast<uint8_t>(value);
-      err = cuMemsetD8(dev_ptr, *(reinterpret_cast<uint8_t *>(&cval)), count);
+      const auto cval = static_cast<uint8_t>(value);
+      err = cuMemsetD8(dev_ptr, cval, count);
       break;
     }
     default:
-      std::cerr << "Warning: Unsupported value size for cuda setMemory" << std::endl;
-      break;
+      throw std::runtime_error(
+        "Error: Unsupported data type for CUDA setMemory");
   }
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to fill memory. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) + ").");
-  }
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
+
+  CU_CHECK(err, "Error: Failed to fill memory");
 }
 
 auto
@@ -722,42 +924,11 @@ CUDABackend::setMemory(const Device::Pointer &       device,
                        const mType &                 mtype,
                        const float &                 value) const -> void
 {
-#if USE_CUDA
-  switch (mtype)
-  {
-    case mType::BUFFER: {
-      setBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, dtype, value);
-      break;
-    }
-    case mType::IMAGE: {
-      setBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, dtype, value);
-      break;
-    }
-  }
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
+  // @StRigaud TODO: differentiate IMAGE path when image support lands
+  setBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, dtype, value);
 }
 
-#if USE_CUDA
-static auto
-saveBinaryToCache(const std::string & device_hash, const std::string & source_hash, const std::string & program) -> void
-{
-  DiskCache::instance().saveBinary(device_hash, source_hash, "ptx", program.c_str(), program.size());
-}
-
-static auto
-loadBinaryFromCache(const Device::Pointer & device, const std::string & device_hash, const std::string & source_hash) -> std::string
-{
-  auto binary = DiskCache::instance().loadBinary(device_hash, source_hash, "ptx");
-  if (binary.empty())
-  {
-    return {};
-  }
-  return std::string(binary.begin(), binary.end());
-}
-#endif
-
+// ── Kernel build and execution ──────────────────────────────────────────────
 
 auto
 CUDABackend::buildKernel(const Device::Pointer & device,
@@ -765,102 +936,61 @@ CUDABackend::buildKernel(const Device::Pointer & device,
                          const std::string &     kernel_name,
                          std::shared_ptr<void> & kernel) const -> void
 {
-#if USE_CUDA
-  auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);
-  auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to get context from device. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
-                             ").");
-  }
+  CUDAContextGuard ctx(device);
+  const auto &     cuda_device = ctx.device();
 
   const auto source_hash = DiskCache::hash(kernel_source);
   const auto device_hash = DiskCache::hash(cuda_device->getInfo());
   auto &     disk_cache = DiskCache::instance();
 
-  // Try in-memory cache first to avoid recompilation and disk access
+  // ── Level 1: in-memory cache (fastest) ──
   const auto cache_key = device_hash + "_" + source_hash + "_" + kernel_name;
   auto       cached = device->getProgramFromCache(cache_key);
   if (cached != nullptr)
   {
-    *(reinterpret_cast<CUfunction *>(kernel)) = *(reinterpret_cast<CUfunction *>(cached.get()));
+    *reinterpret_cast<CUfunction *>(kernel.get()) =
+      *reinterpret_cast<CUfunction *>(cached.get());
     return;
   }
 
+  // ── Level 2: disk cache (avoids recompilation) ──
   std::string ptx;
   if (disk_cache.isEnabled())
   {
-    ptx = loadBinaryFromCache(device, device_hash, source_hash);
+    ptx = loadPtxFromCache(device_hash, source_hash);
   }
+
+  // ── Level 3: compile from source ──
   if (ptx.empty())
   {
-    nvrtcProgram prog;
-    auto         res = nvrtcCreateProgram(&prog, kernel_source.c_str(), nullptr, 0, nullptr, nullptr);
-    if (res != NVRTC_SUCCESS)
-    {
-      throw std::runtime_error("Error: Fail to create kernel program from source. CUDA error : " + getErrorString(res) + " (" +
-                               std::to_string(res) + ").");
-    }
-    const std::string                 arch_comp = "--gpu-architecture=compute_" + cuda_device->getArch();
-    const std::string                 woff = "--disable-warnings";
-    const std::array<const char *, 2> options = { arch_comp.c_str(), woff.c_str() };
-    res = nvrtcCompileProgram(prog, options.size(), options.data());
-    if (res != NVRTC_SUCCESS)
-    {
-      size_t log_size;
-      nvrtcGetProgramLogSize(prog, &log_size);
-      std::string log(log_size, '\0');
-      nvrtcGetProgramLog(prog, &log[0]);
-      std::cerr << "Build log: " << log << std::endl;
-      throw std::runtime_error("Error: Fail to build kernel program. CUDA error : " + getErrorString(res) + " (" + std::to_string(res) +
-                               ").");
-    }
-    size_t      ptxSize;
-    nvrtcResult result = nvrtcGetPTXSize(prog, &ptxSize);
-    if (result != NVRTC_SUCCESS)
-    {
-      throw std::runtime_error("Error: Fail to get PTX size. CUDA error : " + getErrorString(result) + " (" + std::to_string(result) +
-                               ").");
-    }
-    ptx.resize(ptxSize + 1); // +1 for null terminator
-    result = nvrtcGetPTX(prog, &ptx[0]);
-    if (result != NVRTC_SUCCESS)
-    {
-      throw std::runtime_error("Error: Fail to get PTX. CUDA error : " + getErrorString(result) + " (" + std::to_string(result) + ").");
-    }
-    result = nvrtcDestroyProgram(&prog);
-    if (result != NVRTC_SUCCESS)
-    {
-      throw std::runtime_error("Error: Fail to destroy kernel program. CUDA error : " + getErrorString(result) + " (" +
-                               std::to_string(result) + ").");
-    }
+    ptx = compileToPtx(kernel_source, cuda_device->getArch());
+
     if (disk_cache.isEnabled())
     {
-      saveBinaryToCache(device_hash, source_hash, ptx);
+      savePtxToCache(device_hash, source_hash, ptx);
     }
   }
-  CUmodule cuModule;
-  err = cuModuleLoadData(&cuModule, ptx.c_str());
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to load module. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) + ").");
-  }
-  CUfunction cuFunction;
-  err = cuModuleGetFunction(&cuFunction, cuModule, kernel_name.c_str());
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to build function from module. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) +
-                             ").");
-  }
 
-  // Store function in in-memory cache for reuse
-  auto function_ptr = std::shared_ptr<void>(new CUfunction(cuFunction), [](void * p) { delete reinterpret_cast<CUfunction *>(p); });
+  // ── Load module and extract function ──
+  CUmodule cuModule = nullptr;
+  CU_CHECK(cuModuleLoadData(&cuModule, ptx.c_str()),
+           "Error: Failed to load PTX module");
+
+  CUfunction cuFunction = nullptr;
+  CU_CHECK(cuModuleGetFunction(&cuFunction, cuModule, kernel_name.c_str()),
+           "Error: Failed to get function '" + kernel_name + "' from module");
+
+  // Cache both the function and the module (module must stay alive while
+  // the function is in use). We attach the module to the shared_ptr deleter.
+  auto function_ptr = std::shared_ptr<void>(
+    new CUfunction(cuFunction),
+    [cuModule](void * p) {
+      cuModuleUnload(cuModule);
+      delete reinterpret_cast<CUfunction *>(p);
+    });
   device->addProgramToCache(cache_key, function_ptr);
 
-  *(reinterpret_cast<CUfunction *>(kernel)) = cuFunction;
-#else
-  throw std::runtime_error("Error: CUDA is not enabled");
-#endif
+  *reinterpret_cast<CUfunction *>(kernel.get()) = cuFunction;
 }
 
 auto
@@ -872,77 +1002,40 @@ CUDABackend::executeKernel(const Device::Pointer &                    device,
                            const std::vector<std::shared_ptr<void>> & args,
                            const std::vector<size_t> &                sizes) const -> void
 {
-#if USE_CUDA
-  auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device);
-  auto err = cuCtxSetCurrent(cuda_device->getCUDAContext());
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail to get context from device.");
-  }
+  CUDAContextGuard ctx(device);
 
-  CUfunction cuFunction;
-  buildKernel(device, kernel_source, kernel_name, &cuFunction);
+  // ── Build / retrieve the kernel function ──
+  CUfunction        cuFunction = nullptr;
+  std::shared_ptr<void> kernel_holder(
+    reinterpret_cast<void *>(&cuFunction), [](void *) { /* no-op, stack-owned */ });
+  buildKernel(device, kernel_source, kernel_name, kernel_holder);
 
-  std::vector<void *> argsValues(args.size());
-  argsValues = args;
+  // ── Prepare kernel arguments ──
+  // cuLaunchKernel expects an array of pointers, where each element points
+  // to the argument value. For us, args[i].get() points to the value.
+  std::vector<void *> arg_ptrs(args.size());
+  std::transform(args.begin(), args.end(), arg_ptrs.begin(),
+    [](const std::shared_ptr<void> & sp) { return sp.get(); });
 
-  std::array<size_t, 3> block_size = { 0, 0, 0 };
-  int                   dim = 0;
-  for (size_t i = 0; i < global_size.size(); ++i)
-  {
-    if (global_size[i] > 1)
-    {
-      dim++;
-      block_size[i] = 1;
-    }
-  }
+  // ── Compute launch configuration ──
+  const auto block_size = computeBlockSize(global_size);
+  const auto grid_size = computeGridSize(global_size, block_size);
 
-  switch (dim)
-  {
-    case 1:
-      // Warning: Ensure that the third dimension of the block size does not exceed 64.
-      std::transform(
-        block_size.begin(), block_size.end(), block_size.begin(), [](size_t value) { return (value == 0) ? (1) : (value * 512); });
-      break;
-    case 2:
-      std::transform(
-        block_size.begin(), block_size.end(), block_size.begin(), [](size_t value) { return (value == 0) ? (1) : (value * 16); });
-      break;
-    case 3:
-      std::transform(block_size.begin(), block_size.end(), block_size.begin(), [](size_t value) { return (value * 8); });
-      break;
-    default:
-      block_size = { 1, 1, 1 };
-  }
-  if (block_size.back() > 64)
-  {
-    block_size.back() = 64;
-  }
+  // ── Launch ──
+  CU_CHECK(cuLaunchKernel(cuFunction,
+                           static_cast<unsigned>(grid_size[0]),
+                           static_cast<unsigned>(grid_size[1]),
+                           static_cast<unsigned>(grid_size[2]),
+                           static_cast<unsigned>(block_size[0]),
+                           static_cast<unsigned>(block_size[1]),
+                           static_cast<unsigned>(block_size[2]),
+                           0,               // shared memory bytes
+                           ctx.stream(),    // stream
+                           arg_ptrs.data(), // kernel arguments
+                           nullptr),        // extra
+           "Error: Failed to launch kernel '" + kernel_name + "'");
 
-  std::array<size_t, 3> grid_size = { (global_size.data()[0] + block_size.data()[0] - 1) / block_size.data()[0],
-                                      (global_size.data()[1] + block_size.data()[1] - 1) / block_size.data()[1],
-                                      (global_size.data()[2] + block_size.data()[2] - 1) / block_size.data()[2] };
-
-  err = cuLaunchKernel(cuFunction,
-                       grid_size.data()[0],
-                       grid_size.data()[1],
-                       grid_size.data()[2],
-                       block_size.data()[0],
-                       block_size.data()[1],
-                       block_size.data()[2],
-                       0,
-                       cuda_device->getCUDAStream(),
-                       argsValues.data(),
-                       nullptr);
-
-  if (err != CUDA_SUCCESS)
-  {
-    throw std::runtime_error("Error: Fail launching kernel. CUDA error : " + getErrorString(err) + " (" + std::to_string(err) + ").");
-  }
-  cuda_device->finish();
-#else
-  throw std::runtime_error("Error: CUDA backend is not enabled");
-#endif
+  ctx.device()->finish();
 }
 
 auto
@@ -950,5 +1043,7 @@ CUDABackend::getPreamble() const -> std::string
 {
   return kernel::preamble_cu;
 }
+
+#endif // USE_CUDA
 
 } // namespace cle
