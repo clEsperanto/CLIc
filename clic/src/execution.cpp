@@ -278,10 +278,6 @@ execute(const Device::Pointer & device,
   auto kernel_name = kernel_func.first;
   auto kernel_preamble = cle::BackendManager::getInstance().getBackend().getPreamble();
   auto defines = generateDefines(parameters, constants, device->getType());
-  if (device->getType() == Device::Type::CUDA)
-  {
-    cle::translateOpenclToCuda(kernel_source);
-  }
   platform_options(device, &kernel_preamble);
 
   // Collect unique array dtypes and dimensions for CLIJ defines
@@ -310,7 +306,14 @@ execute(const Device::Pointer & device,
   }
   defines += "\n\n";
 
-  const std::string program_source = defines + kernel_preamble + kernel_source;
+  // merge the defines and ocl before possible translation to CUDA
+  // preamble is added after because it is already adapted to the target platform
+  auto sources = defines + kernel_source;
+  if (device->getType() == Device::Type::CUDA)
+  {
+        sources = cle::translateOpenclToCuda(sources);
+  }
+  const std::string program_source = kernel_preamble + sources;
   cle::BackendManager::getInstance().getBackend().executeKernel(
     device, program_source, kernel_name, global_range, local_range, args_ptr, args_size);
 }
@@ -359,12 +362,20 @@ native_execute(const Device::Pointer & device,
                const RangeArray &      global_range,
                const RangeArray &      local_range) -> void
 {
+
+  auto kernel_source = kernel_func.second;
+  auto kernel_name = kernel_func.first;
+  if (device->getType() == Device::Type::CUDA)
+  {
+    kernel_source = cle::translateOpenclToCuda(kernel_source);
+  }
+
   std::vector<std::shared_ptr<void>> args_ptr;
   std::vector<size_t>                args_size;
   marshalParameters(parameters, args_ptr, args_size);
 
   cle::BackendManager::getInstance().getBackend().executeKernel(
-    device, kernel_func.second, kernel_func.first, global_range, local_range, args_ptr, args_size);
+    device, kernel_source, kernel_name, global_range, local_range, args_ptr, args_size);
 }
 
 
