@@ -279,6 +279,10 @@ execute(const Device::Pointer & device,
   auto kernel_preamble = cle::BackendManager::getInstance().getBackend().getPreamble();
   auto defines = generateDefines(parameters, constants, device->getType());
   platform_options(device, &kernel_preamble);
+  if (device->getType() == Device::Type::CUDA)
+  {
+        kernel_source = cle::translateOpenclToCuda(kernel_source);
+  }
 
   // Collect unique array dtypes and dimensions for CLIJ defines
   std::set<dType> used_dtypes;
@@ -306,14 +310,8 @@ execute(const Device::Pointer & device,
   }
   defines += "\n\n";
 
-  // merge the defines and ocl before possible translation to CUDA
-  // preamble is added after because it is already adapted to the target platform
-  auto sources = defines + kernel_source;
-  if (device->getType() == Device::Type::CUDA)
-  {
-    sources = cle::translateOpenclToCuda(sources);
-  }
-  const std::string program_source = kernel_preamble + sources;
+
+  const std::string program_source = defines + kernel_preamble + kernel_source;
   cle::BackendManager::getInstance().getBackend().executeKernel(
     device, program_source, kernel_name, global_range, local_range, args_ptr, args_size);
 }
