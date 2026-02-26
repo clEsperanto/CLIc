@@ -563,7 +563,6 @@ compileToPtx(const std::string & kernel_source, const std::string & arch) -> std
 [[nodiscard]] static auto
 computeBlockSize(const std::array<size_t, 3> & global_size) -> std::array<size_t, 3>
 {
-  // Count active dimensions
   int dim = 0;
   for (size_t i = 0; i < 3; ++i)
   {
@@ -578,11 +577,8 @@ computeBlockSize(const std::array<size_t, 3> & global_size) -> std::array<size_t
   switch (dim)
   {
     case 0:
-      // Degenerate case: all dimensions are 1
       break;
     case 1: {
-      // One active dimension gets up to 256 threads
-      // (conservative to leave room for registers/shared memory)
       constexpr size_t kMaxThreads1D = 256;
       for (size_t i = 0; i < 3; ++i)
       {
@@ -594,20 +590,30 @@ computeBlockSize(const std::array<size_t, 3> & global_size) -> std::array<size_t
       break;
     }
     case 2: {
-      // Two active dimensions: 16×16 = 256 threads
-      constexpr size_t kBlockDim2D = 16;
+      // Prefer wider x for coalescing: 32×8 instead of 16×16
+      constexpr size_t kBlockDimX_2D = 32;     // <- changed
+      constexpr size_t kBlockDimOther_2D = 8;   // <- changed
+      bool first_active = true;
       for (size_t i = 0; i < 3; ++i)
       {
         if (global_size[i] > 1)
         {
-          block[i] = std::min(global_size[i], kBlockDim2D);
+          if (first_active)
+          {
+            block[i] = std::min(global_size[i], kBlockDimX_2D);
+            first_active = false;
+          }
+          else
+          {
+            block[i] = std::min(global_size[i], kBlockDimOther_2D);
+          }
         }
       }
       break;
     }
     case 3: {
-      // Three active dimensions: 8×8×4 = 256 threads (z capped at 64)
-      constexpr std::array<size_t, 3> kBlockDim3D = { 8, 8, 4 };
+      // x=32 for coalescing, y=8, z=1 in block (z goes to grid)
+      constexpr std::array<size_t, 3> kBlockDim3D = { 32, 8, 1 };  // <- changed
       for (size_t i = 0; i < 3; ++i)
       {
         block[i] = std::min(global_size[i], kBlockDim3D[i]);
@@ -616,14 +622,11 @@ computeBlockSize(const std::array<size_t, 3> & global_size) -> std::array<size_t
     }
   }
 
-  // Hardware constraint: z-dimension must not exceed 64
   block[2] = std::min(block[2], size_t{ 64 });
 
-  // Ensure total threads per block does not exceed 1024
   size_t total = block[0] * block[1] * block[2];
   while (total > 1024)
   {
-    // Shrink the largest dimension
     auto max_it = std::max_element(block.begin(), block.end());
     *max_it = (*max_it + 1) / 2;
     total = block[0] * block[1] * block[2];
