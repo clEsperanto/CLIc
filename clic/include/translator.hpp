@@ -1,10 +1,10 @@
 #pragma once
 
-#include <string>
-#include <vector>
-#include <regex>
 #include <functional>
+#include <regex>
+#include <string>
 #include <unordered_map>
+#include <vector>
 
 /// Translates OpenCL kernel source code to equivalent CUDA source code at runtime.
 ///

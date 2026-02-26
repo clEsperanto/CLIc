@@ -60,7 +60,7 @@ static auto
 translateOpenclToCuda(const std::string & openclCode) -> std::string
 {
   OpenCLToCUDATranslator translator;
-  std::string cudaKernel = translator.translate(openclCode);
+  std::string            cudaKernel = translator.translate(openclCode);
   return cudaKernel;
 }
 

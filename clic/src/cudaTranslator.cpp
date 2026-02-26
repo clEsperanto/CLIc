@@ -54,16 +54,13 @@ OpenCLToCUDATranslator::replaceAll(std::string & str, const std::string & from, 
 }
 
 auto
-OpenCLToCUDATranslator::regexReplaceAll(std::string & str, const std::regex & pattern, const std::string & replacement)
-  -> void
+OpenCLToCUDATranslator::regexReplaceAll(std::string & str, const std::regex & pattern, const std::string & replacement) -> void
 {
   str = std::regex_replace(str, pattern, replacement);
 }
 
 auto
-OpenCLToCUDATranslator::replaceVectorConstructor(std::string &       code,
-                                                  const std::string & openclCtor,
-                                                  const std::string & cudaCtor) -> void
+OpenCLToCUDATranslator::replaceVectorConstructor(std::string & code, const std::string & openclCtor, const std::string & cudaCtor) -> void
 {
   // Match:  (typeN){ expr, expr, ... }
   // Replace with:  make_typeN( expr, expr, ... )
@@ -405,9 +402,8 @@ OpenCLToCUDATranslator::translateTypeConversions(std::string & code) -> void
 
   // Handle scalar conversions with optional rounding/saturation suffixes
   // e.g., convert_int_rte, convert_float_sat, convert_int_sat_rte
-  static const std::vector<std::string> scalarTypes = { "char",  "uchar", "short", "ushort",
-                                                        "int",   "uint",  "long",  "ulong",
-                                                        "float", "double" };
+  static const std::vector<std::string> scalarTypes = { "char", "uchar", "short", "ushort", "int",
+                                                        "uint", "long",  "ulong", "float",  "double" };
 
   for (const auto & type : scalarTypes)
   {
