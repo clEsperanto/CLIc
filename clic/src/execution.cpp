@@ -20,40 +20,48 @@ static const std::unordered_map<dType, std::string> dtype_defines = {
 };
 } // namespace
 
-// Translate OpenCL kernel code to CUDA.
-// @StRigaud TODO: function is not exhaustive and needs to be improved to support more features
+// // Translate OpenCL kernel code to CUDA.
+// // @StRigaud TODO: function is not exhaustive and needs to be improved to support more features
+// static auto
+// translateOpenclToCuda(std::string & code) -> void
+// {
+//   auto replaceAll = [](std::string & str, const std::string & from, const std::string & to) {
+//     for (size_t pos = 0; (pos = str.find(from, pos)) != std::string::npos; pos += to.size())
+//       str.replace(pos, from.size(), to);
+//   };
+
+//   // Vector type constructors:  (typeN){...}; → make_typeN(...);
+//   auto replaceVecCtor = [&code](const std::string & from, const std::string & to) {
+//     for (size_t pos = 0; (pos = code.find(from, pos)) != std::string::npos;)
+//     {
+//       code.replace(pos, from.size(), to);
+//       pos += to.size();
+//       auto end = code.find("};", pos);
+//       if (end != std::string::npos)
+//         code.replace(end, 2, ");");
+//     }
+//   };
+
+//   replaceVecCtor("(int2){", "make_int2(");
+//   replaceVecCtor("(int4){", "make_int4(");
+//   replaceVecCtor("(float2){", "make_float2(");
+//   replaceVecCtor("(float4){", "make_float4(");
+
+//   replaceAll(code, "__constant sampler_t", "__device__ int");
+//   replaceAll(code, "inline", "__device__ inline");
+//   replaceAll(code, "#pragma", "// #pragma");
+//   replaceAll(code, "__kernel void", "extern \"C\" __global__ void");
+//   replaceAll(code, "get_global_id(0)", "blockDim.x * blockIdx.x + threadIdx.x");
+//   replaceAll(code, "get_global_id(1)", "blockDim.y * blockIdx.y + threadIdx.y");
+//   replaceAll(code, "get_global_id(2)", "blockDim.z * blockIdx.z + threadIdx.z");
+// }
+
 static auto
-translateOpenclToCuda(std::string & code) -> void
+translateOpenclToCuda(const std::string & openclCode) -> std::string
 {
-  auto replaceAll = [](std::string & str, const std::string & from, const std::string & to) {
-    for (size_t pos = 0; (pos = str.find(from, pos)) != std::string::npos; pos += to.size())
-      str.replace(pos, from.size(), to);
-  };
-
-  // Vector type constructors:  (typeN){...}; → make_typeN(...);
-  auto replaceVecCtor = [&code](const std::string & from, const std::string & to) {
-    for (size_t pos = 0; (pos = code.find(from, pos)) != std::string::npos;)
-    {
-      code.replace(pos, from.size(), to);
-      pos += to.size();
-      auto end = code.find("};", pos);
-      if (end != std::string::npos)
-        code.replace(end, 2, ");");
-    }
-  };
-
-  replaceVecCtor("(int2){", "make_int2(");
-  replaceVecCtor("(int4){", "make_int4(");
-  replaceVecCtor("(float2){", "make_float2(");
-  replaceVecCtor("(float4){", "make_float4(");
-
-  replaceAll(code, "__constant sampler_t", "__device__ int");
-  replaceAll(code, "inline", "__device__ inline");
-  replaceAll(code, "#pragma", "// #pragma");
-  replaceAll(code, "__kernel void", "extern \"C\" __global__ void");
-  replaceAll(code, "get_global_id(0)", "blockDim.x * blockIdx.x + threadIdx.x");
-  replaceAll(code, "get_global_id(1)", "blockDim.y * blockIdx.y + threadIdx.y");
-  replaceAll(code, "get_global_id(2)", "blockDim.z * blockIdx.z + threadIdx.z");
+  OpenCLToCUDATranslator translator;
+  std::string cudaKernel = translator.translate(openclCode);
+  return cudaKernel;
 }
 
 
