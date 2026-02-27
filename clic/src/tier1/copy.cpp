@@ -27,6 +27,8 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
     const std::string src_type = toString(src->dtype());
     const std::string dst_type = toString(dst->dtype());
 
+    // _sat suffix is only valid for conversions to integer types
+    const std::string convert_suffix = (dst->dtype() == dType::FLOAT) ? "" : "_sat";
     const std::string kernel_source =
       "__kernel void copy_cast("
       "  __global const " + src_type + "* src,"
@@ -34,7 +36,7 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
       "  const unsigned long size"
       ") {\n"
       "  const size_t idx = get_global_id(0);\n"
-      "  if (idx < size) { dst[idx] = convert_" + dst_type + "_sat(src[idx]); }\n"
+      "  if (idx < size) { dst[idx] = convert_" + dst_type + convert_suffix + "(src[idx]); }\n"
       "}\n";
 
     const size_t     total_size = src->size();
