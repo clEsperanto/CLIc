@@ -56,20 +56,22 @@ namespace kernel
 //   return dst;
 // }
 
-auto
-copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
-{
-  tier0::create_like(src, dst);
-
   // if (src->dtype() == dst->dtype())
   // {
   //   src->copyTo(dst);
   //   return dst;
   // }
 
+auto
+copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+{
+  tier0::create_like(src, dst);
+
+
+
   auto input_type = toString(src->dtype());
   auto output_type = toString(dst->dtype());
-  auto convert = (dst->dtype() == dType::FLOAT) ? "float" : "convert_" + output_type + "_sat";
+  auto convert = (dst->dtype() == dType::FLOAT) ? "convert_float" : "convert_" + output_type + "_sat";
   auto kernel_name = "copy_" + input_type + "_to_" + output_type;
 
   std::string kernel_source = "__kernel void " + kernel_name + "(__global const " + input_type + "* restrict src, __global " + output_type + "* restrict dst, const uint n) { const uint gid = get_global_id(0); if (gid < n) dst[gid] = " + convert + "(src[gid]); }";
