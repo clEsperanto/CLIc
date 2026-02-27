@@ -45,7 +45,7 @@ apply_binary_math_operation(const Device::Pointer & device,
                             const std::string &     op_define) -> Array::Pointer
 {
   tier0::create_like(src, dst);
-  std::string dst_is_int = (dst->dtype() == dType::FLOAT) ? "0" : "1";
+  std::string         dst_is_int = (dst->dtype() == dType::FLOAT) ? "0" : "1";
   const KernelInfo    kernel_info = { "cle_binary_operation", kernel_source };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar", scalar } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };

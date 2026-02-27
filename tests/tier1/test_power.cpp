@@ -7,18 +7,18 @@
 class TestPower : public ::testing::TestWithParam<std::string>
 {
 protected:
-  const float                   value = 5;
-  const float                   exp = 3;
-  std::string backend;
+  const float          value = 5;
+  const float          exp = 3;
+  std::string          backend;
   cle::Device::Pointer device;
 
   virtual void
   SetUp()
   {
-  std::string backend = GetParam();
-  cle::BackendManager::getInstance().setBackend(backend);
-  device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
+    std::string backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
   }
 };
 

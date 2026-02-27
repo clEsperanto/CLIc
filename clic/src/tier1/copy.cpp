@@ -32,8 +32,8 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
     const std::string dst_type = toString(dst->dtype());
     const std::string addr = is_opencl ? "__global " : "";
 
-    const std::string kernel_source = "__kernel void copy_cast( __global const " + src_type + "* src,  __global " + dst_type + "* dst, const int size) {\n" +
-                                      "  const int idx = get_global_id(0);\n" +
+    const std::string kernel_source = "__kernel void copy_cast( __global const " + src_type + "* src,  __global " + dst_type +
+                                      "* dst, const int size) {\n" + "  const int idx = get_global_id(0);\n" +
                                       "  if (idx < size) { dst[idx] = (" + dst_type + ")src[idx]; }\n}\n";
     const std::string kernel_name = "copy_cast";
 
