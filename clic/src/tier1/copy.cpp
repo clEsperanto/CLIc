@@ -73,13 +73,13 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
   const KernelInfo    kernel_info = { kernel_name, kernel_source };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "n", static_cast<unsigned int>(dst->size()) } };
   
-  auto max_work_group_size = device->getMaximumWorkGroupSize();
-  auto global_work_size = dst->size();
-  auto local_work_size = (global_work_size < max_work_group_size) ? global_work_size : max_work_group_size;
+  const size_t LOCAL_ITEM_SIZE = std::min(256, static_cast<int>(device->getMaximumWorkGroupSize()));
+  size_t       globalItemSize =
+    static_cast<size_t>(ceil(static_cast<double>(dst->size()) / static_cast<double>(LOCAL_ITEM_SIZE)) * LOCAL_ITEM_SIZE);
+  const RangeArray    global_range = { globalItemSize, 1, 1 };
+  const RangeArray    local_range = { LOCAL_ITEM_SIZE, 1, 1 };
 
-  const RangeArray    range = { dst->size(), 1, 1 };
-  const RangeArray    local_range = { local_work_size, 1, 1 };
-  native_execute(device, kernel_info, params, range, local_range);
+  native_execute(device, kernel_info, params, global_range, local_range);
   return dst;
 }
 

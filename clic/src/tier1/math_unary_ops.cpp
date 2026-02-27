@@ -42,11 +42,11 @@ apply_unary_math_operation(const Device::Pointer & device, const Array::Pointer 
                                               { "OP", op_expr } });
 
   const int        total_size = static_cast<int>(src->size());
-  const size_t     max_local = device->getMaximumWorkGroupSize();
-  const size_t     global_padded = ((total_size + max_local - 1) / max_local) * max_local;
-  const RangeArray global_range = { global_padded, 1, 1 };
-  const RangeArray local_range = { max_local, 1, 1 };
-
+  const size_t LOCAL_ITEM_SIZE = std::min(256, static_cast<int>(device->getMaximumWorkGroupSize()));
+  size_t       globalItemSize =
+    static_cast<size_t>(ceil(static_cast<double>(total_size) / static_cast<double>(LOCAL_ITEM_SIZE)) * LOCAL_ITEM_SIZE);
+  const RangeArray    global_range = { globalItemSize, 1, 1 };
+  const RangeArray    local_range = { LOCAL_ITEM_SIZE, 1, 1 };
   const KernelInfo    kernel = { "math_unary", source };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "size", total_size } };
   native_execute(device, kernel, params, global_range, local_range);
