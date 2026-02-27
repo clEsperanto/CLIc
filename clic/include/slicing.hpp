@@ -210,7 +210,7 @@ struct ResolvedSlice
 };
 
 
-// ─── The main slicing function ─────────────────────────────────────────────
+// ─── The main slicing / pasting function ─────────────────────────────────────────────
 
 /**
  * @brief Extract a sub-array from `src` described by up to 3 Slice specs (x, y, z order).
@@ -247,5 +247,24 @@ auto
 slice(const Array::Pointer & src, const Slice & x_slice = Slice(), const Slice & y_slice = Slice(), const Slice & z_slice = Slice())
   -> Array::Pointer;
 
+/**
+ * @brief Write src INTO a sub-region of dst described by up to 3 Slice specs (x, y, z order).
+ *
+ * This is the inverse of slice(): where slice() reads a region out,
+ * paste() writes data in.
+ *
+ * The source array dimensions must exactly match the region described
+ * by the slices (with collapsed axes having size 1).
+ *
+ * @param src     Data to write (small array)
+ * @param dst     Target array (modified in-place)
+ * @param slices  Where in dst to write (x, y, z order)
+ */
+auto
+paste(const Array::Pointer & src, const Array::Pointer & dst, const std::vector<Slice> & slices) -> void;
+
+auto
+paste(const Array::Pointer & src, const Array::Pointer & dst,
+      const Slice & x_slice = Slice(), const Slice & y_slice = Slice(), const Slice & z_slice = Slice()) -> void;
 
 } // namespace cle
