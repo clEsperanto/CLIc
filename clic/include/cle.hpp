@@ -1,10 +1,11 @@
-#ifndef __INCLUDE_CLE_HPP
-#define __INCLUDE_CLE_HPP
+#pragma once
 
 #include "array.hpp"
 #include "backend.hpp"
 #include "clic.hpp"
 #include "device.hpp"
+#include "execution.hpp"
+#include "slicing.hpp"
 
 #include "fft.hpp"
 
@@ -16,5 +17,3 @@
 #include "tier6.hpp"
 #include "tier7.hpp"
 #include "tier8.hpp"
-
-#endif // __INCLUDE_CLE_HPP

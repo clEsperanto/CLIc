@@ -5,6 +5,7 @@
 #include <array>
 #include <cmath>
 
+#include "test_utils.hpp"
 #include <gtest/gtest.h>
 
 class TestStatisticsOfLabelledPixels : public ::testing::TestWithParam<std::string>
@@ -287,6 +288,8 @@ TEST_P(TestStatisticsOfLabelledPixels, standard_deviation)
   std::array<float, 3 * 3 * 1> image = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
   std::array<float, 3 * 3 * 1> labels = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
   device->setWaitToFinish(true);
 
@@ -304,18 +307,4 @@ TEST_P(TestStatisticsOfLabelledPixels, standard_deviation)
 
   EXPECT_NEAR(std_dev[0], 2.5819888, 0.001);
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestStatisticsOfLabelledPixels, ::testing::ValuesIn(getParameters()));

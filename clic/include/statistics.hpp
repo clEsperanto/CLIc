@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_STATISTICS_HPP
-#define __INCLUDE_STATISTICS_HPP
+#pragma once
 
 #include "array.hpp"
 
@@ -45,5 +44,3 @@ _std_per_label(const Device::Pointer & device,
                int                     nb_labels) -> Array::Pointer;
 
 } // namespace cle
-
-#endif // __INCLUDE_STATISTICS_HPP

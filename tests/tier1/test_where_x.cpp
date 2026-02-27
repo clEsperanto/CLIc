@@ -1,5 +1,6 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
 
@@ -76,18 +77,4 @@ TEST_P(TestWhereX, executeGreaterY)
     EXPECT_EQ(output[i], valid_greater[i]);
   }
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestWhereX, ::testing::ValuesIn(getParameters()));

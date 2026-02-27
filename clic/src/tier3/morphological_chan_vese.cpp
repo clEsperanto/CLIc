@@ -76,26 +76,20 @@ compute_contour_evolution(const Device::Pointer & device,
                           float                   lambda2) -> void
 {
   // magnitude * (lambda1 * (image - c1) ** 2 - lambda2 * (image - c0) ** 2)
-  // (image - c1) ** 2 -> inside_evo
-  auto inside_evo = tier1::add_image_and_scalar_func(device, image, nullptr, c1);
-  tier1::power_func(device, inside_evo, inside_evo, 2);
-  // (image - c0) ** 2) -> outside_evo
-  auto outside_evo = tier1::add_image_and_scalar_func(device, image, nullptr, c0);
-  tier1::power_func(device, outside_evo, outside_evo, 2);
-  // magnitude * (lambda1 * inside_evo - lambda2 * outside_evo)
-  auto merged = tier1::add_images_weighted_func(device, inside_evo, outside_evo, nullptr, lambda1, -lambda2);
-  tier1::multiply_images_func(device, merged, evolution, evolution);
+  evaluate(device, "e * (l1 * pow(a + c1, 2.0f) - l2 * pow(a + c0, 2.0f))", { evolution, lambda1, image, c1, lambda2, c0 }, evolution);
 }
 
 auto
 apply_contour_evolution(const Device::Pointer & device, const Array::Pointer & evolution, Array::Pointer contour) -> void
 {
-  auto evolution_pos = tier1::greater_constant_func(device, evolution, nullptr, 0);
-  auto evolution_neg = tier1::smaller_constant_func(device, evolution, nullptr, 0);
-  auto evolution_or = tier1::binary_or_func(device, evolution_pos, evolution_neg, nullptr);
-  auto mask = tier1::binary_not_func(device, evolution_or, nullptr);
-  auto masked_evolution = tier1::mask_func(device, contour, mask, nullptr);
-  tier1::add_images_weighted_func(device, masked_evolution, evolution_neg, contour, 1, 1);
+  // auto evolution_pos = tier1::greater_constant_func(device, evolution, nullptr, 0);
+  // auto evolution_neg = tier1::smaller_constant_func(device, evolution, nullptr, 0);
+  // auto evolution_or = tier1::binary_or_func(device, evolution_pos, evolution_neg, nullptr);
+  // auto mask = tier1::binary_not_func(device, evolution_or, nullptr);
+  // auto masked_evolution = tier1::mask_func(device, contour, mask, nullptr);
+  // tier1::add_images_weighted_func(device, masked_evolution, evolution_neg, contour, 1, 1);
+
+  evaluate(device, "b * (a == 0.0f) + (a < 0.0f)", { contour, evolution }, contour);
 }
 
 auto

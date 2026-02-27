@@ -17,6 +17,33 @@
 namespace cle::tier8
 {
 
+#if USE_CUDA
+
+auto
+fft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
+{
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+}
+
+auto
+ifft_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & dst) -> Array::Pointer
+{
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+  =
+}
+
+auto
+convolve_fft_func(const Device::Pointer & device,
+                  const Array::Pointer &  src,
+                  const Array::Pointer &  kernel,
+                  Array::Pointer          dst,
+                  bool                    correlate) -> Array::Pointer
+{
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+}
+
+#else // USE_CUDA ═════════════════════════════════════════════════════════════
+
 auto
 fft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
@@ -189,5 +216,7 @@ deconvolve_fft_func(const Device::Pointer & device,
 
   return dst;
 }
+
+#endif // USE_CUDA ═════════════════════════════════════════════════════════════
 
 } // namespace cle::tier8

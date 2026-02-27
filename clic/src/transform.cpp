@@ -89,7 +89,15 @@ apply_affine_transform(const cle::Array::Pointer &  src,
     }
     catch (const std::exception & e)
     {
-      std::cerr << "Warning: Device does not support Image type, interpolation is not available." << std::endl;
+      if (src->device()->getType() == Device::Type::CUDA)
+      {
+        std::cerr << "Warning: Interpolated transform is not implemented with the CUDA backend." << std::endl;
+      }
+      else
+      {
+        std::cerr << "Warning: Device does not support Image type required for interpolation." << std::endl;
+      }
+      std::cerr << "-> We fall back to non-interpolated transform." << std::endl;
     }
   }
 

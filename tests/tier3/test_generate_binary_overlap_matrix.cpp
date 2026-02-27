@@ -1,9 +1,10 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
 
-class TestGenerateTouchMatrix : public ::testing::TestWithParam<std::string>
+class TestGenerateBinaryOverlapMatrix : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<float, 5 * 2 * 2>    input1 = { 1, 1, 0, 0, 0, 1, 1, 0, 3, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 4 };
@@ -12,7 +13,7 @@ protected:
   std::array<uint32_t, 3 * 5 * 1> output;
 };
 
-TEST_P(TestGenerateTouchMatrix, execute)
+TEST_P(TestGenerateBinaryOverlapMatrix, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -32,18 +33,4 @@ TEST_P(TestGenerateTouchMatrix, execute)
     EXPECT_EQ(output[i], valid[i]);
   }
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestGenerateTouchMatrix, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestGenerateBinaryOverlapMatrix, ::testing::ValuesIn(getParameters()));

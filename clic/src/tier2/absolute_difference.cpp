@@ -12,8 +12,8 @@ absolute_difference_func(const Device::Pointer & device, const Array::Pointer & 
   -> Array::Pointer
 {
   tier0::create_like(src0, dst);
-  auto tmp = tier1::add_images_weighted_func(device, src0, src1, nullptr, 1, -1);
-  return tier1::absolute_func(device, tmp, dst);
+  evaluate(device, "fabs(src0 - src1)", { src0, src1 }, dst);
+  return dst;
 }
 
 } // namespace cle::tier2

@@ -1,19 +1,29 @@
 
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <gtest/gtest.h>
 
 class TestDevice : public ::testing::TestWithParam<std::string>
-{};
+{
+protected:
+  std::string backend;
+
+  virtual void
+  SetUp()
+  {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+  }
+};
 
 TEST_P(TestDevice, availableDevices)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
+
   auto devices_all = cle::BackendManager::getInstance().getBackend().getDevices("all");
   auto devices_gpu = cle::BackendManager::getInstance().getBackend().getDevices("gpu");
   auto devices_cpu = cle::BackendManager::getInstance().getBackend().getDevices("cpu");
-  if (param == "cuda")
+  if (backend == "cuda")
   {
     devices_cpu.clear();
   }
@@ -34,8 +44,7 @@ TEST_P(TestDevice, availableDevices)
 
 TEST_P(TestDevice, defaultDevice)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
+
 
   auto list = cle::BackendManager::getInstance().getBackend().getDevicesList("all");
   for (auto && i : list)
@@ -52,17 +61,16 @@ TEST_P(TestDevice, defaultDevice)
 
 TEST_P(TestDevice, type)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
+
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
   // Check that the device type is correct
-  if (param == "opencl")
+  if (backend == "opencl")
   {
     EXPECT_EQ(device->getType(), cle::Device::Type::OPENCL);
   }
-  else if (param == "cuda")
+  else if (backend == "cuda")
   {
     EXPECT_EQ(device->getType(), cle::Device::Type::CUDA);
   }
@@ -74,8 +82,7 @@ TEST_P(TestDevice, type)
 
 TEST_P(TestDevice, name)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
+
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
@@ -85,8 +92,7 @@ TEST_P(TestDevice, name)
 
 TEST_P(TestDevice, index)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
+
   auto device = cle::BackendManager::getInstance().getBackend().getDeviceFromIndex(0, "all");
   device->setWaitToFinish(true);
 
@@ -96,8 +102,7 @@ TEST_P(TestDevice, index)
 
 TEST_P(TestDevice, info)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
+
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
@@ -107,8 +112,7 @@ TEST_P(TestDevice, info)
 
 TEST_P(TestDevice, waitInitFinit)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
+
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
@@ -215,8 +219,7 @@ TEST(TestDevice, cudaGetters)
 
 TEST_P(TestDevice, stringCout)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
+
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
@@ -233,8 +236,7 @@ TEST_P(TestDevice, stringCout)
 
 TEST_P(TestDevice, clInfo)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
+
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
@@ -249,18 +251,4 @@ TEST_P(TestDevice, clInfo)
   // // Check that the output is correct
   // EXPECT_FALSE(output.empty());
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDevice, ::testing::ValuesIn(getParameters()));

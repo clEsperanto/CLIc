@@ -1,11 +1,12 @@
 
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
 #include <random>
 
-class TestDilate : public ::testing::TestWithParam<std::string>
+class TestDilation : public ::testing::TestWithParam<std::string>
 {
 protected:
   std::array<float, 5 * 5 * 1> output;
@@ -19,7 +20,7 @@ protected:
   };
 };
 
-TEST_P(TestDilate, execute)
+TEST_P(TestDilation, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -40,18 +41,4 @@ TEST_P(TestDilate, execute)
     EXPECT_EQ(output[i], valid[i]);
   }
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDilate, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDilation, ::testing::ValuesIn(getParameters()));

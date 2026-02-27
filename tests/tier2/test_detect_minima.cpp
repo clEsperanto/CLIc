@@ -1,11 +1,14 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
 
 class TestDetectMinima : public ::testing::TestWithParam<std::string>
 {
 protected:
+  std::string                     backend;
+  cle::Device::Pointer            device;
   std::array<uint8_t, 10 * 5 * 1> output;
   std::array<uint8_t, 10 * 5 * 1> valid;
   std::array<uint8_t, 10 * 5 * 1> input;
@@ -13,6 +16,10 @@ protected:
   virtual void
   SetUp()
   {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
     std::fill(input.begin(), input.end(), static_cast<uint8_t>(100));
     std::fill(valid.begin(), valid.end(), static_cast<uint8_t>(0));
     const size_t center = (10 / 2) + (5 / 2) * 10;
@@ -28,11 +35,6 @@ protected:
 
 TEST_P(TestDetectMinima, execute)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   auto gpu_input = cle::Array::create(10, 5, 1, 2, cle::dType::UINT8, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
@@ -47,11 +49,6 @@ TEST_P(TestDetectMinima, execute)
 
 TEST_P(TestDetectMinima, boundaries)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
   auto gpu_input = cle::Array::create(5, 5, 1, 2, cle::dType::UINT8, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input_bound.data());
 
@@ -64,18 +61,4 @@ TEST_P(TestDetectMinima, boundaries)
     EXPECT_EQ(output_bound[i], valid_bound[i]);
   }
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDetectMinima, ::testing::ValuesIn(getParameters()));

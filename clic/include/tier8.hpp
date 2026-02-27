@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_TIER8_HPP
-#define __INCLUDE_TIER8_HPP
+#pragma once
 
 #include "tier0.hpp"
 
@@ -125,5 +124,3 @@ deconvolve_fft_func(const Device::Pointer & device,
 
 
 } // namespace cle::tier8
-
-#endif // __INCLUDE_TIER8_HPP

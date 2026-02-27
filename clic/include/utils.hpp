@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_UTILS_HPP
-#define __INCLUDE_UTILS_HPP
+#pragma once
 
 #include <algorithm>
 #include <array>
@@ -85,6 +84,37 @@ toShortString(const dType & dtype) -> std::string
 
   auto it = dtypeToString.find(dtype);
   return it != dtypeToString.end() ? it->second : "?";
+}
+
+/**
+ * @brief Render a template string by replacing {KEY} placeholders with values from a map.
+ * Single-pass O(n) scan, suitable for generating kernel source strings.
+ */
+inline auto
+renderTemplate(const std::string & tmpl, const std::unordered_map<std::string, std::string> & vars) -> std::string
+{
+  std::string result;
+  result.reserve(tmpl.size() * 2);
+  for (std::size_t i = 0; i < tmpl.size();)
+  {
+    if (tmpl[i] == '{')
+    {
+      const auto end = tmpl.find('}', i + 1);
+      if (end != std::string::npos)
+      {
+        const auto key = tmpl.substr(i + 1, end - i - 1);
+        const auto it = vars.find(key);
+        if (it != vars.end())
+        {
+          result += it->second;
+          i = end + 1;
+          continue;
+        }
+      }
+    }
+    result += tmpl[i++];
+  }
+  return result;
 }
 
 /**
@@ -425,5 +455,3 @@ auto inline fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<
 
 
 } // namespace cle
-
-#endif // __INCLUDE_UTILS_HPP

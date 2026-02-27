@@ -22,8 +22,8 @@ The ``cle::BackendManager::getInstance()`` function returns the singleton instan
 We can then call the ``setBackend()`` function to set the backend we want to use.
 Here we use the OpenCL backend. This is the only backend available at the moment.
 
-Once set, the backend will initialize all ressources available on the machine, and make them available to the library.
-Here, by ressources, we mean devices (CPU, GPU, etc.) that are available on the system.
+Once set, the backend will initialize all resources available on the machine, and make them available to the library.
+Here, by resources, we mean devices (CPU, GPU, etc.) that are available on the system.
 If no devices are available, the backend will not be able to initialize and will throw an error.
 
 Now that the backend is initialized, we can access it through the ``getBackend()`` function of the singleton as such:

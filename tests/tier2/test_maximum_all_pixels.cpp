@@ -1,12 +1,15 @@
 
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
 
 class TestMaxAllPixel : public ::testing::TestWithParam<std::string>
 {
 protected:
+  std::string                     backend;
+  cle::Device::Pointer            device;
   const float                     max = 100;
   const float                     min = 42;
   std::array<float, 10 * 20 * 30> input;
@@ -14,6 +17,11 @@ protected:
   virtual void
   SetUp()
   {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
+
     std::fill(input.begin(), input.end(), min);
     const int center = (10 / 2) + (20 / 2) * 10 + (30 / 2) * 10 * 20;
     input[center] = max;
@@ -22,10 +30,6 @@ protected:
 
 TEST_P(TestMaxAllPixel, execute)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   array->writeFrom(input.data());
@@ -34,18 +38,4 @@ TEST_P(TestMaxAllPixel, execute)
 
   EXPECT_EQ(output, max);
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestMaxAllPixel, ::testing::ValuesIn(getParameters()));

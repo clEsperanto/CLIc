@@ -1,89 +1,14 @@
-#ifndef __INCLUDE_DEVICE_HPP
-#define __INCLUDE_DEVICE_HPP
+#pragma once
 
+#include "cache.hpp"
 #include "clic.hpp"
 
 #include <iostream>
-#include <list>
 #include <memory>
 #include <sstream>
-#include <unordered_map>
 
 namespace cle
 {
-
-/**
- * @brief Cache struct for pre-compiled programs and Least Recently Used (LRU) management
- * This structure stores programs pointers in a unordered_map with a maximum size (64), allowing devices
- * to search the cache before compiling a new program. If not found, the new program is added to the cache.
- * The cache uses an LRU list to track usage and evict the least recently used program when the cache is full.
- */
-struct Cache
-{
-  static constexpr size_t MAX_PROGRAM_CACHE_SIZE = 64;
-
-  // Store program and its position in LRU list
-  struct Entry
-  {
-    std::shared_ptr<void>            program;
-    std::list<std::string>::iterator lru_it;
-  };
-
-  std::unordered_map<std::string, Entry> program_cache;
-  std::list<std::string>                 program_lru;
-
-  Cache() { program_cache.reserve(MAX_PROGRAM_CACHE_SIZE); }
-  ~Cache() = default;
-
-  /**
-   * @brief Cache a program with a given key
-   * @param key The key to identify the program
-   * @param program The program pointer to cache
-   */
-  auto
-  cacheProgram(const std::string & key, const std::shared_ptr<void> & program) -> void
-  {
-    auto it = program_cache.find(key);
-    if (it != program_cache.end())
-    {
-      // Move key to back (most recently used)
-      program_lru.erase(it->second.lru_it);
-      program_lru.push_back(key);
-      it->second.lru_it = std::prev(program_lru.end());
-      it->second.program = program;
-      return;
-    }
-    if (program_cache.size() >= MAX_PROGRAM_CACHE_SIZE)
-    {
-      // Remove oldest
-      auto oldest = program_lru.front();
-      program_lru.pop_front();
-      program_cache.erase(oldest);
-    }
-    program_lru.push_back(key);
-    program_cache[key] = { program, std::prev(program_lru.end()) };
-  }
-
-  /**
-   * @brief Retrieve a cached program by key
-   * @param key The key to identify the program
-   * @return The program pointer if found, nullptr otherwise
-   */
-  auto
-  getCachedProgram(const std::string & key) -> std::shared_ptr<void>
-  {
-    auto it = program_cache.find(key);
-    if (it != program_cache.end())
-    {
-      // Move accessed key to back (most recently used)
-      program_lru.erase(it->second.lru_it);
-      program_lru.push_back(key);
-      it->second.lru_it = std::prev(program_lru.end());
-      return it->second.program;
-    }
-    return nullptr;
-  }
-};
 
 /**
  * @brief Device class
@@ -324,7 +249,7 @@ public:
     operator=(CommandQueue && other) noexcept;
   };
 
-  struct Ressources
+  struct Resources
   {
     cl_device_id   device_ptr = nullptr;
     cl_platform_id platform_ptr = nullptr;
@@ -335,16 +260,16 @@ public:
     bool           image_support = false;
     size_t         device_index = 0;
 
-    Ressources(const cl_platform_id & platform, const cl_device_id & device, size_t index);
-    ~Ressources() = default;
+    Resources(const cl_platform_id & platform, const cl_device_id & device, size_t index);
+    ~Resources() = default;
     auto
     get_device() const -> const cl_device_id &;
     auto
     get_platform() const -> const cl_platform_id &;
 
-    Ressources(const Ressources &) = delete;
-    Ressources &
-    operator=(const Ressources &) = delete;
+    Resources(const Resources &) = delete;
+    Resources &
+    operator=(const Resources &) = delete;
   };
 
 
@@ -358,14 +283,14 @@ public:
 
   /**
    * @brief Construct a new Device object
-   * @param ressources
+   * @param resources
    * @param context
    * @param command_queue
    * @param device_index
    * @param nb_device
    * @return OpenCLDevice
    */
-  OpenCLDevice(const std::shared_ptr<Ressources> &   ressources,
+  OpenCLDevice(const std::shared_ptr<Resources> &    resources,
                const std::shared_ptr<Context> &      context,
                const std::shared_ptr<CommandQueue> & command_queue);
 
@@ -533,10 +458,10 @@ public:
   addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void override;
 
 private:
-  std::shared_ptr<Ressources>   clRessources = nullptr;
+  std::shared_ptr<Resources>    clResources = nullptr;
   std::shared_ptr<Context>      clContext = nullptr;
   std::shared_ptr<CommandQueue> clCommandQueue = nullptr;
-  std::shared_ptr<Cache>        cache = std::make_shared<Cache>();
+  std::shared_ptr<ProgramCache> cache = std::make_shared<ProgramCache>();
   bool                          initialized = false;
   bool                          waitFinish = false;
 };
@@ -727,16 +652,14 @@ public:
   addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void override;
 
 private:
-  int              cudaDeviceIndex;
-  CUdevice         cudaDevice;
-  CUcontext        cudaContext;
-  CUstream         cudaStream;
-  shared_ptr<void> cache = std::make_shared<Cache>();
-  bool             initialized = false;
-  bool             waitFinish = false;
+  int                           cudaDeviceIndex;
+  CUdevice                      cudaDevice;
+  CUcontext                     cudaContext;
+  CUstream                      cudaStream;
+  std::shared_ptr<ProgramCache> cache = std::make_shared<ProgramCache>();
+  bool                          initialized = false;
+  bool                          waitFinish = false;
 };
 #endif // USE_CUDA
 
 } // namespace cle
-
-#endif // __INCLUDE_DEVICE_HPP

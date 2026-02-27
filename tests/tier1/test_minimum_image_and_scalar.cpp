@@ -1,9 +1,10 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
 
-class TestMaximumImageAndScalar : public ::testing::TestWithParam<std::string>
+class TestMinimumImageAndScalar : public ::testing::TestWithParam<std::string>
 {
 protected:
   const float                   value = 5;
@@ -28,7 +29,7 @@ protected:
   }
 };
 
-TEST_P(TestMaximumImageAndScalar, execute)
+TEST_P(TestMinimumImageAndScalar, execute)
 {
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
@@ -46,18 +47,4 @@ TEST_P(TestMaximumImageAndScalar, execute)
     EXPECT_EQ(output[i], valid[i]);
   }
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
-INSTANTIATE_TEST_SUITE_P(InstantiationName, TestMaximumImageAndScalar, ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestMinimumImageAndScalar, ::testing::ValuesIn(getParameters()));

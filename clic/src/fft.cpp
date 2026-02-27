@@ -25,63 +25,73 @@
 namespace cle::fft
 {
 
-// auto
-// handle_prime(size_t x, size_t z, std::vector<double> & a, int p) -> void
-// {
-//   double log_p = std::log(p);
-//   int    power = p;
+#if USE_CUDA
 
-//   while (power <= x + z)
-//   {
-//     int j = x % power;
-//     if (j > 0)
-//     {
-//       j = power - j;
-//     }
+Array::Pointer
+create_hermitian(const Array::Pointer & input)
+{
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+}
 
-//     while (j < z)
-//     {
-//       a[j] += log_p;
-//       j += power;
-//     }
+auto
+fft_pad_shape(const std::array<size_t, 3> & image_shape, const std::array<size_t, 3> & kernel_shape) -> std::array<size_t, 3>
+{
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+}
+auto
+execOperationKernel(const Device::Pointer & device,
+                    const std::string       name,
+                    const Array::Pointer &  bufferA,
+                    const Array::Pointer &  bufferB,
+                    Array::Pointer          buffer_out,
+                    const unsigned int      nElements) -> Array::Pointer
+{
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+}
+auto
+execRemoveSmallValues(const Device::Pointer & device, Array::Pointer buffer, const unsigned int nElements) -> void
+{
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+}
+auto
+execTotalVariationTerm(const Device::Pointer & device,
+                       const Array::Pointer &  estimate,
+                       const Array::Pointer &  correction,
+                       Array::Pointer          variation,
+                       float                   hx,
+                       float                   hy,
+                       float                   hz,
+                       float                   regularization_factor) -> void
+{
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+}
+auto
+performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointer
+{
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+}
+auto
+performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
+{
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+}
+auto
+performConvolution(const Array::Pointer & input, const Array::Pointer & psf, const Array::Pointer & output, bool correlate) -> void
+{
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+}
+auto
+performDeconvolution(const Array::Pointer & observe,
+                     const Array::Pointer & psf,
+                     Array::Pointer         normal,
+                     Array::Pointer         estimate,
+                     size_t                 iterations,
+                     float                  regularization) -> Array::Pointer
+{
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+}
 
-//     power *= p;
-//   }
-// }
-
-// auto
-// next_smooth(size_t x) -> size_t
-// {
-//   size_t              z = static_cast<size_t>(10 * std::log2(x));
-//   double              delta = 0.000001;
-//   std::vector<double> a(z, 0.0);
-
-//   constexpr std::array<int, 4> primes = { 2, 3, 5, 7 };
-//   for (int p : primes)
-//   {
-//     handle_prime(x, z, a, p);
-//   }
-
-//   double log_x = std::log(x);
-//   for (size_t i = 0; i < a.size(); ++i)
-//   {
-//     if (a[i] >= log_x - delta)
-//     {
-//       return x + i;
-//     }
-//   }
-//   return std::numeric_limits<size_t>::max();
-// }
-
-
-// auto
-// fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>
-// {
-//   std::array<size_t, 3> result;
-//   std::transform(
-//     shape.begin(), shape.end(), result.begin(), [](size_t value) { return (value > 1) ? next_smooth(value) : 1; });
-//   return result;
-// }
+#else // USE_CUDA ═════════════════════════════════════════════════════════════
 
 
 auto
@@ -138,10 +148,9 @@ get_cache_path(const Array::Pointer & output, const std::shared_ptr<OpenCLDevice
 {
   std::ostringstream hashStream;
   hashStream << output->width() << "," << output->height() << "," << output->depth() << "," << output->dimension();
-  std::hash<std::string> hasher;
-  const auto             source_hash = std::to_string(hasher(hashStream.str()));
-  const auto             device_hash = std::to_string(hasher(ocl_device->getInfo()));
-  return CACHE_FOLDER_PATH / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + ".bin");
+  const auto source_hash = DiskCache::hash(hashStream.str());
+  const auto device_hash = DiskCache::hash(ocl_device->getInfo());
+  return DiskCache::instance().getFilePath(device_hash, source_hash, "bin");
 }
 
 auto
@@ -167,6 +176,7 @@ load_kernel_cache(const std::filesystem::path & binary_path, VkFFTConfiguration 
 auto
 save_kernel_cache(const std::filesystem::path & binary_path, const VkFFTApplication & app) -> void
 {
+  std::filesystem::create_directories(binary_path.parent_path());
   FILE * kernelCache = fopen(binary_path.string().c_str(), "wb");
   fwrite(app.saveApplicationString, app.applicationStringSize, 1, kernelCache);
   fclose(kernelCache);
@@ -207,7 +217,7 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   configuration.commandQueue = &queue;
 
   // manage jit-cache system
-  const auto            use_cache = is_cache_enabled();
+  const auto            use_cache = DiskCache::instance().isEnabled();
   std::filesystem::path binary_path;
   if (use_cache)
   {
@@ -286,7 +296,7 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
   configuration.commandQueue = &queue;
 
   // manage jit-cache system
-  const auto            use_cache = is_cache_enabled();
+  const auto            use_cache = DiskCache::instance().isEnabled();
   std::filesystem::path binary_path;
   if (use_cache)
   {
@@ -517,5 +527,6 @@ execTotalVariationTerm(const Device::Pointer & device,
   native_execute(device, kernel, params, global_range, local_range);
 }
 
+#endif // USE_CUDA ═════════════════════════════════════════════════════════════
 
 } // namespace cle::fft

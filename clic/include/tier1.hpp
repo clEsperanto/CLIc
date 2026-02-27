@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_TIER1_HPP
-#define __INCLUDE_TIER1_HPP
+#pragma once
 
 #include "tier0.hpp"
 
@@ -2762,6 +2761,38 @@ square_root_func(const Device::Pointer & device, const Array::Pointer & src, Arr
 
 
 /**
+ * @name std_x_projection
+ * @brief Determines the standard deviation intensity projection of an image stack along X.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'projection'
+ * @see https://clij.github.io/clij2-docs/reference_standardDeviationXProjection
+ */
+auto
+std_x_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+
+/**
+ * @name std_y_projection
+ * @brief Determines the standard deviation intensity projection of an image stack along Y.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'projection'
+ * @see https://clij.github.io/clij2-docs/reference_standardDeviationYProjection
+ */
+auto
+std_y_projection_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+
+/**
  * @name std_z_projection
  * @brief Determines the standard deviation intensity projection of an image stack along Z.
  *
@@ -3284,5 +3315,3 @@ truncate_func(const Device::Pointer & device, const Array::Pointer & src, Array:
 
 
 } // namespace cle::tier1
-
-#endif // __INCLUDE_TIER1_HPP

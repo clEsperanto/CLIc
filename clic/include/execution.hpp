@@ -1,10 +1,11 @@
-#ifndef __INCLUDE_EXECUTION_HPP
-#define __INCLUDE_EXECUTION_HPP
+#pragma once
 
 #include "array.hpp"
 #include "device.hpp"
+#include "translator.hpp"
 
 #include <array>
+#include <set>
 #include <variant>
 #include <vector>
 
@@ -44,28 +45,7 @@ execute(const Device::Pointer & device,
  * @param dst Destination array
  * @param sigma Sigma value for the kernel
  * @param radius Radius value for the kernel
- */
-auto
-execute_separable(const Device::Pointer &      device,
-                  const KernelInfo &           kernel,
-                  const Array::Pointer &       src,
-                  const Array::Pointer &       dst,
-                  const std::array<float, 3> & sigma,
-                  const std::array<int, 3> &   radius) -> void;
-
-/**
- * @brief Execution function for separable kernel operation (with with extra parameters)
- *
- * This is currently only used for Gaussian derivative kernels.
- * to be fused / generalized with the previous function in future
- *
- * @param device Device pointer
- * @param kernel Kernel function name and code
- * @param src Source array
- * @param dst Destination array
- * @param sigma Sigma value for the kernel
- * @param radius Radius value for the kernel
- * @param orders Orders for the kernel operation
+ * @param orders Orders for the kernel operation (default: {0,0,0})
  */
 auto
 execute_separable(const Device::Pointer &      device,
@@ -74,7 +54,7 @@ execute_separable(const Device::Pointer &      device,
                   const Array::Pointer &       dst,
                   const std::array<float, 3> & sigma,
                   const std::array<int, 3> &   radius,
-                  const std::array<int, 3> &   orders) -> void;
+                  const std::array<int, 3> &   orders = { 0, 0, 0 }) -> void;
 
 /**
  * @brief Execute a kernel using native OpenCL code
@@ -91,6 +71,32 @@ native_execute(const Device::Pointer & device,
                const RangeArray &      global_range = { 1, 1, 1 },
                const RangeArray &      local_range = { 0, 0, 0 }) -> void;
 
-} // namespace cle
 
-#endif // __INCLUDE_EXECUTION_HPP
+/**
+ * @brief Evaluate a mathematical expression element-wise on GPU arrays
+ *
+ * Generates and executes a pure OpenCL/CUDA 1D kernel from the given expression.
+ * Variable names in the expression are automatically mapped by position to the
+ * parameters vector. All values (array elements and scalars) are cast to float
+ * for computation, and the result is cast to the output array's data type.
+ *
+ * The expression uses standard C/OpenCL math syntax. Built-in math functions
+ * (sin, cos, exp, pow, sqrt, fabs, fmin, fmax, etc.) are supported.
+ *
+ * Variable names are extracted from the expression in order of first appearance
+ * and bound to parameters by index:
+ *   evaluate(device, "a + b * s", {img1, img2, 2.5f}, result);
+ *   // a -> img1 (index 0), b -> img2 (index 1), s -> 2.5f (index 2)
+ *
+ * @param device Device pointer
+ * @param expression Mathematical expression string (e.g. "a + b * s")
+ * @param parameters Positional list of input arrays and scalars
+ * @param output Destination array (must be pre-allocated, same size as input arrays)
+ */
+auto
+evaluate(const Device::Pointer &            device,
+         const std::string &                expression,
+         const std::vector<ParameterType> & parameters,
+         const Array::Pointer &             output) -> void;
+
+} // namespace cle

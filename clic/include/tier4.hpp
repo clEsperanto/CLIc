@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_TIER4_HPP
-#define __INCLUDE_TIER4_HPP
+#pragma once
 
 #include "tier0.hpp"
 
@@ -648,5 +647,3 @@ auto
 standard_deviation_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
 
 } // namespace cle::tier4
-
-#endif // __INCLUDE_TIER4_HPP

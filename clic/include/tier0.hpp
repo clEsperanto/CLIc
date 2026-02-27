@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_TIER0_HPP
-#define __INCLUDE_TIER0_HPP
+#pragma once
 
 #include "array.hpp"
 #include "device.hpp"
@@ -110,5 +109,3 @@ create_zx(const Array::Pointer & src, Array::Pointer & dst, dType type = dType::
 
 
 } // namespace cle::tier0
-
-#endif // __INCLUDE_TIER0_HPP

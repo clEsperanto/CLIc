@@ -1,12 +1,15 @@
 
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
 
 class TestMinMaskPixel : public ::testing::TestWithParam<std::string>
 {
 protected:
+  std::string                  backend;
+  cle::Device::Pointer         device;
   std::array<float, 5 * 3 * 2> input;
   std::array<float, 5 * 3 * 2> mask;
   float                        valid = 3;
@@ -14,6 +17,11 @@ protected:
   virtual void
   SetUp()
   {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
+
     for (size_t i = 0; i < input.size(); i++)
     {
       input[i] = 100;
@@ -25,10 +33,6 @@ protected:
 
 TEST_P(TestMinMaskPixel, execute)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   auto gpu_mask = cle::Array::create(gpu_input);
@@ -39,18 +43,4 @@ TEST_P(TestMinMaskPixel, execute)
 
   EXPECT_EQ(output, valid);
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestMinMaskPixel, ::testing::ValuesIn(getParameters()));

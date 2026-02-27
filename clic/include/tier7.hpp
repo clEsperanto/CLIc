@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_TIER7_HPP
-#define __INCLUDE_TIER7_HPP
+#pragma once
 
 #include "tier0.hpp"
 
@@ -317,5 +316,3 @@ voronoi_otsu_labeling_func(const Device::Pointer & device,
 
 
 } // namespace cle::tier7
-
-#endif // __INCLUDE_TIER7_HPP

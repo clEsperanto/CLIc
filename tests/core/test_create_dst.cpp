@@ -1,21 +1,29 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
 
 class TestCreate : public ::testing::TestWithParam<std::string>
 {
 protected:
-  cle::Array::Pointer output;
-  cle::Array::Pointer input;
+  cle::Array::Pointer  output;
+  cle::Array::Pointer  input;
+  std::string          backend;
+  cle::Device::Pointer device;
+
+  virtual void
+  SetUp()
+  {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
+  }
 };
 
 TEST_P(TestCreate, notNullPtr)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   input = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   output = cle::Array::create(3, 5, 10, 3, cle::dType::UINT16, cle::mType::BUFFER, device);
@@ -123,10 +131,6 @@ TEST_P(TestCreate, notNullPtr)
 
 TEST_P(TestCreate, create_dst)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   input = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   cle::tier0::create_dst(input, output, 2, 3, 4, cle::dType::UINT8);
@@ -156,10 +160,6 @@ TEST_P(TestCreate, create_dst)
 
 TEST_P(TestCreate, create_like)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   input = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   cle::tier0::create_like(input, output, cle::dType::UINT8);
@@ -188,10 +188,6 @@ TEST_P(TestCreate, create_like)
 
 TEST_P(TestCreate, create_one)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   input = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   cle::tier0::create_one(input, output, cle::dType::UINT8);
@@ -220,10 +216,6 @@ TEST_P(TestCreate, create_one)
 
 TEST_P(TestCreate, create_vector)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   input = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   cle::tier0::create_vector(input, output, 10, cle::dType::UINT8);
@@ -252,10 +244,6 @@ TEST_P(TestCreate, create_vector)
 
 TEST_P(TestCreate, create_xy)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   input = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   cle::tier0::create_xy(input, output, cle::dType::UINT8);
@@ -284,10 +272,6 @@ TEST_P(TestCreate, create_xy)
 
 TEST_P(TestCreate, create_yx)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   input = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   cle::tier0::create_yx(input, output, cle::dType::UINT8);
@@ -316,10 +300,6 @@ TEST_P(TestCreate, create_yx)
 
 TEST_P(TestCreate, create_zy)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   input = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   cle::tier0::create_zy(input, output, cle::dType::UINT8);
@@ -348,10 +328,6 @@ TEST_P(TestCreate, create_zy)
 
 TEST_P(TestCreate, create_yz)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   input = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   cle::tier0::create_yz(input, output, cle::dType::UINT8);
@@ -380,10 +356,6 @@ TEST_P(TestCreate, create_yz)
 
 TEST_P(TestCreate, create_xz)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   input = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   cle::tier0::create_xz(input, output, cle::dType::UINT8);
@@ -411,10 +383,6 @@ TEST_P(TestCreate, create_xz)
 
 TEST_P(TestCreate, create_zx)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   input = cle::Array::create(10, 5, 3, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   cle::tier0::create_zx(input, output, cle::dType::UINT8);
@@ -440,18 +408,4 @@ TEST_P(TestCreate, create_zx)
   EXPECT_EQ(output->itemSize(), input->itemSize());
   EXPECT_EQ(output->dtype(), input->dtype());
 }
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestCreate, ::testing::ValuesIn(getParameters()));

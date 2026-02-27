@@ -12,8 +12,8 @@ squared_difference_func(const Device::Pointer & device, const Array::Pointer & s
   -> Array::Pointer
 {
   tier0::create_like(src0, dst, dType::FLOAT);
-  auto tmp = tier1::add_images_weighted_func(device, src0, src1, nullptr, 1, -1);
-  return tier1::power_func(device, tmp, dst, 2);
+  evaluate(device, "pow(src0 - src1, 2)", { src0, src1 }, dst);
+  return dst;
 }
 
 } // namespace cle::tier2

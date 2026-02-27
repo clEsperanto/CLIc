@@ -1,5 +1,4 @@
-#ifndef __INCLUDE_BACKEND_HPP
-#define __INCLUDE_BACKEND_HPP
+#pragma once
 
 #include "cache.hpp"
 #include "clic.hpp"
@@ -566,7 +565,7 @@ public:
   operator=(OpenCLBackend &&) -> OpenCLBackend & = default;
 
   auto
-  initialiseRessources() -> void;
+  initialiseResources() -> void;
 
   [[nodiscard]] auto
   getDevices(const std::string & type) const -> std::vector<Device::Pointer> override;
@@ -832,5 +831,3 @@ private:
 };
 
 } // namespace cle
-
-#endif // __INCLUDE_BACKEND_HPP

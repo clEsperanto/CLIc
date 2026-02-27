@@ -1,15 +1,34 @@
 #include "cle.hpp"
 
+#include "test_utils.hpp"
 #include <array>
 #include <gtest/gtest.h>
 
 
 class TestDeskew : public ::testing::TestWithParam<std::string>
-{};
+{
+protected:
+  std::string          backend;
+  cle::Device::Pointer device;
+
+  virtual void
+  SetUp()
+  {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
+  }
+};
 
 TEST_P(TestDeskew, deskew_y)
 {
-  GTEST_SKIP();
+
+  GTEST_SKIP() << "POCL does not reliably support image interpolation for deskew operations.";
+  if (!device->supportImage())
+  {
+    GTEST_SKIP() << "Device does not support image objects.";
+  }
 
   auto coord_to_index = [](size_t x, size_t y, size_t z, size_t width, size_t height) -> size_t {
     return z * height * width + y * width + x;
@@ -24,11 +43,6 @@ TEST_P(TestDeskew, deskew_y)
   valid[idx] = 0.169872939f;
 
   std::array<float, 10 * 19 * 5> output;
-
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   cle::Array::Pointer gpu_input = nullptr;
   try
@@ -48,19 +62,4 @@ TEST_P(TestDeskew, deskew_y)
     EXPECT_NEAR(output[i], valid[i], 0.00001);
   }
 }
-
-
-std::vector<std::string>
-getParameters()
-{
-  std::vector<std::string> parameters;
-#if USE_OPENCL
-  parameters.push_back("opencl");
-#endif
-#if USE_CUDA
-  parameters.push_back("cuda");
-#endif
-  return parameters;
-}
-
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDeskew, ::testing::ValuesIn(getParameters()));
