@@ -61,11 +61,11 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
 {
   tier0::create_like(src, dst);
 
-  if (src->dtype() == dst->dtype())
-  {
-    src->copyTo(dst);
-    return dst;
-  }
+  // if (src->dtype() == dst->dtype())
+  // {
+  //   src->copyTo(dst);
+  //   return dst;
+  // }
 
   auto input_type = toString(src->dtype());
   auto output_type = toString(dst->dtype());
