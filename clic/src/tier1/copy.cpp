@@ -31,20 +31,11 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
     const std::string src_type = toString(src->dtype());
     const std::string dst_type = toString(dst->dtype());
     const std::string addr = is_opencl ? "__global " : "";
-    const std::string kw = is_opencl ? "__kernel" : "extern \"C\" __global__";
-    const std::string gid = is_opencl ? "get_global_id(0)" : "blockDim.x * blockIdx.x + threadIdx.x";
 
-    const std::string kernel_source = kw + " void copy_" + src_type + "_to_" + dst_type + "(" + addr + "const " + src_type + "* src, " +
-                                      addr + dst_type +
-                                      "* dst, const int size) {\n"
-                                      "  const int idx = " +
-                                      gid +
-                                      ";\n"
-                                      "  if (idx < size) { dst[idx] = (" +
-                                      dst_type +
-                                      ")src[idx]; }\n"
-                                      "}\n";
-    const std::string kernel_name = "copy_" + src_type + "_to_" + dst_type;
+    const std::string kernel_source = "__kernel void copy_cast( __global const " + src_type + "* src,  __global " + dst_type + "* dst, const int size) {\n" +
+                                      "  const int idx = get_global_id(0);\n" +
+                                      "  if (idx < size) { dst[idx] = (" + dst_type + ")src[idx]; }\n}\n";
+    const std::string kernel_name = "copy_cast";
 
     const int        total_size = static_cast<int>(src->size());
     const size_t     max_local = device->getMaximumWorkGroupSize();
