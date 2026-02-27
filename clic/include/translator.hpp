@@ -24,6 +24,9 @@
 ///   - Complex image read/write may need manual intervention
 ///   - Nested vector constructor braces may confuse brace matching
 ///   - OpenCL 2.0+ features (pipes, SVM, work_group_*) are not handled
+///
+/// ToDo:
+///   - Add support for convert_<type>_sat functions
 class OpenCLToCUDATranslator
 {
 public:
