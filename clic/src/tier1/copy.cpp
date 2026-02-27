@@ -27,10 +27,11 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
     const std::string src_type = toString(src->dtype());
     const std::string dst_type = toString(dst->dtype());
 
-    // _sat suffix is only valid for conversions to integer types
     const std::string convert_suffix = (dst->dtype() == dType::FLOAT) ? "" : "_sat";
+    const std::string kernel_name = "copy_cast_" + src_type + "_to_" + dst_type;
+
     const std::string kernel_source =
-      "__kernel void copy_cast("
+      "__kernel void " + kernel_name + "("
       "  __global const " + src_type + "* src,"
       "  __global "       + dst_type + "* dst,"
       "  const unsigned long size"
@@ -45,7 +46,7 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
     const RangeArray global_range = { global_padded, 1, 1 };
     const RangeArray local_range = { max_local, 1, 1 };
 
-    const KernelInfo    kernel = { "copy_cast", kernel_source };
+    const KernelInfo    kernel = { kernel_name, kernel_source };
     const ParameterList params = { { "src", src }, { "dst", dst }, { "size", total_size } };
     native_execute(device, kernel, params, global_range, local_range);
   }
