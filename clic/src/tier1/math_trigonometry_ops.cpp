@@ -9,47 +9,34 @@ namespace cle::tier1
 namespace
 {
 
-// Native 1D kernel template.
-constexpr const char * kernel_template = R"SRC(
-{KW} void math_trigo(
-  {ADDR}const {SRC_T}* src,
-  {ADDR}{DST_T}*       dst,
-  const int            size
-) {
-  const int idx = {GID};
-  if (idx >= size) return;
-  const float x = (float)src[idx];
-  dst[idx] = ({DST_T})({OP});
-}
-)SRC";
+const char * kernel_source = R"CLC(
+__constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
+
+__kernel void math_trigo(
+    IMAGE_src_TYPE  src,
+    IMAGE_dst_TYPE  dst
+) 
+{
+  const int x = get_global_id(0);
+  const int y = get_global_id(1);
+  const int z = get_global_id(2);
+
+  const IMAGE_src_PIXEL_TYPE value = READ_IMAGE(src, sampler, POS_src_INSTANCE(x,y,z,0)).x;
+  float res = OP(value);
+  WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(res));
+})CLC";
+
 
 auto
 apply_trigonometric_op(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, const std::string & op_expr)
   -> Array::Pointer
 {
   tier0::create_like(src, dst);
-
-  const bool        is_opencl = (device->getType() == Device::Type::OPENCL);
-  const std::string src_type = toString(src->dtype());
-  const std::string dst_type = toString(dst->dtype());
-
-  const std::string source = renderTemplate(kernel_template,
-                                            { { "KW", is_opencl ? "__kernel" : "extern \"C\" __global__" },
-                                              { "ADDR", is_opencl ? "__global " : "" },
-                                              { "SRC_T", src_type },
-                                              { "DST_T", dst_type },
-                                              { "GID", is_opencl ? "get_global_id(0)" : "blockDim.x * blockIdx.x + threadIdx.x" },
-                                              { "OP", op_expr } });
-
-  const int        total_size = static_cast<int>(src->size());
-  const size_t     max_local = device->getMaximumWorkGroupSize();
-  const size_t     global_padded = ((total_size + max_local - 1) / max_local) * max_local;
-  const RangeArray global_range = { global_padded, 1, 1 };
-  const RangeArray local_range = { max_local, 1, 1 };
-
-  const KernelInfo    kernel = { "math_trigo", source };
-  const ParameterList params = { { "src", src }, { "dst", dst }, { "size", total_size } };
-  native_execute(device, kernel, params, global_range, local_range);
+  const RangeArray    global_range = { dst->width(), dst->height(), dst->depth() };
+  const KernelInfo    kernel = { "math_trigo", kernel_source };
+  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const ConstantList  constants = { { "OP(x)", op_expr } };
+  execute(device, kernel, params, global_range, {0,0,0}, constants);
   return dst;
 }
 
