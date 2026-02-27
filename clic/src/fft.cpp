@@ -30,13 +30,13 @@ namespace cle::fft
 Array::Pointer
 create_hermitian(const Array::Pointer & input)
 {
-    throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
 }
 
 auto
 fft_pad_shape(const std::array<size_t, 3> & image_shape, const std::array<size_t, 3> & kernel_shape) -> std::array<size_t, 3>
 {
-    throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
 }
 auto
 execOperationKernel(const Device::Pointer & device,
@@ -46,12 +46,12 @@ execOperationKernel(const Device::Pointer & device,
                     Array::Pointer          buffer_out,
                     const unsigned int      nElements) -> Array::Pointer
 {
-    throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
 }
 auto
 execRemoveSmallValues(const Device::Pointer & device, Array::Pointer buffer, const unsigned int nElements) -> void
 {
-    throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
 }
 auto
 execTotalVariationTerm(const Device::Pointer & device,
@@ -63,22 +63,22 @@ execTotalVariationTerm(const Device::Pointer & device,
                        float                   hz,
                        float                   regularization_factor) -> void
 {
-    throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
 }
 auto
 performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointer
 {
-    throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
 }
 auto
 performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
 {
-    throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
 }
 auto
 performConvolution(const Array::Pointer & input, const Array::Pointer & psf, const Array::Pointer & output, bool correlate) -> void
 {
-    throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
 }
 auto
 performDeconvolution(const Array::Pointer & observe,
@@ -88,7 +88,7 @@ performDeconvolution(const Array::Pointer & observe,
                      size_t                 iterations,
                      float                  regularization) -> Array::Pointer
 {
-    throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
 }
 
 #else // USE_CUDA ═════════════════════════════════════════════════════════════

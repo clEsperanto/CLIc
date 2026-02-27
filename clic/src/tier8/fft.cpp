@@ -28,7 +28,8 @@ fft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poin
 auto
 ifft_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & dst) -> Array::Pointer
 {
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");=
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+  =
 }
 
 auto
@@ -38,7 +39,7 @@ convolve_fft_func(const Device::Pointer & device,
                   Array::Pointer          dst,
                   bool                    correlate) -> Array::Pointer
 {
-    throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
+  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
 }
 
 #else // USE_CUDA ═════════════════════════════════════════════════════════════
