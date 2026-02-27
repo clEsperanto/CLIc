@@ -63,12 +63,9 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
   auto input_type = toString(src->dtype());
   auto output_type = toString(dst->dtype());
   auto convert = (dst->dtype() == dType::FLOAT) ? "convert_float" : "convert_" + output_type + "_sat";
-  auto kernel_name = "copy_" + input_type + "_to_" + output_type;
+  auto kernel_name = "copy";
 
-  std::string kernel_source = "__kernel void " + kernel_name + "(__global const " + input_type + "* restrict src, __global " + output_type + "* restrict dst, const uint n) { const uint gid = get_global_id(0); if (gid < n) dst[gid] = " + convert + "(src[gid]); }";
-
-  // save kernel as kernel.txt for debugging
-  // saveFile("kernel.txt", kernel_source);
+  std::string kernel_source = "__kernel void copy(__global const " + input_type + "* restrict src, __global " + output_type + "* restrict dst, const uint n) { const uint gid = get_global_id(0); if (gid < n) dst[gid] = " + convert + "(src[gid]); }";
 
   const KernelInfo    kernel_info = { kernel_name, kernel_source };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "n", static_cast<unsigned int>(dst->size()) } };
