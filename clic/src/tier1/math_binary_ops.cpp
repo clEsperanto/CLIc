@@ -15,6 +15,11 @@ constexpr const char * kernel_source = R"CLC(
   __constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE |
                                 CLK_ADDRESS_CLAMP_TO_EDGE |
                                 CLK_FILTER_NEAREST;
+  #if DST_IS_INT
+  #define FINALIZE(x) rint(x)
+  #else
+  #define FINALIZE(x) (x)
+  #endif
 
   __kernel void cle_binary_operation(
       IMAGE_src_TYPE src,
@@ -29,7 +34,7 @@ constexpr const char * kernel_source = R"CLC(
     const float value = (float) READ_IMAGE(src, sampler, POS_src_INSTANCE(x,y,z,0)).x;
     const float res = APPLY_OP(value, scalar);
 
-    WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(res));
+    WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(FINALIZE(res)));
   })CLC";
 
 auto
@@ -40,10 +45,11 @@ apply_binary_math_operation(const Device::Pointer & device,
                             const std::string &     op_define) -> Array::Pointer
 {
   tier0::create_like(src, dst);
+  std::string dst_is_int = (dst->dtype() == dType::FLOAT) ? "0" : "1";
   const KernelInfo    kernel_info = { "cle_binary_operation", kernel_source };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "scalar", scalar } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
-  const ConstantList  constants = { { "APPLY_OP(x, y)", op_define } };
+  const ConstantList  constants = { { "APPLY_OP(x, y)", op_define }, { "DST_IS_INT", dst_is_int } };
   execute(device, kernel_info, params, range, { 0, 0, 0 }, constants);
   return dst;
 }
