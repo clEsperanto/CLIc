@@ -680,14 +680,12 @@ evaluate(const Device::Pointer &            device,
     throw std::invalid_argument("Error: at least one Array parameter is required in evaluate().");
   }
 
-  const bool        is_opencl = (device->getType() == Device::Type::OPENCL);
-  const std::string addr_qualifier = is_opencl ? "__global " : "";
-  const std::string kernel_keyword = is_opencl ? "__kernel" : "extern \"C\" __global__";
+  const std::string addr_qualifier = "__global ";
+  const std::string kernel_keyword = "__kernel";
   const size_t      total_size = output->size();
 
   // --- Generate pure OpenCL/CUDA 1D kernel source ---
   std::ostringstream ks;
-
   ks << kernel_keyword << " void evaluate_kernel(\n";
 
   // Input array parameters (typed by their actual dtype)
@@ -698,37 +696,24 @@ evaluate(const Device::Pointer &            device,
 
   // Output array parameter
   ks << "    " << addr_qualifier << toString(output->dtype()) << "* _arr_output,\n";
-
   // Scalar parameters (all passed as float)
   for (const auto & s : scalars)
   {
     ks << "    const float " << s.name << ",\n";
   }
-
   // Total number of elements
   ks << "    const int _size\n";
   ks << ") {\n";
-
   // 1D thread index
-  if (is_opencl)
-  {
-    ks << "    const int idx = get_global_id(0);\n";
-  }
-  else
-  {
-    ks << "    const int idx = blockDim.x * blockIdx.x + threadIdx.x;\n";
-  }
-
+  ks << "    const int idx = get_global_id(0);\n";
   // Bounds check
   ks << "    if (idx >= _size) return;\n\n";
-
   // Read each input array element and cast to float
   for (const auto & a : arrays)
   {
     ks << "    const float " << a.name << " = (float)_arr_" << a.name << "[idx];\n";
   }
   ks << "\n";
-
   // Evaluate expression (all in float) and cast result to output dtype
   ks << "    _arr_output[idx] = (" << toString(output->dtype()) << ")(" << float_expression << ");\n";
   ks << "}\n";
