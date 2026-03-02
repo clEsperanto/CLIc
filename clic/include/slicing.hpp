@@ -90,8 +90,8 @@ struct Slice
         idx += len;
       if (idx < 0 || idx >= len)
       {
-        throw std::out_of_range("Slice index " + std::to_string(start.value()) +
-                                " is out of range for axis of length " + std::to_string(len));
+        throw std::out_of_range("Slice index " + std::to_string(start.value()) + " is out of range for axis of length " +
+                                std::to_string(len));
       }
       return { idx, idx + 1, 1 };
     }
@@ -206,8 +206,8 @@ S_(std::optional<int> start, std::optional<int> stop, int step) -> Slice
 /** @brief Internal helper: fully resolved slice for one axis. All values are plain ints. */
 struct ResolvedSlice
 {
-  int    start;    // absolute start index (can be -1 only as neg-step sentinel)
-  int    stop;     // absolute stop index  (exclusive; can be -1 for neg-step)
+  int    start; // absolute start index (can be -1 only as neg-step sentinel)
+  int    stop;  // absolute stop index  (exclusive; can be -1 for neg-step)
   int    step;
   size_t length;   // number of output elements
   bool   is_index; // if true, this axis is collapsed in the output
@@ -220,18 +220,17 @@ auto
 slice(const Array::Pointer & src, const std::vector<Slice> & slices) -> Array::Pointer;
 
 auto
-slice(const Array::Pointer & src,
-      const Slice & x_slice = Slice(),
-      const Slice & y_slice = Slice(),
-      const Slice & z_slice = Slice()) -> Array::Pointer;
+slice(const Array::Pointer & src, const Slice & x_slice = Slice(), const Slice & y_slice = Slice(), const Slice & z_slice = Slice())
+  -> Array::Pointer;
 
 auto
 paste(const Array::Pointer & src, const Array::Pointer & dst, const std::vector<Slice> & slices) -> void;
 
 auto
-paste(const Array::Pointer & src, const Array::Pointer & dst,
-      const Slice & x_slice = Slice(),
-      const Slice & y_slice = Slice(),
-      const Slice & z_slice = Slice()) -> void;
+paste(const Array::Pointer & src,
+      const Array::Pointer & dst,
+      const Slice &          x_slice = Slice(),
+      const Slice &          y_slice = Slice(),
+      const Slice &          z_slice = Slice()) -> void;
 
 } // namespace cle
