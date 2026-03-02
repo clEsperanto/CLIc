@@ -21,7 +21,7 @@ __kernel void math_unary(
   const int y = get_global_id(1);
   const int z = get_global_id(2);
 
-  const IMAGE_src_PIXEL_TYPE value = READ_IMAGE(src, sampler, POS_src_INSTANCE(x,y,z,0)).x;
+  const float value = (float) READ_IMAGE(src, sampler, POS_src_INSTANCE(x,y,z,0)).x;
   float res = OP(value);
   WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(res));
 })CLC";
