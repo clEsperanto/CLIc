@@ -163,11 +163,9 @@ output_shape(const std::array<ResolvedSlice, 3> & resolved) -> std::array<size_t
 static auto
 slice_contiguous(const Array::Pointer & src, const std::array<ResolvedSlice, 3> & resolved) -> Array::Pointer
 {
-  const std::array<size_t, 3> src_origin = {
-    static_cast<size_t>(resolved[0].start),
-    static_cast<size_t>(resolved[1].start),
-    static_cast<size_t>(resolved[2].start)
-  };
+  const std::array<size_t, 3> src_origin = { static_cast<size_t>(resolved[0].start),
+                                             static_cast<size_t>(resolved[1].start),
+                                             static_cast<size_t>(resolved[2].start) };
   const std::array<size_t, 3> region = { resolved[0].length, resolved[1].length, resolved[2].length };
 
   const auto [out_w, out_h, out_d] = output_shape(resolved);
@@ -205,11 +203,11 @@ slice_strided(const Array::Pointer & src, const std::array<ResolvedSlice, 3> & r
   parameters.push_back({ "dst_h", static_cast<int>(out_h) });
   parameters.push_back({ "dst_d", static_cast<int>(out_d) });
   parameters.push_back({ "x_start", resolved[0].start });
-  parameters.push_back({ "x_step",  resolved[0].step });
+  parameters.push_back({ "x_step", resolved[0].step });
   parameters.push_back({ "y_start", resolved[1].start });
-  parameters.push_back({ "y_step",  resolved[1].step });
+  parameters.push_back({ "y_step", resolved[1].step });
   parameters.push_back({ "z_start", resolved[2].start });
-  parameters.push_back({ "z_step",  resolved[2].step });
+  parameters.push_back({ "z_step", resolved[2].step });
 
   KernelInfo kernel_info = { "slice_strided_kernel", kernel_code.c_str() };
   RangeArray global_range = { out_w, out_h, out_d };
@@ -269,11 +267,9 @@ validate_paste_shape(const Array::Pointer & src, const std::array<ResolvedSlice,
 
   if (src->width() != exp_w || src->height() != exp_h || src->depth() != exp_d)
   {
-    throw std::invalid_argument(
-      "paste(): source shape (" + std::to_string(src->width()) + ", " +
-      std::to_string(src->height()) + ", " + std::to_string(src->depth()) +
-      ") does not match the target region (" + std::to_string(exp_w) + ", " +
-      std::to_string(exp_h) + ", " + std::to_string(exp_d) + ").");
+    throw std::invalid_argument("paste(): source shape (" + std::to_string(src->width()) + ", " + std::to_string(src->height()) + ", " +
+                                std::to_string(src->depth()) + ") does not match the target region (" + std::to_string(exp_w) + ", " +
+                                std::to_string(exp_h) + ", " + std::to_string(exp_d) + ").");
   }
 }
 
@@ -285,11 +281,9 @@ paste_contiguous(const Array::Pointer & src, const Array::Pointer & dst, const s
 {
   const std::array<size_t, 3> region = { resolved[0].length, resolved[1].length, resolved[2].length };
   const std::array<size_t, 3> src_origin = { 0, 0, 0 };
-  const std::array<size_t, 3> dst_origin = {
-    static_cast<size_t>(resolved[0].start),
-    static_cast<size_t>(resolved[1].start),
-    static_cast<size_t>(resolved[2].start)
-  };
+  const std::array<size_t, 3> dst_origin = { static_cast<size_t>(resolved[0].start),
+                                             static_cast<size_t>(resolved[1].start),
+                                             static_cast<size_t>(resolved[2].start) };
 
   src->copyTo(dst, region, src_origin, dst_origin);
 }
@@ -316,11 +310,11 @@ paste_strided(const Array::Pointer & src, const Array::Pointer & dst, const std:
   parameters.push_back({ "dst_h", static_cast<int>(dst->height()) });
   parameters.push_back({ "dst_d", static_cast<int>(dst->depth()) });
   parameters.push_back({ "x_start", resolved[0].start });
-  parameters.push_back({ "x_step",  resolved[0].step });
+  parameters.push_back({ "x_step", resolved[0].step });
   parameters.push_back({ "y_start", resolved[1].start });
-  parameters.push_back({ "y_step",  resolved[1].step });
+  parameters.push_back({ "y_step", resolved[1].step });
   parameters.push_back({ "z_start", resolved[2].start });
-  parameters.push_back({ "z_step",  resolved[2].step });
+  parameters.push_back({ "z_step", resolved[2].step });
 
   KernelInfo kernel_info = { "paste_strided_kernel", kernel_code.c_str() };
   RangeArray global_range = { src_w, src_h, src_d };
@@ -347,9 +341,8 @@ paste(const Array::Pointer & src, const Array::Pointer & dst, const std::vector<
   }
   if (src->dtype() != dst->dtype())
   {
-    throw std::invalid_argument(
-      "paste(): source and destination must have the same dtype (" +
-      toString(src->dtype()) + " vs " + toString(dst->dtype()) + ").");
+    throw std::invalid_argument("paste(): source and destination must have the same dtype (" + toString(src->dtype()) + " vs " +
+                                toString(dst->dtype()) + ").");
   }
 
   auto resolved = resolve_slices(dst, slices);
@@ -375,8 +368,7 @@ paste(const Array::Pointer & src, const Array::Pointer & dst, const std::vector<
 }
 
 auto
-paste(const Array::Pointer & src, const Array::Pointer & dst,
-      const Slice & x_slice, const Slice & y_slice, const Slice & z_slice) -> void
+paste(const Array::Pointer & src, const Array::Pointer & dst, const Slice & x_slice, const Slice & y_slice, const Slice & z_slice) -> void
 {
   paste(src, dst, std::vector<Slice>{ x_slice, y_slice, z_slice });
 }
