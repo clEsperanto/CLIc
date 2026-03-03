@@ -28,10 +28,10 @@ remove_labels_on_edges_func(const Device::Pointer & device,
   auto execute_if_needed = [&](bool exclude, int dimension, int axis) {
     if (exclude && dimension > 1)
     {
-      const KernelInfo kernel = { "exclude_on_edges", kernel::exclude_on_edges };
-      const RangeArray range = { (dimension == 0) ? 1 : src->width(),
-                                 (dimension == 1) ? 1 : src->height(),
-                                 (dimension == 2) ? 1 : src->depth() };
+      const KernelInfo   kernel = { "exclude_on_edges", kernel::exclude_on_edges };
+      const RangeArray   range = { (dimension == 0) ? 1 : src->width(),
+                                   (dimension == 1) ? 1 : src->height(),
+                                   (dimension == 2) ? 1 : src->depth() };
       const RangeArray   local = { 1, 1, 1 };
       const ConstantList constants = { { "EXCLUDE_AXIS", axis } }; // 0 for X axis, 1 for Y axis, 2 for Z axis
       execute(device, kernel, params, range, local, constants);
