@@ -404,6 +404,7 @@ extractVariableNames(const std::string & expr) -> std::vector<std::string>
     "log2",
     "log10",
     "pow",
+    "power",
     "pown",
     "powr",
     "sqrt",
@@ -565,6 +566,7 @@ promoteBuiltinsToFloat(const std::string & expr) -> std::string
     { "abs", "fabs" },
     { "min", "fmin" },
     { "max", "fmax" },
+    { "power", "pow" },
   };
 
   std::string result = expr;

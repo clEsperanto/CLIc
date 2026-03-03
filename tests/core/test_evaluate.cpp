@@ -189,4 +189,23 @@ TEST_P(TestEvaluate, multipleScalars)
     EXPECT_FLOAT_EQ(result[i], 13.0f);
   }
 }
+TEST_P(TestEvaluate, powerAlias)
+{
+
+
+  auto a = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto out = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, device);
+
+  a->fill(3.0f);
+
+  // power(a, 2) => 3^2 = 9
+  cle::evaluate(device, "power(a, 2)", { a }, out);
+
+  std::vector<float> result(10);
+  out->readTo(result.data());
+  for (int i = 0; i < 10; i++)
+  {
+    EXPECT_FLOAT_EQ(result[i], 9.0f);
+  }
+}
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestEvaluate, ::testing::ValuesIn(getParameters()));
