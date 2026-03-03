@@ -17,13 +17,13 @@ namespace cle::tier1
 
 namespace kernel
 {
-  const char * copy = R"CLC(
+const char * copy = R"CLC(
 __constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
 
 __kernel void copy(
     IMAGE_src_TYPE  src,
     IMAGE_dst_TYPE  dst
-) 
+)
 {
   const int x = get_global_id(0);
   const int y = get_global_id(1);
@@ -55,7 +55,7 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
     const ParameterList params = { { "src", src }, { "dst", dst } };
     const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
     execute(device, kernel, params, range);
-    return dst;    
+    return dst;
   }
 
   // use basic copy kernel for the rest
@@ -65,22 +65,22 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
   auto convert = (dst->dtype() == dType::FLOAT) ? "convert_float" : "convert_" + output_type + "_sat";
   auto kernel_name = "copy";
 
-  std::string kernel_source = "__kernel void copy(__global const " + input_type + "* restrict src, __global " + output_type + "* restrict dst, const uint n) { const uint gid = get_global_id(0); if (gid < n) dst[gid] = " + convert + "(src[gid]); }";
+  std::string kernel_source = "__kernel void copy(__global const " + input_type + "* restrict src, __global " + output_type +
+                              "* restrict dst, const uint n) { const uint gid = get_global_id(0); if (gid < n) dst[gid] = " + convert +
+                              "(src[gid]); }";
 
   const KernelInfo    kernel_info = { kernel_name, kernel_source };
   const ParameterList params = { { "src", src }, { "dst", dst }, { "n", static_cast<unsigned int>(dst->size()) } };
-  
+
   const size_t LOCAL_ITEM_SIZE = std::min(256, static_cast<int>(device->getMaximumWorkGroupSize()));
   size_t       globalItemSize =
     static_cast<size_t>(ceil(static_cast<double>(dst->size()) / static_cast<double>(LOCAL_ITEM_SIZE)) * LOCAL_ITEM_SIZE);
-  const RangeArray    global_range = { globalItemSize, 1, 1 };
-  const RangeArray    local_range = { LOCAL_ITEM_SIZE, 1, 1 };
+  const RangeArray global_range = { globalItemSize, 1, 1 };
+  const RangeArray local_range = { LOCAL_ITEM_SIZE, 1, 1 };
 
   native_execute(device, kernel_info, params, global_range, local_range);
   return dst;
 }
-
-
 
 
 } // namespace cle::tier1

@@ -15,7 +15,7 @@ __constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_T
 __kernel void math_unary(
     IMAGE_src_TYPE  src,
     IMAGE_dst_TYPE  dst
-) 
+)
 {
   const int x = get_global_id(0);
   const int y = get_global_id(1);
@@ -36,7 +36,7 @@ apply_unary_math_operation(const Device::Pointer & device, const Array::Pointer 
   const KernelInfo    kernel = { "math_unary", kernel_source };
   const ParameterList params = { { "src", src }, { "dst", dst } };
   const ConstantList  constants = { { "OP(x)", op_expr } };
-  execute(device, kernel, params, global_range, {0,0,0}, constants);
+  execute(device, kernel, params, global_range, { 0, 0, 0 }, constants);
   return dst;
 }
 
