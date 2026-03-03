@@ -338,8 +338,8 @@ TEST_P(TestSlicing, slice_negative_stop)
 
   auto src = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, data.data(), device);
 
-  // Slice [:7] — all but last 3 elements
-  auto dst = cle::slice(src, { cle::Slice(std::nullopt, 7) });
+  // Slice [:-3] — all but last 3 elements (equivalent to [:7])
+  auto dst = cle::slice(src, { cle::Slice(std::nullopt, -3) });
 
   EXPECT_EQ(dst->width(), 7);
 
@@ -496,6 +496,682 @@ TEST_P(TestSlicing, slice_overload_xyz)
   EXPECT_EQ(dst->width(), 2);
   EXPECT_EQ(dst->height(), 2);
   EXPECT_EQ(dst->depth(), 3);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Negative step (reverse) slicing
+// ─────────────────────────────────────────────────────────────────────────────
+
+TEST_P(TestSlicing, slice_negative_step_reverse_1d)
+{
+  // Create a 1D array and reverse it with step=-1
+  std::array<float, 6> data = { 0, 1, 2, 3, 4, 5 };
+
+  auto src = cle::Array::create(6, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, data.data(), device);
+
+  // Slice [::-1] — full reverse
+  auto dst = cle::slice(src, { cle::Slice(std::nullopt, std::nullopt, -1) });
+
+  EXPECT_EQ(dst->width(), 6);
+
+  std::array<float, 6> result;
+  dst->readTo(result.data());
+
+  for (int i = 0; i < 6; i++)
+  {
+    EXPECT_EQ(result[i], static_cast<float>(5 - i));
+  }
+}
+
+TEST_P(TestSlicing, slice_negative_step_partial)
+{
+  // Reverse a sub-range: [4:1:-1] → elements at indices 4, 3, 2
+  std::array<float, 8> data = { 0, 1, 2, 3, 4, 5, 6, 7 };
+
+  auto src = cle::Array::create(8, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, data.data(), device);
+
+  auto dst = cle::slice(src, { cle::Slice(4, 1, -1) });
+
+  EXPECT_EQ(dst->width(), 3);
+
+  std::array<float, 3> result;
+  dst->readTo(result.data());
+
+  EXPECT_EQ(result[0], 4.0f);
+  EXPECT_EQ(result[1], 3.0f);
+  EXPECT_EQ(result[2], 2.0f);
+}
+
+TEST_P(TestSlicing, slice_negative_step_every_other)
+{
+  // Reverse with step=-2: [9:0:-2] → 9, 7, 5, 3, 1
+  std::array<float, 10> data;
+  for (int i = 0; i < 10; i++)
+  {
+    data[i] = static_cast<float>(i);
+  }
+
+  auto src = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, data.data(), device);
+
+  auto dst = cle::slice(src, { cle::Slice(9, 0, -2) });
+
+  EXPECT_EQ(dst->width(), 5);
+
+  std::array<float, 5> result;
+  dst->readTo(result.data());
+
+  EXPECT_EQ(result[0], 9.0f);
+  EXPECT_EQ(result[1], 7.0f);
+  EXPECT_EQ(result[2], 5.0f);
+  EXPECT_EQ(result[3], 3.0f);
+  EXPECT_EQ(result[4], 1.0f);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// S_() convenience constructors
+// ─────────────────────────────────────────────────────────────────────────────
+
+TEST_P(TestSlicing, slice_s_convenience)
+{
+  std::array<float, 5 * 5> data;
+  for (int i = 0; i < 5 * 5; i++)
+  {
+    data[i] = static_cast<float>(i);
+  }
+
+  auto src = cle::Array::create(5, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, data.data(), device);
+
+  // Use S_() convenience functions
+  auto dst = cle::slice(src, { cle::S_(1, 4), cle::S_(2, 5) });
+
+  EXPECT_EQ(dst->width(), 3);
+  EXPECT_EQ(dst->height(), 3);
+
+  std::array<float, 3 * 3> result;
+  dst->readTo(result.data());
+
+  int idx = 0;
+  for (int y = 2; y < 5; y++)
+  {
+    for (int x = 1; x < 4; x++)
+    {
+      int src_idx = y * 5 + x;
+      EXPECT_EQ(result[idx], data[src_idx]);
+      idx++;
+    }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Error / exception tests
+// ─────────────────────────────────────────────────────────────────────────────
+
+TEST_P(TestSlicing, slice_null_source)
+{
+  cle::Array::Pointer null_src = nullptr;
+  EXPECT_THROW(cle::slice(null_src, { cle::Slice() }), std::invalid_argument);
+}
+
+TEST_P(TestSlicing, slice_too_many_axes)
+{
+  std::array<float, 8> data = {};
+  auto                 src = cle::Array::create(2, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, data.data(), device);
+
+  EXPECT_THROW(cle::slice(src, { cle::Slice(), cle::Slice(), cle::Slice(), cle::Slice() }), std::invalid_argument);
+}
+
+TEST_P(TestSlicing, slice_zero_step)
+{
+  std::array<float, 10> data = {};
+  auto                  src = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, data.data(), device);
+
+  EXPECT_THROW(cle::slice(src, { cle::Slice(0, 5, 0) }), std::invalid_argument);
+}
+
+TEST_P(TestSlicing, slice_index_out_of_range)
+{
+  std::array<float, 5> data = {};
+  auto                 src = cle::Array::create(5, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, data.data(), device);
+
+  EXPECT_THROW(cle::slice(src, { cle::Slice(10) }), std::out_of_range);
+  EXPECT_THROW(cle::slice(src, { cle::Slice(-6) }), std::out_of_range);
+}
+
+TEST_P(TestSlicing, slice_empty_selection)
+{
+  std::array<float, 10> data = {};
+  auto                  src = cle::Array::create(10, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, data.data(), device);
+
+  // [5:2] with positive step produces empty range
+  EXPECT_THROW(cle::slice(src, { cle::Slice(5, 2) }), std::out_of_range);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Paste tests - basic contiguous
+// ─────────────────────────────────────────────────────────────────────────────
+
+TEST_P(TestSlicing, paste_full_axis)
+{
+  // Paste a full array into a destination of the same size
+  std::array<float, 2 * 3 * 4> src_data;
+  for (int i = 0; i < 2 * 3 * 4; i++)
+  {
+    src_data[i] = static_cast<float>(i + 100);
+  }
+
+  std::array<float, 2 * 3 * 4> dst_data = {};
+  auto src = cle::Array::create(2, 3, 4, 3, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
+  auto dst = cle::Array::create(2, 3, 4, 3, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
+
+  cle::paste(src, dst, { cle::Slice(), cle::Slice(), cle::Slice() });
+
+  std::array<float, 2 * 3 * 4> result;
+  dst->readTo(result.data());
+
+  for (int i = 0; i < 2 * 3 * 4; i++)
+  {
+    EXPECT_EQ(result[i], src_data[i]);
+  }
+}
+
+TEST_P(TestSlicing, paste_subregion_contiguous)
+{
+  // Paste a small (3×3) block into a larger (6×6) destination at [1:4, 1:4]
+  constexpr int dst_w = 6, dst_h = 6;
+  constexpr int src_w = 3, src_h = 3;
+
+  std::array<float, src_w * src_h> src_data;
+  for (int i = 0; i < src_w * src_h; i++)
+  {
+    src_data[i] = static_cast<float>(i + 1);
+  }
+
+  // Initialize dst with zeros
+  std::array<float, dst_w * dst_h> dst_data = {};
+
+  auto src = cle::Array::create(src_w, src_h, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
+  auto dst = cle::Array::create(dst_w, dst_h, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
+
+  cle::paste(src, dst, { cle::Slice(1, 4), cle::Slice(1, 4) });
+
+  std::array<float, dst_w * dst_h> result;
+  dst->readTo(result.data());
+
+  // Verify that only [1:4, 1:4] region was written
+  for (int y = 0; y < dst_h; y++)
+  {
+    for (int x = 0; x < dst_w; x++)
+    {
+      int dst_idx = y * dst_w + x;
+      if (x >= 1 && x < 4 && y >= 1 && y < 4)
+      {
+        int src_idx = (y - 1) * src_w + (x - 1);
+        EXPECT_EQ(result[dst_idx], src_data[src_idx]);
+      }
+      else
+      {
+        EXPECT_EQ(result[dst_idx], 0.0f);
+      }
+    }
+  }
+}
+
+TEST_P(TestSlicing, paste_3d_contiguous)
+{
+  // Paste a (2×2×2) block into a (4×4×4) destination at [1:3, 1:3, 1:3]
+  constexpr int sw = 2, sh = 2, sd = 2;
+  constexpr int dw = 4, dh = 4, dd = 4;
+
+  std::array<float, sw * sh * sd> src_data;
+  for (int i = 0; i < sw * sh * sd; i++)
+  {
+    src_data[i] = static_cast<float>(i + 10);
+  }
+
+  std::array<float, dw * dh * dd> dst_data = {};
+  auto src = cle::Array::create(sw, sh, sd, 3, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
+  auto dst = cle::Array::create(dw, dh, dd, 3, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
+
+  cle::paste(src, dst, { cle::Slice(1, 3), cle::Slice(1, 3), cle::Slice(1, 3) });
+
+  std::array<float, dw * dh * dd> result;
+  dst->readTo(result.data());
+
+  for (int z = 0; z < dd; z++)
+  {
+    for (int y = 0; y < dh; y++)
+    {
+      for (int x = 0; x < dw; x++)
+      {
+        int dst_idx = z * dh * dw + y * dw + x;
+        if (x >= 1 && x < 3 && y >= 1 && y < 3 && z >= 1 && z < 3)
+        {
+          int src_idx = (z - 1) * sh * sw + (y - 1) * sw + (x - 1);
+          EXPECT_EQ(result[dst_idx], src_data[src_idx]);
+        }
+        else
+        {
+          EXPECT_EQ(result[dst_idx], 0.0f);
+        }
+      }
+    }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Paste tests - strided (with step)
+// ─────────────────────────────────────────────────────────────────────────────
+
+TEST_P(TestSlicing, paste_strided_1d)
+{
+  // Paste 5 elements into every-other position of a 10-element array: [0:10:2]
+  constexpr int src_w = 5;
+  constexpr int dst_w = 10;
+
+  std::array<float, src_w> src_data = { 10, 20, 30, 40, 50 };
+  std::array<float, dst_w> dst_data = {};
+
+  auto src = cle::Array::create(src_w, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
+  auto dst = cle::Array::create(dst_w, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
+
+  cle::paste(src, dst, { cle::Slice(0, 10, 2) });
+
+  std::array<float, dst_w> result;
+  dst->readTo(result.data());
+
+  // Even positions should have src values, odd positions should remain 0
+  for (int i = 0; i < dst_w; i++)
+  {
+    if (i % 2 == 0)
+    {
+      EXPECT_EQ(result[i], src_data[i / 2]);
+    }
+    else
+    {
+      EXPECT_EQ(result[i], 0.0f);
+    }
+  }
+}
+
+TEST_P(TestSlicing, paste_strided_2d)
+{
+  // Paste a (3×3) into every-other position of a (6×6): [0:6:2, 0:6:2]
+  constexpr int sw = 3, sh = 3;
+  constexpr int dw = 6, dh = 6;
+
+  std::array<float, sw * sh> src_data;
+  for (int i = 0; i < sw * sh; i++)
+  {
+    src_data[i] = static_cast<float>(i + 1);
+  }
+
+  std::array<float, dw * dh> dst_data = {};
+
+  auto src = cle::Array::create(sw, sh, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
+  auto dst = cle::Array::create(dw, dh, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
+
+  cle::paste(src, dst, { cle::Slice(0, 6, 2), cle::Slice(0, 6, 2) });
+
+  std::array<float, dw * dh> result;
+  dst->readTo(result.data());
+
+  for (int y = 0; y < dh; y++)
+  {
+    for (int x = 0; x < dw; x++)
+    {
+      int dst_idx = y * dw + x;
+      if (x % 2 == 0 && y % 2 == 0)
+      {
+        int src_idx = (y / 2) * sw + (x / 2);
+        EXPECT_EQ(result[dst_idx], src_data[src_idx]);
+      }
+      else
+      {
+        EXPECT_EQ(result[dst_idx], 0.0f);
+      }
+    }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Paste tests - with index slices (single position)
+// ─────────────────────────────────────────────────────────────────────────────
+
+TEST_P(TestSlicing, paste_single_element)
+{
+  // Paste a single element into a specific position [2, 3, 1]
+  constexpr int dw = 5, dh = 5, dd = 3;
+
+  std::array<float, 1> src_data = { 42.0f };
+  std::array<float, dw * dh * dd> dst_data = {};
+
+  auto src = cle::Array::create(1, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
+  auto dst = cle::Array::create(dw, dh, dd, 3, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
+
+  cle::paste(src, dst, { cle::Slice(2), cle::Slice(3), cle::Slice(1) });
+
+  std::array<float, dw * dh * dd> result;
+  dst->readTo(result.data());
+
+  int target_idx = 1 * dh * dw + 3 * dw + 2;
+  EXPECT_EQ(result[target_idx], 42.0f);
+
+  // Verify all other positions are still 0
+  for (int i = 0; i < dw * dh * dd; i++)
+  {
+    if (i != target_idx)
+    {
+      EXPECT_EQ(result[i], 0.0f);
+    }
+  }
+}
+
+TEST_P(TestSlicing, paste_row_into_3d)
+{
+  // Paste a row (1D) into a 3D array at a specific z and y: [:, 2, 1]
+  constexpr int dw = 4, dh = 5, dd = 3;
+
+  std::array<float, dw> src_data = { 10, 20, 30, 40 };
+  std::array<float, dw * dh * dd> dst_data = {};
+
+  auto src = cle::Array::create(dw, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
+  auto dst = cle::Array::create(dw, dh, dd, 3, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
+
+  cle::paste(src, dst, { cle::Slice(), cle::Slice(2), cle::Slice(1) });
+
+  std::array<float, dw * dh * dd> result;
+  dst->readTo(result.data());
+
+  for (int x = 0; x < dw; x++)
+  {
+    int idx = 1 * dh * dw + 2 * dw + x;
+    EXPECT_EQ(result[idx], src_data[x]);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Paste tests - different data types
+// ─────────────────────────────────────────────────────────────────────────────
+
+TEST_P(TestSlicing, paste_uint8)
+{
+  constexpr int sw = 2, sh = 2;
+  constexpr int dw = 4, dh = 4;
+
+  std::array<uint8_t, sw * sh> src_data = { 10, 20, 30, 40 };
+  std::array<uint8_t, dw * dh> dst_data = {};
+
+  auto src = cle::Array::create(sw, sh, 1, 2, cle::dType::UINT8, cle::mType::BUFFER, src_data.data(), device);
+  auto dst = cle::Array::create(dw, dh, 1, 2, cle::dType::UINT8, cle::mType::BUFFER, dst_data.data(), device);
+
+  cle::paste(src, dst, { cle::Slice(1, 3), cle::Slice(1, 3) });
+
+  std::array<uint8_t, dw * dh> result;
+  dst->readTo(result.data());
+
+  int idx = 0;
+  for (int y = 1; y < 3; y++)
+  {
+    for (int x = 1; x < 3; x++)
+    {
+      int dst_idx = y * dw + x;
+      EXPECT_EQ(result[dst_idx], src_data[idx]);
+      idx++;
+    }
+  }
+}
+
+TEST_P(TestSlicing, paste_int32)
+{
+  constexpr int sw = 2, sh = 3;
+  constexpr int dw = 5, dh = 5;
+
+  std::array<int32_t, sw * sh> src_data = { -5, -4, -3, -2, -1, 0 };
+  std::array<int32_t, dw * dh> dst_data = {};
+
+  auto src = cle::Array::create(sw, sh, 1, 2, cle::dType::INT32, cle::mType::BUFFER, src_data.data(), device);
+  auto dst = cle::Array::create(dw, dh, 1, 2, cle::dType::INT32, cle::mType::BUFFER, dst_data.data(), device);
+
+  cle::paste(src, dst, { cle::Slice(2, 4), cle::Slice(1, 4) });
+
+  std::array<int32_t, dw * dh> result;
+  dst->readTo(result.data());
+
+  int idx = 0;
+  for (int y = 1; y < 4; y++)
+  {
+    for (int x = 2; x < 4; x++)
+    {
+      int dst_idx = y * dw + x;
+      EXPECT_EQ(result[dst_idx], src_data[idx]);
+      idx++;
+    }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Paste tests - convenience overload
+// ─────────────────────────────────────────────────────────────────────────────
+
+TEST_P(TestSlicing, paste_overload_xyz)
+{
+  constexpr int sw = 2, sh = 2, sd = 2;
+  constexpr int dw = 4, dh = 4, dd = 4;
+
+  std::array<float, sw * sh * sd> src_data;
+  for (int i = 0; i < sw * sh * sd; i++)
+  {
+    src_data[i] = static_cast<float>(i + 100);
+  }
+
+  std::array<float, dw * dh * dd> dst_data = {};
+
+  auto src = cle::Array::create(sw, sh, sd, 3, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
+  auto dst = cle::Array::create(dw, dh, dd, 3, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
+
+  // Use the overload: paste(src, dst, x_slice, y_slice, z_slice)
+  cle::paste(src, dst, cle::Slice(1, 3), cle::Slice(1, 3), cle::Slice(1, 3));
+
+  std::array<float, dw * dh * dd> result;
+  dst->readTo(result.data());
+
+  for (int z = 1; z < 3; z++)
+  {
+    for (int y = 1; y < 3; y++)
+    {
+      for (int x = 1; x < 3; x++)
+      {
+        int dst_idx = z * dh * dw + y * dw + x;
+        int src_idx = (z - 1) * sh * sw + (y - 1) * sw + (x - 1);
+        EXPECT_EQ(result[dst_idx], src_data[src_idx]);
+      }
+    }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Paste tests - error cases
+// ─────────────────────────────────────────────────────────────────────────────
+
+TEST_P(TestSlicing, paste_null_source)
+{
+  std::array<float, 4> dst_data = {};
+  auto                 dst = cle::Array::create(2, 2, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
+
+  cle::Array::Pointer null_src = nullptr;
+  EXPECT_THROW(cle::paste(null_src, dst, { cle::Slice() }), std::invalid_argument);
+}
+
+TEST_P(TestSlicing, paste_null_destination)
+{
+  std::array<float, 4> src_data = { 1, 2, 3, 4 };
+  auto                 src = cle::Array::create(2, 2, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
+
+  cle::Array::Pointer null_dst = nullptr;
+  EXPECT_THROW(cle::paste(src, null_dst, { cle::Slice() }), std::invalid_argument);
+}
+
+TEST_P(TestSlicing, paste_mismatched_dtype)
+{
+  std::array<float, 4>   src_data = { 1, 2, 3, 4 };
+  std::array<uint8_t, 4> dst_data = {};
+
+  auto src = cle::Array::create(2, 2, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
+  auto dst = cle::Array::create(2, 2, 1, 2, cle::dType::UINT8, cle::mType::BUFFER, dst_data.data(), device);
+
+  EXPECT_THROW(cle::paste(src, dst, { cle::Slice() }), std::invalid_argument);
+}
+
+TEST_P(TestSlicing, paste_mismatched_shape)
+{
+  // Source is 3×3 but target region is 2×2 — should throw
+  std::array<float, 9>  src_data = {};
+  std::array<float, 25> dst_data = {};
+
+  auto src = cle::Array::create(3, 3, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
+  auto dst = cle::Array::create(5, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
+
+  EXPECT_THROW(cle::paste(src, dst, { cle::Slice(1, 3), cle::Slice(1, 3) }), std::invalid_argument);
+}
+
+TEST_P(TestSlicing, paste_too_many_axes)
+{
+  std::array<float, 8> src_data = {};
+  std::array<float, 8> dst_data = {};
+
+  auto src = cle::Array::create(2, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
+  auto dst = cle::Array::create(2, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
+
+  EXPECT_THROW(cle::paste(src, dst, { cle::Slice(), cle::Slice(), cle::Slice(), cle::Slice() }), std::invalid_argument);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Roundtrip: slice then paste (and vice versa)
+// ─────────────────────────────────────────────────────────────────────────────
+
+TEST_P(TestSlicing, roundtrip_slice_then_paste)
+{
+  // Extract a sub-region with slice, then paste it back into a zeroed array
+  constexpr int w = 6, h = 6;
+
+  std::array<float, w * h> data;
+  for (int i = 0; i < w * h; i++)
+  {
+    data[i] = static_cast<float>(i);
+  }
+
+  auto src = cle::Array::create(w, h, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, data.data(), device);
+
+  // Slice [1:4, 2:5]
+  std::vector<cle::Slice> slices = { cle::Slice(1, 4), cle::Slice(2, 5) };
+  auto                    sub = cle::slice(src, slices);
+
+  EXPECT_EQ(sub->width(), 3);
+  EXPECT_EQ(sub->height(), 3);
+
+  // Paste back into a fresh destination at the same position
+  std::array<float, w * h> dst_data = {};
+  auto                     dst = cle::Array::create(w, h, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
+
+  cle::paste(sub, dst, slices);
+
+  std::array<float, w * h> result;
+  dst->readTo(result.data());
+
+  // Only the [1:4, 2:5] region should have been written
+  for (int y = 0; y < h; y++)
+  {
+    for (int x = 0; x < w; x++)
+    {
+      int idx = y * w + x;
+      if (x >= 1 && x < 4 && y >= 2 && y < 5)
+      {
+        EXPECT_EQ(result[idx], data[idx]);
+      }
+      else
+      {
+        EXPECT_EQ(result[idx], 0.0f);
+      }
+    }
+  }
+}
+
+TEST_P(TestSlicing, roundtrip_strided_slice_then_paste)
+{
+  // Slice with step, then paste back at the same strided positions
+  constexpr int w = 10;
+
+  std::array<float, w> data;
+  for (int i = 0; i < w; i++)
+  {
+    data[i] = static_cast<float>(i);
+  }
+
+  auto src = cle::Array::create(w, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, data.data(), device);
+
+  // Slice [1:9:2] → elements at 1, 3, 5, 7
+  std::vector<cle::Slice> slices = { cle::Slice(1, 9, 2) };
+  auto                    sub = cle::slice(src, slices);
+
+  EXPECT_EQ(sub->width(), 4);
+
+  std::array<float, 4> sub_result;
+  sub->readTo(sub_result.data());
+  EXPECT_EQ(sub_result[0], 1.0f);
+  EXPECT_EQ(sub_result[1], 3.0f);
+  EXPECT_EQ(sub_result[2], 5.0f);
+  EXPECT_EQ(sub_result[3], 7.0f);
+
+  // Paste back at the same strided positions
+  std::array<float, w> dst_data = {};
+  auto                 dst = cle::Array::create(w, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
+
+  cle::paste(sub, dst, slices);
+
+  std::array<float, w> result;
+  dst->readTo(result.data());
+
+  for (int i = 0; i < w; i++)
+  {
+    if (i == 1 || i == 3 || i == 5 || i == 7)
+    {
+      EXPECT_EQ(result[i], data[i]);
+    }
+    else
+    {
+      EXPECT_EQ(result[i], 0.0f);
+    }
+  }
+}
+
+TEST_P(TestSlicing, paste_multiple_regions)
+{
+  // Paste different sub-arrays into non-overlapping regions of a destination
+  constexpr int dw = 8, dh = 1;
+
+  std::array<float, 3> src1_data = { 10, 20, 30 };
+  std::array<float, 3> src2_data = { 40, 50, 60 };
+  std::array<float, dw> dst_data = {};
+
+  auto src1 = cle::Array::create(3, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, src1_data.data(), device);
+  auto src2 = cle::Array::create(3, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, src2_data.data(), device);
+  auto dst = cle::Array::create(dw, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
+
+  // Paste src1 at [0:3], src2 at [5:8]
+  cle::paste(src1, dst, { cle::Slice(0, 3) });
+  cle::paste(src2, dst, { cle::Slice(5, 8) });
+
+  std::array<float, dw> result;
+  dst->readTo(result.data());
+
+  EXPECT_EQ(result[0], 10.0f);
+  EXPECT_EQ(result[1], 20.0f);
+  EXPECT_EQ(result[2], 30.0f);
+  EXPECT_EQ(result[3], 0.0f);
+  EXPECT_EQ(result[4], 0.0f);
+  EXPECT_EQ(result[5], 40.0f);
+  EXPECT_EQ(result[6], 50.0f);
+  EXPECT_EQ(result[7], 60.0f);
 }
 
 INSTANTIATE_TEST_SUITE_P(TestSlicing, TestSlicing, ::testing::ValuesIn(getParameters()));
