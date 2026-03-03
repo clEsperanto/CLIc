@@ -660,8 +660,8 @@ TEST_P(TestSlicing, paste_full_axis)
   }
 
   std::array<float, 2 * 3 * 4> dst_data = {};
-  auto src = cle::Array::create(2, 3, 4, 3, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
-  auto dst = cle::Array::create(2, 3, 4, 3, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
+  auto                         src = cle::Array::create(2, 3, 4, 3, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
+  auto                         dst = cle::Array::create(2, 3, 4, 3, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
 
   cle::paste(src, dst, { cle::Slice(), cle::Slice(), cle::Slice() });
 
@@ -729,8 +729,8 @@ TEST_P(TestSlicing, paste_3d_contiguous)
   }
 
   std::array<float, dw * dh * dd> dst_data = {};
-  auto src = cle::Array::create(sw, sh, sd, 3, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
-  auto dst = cle::Array::create(dw, dh, dd, 3, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
+  auto                            src = cle::Array::create(sw, sh, sd, 3, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
+  auto                            dst = cle::Array::create(dw, dh, dd, 3, cle::dType::FLOAT, cle::mType::BUFFER, dst_data.data(), device);
 
   cle::paste(src, dst, { cle::Slice(1, 3), cle::Slice(1, 3), cle::Slice(1, 3) });
 
@@ -842,7 +842,7 @@ TEST_P(TestSlicing, paste_single_element)
   // Paste a single element into a specific position [2, 3, 1]
   constexpr int dw = 5, dh = 5, dd = 3;
 
-  std::array<float, 1> src_data = { 42.0f };
+  std::array<float, 1>            src_data = { 42.0f };
   std::array<float, dw * dh * dd> dst_data = {};
 
   auto src = cle::Array::create(1, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
@@ -871,7 +871,7 @@ TEST_P(TestSlicing, paste_row_into_3d)
   // Paste a row (1D) into a 3D array at a specific z and y: [:, 2, 1]
   constexpr int dw = 4, dh = 5, dd = 3;
 
-  std::array<float, dw> src_data = { 10, 20, 30, 40 };
+  std::array<float, dw>           src_data = { 10, 20, 30, 40 };
   std::array<float, dw * dh * dd> dst_data = {};
 
   auto src = cle::Array::create(dw, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, src_data.data(), device);
@@ -1149,8 +1149,8 @@ TEST_P(TestSlicing, paste_multiple_regions)
   // Paste different sub-arrays into non-overlapping regions of a destination
   constexpr int dw = 8, dh = 1;
 
-  std::array<float, 3> src1_data = { 10, 20, 30 };
-  std::array<float, 3> src2_data = { 40, 50, 60 };
+  std::array<float, 3>  src1_data = { 10, 20, 30 };
+  std::array<float, 3>  src2_data = { 40, 50, 60 };
   std::array<float, dw> dst_data = {};
 
   auto src1 = cle::Array::create(3, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, src1_data.data(), device);
