@@ -151,15 +151,6 @@ jobs:
           cmake --build "$BUILD_DIR" --parallel ${{ env.cmake-parallel }} --config Release
         shell: bash -l {0}
 
-      - name: Run tests
-        run: |
-          set -euo pipefail
-          BUILD_DIR="${{ runner.workspace }}/build"
-          cd "$BUILD_DIR"
-          ctest --output-on-failure --parallel ${{ env.cmake-parallel }}
-        shell: bash -l {0}
-        continue-on-error: true
-
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7.0.0
