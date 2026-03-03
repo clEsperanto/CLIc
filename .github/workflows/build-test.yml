@@ -7,16 +7,17 @@ on:
     branches: [master]
 
 env:
-  opencl-icd-loader-git-tag: "v2024.10.24"
-  opencl-headers-git-tag: "v2024.10.24"
+  opencl-icd-loader-git-tag: "v2025.07.22"
+  opencl-headers-git-tag: "v2025.07.22"
+  cmake-build-type: "Release"
+  cmake-parallel: 10
 
 jobs:
   build:
-    name: ${{ matrix.os }}-${{ matrix.cxx-compiler }}-${{ matrix.cmake-build-type }}
+    name: ${{ matrix.name }}-${{ matrix.cmake-build-type }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
-      max-parallel: 3
       matrix:
         name: [ubuntu, windows, macos]
         include:
@@ -26,99 +27,143 @@ jobs:
             cxx-compiler: "g++"
             cmake-build-type: "Release"
             cmake-build-flag: ""
+            opencl-required: true
           - name: windows
             os: windows-latest
             c-compiler: "cl.exe"
             cxx-compiler: "cl.exe"
             cmake-build-type: "Release"
             cmake-build-flag: "-A x64"
+            opencl-required: true
           - name: macos
             os: macos-latest
             c-compiler: "clang"
             cxx-compiler: "clang++"
             cmake-build-type: "Release"
             cmake-build-flag: ""
+            opencl-required: false
 
     steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          submodules: true
 
       - name: Setup Python
         uses: actions/setup-python@v6.1.0
         with:
           python-version: 3.8
+        
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
-      - name: Install build dependencies
+      - name: Install Python build dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install ninja
         shell: bash
 
-      - name: Get specific version of CMake, Ninja
+      - name: Get CMake and Ninja
         uses: lukka/get-cmake@v4.2.1
 
-      - name: Install ocl-icd-loader - windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          cd ..
-          git clone --branch ${{ env.opencl-icd-loader-git-tag }} https://github.com/KhronosGroup/OpenCL-ICD-Loader
-          git clone --branch ${{ env.opencl-headers-git-tag }} https://github.com/KhronosGroup/OpenCL-Headers
-          # cmake -D CMAKE_INSTALL_PREFIX="./OpenCL-Headers/install" -S "./OpenCL-Headers" -B "./OpenCL-Headers/build"
-          cmake -S "./OpenCL-Headers" -B "./OpenCL-Headers/build"
-          cmake --build "./OpenCL-Headers/build" --parallel 6 --target install
-          cmake -D CMAKE_PREFIX_PATH="./OpenCL-Headers" -D OPENCL_ICD_LOADER_HEADERS_DIR="./OpenCL-Headers/" -S "./OpenCL-ICD-Loader" -B "./OpenCL-ICD-Loader/build" -A x64
-          cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
-        shell: bash -l {0}
-
-      # - name: Install cuda toolkit (windows)
-      #   if: matrix.os == 'windows-latest'
-      #   uses: Jimver/cuda-toolkit@v0.2.10
-      #   id: cuda-toolkit
-      #   with:
-      #     cuda: '12.1.0'
-
-      - name: Install ocl-icd-loader - linux
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          cd ..
-          git clone --branch ${{ env.opencl-icd-loader-git-tag }} https://github.com/KhronosGroup/OpenCL-ICD-Loader
-          git clone --branch ${{ env.opencl-headers-git-tag }} https://github.com/KhronosGroup/OpenCL-Headers
-          cmake -S "./OpenCL-Headers" -B "./OpenCL-Headers/build"
-          sudo cmake --build "./OpenCL-Headers/build" --parallel 6 --target install
-          cmake -D CMAKE_PREFIX_PATH="./OpenCL-Headers/" -D OPENCL_ICD_LOADER_HEADERS_DIR="./OpenCL-Headers/" -S "./OpenCL-ICD-Loader" -B "./OpenCL-ICD-Loader/build"
-          sudo cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
-        shell: bash -l {0}
-
-      # - name: Install cuda toolkit (ubuntu)
-      #   if: matrix.os == 'ubuntu-latest'
-      #   run: |
-      #     wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
-      #     sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
-      #     wget https://developer.download.nvidia.com/compute/cuda/12.1.1/local_installers/cuda-repo-ubuntu2204-12-1-local_12.1.1-530.30.02-1_amd64.deb
-      #     sudo dpkg -i cuda-repo-ubuntu2204-12-1-local_12.1.1-530.30.02-1_amd64.deb
-      #     sudo cp /var/cuda-repo-ubuntu2204-12-1-local/cuda-*-keyring.gpg /usr/share/keyrings/
-      #     sudo apt-get update
-      #     sudo apt-get -y install cuda
-
-      - uses: actions/checkout@v6
+      - name: Cache OpenCL dependencies
+        if: matrix.opencl-required == true
+        uses: actions/cache@v4
         with:
-          submodules: true
+          path: ${{ runner.workspace }}/opencl-cache
+          key: opencl-${{ matrix.name }}-${{ env.opencl-icd-loader-git-tag }}-${{ env.opencl-headers-git-tag }}
+          restore-keys: |
+            opencl-${{ matrix.name }}-
 
-      - name: compile CLIc - linux
-        if: matrix.os == 'ubuntu-latest'
-        run : |
-          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_DOCUMENTATION=OFF -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARIES:FILEPATH="/usr/local/lib/libOpenCL.so" -DOpenCL_INCLUDE_DIRS:PATH="/usr/local/include/"
-          cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
+      - name: Install OpenCL dependencies
+        if: matrix.opencl-required == true
+        run: |
+          set -euo pipefail
+          CACHE_DIR="${{ runner.workspace }}/opencl-cache"
+          mkdir -p "$CACHE_DIR"
+          
+          # Check if already cached
+          if [ -f "$CACHE_DIR/.built" ]; then
+            echo "Using cached OpenCL dependencies"
+            export PKG_CONFIG_PATH="$CACHE_DIR/lib/pkgconfig:$PKG_CONFIG_PATH"
+          else
+            echo "Building OpenCL dependencies"
+            cd ..
+            git clone --branch ${{ env.opencl-icd-loader-git-tag }} https://github.com/KhronosGroup/OpenCL-ICD-Loader
+            git clone --branch ${{ env.opencl-headers-git-tag }} https://github.com/KhronosGroup/OpenCL-Headers
+            
+            CMAKE_INSTALL_PREFIX="$CACHE_DIR"
+            
+            # Build Headers
+            cmake -S "./OpenCL-Headers" -B "./OpenCL-Headers/build" \
+              -DCMAKE_INSTALL_PREFIX="$CMAKE_INSTALL_PREFIX"
+            if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+              sudo cmake --build "./OpenCL-Headers/build" --parallel 6 --target install
+              sudo chown -R "${{ runner.actor }}" "$CACHE_DIR" 2>/dev/null || true
+            else
+              cmake --build "./OpenCL-Headers/build" --parallel 6 --target install
+            fi
+            
+            # Build ICD Loader  
+            cmake -D CMAKE_PREFIX_PATH="$CMAKE_INSTALL_PREFIX" \
+                   -D OPENCL_ICD_LOADER_HEADERS_DIR="$CMAKE_INSTALL_PREFIX/include" \
+                   -D CMAKE_INSTALL_PREFIX="$CMAKE_INSTALL_PREFIX" \
+                   -S "./OpenCL-ICD-Loader" -B "./OpenCL-ICD-Loader/build" \
+                   ${{ matrix.cmake-build-flag }}
+            if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+              sudo cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
+              sudo chown -R "${{ runner.actor }}" "$CACHE_DIR" 2>/dev/null || true
+            else
+              cmake --build "./OpenCL-ICD-Loader/build" --parallel 6 --target install --config Release
+            fi
+            
+            touch "$CACHE_DIR/.built"
+            echo "OpenCL dependencies built and cached"
+          fi
         shell: bash -l {0}
 
-      - name: compile CLIc - windows
-        if: matrix.os == 'windows-latest'
-        run : |
-          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_DOCUMENTATION=OFF -DBUILD_BENCHMARK=OFF -DOpenCL_LIBRARIES:FILEPATH="C:/Program Files/OpenCL-ICD-Loader/lib/OpenCL.lib" -DOpenCL_INCLUDE_DIRS:PATH="C:/Program Files (x86)/OpenCLHeaders/include/"
-          cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
+      - name: Compile CLIc
+        run: |
+          set -euo pipefail
+          BUILD_DIR="${{ runner.workspace }}/build"
+          
+          # Set OpenCL paths for Windows and Linux
+          CMAKE_OPTS="-DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_DOCUMENTATION=OFF -DBUILD_BENCHMARK=OFF"
+          
+          if [ "${{ matrix.opencl-required }}" = "true" ]; then
+            CACHE_DIR="${{ runner.workspace }}/opencl-cache"
+            CMAKE_OPTS="$CMAKE_OPTS -DCMAKE_PREFIX_PATH=$CACHE_DIR"
+            
+            if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+              CMAKE_OPTS="$CMAKE_OPTS -DOpenCL_LIBRARIES=$CACHE_DIR/lib/libOpenCL.so -DOpenCL_INCLUDE_DIRS=$CACHE_DIR/include"
+            elif [ "${{ matrix.os }}" = "windows-latest" ]; then
+              CMAKE_OPTS="$CMAKE_OPTS -DOpenCL_LIBRARIES=$CACHE_DIR/lib/OpenCL.lib -DOpenCL_INCLUDE_DIRS=$CACHE_DIR/include"
+            fi
+          fi
+          
+          cmake -S "${{ github.workspace }}" -B "$BUILD_DIR" $CMAKE_OPTS ${{ matrix.cmake-build-flag }}
+          cmake --build "$BUILD_DIR" --parallel ${{ env.cmake-parallel }} --config Release
         shell: bash -l {0}
 
-      - name: compile CLIc - macos
-        if: matrix.os == 'macos-latest'
-        run : |
-          cmake -S "${{ github.workspace }}" -B "${{ runner.workspace }}/build" -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_DOCUMENTATION=OFF -DBUILD_BENCHMARK=OFF
-          cmake --build "${{ runner.workspace }}/build" --parallel 10 --config Release
+      - name: Run tests
+        run: |
+          set -euo pipefail
+          BUILD_DIR="${{ runner.workspace }}/build"
+          cd "$BUILD_DIR"
+          ctest --output-on-failure --parallel ${{ env.cmake-parallel }}
         shell: bash -l {0}
+        continue-on-error: true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.name }}
+          path: ${{ runner.workspace }}/build/Testing/Temporary/
+          if-no-files-found: ignore
