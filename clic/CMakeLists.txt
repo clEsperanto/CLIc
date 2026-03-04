@@ -30,8 +30,6 @@ target_include_directories(${LIBRARY_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include> # CLIc configuration headers
     $<BUILD_INTERFACE:${CLEKERNELS_INCLUDE_DIR}>           # cleKernels headers
     $<BUILD_INTERFACE:${EIGEN3_INCLUDE_DIR}>               # Eigen headers
-    # $<BUILD_INTERFACE:${clFFT_SOURCE_DIR}/include>         # clFFT headers
-    # $<BUILD_INTERFACE:${clFFT_BINARY_DIR}/include>         # clFFT version headers
     $<BUILD_INTERFACE:${FETCHCONTENT_BASE_DIR}/vkfft-src/vkFFT/> # VkFFT headers
     $<INSTALL_INTERFACE:include>
 )
@@ -39,12 +37,11 @@ target_include_directories(${LIBRARY_NAME} PUBLIC
 set_target_properties(${LIBRARY_NAME} PROPERTIES LINKER_LANGUAGE CXX)        # force C++ linker
 set_target_properties(${LIBRARY_NAME} PROPERTIES VERSION ${PROJECT_VERSION}) # set version
 
-# test if BACKEND variable is OpenCL
-if(${OpenCL_FOUND})
+# link backend-specific dependencies
+if(CLE_OPENCL)
     target_include_directories(${LIBRARY_NAME} PUBLIC ${OpenCL_INCLUDE_DIRS})
     target_link_libraries(${LIBRARY_NAME} PUBLIC ${OpenCL_LIBRARIES})
-endif()
-if(${CUDAToolkit_FOUND})
+elseif(CLE_CUDA)
     set_target_properties(${LIBRARY_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
     set_target_properties(${LIBRARY_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
     target_include_directories(${LIBRARY_NAME} PUBLIC ${CUDAToolkit_INCLUDE_DIRS})
