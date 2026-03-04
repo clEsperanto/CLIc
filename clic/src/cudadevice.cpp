@@ -200,6 +200,18 @@ CUDADevice::supportImage() const -> bool
 }
 
 auto
+CUDADevice::getNbDevicesFromContext() const -> size_t
+{
+  return 1;
+}
+
+auto
+CUDADevice::getDeviceIndex() const -> size_t
+{
+  return static_cast<size_t>(cudaDeviceIndex);
+}
+
+auto
 CUDADevice::getMaximumBufferSize() const -> size_t
 {
   // cuDeviceTotalMem gives the total GPU memory, which is a better proxy for
