@@ -105,7 +105,7 @@ jobs:
           CMAKE_OPTS="$CMAKE_OPTS -DBUILD_DOCUMENTATION=OFF"
           CMAKE_OPTS="$CMAKE_OPTS -DBUILD_BENCHMARK=OFF"
           CMAKE_OPTS="$CMAKE_OPTS -DCLE_BACKEND_TYPE=CUDA"
-          CMAKE_OPTS="$CMAKE_OPTS -DCUDAToolkit_ROOT=$CUDA_ROOT"
+          CMAKE_OPTS="$CMAKE_OPTS -DCUDAToolkit_ROOT=\"$CUDA_ROOT\""
 
           cmake -S "${{ github.workspace }}" -B "$BUILD_DIR" $CMAKE_OPTS ${{ matrix.cmake-build-flag }}
           cmake --build "$BUILD_DIR" --parallel ${{ env.cmake-parallel }} --config Release
