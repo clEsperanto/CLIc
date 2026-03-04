@@ -77,9 +77,7 @@ jobs:
         uses: Jimver/cuda-toolkit@v0.2.21
         with:
           cuda: '12.6.0'
-          method: 'network'
-          sub-packages: '["nvcc","cudart","nvrtc","nvrtc_dev","nvjitlink","nvjitlink_dev"]'
-          non-cuda-sub-packages: '[]'
+          method: 'local'
 
       - name: Set CUDA path
         id: cuda-path
