@@ -43,6 +43,13 @@ function(add_clic_test_suite SUITE_NAME LABEL)
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         PROPERTIES LABELS "${LABEL}"
     )
+
+    # For CUDA backend, set library path for test execution on Linux
+    if(CLE_BACKEND_TYPE STREQUAL "CUDA" AND UNIX AND NOT APPLE AND CUDAToolkit_LIBRARY_DIR)
+        set_tests_properties(${SUITE_NAME} PROPERTIES
+            ENVIRONMENT "LD_LIBRARY_PATH=${CUDAToolkit_LIBRARY_DIR}:$ENV{LD_LIBRARY_PATH}"
+        )
+    endif()
 endfunction()
 
 add_subdirectory(core)
