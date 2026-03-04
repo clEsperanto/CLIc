@@ -9,7 +9,6 @@ on:
 env:
   cmake-build-type: "Release"
   cmake-parallel: 10
-  cuda-version: "12.4"
 
 jobs:
   build:
@@ -62,76 +61,32 @@ jobs:
       - name: Get CMake and Ninja
         uses: lukka/get-cmake@v4.2.3
 
-      - name: Install CUDA Toolkit (Ubuntu)
-        if: matrix.os == 'ubuntu-latest'
+      - name: Install CUDA Toolkit
+        id: cuda-toolkit
+        uses: Jimver/cuda-toolkit@v0.2.21
+        with:
+          cuda: '12.4.0'
+          method: 'network'
+          non-cuda-sub-packages: '["libcublas","libcublas-dev"]'
+
+      - name: Verify CUDA Installation
         run: |
-          set -euo pipefail
-
-          echo "Downloading CUDA 12.4 installer..."
-          CUDA_URL="https://developer.download.nvidia.com/compute/cuda/12.4.1/local_installers/cuda_12.4.1_550.54.15_linux.run"
-          CUDA_INSTALLER="cuda_installer.run"
-
-          wget -q $CUDA_URL -O $CUDA_INSTALLER
-          chmod +x $CUDA_INSTALLER
-
-          echo "Installing CUDA toolkit..."
-          sudo sh $CUDA_INSTALLER --silent --driver --toolkit --no-opengl-libs --no-man-page
-
-          # Set environment variables
-          echo "CUDA_HOME=/usr/local/cuda" >> $GITHUB_ENV
-          echo "/usr/local/cuda/bin" >> $GITHUB_PATH
-          echo "LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH" >> $GITHUB_ENV
-
-          rm -f $CUDA_INSTALLER
-          echo "CUDA installation complete"
+          echo "CUDA installed to: ${{ steps.cuda-toolkit.outputs.CUDA_PATH }}"
+          echo "nvcc version:"
+          nvcc --version
         shell: bash
 
-      - name: Install CUDA Toolkit (Windows)
-        if: matrix.os == 'windows-latest'
-        shell: powershell
-        run: |
-          # Use Chocolatey to install CUDA (more reliable than manual installer)
-          choco install cuda --version=12.4 -y --force
-
-          # Verify CUDA installation
-          $cudaPath = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.4"
-          if (Test-Path $cudaPath) {
-            Write-Host "CUDA found at $cudaPath"
-            Get-ChildItem "$cudaPath\bin\nvcc.exe"
-          } else {
-            Write-Host "CUDA not found at expected location"
-            exit 1
-          }
-
-      - name: Set CUDA Environment Variables (Windows)
-        if: matrix.os == 'windows-latest'
-        shell: powershell
-        run: |
-          $cudaPath = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.4"
-          echo "CUDA_PATH=$cudaPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          echo "$cudaPath\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-
-      - name: Verify CUDA Installation (Ubuntu)
-        if: matrix.os == 'ubuntu-latest'
-        run: nvcc --version
-        shell: bash
-
-      - name: Verify CUDA Installation (Windows)
-        if: matrix.os == 'windows-latest'
-        run: nvcc --version
-        shell: cmd
-
-      - name: Compile with CUDA
+      - name: Compile CLIc with CUDA
         run: |
           set -euo pipefail
           BUILD_DIR="${{ runner.workspace }}/build"
+          CUDA_ROOT="${{ steps.cuda-toolkit.outputs.CUDA_PATH }}"
 
-          CMAKE_OPTS="-DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_DOCUMENTATION=OFF -DBUILD_BENCHMARK=OFF"
-          CMAKE_OPTS="$CMAKE_OPTS -DENABLE_CUDA=ON"
-
-          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            CMAKE_OPTS="$CMAKE_OPTS -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda"
-          fi
+          CMAKE_OPTS="-DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }}"
+          CMAKE_OPTS="$CMAKE_OPTS -DBUILD_DOCUMENTATION=OFF"
+          CMAKE_OPTS="$CMAKE_OPTS -DBUILD_BENCHMARK=OFF"
+          CMAKE_OPTS="$CMAKE_OPTS -DCLE_BACKEND_TYPE=CUDA"
+          CMAKE_OPTS="$CMAKE_OPTS -DCUDAToolkit_ROOT=$CUDA_ROOT"
 
           cmake -S "${{ github.workspace }}" -B "$BUILD_DIR" $CMAKE_OPTS ${{ matrix.cmake-build-flag }}
           cmake --build "$BUILD_DIR" --parallel ${{ env.cmake-parallel }} --config Release
@@ -144,3 +99,7 @@ jobs:
           name: test-results-cuda-${{ matrix.name }}
           path: ${{ runner.workspace }}/build/Testing/Temporary/
           if-no-files-found: ignore
+
+# # Bypass find_package completely
+# CMAKE_OPTS="$CMAKE_OPTS -DCUDAToolkit_LIBRARY_DIR=$CUDA_ROOT/lib64"
+# CMAKE_OPTS="$CMAKE_OPTS -DCUDAToolkit_INCLUDE_DIRS=$CUDA_ROOT/include"
