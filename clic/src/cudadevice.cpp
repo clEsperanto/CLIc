@@ -167,7 +167,7 @@ CUDADevice::getDeviceType() const -> std::string
 }
 
 [[nodiscard]] auto
-CUDADevice::getPlatform() const -> const std::string
+CUDADevice::getPlatform() const -> std::string
 {
   return "NVIDIA";
 }
