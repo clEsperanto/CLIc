@@ -65,7 +65,7 @@ jobs:
         id: cuda-toolkit
         uses: Jimver/cuda-toolkit@v0.2.21
         with:
-          cuda: '12.4.0'
+          cuda: '12.6.0'
           method: 'network'
           non-cuda-sub-packages: '["libcublas","libcublas-dev"]'
 
@@ -82,13 +82,16 @@ jobs:
           BUILD_DIR="${{ runner.workspace }}/build"
           CUDA_ROOT="${{ steps.cuda-toolkit.outputs.CUDA_PATH }}"
 
-          CMAKE_OPTS="-DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }}"
-          CMAKE_OPTS="$CMAKE_OPTS -DBUILD_DOCUMENTATION=OFF"
-          CMAKE_OPTS="$CMAKE_OPTS -DBUILD_BENCHMARK=OFF"
-          CMAKE_OPTS="$CMAKE_OPTS -DCLE_BACKEND_TYPE=CUDA"
-          CMAKE_OPTS="$CMAKE_OPTS -DCUDAToolkit_ROOT=$CUDA_ROOT"
+          # Use array to properly preserve quoted paths with spaces
+          declare -a CMAKE_OPTS=(
+            "-DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }}"
+            "-DBUILD_DOCUMENTATION=OFF"
+            "-DBUILD_BENCHMARK=OFF"
+            "-DCLE_BACKEND_TYPE=CUDA"
+            "-DCUDAToolkit_ROOT=$CUDA_ROOT"
+          )
 
-          cmake -S "${{ github.workspace }}" -B "$BUILD_DIR" $CMAKE_OPTS ${{ matrix.cmake-build-flag }}
+          cmake -S "${{ github.workspace }}" -B "$BUILD_DIR" "${CMAKE_OPTS[@]}" ${{ matrix.cmake-build-flag }}
           cmake --build "$BUILD_DIR" --parallel ${{ env.cmake-parallel }} --config Release
         shell: bash -l {0}
 
