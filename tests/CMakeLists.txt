@@ -48,8 +48,8 @@ function(add_clic_test_suite SUITE_NAME LABEL)
         list(APPEND TEST_PROPERTIES ENVIRONMENT "LD_LIBRARY_PATH=${CUDAToolkit_LIBRARY_DIR}:$ENV{LD_LIBRARY_PATH}")
     endif()
 
-    # For Windows, defer test discovery to runtime to ensure DLLs are available
-    if(WIN32)
+    # For Windows or CUDA on Linux, defer test discovery to runtime
+    if(WIN32 OR (CLE_BACKEND_TYPE STREQUAL "CUDA" AND UNIX AND NOT APPLE))
         gtest_discover_tests(${SUITE_NAME}
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             PROPERTIES ${TEST_PROPERTIES}
