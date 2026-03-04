@@ -68,15 +68,15 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           set -euo pipefail
-          
+
           # Add NVIDIA repository
           wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb
           sudo dpkg -i cuda-keyring_1.0-1_all.deb
           sudo apt-get update
-          
+
           # Install CUDA toolkit
           sudo apt-get install -y cuda-toolkit-12-4 cuda-runtime-12-4
-          
+
           # Set environment variables
           echo "CUDA_HOME=/usr/local/cuda-12.4" >> $GITHUB_ENV
           echo "/usr/local/cuda-12.4/bin" >> $GITHUB_PATH
@@ -89,12 +89,12 @@ jobs:
           # Download and install CUDA
           $cudaUrl = "https://developer.download.nvidia.com/compute/cuda/12.4.0/network_installers/cuda_12.4.0_windows_network.exe"
           $cudaInstaller = "cuda_installer.exe"
-          
+
           Invoke-WebRequest -Uri $cudaUrl -OutFile $cudaInstaller
-          
+
           # Run installer silently
           & "./$cudaInstaller" -s -noprompt -InstallationType=Single -CudaToolkit=12.4
-          
+
           # Add to PATH
           $cudaPath = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.4"
           echo "CUDA_PATH=$cudaPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
@@ -115,7 +115,7 @@ jobs:
           CMAKE_OPTS="-DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_DOCUMENTATION=OFF -DBUILD_BENCHMARK=OFF"
           CMAKE_OPTS="$CMAKE_OPTS -DCMAKE_CUDA_COMPILER=nvcc"
           CMAKE_OPTS="$CMAKE_OPTS -DCLE_BACKEND_TYPE=CUDA"
-          
+
           if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
             CMAKE_OPTS="$CMAKE_OPTS -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-12.4"
           elif [ "${{ matrix.os }}" = "windows-latest" ]; then
