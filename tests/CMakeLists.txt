@@ -40,24 +40,25 @@ function(add_clic_test_suite SUITE_NAME LABEL)
                                "$<TARGET_FILE_DIR:${SUITE_NAME}>")
     endif()
 
+    # Build properties list for test discovery
+    set(TEST_PROPERTIES LABELS "${LABEL}")
+    
+    # For CUDA backend on Linux, add library path to environment
+    if(CLE_BACKEND_TYPE STREQUAL "CUDA" AND UNIX AND NOT APPLE AND CUDAToolkit_LIBRARY_DIR)
+        list(APPEND TEST_PROPERTIES ENVIRONMENT "LD_LIBRARY_PATH=${CUDAToolkit_LIBRARY_DIR}:$ENV{LD_LIBRARY_PATH}")
+    endif()
+
     # For Windows, defer test discovery to runtime to ensure DLLs are available
     if(WIN32)
         gtest_discover_tests(${SUITE_NAME}
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-            PROPERTIES LABELS "${LABEL}"
+            PROPERTIES ${TEST_PROPERTIES}
             DISCOVERY_MODE POST_BUILD
         )
     else()
         gtest_discover_tests(${SUITE_NAME}
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-            PROPERTIES LABELS "${LABEL}"
-        )
-    endif()
-
-    # For CUDA backend, set library path for test execution on Linux
-    if(CLE_BACKEND_TYPE STREQUAL "CUDA" AND UNIX AND NOT APPLE AND CUDAToolkit_LIBRARY_DIR)
-        set_tests_properties(${SUITE_NAME} PROPERTIES
-            ENVIRONMENT "LD_LIBRARY_PATH=${CUDAToolkit_LIBRARY_DIR}:$ENV{LD_LIBRARY_PATH}"
+            PROPERTIES ${TEST_PROPERTIES}
         )
     endif()
 endfunction()
