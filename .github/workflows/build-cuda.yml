@@ -61,8 +61,9 @@ jobs:
       - name: Get CMake and Ninja
         uses: lukka/get-cmake@v4.2.3
 
-      - name: Install CUDA Toolkit
-        id: cuda-toolkit
+      - name: Install CUDA Toolkit (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        id: cuda-toolkit-linux
         uses: Jimver/cuda-toolkit@v0.2.21
         with:
           cuda: '12.6.0'
@@ -70,10 +71,29 @@ jobs:
           sub-packages: '["nvcc","cudart","cudart-dev","nvrtc","nvrtc-dev"]'
           non-cuda-sub-packages: '["libnvjitlink","libnvjitlink-dev"]'
 
+      - name: Install CUDA Toolkit (Windows)
+        if: matrix.os == 'windows-latest'
+        id: cuda-toolkit-windows
+        uses: Jimver/cuda-toolkit@v0.2.21
+        with:
+          cuda: '12.6.0'
+          method: 'network'
+          sub-packages: '["nvcc","cudart","nvrtc","nvrtc_dev","nvjitlink","nvjitlink_dev"]'
+          non-cuda-sub-packages: '[]'
+
+      - name: Set CUDA path
+        id: cuda-path
+        run: |
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+            echo "CUDA_ROOT=${{ steps.cuda-toolkit-linux.outputs.CUDA_PATH }}" >> $GITHUB_OUTPUT
+          else
+            echo "CUDA_ROOT=${{ steps.cuda-toolkit-windows.outputs.CUDA_PATH }}" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
       - name: Verify CUDA Installation
         run: |
-          echo "CUDA installed to: ${{ steps.cuda-toolkit.outputs.CUDA_PATH }}"
-          echo "nvcc version:"
+          echo "CUDA installed to: ${{ steps.cuda-path.outputs.CUDA_ROOT }}"
           nvcc --version
         shell: bash
 
@@ -81,18 +101,15 @@ jobs:
         run: |
           set -euo pipefail
           BUILD_DIR="${{ runner.workspace }}/build"
-          CUDA_ROOT="${{ steps.cuda-toolkit.outputs.CUDA_PATH }}"
+          CUDA_ROOT="${{ steps.cuda-path.outputs.CUDA_ROOT }}"
 
-          # Use array to properly preserve quoted paths with spaces
-          declare -a CMAKE_OPTS=(
-            "-DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }}"
-            "-DBUILD_DOCUMENTATION=OFF"
-            "-DBUILD_BENCHMARK=OFF"
-            "-DCLE_BACKEND_TYPE=CUDA"
-            "-DCUDAToolkit_ROOT=$CUDA_ROOT"
-          )
+          CMAKE_OPTS="-DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }}"
+          CMAKE_OPTS="$CMAKE_OPTS -DBUILD_DOCUMENTATION=OFF"
+          CMAKE_OPTS="$CMAKE_OPTS -DBUILD_BENCHMARK=OFF"
+          CMAKE_OPTS="$CMAKE_OPTS -DCLE_BACKEND_TYPE=CUDA"
+          CMAKE_OPTS="$CMAKE_OPTS -DCUDAToolkit_ROOT=$CUDA_ROOT"
 
-          cmake -S "${{ github.workspace }}" -B "$BUILD_DIR" "${CMAKE_OPTS[@]}" ${{ matrix.cmake-build-flag }}
+          cmake -S "${{ github.workspace }}" -B "$BUILD_DIR" $CMAKE_OPTS ${{ matrix.cmake-build-flag }}
           cmake --build "$BUILD_DIR" --parallel ${{ env.cmake-parallel }} --config Release
         shell: bash -l {0}
 
@@ -103,7 +120,3 @@ jobs:
           name: test-results-cuda-${{ matrix.name }}
           path: ${{ runner.workspace }}/build/Testing/Temporary/
           if-no-files-found: ignore
-
-# # Bypass find_package completely
-# CMAKE_OPTS="$CMAKE_OPTS -DCUDAToolkit_LIBRARY_DIR=$CUDA_ROOT/lib64"
-# CMAKE_OPTS="$CMAKE_OPTS -DCUDAToolkit_INCLUDE_DIRS=$CUDA_ROOT/include"
