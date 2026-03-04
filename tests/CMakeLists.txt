@@ -19,11 +19,12 @@ function(add_clic_test_suite SUITE_NAME LABEL)
     endif()
 
     add_executable(${SUITE_NAME} ${SUITE_SOURCES})
-    add_dependencies(${SUITE_NAME} CLIc)
+    add_dependencies(${SUITE_NAME} CLIc gtest gtest_main)
     target_link_libraries(${SUITE_NAME} PRIVATE CLIc::CLIc gtest gtest_main)
     target_include_directories(${SUITE_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/tests)
     set_target_properties(${SUITE_NAME} PROPERTIES FOLDER "Tests")
 
+    # On Windows, copy DLLs to test executable directory before test discovery
     if(WIN32)
         add_custom_command(TARGET ${SUITE_NAME} POST_BUILD
                            COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -39,10 +40,19 @@ function(add_clic_test_suite SUITE_NAME LABEL)
                                "$<TARGET_FILE_DIR:${SUITE_NAME}>")
     endif()
 
-    gtest_discover_tests(${SUITE_NAME}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        PROPERTIES LABELS "${LABEL}"
-    )
+    # For Windows, defer test discovery to runtime to ensure DLLs are available
+    if(WIN32)
+        gtest_discover_tests(${SUITE_NAME}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            PROPERTIES LABELS "${LABEL}"
+            DISCOVERY_MODE POST_BUILD
+        )
+    else()
+        gtest_discover_tests(${SUITE_NAME}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            PROPERTIES LABELS "${LABEL}"
+        )
+    endif()
 
     # For CUDA backend, set library path for test execution on Linux
     if(CLE_BACKEND_TYPE STREQUAL "CUDA" AND UNIX AND NOT APPLE AND CUDAToolkit_LIBRARY_DIR)
