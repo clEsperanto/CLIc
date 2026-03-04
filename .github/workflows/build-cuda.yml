@@ -67,7 +67,8 @@ jobs:
         with:
           cuda: '12.6.0'
           method: 'network'
-          non-cuda-sub-packages: '["libcublas","libcublas-dev"]'
+          sub-packages: '["nvcc","cudart","cudart-dev","nvrtc","nvrtc-dev"]'
+          non-cuda-sub-packages: '["libnvjitlink","libnvjitlink-dev"]'
 
       - name: Verify CUDA Installation
         run: |
