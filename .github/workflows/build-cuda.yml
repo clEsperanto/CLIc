@@ -26,14 +26,12 @@ jobs:
             cxx-compiler: "g++"
             cmake-build-type: "Release"
             cmake-build-flag: ""
-            cuda-install: true
           - name: windows
             os: windows-latest
             c-compiler: "cl.exe"
             cxx-compiler: "cl.exe"
             cmake-build-type: "Release"
             cmake-build-flag: "-A x64"
-            cuda-install: true
 
     steps:
 
@@ -68,58 +66,71 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           set -euo pipefail
-
-          # Add NVIDIA repository
-          wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb
-          sudo dpkg -i cuda-keyring_1.0-1_all.deb
-          sudo apt-get update
-
-          # Install CUDA toolkit
-          sudo apt-get install -y cuda-toolkit-12-4 cuda-runtime-12-4
-
+          
+          echo "Downloading CUDA 12.4 installer..."
+          CUDA_URL="https://developer.download.nvidia.com/compute/cuda/12.4.1/local_installers/cuda_12.4.1_550.54.15_linux.run"
+          CUDA_INSTALLER="cuda_installer.run"
+          
+          wget -q $CUDA_URL -O $CUDA_INSTALLER
+          chmod +x $CUDA_INSTALLER
+          
+          echo "Installing CUDA toolkit..."
+          sudo sh $CUDA_INSTALLER --silent --driver --toolkit --no-opengl-libs --no-man-page
+          
           # Set environment variables
-          echo "CUDA_HOME=/usr/local/cuda-12.4" >> $GITHUB_ENV
-          echo "/usr/local/cuda-12.4/bin" >> $GITHUB_PATH
-          echo "LD_LIBRARY_PATH=/usr/local/cuda-12.4/lib64:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+          echo "CUDA_HOME=/usr/local/cuda" >> $GITHUB_ENV
+          echo "/usr/local/cuda/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+          
+          rm -f $CUDA_INSTALLER
+          echo "CUDA installation complete"
         shell: bash
 
       - name: Install CUDA Toolkit (Windows)
         if: matrix.os == 'windows-latest'
+        shell: powershell
         run: |
-          # Download and install CUDA
-          $cudaUrl = "https://developer.download.nvidia.com/compute/cuda/12.4.0/network_installers/cuda_12.4.0_windows_network.exe"
-          $cudaInstaller = "cuda_installer.exe"
+          # Use Chocolatey to install CUDA (more reliable than manual installer)
+          choco install cuda --version=12.4 -y --force
+          
+          # Verify CUDA installation
+          $cudaPath = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.4"
+          if (Test-Path $cudaPath) {
+            Write-Host "CUDA found at $cudaPath"
+            Get-ChildItem "$cudaPath\bin\nvcc.exe"
+          } else {
+            Write-Host "CUDA not found at expected location"
+            exit 1
+          }
 
-          Invoke-WebRequest -Uri $cudaUrl -OutFile $cudaInstaller
-
-          # Run installer silently
-          & "./$cudaInstaller" -s -noprompt -InstallationType=Single -CudaToolkit=12.4
-
-          # Add to PATH
+      - name: Set CUDA Environment Variables (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: powershell
+        run: |
           $cudaPath = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.4"
           echo "CUDA_PATH=$cudaPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           echo "$cudaPath\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-        shell: powershell
 
-      - name: Verify CUDA Installation
-        run: |
-          nvcc --version
+      - name: Verify CUDA Installation (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: nvcc --version
         shell: bash
+
+      - name: Verify CUDA Installation (Windows)
+        if: matrix.os == 'windows-latest'
+        run: nvcc --version
+        shell: cmd
 
       - name: Compile with CUDA
         run: |
           set -euo pipefail
           BUILD_DIR="${{ runner.workspace }}/build"
 
-          # Set CUDA paths
           CMAKE_OPTS="-DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_DOCUMENTATION=OFF -DBUILD_BENCHMARK=OFF"
-          CMAKE_OPTS="$CMAKE_OPTS -DCMAKE_CUDA_COMPILER=nvcc"
-          CMAKE_OPTS="$CMAKE_OPTS -DCLE_BACKEND_TYPE=CUDA"
-
+          CMAKE_OPTS="$CMAKE_OPTS -DENABLE_CUDA=ON"
+          
           if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            CMAKE_OPTS="$CMAKE_OPTS -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-12.4"
-          elif [ "${{ matrix.os }}" = "windows-latest" ]; then
-            CMAKE_OPTS="$CMAKE_OPTS -DCUDA_TOOLKIT_ROOT_DIR=C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.4"
+            CMAKE_OPTS="$CMAKE_OPTS -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda"
           fi
 
           cmake -S "${{ github.workspace }}" -B "$BUILD_DIR" $CMAKE_OPTS ${{ matrix.cmake-build-flag }}
