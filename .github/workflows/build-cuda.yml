@@ -101,13 +101,13 @@ jobs:
           BUILD_DIR="${{ runner.workspace }}/build"
           CUDA_ROOT="${{ steps.cuda-path.outputs.CUDA_ROOT }}"
 
-          CMAKE_OPTS="-DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }}"
-          CMAKE_OPTS="$CMAKE_OPTS -DBUILD_DOCUMENTATION=OFF"
-          CMAKE_OPTS="$CMAKE_OPTS -DBUILD_BENCHMARK=OFF"
-          CMAKE_OPTS="$CMAKE_OPTS -DCLE_BACKEND_TYPE=CUDA"
-          CMAKE_OPTS="$CMAKE_OPTS -DCUDAToolkit_ROOT=\"$CUDA_ROOT\""
-
-          cmake -S "${{ github.workspace }}" -B "$BUILD_DIR" $CMAKE_OPTS ${{ matrix.cmake-build-flag }}
+          cmake -S "${{ github.workspace }}" -B "$BUILD_DIR" \
+            -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} \
+            -DBUILD_DOCUMENTATION=OFF \
+            -DBUILD_BENCHMARK=OFF \
+            -DCLE_BACKEND_TYPE=CUDA \
+            "-DCUDAToolkit_ROOT=${CUDA_ROOT}" \
+            ${{ matrix.cmake-build-flag }}
           cmake --build "$BUILD_DIR" --parallel ${{ env.cmake-parallel }} --config Release
         shell: bash -l {0}
 
