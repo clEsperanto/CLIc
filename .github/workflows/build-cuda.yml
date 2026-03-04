@@ -66,22 +66,22 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           set -euo pipefail
-          
+
           echo "Downloading CUDA 12.4 installer..."
           CUDA_URL="https://developer.download.nvidia.com/compute/cuda/12.4.1/local_installers/cuda_12.4.1_550.54.15_linux.run"
           CUDA_INSTALLER="cuda_installer.run"
-          
+
           wget -q $CUDA_URL -O $CUDA_INSTALLER
           chmod +x $CUDA_INSTALLER
-          
+
           echo "Installing CUDA toolkit..."
           sudo sh $CUDA_INSTALLER --silent --driver --toolkit --no-opengl-libs --no-man-page
-          
+
           # Set environment variables
           echo "CUDA_HOME=/usr/local/cuda" >> $GITHUB_ENV
           echo "/usr/local/cuda/bin" >> $GITHUB_PATH
           echo "LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH" >> $GITHUB_ENV
-          
+
           rm -f $CUDA_INSTALLER
           echo "CUDA installation complete"
         shell: bash
@@ -92,7 +92,7 @@ jobs:
         run: |
           # Use Chocolatey to install CUDA (more reliable than manual installer)
           choco install cuda --version=12.4 -y --force
-          
+
           # Verify CUDA installation
           $cudaPath = "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.4"
           if (Test-Path $cudaPath) {
@@ -128,7 +128,7 @@ jobs:
 
           CMAKE_OPTS="-DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_DOCUMENTATION=OFF -DBUILD_BENCHMARK=OFF"
           CMAKE_OPTS="$CMAKE_OPTS -DENABLE_CUDA=ON"
-          
+
           if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
             CMAKE_OPTS="$CMAKE_OPTS -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda"
           fi
