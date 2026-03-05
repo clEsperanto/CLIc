@@ -46,18 +46,12 @@ jobs:
 
       - name: Cache pip packages
         uses: actions/cache@v4
+        continue-on-error: true
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-
-      - name: Cache CUDA Toolkit
-        uses: actions/cache@v4
-        id: cuda-cache
-        with:
-          path: ${{ runner.workspace }}/cuda-cache
-          key: cuda-12.6.0-${{ matrix.os }}
 
       - name: Install Python build dependencies
         run: |
@@ -73,6 +67,7 @@ jobs:
       - name: Cache ccache (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
         uses: actions/cache@v4
+        continue-on-error: true
         with:
           path: ~/.cache/ccache
           key: ${{ runner.os }}-ccache-${{ hashFiles('clic/**', 'cmake/**') }}
@@ -101,6 +96,7 @@ jobs:
           cuda: '12.6.0'
           method: 'local'
           use-local-cache: true
+          log-file-suffix: '_windows'
 
       - name: Set CUDA path
         id: cuda-path
@@ -120,6 +116,7 @@ jobs:
 
       - name: Restore build cache
         uses: actions/cache@v4
+        continue-on-error: true
         with:
           path: ${{ runner.workspace }}/build
           key: ${{ runner.os }}-cuda-build-${{ matrix.cmake-build-type }}-${{ hashFiles('CMakeLists.txt', 'clic/**', 'cmake/**') }}
