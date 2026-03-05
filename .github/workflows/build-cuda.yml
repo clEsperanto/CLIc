@@ -52,11 +52,32 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
+      - name: Cache CUDA Toolkit
+        uses: actions/cache@v4
+        id: cuda-cache
+        with:
+          path: ${{ runner.workspace }}/cuda-cache
+          key: cuda-12.6.0-${{ matrix.os }}
+
       - name: Install Python build dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install ninja
         shell: bash
+
+      - name: Install ccache (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install -y ccache
+        shell: bash
+
+      - name: Cache ccache (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ccache
+          key: ${{ runner.os }}-ccache-${{ hashFiles('clic/**', 'cmake/**') }}
+          restore-keys: |
+            ${{ runner.os }}-ccache-
 
       - name: Get CMake and Ninja
         uses: lukka/get-cmake@v4.2.3
@@ -70,6 +91,7 @@ jobs:
           method: 'network'
           sub-packages: '["nvcc","cudart","cudart-dev","nvrtc","nvrtc-dev"]'
           non-cuda-sub-packages: '["libnvjitlink","libnvjitlink-dev"]'
+          cache: true
 
       - name: Install CUDA Toolkit (Windows)
         if: matrix.os == 'windows-latest'
@@ -78,6 +100,7 @@ jobs:
         with:
           cuda: '12.6.0'
           method: 'local'
+          cache: true
 
       - name: Set CUDA path
         id: cuda-path
@@ -95,6 +118,14 @@ jobs:
           nvcc --version
         shell: bash
 
+      - name: Restore build cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.workspace }}/build
+          key: ${{ runner.os }}-cuda-build-${{ matrix.cmake-build-type }}-${{ hashFiles('CMakeLists.txt', 'clic/**', 'cmake/**') }}
+          restore-keys: |
+            ${{ runner.os }}-cuda-build-${{ matrix.cmake-build-type }}-
+
       - name: Compile CLIc with CUDA
         run: |
           set -euo pipefail
@@ -107,9 +138,13 @@ jobs:
             -DBUILD_BENCHMARK=OFF \
             -DCLE_BACKEND_TYPE=CUDA \
             "-DCUDAToolkit_ROOT=${CUDA_ROOT}" \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
             ${{ matrix.cmake-build-flag }}
           cmake --build "$BUILD_DIR" --parallel ${{ env.cmake-parallel }} --config Release
         shell: bash -l {0}
+        env:
+          CCACHE_BASEDIR: ${{ github.workspace }}
+          CCACHE_DIR: ~/.cache/ccache
 
       - name: Upload test results
         if: always()
