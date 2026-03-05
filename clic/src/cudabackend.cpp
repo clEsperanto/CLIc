@@ -759,7 +759,7 @@ CUDABackend::allocateBuffer(const Device::Pointer & device, const size_t & size,
 
   CUdeviceptr mem = 0;
   CU_CHECK(cuMemAlloc(&mem, size), "Error: Failed to allocate buffer memory");
-  *data_ptr = reinterpret_cast<void *>(mem);
+  data_ptr = std::shared_ptr<void>(reinterpret_cast<void *>(mem), [](void *) {});
 }
 
 auto
@@ -768,7 +768,7 @@ CUDABackend::freeMemory(const Device::Pointer & device, const mType & mtype, con
   CUDAContextGuard ctx(device);
 
   // @StRigaud TODO: differentiate image vs buffer free when image support lands
-  CU_CHECK(cuMemFree(reinterpret_cast<CUdeviceptr>(*data_ptr)), "Error: Failed to free memory");
+  CU_CHECK(cuMemFree(reinterpret_cast<CUdeviceptr>(data_ptr.get())), "Error: Failed to free memory");
 }
 
 auto
@@ -820,7 +820,7 @@ CUDABackend::writeBuffer(const Device::Pointer &       device,
                 0,
                 0,
                 CU_MEMORYTYPE_DEVICE,
-                *buffer_ptr,
+                buffer_ptr.get(),
                 buffer_origin,
                 dst_row_pitch,
                 dst_slice_pitch,
@@ -862,7 +862,7 @@ CUDABackend::readBuffer(const Device::Pointer &       device,
   const std::array<size_t, 3> host_origin = { 0, 0, 0 };
 
   performMemcpy(CU_MEMORYTYPE_DEVICE,
-                *buffer_ptr,
+                buffer_ptr.get(),
                 buffer_origin,
                 src_row_pitch,
                 src_slice_pitch,
@@ -903,12 +903,12 @@ CUDABackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
   const size_t dst_slice_pitch = (dst_shape[2] > 1) ? dst_shape[1] : 0;
 
   performMemcpy(CU_MEMORYTYPE_DEVICE,
-                *src_ptr,
+                src_ptr.get(),
                 src_origin,
                 src_row_pitch,
                 src_slice_pitch,
                 CU_MEMORYTYPE_DEVICE,
-                *dst_ptr,
+                dst_ptr.get(),
                 dst_origin,
                 dst_row_pitch,
                 dst_slice_pitch,
@@ -975,7 +975,7 @@ CUDABackend::setBuffer(const Device::Pointer &       device,
   CUDAContextGuard ctx(device);
 
   const auto        count = region[0] * region[1] * region[2];
-  const CUdeviceptr dev_ptr = reinterpret_cast<CUdeviceptr>(*buffer_ptr);
+  const CUdeviceptr dev_ptr = reinterpret_cast<CUdeviceptr>(buffer_ptr.get());
   CUresult          err = CUDA_SUCCESS;
 
   switch (dtype)

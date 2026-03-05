@@ -167,7 +167,7 @@ CUDADevice::getDeviceType() const -> std::string
 }
 
 [[nodiscard]] auto
-CUDADevice::getPlatform() const -> const std::string
+CUDADevice::getPlatform() const -> std::string
 {
   return "NVIDIA";
 }
@@ -197,6 +197,18 @@ auto
 CUDADevice::supportImage() const -> bool
 {
   return true;
+}
+
+auto
+CUDADevice::getNbDevicesFromContext() const -> size_t
+{
+  return 1;
+}
+
+auto
+CUDADevice::getDeviceIndex() const -> size_t
+{
+  return static_cast<size_t>(cudaDeviceIndex);
 }
 
 auto

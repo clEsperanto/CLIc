@@ -1,4 +1,4 @@
-name: Build
+name: Build OpenCL
 
 on:
   push:
@@ -69,6 +69,20 @@ jobs:
           python -m pip install ninja
         shell: bash
 
+      - name: Install ccache (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install -y ccache
+        shell: bash
+
+      - name: Cache ccache (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ccache
+          key: ${{ runner.os }}-ccache-opencl-${{ hashFiles('clic/**', 'cmake/**') }}
+          restore-keys: |
+            ${{ runner.os }}-ccache-opencl-
+
       - name: Get CMake and Ninja
         uses: lukka/get-cmake@v4.2.3
 
@@ -128,6 +142,14 @@ jobs:
           fi
         shell: bash -l {0}
 
+      - name: Restore build cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.workspace }}/build
+          key: ${{ runner.os }}-opencl-build-${{ matrix.cmake-build-type }}-${{ hashFiles('CMakeLists.txt', 'clic/**', 'cmake/**') }}
+          restore-keys: |
+            ${{ runner.os }}-opencl-build-${{ matrix.cmake-build-type }}-
+
       - name: Compile CLIc
         run: |
           set -euo pipefail
@@ -141,15 +163,20 @@ jobs:
             CMAKE_OPTS="$CMAKE_OPTS -DCMAKE_PREFIX_PATH=$CACHE_DIR"
 
             if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-              CMAKE_OPTS="$CMAKE_OPTS -DOpenCL_LIBRARIES=$CACHE_DIR/lib/libOpenCL.so -DOpenCL_INCLUDE_DIRS=$CACHE_DIR/include"
+              CMAKE_OPTS="$CMAKE_OPTS -DOpenCL_LIBRARIES=$CACHE_DIR/lib/libOpenCL.so -DOpenCL_INCLUDE_DIRS=$CACHE_DIR/include -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
             elif [ "${{ matrix.os }}" = "windows-latest" ]; then
               CMAKE_OPTS="$CMAKE_OPTS -DOpenCL_LIBRARIES=$CACHE_DIR/lib/OpenCL.lib -DOpenCL_INCLUDE_DIRS=$CACHE_DIR/include"
             fi
+
+            CMAKE_OPTS="$CMAKE_OPTS -DCLE_BACKEND_TYPE=OPENCL"
           fi
 
           cmake -S "${{ github.workspace }}" -B "$BUILD_DIR" $CMAKE_OPTS ${{ matrix.cmake-build-flag }}
           cmake --build "$BUILD_DIR" --parallel ${{ env.cmake-parallel }} --config Release
         shell: bash -l {0}
+        env:
+          CCACHE_BASEDIR: ${{ github.workspace }}
+          CCACHE_DIR: ~/.cache/ccache
 
       - name: Upload test results
         if: always()
