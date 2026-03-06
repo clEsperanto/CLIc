@@ -30,7 +30,7 @@ clic/
 │   ├── tier5.hpp
 │   ├── tier6.hpp
 │   ├── tier7.hpp
-│   ├── tier8.hpp 
+│   ├── tier8.hpp
 │   ├── transform.hpp
 │   ├── translator.hpp
 │   └── utils.hpp
@@ -67,8 +67,8 @@ This is the lowest level of the library
 it uses shared_ptr to manage memory and GPU resources to ensure that they are properly released when they are no longer needed.
 
 ### Array (array.hpp)
-The Array class hold a pointer to the GPU memory and the metadata associated with it (data type, shape, etc.). 
-It hold a pointer to the backend and device that is used to allocate the memory. 
+The Array class hold a pointer to the GPU memory and the metadata associated with it (data type, shape, etc.).
+It hold a pointer to the backend and device that is used to allocate the memory.
 It provide a set of method to access and manipulate the data on the GPU, such as copy, fill, etc.
 It provide a set of method to copy to and from the GPU, such as copyTo and readFrom.
 The Array class is the main data structure used in the library and is used as input and output for mostly all the functions in the library.
@@ -79,7 +79,7 @@ execution.hpp provides implementations of functions that, takes GPU code, set of
 - `native_execute` do the same but for pure OpenCL code.
 
 ### translator (translator.hpp)
-The library is focused on OpenCL code but to support CUDA devices, we have a translator that translate OpenCL code to CUDA code. 
+The library is focused on OpenCL code but to support CUDA devices, we have a translator that translate OpenCL code to CUDA code.
 The translator is implemented in translator.hpp and translator.cpp, it uses a simple string replacement approach to translate the code, it is not a full fledged translator but it is enough for our use case.
 The translator is used in the execution functions to translate the OpenCL code to CUDA code when the device is a CUDA device.
 
