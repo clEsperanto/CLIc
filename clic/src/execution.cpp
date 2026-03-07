@@ -312,6 +312,21 @@ execute(const Device::Pointer & device,
 
 
   const std::string program_source = defines + kernel_preamble + kernel_source;
+  std::string       program_source_cu;
+  try
+  {
+    program_source_cu = defines + cle::translateOpenclToCuda(kernel_source);
+  }
+  catch (const std::exception & e)
+  {
+    // Keep OpenCL execution path usable even if debug translation fails.
+    program_source_cu = "// OpenCL to CUDA translation failed: " + std::string(e.what()) + "\n\n" + program_source;
+  }
+
+  // save kernel source as kernel.txt for debugging
+  saveFile("kernel_ocl.txt", program_source);
+  saveFile("kernel_cuda.txt", program_source_cu);
+
   cle::BackendManager::getInstance().getBackend().executeKernel(
     device, program_source, kernel_name, global_range, local_range, args_ptr, args_size);
 }
@@ -371,6 +386,20 @@ native_execute(const Device::Pointer & device,
   std::vector<std::shared_ptr<void>> args_ptr;
   std::vector<size_t>                args_size;
   marshalParameters(parameters, args_ptr, args_size);
+
+  // save kernel source as kernel.txt for debugging
+  saveFile("kernel_ocl.txt", kernel_source);
+  std::string kernel_source_cu;
+  try
+  {
+    kernel_source_cu = cle::translateOpenclToCuda(kernel_source);
+  }
+  catch (const std::exception & e)
+  {
+    // Keep OpenCL execution path usable even if debug translation fails.
+    kernel_source_cu = "// OpenCL to CUDA translation failed: " + std::string(e.what()) + "\n\n" + kernel_source;
+  }
+  saveFile("kernel_cuda.txt", kernel_source_cu);
 
   cle::BackendManager::getInstance().getBackend().executeKernel(
     device, kernel_source, kernel_name, global_range, local_range, args_ptr, args_size);
@@ -720,8 +749,13 @@ evaluate(const Device::Pointer &            device,
   ks << "    _arr_output[idx] = (" << toString(output->dtype()) << ")(" << float_expression << ");\n";
   ks << "}\n";
 
-  const std::string kernel_source = ks.str();
+  std::string       kernel_source = ks.str();
   const std::string kernel_name = "evaluate_kernel";
+  // convert OpenCL kernel to CUDA if needed
+  if (device->getType() == Device::Type::CUDA)
+  {
+    kernel_source = cle::translateOpenclToCuda(kernel_source);
+  }
 
   // --- Build argument lists ---
   std::vector<std::shared_ptr<void>> args_ptr;
