@@ -79,6 +79,38 @@ public:
   create(const Array::Pointer & array) -> Array::Pointer;
 
   /**
+   * @brief Create a new Array::Pointer object from existing GPU memory
+   * @details This method allows wrapping external GPU memory (from OpenCL, CUDA, or other sources)
+   *          without transferring ownership. The Array will not deallocate this memory.
+   *          This is useful for inter-library integration (similar to CuPy's memory management).
+   * @param width width of the array
+   * @param height height of the array
+   * @param depth depth of the array
+   * @param dimension dimension of the array (1, 2 or 3)
+   * @param data_type data type of the array
+   * @param mem_type memory type of the array
+   * @param gpu_data pointer to the GPU memory
+   * @param device_ptr device where the array is stored
+   * @return Array::Pointer
+   */
+  static auto
+  createFromGPUMemory(size_t                  width,
+                      size_t                  height,
+                      size_t                  depth,
+                      size_t                  dimension,
+                      const dType &           data_type,
+                      const mType &           mem_type,
+                      const std::shared_ptr<void> & gpu_data,
+                      const Device::Pointer & device_ptr) -> Array::Pointer;
+
+  /**
+   * @brief Check if the Array owns its GPU memory
+   * @return bool true if the Array allocated and owns the memory, false if memory is externally managed
+   */
+  [[nodiscard]] auto
+  ownsMemory() const -> bool;
+
+  /**
    * @brief operator << to print the Array::Pointer
    */
   friend auto
@@ -319,6 +351,19 @@ private:
         const mType &           mem_type,
         const Device::Pointer & device_ptr);
 
+  /**
+   * @brief Constructor for wrapping external GPU memory
+   */
+  Array(size_t                  width,
+        size_t                  height,
+        size_t                  depth,
+        size_t                  dimension,
+        const dType &           data_type,
+        const mType &           mem_type,
+        const std::shared_ptr<void> & gpu_data,
+        const Device::Pointer & device_ptr,
+        bool                    owns_memory);
+
   size_t                dim_ = 1;
   size_t                width_ = 1;
   size_t                height_ = 1;
@@ -328,6 +373,7 @@ private:
   Device::Pointer       device_ = nullptr;
   std::shared_ptr<void> data_ = nullptr;
   bool                  initialized_ = false;
+  bool                  owns_memory_ = true;
   const Backend &       backend_ = cle::BackendManager::getInstance().getBackend();
 };
 

@@ -20,21 +20,29 @@ Array::Array(const size_t            width,
   , memType_(mem_type)
   , device_(device_ptr)
   , data_(nullptr)
+  , owns_memory_(true)
 {}
 
-// Array::~Array()
-// {
-//   if (initialized())
-//   {
-//     // auto count = backend_.getRefCount(data_);
-//     // if (count == 1)
-//     // {
-//     //   backend_.freeMemory(device(), mtype(), &data_);
-//     // }
-//     // std::cout << "Array destructor called, freeing memory." << std::endl;
-//     initialized_ = false;
-//   }
-// }
+Array::Array(const size_t            width,
+             const size_t            height,
+             const size_t            depth,
+             const size_t            dimension,
+             const dType &           data_type,
+             const mType &           mem_type,
+             const std::shared_ptr<void> & gpu_data,
+             const Device::Pointer & device_ptr,
+             bool                    owns_memory)
+  : width_((width > 1) ? width : 1)
+  , height_((height > 1) ? height : 1)
+  , depth_((depth > 1) ? depth : 1)
+  , dim_(dimension)
+  , dataType_(data_type)
+  , memType_(mem_type)
+  , device_(device_ptr)
+  , data_(gpu_data)
+  , initialized_(true)
+  , owns_memory_(owns_memory)
+{}
 
 auto
 Array::create(const size_t            width,
@@ -69,6 +77,29 @@ auto
 Array::create(const Array::Pointer & array) -> Array::Pointer
 {
   auto ptr = create(array->width(), array->height(), array->depth(), array->dimension(), array->dtype(), array->mtype(), array->device());
+  return ptr;
+}
+
+auto
+Array::createFromGPUMemory(const size_t                 width,
+                           const size_t                 height,
+                           const size_t                 depth,
+                           const size_t                 dimension,
+                           const dType &                data_type,
+                           const mType &                mem_type,
+                           const std::shared_ptr<void> & gpu_data,
+                           const Device::Pointer &      device_ptr) -> Array::Pointer
+{
+  if (gpu_data == nullptr)
+  {
+    throw std::runtime_error("Error: GPU memory pointer is null");
+  }
+  if (device_ptr == nullptr)
+  {
+    throw std::runtime_error("Error: Device pointer is null");
+  }
+  auto ptr = std::shared_ptr<Array>(
+    new Array(width, height, depth, dimension, data_type, mem_type, gpu_data, device_ptr, false));
   return ptr;
 }
 
@@ -376,6 +407,12 @@ auto
 Array::get_ptr() const -> std::shared_ptr<void>
 {
   return data_;
+}
+
+auto
+Array::ownsMemory() const -> bool
+{
+  return owns_memory_;
 }
 
 } // namespace cle
