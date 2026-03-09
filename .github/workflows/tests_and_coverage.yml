@@ -83,6 +83,8 @@ jobs:
         run: |
           find "${{ runner.workspace }}/build" -name "*.gcda" -delete
           find "${{ runner.workspace }}/build" -name "*.gcno" -delete
+          find "${{ runner.workspace }}/build/_deps" -name "*.gcda" -delete
+          find "${{ runner.workspace }}/build/_deps" -name "*.gcno" -delete
 
       - name: Configure CMake
         run: |
