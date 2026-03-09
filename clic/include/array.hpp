@@ -94,14 +94,14 @@ public:
    * @return Array::Pointer
    */
   static auto
-  createFromGPUMemory(size_t                  width,
-                      size_t                  height,
-                      size_t                  depth,
-                      size_t                  dimension,
-                      const dType &           data_type,
-                      const mType &           mem_type,
+  createFromGPUMemory(size_t                        width,
+                      size_t                        height,
+                      size_t                        depth,
+                      size_t                        dimension,
+                      const dType &                 data_type,
+                      const mType &                 mem_type,
                       const std::shared_ptr<void> & gpu_data,
-                      const Device::Pointer & device_ptr) -> Array::Pointer;
+                      const Device::Pointer &       device_ptr) -> Array::Pointer;
 
   /**
    * @brief Check if the Array owns its GPU memory
@@ -354,15 +354,15 @@ private:
   /**
    * @brief Constructor for wrapping external GPU memory
    */
-  Array(size_t                  width,
-        size_t                  height,
-        size_t                  depth,
-        size_t                  dimension,
-        const dType &           data_type,
-        const mType &           mem_type,
+  Array(size_t                        width,
+        size_t                        height,
+        size_t                        depth,
+        size_t                        dimension,
+        const dType &                 data_type,
+        const mType &                 mem_type,
         const std::shared_ptr<void> & gpu_data,
-        const Device::Pointer & device_ptr,
-        bool                    owns_memory);
+        const Device::Pointer &       device_ptr,
+        bool                          owns_memory);
 
   size_t                dim_ = 1;
   size_t                width_ = 1;

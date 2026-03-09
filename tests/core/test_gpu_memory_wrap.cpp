@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
 #include "cle.hpp"
+#include "gtest/gtest.h"
 
 namespace cle
 {
@@ -54,7 +54,7 @@ TEST_F(GPUMemoryWrapTest, WrappedArrayPointsToSameMemory)
   // Read from wrapped array should get the same data
   std::vector<float> original_data(256);
   std::vector<float> wrapped_data(256);
-  
+
   original->readTo(original_data.data());
   wrapped->readTo(wrapped_data.data());
 
@@ -69,8 +69,7 @@ TEST_F(GPUMemoryWrapTest, WrappedArrayPointsToSameMemory)
 TEST_F(GPUMemoryWrapTest, CreateFromGPUMemoryNullPointerThrows)
 {
   // Creating with null GPU memory pointer should throw
-  EXPECT_THROW(Array::createFromGPUMemory(32, 32, 1, 2, dType::FLOAT, mType::BUFFER, nullptr, device),
-               std::runtime_error);
+  EXPECT_THROW(Array::createFromGPUMemory(32, 32, 1, 2, dType::FLOAT, mType::BUFFER, nullptr, device), std::runtime_error);
 }
 
 TEST_F(GPUMemoryWrapTest, CreateFromGPUMemoryNullDeviceThrows)
@@ -78,9 +77,8 @@ TEST_F(GPUMemoryWrapTest, CreateFromGPUMemoryNullDeviceThrows)
   // Creating with null device pointer should throw
   auto allocated = Array::create(32, 32, 1, 2, dType::FLOAT, mType::BUFFER, device);
   auto gpu_ptr = allocated->get_ptr();
-  
-  EXPECT_THROW(Array::createFromGPUMemory(32, 32, 1, 2, dType::FLOAT, mType::BUFFER, gpu_ptr, nullptr),
-               std::runtime_error);
+
+  EXPECT_THROW(Array::createFromGPUMemory(32, 32, 1, 2, dType::FLOAT, mType::BUFFER, gpu_ptr, nullptr), std::runtime_error);
 }
 
 TEST_F(GPUMemoryWrapTest, MemoryOwnershipTracking)
@@ -98,7 +96,7 @@ TEST_F(GPUMemoryWrapTest, MemoryOwnershipTracking)
 TEST_F(GPUMemoryWrapTest, CreateFromGPUMemoryDifferentDataTypes)
 {
   // Test with different data types
-  std::vector<dType> types = {dType::INT8, dType::UINT8, dType::INT16, dType::UINT16, dType::INT32, dType::UINT32, dType::FLOAT};
+  std::vector<dType> types = { dType::INT8, dType::UINT8, dType::INT16, dType::UINT16, dType::INT32, dType::UINT32, dType::FLOAT };
 
   for (auto dtype : types)
   {

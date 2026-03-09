@@ -23,15 +23,15 @@ Array::Array(const size_t            width,
   , owns_memory_(true)
 {}
 
-Array::Array(const size_t            width,
-             const size_t            height,
-             const size_t            depth,
-             const size_t            dimension,
-             const dType &           data_type,
-             const mType &           mem_type,
+Array::Array(const size_t                  width,
+             const size_t                  height,
+             const size_t                  depth,
+             const size_t                  dimension,
+             const dType &                 data_type,
+             const mType &                 mem_type,
              const std::shared_ptr<void> & gpu_data,
-             const Device::Pointer & device_ptr,
-             bool                    owns_memory)
+             const Device::Pointer &       device_ptr,
+             bool                          owns_memory)
   : width_((width > 1) ? width : 1)
   , height_((height > 1) ? height : 1)
   , depth_((depth > 1) ? depth : 1)
@@ -81,14 +81,14 @@ Array::create(const Array::Pointer & array) -> Array::Pointer
 }
 
 auto
-Array::createFromGPUMemory(const size_t                 width,
-                           const size_t                 height,
-                           const size_t                 depth,
-                           const size_t                 dimension,
-                           const dType &                data_type,
-                           const mType &                mem_type,
+Array::createFromGPUMemory(const size_t                  width,
+                           const size_t                  height,
+                           const size_t                  depth,
+                           const size_t                  dimension,
+                           const dType &                 data_type,
+                           const mType &                 mem_type,
                            const std::shared_ptr<void> & gpu_data,
-                           const Device::Pointer &      device_ptr) -> Array::Pointer
+                           const Device::Pointer &       device_ptr) -> Array::Pointer
 {
   if (gpu_data == nullptr)
   {
@@ -98,8 +98,7 @@ Array::createFromGPUMemory(const size_t                 width,
   {
     throw std::runtime_error("Error: Device pointer is null");
   }
-  auto ptr = std::shared_ptr<Array>(
-    new Array(width, height, depth, dimension, data_type, mem_type, gpu_data, device_ptr, false));
+  auto ptr = std::shared_ptr<Array>(new Array(width, height, depth, dimension, data_type, mem_type, gpu_data, device_ptr, false));
   return ptr;
 }
 
