@@ -27,8 +27,3 @@ if(BUILD_TESTING)
     include(CTest)
     add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
 endif(BUILD_TESTING)
-
-# Build documentation if BUILD_DOCUMENTATION is ON (-DBUILD_DOCUMENTATION=ON)
-if (BUILD_DOCUMENTATION)
-    add_subdirectory(${PROJECT_SOURCE_DIR}/docs)
-endif()
