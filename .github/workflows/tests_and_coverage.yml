@@ -79,6 +79,11 @@ jobs:
           restore-keys: |
             cmake-${{ runner.os }}-${{ matrix.buildtype }}-
 
+      - name: Clean coverage data
+        run: |
+          find "${{ runner.workspace }}/build" -name "*.gcda" -delete
+          find "${{ runner.workspace }}/build" -name "*.gcno" -delete
+
       - name: Configure CMake
         run: |
           set -euo pipefail
