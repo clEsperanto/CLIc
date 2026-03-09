@@ -18,7 +18,6 @@ if(APPLE)
   add_compile_options(-Wno-deprecated-declarations -Wno-comment -Wno-switch -Wno-return-type)
 endif()
 
-
 # set folder properties for IDE
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -46,11 +45,6 @@ endif()
 set(CMAKE_DEBUG_POSTFIX "_d")
 set(CMAKE_RELEASE_POSTFIX "")
 
-# if(CMAKE_BUILD_TYPE MATCHES "Debug")
-#   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}  " -Wall -Werror")
-#   set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} " -Wall -Werror")
-# endif()
-
 ## Defines options for the build
 # set build as static or shared library (default: static)
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
@@ -70,17 +64,12 @@ endif()
 option(BUILD_TESTING "Build ${LIBRARY_NAME} Tests." ON)
 message(STATUS "Build tests: ${BUILD_TESTING}")
 
-# set Doc compilation (default: ON) (NOT IMPLEMENTED)
-option(BUILD_DOCUMENTATION "Build ${LIBRARY_NAME} Documentation." ON)
-message(STATUS "Build documentation: ${BUILD_DOCUMENTATION} (WIP)")
-
 # set Benchmark compilation (default: ON)
 option(BUILD_BENCHMARK "build benchmarks tests" OFF)
 message(STATUS "Build benchmark: ${BUILD_BENCHMARK}")
 
 option(CLEAR_KERNEL_CACHE "remove kernel binaries cache from the system" OFF)
 message(STATUS "Clear kernel cache: ${CLEAR_KERNEL_CACHE}")
-
 
 ## Manage cache folder and cache files
 # delete folder and all its content (sub folder and files)

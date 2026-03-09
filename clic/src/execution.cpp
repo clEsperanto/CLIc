@@ -720,8 +720,13 @@ evaluate(const Device::Pointer &            device,
   ks << "    _arr_output[idx] = (" << toString(output->dtype()) << ")(" << float_expression << ");\n";
   ks << "}\n";
 
-  const std::string kernel_source = ks.str();
+  std::string       kernel_source = ks.str();
   const std::string kernel_name = "evaluate_kernel";
+  // convert OpenCL kernel to CUDA if needed
+  if (device->getType() == Device::Type::CUDA)
+  {
+    kernel_source = cle::translateOpenclToCuda(kernel_source);
+  }
 
   // --- Build argument lists ---
   std::vector<std::shared_ptr<void>> args_ptr;

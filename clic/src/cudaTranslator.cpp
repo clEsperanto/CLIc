@@ -167,8 +167,8 @@ OpenCLToCUDATranslator::translateQualifiers(std::string & code) -> void
   // Non-kernel helper functions declared 'inline' should become __device__
   // We use word boundary matching via regex to avoid mangling "inline" inside strings.
   {
-    // Match standalone "inline" that isn't already preceded by __device__
-    static const std::regex inlineRe(R"((?<![_a-zA-Z])inline(?![_a-zA-Z]))");
+    // Use word boundaries to stay compatible with std::regex ECMAScript grammar.
+    static const std::regex inlineRe(R"(\binline\b)");
     regexReplaceAll(code, inlineRe, "__device__ inline");
   }
 }
@@ -188,7 +188,8 @@ OpenCLToCUDATranslator::translateAddressSpaces(std::string & code) -> void
   // Since we already converted __kernel → __global__, we need to be careful.
   // We look for __global that is *not* followed by '__' (i.e., not __global__).
   {
-    static const std::regex globalQualRe(R"(__global(?!_))");
+    // Match standalone __global but not CUDA's __global__.
+    static const std::regex globalQualRe(R"(__global\b)");
     regexReplaceAll(code, globalQualRe, "");
   }
 
@@ -197,7 +198,8 @@ OpenCLToCUDATranslator::translateAddressSpaces(std::string & code) -> void
 
   // __constant (standalone, not already replaced) → __constant__
   {
-    static const std::regex constQualRe(R"(__constant(?!_))");
+    // Match standalone __constant but not __constant__.
+    static const std::regex constQualRe(R"(__constant\b)");
     regexReplaceAll(code, constQualRe, "__constant__");
   }
 
@@ -340,10 +342,10 @@ OpenCLToCUDATranslator::translateVectorAccess(std::string & code) -> void
 
   // Use regex for safety: match ".sN" that follows a word character or ')'
   static const std::vector<std::pair<std::regex, std::string>> accessMap = {
-    { std::regex(R"(\.s0(?![0-9a-fA-F]))"), ".x" },
-    { std::regex(R"(\.s1(?![0-9a-fA-F]))"), ".y" },
-    { std::regex(R"(\.s2(?![0-9a-fA-F]))"), ".z" },
-    { std::regex(R"(\.s3(?![0-9a-fA-F]))"), ".w" },
+    { std::regex(R"(\.s0\b)"), ".x" },
+    { std::regex(R"(\.s1\b)"), ".y" },
+    { std::regex(R"(\.s2\b)"), ".z" },
+    { std::regex(R"(\.s3\b)"), ".w" },
   };
 
   for (const auto & [pattern, replacement] : accessMap)
