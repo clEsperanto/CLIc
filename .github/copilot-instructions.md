@@ -18,9 +18,9 @@ This repository focuses on the CLIc component, which is the core of the clEspera
 
 ### Architecture:
 
-- CLIc is implemented with C++ library for the data structures (Array) and for the GPU resources (Device, Backends) while the rest are functions that operate on these data structures and resources. 
+- CLIc is implemented with C++ library for the data structures (Array) and for the GPU resources (Device, Backends) while the rest are functions that operate on these data structures and resources.
 - Each language wrapper (python, Java) has its own repository and build process which depends on the CLIc library. The wrappers are designed to be as thin as possible, delegating most of the work to the CLIc library while taking the responsibility for the language-specific interface (e.g., numpy API for pyclEsperanto).
-- The algorithms function are organised as Tiers, with tier1 being the most basic and fully GPU code, tier2 relying on tier1 functions, tier3 relying on tier2 functions and so on. 
+- The algorithms function are organised as Tiers, with tier1 being the most basic and fully GPU code, tier2 relying on tier1 functions, tier3 relying on tier2 functions and so on.
 
 ### Repository Structure:
 
