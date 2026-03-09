@@ -98,7 +98,8 @@ TEST_P(GPUMemoryWrapTest, MemoryOwnershipTracking)
 TEST_P(GPUMemoryWrapTest, CreateFromGPUMemoryDifferentDataTypes)
 {
   // Test with different data types
-  std::vector<cle::dType> types = { cle::dType::INT8, cle::dType::UINT8, cle::dType::INT16, cle::dType::UINT16, cle::dType::INT32, cle::dType::UINT32, cle::dType::FLOAT };
+  std::vector<cle::dType> types = { cle::dType::INT8,  cle::dType::UINT8,  cle::dType::INT16, cle::dType::UINT16,
+                                    cle::dType::INT32, cle::dType::UINT32, cle::dType::FLOAT };
 
   for (auto dtype : types)
   {
@@ -112,4 +113,3 @@ TEST_P(GPUMemoryWrapTest, CreateFromGPUMemoryDifferentDataTypes)
 }
 
 INSTANTIATE_TEST_SUITE_P(InstantiationName, GPUMemoryWrapTest, ::testing::ValuesIn(getParameters()));
-
