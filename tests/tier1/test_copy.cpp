@@ -44,7 +44,7 @@ TEST_P(TestCopy, execute)
 TEST_P(TestCopy, copyCast)
 {
   std::array<uint32_t, 10 * 5 * 3> output;
-  std::array<float, 10 * 5 * 3> input;
+  std::array<float, 10 * 5 * 3>    input;
   std::array<uint32_t, 10 * 5 * 3> valid;
 
   std::fill(input.begin(), input.end(), static_cast<float>(10));
@@ -62,7 +62,6 @@ TEST_P(TestCopy, copyCast)
     EXPECT_EQ(output[i], valid[i]);
   }
 }
-
 
 
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestCopy, ::testing::ValuesIn(getParameters()));

@@ -22,9 +22,6 @@ protected:
 };
 
 
-
-
-
 TEST_P(TestCopySlice, copyHorizontalSliceFrom)
 {
   std::array<float, 2 * 2 * 2> input = { 1, 4, 0, 4, 1, 3, 1, 2 };
