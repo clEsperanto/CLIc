@@ -79,12 +79,10 @@ jobs:
           restore-keys: |
             cmake-${{ runner.os }}-${{ matrix.buildtype }}-
 
-      - name: Clean coverage data
+      - name: Clean stale coverage data
         run: |
-          find "${{ runner.workspace }}/build" -name "*.gcda" -delete
-          find "${{ runner.workspace }}/build" -name "*.gcno" -delete
-          find "${{ runner.workspace }}/build/_deps" -name "*.gcda" -delete
-          find "${{ runner.workspace }}/build/_deps" -name "*.gcno" -delete
+          find "${{ runner.workspace }}/build" -path "*/_deps" -prune -o -name "*.gcda" -print0 | xargs -0 rm -f
+          find "${{ runner.workspace }}/build" -path "*/_deps" -prune -o -name "*.gcno" -print0 | xargs -0 rm -f
 
       - name: Configure CMake
         run: |
@@ -119,6 +117,7 @@ jobs:
         run: |
           set -euo pipefail
           cd "${{ runner.workspace }}/build"
+          find _deps -name "*.gcda" -delete 2>/dev/null || true
           gcovr -r . \
                 --filter='.*/clic/src/.*' \
                 --exclude='.*/_deps/.*' \
