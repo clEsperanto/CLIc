@@ -119,6 +119,7 @@ jobs:
           cd "${{ runner.workspace }}/build"
           gcovr -r . \
                 --filter='.*/clic/src/.*' \
+                --exclude='.*/_deps/.*' \
                 --exclude-throw-branches \
                 --exclude-unreachable-branches \
                 --xml \
