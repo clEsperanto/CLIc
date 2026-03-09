@@ -56,7 +56,7 @@ jobs:
           python-version: 3.8
 
       - name: Cache pip packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
@@ -76,7 +76,7 @@ jobs:
 
       - name: Cache ccache (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/ccache
           key: ${{ runner.os }}-ccache-opencl-${{ hashFiles('clic/**', 'cmake/**') }}
@@ -88,7 +88,7 @@ jobs:
 
       - name: Cache OpenCL dependencies
         if: matrix.opencl-required == true
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ runner.workspace }}/opencl-cache
           key: opencl-${{ matrix.name }}-${{ env.opencl-icd-loader-git-tag }}-${{ env.opencl-headers-git-tag }}
@@ -143,7 +143,7 @@ jobs:
         shell: bash -l {0}
 
       - name: Restore build cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ runner.workspace }}/build
           key: ${{ runner.os }}-opencl-build-${{ matrix.cmake-build-type }}-${{ hashFiles('CMakeLists.txt', 'clic/**', 'cmake/**') }}

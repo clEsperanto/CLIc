@@ -72,7 +72,7 @@ jobs:
         shell: bash
 
       - name: Cache CMake build
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ runner.workspace }}/build
           key: cmake-${{ runner.os }}-${{ matrix.buildtype }}-${{ hashFiles('CMakeLists.txt', 'clic/**', 'cmake/**') }}
