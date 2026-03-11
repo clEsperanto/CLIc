@@ -168,7 +168,7 @@ jobs:
               CMAKE_OPTS="$CMAKE_OPTS -DOpenCL_LIBRARIES=$CACHE_DIR/lib/OpenCL.lib -DOpenCL_INCLUDE_DIRS=$CACHE_DIR/include"
             fi
 
-            CMAKE_OPTS="$CMAKE_OPTS -DCLE_BACKEND_TYPE=OPENCL"
+            CMAKE_OPTS="$CMAKE_OPTS -DCLE_BACKEND=OPENCL"
           fi
 
           cmake -S "${{ github.workspace }}" -B "$BUILD_DIR" $CMAKE_OPTS ${{ matrix.cmake-build-flag }}

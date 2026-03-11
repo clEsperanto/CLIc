@@ -133,7 +133,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} \
             -DBUILD_DOCUMENTATION=OFF \
             -DBUILD_BENCHMARK=OFF \
-            -DCLE_BACKEND_TYPE=CUDA \
+            -DCLE_BACKEND=CUDA \
             "-DCUDAToolkit_ROOT=${CUDA_ROOT}" \
             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
             ${{ matrix.cmake-build-flag }}

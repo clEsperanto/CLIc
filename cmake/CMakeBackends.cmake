@@ -1,9 +1,9 @@
-message(STATUS "Backend selected: ${CLE_BACKEND_TYPE}")
+message(STATUS "Backend selected: ${CLE_BACKEND}")
 
 set(CLE_OPENCL false)
 set(CLE_CUDA false)
 
-if(CLE_BACKEND_TYPE STREQUAL "OPENCL")
+if(CLE_BACKEND STREQUAL "OPENCL")
     # User can bypass find_package by providing:
     #   -DOpenCL_LIBRARIES=/path/to/libOpenCL.so
     #   -DOpenCL_INCLUDE_DIRS=/path/to/opencl/headers
@@ -15,7 +15,7 @@ if(CLE_BACKEND_TYPE STREQUAL "OPENCL")
     set(CLE_OPENCL true)
     message(STATUS "OpenCL library  : ${OpenCL_LIBRARIES}")
     message(STATUS "OpenCL includes : ${OpenCL_INCLUDE_DIRS}")
-elseif(CLE_BACKEND_TYPE STREQUAL "CUDA")
+elseif(CLE_BACKEND STREQUAL "CUDA")
     # User can bypass find_package by providing:
     #   -DCUDAToolkit_LIBRARY_DIR=/path/to/cuda/lib
     #   -DCUDAToolkit_INCLUDE_DIRS=/path/to/cuda/include
