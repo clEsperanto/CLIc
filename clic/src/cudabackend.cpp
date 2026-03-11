@@ -1127,13 +1127,13 @@ CUDABackend::executeKernel(const Device::Pointer &                    device,
   for (size_t i = 0; i < args.size(); ++i)
   {
     void * arg_ptr = args[i].get();
-    
+
     // Check if the argument is a GPU memory pointer (CUdeviceptr)
     if (sizes[i] == sizeof(CUdeviceptr))
     {
       arg_ptr = (void *)&args[i];
     }
-    
+
     arg_ptrs[i] = arg_ptr;
   }
 

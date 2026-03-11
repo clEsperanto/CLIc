@@ -20,7 +20,7 @@ namespace cle::tier8
 auto
 fft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  if(cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
+  if (cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
   {
     throw std::runtime_error("Error: FFT is not yet supported for CUDA backend.");
   }
@@ -30,7 +30,7 @@ fft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poin
 auto
 ifft_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & dst) -> Array::Pointer
 {
-    if(cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
+  if (cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
   {
     throw std::runtime_error("Error: FFT-based convolution is not yet implemented for CUDA backend.");
   }
@@ -55,11 +55,11 @@ convolve_fft_func(const Device::Pointer & device,
                   Array::Pointer          dst,
                   bool                    correlate) -> Array::Pointer
 {
-  if(cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
+  if (cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
   {
     throw std::runtime_error("Error: FFT-based convolution is not yet implemented for CUDA backend.");
   }
-  
+
   if (kernel->width() > src->width() || kernel->height() > src->height() || kernel->depth() > src->depth())
   {
     std::ostringstream oss;
@@ -121,7 +121,7 @@ deconvolve_fft_func(const Device::Pointer & device,
                     int                     iteration,
                     float                   regularization) -> Array::Pointer
 {
-  if(cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
+  if (cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
   {
     throw std::runtime_error("Error: FFT-based convolution is not yet implemented for CUDA backend.");
   }

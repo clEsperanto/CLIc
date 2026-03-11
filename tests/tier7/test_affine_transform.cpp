@@ -7,17 +7,17 @@
 class TestAffineTransform : public ::testing::TestWithParam<std::string>
 {
 protected:
-std::string          backend;
-cle::Device::Pointer device;
+  std::string          backend;
+  cle::Device::Pointer device;
 
-virtual void
-SetUp()
-{
-  backend = GetParam();
-  cle::BackendManager::getInstance().setBackend(backend);
-  device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-}
+  virtual void
+  SetUp()
+  {
+    backend = GetParam();
+    cle::BackendManager::getInstance().setBackend(backend);
+    device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+    device->setWaitToFinish(true);
+  }
 };
 
 TEST_P(TestAffineTransform, affineTransform)
