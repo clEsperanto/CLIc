@@ -615,8 +615,8 @@ OpenCLToCUDATranslator::translateMiscBuiltins(std::string & code) -> void
   {
     // Match clamp(arg1, arg2, arg3) where arg1, arg2, arg3 are expressions
     // This regex handles simple cases; complex nested expressions may need special care.
-    static const std::regex clampRe(R\"(clamp\s*\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^)]+)\s*\))\");
-    regexReplaceAll(code, clampRe, \"min(max($1, $2), $3)\");
+    static const std::regex clampRe(R"(clamp\s*\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^)]+)\s*\))");
+    regexReplaceAll(code, clampRe, "min(max($1, $2), $3)");
   }
 }
 
