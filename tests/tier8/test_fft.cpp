@@ -27,7 +27,7 @@ protected:
 
 TEST_P(TestFFT, executeVKFFT)
 {
-  if(cle::BackendManager::getInstance().getBackend().getType() != cle::Backend::Type::CUDA)
+  if(cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
   {
     GTEST_SKIP() << "VKFFT-based FFT is not yet supported for CUDA backend.";
   }
@@ -54,7 +54,7 @@ TEST_P(TestFFT, executeVKFFT)
 
 TEST_P(TestFFT, executeConvolution)
 {
-    if(cle::BackendManager::getInstance().getBackend().getType() != cle::Backend::Type::CUDA)
+    if(cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
   {
     GTEST_SKIP() << "VKFFT-based FFT is not yet supported for CUDA backend.";
   }
@@ -91,7 +91,7 @@ TEST_P(TestFFT, executeConvolution)
 
 TEST_P(TestFFT, executeConvolutionCorr)
 {
-  if(cle::BackendManager::getInstance().getBackend().getType() != cle::Backend::Type::CUDA)
+  if(cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
   {
     GTEST_SKIP() << "VKFFT-based FFT is not yet supported for CUDA backend.";
   }
@@ -130,7 +130,7 @@ TEST_P(TestFFT, executeConvolutionCorr)
 
 TEST_P(TestFFT, executeConvolutionFunction)
 {
-    if(cle::BackendManager::getInstance().getBackend().getType() != cle::Backend::Type::CUDA)
+    if(cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
   {
     GTEST_SKIP() << "VKFFT-based FFT is not yet supported for CUDA backend.";
   }
@@ -165,7 +165,7 @@ TEST_P(TestFFT, executeConvolutionFunction)
 
 TEST_P(TestFFT, executeDeconvolutionFunction)
 {
-  if(cle::BackendManager::getInstance().getBackend().getType() != cle::Backend::Type::CUDA)
+  if(cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
   {
     GTEST_SKIP() << "VKFFT-based FFT is not yet supported for CUDA backend.";
   }
