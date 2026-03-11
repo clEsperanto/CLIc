@@ -1138,7 +1138,10 @@ CUDABackend::executeKernel(const Device::Pointer &                    device,
   }
 
   // ── Compute launch configuration ──
-  const auto block_size = computeBlockSize(global_size);
+  // Use the caller-provided local_size if it's fully specified (non-zero in all dims),
+  // otherwise fall back to the auto-computed block size.
+  const bool use_local = (local_size[0] > 0 && local_size[1] > 0 && local_size[2] > 0);
+  const auto block_size = use_local ? local_size : computeBlockSize(global_size);
   const auto grid_size = computeGridSize(global_size, block_size);
 
   // ── Launch ──
