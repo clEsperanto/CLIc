@@ -5,18 +5,26 @@
 #include <gtest/gtest.h>
 
 class TestAffineTransform : public ::testing::TestWithParam<std::string>
-{};
+{
+protected:
+std::string          backend;
+cle::Device::Pointer device;
+
+virtual void
+SetUp()
+{
+  backend = GetParam();
+  cle::BackendManager::getInstance().setBackend(backend);
+  device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+  device->setWaitToFinish(true);
+}
+};
 
 TEST_P(TestAffineTransform, affineTransform)
 {
   const std::array<float, 5 * 5 * 1> input = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   const std::array<float, 5 * 5 * 1> valid = { 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   std::array<float, 5 * 5 * 1>       output;
-
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
 
   auto gpu_input = cle::Array::create(5, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
@@ -34,14 +42,9 @@ TEST_P(TestAffineTransform, affineTransform)
 
 TEST_P(TestAffineTransform, affineTransformInterpolate)
 {
-  std::string param = GetParam();
-  cle::BackendManager::getInstance().setBackend(param);
-  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
-  device->setWaitToFinish(true);
-
-  if (!device->supportImage())
+  if (!device->supportImage() || cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
   {
-    GTEST_SKIP() << "Device does not support image objects.";
+    GTEST_SKIP() << "Device does not support image objects or interpolation.";
   }
 
   const std::array<float, 5 * 5 * 1>   input = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
