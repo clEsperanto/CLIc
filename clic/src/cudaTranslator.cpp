@@ -597,9 +597,16 @@ OpenCLToCUDATranslator::translateMiscBuiltins(std::string & code) -> void
   replaceAll(code, "CLK_LOCAL_MEM_FENCE", "0");
   replaceAll(code, "CLK_GLOBAL_MEM_FENCE", "0");
 
-  // OpenCL type aliases
-  replaceAll(code, "uchar", "unsigned char");
-  replaceAll(code, "ushort", "unsigned short");
+  // OpenCL type aliases — use word boundaries to avoid corrupting vector types
+  // (e.g. uchar2, ushort4, ulong2 are valid CUDA built-ins and must not be touched)
+  {
+    static const std::regex ucharTypeRe(R"(\buchar\b)");
+    regexReplaceAll(code, ucharTypeRe, "unsigned char");
+  }
+  {
+    static const std::regex ushortTypeRe(R"(\bushort\b)");
+    regexReplaceAll(code, ushortTypeRe, "unsigned short");
+  }
   // uint is not defined in CUDA NVRTC, so translate it
   // Must use word boundary matching to avoid replacing it in identifiers like "uint3"
   {
@@ -607,7 +614,10 @@ OpenCLToCUDATranslator::translateMiscBuiltins(std::string & code) -> void
     regexReplaceAll(code, uintTypeRe, "unsigned int");
   }
   // "ulong" → "unsigned long"
-  replaceAll(code, "ulong", "unsigned long");
+  {
+    static const std::regex ulongTypeRe(R"(\bulong\b)");
+    regexReplaceAll(code, ulongTypeRe, "unsigned long");
+  }
 
   // Add clamp function for CUDA (not built-in)
   // OpenCL: clamp(x, lo, hi)  ->  CUDA: min(max(x, lo), hi)
