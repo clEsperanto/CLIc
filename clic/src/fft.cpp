@@ -527,6 +527,6 @@ execTotalVariationTerm(const Device::Pointer & device,
   native_execute(device, kernel, params, global_range, local_range);
 }
 
-#endif // USE_CUDA ═════════════════════════════════════════════════════════════
+// #endif // USE_CUDA ═════════════════════════════════════════════════════════════
 
 } // namespace cle::fft
