@@ -215,35 +215,35 @@ OpenCLToCUDATranslator::translateAddressSpaces(std::string & code) -> void
 auto
 OpenCLToCUDATranslator::translateWorkItemFunctions(std::string & code) -> void
 {
-  // get_global_id(dim)
-  replaceAll(code, "get_global_id(0)", "(blockDim.x * blockIdx.x + threadIdx.x)");
-  replaceAll(code, "get_global_id(1)", "(blockDim.y * blockIdx.y + threadIdx.y)");
-  replaceAll(code, "get_global_id(2)", "(blockDim.z * blockIdx.z + threadIdx.z)");
+  // get_global_id(dim) — cast to int since blockDim/threadIdx are unsigned
+  replaceAll(code, "get_global_id(0)", "((int)(blockDim.x * blockIdx.x + threadIdx.x))");
+  replaceAll(code, "get_global_id(1)", "((int)(blockDim.y * blockIdx.y + threadIdx.y))");
+  replaceAll(code, "get_global_id(2)", "((int)(blockDim.z * blockIdx.z + threadIdx.z))");
 
-  // get_local_id(dim)
-  replaceAll(code, "get_local_id(0)", "threadIdx.x");
-  replaceAll(code, "get_local_id(1)", "threadIdx.y");
-  replaceAll(code, "get_local_id(2)", "threadIdx.z");
+  // get_local_id(dim) — cast to int
+  replaceAll(code, "get_local_id(0)", "((int)threadIdx.x)");
+  replaceAll(code, "get_local_id(1)", "((int)threadIdx.y)");
+  replaceAll(code, "get_local_id(2)", "((int)threadIdx.z)");
 
-  // get_group_id(dim)
-  replaceAll(code, "get_group_id(0)", "blockIdx.x");
-  replaceAll(code, "get_group_id(1)", "blockIdx.y");
-  replaceAll(code, "get_group_id(2)", "blockIdx.z");
+  // get_group_id(dim) — cast to int
+  replaceAll(code, "get_group_id(0)", "((int)blockIdx.x)");
+  replaceAll(code, "get_group_id(1)", "((int)blockIdx.y)");
+  replaceAll(code, "get_group_id(2)", "((int)blockIdx.z)");
 
-  // get_local_size(dim)
-  replaceAll(code, "get_local_size(0)", "blockDim.x");
-  replaceAll(code, "get_local_size(1)", "blockDim.y");
-  replaceAll(code, "get_local_size(2)", "blockDim.z");
+  // get_local_size(dim) — cast to int
+  replaceAll(code, "get_local_size(0)", "((int)blockDim.x)");
+  replaceAll(code, "get_local_size(1)", "((int)blockDim.y)");
+  replaceAll(code, "get_local_size(2)", "((int)blockDim.z)");
 
-  // get_global_size(dim)
-  replaceAll(code, "get_global_size(0)", "(gridDim.x * blockDim.x)");
-  replaceAll(code, "get_global_size(1)", "(gridDim.y * blockDim.y)");
-  replaceAll(code, "get_global_size(2)", "(gridDim.z * blockDim.z)");
+  // get_global_size(dim) — cast to int
+  replaceAll(code, "get_global_size(0)", "((int)(gridDim.x * blockDim.x))");
+  replaceAll(code, "get_global_size(1)", "((int)(gridDim.y * blockDim.y))");
+  replaceAll(code, "get_global_size(2)", "((int)(gridDim.z * blockDim.z))");
 
-  // get_num_groups(dim)
-  replaceAll(code, "get_num_groups(0)", "gridDim.x");
-  replaceAll(code, "get_num_groups(1)", "gridDim.y");
-  replaceAll(code, "get_num_groups(2)", "gridDim.z");
+  // get_num_groups(dim) — cast to int
+  replaceAll(code, "get_num_groups(0)", "((int)gridDim.x)");
+  replaceAll(code, "get_num_groups(1)", "((int)gridDim.y)");
+  replaceAll(code, "get_num_groups(2)", "((int)gridDim.z)");
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -273,6 +273,41 @@ OpenCLToCUDATranslator::translateSynchronization(std::string & code) -> void
 auto
 OpenCLToCUDATranslator::translateVectorConstructors(std::string & code) -> void
 {
+  // Translate functional-style vector casts first: (typeN)(a, b, ...) → make_typeN(a, b, ...)
+  // Must be done before brace-style to avoid confusion
+  static const std::vector<std::string> vecTypeNames = {
+    "char2", "char3", "char4",
+    "uchar2", "uchar3", "uchar4",
+    "short2", "short3", "short4",
+    "ushort2", "ushort3", "ushort4",
+    "int2", "int3", "int4",
+    "uint2", "uint3", "uint4",
+    "long2", "long3", "long4",
+    "ulong2", "ulong3", "ulong4",
+    "float2", "float3", "float4",
+    "double2", "double3", "double4"
+  };
+
+  for (const auto & typeName : vecTypeNames)
+  {
+    std::string pattern = "(" + typeName + ")(";  // e.g., "(int3)("
+    std::string replacement = "make_" + typeName + "(";
+    size_t pos = 0;
+    while ((pos = code.find(pattern, pos)) != std::string::npos)
+    {
+      // Verify this is actually a cast (preceded by space, operator, or paren, not alphanumeric)
+      if (pos == 0 || !std::isalnum(code[pos - 1]))
+      {
+        code.replace(pos, pattern.size(), replacement);
+        pos += replacement.size();
+      }
+      else
+      {
+        pos += pattern.size();
+      }
+    }
+  }
+
   // List of all standard OpenCL vector types and their sizes.
   // OpenCL compound literal:  (typeN){ a, b, ... }
   // CUDA equivalent:          make_typeN( a, b, ... )
@@ -565,9 +600,24 @@ OpenCLToCUDATranslator::translateMiscBuiltins(std::string & code) -> void
   // OpenCL type aliases
   replaceAll(code, "uchar", "unsigned char");
   replaceAll(code, "ushort", "unsigned short");
-  // Note: "uint" is already defined in CUDA headers, usually fine as-is.
-  // "ulong" → "unsigned long" if needed:
-  // replaceAll(code, "ulong", "unsigned long");
+  // uint is not defined in CUDA NVRTC, so translate it
+  // Must use word boundary matching to avoid replacing it in identifiers like "uint3"
+  {
+    static const std::regex uintTypeRe(R"(\buint\b)");
+    regexReplaceAll(code, uintTypeRe, "unsigned int");
+  }
+  // "ulong" → "unsigned long"
+  replaceAll(code, "ulong", "unsigned long");
+
+  // Add clamp function for CUDA (not built-in)
+  // OpenCL: clamp(x, lo, hi)  ->  CUDA: min(max(x, lo), hi)
+  // We use a regex approach for safer matching
+  {
+    // Match clamp(arg1, arg2, arg3) where arg1, arg2, arg3 are expressions
+    // This regex handles simple cases; complex nested expressions may need special care.
+    static const std::regex clampRe(R\"(clamp\s*\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^)]+)\s*\))\");
+    regexReplaceAll(code, clampRe, \"min(max($1, $2), $3)\");
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
