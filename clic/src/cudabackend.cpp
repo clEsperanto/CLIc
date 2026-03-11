@@ -371,7 +371,13 @@ performMemcpy(CUmemorytype                  src_type,
 {
   CUresult err;
 
-  if (shape[2] > 1)
+  // Determine effective copy dimensionality from both the buffer shape AND the
+  // origins: a small source pasted at a non-zero z/y offset into a larger
+  // destination still needs a 3D/2D copy to land at the correct address.
+  const bool need_3d = (shape[2] > 1 || src_origin[2] > 0 || dst_origin[2] > 0);
+  const bool need_2d = !need_3d && (shape[1] > 1 || src_origin[1] > 0 || dst_origin[1] > 0);
+
+  if (need_3d)
   {
     // ── 3D copy ──
     CUDA_MEMCPY3D params = {};
@@ -412,7 +418,7 @@ performMemcpy(CUmemorytype                  src_type,
 
     err = cuMemcpy3D(&params);
   }
-  else if (shape[1] > 1)
+  else if (need_2d)
   {
     // ── 2D copy ──
     CUDA_MEMCPY2D params = {};
