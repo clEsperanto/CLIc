@@ -30,12 +30,12 @@ FetchContent_MakeAvailable(cleKernels eigen ) # clFFT
 
 # Fetch vkFFT library sources
 # 0 - Vulkan, 1 - CUDA, 2 - HIP, 3 - OpenCL, 4 - Level Zero, 5 - Metal.
-if (CLE_BACKEND_TYPE STREQUAL "OPENCL")
+if (CLE_BACKEND STREQUAL "OPENCL")
     set(VKFFT_BACKEND 3 CACHE STRING "VkFFT backend")
-elseif (CLE_BACKEND_TYPE STREQUAL "CUDA")
+elseif (CLE_BACKEND STREQUAL "CUDA")
     set(VKFFT_BACKEND 1 CACHE STRING "VkFFT backend")
 else()
-    message(FATAL_ERROR "Unsupported backend type: ${CLE_BACKEND_TYPE}")
+    message(FATAL_ERROR "Unsupported backend type: ${CLE_BACKEND}")
 endif()
 set(VKFFT_MAX_FFT_DIMENSIONS 4 CACHE STRING "VkFFT maximum dimension supported")
 FetchContent_Declare(VkFFT

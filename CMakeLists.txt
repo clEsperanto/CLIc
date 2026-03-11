@@ -10,8 +10,8 @@ set(eigen_lib_version_tag "3.4.0" CACHE STRING "Eigen library version tag")
 set(vkFFT_version_tag "v1.3.4" CACHE STRING "vkFFT library version tag")
 
 # if not set, set the default build type to Release
-if(NOT CLE_BACKEND_TYPE)
-    set(CLE_BACKEND_TYPE "OPENCL" CACHE STRING "Backend to use (CUDA or OCL)")
+if(NOT CLE_BACKEND)
+    set(CLE_BACKEND "OPENCL" CACHE STRING "Backend to use (CUDA or OCL)")
 endif()
 
 # set environment variables

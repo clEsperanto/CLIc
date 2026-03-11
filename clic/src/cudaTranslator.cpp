@@ -275,24 +275,16 @@ OpenCLToCUDATranslator::translateVectorConstructors(std::string & code) -> void
 {
   // Translate functional-style vector casts first: (typeN)(a, b, ...) → make_typeN(a, b, ...)
   // Must be done before brace-style to avoid confusion
-  static const std::vector<std::string> vecTypeNames = {
-    "char2", "char3", "char4",
-    "uchar2", "uchar3", "uchar4",
-    "short2", "short3", "short4",
-    "ushort2", "ushort3", "ushort4",
-    "int2", "int3", "int4",
-    "uint2", "uint3", "uint4",
-    "long2", "long3", "long4",
-    "ulong2", "ulong3", "ulong4",
-    "float2", "float3", "float4",
-    "double2", "double3", "double4"
-  };
+  static const std::vector<std::string> vecTypeNames = { "char2",  "char3",   "char4",   "uchar2",  "uchar3",  "uchar4", "short2", "short3",
+                                                         "short4", "ushort2", "ushort3", "ushort4", "int2",    "int3",   "int4",   "uint2",
+                                                         "uint3",  "uint4",   "long2",   "long3",   "long4",   "ulong2", "ulong3", "ulong4",
+                                                         "float2", "float3",  "float4",  "double2", "double3", "double4" };
 
   for (const auto & typeName : vecTypeNames)
   {
-    std::string pattern = "(" + typeName + ")(";  // e.g., "(int3)("
+    std::string pattern = "(" + typeName + ")("; // e.g., "(int3)("
     std::string replacement = "make_" + typeName + "(";
-    size_t pos = 0;
+    size_t      pos = 0;
     while ((pos = code.find(pattern, pos)) != std::string::npos)
     {
       // Verify this is actually a cast (preceded by space, operator, or paren, not alphanumeric)

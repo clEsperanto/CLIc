@@ -42,7 +42,7 @@ function(add_clic_test_suite SUITE_NAME LABEL)
     set(TEST_PROPERTIES LABELS "${LABEL}")
 
     # For CUDA backend on Linux, add library path to environment
-    if(CLE_BACKEND_TYPE STREQUAL "CUDA" AND UNIX AND NOT APPLE AND CUDAToolkit_LIBRARY_DIR)
+    if(CLE_BACKEND STREQUAL "CUDA" AND UNIX AND NOT APPLE AND CUDAToolkit_LIBRARY_DIR)
         list(APPEND TEST_PROPERTIES
             ENVIRONMENT "LD_LIBRARY_PATH=${CUDAToolkit_LIBRARY_DIR}:$ENV{LD_LIBRARY_PATH}")
     endif()
