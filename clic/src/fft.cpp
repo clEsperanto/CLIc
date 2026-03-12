@@ -131,8 +131,8 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   auto device = cu_device->getCUDADevice();
   auto stream = cu_device->getCUDAStream();
 
-  void* output_mem = output->get();
-  void* input_mem = input->get();
+  void * output_mem = output->get();
+  void * input_mem = input->get();
 
   auto output_size = static_cast<uint64_t>(output->bitsize());
   auto input_size = static_cast<uint64_t>(input->bitsize());
@@ -232,8 +232,8 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
   auto device = cu_device->getCUDADevice();
   auto stream = cu_device->getCUDAStream();
 
-  void* input_mem = input->get();
-  void* output_mem = output->get();
+  void * input_mem = input->get();
+  void * output_mem = output->get();
 
   auto input_size = static_cast<uint64_t>(input->bitsize());
   auto output_size = static_cast<uint64_t>(output->bitsize());
