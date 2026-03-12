@@ -25,75 +25,6 @@
 namespace cle::fft
 {
 
-#if USE_CUDA
-
-Array::Pointer
-create_hermitian(const Array::Pointer & input)
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-
-auto
-fft_pad_shape(const std::array<size_t, 3> & image_shape, const std::array<size_t, 3> & kernel_shape) -> std::array<size_t, 3>
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-auto
-execOperationKernel(const Device::Pointer & device,
-                    const std::string       name,
-                    const Array::Pointer &  bufferA,
-                    const Array::Pointer &  bufferB,
-                    Array::Pointer          buffer_out,
-                    const unsigned int      nElements) -> Array::Pointer
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-auto
-execRemoveSmallValues(const Device::Pointer & device, Array::Pointer buffer, const unsigned int nElements) -> void
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-auto
-execTotalVariationTerm(const Device::Pointer & device,
-                       const Array::Pointer &  estimate,
-                       const Array::Pointer &  correction,
-                       Array::Pointer          variation,
-                       float                   hx,
-                       float                   hy,
-                       float                   hz,
-                       float                   regularization_factor) -> void
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-auto
-performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointer
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-auto
-performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-auto
-performConvolution(const Array::Pointer & input, const Array::Pointer & psf, const Array::Pointer & output, bool correlate) -> void
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-auto
-performDeconvolution(const Array::Pointer & observe,
-                     const Array::Pointer & psf,
-                     Array::Pointer         normal,
-                     Array::Pointer         estimate,
-                     size_t                 iterations,
-                     float                  regularization) -> Array::Pointer
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-
-#else // USE_CUDA ═════════════════════════════════════════════════════════════
-
-
 auto
 fft_pad_shape(const std::array<size_t, 3> & image_shape, const std::array<size_t, 3> & kernel_shape) -> std::array<size_t, 3>
 {
@@ -108,7 +39,6 @@ fft_pad_shape(const std::array<size_t, 3> & image_shape, const std::array<size_t
 Array::Pointer
 create_hermitian(const Array::Pointer & input)
 {
-  auto   ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
   size_t hermitian_width = static_cast<size_t>(input->width() / 2) + 1;
   return Array::create(
     hermitian_width * 2, input->height(), input->depth(), input->dimension(), dType::COMPLEX, input->mtype(), input->device());
@@ -144,12 +74,12 @@ configure(const Array::Pointer & array, VkFFTConfiguration & configuration) -> v
 }
 
 auto
-get_cache_path(const Array::Pointer & output, const std::shared_ptr<OpenCLDevice> & ocl_device) -> std::filesystem::path
+get_cache_path(const Array::Pointer & output, const Device::Pointer & device) -> std::filesystem::path
 {
   std::ostringstream hashStream;
   hashStream << output->width() << "," << output->height() << "," << output->depth() << "," << output->dimension();
   const auto source_hash = DiskCache::hash(hashStream.str());
-  const auto device_hash = DiskCache::hash(ocl_device->getInfo());
+  const auto device_hash = DiskCache::hash(device->getInfo());
   return DiskCache::instance().getFilePath(device_hash, source_hash, "bin");
 }
 
@@ -191,19 +121,38 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
     output = create_hermitian(input);
   }
 
+  // configure VkFFT
+  VkFFTConfiguration configuration{};
+  configure(input, configuration);
+
+
+#if USE_CUDA
+  auto cu_device = std::dynamic_pointer_cast<CUDADevice>(input->device());
+  auto device = cu_device->getCUDADevice();
+  auto stream = cu_device->getCUDAStream();
+
+  void * output_mem = output->get();
+  void * input_mem = input->get();
+
+  auto output_size = static_cast<uint64_t>(output->bitsize());
+  auto input_size = static_cast<uint64_t>(input->bitsize());
+  configuration.bufferSize = &output_size;
+  configuration.inputBufferSize = &input_size;
+  configuration.buffer = &output_mem;
+  configuration.inputBuffer = &input_mem;
+  configuration.outputBuffer = &output_mem;
+  configuration.device = &device;
+  configuration.stream = &stream;
+  configuration.num_streams = 1;
+#else
   // fetch ocl device, context and queue
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
   auto device = ocl_device->getCLDevice();
   auto context = ocl_device->getCLContext();
   auto queue = ocl_device->getCLCommandQueue();
 
-  // configure VkFFT
-  VkFFTConfiguration configuration{};
-  configure(input, configuration);
-
   auto output_mem = static_cast<cl_mem>(output->get());
   auto input_mem = static_cast<cl_mem>(input->get());
-
 
   auto psize = static_cast<uint64_t>(output->bitsize());
   auto psizein = static_cast<uint64_t>(input->bitsize());
@@ -215,13 +164,14 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   configuration.device = &device;
   configuration.context = &context;
   configuration.commandQueue = &queue;
+#endif
 
   // manage jit-cache system
   const auto            use_cache = DiskCache::instance().isEnabled();
   std::filesystem::path binary_path;
   if (use_cache)
   {
-    binary_path = get_cache_path(input, ocl_device);
+    binary_path = get_cache_path(input, input->device());
     if (!load_kernel_cache(binary_path, configuration))
     {
       configuration.loadApplicationFromString = 0;
@@ -249,7 +199,9 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
 
   // execute VkFFT
   VkFFTLaunchParams launchParams = {};
+#if !USE_CUDA
   launchParams.commandQueue = &queue;
+#endif
   resFFT = VkFFTAppend(&app, -1, &launchParams);
   if (resFFT != VKFFT_SUCCESS)
   {
@@ -257,7 +209,7 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   }
 
   // wait for calculations to be finished before returning
-  clFinish(queue);
+  input->device()->finish();
   deleteVkFFT(&app);
   return output;
 }
@@ -271,15 +223,34 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
     throw std::runtime_error("Error: ifft output buffer is null. Please provide an output buffer.");
   }
 
+  // configure VkFFT
+  VkFFTConfiguration configuration{};
+  configure(output, configuration);
+
+#if USE_CUDA
+  auto cu_device = std::dynamic_pointer_cast<CUDADevice>(input->device());
+  auto device = cu_device->getCUDADevice();
+  auto stream = cu_device->getCUDAStream();
+
+  void * input_mem = input->get();
+  void * output_mem = output->get();
+
+  auto input_size = static_cast<uint64_t>(input->bitsize());
+  auto output_size = static_cast<uint64_t>(output->bitsize());
+  configuration.bufferSize = &input_size;
+  configuration.inputBufferSize = &output_size;
+  configuration.buffer = &input_mem;
+  configuration.inputBuffer = &output_mem;
+  configuration.outputBuffer = &input_mem;
+  configuration.device = &device;
+  configuration.stream = &stream;
+  configuration.num_streams = 1;
+#else
   // fetch ocl device, context and queue
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
   auto device = ocl_device->getCLDevice();
   auto context = ocl_device->getCLContext();
   auto queue = ocl_device->getCLCommandQueue();
-
-  // configure VkFFT
-  VkFFTConfiguration configuration{};
-  configure(output, configuration);
 
   auto input_mem = static_cast<cl_mem>(input->get());
   auto output_mem = static_cast<cl_mem>(output->get());
@@ -294,13 +265,14 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
   configuration.device = &device;
   configuration.context = &context;
   configuration.commandQueue = &queue;
+#endif
 
   // manage jit-cache system
   const auto            use_cache = DiskCache::instance().isEnabled();
   std::filesystem::path binary_path;
   if (use_cache)
   {
-    binary_path = get_cache_path(output, ocl_device);
+    binary_path = get_cache_path(output, input->device());
     if (!load_kernel_cache(binary_path, configuration))
     {
       configuration.loadApplicationFromString = 0;
@@ -328,7 +300,9 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
 
   // execute VkFFT
   VkFFTLaunchParams launchParams = {};
+#if !USE_CUDA
   launchParams.commandQueue = &queue;
+#endif
   resFFT = VkFFTAppend(&app, 1, &launchParams);
   if (resFFT != VKFFT_SUCCESS)
   {
@@ -336,7 +310,7 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
   }
 
   // wait for calculations to be finished before returning
-  clFinish(queue);
+  input->device()->finish();
   deleteVkFFT(&app);
 }
 
@@ -368,88 +342,181 @@ performDeconvolution(const Array::Pointer & observe,
                      size_t                 iterations,
                      float                  regularization) -> Array::Pointer
 {
-  // fetch ocl device, context and queue
   auto device = observe->device();
-
-  // check if total variation is used
   bool use_tv = regularization > 0;
 
-  // create temp and output real buffers
   auto reblurred = Array::create(observe);
   if (estimate == nullptr)
   {
     estimate = Array::create(observe);
     observe->copyTo(estimate);
   }
-  // create fft buffers
   auto fft_psf = create_hermitian(psf);
   auto fft_estimate = create_hermitian(estimate);
 
-  // create variation buffer, if used
   Array::Pointer variation = nullptr;
   if (use_tv)
-  {
     variation = Array::create(observe);
-  }
 
-  // clean normal buffer, if used
   if (normal != nullptr)
-  {
-    // remove small values from normal, if used
     execRemoveSmallValues(device, normal, normal->size());
-  }
 
-  // FFT of PSF
+  // FFT of PSF (single init+exec+delete – done only once)
   performFFT(psf, fft_psf);
 
-  // Richardson Lucy - deconvolution loop
+  // ── Pre-initialise VkFFT apps once for the iterative loop ─────────────────
+  // Calling performFFT/performIFFT inside the loop would trigger one
+  // initializeVkFFT (= NVRTC/JIT compilation) per call, making CUDA ~100x
+  // slower than OpenCL for many iterations.  Instead we build two apps here
+  // and call VkFFTAppend directly in the loop.
+  //
+  // Forward FFT config stores a pointer to `fft_real_in_mem`.  We update that
+  // variable before each VkFFTAppend to switch between estimate and reblurred
+  // as the real-space input without reinitialising the app.
+
+  auto real_size = static_cast<uint64_t>(estimate->bitsize());
+  auto complex_size = static_cast<uint64_t>(fft_estimate->bitsize());
+
+#if USE_CUDA
+  auto cu_dev = std::dynamic_pointer_cast<CUDADevice>(device);
+  auto cuda_device = cu_dev->getCUDADevice();
+  auto cuda_stream = cu_dev->getCUDAStream();
+
+  void * fft_real_in_mem = estimate->get(); // mutable: updated per VkFFTAppend
+  void * fft_complex_mem = fft_estimate->get();
+  void * ifft_real_out = reblurred->get();
+
+  VkFFTConfiguration fft_cfg{};
+  configure(estimate, fft_cfg);
+  fft_cfg.bufferSize = &complex_size;
+  fft_cfg.inputBufferSize = &real_size;
+  fft_cfg.buffer = &fft_complex_mem;
+  fft_cfg.inputBuffer = &fft_real_in_mem; // pointer to mutable local
+  fft_cfg.outputBuffer = &fft_complex_mem;
+  fft_cfg.device = &cuda_device;
+  fft_cfg.stream = &cuda_stream;
+  fft_cfg.num_streams = 1;
+
+  VkFFTConfiguration ifft_cfg{};
+  configure(reblurred, ifft_cfg);
+  ifft_cfg.bufferSize = &complex_size;
+  ifft_cfg.inputBufferSize = &real_size;
+  ifft_cfg.buffer = &fft_complex_mem;
+  ifft_cfg.inputBuffer = &ifft_real_out;
+  ifft_cfg.outputBuffer = &fft_complex_mem;
+  ifft_cfg.device = &cuda_device;
+  ifft_cfg.stream = &cuda_stream;
+  ifft_cfg.num_streams = 1;
+#else
+  auto ocl_dev = std::dynamic_pointer_cast<OpenCLDevice>(device);
+  auto ocl_device = ocl_dev->getCLDevice();
+  auto ocl_context = ocl_dev->getCLContext();
+  auto ocl_queue = ocl_dev->getCLCommandQueue();
+
+  cl_mem fft_real_in_mem = static_cast<cl_mem>(estimate->get()); // mutable
+  cl_mem fft_complex_mem = static_cast<cl_mem>(fft_estimate->get());
+  cl_mem ifft_real_out = static_cast<cl_mem>(reblurred->get());
+
+  VkFFTConfiguration fft_cfg{};
+  configure(estimate, fft_cfg);
+  fft_cfg.bufferSize = &complex_size;
+  fft_cfg.inputBufferSize = &real_size;
+  fft_cfg.buffer = &fft_complex_mem;
+  fft_cfg.inputBuffer = &fft_real_in_mem; // pointer to mutable local
+  fft_cfg.outputBuffer = &fft_complex_mem;
+  fft_cfg.device = &ocl_device;
+  fft_cfg.context = &ocl_context;
+  fft_cfg.commandQueue = &ocl_queue;
+
+  VkFFTConfiguration ifft_cfg{};
+  configure(reblurred, ifft_cfg);
+  ifft_cfg.bufferSize = &complex_size;
+  ifft_cfg.inputBufferSize = &real_size;
+  ifft_cfg.buffer = &fft_complex_mem;
+  ifft_cfg.inputBuffer = &ifft_real_out;
+  ifft_cfg.outputBuffer = &fft_complex_mem;
+  ifft_cfg.device = &ocl_device;
+  ifft_cfg.context = &ocl_context;
+  ifft_cfg.commandQueue = &ocl_queue;
+#endif
+
+  VkFFTApplication fft_app = {};
+  VkFFTApplication ifft_app = {};
+  auto             res = initializeVkFFT(&fft_app, fft_cfg);
+  if (res != VKFFT_SUCCESS)
+    throw std::runtime_error("Error: Failed to initialise forward VkFFT -> " + std::string(getVkFFTErrorString(res)));
+  res = initializeVkFFT(&ifft_app, ifft_cfg);
+  if (res != VKFFT_SUCCESS)
+  {
+    deleteVkFFT(&fft_app);
+    throw std::runtime_error("Error: Failed to initialise inverse VkFFT -> " + std::string(getVkFFTErrorString(res)));
+  }
+
+  // ── Richardson-Lucy deconvolution loop ────────────────────────────────────
+  VkFFTLaunchParams lp = {};
+#if !USE_CUDA
+  lp.commandQueue = &ocl_queue;
+#endif
+
   for (size_t i = 0; i < iterations; i++)
   {
-    // FFT of estimate
-    performFFT(estimate, fft_estimate);
+    // Forward FFT of estimate → fft_estimate
+#if USE_CUDA
+    fft_real_in_mem = estimate->get();
+#else
+    fft_real_in_mem = static_cast<cl_mem>(estimate->get());
+#endif
+    res = VkFFTAppend(&fft_app, -1, &lp);
+    if (res != VKFFT_SUCCESS)
+      throw std::runtime_error("Error: VkFFTAppend (forward) -> " + std::string(getVkFFTErrorString(res)));
 
-    // complex multiply estimate FFT and PSF FFT
+    // complex multiply: fft_estimate × fft_psf → fft_estimate
     execOperationKernel(device, "vecComplexMultiply", fft_estimate, fft_psf, fft_estimate, fft_estimate->size() / 2);
 
-    // Inverse FFT of estimate to get reblurred
-    performIFFT(fft_estimate, reblurred);
+    // Inverse FFT: fft_estimate → reblurred
+    res = VkFFTAppend(&ifft_app, 1, &lp);
+    if (res != VKFFT_SUCCESS)
+      throw std::runtime_error("Error: VkFFTAppend (inverse) -> " + std::string(getVkFFTErrorString(res)));
 
     // Divide observed by reblurred
     execOperationKernel(device, "vecDiv", observe, reblurred, reblurred, observe->size());
 
-    // FFT of reblurred into estimate
-    performFFT(reblurred, fft_estimate);
+    // Forward FFT of reblurred → fft_estimate
+#if USE_CUDA
+    fft_real_in_mem = reblurred->get();
+#else
+    fft_real_in_mem = static_cast<cl_mem>(reblurred->get());
+#endif
+    res = VkFFTAppend(&fft_app, -1, &lp);
+    if (res != VKFFT_SUCCESS)
+      throw std::runtime_error("Error: VkFFTAppend (forward) -> " + std::string(getVkFFTErrorString(res)));
 
-    // Correlate above result with PSF
+    // Correlate: complex conjugate multiply of fft_estimate with fft_psf
     execOperationKernel(device, "vecComplexConjugateMultiply", fft_estimate, fft_psf, fft_estimate, fft_estimate->size() / 2);
 
-    // Inverse FFT of estimate to get reblurred
-    performIFFT(fft_estimate, reblurred);
+    // Inverse FFT: fft_estimate → reblurred
+    res = VkFFTAppend(&ifft_app, 1, &lp);
+    if (res != VKFFT_SUCCESS)
+      throw std::runtime_error("Error: VkFFTAppend (inverse) -> " + std::string(getVkFFTErrorString(res)));
 
-    // total variation multiply by variation factor, if used
     if (use_tv)
     {
-      // calculate total variation
       execTotalVariationTerm(device, estimate, reblurred, variation, 1.0, 1.0, 3.0, regularization);
-      // multiply by variation factor
       execOperationKernel(device, "vecMul", estimate, variation, estimate, estimate->size());
     }
     else
     {
-      // multiply estimate by update factor
       execOperationKernel(device, "vecMul", estimate, reblurred, estimate, estimate->size());
     }
 
     if (normal != nullptr)
-    {
-      // divide estimate by normal, if used
       execOperationKernel(device, "vecDiv", estimate, normal, estimate, estimate->size());
-    }
 
-    // wait for calculations to be finished before next iteration
     device->finish();
   }
 
+  deleteVkFFT(&fft_app);
+  deleteVkFFT(&ifft_app);
   return estimate;
 }
 
@@ -526,7 +593,5 @@ execTotalVariationTerm(const Device::Pointer & device,
                                  { "regularizationFactor", regularization_factor } };
   native_execute(device, kernel, params, global_range, local_range);
 }
-
-#endif // USE_CUDA ═════════════════════════════════════════════════════════════
 
 } // namespace cle::fft

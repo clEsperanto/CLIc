@@ -20,20 +20,12 @@ namespace cle::tier8
 auto
 fft_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  if (cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
-  {
-    throw std::runtime_error("Error: FFT is not yet supported for CUDA backend.");
-  }
   return fft::performFFT(src, dst);
 }
 
 auto
 ifft_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & dst) -> Array::Pointer
 {
-  if (cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
-  {
-    throw std::runtime_error("Error: FFT-based convolution is not yet implemented for CUDA backend.");
-  }
   if (src->dtype() != dType::COMPLEX)
   {
     std::cerr << "Warning: ifft input buffer expect COMPLEX type, but got " << toString(src->dtype()) << "." << std::endl;
@@ -55,11 +47,6 @@ convolve_fft_func(const Device::Pointer & device,
                   Array::Pointer          dst,
                   bool                    correlate) -> Array::Pointer
 {
-  if (cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
-  {
-    throw std::runtime_error("Error: FFT-based convolution is not yet implemented for CUDA backend.");
-  }
-
   if (kernel->width() > src->width() || kernel->height() > src->height() || kernel->depth() > src->depth())
   {
     std::ostringstream oss;
@@ -121,11 +108,6 @@ deconvolve_fft_func(const Device::Pointer & device,
                     int                     iteration,
                     float                   regularization) -> Array::Pointer
 {
-  if (cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
-  {
-    throw std::runtime_error("Error: FFT-based convolution is not yet implemented for CUDA backend.");
-  }
-
   if (psf->width() > src->width() || psf->height() > src->height() || psf->depth() > src->depth())
   {
     std::ostringstream oss;
