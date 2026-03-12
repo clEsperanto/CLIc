@@ -27,11 +27,6 @@ protected:
 
 TEST_P(TestFFT, executeVKFFT)
 {
-  if (cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
-  {
-    GTEST_SKIP() << "VKFFT-based FFT is not yet supported for CUDA backend.";
-  }
-
   cle::use_cache(false);
 
   auto gpu_input = cle::Array::create(10, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
@@ -54,11 +49,6 @@ TEST_P(TestFFT, executeVKFFT)
 
 TEST_P(TestFFT, executeConvolution)
 {
-  if (cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
-  {
-    GTEST_SKIP() << "VKFFT-based FFT is not yet supported for CUDA backend.";
-  }
-
   cle::use_cache(false);
 
   std::array<float, 3 * 3 * 1> input = {
@@ -91,10 +81,6 @@ TEST_P(TestFFT, executeConvolution)
 
 TEST_P(TestFFT, executeConvolutionCorr)
 {
-  if (cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
-  {
-    GTEST_SKIP() << "VKFFT-based FFT is not yet supported for CUDA backend.";
-  }
   cle::use_cache(false);
 
   std::array<float, 3 * 3 * 1> input = {
@@ -130,11 +116,6 @@ TEST_P(TestFFT, executeConvolutionCorr)
 
 TEST_P(TestFFT, executeConvolutionFunction)
 {
-  if (cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
-  {
-    GTEST_SKIP() << "VKFFT-based FFT is not yet supported for CUDA backend.";
-  }
-
   cle::use_cache(false);
 
   std::array<float, 3 * 3 * 1> input = {
@@ -165,10 +146,6 @@ TEST_P(TestFFT, executeConvolutionFunction)
 
 TEST_P(TestFFT, executeDeconvolutionFunction)
 {
-  if (cle::BackendManager::getInstance().getBackend().getType() == cle::Backend::Type::CUDA)
-  {
-    GTEST_SKIP() << "VKFFT-based FFT is not yet supported for CUDA backend.";
-  }
   cle::use_cache(false);
 
   std::array<float, 3 * 3 * 1> valid = {
@@ -197,4 +174,5 @@ TEST_P(TestFFT, executeDeconvolutionFunction)
     EXPECT_NEAR(output[i], valid[i], 0.1);
   }
 }
+
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestFFT, ::testing::ValuesIn(getParameters()));
