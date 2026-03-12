@@ -128,23 +128,22 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
 
 #if USE_CUDA
   auto cu_device = std::dynamic_pointer_cast<CUDADevice>(input->device());
-  auto device = cu_device->getCUDevice();
-  auto context = cu_device->getCUContext();
+  auto device = cu_device->getCUDADevice();
   auto stream = cu_device->getCUDAStream();
 
-  auto output_mem = static_cast<void **>(output->get());
-  auto input_mem = static_cast<void **>(input->get());
+  void* output_mem = output->get();
+  void* input_mem = input->get();
 
-  auto input_size = static_cast<uint64_t>(input->bitsize());
   auto output_size = static_cast<uint64_t>(output->bitsize());
-  configuration.bufferSize = &psize;
-  configuration.inputBufferSize = &psizein;
+  auto input_size = static_cast<uint64_t>(input->bitsize());
+  configuration.bufferSize = &output_size;
+  configuration.inputBufferSize = &input_size;
   configuration.buffer = &output_mem;
   configuration.inputBuffer = &input_mem;
   configuration.outputBuffer = &output_mem;
   configuration.device = &device;
-  configuration.context = &context;
-  configuration.stream_event = &stream;
+  configuration.stream = &stream;
+  configuration.num_streams = 1;
 #else
   // fetch ocl device, context and queue
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
@@ -200,7 +199,9 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
 
   // execute VkFFT
   VkFFTLaunchParams launchParams = {};
+#if !USE_CUDA
   launchParams.commandQueue = &queue;
+#endif
   resFFT = VkFFTAppend(&app, -1, &launchParams);
   if (resFFT != VKFFT_SUCCESS)
   {
@@ -208,7 +209,7 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   }
 
   // wait for calculations to be finished before returning
-  clFinish(queue);
+  input->device()->finish();
   deleteVkFFT(&app);
   return output;
 }
@@ -228,12 +229,11 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
 
 #if USE_CUDA
   auto cu_device = std::dynamic_pointer_cast<CUDADevice>(input->device());
-  auto device = cu_device->getCUDevice();
-  auto context = cu_device->getCUContext();
+  auto device = cu_device->getCUDADevice();
   auto stream = cu_device->getCUDAStream();
 
-  auto input_mem = static_cast<void **>(input->get());
-  auto output_mem = static_cast<void **>(output->get());
+  void* input_mem = input->get();
+  void* output_mem = output->get();
 
   auto input_size = static_cast<uint64_t>(input->bitsize());
   auto output_size = static_cast<uint64_t>(output->bitsize());
@@ -243,8 +243,8 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
   configuration.inputBuffer = &output_mem;
   configuration.outputBuffer = &input_mem;
   configuration.device = &device;
-  configuration.context = &context;
-  configuration.stream_event = &stream;
+  configuration.stream = &stream;
+  configuration.num_streams = 1;
 #else
   // fetch ocl device, context and queue
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
@@ -300,7 +300,9 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
 
   // execute VkFFT
   VkFFTLaunchParams launchParams = {};
+#if !USE_CUDA
   launchParams.commandQueue = &queue;
+#endif
   resFFT = VkFFTAppend(&app, 1, &launchParams);
   if (resFFT != VKFFT_SUCCESS)
   {
