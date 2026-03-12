@@ -345,13 +345,13 @@ performDeconvolution(const Array::Pointer & observe,
   auto device = observe->device();
   bool use_tv = regularization > 0;
 
-  auto reblurred    = Array::create(observe);
+  auto reblurred = Array::create(observe);
   if (estimate == nullptr)
   {
     estimate = Array::create(observe);
     observe->copyTo(estimate);
   }
-  auto fft_psf      = create_hermitian(psf);
+  auto fft_psf = create_hermitian(psf);
   auto fft_estimate = create_hermitian(estimate);
 
   Array::Pointer variation = nullptr;
@@ -374,75 +374,75 @@ performDeconvolution(const Array::Pointer & observe,
   // variable before each VkFFTAppend to switch between estimate and reblurred
   // as the real-space input without reinitialising the app.
 
-  auto real_size    = static_cast<uint64_t>(estimate->bitsize());
+  auto real_size = static_cast<uint64_t>(estimate->bitsize());
   auto complex_size = static_cast<uint64_t>(fft_estimate->bitsize());
 
 #if USE_CUDA
-  auto cu_dev      = std::dynamic_pointer_cast<CUDADevice>(device);
+  auto cu_dev = std::dynamic_pointer_cast<CUDADevice>(device);
   auto cuda_device = cu_dev->getCUDADevice();
   auto cuda_stream = cu_dev->getCUDAStream();
 
-  void * fft_real_in_mem = estimate->get();     // mutable: updated per VkFFTAppend
+  void * fft_real_in_mem = estimate->get(); // mutable: updated per VkFFTAppend
   void * fft_complex_mem = fft_estimate->get();
-  void * ifft_real_out   = reblurred->get();
+  void * ifft_real_out = reblurred->get();
 
   VkFFTConfiguration fft_cfg{};
   configure(estimate, fft_cfg);
-  fft_cfg.bufferSize      = &complex_size;
+  fft_cfg.bufferSize = &complex_size;
   fft_cfg.inputBufferSize = &real_size;
-  fft_cfg.buffer          = &fft_complex_mem;
-  fft_cfg.inputBuffer     = &fft_real_in_mem; // pointer to mutable local
-  fft_cfg.outputBuffer    = &fft_complex_mem;
-  fft_cfg.device          = &cuda_device;
-  fft_cfg.stream          = &cuda_stream;
-  fft_cfg.num_streams     = 1;
+  fft_cfg.buffer = &fft_complex_mem;
+  fft_cfg.inputBuffer = &fft_real_in_mem; // pointer to mutable local
+  fft_cfg.outputBuffer = &fft_complex_mem;
+  fft_cfg.device = &cuda_device;
+  fft_cfg.stream = &cuda_stream;
+  fft_cfg.num_streams = 1;
 
   VkFFTConfiguration ifft_cfg{};
   configure(reblurred, ifft_cfg);
-  ifft_cfg.bufferSize      = &complex_size;
+  ifft_cfg.bufferSize = &complex_size;
   ifft_cfg.inputBufferSize = &real_size;
-  ifft_cfg.buffer          = &fft_complex_mem;
-  ifft_cfg.inputBuffer     = &ifft_real_out;
-  ifft_cfg.outputBuffer    = &fft_complex_mem;
-  ifft_cfg.device          = &cuda_device;
-  ifft_cfg.stream          = &cuda_stream;
-  ifft_cfg.num_streams     = 1;
+  ifft_cfg.buffer = &fft_complex_mem;
+  ifft_cfg.inputBuffer = &ifft_real_out;
+  ifft_cfg.outputBuffer = &fft_complex_mem;
+  ifft_cfg.device = &cuda_device;
+  ifft_cfg.stream = &cuda_stream;
+  ifft_cfg.num_streams = 1;
 #else
-  auto ocl_dev     = std::dynamic_pointer_cast<OpenCLDevice>(device);
-  auto ocl_device  = ocl_dev->getCLDevice();
+  auto ocl_dev = std::dynamic_pointer_cast<OpenCLDevice>(device);
+  auto ocl_device = ocl_dev->getCLDevice();
   auto ocl_context = ocl_dev->getCLContext();
-  auto ocl_queue   = ocl_dev->getCLCommandQueue();
+  auto ocl_queue = ocl_dev->getCLCommandQueue();
 
   cl_mem fft_real_in_mem = static_cast<cl_mem>(estimate->get()); // mutable
   cl_mem fft_complex_mem = static_cast<cl_mem>(fft_estimate->get());
-  cl_mem ifft_real_out   = static_cast<cl_mem>(reblurred->get());
+  cl_mem ifft_real_out = static_cast<cl_mem>(reblurred->get());
 
   VkFFTConfiguration fft_cfg{};
   configure(estimate, fft_cfg);
-  fft_cfg.bufferSize      = &complex_size;
+  fft_cfg.bufferSize = &complex_size;
   fft_cfg.inputBufferSize = &real_size;
-  fft_cfg.buffer          = &fft_complex_mem;
-  fft_cfg.inputBuffer     = &fft_real_in_mem; // pointer to mutable local
-  fft_cfg.outputBuffer    = &fft_complex_mem;
-  fft_cfg.device          = &ocl_device;
-  fft_cfg.context         = &ocl_context;
-  fft_cfg.commandQueue    = &ocl_queue;
+  fft_cfg.buffer = &fft_complex_mem;
+  fft_cfg.inputBuffer = &fft_real_in_mem; // pointer to mutable local
+  fft_cfg.outputBuffer = &fft_complex_mem;
+  fft_cfg.device = &ocl_device;
+  fft_cfg.context = &ocl_context;
+  fft_cfg.commandQueue = &ocl_queue;
 
   VkFFTConfiguration ifft_cfg{};
   configure(reblurred, ifft_cfg);
-  ifft_cfg.bufferSize      = &complex_size;
+  ifft_cfg.bufferSize = &complex_size;
   ifft_cfg.inputBufferSize = &real_size;
-  ifft_cfg.buffer          = &fft_complex_mem;
-  ifft_cfg.inputBuffer     = &ifft_real_out;
-  ifft_cfg.outputBuffer    = &fft_complex_mem;
-  ifft_cfg.device          = &ocl_device;
-  ifft_cfg.context         = &ocl_context;
-  ifft_cfg.commandQueue    = &ocl_queue;
+  ifft_cfg.buffer = &fft_complex_mem;
+  ifft_cfg.inputBuffer = &ifft_real_out;
+  ifft_cfg.outputBuffer = &fft_complex_mem;
+  ifft_cfg.device = &ocl_device;
+  ifft_cfg.context = &ocl_context;
+  ifft_cfg.commandQueue = &ocl_queue;
 #endif
 
-  VkFFTApplication fft_app  = {};
+  VkFFTApplication fft_app = {};
   VkFFTApplication ifft_app = {};
-  auto res = initializeVkFFT(&fft_app, fft_cfg);
+  auto             res = initializeVkFFT(&fft_app, fft_cfg);
   if (res != VKFFT_SUCCESS)
     throw std::runtime_error("Error: Failed to initialise forward VkFFT -> " + std::string(getVkFFTErrorString(res)));
   res = initializeVkFFT(&ifft_app, ifft_cfg);
