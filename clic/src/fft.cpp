@@ -25,75 +25,6 @@
 namespace cle::fft
 {
 
-#if USE_CUDA
-
-Array::Pointer
-create_hermitian(const Array::Pointer & input)
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-
-auto
-fft_pad_shape(const std::array<size_t, 3> & image_shape, const std::array<size_t, 3> & kernel_shape) -> std::array<size_t, 3>
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-auto
-execOperationKernel(const Device::Pointer & device,
-                    const std::string       name,
-                    const Array::Pointer &  bufferA,
-                    const Array::Pointer &  bufferB,
-                    Array::Pointer          buffer_out,
-                    const unsigned int      nElements) -> Array::Pointer
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-auto
-execRemoveSmallValues(const Device::Pointer & device, Array::Pointer buffer, const unsigned int nElements) -> void
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-auto
-execTotalVariationTerm(const Device::Pointer & device,
-                       const Array::Pointer &  estimate,
-                       const Array::Pointer &  correction,
-                       Array::Pointer          variation,
-                       float                   hx,
-                       float                   hy,
-                       float                   hz,
-                       float                   regularization_factor) -> void
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-auto
-performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointer
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-auto
-performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-auto
-performConvolution(const Array::Pointer & input, const Array::Pointer & psf, const Array::Pointer & output, bool correlate) -> void
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-auto
-performDeconvolution(const Array::Pointer & observe,
-                     const Array::Pointer & psf,
-                     Array::Pointer         normal,
-                     Array::Pointer         estimate,
-                     size_t                 iterations,
-                     float                  regularization) -> Array::Pointer
-{
-  throw std::runtime_error("Error: FFT functions are not yet implemented for CUDA backend.");
-}
-
-#else // USE_CUDA ═════════════════════════════════════════════════════════════
-
-
 auto
 fft_pad_shape(const std::array<size_t, 3> & image_shape, const std::array<size_t, 3> & kernel_shape) -> std::array<size_t, 3>
 {
@@ -108,7 +39,6 @@ fft_pad_shape(const std::array<size_t, 3> & image_shape, const std::array<size_t
 Array::Pointer
 create_hermitian(const Array::Pointer & input)
 {
-  auto   ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
   size_t hermitian_width = static_cast<size_t>(input->width() / 2) + 1;
   return Array::create(
     hermitian_width * 2, input->height(), input->depth(), input->dimension(), dType::COMPLEX, input->mtype(), input->device());
@@ -144,12 +74,12 @@ configure(const Array::Pointer & array, VkFFTConfiguration & configuration) -> v
 }
 
 auto
-get_cache_path(const Array::Pointer & output, const std::shared_ptr<OpenCLDevice> & ocl_device) -> std::filesystem::path
+get_cache_path(const Array::Pointer & output, const Device::Pointer & device) -> std::filesystem::path
 {
   std::ostringstream hashStream;
   hashStream << output->width() << "," << output->height() << "," << output->depth() << "," << output->dimension();
   const auto source_hash = DiskCache::hash(hashStream.str());
-  const auto device_hash = DiskCache::hash(ocl_device->getInfo());
+  const auto device_hash = DiskCache::hash(device->getInfo());
   return DiskCache::instance().getFilePath(device_hash, source_hash, "bin");
 }
 
@@ -191,19 +121,39 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
     output = create_hermitian(input);
   }
 
+  // configure VkFFT
+  VkFFTConfiguration configuration{};
+  configure(input, configuration);
+
+
+#if USE_CUDA
+  auto cu_device = std::dynamic_pointer_cast<CUDADevice>(input->device());
+  auto device = cu_device->getCUDevice();
+  auto context = cu_device->getCUContext();
+  auto stream = cu_device->getCUDAStream();
+
+  auto output_mem = static_cast<void**>(output->get());
+  auto input_mem = static_cast<void**>(input->get());
+
+  auto input_size = static_cast<uint64_t>(input->bitsize());
+  auto output_size = static_cast<uint64_t>(output->bitsize());
+  configuration.bufferSize = &psize;
+  configuration.inputBufferSize = &psizein;
+  configuration.buffer = &output_mem;
+  configuration.inputBuffer = &input_mem;
+  configuration.outputBuffer = &output_mem;
+  configuration.device = &device;
+  configuration.context = &context;
+  configuration.stream_event = &stream;
+#else
   // fetch ocl device, context and queue
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
   auto device = ocl_device->getCLDevice();
   auto context = ocl_device->getCLContext();
   auto queue = ocl_device->getCLCommandQueue();
 
-  // configure VkFFT
-  VkFFTConfiguration configuration{};
-  configure(input, configuration);
-
   auto output_mem = static_cast<cl_mem>(output->get());
   auto input_mem = static_cast<cl_mem>(input->get());
-
 
   auto psize = static_cast<uint64_t>(output->bitsize());
   auto psizein = static_cast<uint64_t>(input->bitsize());
@@ -215,13 +165,14 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   configuration.device = &device;
   configuration.context = &context;
   configuration.commandQueue = &queue;
+#endif
 
   // manage jit-cache system
   const auto            use_cache = DiskCache::instance().isEnabled();
   std::filesystem::path binary_path;
   if (use_cache)
   {
-    binary_path = get_cache_path(input, ocl_device);
+    binary_path = get_cache_path(input, input->device());
     if (!load_kernel_cache(binary_path, configuration))
     {
       configuration.loadApplicationFromString = 0;
@@ -271,15 +222,35 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
     throw std::runtime_error("Error: ifft output buffer is null. Please provide an output buffer.");
   }
 
+  // configure VkFFT
+  VkFFTConfiguration configuration{};
+  configure(output, configuration);
+
+#if USE_CUDA
+  auto cu_device = std::dynamic_pointer_cast<CUDADevice>(input->device());
+  auto device = cu_device->getCUDevice();
+  auto context = cu_device->getCUContext();
+  auto stream = cu_device->getCUDAStream();
+
+  auto input_mem = static_cast<void**>(input->get());
+  auto output_mem = static_cast<void**>(output->get());
+
+  auto input_size = static_cast<uint64_t>(input->bitsize());
+  auto output_size = static_cast<uint64_t>(output->bitsize());
+  configuration.bufferSize = &input_size;
+  configuration.inputBufferSize = &output_size;
+  configuration.buffer = &input_mem;
+  configuration.inputBuffer = &output_mem;
+  configuration.outputBuffer = &input_mem;
+  configuration.device = &device;
+  configuration.context = &context;
+  configuration.stream_event = &stream;
+#else
   // fetch ocl device, context and queue
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
   auto device = ocl_device->getCLDevice();
   auto context = ocl_device->getCLContext();
   auto queue = ocl_device->getCLCommandQueue();
-
-  // configure VkFFT
-  VkFFTConfiguration configuration{};
-  configure(output, configuration);
 
   auto input_mem = static_cast<cl_mem>(input->get());
   auto output_mem = static_cast<cl_mem>(output->get());
@@ -294,13 +265,14 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
   configuration.device = &device;
   configuration.context = &context;
   configuration.commandQueue = &queue;
+#endif
 
   // manage jit-cache system
   const auto            use_cache = DiskCache::instance().isEnabled();
   std::filesystem::path binary_path;
   if (use_cache)
   {
-    binary_path = get_cache_path(output, ocl_device);
+    binary_path = get_cache_path(output, input->device());
     if (!load_kernel_cache(binary_path, configuration))
     {
       configuration.loadApplicationFromString = 0;
@@ -336,7 +308,7 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
   }
 
   // wait for calculations to be finished before returning
-  clFinish(queue);
+  input->device()->finish();
   deleteVkFFT(&app);
 }
 
@@ -526,7 +498,5 @@ execTotalVariationTerm(const Device::Pointer & device,
                                  { "regularizationFactor", regularization_factor } };
   native_execute(device, kernel, params, global_range, local_range);
 }
-
-#endif // USE_CUDA ═════════════════════════════════════════════════════════════
 
 } // namespace cle::fft
