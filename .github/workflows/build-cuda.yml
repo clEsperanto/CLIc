@@ -108,7 +108,7 @@ jobs:
           sub-packages: '["nvcc","cudart","cudart-dev","nvrtc","nvrtc-dev"]'
           non-cuda-sub-packages: '["nvJitLink","nvJitLink-dev"]'
           use-local-cache: true
-          use-github-cache: false    
+          use-github-cache: false
 
       - name: Set CUDA path
         id: cuda-path
