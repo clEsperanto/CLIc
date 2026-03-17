@@ -36,7 +36,12 @@ target_include_directories(${LIBRARY_NAME} PUBLIC
 
 set_target_properties(${LIBRARY_NAME} PROPERTIES LINKER_LANGUAGE CXX)        # force C++ linker
 set_target_properties(${LIBRARY_NAME} PROPERTIES VERSION ${PROJECT_VERSION}) # set version
-
+# When statically linked into a consumer shared library (e.g. a Python extension), hide CLIc symbols
+# by default so they don't leak into the consumer's dynamic symbol table and cause interposition.
+if(NOT BUILD_SHARED_LIBS)
+    set_target_properties(${LIBRARY_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden)
+    set_target_properties(${LIBRARY_NAME} PROPERTIES VISIBILITY_INLINES_HIDDEN YES)
+endif()
 # link backend-specific dependencies
 if(CLE_OPENCL)
     target_include_directories(${LIBRARY_NAME} PUBLIC ${OpenCL_INCLUDE_DIRS})
