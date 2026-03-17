@@ -83,16 +83,16 @@ BackendManager::setBackend(const std::string & backend) -> void
   // Check if the requested backend is known (i.e. compiled in)
   if (backendMap.find(backend) == backendMap.end())
   {
-    throw std::runtime_error("Unknown backend '" + backend + "'. This build supports: " +
-                             [&]() {
-                               std::string list;
-                               for (const auto & [name, _] : backendMap)
-                               {
-                                 if (!list.empty()) list += ", ";
-                                 list += name;
-                               }
-                               return list.empty() ? "none" : list;
-                             }());
+    throw std::runtime_error("Unknown backend '" + backend + "'. This build supports: " + [&]() {
+      std::string list;
+      for (const auto & [name, _] : backendMap)
+      {
+        if (!list.empty())
+          list += ", ";
+        list += name;
+      }
+      return list.empty() ? "none" : list;
+    }());
   }
 
   // Get the type and creation function for the requested backend
@@ -102,8 +102,7 @@ BackendManager::setBackend(const std::string & backend) -> void
   bool isEnabled = (backend_type == Backend::Type::CUDA) ? cudaEnabled() : openCLEnabled();
   if (!isEnabled)
   {
-    throw std::runtime_error("Backend '" + backend +
-                             "' is not available. No compatible device found or runtime not installed.");
+    throw std::runtime_error("Backend '" + backend + "' is not available. No compatible device found or runtime not installed.");
   }
 
   // Create the requested backend
