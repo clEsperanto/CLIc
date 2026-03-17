@@ -1,23 +1,47 @@
 #include "backend.hpp"
 #include <functional>
 #include <map>
+#include <sstream>
 
 namespace cle
 {
+
+// Static error message storage
+std::string BackendManager::cudaErrorMsg = "";
+std::string BackendManager::openCLErrorMsg = "";
 
 auto
 BackendManager::cudaEnabled() -> bool
 {
 #if USE_CUDA
-  cuInit(0);
-  int  deviceCount = 0;
-  auto error = cuDeviceGetCount(&deviceCount);
-  if (error != CUDA_SUCCESS)
+  CUresult initErr = cuInit(0);
+  if (initErr != CUDA_SUCCESS)
   {
+    const char* errStr = nullptr;
+    cuGetErrorString(initErr, &errStr);
+    cudaErrorMsg = std::string(errStr ? errStr : "unknown error");
+    cudaErrorMsg += std::string(" (cuInit failed)");
     return false;
   }
-  return deviceCount > 0;
+  int  deviceCount = 0;
+  CUresult countErr = cuDeviceGetCount(&deviceCount);
+  if (countErr != CUDA_SUCCESS)
+  {
+    const char* errStr = nullptr;
+    cuGetErrorString(countErr, &errStr);
+    cudaErrorMsg = std::string(errStr ? errStr : "unknown error");
+    cudaErrorMsg += std::string(" (cuDeviceGetCount failed)");
+    return false;
+  }
+  if (deviceCount == 0)
+  {
+    cudaErrorMsg = "No CUDA devices found";
+    return false;
+  }
+  cudaErrorMsg = "";  // Clear error on success
+  return true;
 #else
+  cudaErrorMsg = "CUDA not compiled into this build (USE_CUDA=OFF)";
   return false;
 #endif
 }
@@ -27,9 +51,23 @@ BackendManager::openCLEnabled() -> bool
 {
 #if USE_OPENCL
   cl_uint platformCount = 0;
-  clGetPlatformIDs(0, nullptr, &platformCount);
-  return platformCount > 0;
+  cl_int err = clGetPlatformIDs(0, nullptr, &platformCount);
+  if (err != CL_SUCCESS)
+  {
+    std::ostringstream oss;
+    oss << "clGetPlatformIDs failed with error code " << err;
+    openCLErrorMsg = oss.str();
+    return false;
+  }
+  if (platformCount == 0)
+  {
+    openCLErrorMsg = "No OpenCL platforms found";
+    return false;
+  }
+  openCLErrorMsg = "";  // Clear error on success
+  return true;
 #else
+  openCLErrorMsg = "OpenCL not compiled into this build (USE_OPENCL=OFF)";
   return false;
 #endif
 }
@@ -102,11 +140,24 @@ BackendManager::setBackend(const std::string & backend) -> void
   bool isEnabled = (backend_type == Backend::Type::CUDA) ? cudaEnabled() : openCLEnabled();
   if (!isEnabled)
   {
-    throw std::runtime_error("Backend '" + backend + "' is not available. No compatible device found or runtime not installed.");
+    const std::string & errorReason = (backend_type == Backend::Type::CUDA) ? getCudaError() : getOpenCLError();
+    throw std::runtime_error("Backend '" + backend + "' is not available: " + errorReason);
   }
 
   // Create the requested backend
   this->backend = createBackend();
+}
+
+auto
+BackendManager::getCudaError() -> const std::string &
+{
+  return cudaErrorMsg;
+}
+
+auto
+BackendManager::getOpenCLError() -> const std::string &
+{
+  return openCLErrorMsg;
 }
 
 auto

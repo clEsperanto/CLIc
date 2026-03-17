@@ -779,6 +779,22 @@ public:
   openCLEnabled() -> bool;
 
   /**
+   * @brief Get the reason why CUDA is not available
+   *
+   * @return std::string Error message describing why CUDA failed to initialize or find devices
+   */
+  [[nodiscard]] static auto
+  getCudaError() -> const std::string &;
+
+  /**
+   * @brief Get the reason why OpenCL is not available
+   *
+   * @return std::string Error message describing why OpenCL failed to initialize or find platforms
+   */
+  [[nodiscard]] static auto
+  getOpenCLError() -> const std::string &;
+
+  /**
    * @brief Set the backend
    *
    * @param backend The backend to be set, default is "opencl"
@@ -823,6 +839,8 @@ public:
 
 private:
   std::unique_ptr<Backend> backend;
+  static std::string cudaErrorMsg;
+  static std::string openCLErrorMsg;
 
   BackendManager() = default;
   BackendManager(BackendManager &&) = default;
