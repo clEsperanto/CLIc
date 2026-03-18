@@ -122,7 +122,8 @@ Array::allocate() -> void
   {
     return;
   }
-  BackendManager::getInstance().getBackend().allocateMemory(device(), { this->width(), this->height(), this->depth() }, dtype(), mtype(), data_);
+  BackendManager::getInstance().getBackend().allocateMemory(
+    device(), { this->width(), this->height(), this->depth() }, dtype(), mtype(), data_);
   initialized_ = true;
 }
 
@@ -217,15 +218,18 @@ Array::copyTo(const Array::Pointer & dst) const -> void
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::IMAGE)
   {
-    BackendManager::getInstance().getBackend().copyMemoryImageToImage(device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+    BackendManager::getInstance().getBackend().copyMemoryImageToImage(
+      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::BUFFER && dst->mtype() == mType::IMAGE)
   {
-    BackendManager::getInstance().getBackend().copyMemoryBufferToImage(device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+    BackendManager::getInstance().getBackend().copyMemoryBufferToImage(
+      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::BUFFER)
   {
-    BackendManager::getInstance().getBackend().copyMemoryImageToBuffer(device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+    BackendManager::getInstance().getBackend().copyMemoryImageToBuffer(
+      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else
   {
@@ -260,15 +264,18 @@ Array::copyTo(const Array::Pointer &        dst,
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::IMAGE)
   {
-    BackendManager::getInstance().getBackend().copyMemoryImageToImage(device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+    BackendManager::getInstance().getBackend().copyMemoryImageToImage(
+      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::BUFFER && dst->mtype() == mType::IMAGE)
   {
-    BackendManager::getInstance().getBackend().copyMemoryBufferToImage(device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+    BackendManager::getInstance().getBackend().copyMemoryBufferToImage(
+      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::BUFFER)
   {
-    BackendManager::getInstance().getBackend().copyMemoryImageToBuffer(device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
+    BackendManager::getInstance().getBackend().copyMemoryImageToBuffer(
+      device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
 }
 

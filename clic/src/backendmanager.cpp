@@ -17,17 +17,17 @@ BackendManager::cudaEnabled() -> bool
   CUresult initErr = cuInit(0);
   if (initErr != CUDA_SUCCESS)
   {
-    const char* errStr = nullptr;
+    const char * errStr = nullptr;
     cuGetErrorString(initErr, &errStr);
     cudaErrorMsg = std::string(errStr ? errStr : "unknown error");
     cudaErrorMsg += std::string(" (cuInit failed)");
     return false;
   }
-  int  deviceCount = 0;
+  int      deviceCount = 0;
   CUresult countErr = cuDeviceGetCount(&deviceCount);
   if (countErr != CUDA_SUCCESS)
   {
-    const char* errStr = nullptr;
+    const char * errStr = nullptr;
     cuGetErrorString(countErr, &errStr);
     cudaErrorMsg = std::string(errStr ? errStr : "unknown error");
     cudaErrorMsg += std::string(" (cuDeviceGetCount failed)");
@@ -38,7 +38,7 @@ BackendManager::cudaEnabled() -> bool
     cudaErrorMsg = "No CUDA devices found";
     return false;
   }
-  cudaErrorMsg = "";  // Clear error on success
+  cudaErrorMsg = ""; // Clear error on success
   return true;
 #else
   cudaErrorMsg = "CUDA not compiled into this build (USE_CUDA=OFF)";
@@ -51,7 +51,7 @@ BackendManager::openCLEnabled() -> bool
 {
 #if USE_OPENCL
   cl_uint platformCount = 0;
-  cl_int err = clGetPlatformIDs(0, nullptr, &platformCount);
+  cl_int  err = clGetPlatformIDs(0, nullptr, &platformCount);
   if (err != CL_SUCCESS)
   {
     std::ostringstream oss;
@@ -64,7 +64,7 @@ BackendManager::openCLEnabled() -> bool
     openCLErrorMsg = "No OpenCL platforms found";
     return false;
   }
-  openCLErrorMsg = "";  // Clear error on success
+  openCLErrorMsg = ""; // Clear error on success
   return true;
 #else
   openCLErrorMsg = "OpenCL not compiled into this build (USE_OPENCL=OFF)";

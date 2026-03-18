@@ -839,8 +839,8 @@ public:
 
 private:
   std::unique_ptr<Backend> backend;
-  static std::string cudaErrorMsg;
-  static std::string openCLErrorMsg;
+  static std::string       cudaErrorMsg;
+  static std::string       openCLErrorMsg;
 
   BackendManager() = default;
   BackendManager(BackendManager &&) = default;
