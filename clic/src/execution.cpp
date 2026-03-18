@@ -310,10 +310,7 @@ execute(const Device::Pointer & device,
   }
   defines += "\n\n";
 
-
   const std::string program_source = defines + kernel_preamble + kernel_source;
-
-  std::cout << "Final kernel source:\n" << program_source << std::endl;
   cle::BackendManager::getInstance().getBackend().executeKernel(
     device, program_source, kernel_name, global_range, local_range, args_ptr, args_size);
 }
