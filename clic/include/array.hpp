@@ -374,7 +374,6 @@ private:
   std::shared_ptr<void> data_ = nullptr;
   bool                  initialized_ = false;
   bool                  owns_memory_ = true;
-  const Backend &       backend_ = cle::BackendManager::getInstance().getBackend();
 };
 
 
