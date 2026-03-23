@@ -84,7 +84,7 @@ jobs:
             ${{ runner.os }}-ccache-opencl-
 
       - name: Get CMake and Ninja
-        uses: lukka/get-cmake@v4.2.3
+        uses: lukka/get-cmake@v4.3.0
 
       - name: Cache OpenCL dependencies
         if: matrix.opencl-required == true
