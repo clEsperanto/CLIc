@@ -199,10 +199,11 @@ Array::copyTo(const Array::Pointer & dst) const -> void
   {
     throw std::runtime_error("Error: Copying Arrays from different devices");
   }
-  if (width() != dst->width() || height() != dst->height() || depth() != dst->depth() || itemSize() != dst->itemSize())
+  if (size() != dst->size())
   {
-    throw std::runtime_error("Error: Arrays dimensions do not match");
+    throw std::runtime_error("Error: Arrays sizes do not match");
   }
+
   std::array<size_t, 3> _src_origin = { 0, 0, 0 };
   std::array<size_t, 3> _dst_origin = { 0, 0, 0 };
   std::array<size_t, 3> _region = { this->width(), this->height(), this->depth() };
@@ -213,21 +214,30 @@ Array::copyTo(const Array::Pointer & dst) const -> void
 
   if (mtype() == mType::BUFFER && dst->mtype() == mType::BUFFER)
   {
+    _region = { this->size(), 1, 1 };
+    _src_shape = { this->size(), 1, 1 };
+    _dst_shape = { dst->size(), 1, 1 };
     BackendManager::getInstance().getBackend().copyMemoryBufferToBuffer(
       device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::IMAGE)
   {
+    if( this->width() != dst->width() || this->height() != dst->height() || this->depth() != dst->depth() )
+    {
+      throw std::runtime_error("Error: Copying Images of different dimensions");
+    }
     BackendManager::getInstance().getBackend().copyMemoryImageToImage(
       device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::BUFFER && dst->mtype() == mType::IMAGE)
   {
+    _src_shape = { this->size(), 1, 1 };
     BackendManager::getInstance().getBackend().copyMemoryBufferToImage(
       device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::BUFFER)
   {
+    _dst_shape = { dst->size(), 1, 1 };
     BackendManager::getInstance().getBackend().copyMemoryImageToBuffer(
       device(), data_, _src_origin, _src_shape, dst_ptr, _dst_origin, _dst_shape, _region, toBytes(dtype()));
   }
