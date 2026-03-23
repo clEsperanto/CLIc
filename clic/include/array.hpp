@@ -23,10 +23,7 @@ public:
    * @brief Create a new Array::Pointer object
    */
   static auto
-  New() -> Array::Pointer
-  {
-    return std::shared_ptr<Array>(new Array());
-  }
+  New() -> Array::Pointer;
 
   /**
    * @brief Create an empty new Array::Pointer object
@@ -79,36 +76,22 @@ public:
   create(const Array::Pointer & array) -> Array::Pointer;
 
   /**
-   * @brief Create a new Array::Pointer object from existing GPU memory
-   * @details This method allows wrapping external GPU memory (from OpenCL, CUDA, or other sources)
-   *          without transferring ownership. The Array will not deallocate this memory.
-   *          This is useful for inter-library integration (similar to CuPy's memory management).
-   * @param width width of the array
-   * @param height height of the array
-   * @param depth depth of the array
-   * @param dimension dimension of the array (1, 2 or 3)
-   * @param data_type data type of the array
-   * @param mem_type memory type of the array
-   * @param gpu_data pointer to the GPU memory
-   * @param device_ptr device where the array is stored
+   * @brief Reshape the Array, changing its dimensions but keeping the same data pointer (shallow copy) 
+   * @param new_width new width of the array
+   * @param new_height new height of the array
+   * @param new_depth new depth of the array
+   * @param new_dimension new dimension of the array (1, 2 or 3)
    * @return Array::Pointer
    */
-  static auto
-  createFromGPUMemory(size_t                        width,
-                      size_t                        height,
-                      size_t                        depth,
-                      size_t                        dimension,
-                      const dType &                 data_type,
-                      const mType &                 mem_type,
-                      const std::shared_ptr<void> & gpu_data,
-                      const Device::Pointer &       device_ptr) -> Array::Pointer;
+  auto
+  reshape(size_t new_width, size_t new_height, size_t new_depth, size_t new_dimension =0) const -> Array::Pointer;
 
   /**
-   * @brief Check if the Array owns its GPU memory
-   * @return bool true if the Array allocated and owns the memory, false if memory is externally managed
+   * @brief Copy the Array, creating a new Array::Pointer with the same data pointer (shallow copy)
+   * @return Array::Pointer
    */
-  [[nodiscard]] auto
-  ownsMemory() const -> bool;
+  auto
+  shallow_copy() const -> Array::Pointer;
 
   /**
    * @brief operator << to print the Array::Pointer
@@ -361,8 +344,7 @@ private:
         const dType &                 data_type,
         const mType &                 mem_type,
         const std::shared_ptr<void> & gpu_data,
-        const Device::Pointer &       device_ptr,
-        bool                          owns_memory);
+        const Device::Pointer &       device_ptr);
 
   size_t                dim_ = 1;
   size_t                width_ = 1;
@@ -373,7 +355,6 @@ private:
   Device::Pointer       device_ = nullptr;
   std::shared_ptr<void> data_ = nullptr;
   bool                  initialized_ = false;
-  bool                  owns_memory_ = true;
 };
 
 

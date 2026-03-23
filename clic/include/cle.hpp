@@ -5,8 +5,6 @@
 #include "clic.hpp"
 #include "device.hpp"
 #include "execution.hpp"
-#include "slicing.hpp"
-
 #include "fft.hpp"
 
 #include "tier1.hpp"

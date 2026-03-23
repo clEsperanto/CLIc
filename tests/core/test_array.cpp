@@ -246,6 +246,29 @@ TEST_P(TestArray, regionOperation)
   }
 }
 
+TEST_P(TestArray, reshapeAndShallowCopy)
+{
+  // Create a new Array
+  auto array = cle::Array::create(10, 20, 30, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+
+  // Reshape the array to a new shape
+  auto reshaped = array->reshape(20, 30, 10);
+
+  // Check that the dimensions are correct
+  EXPECT_EQ(reshaped->width(), 20);
+  EXPECT_EQ(reshaped->height(), 30);
+  EXPECT_EQ(reshaped->depth(), 10);
+
+  // Check that the ptr is the same (shallow copy)
+  EXPECT_EQ(array->get_ptr(), reshaped->get_ptr());
+  EXPECT_EQ(array->get(), reshaped->get());
+
+  // shallow copy the array
+  auto shallow_copy = array->shallow_copy();
+  EXPECT_EQ(array->get_ptr(), shallow_copy->get_ptr());
+  EXPECT_EQ(array->get(), shallow_copy->get());
+}
+
 TEST_P(TestArray, throwErrors)
 {
 
@@ -278,7 +301,7 @@ TEST_P(TestArray, throwErrors)
   EXPECT_THROW(test_empty->readTo(nullptr, { 10, 10, 10 }, { 0, 0, 0 }), std::runtime_error);
   EXPECT_THROW(test_empty->readTo(nullptr, 10, 5, 6), std::runtime_error);
 
-  auto array_other = cle::Array::create(30, 20, 10, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  auto array_other = cle::Array::create(5, 20, 30, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   EXPECT_THROW(array->copyTo(array_other), std::runtime_error);
 }
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestArray, ::testing::ValuesIn(getParameters()));
