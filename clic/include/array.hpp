@@ -76,7 +76,7 @@ public:
   create(const Array::Pointer & array) -> Array::Pointer;
 
   /**
-   * @brief Reshape the Array, changing its dimensions but keeping the same data pointer (shallow copy) 
+   * @brief Reshape the Array, changing its dimensions but keeping the same data pointer (shallow copy)
    * @param new_width new width of the array
    * @param new_height new height of the array
    * @param new_depth new depth of the array
@@ -84,7 +84,7 @@ public:
    * @return Array::Pointer
    */
   auto
-  reshape(size_t new_width, size_t new_height, size_t new_depth, size_t new_dimension =0) const -> Array::Pointer;
+  reshape(size_t new_width, size_t new_height, size_t new_depth, size_t new_dimension = 0) const -> Array::Pointer;
 
   /**
    * @brief Copy the Array, creating a new Array::Pointer with the same data pointer (shallow copy)

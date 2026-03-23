@@ -93,7 +93,8 @@ Array::reshape(size_t new_width, size_t new_height, size_t new_depth, size_t new
   }
   if (new_width * new_height * new_depth != this->size())
   {
-    throw std::invalid_argument("Error: Array reshape size mismatch. Original size: " + std::to_string(this->size()) + ", new size: " + std::to_string(new_width * new_height * new_depth));
+    throw std::invalid_argument("Error: Array reshape size mismatch. Original size: " + std::to_string(this->size()) +
+                                ", new size: " + std::to_string(new_width * new_height * new_depth));
   }
   auto ptr = std::shared_ptr<Array>(
     new Array(new_width, new_height, new_depth, new_dimension, this->dtype(), this->mtype(), this->get_ptr(), this->device()));
@@ -103,8 +104,7 @@ Array::reshape(size_t new_width, size_t new_height, size_t new_depth, size_t new
 auto
 Array::shallow_copy() const -> Array::Pointer
 {
-  auto ptr = std::shared_ptr<Array>(
-    new Array(width_, height_, depth_, dim_, dataType_, memType_, data_, device_));
+  auto ptr = std::shared_ptr<Array>(new Array(width_, height_, depth_, dim_, dataType_, memType_, data_, device_));
   return ptr;
 }
 
@@ -228,7 +228,7 @@ Array::copyTo(const Array::Pointer & dst) const -> void
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::IMAGE)
   {
-    if( this->width() != dst->width() || this->height() != dst->height() || this->depth() != dst->depth() )
+    if (this->width() != dst->width() || this->height() != dst->height() || this->depth() != dst->depth())
     {
       throw std::runtime_error("Error: Copying Images of different dimensions");
     }
