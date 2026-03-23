@@ -5,6 +5,13 @@
 namespace cle
 {
 
+auto
+Array::New() -> Array::Pointer
+{
+  return std::shared_ptr<Array>(new Array());
+}
+
+
 Array::Array(const size_t            width,
              const size_t            height,
              const size_t            depth,
@@ -20,7 +27,6 @@ Array::Array(const size_t            width,
   , memType_(mem_type)
   , device_(device_ptr)
   , data_(nullptr)
-  , owns_memory_(true)
 {}
 
 Array::Array(const size_t                  width,
@@ -30,8 +36,7 @@ Array::Array(const size_t                  width,
              const dType &                 data_type,
              const mType &                 mem_type,
              const std::shared_ptr<void> & gpu_data,
-             const Device::Pointer &       device_ptr,
-             bool                          owns_memory)
+             const Device::Pointer &       device_ptr)
   : width_((width > 1) ? width : 1)
   , height_((height > 1) ? height : 1)
   , depth_((depth > 1) ? depth : 1)
@@ -41,7 +46,6 @@ Array::Array(const size_t                  width,
   , device_(device_ptr)
   , data_(gpu_data)
   , initialized_(true)
-  , owns_memory_(owns_memory)
 {}
 
 auto
@@ -81,24 +85,26 @@ Array::create(const Array::Pointer & array) -> Array::Pointer
 }
 
 auto
-Array::createFromGPUMemory(const size_t                  width,
-                           const size_t                  height,
-                           const size_t                  depth,
-                           const size_t                  dimension,
-                           const dType &                 data_type,
-                           const mType &                 mem_type,
-                           const std::shared_ptr<void> & gpu_data,
-                           const Device::Pointer &       device_ptr) -> Array::Pointer
+Array::reshape(size_t new_width, size_t new_height, size_t new_depth, size_t new_dimension) const -> Array::Pointer
 {
-  if (gpu_data == nullptr)
+  if (new_dimension == 0)
   {
-    throw std::runtime_error("Error: GPU memory pointer is null");
+    new_dimension = (this->depth() > 1) ? 3 : (this->height() > 1) ? 2 : 1;
   }
-  if (device_ptr == nullptr)
+  if (new_width * new_height * new_depth != this->size())
   {
-    throw std::runtime_error("Error: Device pointer is null");
+    throw std::invalid_argument("Error: Array reshape size mismatch. Original size: " + std::to_string(this->size()) +
+                                ", new size: " + std::to_string(new_width * new_height * new_depth));
   }
-  auto ptr = std::shared_ptr<Array>(new Array(width, height, depth, dimension, data_type, mem_type, gpu_data, device_ptr, false));
+  auto ptr = std::shared_ptr<Array>(
+    new Array(new_width, new_height, new_depth, new_dimension, this->dtype(), this->mtype(), this->get_ptr(), this->device()));
+  return ptr;
+}
+
+auto
+Array::shallow_copy() const -> Array::Pointer
+{
+  auto ptr = std::shared_ptr<Array>(new Array(width_, height_, depth_, dim_, dataType_, memType_, data_, device_));
   return ptr;
 }
 
@@ -222,7 +228,7 @@ Array::copyTo(const Array::Pointer & dst) const -> void
   }
   else if (mtype() == mType::IMAGE && dst->mtype() == mType::IMAGE)
   {
-    if( this->width() != dst->width() || this->height() != dst->height() || this->depth() != dst->depth() )
+    if (this->width() != dst->width() || this->height() != dst->height() || this->depth() != dst->depth())
     {
       throw std::runtime_error("Error: Copying Images of different dimensions");
     }
@@ -354,59 +360,69 @@ Array::size() const -> size_t
 auto
 Array::bitsize() const -> size_t
 {
-
   return size() * itemSize();
 }
+
 auto
 Array::width() const -> size_t
 {
   return width_;
 }
+
 auto
 Array::height() const -> size_t
 {
   return height_;
 }
+
 auto
 Array::depth() const -> size_t
 {
   return depth_;
 }
+
 auto
 Array::itemSize() const -> size_t
 {
   return toBytes(dataType_);
 }
+
 auto
 Array::dtype() const -> dType
 {
   return dataType_;
 }
+
 auto
 Array::mtype() const -> mType
 {
   return memType_;
 }
+
 auto
 Array::device() const -> Device::Pointer
 {
   return device_;
 }
+
 auto
 Array::dim() const -> unsigned int
 {
   return (depth_ > 1) ? 3 : (height_ > 1) ? 2 : 1;
 }
+
 auto
 Array::dimension() const -> unsigned int
 {
   return dim_;
 }
+
 auto
 Array::initialized() const -> bool
 {
   return initialized_;
 }
+
 auto
 Array::get() const -> void *
 {
@@ -425,10 +441,5 @@ Array::get_ptr() const -> std::shared_ptr<void>
   return data_;
 }
 
-auto
-Array::ownsMemory() const -> bool
-{
-  return owns_memory_;
-}
 
 } // namespace cle
