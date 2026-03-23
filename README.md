@@ -7,7 +7,7 @@
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/clesperanto/CLIc?color=white&include_prereleases)](https://github.com/clEsperanto/CLIc/releases/latest)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6075345.svg)](https://doi.org/10.5281/zenodo.6075345)
 
-__CLIc__ is a backend library for [clEsperanto](https://github.com/clEsperanto) - a multi-language framework for GPU-accelerated image processing. It uses the [OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/clesperanto_kernels) originally developped for [CLIJ](https://clij.github.io/). It currently focussed on running with [OpenCL](https://github.com/KhronosGroup/OpenCL-CLHPP), and also propose a [CUDA](https://developer.nvidia.com/cuda/toolkit) compatibility.
+__CLIc__ is a backend library for [clEsperanto](https://github.com/clEsperanto) - a multi-language framework for GPU-accelerated image processing. It uses the [OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/clesperanto_kernels) originally developped for [CLIJ](https://clij.github.io/). The project uses [OpenCL](https://github.com/KhronosGroup/OpenCL-CLHPP) or [CUDA](https://developer.nvidia.com/cuda/toolkit) for GPU-acceleration.
 
 The library is used for various user-oriented API libraries:
 - :snake: [pyclesperanto](https://github.com/clEsperanto/pyclesperanto)
