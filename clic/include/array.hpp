@@ -7,7 +7,6 @@
 #include "dlpack/dlpack.h"
 
 
-
 namespace cle
 {
 
@@ -320,11 +319,11 @@ public:
   print(const Array::Pointer & array) -> void;
 
 
-
   // DLPack interoperability
-  [[nodiscard]] auto toDLPack() const -> DLManagedTensorVersioned*;
-  static auto fromDLPack(DLManagedTensorVersioned* tensor,
-                       const Device::Pointer& device) -> Array::Pointer;
+  [[nodiscard]] auto
+  toDLPack() const -> DLManagedTensorVersioned *;
+  static auto
+  fromDLPack(DLManagedTensorVersioned * tensor, const Device::Pointer & device) -> Array::Pointer;
 
 private:
   // using MemoryPointer = std::shared_ptr<void *>;

@@ -27,8 +27,8 @@ protected:
 TEST_P(TestDLPack, RoundTripFloat)
 {
   auto dl = cle::toDLDataType(cle::dType::FLOAT);
-  EXPECT_EQ(dl.code,  kDLFloat);
-  EXPECT_EQ(dl.bits,  32);
+  EXPECT_EQ(dl.code, kDLFloat);
+  EXPECT_EQ(dl.bits, 32);
   EXPECT_EQ(cle::fromDLDataType(dl), cle::dType::FLOAT);
 }
 
@@ -58,13 +58,13 @@ TEST_P(TestDLPack, ImportMetadataCorrect1D)
   ASSERT_NE(managed, nullptr);
 
   const auto & t = managed->dl_tensor;
-  EXPECT_EQ(t.ndim,       1);
-  EXPECT_EQ(t.shape[0],   10);
+  EXPECT_EQ(t.ndim, 1);
+  EXPECT_EQ(t.shape[0], 10);
   EXPECT_EQ(t.dtype.code, kDLFloat);
   EXPECT_EQ(t.dtype.bits, 32);
-  EXPECT_NE(t.data,       nullptr);
+  EXPECT_NE(t.data, nullptr);
 
-  managed->deleter(managed);  // must not crash / leak
+  managed->deleter(managed); // must not crash / leak
 }
 
 TEST_P(TestDLPack, ImportMetadataCorrect3D)
@@ -75,8 +75,8 @@ TEST_P(TestDLPack, ImportMetadataCorrect3D)
   ASSERT_NE(managed, nullptr);
 
   const auto & t = managed->dl_tensor;
-  EXPECT_EQ(t.ndim,     3);
-  EXPECT_EQ(t.shape[0], 2);  // or z,y,x depending on your convention
+  EXPECT_EQ(t.ndim, 3);
+  EXPECT_EQ(t.shape[0], 2); // or z,y,x depending on your convention
   EXPECT_EQ(t.shape[1], 3);
   EXPECT_EQ(t.shape[2], 4);
 
@@ -112,11 +112,11 @@ TEST_P(TestDLPack, ExportRoundTripData)
 
   // Create source array with known data
   std::vector<float> src(12);
-  std::iota(src.begin(), src.end(), 0.f);  // 0,1,2,...,11
+  std::iota(src.begin(), src.end(), 0.f); // 0,1,2,...,11
   auto original = cle::Array::create(12, 1, 1, 1, cle::dType::FLOAT, cle::mType::BUFFER, src.data(), device);
 
   // Export → import
-  auto * managed  = original->toDLPack();
+  auto * managed = original->toDLPack();
   auto   imported = cle::Array::fromDLPack(managed, device);
 
   // Read back and compare
@@ -131,21 +131,19 @@ TEST_P(TestDLPack, ExportShapePreserved)
 {
   auto arr = cle::Array::create(6, 4, 2, 3, cle::dType::UINT16, cle::mType::BUFFER, device);
 
-  auto * managed  = arr->toDLPack();
+  auto * managed = arr->toDLPack();
   auto   imported = cle::Array::fromDLPack(managed, device);
 
-  EXPECT_EQ(imported->width(),  arr->width());
+  EXPECT_EQ(imported->width(), arr->width());
   EXPECT_EQ(imported->height(), arr->height());
-  EXPECT_EQ(imported->depth(),  arr->depth());
-  EXPECT_EQ(imported->dtype(),  arr->dtype());
+  EXPECT_EQ(imported->depth(), arr->depth());
+  EXPECT_EQ(imported->dtype(), arr->dtype());
 }
 
 TEST_P(TestDLPack, ExportNullThrows)
 {
   EXPECT_THROW(cle::Array::fromDLPack(nullptr, device), std::invalid_argument);
 }
-
-
 
 
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDLPack, ::testing::ValuesIn(getParameters()));

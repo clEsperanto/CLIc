@@ -444,37 +444,48 @@ Array::get_ptr() const -> std::shared_ptr<void>
 
 // DLPack interoperability
 // Helper: compute C-contiguous strides for a given shape
-static auto makeContiguousStrides(int32_t ndim, const int64_t* shape) -> int64_t*
+static auto
+makeContiguousStrides(int32_t ndim, const int64_t * shape) -> int64_t *
 {
-  auto* strides = new int64_t[ndim];
+  auto * strides = new int64_t[ndim];
   strides[ndim - 1] = 1;
   for (int32_t i = ndim - 2; i >= 0; --i)
     strides[i] = strides[i + 1] * shape[i + 1];
   return strides;
 }
 
-auto Array::toDLPack() const -> DLManagedTensorVersioned*
+auto
+Array::toDLPack() const -> DLManagedTensorVersioned *
 {
   if (mtype() != mType::BUFFER)
     throw std::runtime_error("DLPack export only supports BUFFER memory type");
   if (!initialized())
     throw std::runtime_error("Array is not initialized");
 
-  auto* managed = new DLManagedTensorVersioned();
-  managed->version = {DLPACK_MAJOR_VERSION, DLPACK_MINOR_VERSION};
-  managed->flags   = 0;
+  auto * managed = new DLManagedTensorVersioned();
+  managed->version = { DLPACK_MAJOR_VERSION, DLPACK_MINOR_VERSION };
+  managed->flags = 0;
 
   // Shape: DLPack C-order — [depth, height, width]
   int32_t ndim = static_cast<int32_t>(dimension());
-  auto* shape = new int64_t[ndim];
-  if      (ndim == 1) { shape[0] = static_cast<int64_t>(width()); }
-  else if (ndim == 2) { shape[0] = static_cast<int64_t>(height());
-                        shape[1] = static_cast<int64_t>(width()); }
-  else                { shape[0] = static_cast<int64_t>(depth());
-                        shape[1] = static_cast<int64_t>(height());
-                        shape[2] = static_cast<int64_t>(width()); }
+  auto *  shape = new int64_t[ndim];
+  if (ndim == 1)
+  {
+    shape[0] = static_cast<int64_t>(width());
+  }
+  else if (ndim == 2)
+  {
+    shape[0] = static_cast<int64_t>(height());
+    shape[1] = static_cast<int64_t>(width());
+  }
+  else
+  {
+    shape[0] = static_cast<int64_t>(depth());
+    shape[1] = static_cast<int64_t>(height());
+    shape[2] = static_cast<int64_t>(width());
+  }
 
-  int64_t* strides = makeContiguousStrides(ndim, shape);
+  int64_t * strides = makeContiguousStrides(ndim, shape);
 
   // Device type
   DLDeviceType dl_device_type;
@@ -484,21 +495,20 @@ auto Array::toDLPack() const -> DLManagedTensorVersioned*
   dl_device_type = kDLOpenCL;
 #endif
 
-  managed->dl_tensor.data        = get();  // void* — raw CUdeviceptr or cl_mem
-  managed->dl_tensor.device      = { dl_device_type,
-                                     static_cast<int32_t>(device()->getDeviceIndex()) };
-  managed->dl_tensor.ndim        = ndim;
-  managed->dl_tensor.dtype       = toDLDataType(dtype());
-  managed->dl_tensor.shape       = shape;
-  managed->dl_tensor.strides     = strides;  // required since DLPack v1.2
+  managed->dl_tensor.data = get(); // void* — raw CUdeviceptr or cl_mem
+  managed->dl_tensor.device = { dl_device_type, static_cast<int32_t>(device()->getDeviceIndex()) };
+  managed->dl_tensor.ndim = ndim;
+  managed->dl_tensor.dtype = toDLDataType(dtype());
+  managed->dl_tensor.shape = shape;
+  managed->dl_tensor.strides = strides; // required since DLPack v1.2
   managed->dl_tensor.byte_offset = 0;
 
   // Keep the Array alive via manager_ctx
   managed->manager_ctx = new Array::Pointer(shallow_copy());
-  managed->deleter = [](DLManagedTensorVersioned* self) {
+  managed->deleter = [](DLManagedTensorVersioned * self) {
     delete[] self->dl_tensor.shape;
     delete[] self->dl_tensor.strides;
-    delete static_cast<Array::Pointer*>(self->manager_ctx);
+    delete static_cast<Array::Pointer *>(self->manager_ctx);
     delete self;
   };
 
@@ -506,8 +516,8 @@ auto Array::toDLPack() const -> DLManagedTensorVersioned*
 }
 
 
-auto Array::fromDLPack(DLManagedTensorVersioned* src,
-                       const Device::Pointer& device_ptr) -> Array::Pointer
+auto
+Array::fromDLPack(DLManagedTensorVersioned * src, const Device::Pointer & device_ptr) -> Array::Pointer
 {
   if (src == nullptr)
   {
@@ -517,11 +527,12 @@ auto Array::fromDLPack(DLManagedTensorVersioned* src,
   // Version check: major version mismatch = must call deleter and bail
   if (src->version.major != DLPACK_MAJOR_VERSION)
   {
-    if (src->deleter) src->deleter(src);
+    if (src->deleter)
+      src->deleter(src);
     throw std::runtime_error("DLPack major version mismatch");
   }
 
-  const auto& t = src->dl_tensor;
+  const auto & t = src->dl_tensor;
 
 #if USE_CUDA
   if (t.device.device_type != kDLCUDA)
@@ -547,25 +558,23 @@ auto Array::fromDLPack(DLManagedTensorVersioned* src,
 
   // Reconstruct w/h/d from C-order shape [d, h, w]
   size_t w = 1, h = 1, d = 1;
-  if (t.ndim >= 1) w = static_cast<size_t>(t.shape[t.ndim - 1]);
-  if (t.ndim >= 2) h = static_cast<size_t>(t.shape[t.ndim - 2]);
-  if (t.ndim >= 3) d = static_cast<size_t>(t.shape[t.ndim - 3]);
+  if (t.ndim >= 1)
+    w = static_cast<size_t>(t.shape[t.ndim - 1]);
+  if (t.ndim >= 2)
+    h = static_cast<size_t>(t.shape[t.ndim - 2]);
+  if (t.ndim >= 3)
+    d = static_cast<size_t>(t.shape[t.ndim - 3]);
 
   dType dt = fromDLDataType(t.dtype);
 
   // Wrap raw pointer — deleter is called when the shared_ptr ref-count hits 0
-  DLManagedTensorVersioned* captured = src;
-  auto shared_data = std::shared_ptr<void>(
-    t.data,
-    [captured](void*) {
-      if (captured->deleter) captured->deleter(captured);
-    }
-  );
+  DLManagedTensorVersioned * captured = src;
+  auto                       shared_data = std::shared_ptr<void>(t.data, [captured](void *) {
+    if (captured->deleter)
+      captured->deleter(captured);
+  });
 
-  return std::shared_ptr<Array>(
-    new Array(w, h, d, static_cast<size_t>(t.ndim),
-              dt, mType::BUFFER, shared_data, device_ptr)
-  );
+  return std::shared_ptr<Array>(new Array(w, h, d, static_cast<size_t>(t.ndim), dt, mType::BUFFER, shared_data, device_ptr));
 }
 
 

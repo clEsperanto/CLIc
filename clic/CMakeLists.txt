@@ -31,7 +31,7 @@ target_include_directories(${LIBRARY_NAME} PUBLIC
     $<BUILD_INTERFACE:${CLEKERNELS_INCLUDE_DIR}>           # cleKernels headers
     $<BUILD_INTERFACE:${EIGEN3_INCLUDE_DIR}>               # Eigen headers
     $<BUILD_INTERFACE:${FETCHCONTENT_BASE_DIR}/vkfft-src/vkFFT/> # VkFFT headers
-    $<BUILD_INTERFACE:${FETCHCONTENT_BASE_DIR}/dlpack-src/include> # DLPack headers 
+    $<BUILD_INTERFACE:${FETCHCONTENT_BASE_DIR}/dlpack-src/include> # DLPack headers
     $<INSTALL_INTERFACE:include>
 )
 
