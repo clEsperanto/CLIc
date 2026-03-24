@@ -253,6 +253,11 @@ marshalParameters(const ParameterList & parameters, std::vector<std::shared_ptr<
       args_ptr.push_back(std::static_pointer_cast<void>(std::make_shared<unsigned int>(*u)));
       args_size.push_back(sizeof(unsigned int));
     }
+    else if (const auto * s = std::get_if<size_t>(&value))
+    {
+      args_ptr.push_back(std::static_pointer_cast<void>(std::make_shared<size_t>(*s)));
+      args_size.push_back(sizeof(size_t));
+    }
     else
     {
       throw std::runtime_error("Error: Invalid parameter type.");
@@ -660,6 +665,10 @@ evaluate(const Device::Pointer &            device,
     else if (const auto * u = std::get_if<unsigned int>(&p))
     {
       scalars.push_back({ name, static_cast<float>(*u) });
+    }
+    else if (const auto * s = std::get_if<size_t>(&p))
+    {
+      scalars.push_back({ name, static_cast<float>(*s) });
     }
     else
     {
