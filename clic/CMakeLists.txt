@@ -18,10 +18,9 @@ message(STATUS "VKFFT_INCLUDE_DIR: ${VKFFT_INCLUDE_DIR}")
 
 # target library definition
 add_library(${LIBRARY_NAME} ${SOURCES})
-target_link_libraries(${LIBRARY_NAME} PUBLIC cleKernels::cleKernels Eigen3::Eigen  VkFFT) # clFFT
-target_link_libraries(${LIBRARY_NAME} PRIVATE dlpack::dlpack)
+target_link_libraries(${LIBRARY_NAME} PUBLIC cleKernels::cleKernels Eigen3::Eigen VkFFT) 
 # make target depend on other targets
-add_dependencies(${LIBRARY_NAME} cleKernels::cleKernels Eigen3::Eigen  VkFFT) # clFFT
+add_dependencies(${LIBRARY_NAME} cleKernels::cleKernels Eigen3::Eigen VkFFT)
 
 add_library(${PROJECT_NAME}::${LIBRARY_NAME} ALIAS ${LIBRARY_NAME})
 # target_include_directories(${LIBRARY_NAME} PUBLIC ${FETCHCONTENT_BASE_DIR}/vkfft-src/vkFFT/)
