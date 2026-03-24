@@ -16,15 +16,13 @@ FetchContent_Declare(eigen
     GIT_SHALLOW ON
 )
 
-# # Fetch clFFT library sources
-# FetchContent_Declare(clFFT
-#     GIT_REPOSITORY https://github.com/clEsperanto/clFFT # https://github.com/clMathLibraries/clFFT.git
-#     GIT_TAG        clic-build #master
-#     GIT_SHALLOW ON
-#     SOURCE_SUBDIR  src  # clFFT CMakeLists.txt is in src/ instead of root
-# )
+FetchContent_Declare(
+    dlpack
+    GIT_REPOSITORY https://github.com/dmlc/dlpack.git
+    GIT_TAG        v1.3 # or pin a specific commit
+)
 
-FetchContent_MakeAvailable(cleKernels eigen ) # clFFT
+FetchContent_MakeAvailable(cleKernels eigen dlpack) # clFFT
 
 # test to avoid building eigen tests for fortran
 
