@@ -18,7 +18,7 @@ message(STATUS "VKFFT_INCLUDE_DIR: ${VKFFT_INCLUDE_DIR}")
 
 # target library definition
 add_library(${LIBRARY_NAME} ${SOURCES})
-target_link_libraries(${LIBRARY_NAME} PUBLIC cleKernels::cleKernels Eigen3::Eigen VkFFT) 
+target_link_libraries(${LIBRARY_NAME} PUBLIC cleKernels::cleKernels Eigen3::Eigen VkFFT)
 # make target depend on other targets
 add_dependencies(${LIBRARY_NAME} cleKernels::cleKernels Eigen3::Eigen VkFFT)
 
