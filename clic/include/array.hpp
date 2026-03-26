@@ -325,7 +325,7 @@ public:
   static auto
   fromDLPack(DLManagedTensorVersioned * tensor, const Device::Pointer & device) -> Array::Pointer;
 
-  auto 
+  auto
   syncToStream(int64_t consumer_stream) const -> void;
 
 private:

@@ -268,7 +268,7 @@ OpenCLBackend::executeKernel(const Device::Pointer &,
   throw std::runtime_error("Error: OpenCL is not enabled");
 }
 
-auto 
+auto
 OpenCLBackend::syncToStream(const Device::Pointer & device, int64_t /*consumer_stream*/) const -> void
 {
   throw std::runtime_error("Error: OpenCL is not enabled");
@@ -1338,11 +1338,12 @@ OpenCLBackend::setImage(const Device::Pointer &       device,
 // ── Kernel build and execution ──────────────────────────────────────────────
 
 
-auto 
+auto
 OpenCLBackend::syncToStream(const Device::Pointer & device, int64_t /*consumer_stream*/) const -> void
 {
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(device);
-  if (!ocl_device) return;
+  if (!ocl_device)
+    return;
   clFinish(ocl_device->getCLCommandQueue());
 }
 

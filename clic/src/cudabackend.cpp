@@ -195,10 +195,10 @@ CUDABackend::allocateBuffer(const Device::Pointer &, const size_t &, std::shared
   throw std::runtime_error("Error: CUDA is not enabled");
 }
 
-  auto 
-  CUDABackend::syncToStream(const Device::Pointer & device, int64_t consumer_stream) const -> void
-  {
-    throw std::runtime_error("Error: CUDA is not enabled");
+auto
+CUDABackend::syncToStream(const Device::Pointer & device, int64_t consumer_stream) const -> void
+{
+  throw std::runtime_error("Error: CUDA is not enabled");
 }
 
 
@@ -1052,15 +1052,17 @@ CUDABackend::setMemory(const Device::Pointer &       device,
 // ── Kernel build and execution ──────────────────────────────────────────────
 
 
-auto 
+auto
 CUDABackend::syncToStream(const Device::Pointer & device, int64_t consumer_stream) const -> void
 {
   auto cuda_device = std::dynamic_pointer_cast<CUDADevice>(device);
-  if (!cuda_device) return;
+  if (!cuda_device)
+    return;
 
   CUstream src_stream = cuda_device->getCUDAStream();
 
-  if (consumer_stream <= 0) {
+  if (consumer_stream <= 0)
+  {
     // null/legacy stream: full sync is safest
     cuStreamSynchronize(src_stream);
     return;
@@ -1070,7 +1072,7 @@ CUDABackend::syncToStream(const Device::Pointer & device, int64_t consumer_strea
 
   CUevent event;
   cuEventCreate(&event, CU_EVENT_DISABLE_TIMING);
-  cuEventRecord(event, src_stream);       // mark when YOUR work is done
+  cuEventRecord(event, src_stream);        // mark when YOUR work is done
   cuStreamWaitEvent(dst_stream, event, 0); // make CUPY wait before touching memory
   cuEventDestroy(event);
 }

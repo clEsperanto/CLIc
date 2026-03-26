@@ -152,7 +152,7 @@ public:
    * @param device
    * @param consumer_stream
    */
-  virtual auto 
+  virtual auto
   syncToStream(const Device::Pointer & device, int64_t consumer_stream) const -> void = 0;
 
   /**
@@ -412,7 +412,7 @@ public:
   [[nodiscard]] auto
   getType() const -> Backend::Type override;
 
-  auto 
+  auto
   syncToStream(const Device::Pointer & device, int64_t consumer_stream) const -> void override;
 
   static auto
@@ -594,7 +594,7 @@ public:
   [[nodiscard]] auto
   getType() const -> Backend::Type override;
 
-  auto 
+  auto
   syncToStream(const Device::Pointer & device, int64_t consumer_stream) const -> void override;
 
   static auto

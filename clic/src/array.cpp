@@ -577,7 +577,7 @@ Array::fromDLPack(DLManagedTensorVersioned * src, const Device::Pointer & device
   return std::shared_ptr<Array>(new Array(w, h, d, static_cast<size_t>(t.ndim), dt, mType::BUFFER, shared_data, device_ptr));
 }
 
-auto 
+auto
 Array::syncToStream(int64_t consumer_stream) const -> void
 {
   BackendManager::getInstance().getBackend().syncToStream(device(), consumer_stream);
