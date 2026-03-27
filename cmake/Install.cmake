@@ -16,6 +16,11 @@ install(
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
 )
 
+install(DIRECTORY ${FETCHCONTENT_BASE_DIR}/dlpack-src/include/
+    DESTINATION include
+    FILES_MATCHING PATTERN "*.h"
+)
+
 # Export for the build tree
 write_basic_package_version_file(
     "${PROJECT_BINARY_DIR}/${VERSION_CONFIG_FILE}"

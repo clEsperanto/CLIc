@@ -147,6 +147,15 @@ public:
   freeMemory(const Device::Pointer & device, const mType & mtype, const std::shared_ptr<void> & data_ptr) const -> void = 0;
 
   /**
+   * @brief Synchronize the device with a specific stream/queue
+   *
+   * @param device
+   * @param consumer_stream
+   */
+  virtual auto
+  syncToStream(const Device::Pointer & device, int64_t consumer_stream) const -> void = 0;
+
+  /**
    * @brief Write data from host to device buffer
    *
    * @param device
@@ -403,6 +412,9 @@ public:
   [[nodiscard]] auto
   getType() const -> Backend::Type override;
 
+  auto
+  syncToStream(const Device::Pointer & device, int64_t consumer_stream) const -> void override;
+
   static auto
   allocateBuffer(const Device::Pointer & device, const size_t & size, std::shared_ptr<void> & data_ptr) -> void;
 
@@ -581,6 +593,9 @@ public:
 
   [[nodiscard]] auto
   getType() const -> Backend::Type override;
+
+  auto
+  syncToStream(const Device::Pointer & device, int64_t consumer_stream) const -> void override;
 
   static auto
   allocateBuffer(const Device::Pointer & device, const size_t & size, std::shared_ptr<void> & data_ptr) -> void;
