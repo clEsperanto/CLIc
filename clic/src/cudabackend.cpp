@@ -773,7 +773,8 @@ CUDABackend::allocateBuffer(const Device::Pointer & device, const size_t & size,
   CUdeviceptr mem = 0;
   CU_CHECK(cuMemAlloc(&mem, size), "Error: Failed to allocate buffer memory");
   data_ptr = std::shared_ptr<void>(reinterpret_cast<void *>(mem), [device](void * ptr) {
-    if (ptr) {
+    if (ptr)
+    {
       CUDAContextGuard guard(device);
       cuMemFree(reinterpret_cast<CUdeviceptr>(ptr));
     }
