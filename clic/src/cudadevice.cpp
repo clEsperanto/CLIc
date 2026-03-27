@@ -106,7 +106,7 @@ CUDADevice::finalize() -> void
     return;
   }
 
-  initialized = false;  // Mark early so concurrent deleters see it
+  initialized = false; // Mark early so concurrent deleters see it
 
   waitFinish = true;
   finish();
