@@ -619,23 +619,15 @@ evaluate(const Device::Pointer &            device,
   if (var_names.size() != parameters.size())
   {
     throw std::invalid_argument("Error: expression has " + std::to_string(var_names.size()) + " variable(s) but " +
-                                std::to_string(parameters.size()) + " parameter(s) were provided.");
+                    std::to_string(parameters.size()) + " parameter(s) were provided.");
   }
 
-  // Promote integer math builtins to float equivalents (abs->fabs, min->fmin, max->fmax)
+  // Promote integer math builtins to float equivalents
   const std::string float_expression = promoteBuiltinsToFloat(expression);
 
-  // Classify each parameter as array or scalar, paired with its variable name
-  struct ArrayParam
-  {
-    std::string    name;
-    Array::Pointer arr;
-  };
-  struct ScalarParam
-  {
-    std::string name;
-    float       val;
-  };
+  // Separate arrays and scalars, preserving names
+  struct ArrayParam  { std::string name; Array::Pointer arr; };
+  struct ScalarParam { std::string name; float val; };
   std::vector<ArrayParam>  arrays;
   std::vector<ScalarParam> scalars;
 
@@ -650,7 +642,7 @@ evaluate(const Device::Pointer &            device,
       if ((*arr)->size() != output->size())
       {
         throw std::invalid_argument("Error: array '" + name + "' size (" + std::to_string((*arr)->size()) +
-                                    ") does not match output size (" + std::to_string(output->size()) + ").");
+                    ") does not match output size (" + std::to_string(output->size()) + ").");
       }
       arrays.push_back({ name, *arr });
     }
@@ -681,92 +673,57 @@ evaluate(const Device::Pointer &            device,
     throw std::invalid_argument("Error: at least one Array parameter is required in evaluate().");
   }
 
-  const std::string addr_qualifier = "__global ";
-  const std::string kernel_keyword = "__kernel";
-  const size_t      total_size = output->size();
+  // --- Build ParameterList matching kernel signature order ---
+  // Signature: (IMAGE_a_TYPE, IMAGE_b_TYPE, ..., IMAGE_dst_TYPE, float s1, float s2, ...)
+  // IMAGE_xxx_TYPE expands to just a pointer, so ParameterList order = arrays, dst, scalars
+  ParameterList param_list;
 
-  // --- Generate pure OpenCL/CUDA 1D kernel source ---
-  std::ostringstream ks;
-  ks << kernel_keyword << " void evaluate_kernel(\n";
-
-  // Input array parameters (typed by their actual dtype)
   for (const auto & a : arrays)
   {
-    ks << "    " << addr_qualifier << "const " << toString(a.arr->dtype()) << "* _arr_" << a.name << ",\n";
+    param_list.push_back({ "arr_" + a.name, a.arr });
   }
-
-  // Output array parameter
-  ks << "    " << addr_qualifier << toString(output->dtype()) << "* _arr_output,\n";
-  // Scalar parameters (all passed as float)
+  param_list.push_back({ "dst", output });
   for (const auto & s : scalars)
   {
-    ks << "    const float " << s.name << ",\n";
+    param_list.push_back({ s.name, s.val });
   }
-  // Total number of elements
-  ks << "    const int _size\n";
-  ks << ") {\n";
-  // 1D thread index
-  ks << "    const int idx = get_global_id(0);\n";
-  // Bounds check
-  ks << "    if (idx >= _size) return;\n\n";
-  // Read each input array element and cast to float
+
+  // --- Generate macro-compatible kernel source ---
+  std::ostringstream ks;
+  ks << "__constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;\n\n";
+  ks << "__kernel void evaluate_kernel(\n";
+
+for (const auto & a : arrays)
+  {
+    ks << "    IMAGE_arr_" << a.name << "_TYPE arr_" << a.name << ",\n";
+  }
+  ks << "    IMAGE_dst_TYPE dst";
+  for (const auto & s : scalars)
+  {
+    ks << ",\n    const float " << s.name;
+  }
+  ks << "\n) {\n";
+
+  ks << "    const int x = get_global_id(0);\n";
+  ks << "    const int y = get_global_id(1);\n";
+  ks << "    const int z = get_global_id(2);\n\n";
+
   for (const auto & a : arrays)
   {
-    ks << "    const float " << a.name << " = (float)_arr_" << a.name << "[idx];\n";
+    ks << "    const float " << a.name
+       << " = (float)READ_IMAGE(arr_" << a.name << ", sampler, POS_arr_" << a.name << "_INSTANCE(x,y,z,0)).x;\n";
   }
   ks << "\n";
-  // Evaluate expression (all in float) and cast result to output dtype
-  ks << "    _arr_output[idx] = (" << toString(output->dtype()) << ")(" << float_expression << ");\n";
+  ks << "    const float value = " << float_expression << ";\n";
+  ks << "    WRITE_IMAGE(dst, POS_dst_INSTANCE(x,y,z,0), CONVERT_dst_PIXEL_TYPE(value));\n";
   ks << "}\n";
 
-  std::string       kernel_source = ks.str();
-  const std::string kernel_name = "evaluate_kernel";
-  // convert OpenCL kernel to CUDA if needed
-  if (device->getType() == Device::Type::CUDA)
-  {
-    kernel_source = cle::translateOpenclToCuda(kernel_source);
-  }
+  // --- Delegate to execute() ---
+  const KernelInfo kernel_info = { "evaluate_kernel", ks.str() };
+  const RangeArray global_range = { output->width(), output->height(), output->depth() };
 
-  // --- Build argument lists ---
-  std::vector<std::shared_ptr<void>> args_ptr;
-  std::vector<size_t>                args_size;
+  std::cout << ks.str() << std::endl;
 
-  const size_t total_args = arrays.size() + 1 + scalars.size() + 1;
-  args_ptr.reserve(total_args);
-  args_size.reserve(total_args);
-
-  // Input arrays
-  for (const auto & a : arrays)
-  {
-    args_ptr.push_back(a.arr->get_ptr());
-    args_size.push_back(GPU_MEM_PTR_SIZE);
-  }
-
-  // Output array
-  args_ptr.push_back(output->get_ptr());
-  args_size.push_back(GPU_MEM_PTR_SIZE);
-
-  // Scalars (all as float)
-  for (const auto & s : scalars)
-  {
-    auto ptr = std::make_shared<float>(s.val);
-    args_ptr.push_back(std::static_pointer_cast<void>(ptr));
-    args_size.push_back(sizeof(float));
-  }
-
-  // Total size parameter
-  auto size_ptr = std::make_shared<int>(static_cast<int>(total_size));
-  args_ptr.push_back(std::static_pointer_cast<void>(size_ptr));
-  args_size.push_back(sizeof(int));
-
-  // Execute as 1D kernel with max local work group size
-  const size_t     max_local = device->getMaximumWorkGroupSize();
-  const size_t     global_size_padded = ((total_size + max_local - 1) / max_local) * max_local;
-  const RangeArray global_range = { global_size_padded, 1, 1 };
-  const RangeArray local_range = { max_local, 1, 1 };
-
-  cle::BackendManager::getInstance().getBackend().executeKernel(
-    device, kernel_source, kernel_name, global_range, local_range, args_ptr, args_size);
+  execute(device, kernel_info, param_list, global_range);
 }
-
 } // namespace cle
