@@ -47,38 +47,11 @@ copy_func(const Device::Pointer & device, const Array::Pointer & src, Array::Poi
     return dst;
   }
 
-  if (src->mtype() == mType::IMAGE || dst->mtype() == mType::IMAGE)
-  {
-    // use image copy kernel if either src or dst is an image
-    tier0::create_like(src, dst);
-    const KernelInfo    kernel = { "copy", kernel::copy };
-    const ParameterList params = { { "src", src }, { "dst", dst } };
-    const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
-    execute(device, kernel, params, range);
-    return dst;
-  }
-
-  // use basic copy kernel for the rest
-
-  auto input_type = toString(src->dtype());
-  auto output_type = toString(dst->dtype());
-  auto convert = (dst->dtype() == dType::FLOAT) ? "convert_float" : "convert_" + output_type + "_sat";
-  auto kernel_name = "copy";
-
-  std::string kernel_source = "__kernel void copy(__global const " + input_type + "* src, __global " + output_type +
-                              "* dst, const uint n) { const uint gid = get_global_id(0); if (gid < n) dst[gid] = " + convert +
-                              "(src[gid]); }";
-
-  const KernelInfo    kernel_info = { kernel_name, kernel_source };
-  const ParameterList params = { { "src", src }, { "dst", dst }, { "n", static_cast<unsigned int>(dst->size()) } };
-
-  const size_t LOCAL_ITEM_SIZE = std::min(256, static_cast<int>(device->getMaximumWorkGroupSize()));
-  size_t       globalItemSize =
-    static_cast<size_t>(ceil(static_cast<double>(dst->size()) / static_cast<double>(LOCAL_ITEM_SIZE)) * LOCAL_ITEM_SIZE);
-  const RangeArray global_range = { globalItemSize, 1, 1 };
-  const RangeArray local_range = { LOCAL_ITEM_SIZE, 1, 1 };
-
-  native_execute(device, kernel_info, params, global_range, local_range);
+  tier0::create_like(src, dst);
+  const KernelInfo    kernel = { "copy", kernel::copy };
+  const ParameterList params = { { "src", src }, { "dst", dst } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
   return dst;
 }
 
