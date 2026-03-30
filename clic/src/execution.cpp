@@ -619,15 +619,23 @@ evaluate(const Device::Pointer &            device,
   if (var_names.size() != parameters.size())
   {
     throw std::invalid_argument("Error: expression has " + std::to_string(var_names.size()) + " variable(s) but " +
-                    std::to_string(parameters.size()) + " parameter(s) were provided.");
+                                std::to_string(parameters.size()) + " parameter(s) were provided.");
   }
 
   // Promote integer math builtins to float equivalents
   const std::string float_expression = promoteBuiltinsToFloat(expression);
 
   // Separate arrays and scalars, preserving names
-  struct ArrayParam  { std::string name; Array::Pointer arr; };
-  struct ScalarParam { std::string name; float val; };
+  struct ArrayParam
+  {
+    std::string    name;
+    Array::Pointer arr;
+  };
+  struct ScalarParam
+  {
+    std::string name;
+    float       val;
+  };
   std::vector<ArrayParam>  arrays;
   std::vector<ScalarParam> scalars;
 
@@ -642,7 +650,7 @@ evaluate(const Device::Pointer &            device,
       if ((*arr)->size() != output->size())
       {
         throw std::invalid_argument("Error: array '" + name + "' size (" + std::to_string((*arr)->size()) +
-                    ") does not match output size (" + std::to_string(output->size()) + ").");
+                                    ") does not match output size (" + std::to_string(output->size()) + ").");
       }
       arrays.push_back({ name, *arr });
     }
@@ -693,7 +701,7 @@ evaluate(const Device::Pointer &            device,
   ks << "__constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;\n\n";
   ks << "__kernel void evaluate_kernel(\n";
 
-for (const auto & a : arrays)
+  for (const auto & a : arrays)
   {
     ks << "    IMAGE_arr_" << a.name << "_TYPE arr_" << a.name << ",\n";
   }
@@ -710,8 +718,8 @@ for (const auto & a : arrays)
 
   for (const auto & a : arrays)
   {
-    ks << "    const float " << a.name
-       << " = (float)READ_IMAGE(arr_" << a.name << ", sampler, POS_arr_" << a.name << "_INSTANCE(x,y,z,0)).x;\n";
+    ks << "    const float " << a.name << " = (float)READ_IMAGE(arr_" << a.name << ", sampler, POS_arr_" << a.name
+       << "_INSTANCE(x,y,z,0)).x;\n";
   }
   ks << "\n";
   ks << "    const float value = " << float_expression << ";\n";
