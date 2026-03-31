@@ -730,8 +730,6 @@ evaluate(const Device::Pointer &            device,
   const KernelInfo kernel_info = { "evaluate_kernel", ks.str() };
   const RangeArray global_range = { output->width(), output->height(), output->depth() };
 
-  std::cout << ks.str() << std::endl;
-
   execute(device, kernel_info, param_list, global_range);
 }
 } // namespace cle
