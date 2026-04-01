@@ -493,6 +493,8 @@ Array::toDLPack() const -> DLManagedTensorVersioned *
   dl_device_type = kDLCUDA;
 #elif USE_OPENCL
   dl_device_type = kDLOpenCL;
+#elif USE_METAL
+  dl_device_type = kDLMetal;
 #endif
 
   managed->dl_tensor.data = get(); // void* — raw CUdeviceptr or cl_mem
@@ -540,6 +542,9 @@ Array::fromDLPack(DLManagedTensorVersioned * src, const Device::Pointer & device
 #elif USE_OPENCL
   if (t.device.device_type != kDLOpenCL)
     throw std::runtime_error("OpenCL backend: DLPack tensor must be on an OpenCL device");
+#elif USE_METAL
+  if (t.device.device_type != kDLMetal)
+    throw std::runtime_error("Metal backend: DLPack tensor must be on a Metal device");
 #endif
 
   if (t.byte_offset != 0)
