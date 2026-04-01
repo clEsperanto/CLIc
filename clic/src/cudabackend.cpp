@@ -892,27 +892,26 @@ CUDABackend::buildKernel(const Device::Pointer & device,
   if (ptx.empty())
   {
     // The kernel_source string is: defines + preamble_cu + opencl_kernel.
-    // preamble_cu is already valid CUDA, so strip it before translating and
-    // re-insert it at its original position afterwards to avoid the translator
-    // corrupting it.
-    const std::string preamble = getPreamble();
-    std::string       source_to_translate = kernel_source;
-    const auto        preamble_pos = source_to_translate.find(preamble);
+    // preamble_cu is already valid CUDA — translate only the opencl_kernel
+    // part that follows it, then reassemble to avoid the translator corrupting
+    // the already-CUDA preamble.  The defines block (before the preamble) is
+    // plain #define macros valid in both OpenCL and CUDA, so it is kept as-is.
+    const std::string preamble     = getPreamble();
+    const auto        preamble_pos = kernel_source.find(preamble);
+
+    std::string cuda_source;
     if (preamble_pos != std::string::npos)
     {
-      source_to_translate.erase(preamble_pos, preamble.length());
+      const std::string before = kernel_source.substr(0, preamble_pos);
+      const std::string after  = kernel_source.substr(preamble_pos + preamble.length());
+      OpenCLToCUDATranslator translator;
+      cuda_source = before + preamble + translator.translate(after);
     }
-
-    OpenCLToCUDATranslator translator;
-    std::string            cuda_source = translator.translate(source_to_translate);
-    if (preamble_pos != std::string::npos)
+    else
     {
-      cuda_source.insert(preamble_pos, preamble);
+      OpenCLToCUDATranslator translator;
+      cuda_source = translator.translate(kernel_source);
     }
-
-
-    std::cout << "Translating OpenCL kernel to CUDA for device '" << cuda_device->getName() << "'..." << std::endl;
-    std::cout << "Translated CUDA source:\n" << cuda_source << std::endl;
 
     ptx = compileToPtx(cuda_source, cuda_device->getArch());
 
