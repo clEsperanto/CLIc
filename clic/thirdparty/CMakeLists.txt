@@ -16,7 +16,6 @@ FetchContent_Declare(eigen
     GIT_SHALLOW ON
 )
 
-
 # Fetch DLPack headers only (do not build its sources)
 FetchContent_Declare(
     dlpack
@@ -39,6 +38,8 @@ if (CLE_BACKEND STREQUAL "OPENCL")
     set(VKFFT_BACKEND 3 CACHE STRING "VkFFT backend")
 elseif (CLE_BACKEND STREQUAL "CUDA")
     set(VKFFT_BACKEND 1 CACHE STRING "VkFFT backend")
+elseif (CLE_BACKEND STREQUAL "METAL")
+    set(VKFFT_BACKEND 5 CACHE STRING "VkFFT backend")
 else()
     message(FATAL_ERROR "Unsupported backend type: ${CLE_BACKEND}")
 endif()
@@ -55,3 +56,9 @@ if(NOT VkFFT_POPULATED)
 endif()
 add_library(VkFFT INTERFACE)
 target_compile_definitions(VkFFT INTERFACE -DVKFFT_BACKEND=${VKFFT_BACKEND} -DVKFFT_MAX_FFT_DIMENSIONS=${VKFFT_MAX_FFT_DIMENSIONS})
+if (CLE_BACKEND STREQUAL "METAL")
+    target_include_directories(VkFFT INTERFACE
+        $<BUILD_INTERFACE:${vkfft_SOURCE_DIR}/metal-cpp>
+    )
+endif()
+

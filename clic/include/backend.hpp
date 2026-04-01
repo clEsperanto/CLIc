@@ -23,7 +23,8 @@ public:
   enum class Type
   {
     CUDA,
-    OPENCL
+    METAL,
+    OPENCL,
   };
 
   /**
@@ -361,6 +362,12 @@ public:
       case Backend::Type::OPENCL:
         out << "OpenCL";
         break;
+      case Backend::Type::METAL:
+        out << "Metal";
+        break;
+      default:
+        out << "Unknown";
+        break;
     }
     return out;
   }
@@ -376,6 +383,7 @@ public:
   }
 };
 
+#if USE_CUDA
 /**
  * @brief CUDA backend class
  *       This class holds low-level device operations for CUDA devices.
@@ -551,8 +559,9 @@ public:
   [[nodiscard]] auto
   getRefCount(void * data_ptr) const -> int override;
 };
+#endif // USE_CUDA
 
-
+#if USE_OPENCL
 /**
  * @brief OpenCL backend class
  *       This class holds low-level device operations for OpenCL devices.
@@ -756,6 +765,41 @@ public:
   [[nodiscard]] auto
   getRefCount(void * data_ptr) const -> int override;
 };
+#endif // USE_OPENCL
+
+#if USE_METAL
+class MetalBackend : public Backend
+{
+public:
+  MetalBackend();
+  ~MetalBackend() override = default;
+
+  [[nodiscard]] auto getType()           const -> Backend::Type override;
+  [[nodiscard]] auto getDevices(const std::string &)      const -> std::vector<Device::Pointer> override;
+  [[nodiscard]] auto getDevice(const std::string &, const std::string &) const -> Device::Pointer override;
+  [[nodiscard]] auto getDeviceFromIndex(size_t, const std::string &)     const -> Device::Pointer override;
+  [[nodiscard]] auto getDevicesList(const std::string &)  const -> std::vector<std::string> override;
+  [[nodiscard]] auto getPreamble()       const -> std::string override;
+  [[nodiscard]] auto getRefCount(void *) const -> int override;
+
+  auto syncToStream(const Device::Pointer &, int64_t) const -> void override;
+  auto allocateMemory(const Device::Pointer &, const std::array<size_t,3> &, const dType &, const mType &, std::shared_ptr<void> &) const -> void override;
+  auto freeMemory(const Device::Pointer &, const mType &, const std::shared_ptr<void> &) const -> void override;
+  auto writeMemory(const Device::Pointer &, const std::shared_ptr<void> &, std::array<size_t,3> &, std::array<size_t,3> &, std::array<size_t,3> &, const dType &, const mType &, const void *) const -> void override;
+  auto writeBuffer(const Device::Pointer &, const std::shared_ptr<void> &, std::array<size_t,3> &, std::array<size_t,3> &, std::array<size_t,3> &, const void *) const -> void;
+  auto readMemory (const Device::Pointer &, const std::shared_ptr<void> &, std::array<size_t,3> &, std::array<size_t,3> &, std::array<size_t,3> &, const dType &, const mType &, void *)       const -> void override;
+  auto readBuffer (const Device::Pointer &, const std::shared_ptr<void> &, std::array<size_t,3> &, std::array<size_t,3> &, std::array<size_t,3> &, void *) const -> void;
+  auto copyMemoryBufferToBuffer(const Device::Pointer &, const std::shared_ptr<void> &, std::array<size_t,3> &, std::array<size_t,3> &, const std::shared_ptr<void> &, std::array<size_t,3> &, std::array<size_t,3> &, std::array<size_t,3> &, const size_t &) const -> void override;
+  auto copyMemoryImageToBuffer (const Device::Pointer &, const std::shared_ptr<void> &, std::array<size_t,3> &, std::array<size_t,3> &, const std::shared_ptr<void> &, std::array<size_t,3> &, std::array<size_t,3> &, std::array<size_t,3> &, const size_t &) const -> void override;
+  auto copyMemoryBufferToImage (const Device::Pointer &, const std::shared_ptr<void> &, std::array<size_t,3> &, std::array<size_t,3> &, const std::shared_ptr<void> &, std::array<size_t,3> &, std::array<size_t,3> &, std::array<size_t,3> &, const size_t &) const -> void override;
+  auto copyMemoryImageToImage  (const Device::Pointer &, const std::shared_ptr<void> &, std::array<size_t,3> &, std::array<size_t,3> &, const std::shared_ptr<void> &, std::array<size_t,3> &, std::array<size_t,3> &, std::array<size_t,3> &, const size_t &) const -> void override;
+  auto setMemory(const Device::Pointer &, const std::shared_ptr<void> &, std::array<size_t,3> &, std::array<size_t,3> &, std::array<size_t,3> &, const dType &, const mType &, const float &) const -> void override;
+  auto setBuffer(const Device::Pointer &, const std::shared_ptr<void> &, std::array<size_t,3> &, std::array<size_t,3> &, std::array<size_t,3> &, const dType &, const float &) const -> void;
+  auto buildKernel  (const Device::Pointer &, const std::string &, const std::string &, std::shared_ptr<void> &) const -> void override;
+  auto executeKernel(const Device::Pointer &, const std::string &, const std::string &, const std::array<size_t,3> &, const std::array<size_t,3> &, const std::vector<std::shared_ptr<void>> &, const std::vector<size_t> &) const -> void override;
+};
+#endif // USE_METAL
+
 
 
 /**
@@ -794,6 +838,14 @@ public:
   openCLEnabled() -> bool;
 
   /**
+   * @brief Check if Metal is enabled
+   *
+   * @return bool True if Metal is enabled, False otherwise
+   */
+  [[nodiscard]] static auto
+  metalEnabled() -> bool;
+
+  /**
    * @brief Get the reason why CUDA is not available
    *
    * @return std::string Error message describing why CUDA failed to initialize or find devices
@@ -808,6 +860,14 @@ public:
    */
   [[nodiscard]] static auto
   getOpenCLError() -> const std::string &;
+
+  /**
+   * @brief Get the reason why Metal is not available
+   * 
+   * @return std::string Error message describing why Metal failed to initialize or find devices
+   */
+  [[nodiscard]] static auto
+  getMetalError() -> const std::string &;
 
   /**
    * @brief Set the backend
@@ -856,6 +916,7 @@ private:
   std::unique_ptr<Backend> backend;
   static std::string       cudaErrorMsg;
   static std::string       openCLErrorMsg;
+  static std::string       metalErrorMsg;
 
   BackendManager() = default;
   BackendManager(BackendManager &&) = default;

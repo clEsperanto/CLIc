@@ -9,6 +9,7 @@ namespace cle
 // Static error message storage
 std::string BackendManager::cudaErrorMsg = "";
 std::string BackendManager::openCLErrorMsg = "";
+std::string BackendManager::metalErrorMsg = "";
 
 auto
 BackendManager::cudaEnabled() -> bool
@@ -66,12 +67,23 @@ BackendManager::openCLEnabled() -> bool
   }
   openCLErrorMsg = ""; // Clear error on success
   return true;
-#else
+#else 
   openCLErrorMsg = "OpenCL not compiled into this build (USE_OPENCL=OFF)";
   return false;
 #endif
 }
 
+auto
+BackendManager::metalEnabled() -> bool
+{
+#if USE_METAL
+  // Metal availability is determined at compile time, so if we're here, it's enabled.
+  return true;
+#else
+  metalErrorMsg = "Metal not compiled into this build (USE_METAL=OFF)";
+  return false;
+#endif
+}
 
 auto
 BackendManager::getBackendsList() -> std::vector<std::string>
@@ -79,7 +91,8 @@ BackendManager::getBackendsList() -> std::vector<std::string>
   // Define a map to associate backend names with their check functions
   static std::map<std::string, std::function<bool()>> backendCheckMap = {
     { "cuda", [cudaEnabled = cudaEnabled]() { return cudaEnabled(); } },
-    { "opencl", [openCLEnabled = openCLEnabled]() { return openCLEnabled(); } }
+    { "opencl", [openCLEnabled = openCLEnabled]() { return openCLEnabled(); } },
+    { "metal", [metalEnabled = metalEnabled]() { return metalEnabled(); } }
   };
 
   std::vector<std::string> availableBackends;
@@ -116,6 +129,9 @@ BackendManager::setBackend(const std::string & backend) -> void
 #if USE_OPENCL
     { "opencl", { Backend::Type::OPENCL, []() -> std::unique_ptr<Backend> { return std::make_unique<OpenCLBackend>(); } } },
 #endif
+#if USE_METAL
+    { "metal", { Backend::Type::METAL, []() -> std::unique_ptr<Backend> { return std::make_unique<MetalBackend>(); } } },
+#endif
   };
 
   // Check if the requested backend is known (i.e. compiled in)
@@ -137,7 +153,36 @@ BackendManager::setBackend(const std::string & backend) -> void
   auto [backend_type, createBackend] = backendMap[backend];
 
   // Check if the requested backend is available at runtime
-  bool isEnabled = (backend_type == Backend::Type::CUDA) ? cudaEnabled() : openCLEnabled();
+  bool isEnabled = false;
+  switch (backend_type)
+  {    
+    case Backend::Type::CUDA:
+      if (!cudaEnabled())
+      {
+        const std::string & errorReason = getCudaError();
+        throw std::runtime_error("Backend '" + backend + "' is not available: " + errorReason);
+      }
+      isEnabled = true;
+      break;
+    case Backend::Type::OPENCL:
+      if (!openCLEnabled())
+      {
+        const std::string & errorReason = getOpenCLError();
+        throw std::runtime_error("Backend '" + backend + "' is not available: " + errorReason);
+      }
+      isEnabled = true;
+      break;
+    case Backend::Type::METAL:
+      if (!metalEnabled())
+      {
+        const std::string & errorReason = getMetalError();
+        throw std::runtime_error("Backend '" + backend + "' is not available: " + errorReason);
+      }
+      isEnabled = true;
+      break;
+    default:
+      throw std::runtime_error("Unsupported backend type");
+  }
   if (!isEnabled)
   {
     const std::string & errorReason = (backend_type == Backend::Type::CUDA) ? getCudaError() : getOpenCLError();
@@ -158,6 +203,12 @@ auto
 BackendManager::getOpenCLError() -> const std::string &
 {
   return openCLErrorMsg;
+}
+
+auto
+BackendManager::getMetalError() -> const std::string &
+{
+  return metalErrorMsg;
 }
 
 auto
