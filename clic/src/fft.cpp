@@ -269,7 +269,7 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
   configuration.context = &context;
   configuration.commandQueue = &queue;
 #else
-  throw std::runtime_error("Error: Unsupported backend. Only CUDA and OpenCL are supported for now.");  
+  throw std::runtime_error("Error: Unsupported backend. Only CUDA and OpenCL are supported for now.");
 #endif
 
   // manage jit-cache system
@@ -395,7 +395,7 @@ performDeconvolution(const Array::Pointer & observe,
   void * fft_real_in_mem = estimate->get(); // mutable: updated per VkFFTAppend
   void * fft_complex_mem = fft_estimate->get();
   void * ifft_real_out = reblurred->get();
-  
+
   fft_cfg.bufferSize = &complex_size;
   fft_cfg.inputBufferSize = &real_size;
   fft_cfg.buffer = &fft_complex_mem;

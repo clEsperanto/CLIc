@@ -21,6 +21,7 @@ TEST_P(TestBackends, manager)
   cle::BackendManager::getInstance().setBackend(param);
 
   auto backend_type = cle::BackendManager::getInstance().getBackend().getType();
-  EXPECT_TRUE(backend_type == cle::Backend::Type::CUDA || backend_type == cle::Backend::Type::OPENCL || backend_type == cle::Backend::Type::METAL);
+  EXPECT_TRUE(backend_type == cle::Backend::Type::CUDA || backend_type == cle::Backend::Type::OPENCL ||
+              backend_type == cle::Backend::Type::METAL);
 }
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestBackends, ::testing::ValuesIn(getParameters()));

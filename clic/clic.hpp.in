@@ -29,4 +29,3 @@
 
 
 const constexpr size_t GPU_MEM_PTR_SIZE = sizeof(void *);
-

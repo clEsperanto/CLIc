@@ -67,7 +67,7 @@ BackendManager::openCLEnabled() -> bool
   }
   openCLErrorMsg = ""; // Clear error on success
   return true;
-#else 
+#else
   openCLErrorMsg = "OpenCL not compiled into this build (USE_OPENCL=OFF)";
   return false;
 #endif
@@ -155,7 +155,7 @@ BackendManager::setBackend(const std::string & backend) -> void
   // Check if the requested backend is available at runtime
   bool isEnabled = false;
   switch (backend_type)
-  {    
+  {
     case Backend::Type::CUDA:
       if (!cudaEnabled())
       {

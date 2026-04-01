@@ -21,8 +21,6 @@ static const std::unordered_map<dType, std::string> dtype_defines = {
 } // namespace
 
 
-
-
 // Function creating common defines for constants
 static auto
 commonDefines(const ConstantList & constant_list) -> std::string

@@ -61,4 +61,3 @@ if (CLE_BACKEND STREQUAL "METAL")
         $<BUILD_INTERFACE:${vkfft_SOURCE_DIR}/metal-cpp>
     )
 endif()
-
