@@ -1,7 +1,5 @@
 #include "translator.hpp"
 
-#include <algorithm>
-#include <cassert>
 #include <sstream>
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -19,7 +17,6 @@ OpenCLToCUDATranslator::translate(const std::string & openclSource) const -> std
 auto
 OpenCLToCUDATranslator::translateInPlace(std::string & code) const -> void
 {
-  // Order matters — some passes depend on results of earlier ones.
   translatePragmas(code);
   translateSamplers(code);
   translateImageOperations(code);
@@ -53,10 +50,157 @@ OpenCLToCUDATranslator::replaceAll(std::string & str, const std::string & from, 
   }
 }
 
-auto
-OpenCLToCUDATranslator::regexReplaceAll(std::string & str, const std::regex & pattern, const std::string & replacement) -> void
+static auto
+isWordChar(char c) -> bool
 {
-  str = std::regex_replace(str, pattern, replacement);
+  return std::isalnum(static_cast<unsigned char>(c)) || c == '_';
+}
+
+auto
+OpenCLToCUDATranslator::replaceWord(std::string & str, const std::string & from, const std::string & to) -> void
+{
+  if (from.empty())
+    return;
+  size_t pos = 0;
+  while ((pos = str.find(from, pos)) != std::string::npos)
+  {
+    bool wordBefore = (pos > 0 && isWordChar(str[pos - 1]));
+    bool wordAfter = (pos + from.size() < str.size() && isWordChar(str[pos + from.size()]));
+    if (!wordBefore && !wordAfter)
+    {
+      str.replace(pos, from.size(), to);
+      pos += to.size();
+    }
+    else
+    {
+      pos += from.size();
+    }
+  }
+}
+
+auto
+OpenCLToCUDATranslator::replaceSuffix(std::string & str, const std::string & from, const std::string & to) -> void
+{
+  if (from.empty())
+    return;
+  size_t pos = 0;
+  while ((pos = str.find(from, pos)) != std::string::npos)
+  {
+    bool wordAfter = (pos + from.size() < str.size() && isWordChar(str[pos + from.size()]));
+    if (!wordAfter)
+    {
+      str.replace(pos, from.size(), to);
+      pos += to.size();
+    }
+    else
+    {
+      pos += from.size();
+    }
+  }
+}
+
+auto
+OpenCLToCUDATranslator::collapseSpaces(std::string & code) -> void
+{
+  size_t write = 0;
+  bool   prevSpace = false;
+  for (size_t read = 0; read < code.size(); ++read)
+  {
+    if (code[read] == ' ')
+    {
+      if (!prevSpace)
+      {
+        code[write++] = ' ';
+        prevSpace = true;
+      }
+    }
+    else
+    {
+      code[write++] = code[read];
+      prevSpace = false;
+    }
+  }
+  code.resize(write);
+}
+
+auto
+OpenCLToCUDATranslator::collapseNewlines(std::string & code) -> void
+{
+  size_t write = 0;
+  size_t nlCount = 0;
+  for (size_t read = 0; read < code.size(); ++read)
+  {
+    if (code[read] == '\n')
+    {
+      ++nlCount;
+      if (nlCount <= 2)
+        code[write++] = '\n';
+    }
+    else
+    {
+      nlCount = 0;
+      code[write++] = code[read];
+    }
+  }
+  code.resize(write);
+}
+
+auto
+OpenCLToCUDATranslator::replaceClamp(std::string & code) -> void
+{
+  const std::string tag = "clamp";
+  size_t            pos = 0;
+  while ((pos = code.find(tag, pos)) != std::string::npos)
+  {
+    if (pos > 0 && isWordChar(code[pos - 1]))
+    {
+      pos += tag.size();
+      continue;
+    }
+
+    size_t parenStart = pos + tag.size();
+    while (parenStart < code.size() && code[parenStart] == ' ')
+      ++parenStart;
+    if (parenStart >= code.size() || code[parenStart] != '(')
+    {
+      pos += tag.size();
+      continue;
+    }
+
+    int    depth = 1;
+    size_t i = parenStart + 1;
+    size_t comma1 = std::string::npos;
+    size_t comma2 = std::string::npos;
+    while (i < code.size() && depth > 0)
+    {
+      if (code[i] == '(')
+        ++depth;
+      else if (code[i] == ')')
+        --depth;
+      else if (code[i] == ',' && depth == 1)
+      {
+        if (comma1 == std::string::npos)
+          comma1 = i;
+        else if (comma2 == std::string::npos)
+          comma2 = i;
+      }
+      ++i;
+    }
+
+    if (depth != 0 || comma1 == std::string::npos || comma2 == std::string::npos)
+    {
+      pos += tag.size();
+      continue;
+    }
+
+    std::string arg1 = code.substr(parenStart + 1, comma1 - parenStart - 1);
+    std::string arg2 = code.substr(comma1 + 1, comma2 - comma1 - 1);
+    std::string arg3 = code.substr(comma2 + 1, (i - 1) - comma2 - 1);
+
+    std::string replacement = "min(max(" + arg1 + "," + arg2 + ")," + arg3 + ")";
+    code.replace(pos, i - pos, replacement);
+    pos += replacement.size();
+  }
 }
 
 auto
@@ -165,12 +309,7 @@ OpenCLToCUDATranslator::translateQualifiers(std::string & code) -> void
   replaceAll(code, "__attribute__((reqd_work_group_size(", "// __attribute__((reqd_work_group_size(");
 
   // Non-kernel helper functions declared 'inline' should become __device__
-  // We use word boundary matching via regex to avoid mangling "inline" inside strings.
-  {
-    // Use word boundaries to stay compatible with std::regex ECMAScript grammar.
-    static const std::regex inlineRe(R"(\binline\b)");
-    regexReplaceAll(code, inlineRe, "__device__ inline");
-  }
+  replaceWord(code, "inline", "__device__ inline");
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -184,24 +323,13 @@ OpenCLToCUDATranslator::translateAddressSpaces(std::string & code) -> void
   // But we must be careful not to remove it when it's part of __global__
   // Strategy: replace "__global " (with trailing space) and "global " when used as qualifier
 
-  // Handle "__global" as OpenCL address-space qualifier (not CUDA's __global__)
-  // Since we already converted __kernel → __global__, we need to be careful.
-  // We look for __global that is *not* followed by '__' (i.e., not __global__).
-  {
-    // Match standalone __global but not CUDA's __global__.
-    static const std::regex globalQualRe(R"(__global\b)");
-    regexReplaceAll(code, globalQualRe, "");
-  }
+  replaceSuffix(code, "__global", "");
 
   // __local → __shared__
   replaceAll(code, "__local ", "__shared__ ");
 
   // __constant (standalone, not already replaced) → __constant__
-  {
-    // Match standalone __constant but not __constant__.
-    static const std::regex constQualRe(R"(__constant\b)");
-    regexReplaceAll(code, constQualRe, "__constant__");
-  }
+  replaceSuffix(code, "__constant", "__constant__");
 
   // __private → (nothing, CUDA local variables are private by default)
   replaceAll(code, "__private ", "");
@@ -368,17 +496,10 @@ OpenCLToCUDATranslator::translateVectorAccess(std::string & code) -> void
   // (letter, digit, underscore, or ')') — indicating member access, not arbitrary text.
 
   // Use regex for safety: match ".sN" that follows a word character or ')'
-  static const std::vector<std::pair<std::regex, std::string>> accessMap = {
-    { std::regex(R"(\.s0\b)"), ".x" },
-    { std::regex(R"(\.s1\b)"), ".y" },
-    { std::regex(R"(\.s2\b)"), ".z" },
-    { std::regex(R"(\.s3\b)"), ".w" },
-  };
-
-  for (const auto & [pattern, replacement] : accessMap)
-  {
-    regexReplaceAll(code, pattern, replacement);
-  }
+  replaceSuffix(code, ".s0", ".x");
+  replaceSuffix(code, ".s1", ".y");
+  replaceSuffix(code, ".s2", ".z");
+  replaceSuffix(code, ".s3", ".w");
 
   // Also handle the .lo / .hi accessors for 2-component vectors
   // .lo → .x   .hi → .y   (only valid for type2, rough approximation)
@@ -591,35 +712,17 @@ OpenCLToCUDATranslator::translateMiscBuiltins(std::string & code) -> void
 
   // OpenCL type aliases — use word boundaries to avoid corrupting vector types
   // (e.g. uchar2, ushort4, ulong2 are valid CUDA built-ins and must not be touched)
-  {
-    static const std::regex ucharTypeRe(R"(\buchar\b)");
-    regexReplaceAll(code, ucharTypeRe, "unsigned char");
-  }
-  {
-    static const std::regex ushortTypeRe(R"(\bushort\b)");
-    regexReplaceAll(code, ushortTypeRe, "unsigned short");
-  }
+  replaceWord(code, "uchar", "unsigned char");
+  replaceWord(code, "ushort", "unsigned short");
   // uint is not defined in CUDA NVRTC, so translate it
   // Must use word boundary matching to avoid replacing it in identifiers like "uint3"
-  {
-    static const std::regex uintTypeRe(R"(\buint\b)");
-    regexReplaceAll(code, uintTypeRe, "unsigned int");
-  }
+  replaceWord(code, "uint", "unsigned int");
   // "ulong" → "unsigned long"
-  {
-    static const std::regex ulongTypeRe(R"(\bulong\b)");
-    regexReplaceAll(code, ulongTypeRe, "unsigned long");
-  }
+  replaceWord(code, "ulong", "unsigned long");
 
   // Add clamp function for CUDA (not built-in)
   // OpenCL: clamp(x, lo, hi)  ->  CUDA: min(max(x, lo), hi)
-  // We use a regex approach for safer matching
-  {
-    // Match clamp(arg1, arg2, arg3) where arg1, arg2, arg3 are expressions
-    // This regex handles simple cases; complex nested expressions may need special care.
-    static const std::regex clampRe(R"(clamp\s*\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^)]+)\s*\))");
-    regexReplaceAll(code, clampRe, "min(max($1, $2), $3)");
-  }
+  replaceClamp(code);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -637,14 +740,8 @@ OpenCLToCUDATranslator::cleanupDoubleQualifiers(std::string & code) -> void
   replaceAll(code, "extern \"C\" extern \"C\"", "extern \"C\"");
 
   // Clean up double spaces introduced by removals
-  {
-    static const std::regex doubleSpace(R"(  +)");
-    regexReplaceAll(code, doubleSpace, " ");
-  }
+  collapseSpaces(code);
 
   // Clean up empty lines (more than 2 consecutive newlines → 2)
-  {
-    static const std::regex multiNewline(R"(\n{3,})");
-    regexReplaceAll(code, multiNewline, "\n\n");
-  }
+  collapseNewlines(code);
 }
