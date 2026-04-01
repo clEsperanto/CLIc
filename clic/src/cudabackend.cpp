@@ -895,9 +895,9 @@ CUDABackend::buildKernel(const Device::Pointer & device,
     // preamble_cu is already valid CUDA, so strip it before translating and
     // re-insert it at its original position afterwards to avoid the translator
     // corrupting it.
-    const std::string preamble = getPreamble();
+    const std::string preamble            = getPreamble();
     std::string       source_to_translate = kernel_source;
-    const auto        preamble_pos = source_to_translate.find(preamble);
+    const auto        preamble_pos        = source_to_translate.find(preamble);
     if (preamble_pos != std::string::npos)
     {
       source_to_translate.erase(preamble_pos, preamble.length());
@@ -909,6 +909,11 @@ CUDABackend::buildKernel(const Device::Pointer & device,
     {
       cuda_source.insert(preamble_pos, preamble);
     }
+
+
+    std::cout << "Translating OpenCL kernel to CUDA for device '" << cuda_device->getName() << "'..." << std::endl;
+    std::cout << "Translated CUDA source:\n" << cuda_source << std::endl;
+
     ptx = compileToPtx(cuda_source, cuda_device->getArch());
 
     if (disk_cache.isEnabled())
