@@ -106,14 +106,18 @@ CUDADevice::finalize() -> void
     return;
   }
 
-  // Ensure all pending work completes before tearing down resources
+  initialized = false; // Mark early so concurrent deleters see it
+
   waitFinish = true;
   finish();
 
   if (cudaStream != nullptr)
   {
-    cuStreamDestroy(cudaStream);
+    CUresult err = cuStreamDestroy(cudaStream);
     cudaStream = nullptr;
+    // If CUDA driver is already shut down, just bail
+    if (err == CUDA_ERROR_DEINITIALIZED)
+      return;
   }
 
   if (cudaContext != nullptr)
@@ -121,8 +125,6 @@ CUDADevice::finalize() -> void
     cuCtxDestroy(cudaContext);
     cudaContext = nullptr;
   }
-
-  initialized = false;
 }
 
 auto

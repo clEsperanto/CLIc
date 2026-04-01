@@ -1,5 +1,8 @@
 #pragma once
 
+
+#include "dlpack/dlpack.h"
+
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -451,6 +454,67 @@ auto inline fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<
   std::array<size_t, 3> result;
   std::transform(shape.begin(), shape.end(), result.begin(), [](size_t value) { return (value > 1) ? next_smooth(value) : 1; });
   return result;
+}
+
+
+inline auto
+toDLDataType(const dType & dt) -> DLDataType
+{
+  switch (dt)
+  {
+    case dType::FLOAT:
+      return { kDLFloat, 32, 1 };
+    case dType::INT8:
+      return { kDLInt, 8, 1 };
+    case dType::INT16:
+      return { kDLInt, 16, 1 };
+    case dType::INT32:
+      return { kDLInt, 32, 1 };
+    case dType::UINT8:
+      return { kDLUInt, 8, 1 };
+    case dType::UINT16:
+      return { kDLUInt, 16, 1 };
+    case dType::UINT32:
+      return { kDLUInt, 32, 1 };
+    default:
+      throw std::runtime_error("toDLDataType: unsupported dType");
+  }
+}
+
+inline auto
+fromDLDataType(const DLDataType & dl) -> dType
+{
+  if (dl.lanes != 1)
+    throw std::runtime_error("fromDLDataType: vectorized types (lanes > 1) are not supported");
+
+  switch (dl.code)
+  {
+    case kDLFloat:
+      if (dl.bits == 32)
+        return dType::FLOAT;
+      throw std::runtime_error("fromDLDataType: only float32 is supported");
+
+    case kDLInt:
+      if (dl.bits == 8)
+        return dType::INT8;
+      if (dl.bits == 16)
+        return dType::INT16;
+      if (dl.bits == 32)
+        return dType::INT32;
+      throw std::runtime_error("fromDLDataType: unsupported int bit width");
+
+    case kDLUInt:
+      if (dl.bits == 8)
+        return dType::UINT8;
+      if (dl.bits == 16)
+        return dType::UINT16;
+      if (dl.bits == 32)
+        return dType::UINT32;
+      throw std::runtime_error("fromDLDataType: unsupported uint bit width");
+
+    default:
+      throw std::runtime_error("fromDLDataType: unsupported DLDataTypeCode");
+  }
 }
 
 

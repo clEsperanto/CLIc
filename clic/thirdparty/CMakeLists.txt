@@ -16,17 +16,22 @@ FetchContent_Declare(eigen
     GIT_SHALLOW ON
 )
 
-# # Fetch clFFT library sources
-# FetchContent_Declare(clFFT
-#     GIT_REPOSITORY https://github.com/clEsperanto/clFFT # https://github.com/clMathLibraries/clFFT.git
-#     GIT_TAG        clic-build #master
-#     GIT_SHALLOW ON
-#     SOURCE_SUBDIR  src  # clFFT CMakeLists.txt is in src/ instead of root
-# )
 
-FetchContent_MakeAvailable(cleKernels eigen ) # clFFT
+# Fetch DLPack headers only (do not build its sources)
+FetchContent_Declare(
+    dlpack
+    GIT_REPOSITORY https://github.com/dmlc/dlpack.git
+    GIT_TAG        v1.3 # or pin a specific commit
+)
+FetchContent_MakeAvailable(cleKernels eigen)
 
-# test to avoid building eigen tests for fortran
+# Populate DLPack (download only, do not add_subdirectory)
+if(NOT dlpack_POPULATED)
+    FetchContent_Populate(dlpack)
+endif()
+
+# To use DLPack headers in your target, add this in your CMakeLists.txt:
+# target_include_directories(<your_target> PUBLIC $<BUILD_INTERFACE:${dlpack_SOURCE_DIR}/include>)
 
 # Fetch vkFFT library sources
 # 0 - Vulkan, 1 - CUDA, 2 - HIP, 3 - OpenCL, 4 - Level Zero, 5 - Metal.
@@ -48,10 +53,5 @@ FetchContent_Declare(VkFFT
 if(NOT VkFFT_POPULATED)
     FetchContent_Populate(VkFFT)
 endif()
-# add_library(VkFFT INTERFACE)
-# target_compile_definitions(VkFFT INTERFACE -DVKFFT_BACKEND=${VKFFT_BACKEND} -DVKFFT_MAX_FFT_DIMENSIONS=${VKFFT_MAX_FFT_DIMENSIONS})
-# T_POPULATED)
-#     FetchContent_Populate(VkFFT)
-# endif()
 add_library(VkFFT INTERFACE)
 target_compile_definitions(VkFFT INTERFACE -DVKFFT_BACKEND=${VKFFT_BACKEND} -DVKFFT_MAX_FFT_DIMENSIONS=${VKFFT_MAX_FFT_DIMENSIONS})
