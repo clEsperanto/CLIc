@@ -895,9 +895,9 @@ CUDABackend::buildKernel(const Device::Pointer & device,
     // preamble_cu is already valid CUDA, so strip it before translating and
     // re-insert it at its original position afterwards to avoid the translator
     // corrupting it.
-    const std::string preamble            = getPreamble();
+    const std::string preamble = getPreamble();
     std::string       source_to_translate = kernel_source;
-    const auto        preamble_pos        = source_to_translate.find(preamble);
+    const auto        preamble_pos = source_to_translate.find(preamble);
     if (preamble_pos != std::string::npos)
     {
       source_to_translate.erase(preamble_pos, preamble.length());
