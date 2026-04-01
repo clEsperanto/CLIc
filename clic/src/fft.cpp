@@ -9,6 +9,7 @@
 #include "cache.hpp"
 #include "device.hpp"
 #include "tier0.hpp"
+#include "vkFFT.h"
 
 #include <array>
 #include <stdexcept>
@@ -144,7 +145,7 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   configuration.device = &device;
   configuration.stream = &stream;
   configuration.num_streams = 1;
-#else
+#elif USE_OPENCL
   // fetch ocl device, context and queue
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
   auto device = ocl_device->getCLDevice();
@@ -164,6 +165,8 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   configuration.device = &device;
   configuration.context = &context;
   configuration.commandQueue = &queue;
+#else
+  throw std::runtime_error("Error: Unsupported backend. Only CUDA and OpenCL are supported for now.");
 #endif
 
   // manage jit-cache system
@@ -199,7 +202,7 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
 
   // execute VkFFT
   VkFFTLaunchParams launchParams = {};
-#if !USE_CUDA
+#if USE_OPENCL
   launchParams.commandQueue = &queue;
 #endif
   resFFT = VkFFTAppend(&app, -1, &launchParams);
@@ -245,7 +248,7 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
   configuration.device = &device;
   configuration.stream = &stream;
   configuration.num_streams = 1;
-#else
+#elif USE_OPENCL
   // fetch ocl device, context and queue
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
   auto device = ocl_device->getCLDevice();
@@ -265,6 +268,8 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
   configuration.device = &device;
   configuration.context = &context;
   configuration.commandQueue = &queue;
+#else
+  throw std::runtime_error("Error: Unsupported backend. Only CUDA and OpenCL are supported for now.");  
 #endif
 
   // manage jit-cache system
@@ -300,7 +305,7 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
 
   // execute VkFFT
   VkFFTLaunchParams launchParams = {};
-#if !USE_CUDA
+#if USE_OPENCL
   launchParams.commandQueue = &queue;
 #endif
   resFFT = VkFFTAppend(&app, 1, &launchParams);
@@ -377,6 +382,11 @@ performDeconvolution(const Array::Pointer & observe,
   auto real_size = static_cast<uint64_t>(estimate->bitsize());
   auto complex_size = static_cast<uint64_t>(fft_estimate->bitsize());
 
+  VkFFTConfiguration fft_cfg{};
+  configure(estimate, fft_cfg);
+
+  VkFFTConfiguration ifft_cfg{};
+  configure(reblurred, ifft_cfg);
 #if USE_CUDA
   auto cu_dev = std::dynamic_pointer_cast<CUDADevice>(device);
   auto cuda_device = cu_dev->getCUDADevice();
@@ -385,9 +395,7 @@ performDeconvolution(const Array::Pointer & observe,
   void * fft_real_in_mem = estimate->get(); // mutable: updated per VkFFTAppend
   void * fft_complex_mem = fft_estimate->get();
   void * ifft_real_out = reblurred->get();
-
-  VkFFTConfiguration fft_cfg{};
-  configure(estimate, fft_cfg);
+  
   fft_cfg.bufferSize = &complex_size;
   fft_cfg.inputBufferSize = &real_size;
   fft_cfg.buffer = &fft_complex_mem;
@@ -397,8 +405,6 @@ performDeconvolution(const Array::Pointer & observe,
   fft_cfg.stream = &cuda_stream;
   fft_cfg.num_streams = 1;
 
-  VkFFTConfiguration ifft_cfg{};
-  configure(reblurred, ifft_cfg);
   ifft_cfg.bufferSize = &complex_size;
   ifft_cfg.inputBufferSize = &real_size;
   ifft_cfg.buffer = &fft_complex_mem;
@@ -407,7 +413,7 @@ performDeconvolution(const Array::Pointer & observe,
   ifft_cfg.device = &cuda_device;
   ifft_cfg.stream = &cuda_stream;
   ifft_cfg.num_streams = 1;
-#else
+#elif USE_OPENCL
   auto ocl_dev = std::dynamic_pointer_cast<OpenCLDevice>(device);
   auto ocl_device = ocl_dev->getCLDevice();
   auto ocl_context = ocl_dev->getCLContext();
@@ -417,8 +423,6 @@ performDeconvolution(const Array::Pointer & observe,
   cl_mem fft_complex_mem = static_cast<cl_mem>(fft_estimate->get());
   cl_mem ifft_real_out = static_cast<cl_mem>(reblurred->get());
 
-  VkFFTConfiguration fft_cfg{};
-  configure(estimate, fft_cfg);
   fft_cfg.bufferSize = &complex_size;
   fft_cfg.inputBufferSize = &real_size;
   fft_cfg.buffer = &fft_complex_mem;
@@ -428,8 +432,6 @@ performDeconvolution(const Array::Pointer & observe,
   fft_cfg.context = &ocl_context;
   fft_cfg.commandQueue = &ocl_queue;
 
-  VkFFTConfiguration ifft_cfg{};
-  configure(reblurred, ifft_cfg);
   ifft_cfg.bufferSize = &complex_size;
   ifft_cfg.inputBufferSize = &real_size;
   ifft_cfg.buffer = &fft_complex_mem;
@@ -438,6 +440,8 @@ performDeconvolution(const Array::Pointer & observe,
   ifft_cfg.device = &ocl_device;
   ifft_cfg.context = &ocl_context;
   ifft_cfg.commandQueue = &ocl_queue;
+#else
+  throw std::runtime_error("Error: Unsupported backend. Only CUDA and OpenCL are supported for now.");
 #endif
 
   VkFFTApplication fft_app = {};
@@ -454,7 +458,7 @@ performDeconvolution(const Array::Pointer & observe,
 
   // ── Richardson-Lucy deconvolution loop ────────────────────────────────────
   VkFFTLaunchParams lp = {};
-#if !USE_CUDA
+#if USE_OPENCL
   lp.commandQueue = &ocl_queue;
 #endif
 
@@ -463,8 +467,10 @@ performDeconvolution(const Array::Pointer & observe,
     // Forward FFT of estimate → fft_estimate
 #if USE_CUDA
     fft_real_in_mem = estimate->get();
-#else
+#elif USE_OPENCL
     fft_real_in_mem = static_cast<cl_mem>(estimate->get());
+#else
+    throw std::runtime_error("Error: Unsupported backend. Only CUDA and OpenCL are supported for now.");
 #endif
     res = VkFFTAppend(&fft_app, -1, &lp);
     if (res != VKFFT_SUCCESS)
@@ -484,8 +490,10 @@ performDeconvolution(const Array::Pointer & observe,
     // Forward FFT of reblurred → fft_estimate
 #if USE_CUDA
     fft_real_in_mem = reblurred->get();
-#else
+#elif USE_OPENCL
     fft_real_in_mem = static_cast<cl_mem>(reblurred->get());
+#else
+    throw std::runtime_error("Error: Unsupported backend. Only CUDA and OpenCL are supported for now.");
 #endif
     res = VkFFTAppend(&fft_app, -1, &lp);
     if (res != VKFFT_SUCCESS)

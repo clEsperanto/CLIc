@@ -13,5 +13,8 @@ getParameters()
 #if USE_CUDA
   parameters.push_back("cuda");
 #endif
+#if USE_METAL
+  parameters.push_back("metal");
+#endif
   return parameters;
 }

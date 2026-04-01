@@ -14,12 +14,13 @@ TEST_P(TestBackends, manager)
 
   auto ocl_flag = cle::BackendManager::getInstance().openCLEnabled();
   auto cuda_flag = cle::BackendManager::getInstance().cudaEnabled();
-  EXPECT_TRUE(ocl_flag || cuda_flag);
+  auto metal_flag = cle::BackendManager::getInstance().metalEnabled();
+  EXPECT_TRUE(ocl_flag || cuda_flag || metal_flag);
 
   std::string param = GetParam();
   cle::BackendManager::getInstance().setBackend(param);
 
   auto backend_type = cle::BackendManager::getInstance().getBackend().getType();
-  EXPECT_TRUE(backend_type == cle::Backend::Type::CUDA || backend_type == cle::Backend::Type::OPENCL);
+  EXPECT_TRUE(backend_type == cle::Backend::Type::CUDA || backend_type == cle::Backend::Type::OPENCL || backend_type == cle::Backend::Type::METAL);
 }
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestBackends, ::testing::ValuesIn(getParameters()));
