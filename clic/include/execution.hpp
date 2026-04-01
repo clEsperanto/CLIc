@@ -2,7 +2,6 @@
 
 #include "array.hpp"
 #include "device.hpp"
-#include "translator.hpp"
 
 #include <array>
 #include <set>

@@ -1,5 +1,6 @@
 #include "backend.hpp"
 #include "cle_preamble_cu.h"
+#include "translator.hpp"
 
 #include <algorithm>
 #include <array>
@@ -15,233 +16,7 @@ namespace cle
 // Compile-time CUDA guard
 // ============================================================================
 
-#if !USE_CUDA
-
-// ── Stub implementations when CUDA is disabled ──────────────────────────────
-
-CUDABackend::CUDABackend() {}
-
-auto
-CUDABackend::getDevices(const std::string &) const -> std::vector<Device::Pointer>
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::getDevice(const std::string &, const std::string &) const -> Device::Pointer
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::getDeviceFromIndex(size_t, const std::string &) const -> Device::Pointer
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::getDevicesList(const std::string &) const -> std::vector<std::string>
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::getType() const -> Backend::Type
-{
-  return Backend::Type::CUDA;
-}
-
-auto
-CUDABackend::allocateMemory(const Device::Pointer &, const std::array<size_t, 3> &, const dType &, const mType &, std::shared_ptr<void> &)
-  const -> void
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::freeMemory(const Device::Pointer &, const mType &, const std::shared_ptr<void> &) const -> void
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::getRefCount(void *) const -> int
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::writeMemory(const Device::Pointer &,
-                         const std::shared_ptr<void> &,
-                         std::array<size_t, 3> &,
-                         std::array<size_t, 3> &,
-                         std::array<size_t, 3> &,
-                         const dType &,
-                         const mType &,
-                         const void *) const -> void
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::readMemory(const Device::Pointer &,
-                        const std::shared_ptr<void> &,
-                        std::array<size_t, 3> &,
-                        std::array<size_t, 3> &,
-                        std::array<size_t, 3> &,
-                        const dType &,
-                        const mType &,
-                        void *) const -> void
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::copyMemoryBufferToBuffer(const Device::Pointer &,
-                                      const std::shared_ptr<void> &,
-                                      std::array<size_t, 3> &,
-                                      std::array<size_t, 3> &,
-                                      const std::shared_ptr<void> &,
-                                      std::array<size_t, 3> &,
-                                      std::array<size_t, 3> &,
-                                      std::array<size_t, 3> &,
-                                      const size_t &) const -> void
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::copyMemoryImageToBuffer(const Device::Pointer &,
-                                     const std::shared_ptr<void> &,
-                                     std::array<size_t, 3> &,
-                                     std::array<size_t, 3> &,
-                                     const std::shared_ptr<void> &,
-                                     std::array<size_t, 3> &,
-                                     std::array<size_t, 3> &,
-                                     std::array<size_t, 3> &,
-                                     const size_t &) const -> void
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::copyMemoryBufferToImage(const Device::Pointer &,
-                                     const std::shared_ptr<void> &,
-                                     std::array<size_t, 3> &,
-                                     std::array<size_t, 3> &,
-                                     const std::shared_ptr<void> &,
-                                     std::array<size_t, 3> &,
-                                     std::array<size_t, 3> &,
-                                     std::array<size_t, 3> &,
-                                     const size_t &) const -> void
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::copyMemoryImageToImage(const Device::Pointer &,
-                                    const std::shared_ptr<void> &,
-                                    std::array<size_t, 3> &,
-                                    std::array<size_t, 3> &,
-                                    const std::shared_ptr<void> &,
-                                    std::array<size_t, 3> &,
-                                    std::array<size_t, 3> &,
-                                    std::array<size_t, 3> &,
-                                    const size_t &) const -> void
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::setMemory(const Device::Pointer &,
-                       const std::shared_ptr<void> &,
-                       std::array<size_t, 3> &,
-                       std::array<size_t, 3> &,
-                       std::array<size_t, 3> &,
-                       const dType &,
-                       const mType &,
-                       const float &) const -> void
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::buildKernel(const Device::Pointer &, const std::string &, const std::string &, std::shared_ptr<void> &) const -> void
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::executeKernel(const Device::Pointer &,
-                           const std::string &,
-                           const std::string &,
-                           const std::array<size_t, 3> &,
-                           const std::array<size_t, 3> &,
-                           const std::vector<std::shared_ptr<void>> &,
-                           const std::vector<size_t> &) const -> void
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::getPreamble() const -> std::string
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::allocateBuffer(const Device::Pointer &, const size_t &, std::shared_ptr<void> &) -> void
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::syncToStream(const Device::Pointer & device, int64_t consumer_stream) const -> void
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-
-auto
-CUDABackend::writeBuffer(const Device::Pointer &,
-                         const std::shared_ptr<void> &,
-                         const std::array<size_t, 3> &,
-                         const std::array<size_t, 3> &,
-                         const std::array<size_t, 3> &,
-                         const void *) -> void
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::readBuffer(const Device::Pointer &,
-                        const std::shared_ptr<void> &,
-                        const std::array<size_t, 3> &,
-                        const std::array<size_t, 3> &,
-                        const std::array<size_t, 3> &,
-                        void *) -> void
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-auto
-CUDABackend::setBuffer(const Device::Pointer &,
-                       const std::shared_ptr<void> &,
-                       const std::array<size_t, 3> &,
-                       const std::array<size_t, 3> &,
-                       const std::array<size_t, 3> &,
-                       const dType &,
-                       const float &) -> void
-{
-  throw std::runtime_error("Error: CUDA is not enabled");
-}
-
-#else // USE_CUDA ═════════════════════════════════════════════════════════════
-
-// ============================================================================
-// Error Handling
-// ============================================================================
-
+#if USE_CUDA
 /**
  * @brief Convert a CUresult error code to a human-readable string.
  *        Returns "Unknown CUDA error" if the driver provides no string.
@@ -1097,7 +872,7 @@ CUDABackend::buildKernel(const Device::Pointer & device,
   const auto device_hash = DiskCache::hash(cuda_device->getInfo());
   auto &     disk_cache = DiskCache::instance();
 
-  // ── Level 1: in-memory cache (fastest) ──
+  // ── Level 1: in-memory cache (fastest, skips translation entirely) ──
   const auto cache_key = device_hash + "_" + source_hash + "_" + kernel_name;
   auto       cached = device->getProgramFromCache(cache_key);
   if (cached != nullptr)
@@ -1106,17 +881,19 @@ CUDABackend::buildKernel(const Device::Pointer & device,
     return;
   }
 
-  // ── Level 2: disk cache (avoids recompilation) ──
+  // ── Level 2: disk cache (avoids translation and recompilation) ──
   std::string ptx;
   if (disk_cache.isEnabled())
   {
     ptx = loadPtxFromCache(device_hash, source_hash);
   }
 
-  // ── Level 3: compile from source ──
+  // ── Level 3: translate OpenCL→CUDA and compile from source ──
   if (ptx.empty())
   {
-    ptx = compileToPtx(kernel_source, cuda_device->getArch());
+    OpenCLToCUDATranslator translator;
+    std::string            cuda_source = translator.translate(kernel_source);
+    ptx = compileToPtx(cuda_source, cuda_device->getArch());
 
     if (disk_cache.isEnabled())
     {
@@ -1206,7 +983,6 @@ CUDABackend::getPreamble() const -> std::string
 {
   return kernel::preamble_cu;
 }
-
 #endif // USE_CUDA
 
 } // namespace cle
