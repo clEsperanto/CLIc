@@ -896,14 +896,14 @@ CUDABackend::buildKernel(const Device::Pointer & device,
     // part that follows it, then reassemble to avoid the translator corrupting
     // the already-CUDA preamble.  The defines block (before the preamble) is
     // plain #define macros valid in both OpenCL and CUDA, so it is kept as-is.
-    const std::string preamble     = getPreamble();
+    const std::string preamble = getPreamble();
     const auto        preamble_pos = kernel_source.find(preamble);
 
     std::string cuda_source;
     if (preamble_pos != std::string::npos)
     {
-      const std::string before = kernel_source.substr(0, preamble_pos);
-      const std::string after  = kernel_source.substr(preamble_pos + preamble.length());
+      const std::string      before = kernel_source.substr(0, preamble_pos);
+      const std::string      after = kernel_source.substr(preamble_pos + preamble.length());
       OpenCLToCUDATranslator translator;
       cuda_source = before + preamble + translator.translate(after);
     }
