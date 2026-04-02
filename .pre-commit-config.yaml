@@ -22,5 +22,5 @@ repos:
     rev: v22.1.0
     hooks:
     -   id: clang-format
-        types_or: [c++, c, objective-c]
+        types_or: [c++, c]
         exclude: \.mm$
