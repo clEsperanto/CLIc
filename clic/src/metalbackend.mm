@@ -471,10 +471,6 @@ MetalBackend::buildKernel(const Device::Pointer & device,
     metal_source = translator.translate(kernel_source);
   }
 
-  std::cout << "\n[CLIc][Metal] Translated kernel source before build ('" << kernel_name << "'):\n"
-            << metal_source << "\n"
-            << "[CLIc][Metal] End translated kernel source\n";
-
   NS::Error * error = nullptr;
   auto        sourceStr = NS::String::string(metal_source.c_str(), NS::UTF8StringEncoding);
   auto *      library = dev->newLibrary(sourceStr, nullptr, &error);
@@ -526,10 +522,6 @@ MetalBackend::executeKernel(const Device::Pointer &                    device,
                             const std::vector<std::shared_ptr<void>> & args,
                             const std::vector<size_t> &                sizes) const -> void
 {
-  std::cout << "\n[CLIc][Metal] Kernel source before execute ('" << kernel_name << "'):\n"
-            << kernel_source << "\n"
-            << "[CLIc][Metal] End kernel source before execute\n";
-
   auto metal_device = castDevice(device);
   auto * queue = static_cast<MTL::CommandQueue *>(metal_device->getMetalCommandQueue());
   auto * dev = static_cast<MTL::Device *>(metal_device->getMetalDevice());
