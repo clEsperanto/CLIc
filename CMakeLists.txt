@@ -5,7 +5,7 @@ project(CLIc VERSION 0.22.0 LANGUAGES C CXX)
 # quick fix for windows CI
 set(CMAKE_Fortran_COMPILER NOTFOUND CACHE FILEPATH "Fortran compiler" FORCE)
 
-set(kernel_version_tag "clesperanto_kernels"  CACHE STRING "clEsperanto kernel version tag")
+set(kernel_version_tag "3.6.0"  CACHE STRING "clEsperanto kernel version tag")
 set(eigen_lib_version_tag "3.4.0" CACHE STRING "Eigen library version tag")
 set(vkFFT_version_tag "v1.3.4" CACHE STRING "vkFFT library version tag")
 
