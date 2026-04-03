@@ -164,8 +164,18 @@ MetalDevice::getName(bool lowercase) const -> std::string
 auto
 MetalDevice::getInfo() const -> std::string
 {
+  auto * dev = static_cast<MTL::Device *>(metalDevice);
   std::ostringstream os;
-  os << "Metal Device: " << getName() << " (index " << metalDeviceIndex << ")";
+  os << std::left << "(" << this->getType() << ") " << getName() << "\n";
+  os << std::left << std::setw(30) << "\tVendor: " << getPlatform() << "\n";
+  os << std::left << std::setw(30) << "\tDevice Type: " << getDeviceType() << "\n";
+  if (dev)
+  {
+    os << std::left << std::setw(30) << "\tLocal Memory Size: " << (getLocalMemorySize() / 1024) << " KB\n";
+    os << std::left << std::setw(30) << "\tMaximum Buffer Size: " << (dev->maxBufferLength() / (1024 * 1024)) << " MB\n";
+    os << std::left << std::setw(30) << "\tHas Unified Memory: " << (dev->hasUnifiedMemory() ? "Yes" : "No") << "\n";
+    os << std::left << std::setw(30) << "\tImage Support: " << (supportImage() ? "Yes" : "No") << '\n';
+  }
   return os.str();
 }
 
@@ -174,14 +184,10 @@ MetalDevice::getInfoExtended() const -> std::string
 {
   auto * dev = static_cast<MTL::Device *>(metalDevice);
   std::ostringstream os;
-  os << "Metal Device Extended Info\n";
-  os << std::left << std::setw(30) << "\tName" << getName() << "\n";
-  os << std::left << std::setw(30) << "\tDevice Index" << metalDeviceIndex << "\n";
+  os << this->getInfo();
   if (dev)
   {
-    os << std::left << std::setw(30) << "\tMax Buffer Length" << dev->maxBufferLength() << "\n";
-    os << std::left << std::setw(30) << "\tMax Threads Per Threadgroup" << dev->maxThreadsPerThreadgroup().width << "\n";
-    os << std::left << std::setw(30) << "\tHas Unified Memory" << (dev->hasUnifiedMemory() ? "Yes" : "No") << "\n";
+    os << std::left << std::setw(30) << "\tMax Threads Per Threadgroup: " << dev->maxThreadsPerThreadgroup().width << "\n";
   }
   return os.str();
 }
