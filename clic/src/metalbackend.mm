@@ -1,5 +1,7 @@
 
 #include "backend.hpp"
+#include "translator.hpp"
+#include "cle_preamble_metal.h"
 
 #include <algorithm>
 #include <array>
@@ -153,8 +155,8 @@ MetalBackend::allocateMemory(const Device::Pointer &       device,
     throw std::runtime_error("Error: Failed to allocate Metal buffer of size " + std::to_string(size));
   }
 
-  data_ptr = std::shared_ptr<void>(buffer->contents(), [buffer](void *) {
-    buffer->release();
+  data_ptr = std::shared_ptr<void>(buffer, [](void * p) {
+    static_cast<MTL::Buffer *>(p)->release();
   });
 }
 
@@ -196,7 +198,7 @@ MetalBackend::writeBuffer(const Device::Pointer &       device,
                           const void *                  host_ptr) const -> void
 {
   const size_t row_bytes = region[0];
-  auto *       dst_base = static_cast<uint8_t *>(buffer_ptr.get());
+  auto *       dst_base = static_cast<uint8_t *>(static_cast<MTL::Buffer *>(buffer_ptr.get())->contents());
   const auto * src_base = static_cast<const uint8_t *>(host_ptr);
 
   for (size_t z = 0; z < region[2]; ++z)
@@ -239,7 +241,7 @@ MetalBackend::readBuffer(const Device::Pointer &       device,
                          void *                        host_ptr) const -> void
 {
   const size_t row_bytes = region[0];
-  const auto * src_base = static_cast<const uint8_t *>(buffer_ptr.get());
+  const auto * src_base = static_cast<const uint8_t *>(static_cast<MTL::Buffer *>(buffer_ptr.get())->contents());
   auto *       dst_base = static_cast<uint8_t *>(host_ptr);
 
   for (size_t z = 0; z < region[2]; ++z)
@@ -291,8 +293,8 @@ MetalBackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
   dst_shape[0] *= bytes;
 
   const size_t row_bytes = region[0];
-  const auto * src_base = static_cast<const uint8_t *>(src_ptr.get());
-  auto *       dst_base = static_cast<uint8_t *>(dst_ptr.get());
+  const auto * src_base = static_cast<const uint8_t *>(static_cast<MTL::Buffer *>(src_ptr.get())->contents());
+  auto *       dst_base = static_cast<uint8_t *>(static_cast<MTL::Buffer *>(dst_ptr.get())->contents());
 
   for (size_t z = 0; z < region[2]; ++z)
   {
@@ -362,7 +364,7 @@ MetalBackend::setBuffer(const Device::Pointer &       device,
 {
   const size_t elem_size = toBytes(dtype);
   const size_t count = region[0] * region[1] * region[2];
-  auto *       dst = static_cast<uint8_t *>(buffer_ptr.get());
+  auto *       dst = static_cast<uint8_t *>(static_cast<MTL::Buffer *>(buffer_ptr.get())->contents());
   const size_t offset = (buffer_origin[2] * buffer_shape[1] * buffer_shape[0]
                        + buffer_origin[1] * buffer_shape[0]
                        + buffer_origin[0]) * elem_size;
@@ -450,8 +452,31 @@ MetalBackend::buildKernel(const Device::Pointer & device,
     return;
   }
 
+  // The input source is: defines + metal preamble + OpenCL-like kernel body.
+  // Translate only the kernel body to preserve the already-valid Metal preamble.
+  const std::string preamble = getPreamble();
+  const auto        preamble_pos = kernel_source.find(preamble);
+
+  std::string metal_source;
+  if (preamble_pos != std::string::npos)
+  {
+    const std::string       before = kernel_source.substr(0, preamble_pos);
+    const std::string       after = kernel_source.substr(preamble_pos + preamble.length());
+    OpenCLToMetalTranslator translator;
+    metal_source = translator.translate(before) + preamble + translator.translate(after);
+  }
+  else
+  {
+    OpenCLToMetalTranslator translator;
+    metal_source = translator.translate(kernel_source);
+  }
+
+  std::cout << "\n[CLIc][Metal] Translated kernel source before build ('" << kernel_name << "'):\n"
+            << metal_source << "\n"
+            << "[CLIc][Metal] End translated kernel source\n";
+
   NS::Error * error = nullptr;
-  auto        sourceStr = NS::String::string(kernel_source.c_str(), NS::UTF8StringEncoding);
+  auto        sourceStr = NS::String::string(metal_source.c_str(), NS::UTF8StringEncoding);
   auto *      library = dev->newLibrary(sourceStr, nullptr, &error);
   if (!library)
   {
@@ -501,6 +526,10 @@ MetalBackend::executeKernel(const Device::Pointer &                    device,
                             const std::vector<std::shared_ptr<void>> & args,
                             const std::vector<size_t> &                sizes) const -> void
 {
+  std::cout << "\n[CLIc][Metal] Kernel source before execute ('" << kernel_name << "'):\n"
+            << kernel_source << "\n"
+            << "[CLIc][Metal] End kernel source before execute\n";
+
   auto metal_device = castDevice(device);
   auto * queue = static_cast<MTL::CommandQueue *>(metal_device->getMetalCommandQueue());
   auto * dev = static_cast<MTL::Device *>(metal_device->getMetalDevice());
@@ -527,8 +556,7 @@ MetalBackend::executeKernel(const Device::Pointer &                    device,
   {
     if (sizes[i] == GPU_MEM_PTR_SIZE)
     {
-      auto * contents = args[i].get();
-      MTL::Buffer * mtlBuf = dev->newBuffer(contents, 0, MTL::ResourceStorageModeShared);
+      auto * mtlBuf = static_cast<MTL::Buffer *>(args[i].get());
       encoder->setBuffer(mtlBuf, 0, i);
     }
     else
@@ -562,7 +590,7 @@ MetalBackend::executeKernel(const Device::Pointer &                    device,
 auto
 MetalBackend::getPreamble() const -> std::string
 {
-  return "#include <metal_stdlib>\nusing namespace metal;\n";
+  return kernel::preamble_metal;
 }
 
 #endif // USE_METAL
