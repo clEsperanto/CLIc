@@ -26,8 +26,7 @@ trimWhitespace(const std::string & s) -> std::string
 static auto
 isScalarType(const std::string & token) -> bool
 {
-  static const char * types[] = { "float", "int", "uint", "short", "ushort",
-                                  "char",  "uchar", "long", "ulong", "half", "double" };
+  static const char * types[] = { "float", "int", "uint", "short", "ushort", "char", "uchar", "long", "ulong", "half", "double" };
   for (const auto * t : types)
     if (token == t)
       return true;
@@ -39,8 +38,7 @@ isScalarType(const std::string & token) -> bool
 static auto
 parseScalarParam(const std::string & trimmed, bool & isConst, std::string & type, std::string & name, std::string & suffix) -> bool
 {
-  if (trimmed.find('*') != std::string::npos || trimmed.find('[') != std::string::npos ||
-      trimmed.find("[[") != std::string::npos)
+  if (trimmed.find('*') != std::string::npos || trimmed.find('[') != std::string::npos || trimmed.find("[[") != std::string::npos)
     return false;
 
   // Tokenize on whitespace.
@@ -314,12 +312,11 @@ OpenCLToMetalTranslator::appendMetalBuiltinKernelArgs(std::string & code) -> voi
       continue;
     }
 
-    std::string builtins =
-      "uint3 __cle_gid [[thread_position_in_grid]], "
-      "uint3 __cle_tid [[thread_position_in_threadgroup]], "
-      "uint3 __cle_tgid [[threadgroup_position_in_grid]], "
-      "uint3 __cle_tptg [[threads_per_threadgroup]], "
-      "uint3 __cle_tgpg [[threadgroups_per_grid]]";
+    std::string builtins = "uint3 __cle_gid [[thread_position_in_grid]], "
+                           "uint3 __cle_tid [[thread_position_in_threadgroup]], "
+                           "uint3 __cle_tgid [[threadgroup_position_in_grid]], "
+                           "uint3 __cle_tptg [[threads_per_threadgroup]], "
+                           "uint3 __cle_tgpg [[threadgroups_per_grid]]";
 
     std::string insertion;
     if (params.find_first_not_of(" \t\n\r") == std::string::npos)
@@ -528,12 +525,9 @@ OpenCLToMetalTranslator::translateAddressSpaces(std::string & code) -> void
     std::string        line;
     while (std::getline(stream, line))
     {
-      if (line.find("#define IMAGE_") != std::string::npos
-          && line.find("_TYPE") != std::string::npos
-          && line.find('*') != std::string::npos
-          && line.find("device ") == std::string::npos
-          && line.find("threadgroup ") == std::string::npos
-          && line.find("constant ") == std::string::npos)
+      if (line.find("#define IMAGE_") != std::string::npos && line.find("_TYPE") != std::string::npos &&
+          line.find('*') != std::string::npos && line.find("device ") == std::string::npos &&
+          line.find("threadgroup ") == std::string::npos && line.find("constant ") == std::string::npos)
       {
         size_t typeNameEnd = line.find("_TYPE");
         if (typeNameEnd != std::string::npos)
@@ -555,9 +549,7 @@ OpenCLToMetalTranslator::translateVectorConstructors(std::string & code) -> void
 {
   // OpenCL vector literals often use `(int3)(x, y, z)` syntax. In MSL this
   // can be parsed differently; normalize to constructor form `int3(x, y, z)`.
-  static const char * prefixes[] = {
-    "char", "uchar", "short", "ushort", "int", "uint", "long", "ulong", "float", "half", "double"
-  };
+  static const char * prefixes[] = { "char", "uchar", "short", "ushort", "int", "uint", "long", "ulong", "float", "half", "double" };
   for (size_t i = 0; i < sizeof(prefixes) / sizeof(prefixes[0]); ++i)
   {
     for (int n = 2; n <= 4; ++n)
@@ -614,7 +606,6 @@ OpenCLToMetalTranslator::translateSynchronization(std::string & code) -> void
 }
 
 
-
 auto
 OpenCLToMetalTranslator::translateMathFunctions(std::string & code) -> void
 {
@@ -628,13 +619,9 @@ OpenCLToMetalTranslator::translateMathFunctions(std::string & code) -> void
   replaceWord(code, "sqrt", "metal::sqrt");
 
   // Affine-transform boundary check: use preamble macro with built-in tolerance.
-  replaceAll(code,
-             "x2 >= 0 && y2 >= 0 && z2 >= 0 && x2 < Nx && y2 < Ny && z2 < Nz",
-             "AFFINE_BOUNDS_CHECK(x2, y2, z2, Nx, Ny, Nz)");
+  replaceAll(code, "x2 >= 0 && y2 >= 0 && z2 >= 0 && x2 < Nx && y2 < Ny && z2 < Nz", "AFFINE_BOUNDS_CHECK(x2, y2, z2, Nx, Ny, Nz)");
 
-  replaceAll(code,
-             "POS_src_INSTANCE(x2, y2, z2, 0)",
-             "POS_src_INSTANCE(x2 + 1e-5f, y2 + 1e-5f, z2 + 1e-5f, 0)");
+  replaceAll(code, "POS_src_INSTANCE(x2, y2, z2, 0)", "POS_src_INSTANCE(x2 + 1e-5f, y2 + 1e-5f, z2 + 1e-5f, 0)");
 
   replaceAll(code, "native_", "fast::");
   replaceAll(code, "half_", "fast::");

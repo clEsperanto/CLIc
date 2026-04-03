@@ -244,9 +244,9 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   resFFT = metalExecuteAppend(&app, -1, metal_device->getMetalCommandQueue());
 #else
   VkFFTLaunchParams launchParams = {};
-#if USE_OPENCL
+#  if USE_OPENCL
   launchParams.commandQueue = &queue;
-#endif
+#  endif
   resFFT = VkFFTAppend(&app, -1, &launchParams);
 #endif
   if (resFFT != VKFFT_SUCCESS)
@@ -368,9 +368,9 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
   resFFT = metalExecuteAppend(&app, 1, metal_device->getMetalCommandQueue());
 #else
   VkFFTLaunchParams launchParams = {};
-#if USE_OPENCL
+#  if USE_OPENCL
   launchParams.commandQueue = &queue;
-#endif
+#  endif
   resFFT = VkFFTAppend(&app, 1, &launchParams);
 #endif
   if (resFFT != VKFFT_SUCCESS)
@@ -543,9 +543,9 @@ performDeconvolution(const Array::Pointer & observe,
   // ── Richardson-Lucy deconvolution loop ────────────────────────────────────
 #if !USE_METAL
   VkFFTLaunchParams lp = {};
-#if USE_OPENCL
+#  if USE_OPENCL
   lp.commandQueue = &ocl_queue;
-#endif
+#  endif
 #endif
 
   for (size_t i = 0; i < iterations; i++)
