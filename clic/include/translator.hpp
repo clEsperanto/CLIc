@@ -119,3 +119,70 @@ private:
   static auto
   cleanupDoubleQualifiers(std::string & code) -> void;
 };
+
+/// Translates OpenCL kernel source code to equivalent Metal Shading Language (MSL)
+/// source code at runtime.
+///
+/// Notes:
+///   - This is a text-based translator (not AST based).
+///   - Kernel signatures are augmented with Metal thread-position builtins so
+///     get_global_id/get_local_id/get_group_id style calls can be rewritten.
+///   - Image and macro preambles are expected to be handled by the caller.
+class OpenCLToMetalTranslator
+{
+public:
+  OpenCLToMetalTranslator() = default;
+  ~OpenCLToMetalTranslator() = default;
+
+  [[nodiscard]] auto
+  translate(const std::string & openclSource) const -> std::string;
+
+  auto
+  translateInPlace(std::string & code) const -> void;
+
+private:
+  static auto
+  replaceAll(std::string & str, const std::string & from, const std::string & to) -> void;
+
+  static auto
+  replaceWord(std::string & str, const std::string & from, const std::string & to) -> void;
+
+  static auto
+  collapseSpaces(std::string & code) -> void;
+
+  static auto
+  collapseNewlines(std::string & code) -> void;
+
+  static auto
+  appendMetalBuiltinKernelArgs(std::string & code) -> void;
+
+  static auto
+  translateKernelScalarArgs(std::string & code) -> void;
+
+  static auto
+  translatePragmas(std::string & code) -> void;
+
+  static auto
+  translateSamplers(std::string & code) -> void;
+
+  static auto
+  translateQualifiers(std::string & code) -> void;
+
+  static auto
+  translateAddressSpaces(std::string & code) -> void;
+
+  static auto
+  translateVectorConstructors(std::string & code) -> void;
+
+  static auto
+  translateWorkItemFunctions(std::string & code) -> void;
+
+  static auto
+  translateSynchronization(std::string & code) -> void;
+
+  static auto
+  translateMathFunctions(std::string & code) -> void;
+
+  static auto
+  cleanupCode(std::string & code) -> void;
+};

@@ -1,6 +1,8 @@
 #include "translator.hpp"
 
+#include <cctype>
 #include <sstream>
+#include <vector>
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  Public API
@@ -745,3 +747,4 @@ OpenCLToCUDATranslator::cleanupDoubleQualifiers(std::string & code) -> void
   // Clean up empty lines (more than 2 consecutive newlines → 2)
   collapseNewlines(code);
 }
+
