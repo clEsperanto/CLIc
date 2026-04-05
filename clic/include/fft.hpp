@@ -1,8 +1,5 @@
 #pragma once
 
-// we rely on the vkFFT library for FFT operations in OpenCL and CUDA
-#include "vkFFT.h"
-
 #include "array.hpp"
 #include "execution.hpp"
 namespace cle::fft

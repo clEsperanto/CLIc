@@ -13,6 +13,11 @@ file(GLOB_RECURSE SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 file(GLOB_RECURSE TIERS "${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.cpp")
 list(APPEND SOURCES ${TIERS})
 
+if(CLE_METAL)
+    file(GLOB_RECURSE OBJCXX_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.mm")
+    list(APPEND SOURCES ${OBJCXX_SOURCES})
+endif()
+
 message(STATUS "FETCHCONTENT_BASE_DIR: ${FETCHCONTENT_BASE_DIR}")
 message(STATUS "VKFFT_INCLUDE_DIR: ${VKFFT_INCLUDE_DIR}")
 
@@ -52,6 +57,20 @@ elseif(CLE_CUDA)
     set_target_properties(${LIBRARY_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
     target_include_directories(${LIBRARY_NAME} PUBLIC ${CUDAToolkit_INCLUDE_DIRS})
     target_link_libraries(${LIBRARY_NAME} PUBLIC CUDA::cudart CUDA::cuda_driver CUDA::nvrtc)
+elseif(CLE_METAL)
+    enable_language(OBJCXX)
+    file(GLOB_RECURSE OBJCXX_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.mm")
+    set_source_files_properties(${OBJCXX_SOURCES} PROPERTIES
+        COMPILE_FLAGS "-x objective-c++"
+    )
+    target_include_directories(${LIBRARY_NAME} BEFORE PUBLIC
+        $<BUILD_INTERFACE:${vkfft_SOURCE_DIR}/metal-cpp>
+    )
+    target_link_libraries(${LIBRARY_NAME} PUBLIC
+        "-framework Metal"
+        "-framework Foundation"
+        "-framework QuartzCore"
+    )
 endif()
 
 # library install instructions

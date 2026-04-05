@@ -1,0 +1,104 @@
+name: Build Metal
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  cmake-parallel: 10
+
+jobs:
+  build:
+    name: ${{ matrix.name }}-Metal-${{ matrix.cmake-build-type }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        name: [macos]
+        include:
+          - name: macos
+            os: macos-latest
+            c-compiler: "clang"
+            cxx-compiler: "clang++"
+            cmake-build-type: "Release"
+            cmake-build-flag: ""
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v6.0.2
+        with:
+          submodules: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v6.2.0
+        with:
+          python-version: '3.12'
+
+      - name: Cache pip packages
+        uses: actions/cache@v5
+        continue-on-error: true
+        with:
+          path: ~/Library/Caches/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install Python build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ninja
+        shell: bash
+
+      - name: Install ccache
+        run: brew install ccache
+        shell: bash
+
+      - name: Cache ccache
+        uses: actions/cache@v5
+        continue-on-error: true
+        with:
+          path: ~/Library/Caches/ccache
+          key: ${{ runner.os }}-ccache-metal-${{ hashFiles('clic/**', 'cmake/**') }}
+          restore-keys: |
+            ${{ runner.os }}-ccache-metal-
+
+      - name: Get CMake and Ninja
+        uses: lukka/get-cmake@v4.3.1
+
+      - name: Restore build cache
+        uses: actions/cache@v5
+        continue-on-error: true
+        with:
+          path: ${{ runner.workspace }}/build
+          key: ${{ runner.os }}-metal-build-${{ matrix.cmake-build-type }}-${{ hashFiles('CMakeLists.txt', 'clic/**', 'cmake/**') }}
+          restore-keys: |
+            ${{ runner.os }}-metal-build-${{ matrix.cmake-build-type }}-
+
+      - name: Compile CLIc with Metal
+        run: |
+          set -euo pipefail
+          BUILD_DIR="${{ runner.workspace }}/build"
+
+          cmake -S "${{ github.workspace }}" -B "$BUILD_DIR" \
+            -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} \
+            -DBUILD_DOCUMENTATION=OFF \
+            -DBUILD_BENCHMARK=OFF \
+            -DCLE_BACKEND=METAL \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+            ${{ matrix.cmake-build-flag }}
+          cmake --build "$BUILD_DIR" --parallel ${{ env.cmake-parallel }} --config Release
+        shell: bash -l {0}
+        env:
+          CCACHE_BASEDIR: ${{ github.workspace }}
+          CCACHE_DIR: ~/Library/Caches/ccache
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7.0.0
+        with:
+          name: test-results-metal-${{ matrix.name }}
+          path: ${{ runner.workspace }}/build/Testing/Temporary/
+          if-no-files-found: ignore

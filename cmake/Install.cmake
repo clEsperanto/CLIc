@@ -21,6 +21,15 @@ install(DIRECTORY ${FETCHCONTENT_BASE_DIR}/dlpack-src/include/
     FILES_MATCHING PATTERN "*.h"
 )
 
+# Install metal-cpp headers if Metal support is enabled
+if(USE_METAL AND EXISTS ${metal-cpp_SOURCE_DIR})
+    install(DIRECTORY ${metal-cpp_SOURCE_DIR}/
+        DESTINATION include
+        COMPONENT Development
+        FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
+    )
+endif()
+
 # Export for the build tree
 write_basic_package_version_file(
     "${PROJECT_BINARY_DIR}/${VERSION_CONFIG_FILE}"

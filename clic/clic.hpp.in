@@ -1,8 +1,8 @@
-#ifndef __CLIC_HPP
-#define __CLIC_HPP
+#pragma once
 
 #define USE_OPENCL @CLE_OPENCL@
 #define USE_CUDA @CLE_CUDA@
+#define USE_METAL @CLE_METAL@
 
 
 #if USE_OPENCL
@@ -23,10 +23,9 @@
 #  include <nvrtc.h>
 #endif
 
-#if USE_OPENCL
-  const constexpr size_t GPU_MEM_PTR_SIZE = sizeof(cl_mem);
-#else
-  const constexpr size_t GPU_MEM_PTR_SIZE = sizeof(void *);
+#if USE_METAL
+// #import <Metal/Metal.h>
 #endif
 
-#endif // __CLIC_HPP
+
+const constexpr size_t GPU_MEM_PTR_SIZE = sizeof(void *);

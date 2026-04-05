@@ -2,6 +2,7 @@ message(STATUS "Backend selected: ${CLE_BACKEND}")
 
 set(CLE_OPENCL false)
 set(CLE_CUDA false)
+set(CLE_METAL false)
 
 if(CLE_BACKEND STREQUAL "OPENCL")
     # User can bypass find_package by providing:
@@ -27,10 +28,16 @@ elseif(CLE_BACKEND STREQUAL "CUDA")
     set(CLE_CUDA true)
     message(STATUS "CUDAToolkit library  : ${CUDAToolkit_LIBRARY_DIR}")
     message(STATUS "CUDAToolkit includes : ${CUDAToolkit_INCLUDE_DIRS}")
+elseif(CLE_BACKEND STREQUAL "METAL" AND APPLE)
+    set(CLE_METAL true)
+    message(STATUS "Metal backend enabled")
+else()
+    message(FATAL_ERROR "Unsupported backend type: ${CLE_BACKEND}")
 endif()
 
 # add the compile definition for the selected backend
 add_compile_definitions(
     $<$<BOOL:${CLE_CUDA}>:CLE_CUDA>
     $<$<BOOL:${CLE_OPENCL}>:CLE_OPENCL>
+    $<$<BOOL:${CLE_METAL}>:CLE_METAL>
 )
