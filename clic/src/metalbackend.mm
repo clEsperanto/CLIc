@@ -44,6 +44,29 @@ castDeviceMutable(const Device::Pointer & device) -> std::shared_ptr<MetalDevice
   return metal_device;
 }
 
+// ============================================================================
+// Disk cache helpers
+// ============================================================================
+
+static auto
+saveMSLToCache(const std::string & device_hash, const std::string & source_hash, const std::string & msl) -> void
+{
+  DiskCache::instance().saveBinary(device_hash, source_hash, "msl", msl.c_str(), msl.size());
+}
+
+[[nodiscard]] static auto
+loadMSLFromCache(const std::string & device_hash, const std::string & source_hash) -> std::string
+{
+  auto binary = DiskCache::instance().loadBinary(device_hash, source_hash, "msl");
+  if (binary.empty())
+  {
+    return {};
+  }
+  return std::string(binary.begin(), binary.end());
+}
+
+// ============================================================================
+
 MetalBackend::MetalBackend()
 {
 }
@@ -437,13 +460,15 @@ MetalBackend::buildKernel(const Device::Pointer & device,
                           const std::string &     kernel_name,
                           std::shared_ptr<void> & kernel) const -> void
 {
-  auto metal_device = castDevice(device);
+  auto   metal_device = castDevice(device);
   auto * dev = static_cast<MTL::Device *>(metal_device->getMetalDevice());
+  auto & disk_cache = DiskCache::instance();
 
   const auto source_hash = DiskCache::hash(kernel_source);
   const auto device_hash = DiskCache::hash(metal_device->getInfo());
   const auto cache_key = device_hash + "_" + source_hash + "_" + kernel_name;
 
+  // ── Level 1: in-memory cache (fastest) ──
   auto cached = device->getProgramFromCache(cache_key);
   if (cached != nullptr)
   {
@@ -452,23 +477,38 @@ MetalBackend::buildKernel(const Device::Pointer & device,
     return;
   }
 
-  // The input source is: defines + metal preamble + OpenCL-like kernel body.
-  // Translate only the kernel body to preserve the already-valid Metal preamble.
-  const std::string preamble = getPreamble();
-  const auto        preamble_pos = kernel_source.find(preamble);
-
+  // ── Level 2: disk cache (avoids re-translation) ──
   std::string metal_source;
-  if (preamble_pos != std::string::npos)
+  if (disk_cache.isEnabled())
   {
-    const std::string       before = kernel_source.substr(0, preamble_pos);
-    const std::string       after = kernel_source.substr(preamble_pos + preamble.length());
-    OpenCLToMetalTranslator translator;
-    metal_source = translator.translate(before) + preamble + translator.translate(after);
+    metal_source = loadMSLFromCache(device_hash, source_hash);
   }
-  else
+
+  // ── Level 3: translate from source ──
+  if (metal_source.empty())
   {
-    OpenCLToMetalTranslator translator;
-    metal_source = translator.translate(kernel_source);
+    // The input source is: defines + metal preamble + OpenCL-like kernel body.
+    // Translate only the kernel body to preserve the already-valid Metal preamble.
+    const std::string preamble = getPreamble();
+    const auto        preamble_pos = kernel_source.find(preamble);
+
+    if (preamble_pos != std::string::npos)
+    {
+      const std::string       before = kernel_source.substr(0, preamble_pos);
+      const std::string       after = kernel_source.substr(preamble_pos + preamble.length());
+      OpenCLToMetalTranslator translator;
+      metal_source = translator.translate(before) + preamble + translator.translate(after);
+    }
+    else
+    {
+      OpenCLToMetalTranslator translator;
+      metal_source = translator.translate(kernel_source);
+    }
+
+    if (disk_cache.isEnabled())
+    {
+      saveMSLToCache(device_hash, source_hash, metal_source);
+    }
   }
 
   NS::Error * error = nullptr;
