@@ -12,7 +12,6 @@ __CLIc__ is a backend library for [clEsperanto](https://github.com/clEsperanto) 
 The library is used for various user-oriented API libraries:
 - :snake: [pyclesperanto](https://github.com/clEsperanto/pyclesperanto)
 - :coffee: [clesperantoj](https://github.com/clEsperanto/clesperantoj_prototype)
-- Fiji plugin - [clij3](https://github.com/clEsperanto/clij3)
 
 # Usage example
 
