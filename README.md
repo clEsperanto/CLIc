@@ -7,11 +7,16 @@
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/clesperanto/CLIc?color=white&include_prereleases)](https://github.com/clEsperanto/CLIc/releases/latest)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6075345.svg)](https://doi.org/10.5281/zenodo.6075345)
 
-__CLIc__ is a backend library for [clEsperanto](https://github.com/clEsperanto) - a multi-language framework for GPU-accelerated image processing. It uses the [OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/clesperanto_kernels) originally developped for [CLIJ](https://clij.github.io/). The project uses [OpenCL](https://github.com/KhronosGroup/OpenCL-CLHPP) or [CUDA](https://developer.nvidia.com/cuda/toolkit) for GPU-acceleration.
+__CLIc__ is a backend library for [clEsperanto](https://github.com/clEsperanto) - a multi-language framework for GPU-accelerated image processing. It relies on [OpenCL kernels](https://github.com/clEsperanto/clij-opencl-kernels/tree/clesperanto_kernels) originally developped for [CLIJ](https://clij.github.io/) and can run on [OpenCL](https://www.khronos.org/opencl/), [CUDA](https://developer.nvidia.com/cuda-zone), or [Metal](https://developer.apple.com/metal/).
 
 The library is used for various user-oriented API libraries:
 - :snake: [pyclesperanto](https://github.com/clEsperanto/pyclesperanto)
 - :coffee: [clesperantoj](https://github.com/clEsperanto/clesperantoj_prototype)
+
+# Documentation
+
+A detail [documentation](https://clesperanto-doc.readthedocs.io/en/latest/) of the library, installation, and API is available.
+If any information is missing, is incorrect, or you are facing any kind of difficulties, do not hesitate to raise an [issue](https://github.com/clEsperanto/CLIc/issues).
 
 # Usage example
 
@@ -21,8 +26,8 @@ The library is used for various user-oriented API libraries:
 int main( int argc, char** argv)
 {
     // Initialisation of clEsperanto with default device
-    cle::BackendManager::getInstance().setBackend();
-    auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
+    cle::BackendManager::getInstance().setBackend("opencl");
+    auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
 
     // host vector to hold input and output
     std::vector<float> input (width * height * depth);
@@ -42,20 +47,12 @@ int main( int argc, char** argv)
     return EXIT_SUCCESS;
 }
 ```
-See more complete example on usage by looking at the kernels [tests](./tests/).
+See more complete example on usage by looking at the [tests](./tests/).
 
-# Documentation
+# Feedback & Contribution
 
-A detail [documentation](https://clesperanto-doc.readthedocs.io/en/latest/) of the library, installation, and API is available.
-If any information is missing, is incorrect, or you are facing any kind of difficulties, do not hesitate to raise an [issue](https://github.com/clEsperanto/CLIc/issues).
-
-# Contributing
-Contributions, of any kind, are very welcome. Before spending effort on coding and filing a pull-request, please get in touch with us, [file an issue](https://github.com/clEsperanto/CLIc/issues), and let's discuss your potential contribution.
-More information on how to add new kernels to the library can be found in the [documentation](https://clesperanto.github.io/CLIc/master/en/doc/functions.html).
-
-# Feedback welcome!
 [clEsperanto](https://github.com/clEsperanto) is developed in the open because we believe in the [open source community](https://clij.github.io/clij2-docs/community_guidelines).
-Feel free to drop feedback as [github issue](https://github.com/clEsperanto/CLIc/issues) or via [image.sc](https://image.sc).
+Feedback and contributions, of any kind, are very much welcome. Do not hesitate to contact us via [github issue](https://github.com/clEsperanto/CLIc/issues) or [image.sc](https://image.sc).
 And if you liked our work, star the repository, share it with your friends, and use it to make cool stuff!
 
 # Acknowledgements
