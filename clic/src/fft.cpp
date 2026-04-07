@@ -9,6 +9,7 @@
 #include "cache.hpp"
 #include "device.hpp"
 #include "tier0.hpp"
+#include "vkFFT.h"
 
 #include <array>
 #include <stdexcept>
@@ -24,6 +25,28 @@
 
 namespace cle::fft
 {
+
+#if USE_METAL
+static auto
+metalExecuteAppend(VkFFTApplication * app, int direction, void * metalQueue) -> VkFFTResult
+{
+  auto * queue = static_cast<MTL::CommandQueue *>(metalQueue);
+  auto * cmdBuf = queue->commandBuffer();
+  auto * encoder = cmdBuf->computeCommandEncoder();
+
+  VkFFTLaunchParams lp = {};
+  lp.commandBuffer = cmdBuf;
+  lp.commandEncoder = encoder;
+
+  auto res = VkFFTAppend(app, direction, &lp);
+
+  encoder->endEncoding();
+  cmdBuf->commit();
+  cmdBuf->waitUntilCompleted();
+
+  return res;
+}
+#endif
 
 auto
 fft_pad_shape(const std::array<size_t, 3> & image_shape, const std::array<size_t, 3> & kernel_shape) -> std::array<size_t, 3>
@@ -144,7 +167,7 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   configuration.device = &device;
   configuration.stream = &stream;
   configuration.num_streams = 1;
-#else
+#elif USE_OPENCL
   // fetch ocl device, context and queue
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
   auto device = ocl_device->getCLDevice();
@@ -164,9 +187,25 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   configuration.device = &device;
   configuration.context = &context;
   configuration.commandQueue = &queue;
+#elif USE_METAL
+  auto metal_device = std::dynamic_pointer_cast<MetalDevice>(input->device());
+
+  void * output_mem = output->get();
+  void * input_mem = input->get();
+
+  auto output_size = static_cast<uint64_t>(output->bitsize());
+  auto input_size = static_cast<uint64_t>(input->bitsize());
+  configuration.device = static_cast<MTL::Device *>(metal_device->getMetalDevice());
+  configuration.queue = static_cast<MTL::CommandQueue *>(metal_device->getMetalCommandQueue());
+  configuration.buffer = reinterpret_cast<MTL::Buffer **>(&output_mem);
+  configuration.inputBuffer = reinterpret_cast<MTL::Buffer **>(&input_mem);
+  configuration.outputBuffer = reinterpret_cast<MTL::Buffer **>(&output_mem);
+  configuration.bufferSize = &output_size;
+  configuration.inputBufferSize = &input_size;
 #endif
 
-  // manage jit-cache system
+  // manage jit-cache system (disabled for Metal backend)
+#if !USE_METAL
   const auto            use_cache = DiskCache::instance().isEnabled();
   std::filesystem::path binary_path;
   if (use_cache)
@@ -178,6 +217,7 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
       configuration.saveApplicationToString = 1;
     }
   }
+#endif
 
   // initialize VkFFT
   VkFFTApplication app = {};
@@ -187,6 +227,7 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
     throw std::runtime_error("Error: Failed to initialize VkFFT -> " + std::string(getVkFFTErrorString(resFFT)));
   }
 
+#if !USE_METAL
   // free memory if needed, save to cache if needed
   if (use_cache && configuration.loadApplicationFromString)
   {
@@ -196,13 +237,18 @@ performFFT(const Array::Pointer & input, Array::Pointer output) -> Array::Pointe
   {
     save_kernel_cache(binary_path, app);
   }
+#endif
 
   // execute VkFFT
+#if USE_METAL
+  resFFT = metalExecuteAppend(&app, -1, metal_device->getMetalCommandQueue());
+#else
   VkFFTLaunchParams launchParams = {};
-#if !USE_CUDA
+#  if USE_OPENCL
   launchParams.commandQueue = &queue;
-#endif
+#  endif
   resFFT = VkFFTAppend(&app, -1, &launchParams);
+#endif
   if (resFFT != VKFFT_SUCCESS)
   {
     throw std::runtime_error("Error: Failed to execute VkFFT -> " + std::string(getVkFFTErrorString(resFFT)));
@@ -245,7 +291,7 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
   configuration.device = &device;
   configuration.stream = &stream;
   configuration.num_streams = 1;
-#else
+#elif USE_OPENCL
   // fetch ocl device, context and queue
   auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(input->device());
   auto device = ocl_device->getCLDevice();
@@ -265,9 +311,25 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
   configuration.device = &device;
   configuration.context = &context;
   configuration.commandQueue = &queue;
+#elif USE_METAL
+  auto metal_device = std::dynamic_pointer_cast<MetalDevice>(input->device());
+
+  void * input_mem = input->get();
+  void * output_mem = output->get();
+
+  auto input_size = static_cast<uint64_t>(input->bitsize());
+  auto output_size = static_cast<uint64_t>(output->bitsize());
+  configuration.device = static_cast<MTL::Device *>(metal_device->getMetalDevice());
+  configuration.queue = static_cast<MTL::CommandQueue *>(metal_device->getMetalCommandQueue());
+  configuration.buffer = reinterpret_cast<MTL::Buffer **>(&input_mem);
+  configuration.inputBuffer = reinterpret_cast<MTL::Buffer **>(&output_mem);
+  configuration.outputBuffer = reinterpret_cast<MTL::Buffer **>(&input_mem);
+  configuration.bufferSize = &input_size;
+  configuration.inputBufferSize = &output_size;
 #endif
 
-  // manage jit-cache system
+  // manage jit-cache system (disabled for Metal backend)
+#if !USE_METAL
   const auto            use_cache = DiskCache::instance().isEnabled();
   std::filesystem::path binary_path;
   if (use_cache)
@@ -279,6 +341,7 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
       configuration.saveApplicationToString = 1;
     }
   }
+#endif
 
   // initialize VkFFT
   VkFFTApplication app = {};
@@ -288,6 +351,7 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
     throw std::runtime_error("Error: Failed to initialize VkFFT -> " + std::string(getVkFFTErrorString(resFFT)));
   }
 
+#if !USE_METAL
   // free memory if needed, save to cache if needed
   if (use_cache && configuration.loadApplicationFromString)
   {
@@ -297,13 +361,18 @@ performIFFT(const Array::Pointer & input, const Array::Pointer & output) -> void
   {
     save_kernel_cache(binary_path, app);
   }
+#endif
 
   // execute VkFFT
+#if USE_METAL
+  resFFT = metalExecuteAppend(&app, 1, metal_device->getMetalCommandQueue());
+#else
   VkFFTLaunchParams launchParams = {};
-#if !USE_CUDA
+#  if USE_OPENCL
   launchParams.commandQueue = &queue;
-#endif
+#  endif
   resFFT = VkFFTAppend(&app, 1, &launchParams);
+#endif
   if (resFFT != VKFFT_SUCCESS)
   {
     throw std::runtime_error("Error: Failed to execute VkFFT -> " + std::string(getVkFFTErrorString(resFFT)));
@@ -377,6 +446,11 @@ performDeconvolution(const Array::Pointer & observe,
   auto real_size = static_cast<uint64_t>(estimate->bitsize());
   auto complex_size = static_cast<uint64_t>(fft_estimate->bitsize());
 
+  VkFFTConfiguration fft_cfg{};
+  configure(estimate, fft_cfg);
+
+  VkFFTConfiguration ifft_cfg{};
+  configure(reblurred, ifft_cfg);
 #if USE_CUDA
   auto cu_dev = std::dynamic_pointer_cast<CUDADevice>(device);
   auto cuda_device = cu_dev->getCUDADevice();
@@ -386,8 +460,6 @@ performDeconvolution(const Array::Pointer & observe,
   void * fft_complex_mem = fft_estimate->get();
   void * ifft_real_out = reblurred->get();
 
-  VkFFTConfiguration fft_cfg{};
-  configure(estimate, fft_cfg);
   fft_cfg.bufferSize = &complex_size;
   fft_cfg.inputBufferSize = &real_size;
   fft_cfg.buffer = &fft_complex_mem;
@@ -397,8 +469,6 @@ performDeconvolution(const Array::Pointer & observe,
   fft_cfg.stream = &cuda_stream;
   fft_cfg.num_streams = 1;
 
-  VkFFTConfiguration ifft_cfg{};
-  configure(reblurred, ifft_cfg);
   ifft_cfg.bufferSize = &complex_size;
   ifft_cfg.inputBufferSize = &real_size;
   ifft_cfg.buffer = &fft_complex_mem;
@@ -407,7 +477,7 @@ performDeconvolution(const Array::Pointer & observe,
   ifft_cfg.device = &cuda_device;
   ifft_cfg.stream = &cuda_stream;
   ifft_cfg.num_streams = 1;
-#else
+#elif USE_OPENCL
   auto ocl_dev = std::dynamic_pointer_cast<OpenCLDevice>(device);
   auto ocl_device = ocl_dev->getCLDevice();
   auto ocl_context = ocl_dev->getCLContext();
@@ -417,8 +487,6 @@ performDeconvolution(const Array::Pointer & observe,
   cl_mem fft_complex_mem = static_cast<cl_mem>(fft_estimate->get());
   cl_mem ifft_real_out = static_cast<cl_mem>(reblurred->get());
 
-  VkFFTConfiguration fft_cfg{};
-  configure(estimate, fft_cfg);
   fft_cfg.bufferSize = &complex_size;
   fft_cfg.inputBufferSize = &real_size;
   fft_cfg.buffer = &fft_complex_mem;
@@ -428,8 +496,6 @@ performDeconvolution(const Array::Pointer & observe,
   fft_cfg.context = &ocl_context;
   fft_cfg.commandQueue = &ocl_queue;
 
-  VkFFTConfiguration ifft_cfg{};
-  configure(reblurred, ifft_cfg);
   ifft_cfg.bufferSize = &complex_size;
   ifft_cfg.inputBufferSize = &real_size;
   ifft_cfg.buffer = &fft_complex_mem;
@@ -438,6 +504,28 @@ performDeconvolution(const Array::Pointer & observe,
   ifft_cfg.device = &ocl_device;
   ifft_cfg.context = &ocl_context;
   ifft_cfg.commandQueue = &ocl_queue;
+#elif USE_METAL
+  auto metal_dev = std::dynamic_pointer_cast<MetalDevice>(device);
+
+  void * fft_real_in_mem = estimate->get(); // mutable: updated per VkFFTAppend
+  void * fft_complex_mem = fft_estimate->get();
+  void * ifft_real_out = reblurred->get();
+
+  fft_cfg.device = static_cast<MTL::Device *>(metal_dev->getMetalDevice());
+  fft_cfg.queue = static_cast<MTL::CommandQueue *>(metal_dev->getMetalCommandQueue());
+  fft_cfg.bufferSize = &complex_size;
+  fft_cfg.inputBufferSize = &real_size;
+  fft_cfg.buffer = reinterpret_cast<MTL::Buffer **>(&fft_complex_mem);
+  fft_cfg.inputBuffer = reinterpret_cast<MTL::Buffer **>(&fft_real_in_mem);
+  fft_cfg.outputBuffer = reinterpret_cast<MTL::Buffer **>(&fft_complex_mem);
+
+  ifft_cfg.device = static_cast<MTL::Device *>(metal_dev->getMetalDevice());
+  ifft_cfg.queue = static_cast<MTL::CommandQueue *>(metal_dev->getMetalCommandQueue());
+  ifft_cfg.bufferSize = &complex_size;
+  ifft_cfg.inputBufferSize = &real_size;
+  ifft_cfg.buffer = reinterpret_cast<MTL::Buffer **>(&fft_complex_mem);
+  ifft_cfg.inputBuffer = reinterpret_cast<MTL::Buffer **>(&ifft_real_out);
+  ifft_cfg.outputBuffer = reinterpret_cast<MTL::Buffer **>(&fft_complex_mem);
 #endif
 
   VkFFTApplication fft_app = {};
@@ -453,9 +541,11 @@ performDeconvolution(const Array::Pointer & observe,
   }
 
   // ── Richardson-Lucy deconvolution loop ────────────────────────────────────
+#if !USE_METAL
   VkFFTLaunchParams lp = {};
-#if !USE_CUDA
+#  if USE_OPENCL
   lp.commandQueue = &ocl_queue;
+#  endif
 #endif
 
   for (size_t i = 0; i < iterations; i++)
@@ -463,10 +553,16 @@ performDeconvolution(const Array::Pointer & observe,
     // Forward FFT of estimate → fft_estimate
 #if USE_CUDA
     fft_real_in_mem = estimate->get();
-#else
+#elif USE_OPENCL
     fft_real_in_mem = static_cast<cl_mem>(estimate->get());
+#elif USE_METAL
+    fft_real_in_mem = estimate->get();
 #endif
+#if USE_METAL
+    res = metalExecuteAppend(&fft_app, -1, metal_dev->getMetalCommandQueue());
+#else
     res = VkFFTAppend(&fft_app, -1, &lp);
+#endif
     if (res != VKFFT_SUCCESS)
       throw std::runtime_error("Error: VkFFTAppend (forward) -> " + std::string(getVkFFTErrorString(res)));
 
@@ -474,7 +570,11 @@ performDeconvolution(const Array::Pointer & observe,
     execOperationKernel(device, "vecComplexMultiply", fft_estimate, fft_psf, fft_estimate, fft_estimate->size() / 2);
 
     // Inverse FFT: fft_estimate → reblurred
+#if USE_METAL
+    res = metalExecuteAppend(&ifft_app, 1, metal_dev->getMetalCommandQueue());
+#else
     res = VkFFTAppend(&ifft_app, 1, &lp);
+#endif
     if (res != VKFFT_SUCCESS)
       throw std::runtime_error("Error: VkFFTAppend (inverse) -> " + std::string(getVkFFTErrorString(res)));
 
@@ -484,10 +584,16 @@ performDeconvolution(const Array::Pointer & observe,
     // Forward FFT of reblurred → fft_estimate
 #if USE_CUDA
     fft_real_in_mem = reblurred->get();
-#else
+#elif USE_OPENCL
     fft_real_in_mem = static_cast<cl_mem>(reblurred->get());
+#elif USE_METAL
+    fft_real_in_mem = reblurred->get();
 #endif
+#if USE_METAL
+    res = metalExecuteAppend(&fft_app, -1, metal_dev->getMetalCommandQueue());
+#else
     res = VkFFTAppend(&fft_app, -1, &lp);
+#endif
     if (res != VKFFT_SUCCESS)
       throw std::runtime_error("Error: VkFFTAppend (forward) -> " + std::string(getVkFFTErrorString(res)));
 
@@ -495,7 +601,11 @@ performDeconvolution(const Array::Pointer & observe,
     execOperationKernel(device, "vecComplexConjugateMultiply", fft_estimate, fft_psf, fft_estimate, fft_estimate->size() / 2);
 
     // Inverse FFT: fft_estimate → reblurred
+#if USE_METAL
+    res = metalExecuteAppend(&ifft_app, 1, metal_dev->getMetalCommandQueue());
+#else
     res = VkFFTAppend(&ifft_app, 1, &lp);
+#endif
     if (res != VKFFT_SUCCESS)
       throw std::runtime_error("Error: VkFFTAppend (inverse) -> " + std::string(getVkFFTErrorString(res)));
 

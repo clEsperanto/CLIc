@@ -23,7 +23,7 @@ TEST_P(TestDevice, availableDevices)
   auto devices_all = cle::BackendManager::getInstance().getBackend().getDevices("all");
   auto devices_gpu = cle::BackendManager::getInstance().getBackend().getDevices("gpu");
   auto devices_cpu = cle::BackendManager::getInstance().getBackend().getDevices("cpu");
-  if (backend == "cuda")
+  if (backend == "cuda" || backend == "metal")
   {
     devices_cpu.clear();
   }
@@ -73,6 +73,10 @@ TEST_P(TestDevice, type)
   else if (backend == "cuda")
   {
     EXPECT_EQ(device->getType(), cle::Device::Type::CUDA);
+  }
+  else if (backend == "metal")
+  {
+    EXPECT_EQ(device->getType(), cle::Device::Type::METAL);
   }
   else
   {

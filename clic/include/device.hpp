@@ -23,6 +23,7 @@ public:
   enum class Type
   {
     CUDA,
+    METAL,
     OPENCL
   };
 
@@ -180,6 +181,9 @@ public:
         break;
       case Device::Type::OPENCL:
         out << "OpenCL";
+        break;
+      case Device::Type::METAL:
+        out << "Metal";
         break;
     }
     return out;
@@ -661,5 +665,70 @@ private:
   bool                          waitFinish = false;
 };
 #endif // USE_CUDA
+
+#if USE_METAL
+class MetalDevice : public Device
+{
+public:
+  explicit MetalDevice(int deviceIndex);
+  ~MetalDevice() override;
+
+  auto
+  initialize() -> void override;
+  auto
+  finalize() -> void override;
+  auto
+  finish() const -> void override;
+  auto
+  setWaitToFinish(bool) -> void override;
+
+  [[nodiscard]] auto
+  isInitialized() const -> bool override;
+  [[nodiscard]] auto
+  getName(bool lc = false) const -> std::string override;
+  [[nodiscard]] auto
+  getInfo() const -> std::string override;
+  [[nodiscard]] auto
+  getInfoExtended() const -> std::string override;
+  [[nodiscard]] auto
+  getType() const -> Device::Type override;
+  [[nodiscard]] auto
+  getDeviceType() const -> std::string override;
+  [[nodiscard]] auto
+  getDeviceIndex() const -> size_t override;
+  [[nodiscard]] auto
+  getPlatform() const -> std::string override;
+  [[nodiscard]] auto
+  supportImage() const -> bool override;
+  [[nodiscard]] auto
+  getNbDevicesFromContext() const -> size_t override;
+  [[nodiscard]] auto
+  getMaximumBufferSize() const -> size_t override;
+  [[nodiscard]] auto
+  getMaximumWorkGroupSize() const -> size_t override;
+  [[nodiscard]] auto
+  getLocalMemorySize() const -> size_t override;
+  [[nodiscard]] auto
+  getProgramFromCache(const std::string &) const -> std::shared_ptr<void> override;
+  auto
+  addProgramToCache(const std::string &, std::shared_ptr<void>) -> void override;
+
+  // Metal-specific accessors (opaque pointers — cast in .mm files)
+  [[nodiscard]] auto
+  getMetalDevice() const -> void *;
+  [[nodiscard]] auto
+  getMetalCommandQueue() const -> void *;
+  [[nodiscard]] auto
+  getMetalDeviceIndex() const -> int;
+
+private:
+  int                           metalDeviceIndex;
+  void *                        metalDevice = nullptr;
+  void *                        metalQueue = nullptr;
+  std::shared_ptr<ProgramCache> cache = std::make_shared<ProgramCache>();
+  bool                          initialized = false;
+  bool                          waitFinish = false;
+};
+#endif // USE_METAL
 
 } // namespace cle
