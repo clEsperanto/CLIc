@@ -1,6 +1,7 @@
 # CLIc
 [![Build OpenCL](https://github.com/clEsperanto/CLIc/actions/workflows/build-opencl.yml/badge.svg)](https://github.com/clEsperanto/CLIc/actions/workflows/build-opencl.yml)
 [![Build CUDA](https://github.com/clEsperanto/CLIc/actions/workflows/build-cuda.yml/badge.svg)](https://github.com/clEsperanto/CLIc/actions/workflows/build-cuda.yml)
+[![Build Metal](https://github.com/clEsperanto/CLIc/actions/workflows/build-metal.yml/badge.svg)](https://github.com/clEsperanto/CLIc/actions/workflows/build-metal.yml)
 [![CI-Tests](https://github.com/clEsperanto/CLIc/actions/workflows/tests_and_coverage.yml/badge.svg)](https://github.com/clEsperanto/CLIc/actions/workflows/tests_and_coverage.yml)
 [![Codecov](https://codecov.io/gh/clEsperanto/CLIc/branch/master/graph/badge.svg?token=QRSZHYDFIF)](https://codecov.io/gh/clEsperanto/CLIc)
 [![License](https://img.shields.io/badge/license-BSD-informational)](https://github.com/clEsperanto/CLIc/blob/master/LICENSE)
