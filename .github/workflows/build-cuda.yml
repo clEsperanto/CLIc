@@ -75,7 +75,7 @@ jobs:
             ${{ runner.os }}-ccache-
 
       - name: Get CMake and Ninja
-        uses: lukka/get-cmake@v4.3.1
+        uses: lukka/get-cmake@v4.3.2
 
       - name: Install CUDA Toolkit (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
