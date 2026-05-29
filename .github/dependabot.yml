@@ -5,7 +5,13 @@
 
 version: 2
 updates:
-  - package-ecosystem: "github-actions" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
       interval: "weekly"
+    version: "~major.minor"
+    automerged_updates:
+      enabled: true
+      merge_method: "squash"     # use "merge" or "rebase" if you prefer
+      commit_message:
+        prefix: "chore(deps)"
