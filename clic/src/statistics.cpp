@@ -345,12 +345,14 @@ compute_neighbors_statistics_per_labels(const Device::Pointer &  device,
   // maximum and average distance of n nearest neighbors # ... and distance of most distant other neighbor
   for (auto n : nearest_neighbor_ns)
   {
-    auto max_distance_of_n_shortest_distances = tier1::maximum_distance_n_nearest_neighbors_func(device, self_far_distance_matrix, nullptr, n);
+    auto max_distance_of_n_shortest_distances =
+      tier1::maximum_distance_n_nearest_neighbors_func(device, self_far_distance_matrix, nullptr, n);
     auto & maximum_distance_of_n_nearest_neighbors = nei_stats["maximum_distance_of_n" + std::to_string(n) + "_nearest_neighbors"];
     maximum_distance_of_n_nearest_neighbors.resize(nb_labels);
     max_distance_of_n_shortest_distances->readTo(maximum_distance_of_n_nearest_neighbors.data());
 
-    auto average_distance_of_n_nearest_distances = tier1::mean_distance_n_nearest_neighbors_func(device, self_far_distance_matrix, nullptr, n);
+    auto average_distance_of_n_nearest_distances =
+      tier1::mean_distance_n_nearest_neighbors_func(device, self_far_distance_matrix, nullptr, n);
     auto & average_distance_of_n_nearest_neighbors = nei_stats["average_distance_of_n" + std::to_string(n) + "_nearest_neighbors"];
     average_distance_of_n_nearest_neighbors.resize(nb_labels);
     average_distance_of_n_nearest_distances->readTo(average_distance_of_n_nearest_neighbors.data());
@@ -375,7 +377,8 @@ compute_neighbors_statistics_per_labels(const Device::Pointer &  device,
   auto touch_count_matrix_0_set_to_high = tier1::replace_intensity_func(device, touch_count_matrix, nullptr, 0, max_touch_count);
   for (auto t : touch_ratio_thresholds)
   {
-    auto touch_portion_within_range_neighbors_matrix = tier2::generate_touching_area_matrix_within_range_func(device, touch_portion_matrix, nullptr, t, 1.1f);
+    auto touch_portion_within_range_neighbors_matrix =
+      tier2::generate_touching_area_matrix_within_range_func(device, touch_portion_matrix, nullptr, t, 1.1f);
     tier2::count_touching_neighbors_func(device, touch_portion_within_range_neighbors_matrix, result_device_vector, true);
     auto & touch_portion_above_threshold_neighbor_count = nei_stats["touch_portion_above_" + std::to_string(t) + "_neighbor_count"];
     touch_portion_above_threshold_neighbor_count.resize(nb_labels);
@@ -414,7 +417,7 @@ compute_neighbors_statistics_per_labels(const Device::Pointer &  device,
 
   // dilate label image and analye touching neighbors
 
-  for (auto r: dilation_radii)
+  for (auto r : dilation_radii)
   {
     auto dilated_label_image = tier6::dilate_labels_func(device, label, nullptr, r);
     auto dilated_centroids = tier4::centroids_of_labels_func(device, dilated_label_image, nullptr, false);
@@ -428,21 +431,25 @@ compute_neighbors_statistics_per_labels(const Device::Pointer &  device,
     tier2::count_touching_neighbors_func(device, dilated_touch_matrix, result_device_vector, true);
     result_device_vector->readTo(touching_neighbor_count_dilated_r.data());
 
-    auto & minimum_distance_of_touching_neighbors_dilated_r = nei_stats["minimum_distance_of_touching_neighbors_dilated_r_" + std::to_string(r)];
+    auto & minimum_distance_of_touching_neighbors_dilated_r =
+      nei_stats["minimum_distance_of_touching_neighbors_dilated_r_" + std::to_string(r)];
     minimum_distance_of_touching_neighbors_dilated_r.resize(nb_labels);
     tier1::minimum_distance_touching_neighbors_func(device, dilated_distance_matrix, dilated_touch_matrix, result_device_vector);
     result_device_vector->readTo(minimum_distance_of_touching_neighbors_dilated_r.data());
-    auto & average_distance_of_touching_neighbors_dilated_r = nei_stats["average_distance_of_touching_neighbors_dilated_r_" + std::to_string(r)];
+    auto & average_distance_of_touching_neighbors_dilated_r =
+      nei_stats["average_distance_of_touching_neighbors_dilated_r_" + std::to_string(r)];
     average_distance_of_touching_neighbors_dilated_r.resize(nb_labels);
     tier1::mean_distance_touching_neighbors_func(device, dilated_distance_matrix, dilated_touch_matrix, result_device_vector);
     result_device_vector->readTo(average_distance_of_touching_neighbors_dilated_r.data());
-    auto & maximum_distance_of_touching_neighbors_dilated_r = nei_stats["maximum_distance_of_touching_neighbors_dilated_r_" + std::to_string(r)];
+    auto & maximum_distance_of_touching_neighbors_dilated_r =
+      nei_stats["maximum_distance_of_touching_neighbors_dilated_r_" + std::to_string(r)];
     maximum_distance_of_touching_neighbors_dilated_r.resize(nb_labels);
     tier1::maximum_distance_touching_neighbors_func(device, dilated_distance_matrix, dilated_touch_matrix, result_device_vector);
     result_device_vector->readTo(maximum_distance_of_touching_neighbors_dilated_r.data());
-  
 
-    auto & max_min_distance_ratio_of_touching_neighbors_dilated_r = nei_stats["max_min_distance_ratio_of_touching_neighbors_dilated_r_" + std::to_string(r)];
+
+    auto & max_min_distance_ratio_of_touching_neighbors_dilated_r =
+      nei_stats["max_min_distance_ratio_of_touching_neighbors_dilated_r_" + std::to_string(r)];
     max_min_distance_ratio_of_touching_neighbors_dilated_r.resize(nb_labels);
     std::transform(nei_stats["maximum_distance_of_touching_neighbors_dilated_r_" + std::to_string(r)].begin(),
                    nei_stats["maximum_distance_of_touching_neighbors_dilated_r_" + std::to_string(r)].end(),
@@ -458,7 +465,8 @@ compute_neighbors_statistics_per_labels(const Device::Pointer &  device,
     tier1::set_row_func(device, dilated_touch_portion_matrix, 0, 0);
 
     auto max_dilated_touch_count = tier2::maximum_of_all_pixels_func(device, dilated_touch_count_matrix);
-    auto dilated_touch_count_matrix_0_set_to_high = tier1::replace_intensity_func(device, dilated_touch_count_matrix, nullptr, 0, max_dilated_touch_count);
+    auto dilated_touch_count_matrix_0_set_to_high =
+      tier1::replace_intensity_func(device, dilated_touch_count_matrix, nullptr, 0, max_dilated_touch_count);
     auto temp = tier1::nan_to_num_func(device, dilated_touch_portion_matrix, nullptr);
     auto max_dilated_touch_portion = tier2::maximum_of_all_pixels_func(device, temp);
     auto dilated_touch_portion_matrix_0_set_to_high = tier1::replace_intensity_func(device, temp, nullptr, 0, max_dilated_touch_portion);
@@ -483,7 +491,7 @@ compute_neighbors_statistics_per_labels(const Device::Pointer &  device,
     maximum_touch_portion_dilated_r.resize(nb_labels);
     tier1::maximum_y_projection_func(device, dilated_touch_portion_matrix, result_device_vector);
     result_device_vector->readTo(maximum_touch_portion_dilated_r.data());
-  }   
+  }
 
   return nei_stats;
 }

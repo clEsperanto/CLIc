@@ -254,7 +254,8 @@ generate_touching_area_matrix_func(const Device::Pointer & device, const Array::
  * @deprecated This function is deprecated. Consider using generate_touch_matrix() with an explicit dst_matrix argument instead.
  */
 auto
-generate_touch_count_matrix_func(const Device::Pointer & device, const Array::Pointer & src_label, Array::Pointer dst_matrix) -> Array::Pointer;
+generate_touch_count_matrix_func(const Device::Pointer & device, const Array::Pointer & src_label, Array::Pointer dst_matrix)
+  -> Array::Pointer;
 
 
 /**
@@ -403,20 +404,21 @@ morphological_chan_vese_func(const Device::Pointer & device,
 
 /**
  * @name labels_statistics
- * @brief Computes the bounding box, area (in pixels/voxels), minimum intensity, maximum intensity, average intensity, standard deviation of the intensity, and shape descriptors of labelled
- * objects in a label image and its corresponding intensity image. 
- * 
- * If not provided, the intensity image defaults to the label image. 
+ * @brief Computes the bounding box, area (in pixels/voxels), minimum intensity, maximum intensity, average intensity, standard deviation of
+ * the intensity, and shape descriptors of labelled objects in a label image and its corresponding intensity image.
+ *
+ * If not provided, the intensity image defaults to the label image.
  * If not provided, the label image defaults to a single label covering the entire image.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param label Label image to compute the statistics. [Array::Pointer ( = None )]
  * @param intensity Intensity image. [Array::Pointer ( = None )]
  * @param include_background Computed the statistics for the background (label 0). [bool ( = False )]
- * @return StatisticsMap  
+ * @return StatisticsMap
  */
-auto 
-labels_statistics_func(const Device::Pointer & device, Array::Pointer label, Array::Pointer intensity, bool include_background) -> StatisticsMap;
+auto
+labels_statistics_func(const Device::Pointer & device, Array::Pointer label, Array::Pointer intensity, bool include_background)
+  -> StatisticsMap;
 
 
 /**
@@ -567,37 +569,50 @@ read_intensities_from_map_func(const Device::Pointer & device, const Array::Poin
   -> Array::Pointer;
 
 
-/** 
+/**
  * @name labels_neighbors_statistics
  * @brief Computes touching, distance-based, and neighborhood statistics of labels and their neighbors.
- * For each label in the input label image, this function computes statistics of its surrounding labels within specified proximal distances. 
- * The statistics include the count of neighboring labels, their distances, if they are touching, how many pixels they share on the boundary, etc.
- * 
+ * For each label in the input label image, this function computes statistics of its surrounding labels within specified proximal distances.
+ * The statistics include the count of neighboring labels, their distances, if they are touching, how many pixels they share on the
+ * boundary, etc.
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param label Input label image. [const Array::Pointer &]
  * @param proximal_distances Vector of proximal distances to consider for analysis. [const std::vector<int> & ( = [10, 20, 40, 80, 160] )]
- * @param nearest_neighbor_ns Vector of n nearest neighbors to consider for analysis. [const std::vector<int> & ( = [1, 2, 3, 4, 5, 6, 7, 8, 10, 20] )]
+ * @param nearest_neighbor_ns Vector of n nearest neighbors to consider for analysis. [const std::vector<int> & ( = [1, 2, 3, 4, 5, 6, 7, 8,
+ * 10, 20] )]
  * @param dilation_radii Vector of dilation radii to consider for analysis. [const std::vector<int> & ( = [5, 10] )]
  * @return StatisticsMap
-*/
+ */
 auto
-labels_neighbors_statistics_func(const Device::Pointer & device, const Array::Pointer label, const std::vector<int> & proximal_distances, const std::vector<int> & nearest_neighbor_ns, const std::vector<int> & dilation_radii) -> StatisticsMap;
+labels_neighbors_statistics_func(const Device::Pointer &  device,
+                                 const Array::Pointer     label,
+                                 const std::vector<int> & proximal_distances,
+                                 const std::vector<int> & nearest_neighbor_ns,
+                                 const std::vector<int> & dilation_radii) -> StatisticsMap;
 
-/** 
+/**
  * @name statistics_of_labelled_neighbors
  * @brief Computes distance-based statistics of the nearest neighbor labels.
- * For each label in the input label image, this function computes statistics of the neighboring labels within specified proximal distances. The statistics include the count of neighboring labels, their distances, if they are touching, how many pixels they share on the boundary, etc.
- * 
+ * For each label in the input label image, this function computes statistics of the neighboring labels within specified proximal distances.
+ * The statistics include the count of neighboring labels, their distances, if they are touching, how many pixels they share on the
+ * boundary, etc.
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param label Input label image. [const Array::Pointer &]
  * @param proximal_distances Vector of proximal distances to consider for analysis. [const std::vector<int> & ( = [10, 20, 40, 80, 160] )]
- * @param nearest_neighbor_ns Vector of n nearest neighbors to consider for analysis. [const std::vector<int> & ( = [1, 2, 3, 4, 5, 6, 7, 8, 10, 20] )]
+ * @param nearest_neighbor_ns Vector of n nearest neighbors to consider for analysis. [const std::vector<int> & ( = [1, 2, 3, 4, 5, 6, 7, 8,
+ * 10, 20] )]
  * @param dilation_radii Vector of dilation radii to consider for analysis. [const std::vector<int> & ( = [5, 10] )]
  * @return StatisticsMap
- * 
+ *
  * @deprecated This function is deprecated. Consider using statistics_of_neighbor_labels() instead.
-*/
+ */
 auto
-statistics_of_labelled_neighbors_func(const Device::Pointer & device, const Array::Pointer label, const std::vector<int> & proximal_distances, const std::vector<int> & nearest_neighbor_ns, const std::vector<int> & dilation_radii) -> StatisticsMap;
+statistics_of_labelled_neighbors_func(const Device::Pointer &  device,
+                                      const Array::Pointer     label,
+                                      const std::vector<int> & proximal_distances,
+                                      const std::vector<int> & nearest_neighbor_ns,
+                                      const std::vector<int> & dilation_radii) -> StatisticsMap;
 
 } // namespace cle::tier3
