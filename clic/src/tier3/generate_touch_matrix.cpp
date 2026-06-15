@@ -20,6 +20,7 @@ generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer 
     tier0::create_dst(src, dst_matrix, max_label, max_label, 1, dType::INDEX);
   }
   dst_matrix->fill(0);
+  
   const KernelInfo    kernel = { "generate_touch_matrix", kernel::generate_touch_matrix };
   const ParameterList params = { { "src", src }, { "dst", dst_matrix } };
   const RangeArray    range = { src->width(), src->height(), src->depth() };
@@ -52,9 +53,9 @@ generate_touching_area_matrix_func(const Device::Pointer & device, const Array::
 }
 
 auto
-generate_touch_count_matrix_func(const Device::Pointer & device, const Array::Pointer & src) -> Array::Pointer
+generate_touch_count_matrix_func(const Device::Pointer & device, const Array::Pointer & src_label, Array::Pointer dst_matrix) -> Array::Pointer
 {
-  return generate_touching_area_matrix_func(device, src, nullptr);
+  return generate_touching_area_matrix_func(device, src_label, dst_matrix);
 }
 
 } // namespace cle::tier3
