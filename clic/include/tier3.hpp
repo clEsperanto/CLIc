@@ -227,6 +227,35 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
 auto
 generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst_matrix) -> Array::Pointer;
 
+/**
+ * @name generate_touching_area_matrix
+ * @brief Takes a label map and generates a symmetric (n+1)×(n+1) matrix where each entry [i,j] holds the
+ * number of pixels shared on the boundary between label i and label j. The result is a symmetric matrix.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_label Input label image [const Array::Pointer &]
+ * @param dst_matrix Output matrix [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+generate_touching_area_matrix_func(const Device::Pointer & device,
+                                   const Array::Pointer &  src_label,
+                                   Array::Pointer          dst_matrix) -> Array::Pointer;
+
+/**
+ * @name generate_touch_count_matrix
+ * @brief Takes a label map and generates a symmetric (n+1)×(n+1) matrix where each entry [i,j] holds the
+ * number of pixels shared on the boundary between label i and label j. The result is a symmetric matrix.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input label image [const Array::Pointer &]
+ * @return Array::Pointer
+ *
+ * @deprecated This function is deprecated. Consider using generate_touch_matrix() with an explicit dst_matrix argument instead.
+ */
+auto
+generate_touch_count_matrix_func(const Device::Pointer & device, const Array::Pointer & src) -> Array::Pointer;
+
 
 /**
  * @name histogram

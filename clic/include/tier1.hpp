@@ -3313,5 +3313,173 @@ round_func(const Device::Pointer & device, const Array::Pointer & src, Array::Po
 auto
 truncate_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
+/**
+ * @name minimum_distance_of_touching_neighbors
+ * @brief For each label in a touch matrix and its corresponding distance matrix, compute the minimum distance to all touching neighbors.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_distance_matrix Input distance matrix containing pairwise distances between labels. [const Array::Pointer &]
+ * @param src_touch_matrix Input touch matrix encoding which labels are neighbors. [const Array::Pointer &]
+ * @param dst_index_list Output vector containing the minimum touching-neighbor distance per label. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+minimum_distance_touching_neighbors_func(const Device::Pointer & device,
+                                            const Array::Pointer &  src_distance_matrix,
+                                            const Array::Pointer &  src_touch_matrix,
+                                            Array::Pointer          dst_index_list) -> Array::Pointer;
+
+/**
+ * @name maximum_distance_touching_neighbors
+ * @brief For each label in a touch matrix and its corresponding distance matrix, compute the maximum distance to all touching neighbors.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_distance_matrix Input distance matrix containing pairwise distances between labels. [const Array::Pointer &]
+ * @param src_touch_matrix Input touch matrix encoding which labels are neighbors. [const Array::Pointer &]
+ * @param dst_index_list Output vector containing the maximum touching-neighbor distance per label. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+maximum_distance_touching_neighbors_func(const Device::Pointer & device,
+                                            const Array::Pointer &  src_distance_matrix,
+                                            const Array::Pointer &  src_touch_matrix,
+                                            Array::Pointer          dst_index_list) -> Array::Pointer;
+
+/**
+ * @name mean_distance_touching_neighbors
+ * @brief For each label in a touch matrix and its corresponding distance matrix, compute the mean distance to all touching neighbors.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_distance_matrix Input distance matrix containing pairwise distances between labels. [const Array::Pointer &]
+ * @param src_touch_matrix Input touch matrix encoding which labels are neighbors. [const Array::Pointer &]
+ * @param dst_index_list Output vector containing the mean touching-neighbor distance per label. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+mean_distance_touching_neighbors_func(const Device::Pointer & device,
+                                         const Array::Pointer &  src_distance_matrix,
+                                         const Array::Pointer &  src_touch_matrix,
+                                         Array::Pointer          dst_index_list) -> Array::Pointer;
+
+/**
+ * @name average_distance_touching_neighbors
+ * @brief For each label in a touch matrix and its corresponding distance matrix, compute the mean distance to all touching neighbors.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_distance_matrix Input distance matrix containing pairwise distances between labels. [const Array::Pointer &]
+ * @param src_touch_matrix Input touch matrix encoding which labels are neighbors. [const Array::Pointer &]
+ * @param dst_index_list Output vector containing the average touching-neighbor distance per label. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ * 
+ * @deprecated This function is deprecated. Consider using mean_distance_of_touching_neighbors() instead.
+ */
+auto
+average_distance_touching_neighbors_func(const Device::Pointer & device,
+                                            const Array::Pointer &  src_distance_matrix,
+                                            const Array::Pointer &  src_touch_matrix,
+                                            Array::Pointer          dst_index_list) -> Array::Pointer;
+
+/**
+ * @name mean_distance_n_nearest_neighbors
+ * @brief For each label in a distance matrix, compute the mean distance to its N nearest neighbors.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_distance_matrix Input distance matrix containing pairwise distances between labels. [const Array::Pointer &]
+ * @param dst_index_list Output vector containing the mean N-nearest-neighbor distance per label. [Array::Pointer ( = None )]
+ * @param n Number of nearest neighbors to consider. [int ( = 1 )]
+ * @return Array::Pointer
+ */
+auto
+mean_distance_n_nearest_neighbors_func(const Device::Pointer & device,
+                                       const Array::Pointer &  src_distance_matrix,
+                                       Array::Pointer          dst_index_list,
+                                       int                     n) -> Array::Pointer;
+
+/**
+ * @name maximum_distance_n_nearest_neighbors
+ * @brief For each label in a distance matrix, compute the maximum distance among its N nearest neighbors.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_distance_matrix Input distance matrix containing pairwise distances between labels. [const Array::Pointer &]
+ * @param dst_index_list Output vector containing the maximum N-nearest-neighbor distance per label. [Array::Pointer ( = None )]
+ * @param n Number of nearest neighbors to consider. [int ( = 1 )]
+ * @return Array::Pointer
+ */
+auto
+maximum_distance_n_nearest_neighbors_func(const Device::Pointer & device,
+                                          const Array::Pointer &  src_distance_matrix,
+                                          Array::Pointer          dst_index_list,
+                                          int                     n) -> Array::Pointer;
+
+/**
+ * @name mean_distance_n_farthest_neighbors
+ * @brief For each label in a distance matrix, compute the mean distance to its N farthest neighbors.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_distance_matrix Input distance matrix containing pairwise distances between labels. [const Array::Pointer &]
+ * @param dst_index_list Output vector containing the mean N-farthest-neighbor distance per label. [Array::Pointer ( = None )]
+ * @param n Number of farthest neighbors to consider. [int ( = 1 )]
+ * @return Array::Pointer
+ */
+auto
+mean_distance_n_farthest_neighbors_func(const Device::Pointer & device,
+                                        const Array::Pointer &  src_distance_matrix,
+                                        Array::Pointer          dst_index_list,
+                                        int                     n) -> Array::Pointer;
+
+/**
+ * @name average_distance_of_n_nearest_distances
+ * @brief For each label in a distance matrix, compute the mean distance to its N nearest neighbors.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_distance_matrix Input distance matrix containing pairwise distances between labels. [const Array::Pointer &]
+ * @param dst_index_list Output vector containing the mean N-nearest-neighbor distance per label. [Array::Pointer ( = None )]
+ * @param n Number of nearest neighbors to consider. [int ( = 1 )]
+ * @return Array::Pointer
+ *
+ * @deprecated This function is deprecated. Consider using mean_distance_n_nearest_neighbors() instead.
+ */
+auto
+average_distance_of_n_nearest_distances_func(const Device::Pointer & device,
+                                             const Array::Pointer &  src_distance_matrix,
+                                             Array::Pointer          dst_index_list,
+                                             int                     n) -> Array::Pointer;
+
+/**
+ * @name maximum_distance_of_n_shortest_distances
+ * @brief For each label in a distance matrix, compute the maximum distance among its N nearest neighbors.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_distance_matrix Input distance matrix containing pairwise distances between labels. [const Array::Pointer &]
+ * @param dst_index_list Output vector containing the maximum N-nearest-neighbor distance per label. [Array::Pointer ( = None )]
+ * @param n Number of nearest neighbors to consider. [int ( = 1 )]
+ * @return Array::Pointer
+ *
+ * @deprecated This function is deprecated. Consider using maximum_distance_n_nearest_neighbors() instead.
+ */
+auto
+maximum_distance_of_n_shortest_distances_func(const Device::Pointer & device,
+                                              const Array::Pointer &  src_distance_matrix,
+                                              Array::Pointer          dst_index_list,
+                                              int                     n) -> Array::Pointer;
+
+/**
+ * @name average_distance_of_n_far_off_distances
+ * @brief For each label in a distance matrix, compute the mean distance to its N farthest neighbors.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_distance_matrix Input distance matrix containing pairwise distances between labels. [const Array::Pointer &]
+ * @param dst_index_list Output vector containing the mean N-farthest-neighbor distance per label. [Array::Pointer ( = None )]
+ * @param n Number of farthest neighbors to consider. [int ( = 1 )]
+ * @return Array::Pointer
+ *
+ * @deprecated This function is deprecated. Consider using mean_distance_n_farthest_neighbors() instead.
+ */
+auto
+average_distance_of_n_far_off_distances_func(const Device::Pointer & device,
+                                             const Array::Pointer &  src_distance_matrix,
+                                             Array::Pointer          dst_index_list,
+                                             int                     n) -> Array::Pointer;
+
 
 } // namespace cle::tier1

@@ -244,7 +244,7 @@ label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer 
  * @param include_background Determines if the background label should be included. [bool ( = False )]
  * @return Array::Pointer
  *
- * @see https://clij.github.io/clij2-docs/reference_centroidsOfLabels
+ * @see https://clij.github.io/clij2-docs/reference_OfLabels
  */
 auto
 centroids_of_labels_func(const Device::Pointer & device,
@@ -645,5 +645,40 @@ mode_of_touching_neighbors_map_func(const Device::Pointer & device,
  */
 auto
 standard_deviation_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
+
+/**
+ * @name generate_partial_touching_area_matrix
+ * @brief Computes, for each pair of touching labels (X, Y), the ratio of the perimeter of label X that
+ * is in contact with label Y. Each entry (X, Y) in the output matrix holds the fraction of label X's
+ * total perimeter that touches label Y (i.e., touching_area(X,Y) / total_perimeter(X)).
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_label Input label image. [const Array::Pointer &]
+ * @param dst_matrix Output matrix of perimeter-contact ratios. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+generate_partial_touching_area_matrix_func(const Device::Pointer & device,
+                                           const Array::Pointer &  src_label,
+                                           Array::Pointer          dst_matrix) -> Array::Pointer;
+
+
+/**
+ * @name generate_touch_portion_matrix
+ * @brief Computes, for each pair of touching labels (X, Y), the ratio of the perimeter of label X that
+ * is in contact with label Y. Each entry (X, Y) in the output matrix holds the fraction of label X's
+ * total perimeter that touches label Y (i.e., touching_area(X,Y) / total_perimeter(X)).
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_label Input label image. [const Array::Pointer &]
+ * @param dst_matrix Output matrix of perimeter-contact ratios. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ * 
+ * @deprecated This function is deprecated. Use generate_partial_touching_area_matrix() instead.
+ */
+auto
+generate_touch_portion_matrix_func(const Device::Pointer & device,
+                                           const Array::Pointer &  src_label,
+                                           Array::Pointer          dst_matrix) -> Array::Pointer;                                           
 
 } // namespace cle::tier4
