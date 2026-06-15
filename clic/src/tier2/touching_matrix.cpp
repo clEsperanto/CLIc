@@ -59,7 +59,7 @@ generate_touching_area_matrix_within_range_func(const Device::Pointer & device,
                                                 float                   min_distance,
                                                 float                   max_distance) -> Array::Pointer
 {
-
+  tier0::create_like(src_matrix, dst_matrix);
   auto sup = tier1::greater_constant_func(device, src_matrix, nullptr, min_distance);
   auto inf = tier1::smaller_constant_func(device, src_matrix, nullptr, max_distance);
   tier1::binary_and_func(device, sup, inf, dst_matrix);
