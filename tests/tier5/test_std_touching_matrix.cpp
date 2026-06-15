@@ -10,12 +10,7 @@ protected:
   std::string                           backend;
   cle::Device::Pointer                  device;
   const std::array<uint32_t, 6 * 6 * 1> input = {
-    1, 1, 3, 3, 3, 3,
-    1, 1, 3, 3, 3, 3,
-    1, 1, 3, 3, 3, 3,
-    2, 2, 2, 4, 4, 4,
-    2, 2, 2, 4, 4, 5,
-    2, 2, 2, 4, 5, 5,
+    1, 1, 3, 3, 3, 3, 1, 1, 3, 3, 3, 3, 1, 1, 3, 3, 3, 3, 2, 2, 2, 4, 4, 4, 2, 2, 2, 4, 4, 5, 2, 2, 2, 4, 5, 5,
   };
   const std::array<float, 6> valid = { 0.0f, 0.10000001f, 0.11111111f, 0.12698412f, 0.04444444f, 0.0f };
   std::array<float, 6>       output;

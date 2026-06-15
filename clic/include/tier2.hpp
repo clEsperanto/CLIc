@@ -1217,7 +1217,7 @@ generate_touching_area_matrix_within_range_func(const Device::Pointer & device,
  * @name generate_touch_portion_within_range_neighbors_matrix
  * @brief Generates a touch matrix from a matrix describing how much labels touch by selecting neighbors
  * whose touch portion lies strictly within a specified range.
- * 
+ *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param src_matrix Input matrix containing touching portions between labels. [const Array::Pointer &]
  * @param dst_matrix Output touch matrix. [Array::Pointer ( = None )]
@@ -1245,9 +1245,8 @@ generate_touch_portion_within_range_neighbors_matrix_func(const Device::Pointer 
  * @return Array::Pointer
  */
 auto
-symmetric_maximum_matrix_func(const Device::Pointer & device,
-                              const Array::Pointer &  src_matrix,
-                              Array::Pointer          dst_matrix) -> Array::Pointer;
+symmetric_maximum_matrix_func(const Device::Pointer & device, const Array::Pointer & src_matrix, Array::Pointer dst_matrix)
+  -> Array::Pointer;
 
 /**
  * @name symmetric_minimum_matrix
@@ -1260,9 +1259,8 @@ symmetric_maximum_matrix_func(const Device::Pointer & device,
  * @return Array::Pointer
  */
 auto
-symmetric_minimum_matrix_func(const Device::Pointer & device,
-                              const Array::Pointer &  src_matrix,
-                              Array::Pointer          dst_matrix) -> Array::Pointer;
+symmetric_minimum_matrix_func(const Device::Pointer & device, const Array::Pointer & src_matrix, Array::Pointer dst_matrix)
+  -> Array::Pointer;
 
 /**
  * @name symmetric_mean_matrix
@@ -1275,9 +1273,7 @@ symmetric_minimum_matrix_func(const Device::Pointer & device,
  * @return Array::Pointer
  */
 auto
-symmetric_mean_matrix_func(const Device::Pointer & device,
-                           const Array::Pointer &  src_matrix,
-                           Array::Pointer          dst_matrix) -> Array::Pointer;
+symmetric_mean_matrix_func(const Device::Pointer & device, const Array::Pointer & src_matrix, Array::Pointer dst_matrix) -> Array::Pointer;
 
 
 } // namespace cle::tier2

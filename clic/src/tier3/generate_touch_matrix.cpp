@@ -28,7 +28,8 @@ generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer 
 }
 
 auto
-generate_touching_area_matrix_func(const Device::Pointer & device, const Array::Pointer & src_label, Array::Pointer dst_matrix) -> Array::Pointer
+generate_touching_area_matrix_func(const Device::Pointer & device, const Array::Pointer & src_label, Array::Pointer dst_matrix)
+  -> Array::Pointer
 {
   if (dst_matrix == nullptr)
   {
@@ -37,8 +38,8 @@ generate_touching_area_matrix_func(const Device::Pointer & device, const Array::
   }
   dst_matrix->fill(0);
 
-  auto temp1 = tier1::copy_func(device,dst_matrix, nullptr);
-  auto temp2 = tier1::copy_func(device,dst_matrix, nullptr);
+  auto temp1 = tier1::copy_func(device, dst_matrix, nullptr);
+  auto temp2 = tier1::copy_func(device, dst_matrix, nullptr);
 
   const KernelInfo    kernel = { "generate_touching_area_matrix", kernel::generate_touching_area_matrix };
   const ParameterList params = { { "src_label", src_label }, { "dst_matrix", temp1 } };

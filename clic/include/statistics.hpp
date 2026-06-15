@@ -44,11 +44,9 @@ _std_per_label(const Device::Pointer & device,
                int                     nb_labels) -> Array::Pointer;
 
 
-
-
 /**
  * @brief Compute a list of neighborhood statistics for each label in the label image
- * The output is a map with the following keys: 
+ * The output is a map with the following keys:
  * The vector length is equal to the number of labels in the label image.
  *
  * @param device Device::Pointer to use
@@ -59,7 +57,10 @@ _std_per_label(const Device::Pointer & device,
  * @return StatisticsMap
  */
 auto
-compute_statistics_per_labels(const Device::Pointer & device, const Array::Pointer & label, const std::vector<int> & proximal_distances, const std::vector<int> & nearest_neighbor_ns, const std::vector<int> & dilation_radii)
-  -> StatisticsMap;
+compute_statistics_per_labels(const Device::Pointer &  device,
+                              const Array::Pointer &   label,
+                              const std::vector<int> & proximal_distances,
+                              const std::vector<int> & nearest_neighbor_ns,
+                              const std::vector<int> & dilation_radii) -> StatisticsMap;
 
 } // namespace cle

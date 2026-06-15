@@ -25,28 +25,30 @@ count_touching_neighbors_func(const Device::Pointer & device,
 }
 
 
-auto 
-symmetric_maximum_matrix_func(const Device::Pointer & device, const Array::Pointer & src_matrix, Array::Pointer dst_matrix) -> Array::Pointer
+auto
+symmetric_maximum_matrix_func(const Device::Pointer & device, const Array::Pointer & src_matrix, Array::Pointer dst_matrix)
+  -> Array::Pointer
 {
   auto temp = tier1::transpose_xy_func(device, src_matrix, nullptr);
   dst_matrix = tier1::maximum_images_func(device, src_matrix, temp, dst_matrix);
-  return dst_matrix; 
+  return dst_matrix;
 }
 
-auto 
-symmetric_minimum_matrix_func(const Device::Pointer & device, const Array::Pointer & src_matrix, Array::Pointer dst_matrix) -> Array::Pointer
+auto
+symmetric_minimum_matrix_func(const Device::Pointer & device, const Array::Pointer & src_matrix, Array::Pointer dst_matrix)
+  -> Array::Pointer
 {
   auto temp = tier1::transpose_xy_func(device, src_matrix, nullptr);
   dst_matrix = tier1::minimum_images_func(device, src_matrix, temp, dst_matrix);
-  return dst_matrix; 
+  return dst_matrix;
 }
 
-auto 
+auto
 symmetric_mean_matrix_func(const Device::Pointer & device, const Array::Pointer & src_matrix, Array::Pointer dst_matrix) -> Array::Pointer
 {
   auto temp = tier1::transpose_xy_func(device, src_matrix, nullptr);
   tier0::create_like(src_matrix, dst_matrix);
-  evaluate(device, "(a + b) / 2", {src_matrix, temp}, dst_matrix);
+  evaluate(device, "(a + b) / 2", { src_matrix, temp }, dst_matrix);
   return dst_matrix;
 }
 
@@ -57,7 +59,7 @@ generate_touching_area_matrix_within_range_func(const Device::Pointer & device,
                                                 float                   min_distance,
                                                 float                   max_distance) -> Array::Pointer
 {
-  
+
   auto sup = tier1::greater_constant_func(device, src_matrix, nullptr, min_distance);
   auto inf = tier1::smaller_constant_func(device, src_matrix, nullptr, max_distance);
   tier1::binary_and_func(device, sup, inf, dst_matrix);
@@ -66,10 +68,10 @@ generate_touching_area_matrix_within_range_func(const Device::Pointer & device,
 
 auto
 generate_touch_portion_within_range_neighbors_matrix_func(const Device::Pointer & device,
-                                                        const Array::Pointer &  src_matrix,
-                                                        Array::Pointer          dst_matrix,
-                                                        float                   min_distance,
-                                                        float                   max_distance) -> Array::Pointer
+                                                          const Array::Pointer &  src_matrix,
+                                                          Array::Pointer          dst_matrix,
+                                                          float                   min_distance,
+                                                          float                   max_distance) -> Array::Pointer
 {
   return generate_touching_area_matrix_within_range_func(device, src_matrix, dst_matrix, min_distance, max_distance);
 }

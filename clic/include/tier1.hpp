@@ -3325,9 +3325,9 @@ truncate_func(const Device::Pointer & device, const Array::Pointer & src, Array:
  */
 auto
 minimum_distance_touching_neighbors_func(const Device::Pointer & device,
-                                            const Array::Pointer &  src_distance_matrix,
-                                            const Array::Pointer &  src_touch_matrix,
-                                            Array::Pointer          dst_index_list) -> Array::Pointer;
+                                         const Array::Pointer &  src_distance_matrix,
+                                         const Array::Pointer &  src_touch_matrix,
+                                         Array::Pointer          dst_index_list) -> Array::Pointer;
 
 /**
  * @name maximum_distance_touching_neighbors
@@ -3341,9 +3341,9 @@ minimum_distance_touching_neighbors_func(const Device::Pointer & device,
  */
 auto
 maximum_distance_touching_neighbors_func(const Device::Pointer & device,
-                                            const Array::Pointer &  src_distance_matrix,
-                                            const Array::Pointer &  src_touch_matrix,
-                                            Array::Pointer          dst_index_list) -> Array::Pointer;
+                                         const Array::Pointer &  src_distance_matrix,
+                                         const Array::Pointer &  src_touch_matrix,
+                                         Array::Pointer          dst_index_list) -> Array::Pointer;
 
 /**
  * @name mean_distance_touching_neighbors
@@ -3357,9 +3357,9 @@ maximum_distance_touching_neighbors_func(const Device::Pointer & device,
  */
 auto
 mean_distance_touching_neighbors_func(const Device::Pointer & device,
-                                         const Array::Pointer &  src_distance_matrix,
-                                         const Array::Pointer &  src_touch_matrix,
-                                         Array::Pointer          dst_index_list) -> Array::Pointer;
+                                      const Array::Pointer &  src_distance_matrix,
+                                      const Array::Pointer &  src_touch_matrix,
+                                      Array::Pointer          dst_index_list) -> Array::Pointer;
 
 /**
  * @name average_distance_touching_neighbors
@@ -3370,14 +3370,14 @@ mean_distance_touching_neighbors_func(const Device::Pointer & device,
  * @param src_touch_matrix Input touch matrix encoding which labels are neighbors. [const Array::Pointer &]
  * @param dst_index_list Output vector containing the average touching-neighbor distance per label. [Array::Pointer ( = None )]
  * @return Array::Pointer
- * 
+ *
  * @deprecated This function is deprecated. Consider using mean_distance_of_touching_neighbors() instead.
  */
 auto
 average_distance_touching_neighbors_func(const Device::Pointer & device,
-                                            const Array::Pointer &  src_distance_matrix,
-                                            const Array::Pointer &  src_touch_matrix,
-                                            Array::Pointer          dst_index_list) -> Array::Pointer;
+                                         const Array::Pointer &  src_distance_matrix,
+                                         const Array::Pointer &  src_touch_matrix,
+                                         Array::Pointer          dst_index_list) -> Array::Pointer;
 
 /**
  * @name mean_distance_n_nearest_neighbors

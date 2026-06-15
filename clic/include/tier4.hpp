@@ -658,9 +658,8 @@ standard_deviation_of_all_pixels_func(const Device::Pointer & device, const Arra
  * @return Array::Pointer
  */
 auto
-generate_partial_touching_area_matrix_func(const Device::Pointer & device,
-                                           const Array::Pointer &  src_label,
-                                           Array::Pointer          dst_matrix) -> Array::Pointer;
+generate_partial_touching_area_matrix_func(const Device::Pointer & device, const Array::Pointer & src_label, Array::Pointer dst_matrix)
+  -> Array::Pointer;
 
 
 /**
@@ -673,12 +672,11 @@ generate_partial_touching_area_matrix_func(const Device::Pointer & device,
  * @param src_label Input label image. [const Array::Pointer &]
  * @param dst_matrix Output matrix of perimeter-contact ratios. [Array::Pointer ( = None )]
  * @return Array::Pointer
- * 
+ *
  * @deprecated This function is deprecated. Use generate_partial_touching_area_matrix() instead.
  */
 auto
-generate_touch_portion_matrix_func(const Device::Pointer & device,
-                                           const Array::Pointer &  src_label,
-                                           Array::Pointer          dst_matrix) -> Array::Pointer;                                           
+generate_touch_portion_matrix_func(const Device::Pointer & device, const Array::Pointer & src_label, Array::Pointer dst_matrix)
+  -> Array::Pointer;
 
 } // namespace cle::tier4

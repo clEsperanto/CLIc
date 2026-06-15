@@ -266,87 +266,83 @@ compute_statistics_per_labels(const Device::Pointer & device, const Array::Point
 
 
 auto
-compute_statistics_per_labels(const Device::Pointer & device, const Array::Pointer & label, const std::vector<int> & proximal_distances, const std::vector<int> & nearest_neighbor_ns, const std::vector<int> & dilation_radii)
-  -> StatisticsMap
+compute_statistics_per_labels(const Device::Pointer &  device,
+                              const Array::Pointer &   label,
+                              const std::vector<int> & proximal_distances,
+                              const std::vector<int> & nearest_neighbor_ns,
+                              const std::vector<int> & dilation_radii) -> StatisticsMap
 {
 
-    const std::vector<float> touch_ratio_thresholds = { 0, 0.16, 0.2, 0.33, 0.5, 0.75 };
+  const std::vector<float> touch_ratio_thresholds = { 0, 0.16, 0.2, 0.33, 0.5, 0.75 };
 
-    const auto nb_labels = static_cast<size_t>(tier2::maximum_of_all_pixels_func(device, label)) + 1;
-    const auto nb_proximal_distances = proximal_distances.size();
-    const auto nb_nearest_neighbor_ns = nearest_neighbor_ns.size();
-    const auto nb_dilation_radii = dilation_radii.size();
-    const auto nb_touch_ratio_thresholds = touch_ratio_thresholds.size();
+  const auto nb_labels = static_cast<size_t>(tier2::maximum_of_all_pixels_func(device, label)) + 1;
+  const auto nb_proximal_distances = proximal_distances.size();
+  const auto nb_nearest_neighbor_ns = nearest_neighbor_ns.size();
+  const auto nb_dilation_radii = dilation_radii.size();
+  const auto nb_touch_ratio_thresholds = touch_ratio_thresholds.size();
 
-    const auto nb_stats = nb_proximal_distances + 2 * nb_nearest_neighbor_ns + 6 * nb_dilation_radii + nb_touch_ratio_thresholds + 13;
-    cle::StatisticsMap nei_stats;
-    nei_stats.reserve(nb_stats); // 37 properties are calculated (36 actually, we are missing 'original labels')
+  const auto         nb_stats = nb_proximal_distances + 2 * nb_nearest_neighbor_ns + 6 * nb_dilation_radii + nb_touch_ratio_thresholds + 13;
+  cle::StatisticsMap nei_stats;
+  nei_stats.reserve(nb_stats); // 37 properties are calculated (36 actually, we are missing 'original labels')
 
-    auto result_device_vector = Array::create(nb_labels, 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
+  auto result_device_vector = Array::create(nb_labels, 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
 
-    auto centroids = tier4::centroids_of_labels_func(device, label, false);
-    auto distance_matrix = tier1::generate_distance_matrix_func(device, centroids, centroids, nullptr);
-    auto touching_matrix = tier3::generate_touch_matrix_func(device, label, nullptr);
-    tier1::set_column_func(device, touching_matrix, 0, 0);
-    tier1::set_row_func(device, touching_matrix, 0, 0);
+  auto centroids = tier4::centroids_of_labels_func(device, label, false);
+  auto distance_matrix = tier1::generate_distance_matrix_func(device, centroids, centroids, nullptr);
+  auto touching_matrix = tier3::generate_touch_matrix_func(device, label, nullptr);
+  tier1::set_column_func(device, touching_matrix, 0, 0);
+  tier1::set_row_func(device, touching_matrix, 0, 0);
 
-    // touching neighbor count # 1
-    tier2::count_touching_neighbors_func(device, touching_matrix, result_device_vector, true);
-    auto & touching_neighbor_count = nei_stats["touching_neighbor_count"];
-    touching_neighbor_count.resize(nb_labels);
-    result_device_vector->readTo(touching_neighbor_count.data());
-
-
-    // distances of touching neighbors
-
-    tier1::minimum_distance_touching_neighbors_func(device, distance_matrix, touching_matrix, result_device_vector);
-    auto & minimum_distance_of_touching_neighbors = nei_stats["minimum_distance_of_touching_neighbors"];
-    minimum_distance_of_touching_neighbors.resize(nb_labels);
-    result_device_vector->readTo(minimum_distance_of_touching_neighbors.data());
-    tier1::average_distance_touching_neighbors_func(device, distance_matrix, touching_matrix, result_device_vector);
-    auto & average_distance_of_touching_neighbors = nei_stats["average_distance_of_touching_neighbors"];
-    average_distance_of_touching_neighbors.resize(nb_labels);
-    result_device_vector->readTo(average_distance_of_touching_neighbors.data());
-    tier1::maximum_distance_touching_neighbors_func(device, distance_matrix, touching_matrix, result_device_vector);
-    auto & maximum_distance_of_touching_neighbors = nei_stats["maximum_distance_of_touching_neighbors"];
-    maximum_distance_of_touching_neighbors.resize(nb_labels);
-    result_device_vector->readTo(maximum_distance_of_touching_neighbors.data());
+  // touching neighbor count # 1
+  tier2::count_touching_neighbors_func(device, touching_matrix, result_device_vector, true);
+  auto & touching_neighbor_count = nei_stats["touching_neighbor_count"];
+  touching_neighbor_count.resize(nb_labels);
+  result_device_vector->readTo(touching_neighbor_count.data());
 
 
+  // distances of touching neighbors
 
-    // label
-    // touching_neighbor_count
-    // minimum_distance_of_touching_neighbors
-    // average_distance_of_touching_neighbors
-    // maximum_distance_of_touching_neighbors
-    // max_min_distance_ratio_of_touching_neighbors
-    // // proximal_neighbor_count_d ... proximal_distances
-    // // maximum_distance_of_n ... nb_nearest_neighbor_ns
-    // // average_distance_of_n ... nb_nearest_neighbor_ns
-    // distance_to_most_distant_other
-    // // touch_portion_above_ ... touch_portion_threshold
-    // touch_count_sum
-    // minimum_touch_count
-    // maximum_touch_count
-    // minimum_touch_portion
-    // maximum_touch_portion
-    // standard_deviation_touch_portion
-    // // touching_neighbor_count_dilated_r_ ... dilated_r_
-    // // minimum_distance_of_touching_neighbors_dilated_r_ ... dilated_r_ ...
-    // // average_distance_of_touching_neighbors_dilated_r_ ... dilated_r_ ...
-    // // maximum_distance_of_touching_neighbors_dilated_r_ ... dilated_r_ ...
-    // // max_min_distance_ratio_of_touching_neighbors_dilated_r_ ... dilated_r_
-    // // touch_count_sum_dilated_r_ ... dilated_r_
-    // // maximum_touch_count_dilated_r_ ... dilated_r_
-    // // minimum_touch_portion_dilated_r_ ... dilated_r_ ...
-    // // maximum_touch_portion_dilated_r_ ... dilated_r_ ...
+  tier1::minimum_distance_touching_neighbors_func(device, distance_matrix, touching_matrix, result_device_vector);
+  auto & minimum_distance_of_touching_neighbors = nei_stats["minimum_distance_of_touching_neighbors"];
+  minimum_distance_of_touching_neighbors.resize(nb_labels);
+  result_device_vector->readTo(minimum_distance_of_touching_neighbors.data());
+  tier1::average_distance_touching_neighbors_func(device, distance_matrix, touching_matrix, result_device_vector);
+  auto & average_distance_of_touching_neighbors = nei_stats["average_distance_of_touching_neighbors"];
+  average_distance_of_touching_neighbors.resize(nb_labels);
+  result_device_vector->readTo(average_distance_of_touching_neighbors.data());
+  tier1::maximum_distance_touching_neighbors_func(device, distance_matrix, touching_matrix, result_device_vector);
+  auto & maximum_distance_of_touching_neighbors = nei_stats["maximum_distance_of_touching_neighbors"];
+  maximum_distance_of_touching_neighbors.resize(nb_labels);
+  result_device_vector->readTo(maximum_distance_of_touching_neighbors.data());
+
+
+  // label
+  // touching_neighbor_count
+  // minimum_distance_of_touching_neighbors
+  // average_distance_of_touching_neighbors
+  // maximum_distance_of_touching_neighbors
+  // max_min_distance_ratio_of_touching_neighbors
+  // // proximal_neighbor_count_d ... proximal_distances
+  // // maximum_distance_of_n ... nb_nearest_neighbor_ns
+  // // average_distance_of_n ... nb_nearest_neighbor_ns
+  // distance_to_most_distant_other
+  // // touch_portion_above_ ... touch_portion_threshold
+  // touch_count_sum
+  // minimum_touch_count
+  // maximum_touch_count
+  // minimum_touch_portion
+  // maximum_touch_portion
+  // standard_deviation_touch_portion
+  // // touching_neighbor_count_dilated_r_ ... dilated_r_
+  // // minimum_distance_of_touching_neighbors_dilated_r_ ... dilated_r_ ...
+  // // average_distance_of_touching_neighbors_dilated_r_ ... dilated_r_ ...
+  // // maximum_distance_of_touching_neighbors_dilated_r_ ... dilated_r_ ...
+  // // max_min_distance_ratio_of_touching_neighbors_dilated_r_ ... dilated_r_
+  // // touch_count_sum_dilated_r_ ... dilated_r_
+  // // maximum_touch_count_dilated_r_ ... dilated_r_
+  // // minimum_touch_portion_dilated_r_ ... dilated_r_ ...
+  // // maximum_touch_portion_dilated_r_ ... dilated_r_ ...
 }
-
-
-
-
-
-
 
 
 } // namespace cle

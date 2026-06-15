@@ -28,7 +28,7 @@ TEST_P(TestGenerateTouchingAreaMatrix, execute)
   // Touching boundary pixel counts (per direction, then symmetrised):
   //   label 0 touches label 1: 2 pixels (left edge of col 1, both rows) x2 slices = 4? No —
   //   only z=0 slice has non-zero labels:
-  //     0↔1: col 0–1 border: 2 pixels (rows 0 and 1) × 1 slice → 2 each side → sum = 4? 
+  //     0↔1: col 0–1 border: 2 pixels (rows 0 and 1) × 1 slice → 2 each side → sum = 4?
   //   Let's follow the Python reference directly:
   //   reference = [[0,6,4,2],[6,0,2,0],[4,2,0,2],[2,0,2,0]]
   // clang-format off
@@ -65,6 +65,4 @@ TEST_P(TestGenerateTouchingAreaMatrix, execute)
   }
 }
 
-INSTANTIATE_TEST_SUITE_P(InstantiationName,
-                         TestGenerateTouchingAreaMatrix,
-                         ::testing::ValuesIn(getParameters()));
+INSTANTIATE_TEST_SUITE_P(InstantiationName, TestGenerateTouchingAreaMatrix, ::testing::ValuesIn(getParameters()));

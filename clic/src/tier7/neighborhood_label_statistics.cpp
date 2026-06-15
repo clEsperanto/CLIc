@@ -15,22 +15,15 @@ namespace cle::tier7
 {
 
 auto
-statistics_labelled_neighbors_func(const Device::Pointer & device,
-                                  const Array::Pointer &  label_image,
-                                  const std::vector<int> &     proximal_distances,
-                                  const std::vector<int> &      nearest_neighbor_ns,
-                                  const std::vector<int> &      dilation_radii) -> Array::Pointer
-{
- 
-}
+statistics_labelled_neighbors_func(const Device::Pointer &  device,
+                                   const Array::Pointer &   label_image,
+                                   const std::vector<int> & proximal_distances,
+                                   const std::vector<int> & nearest_neighbor_ns,
+                                   const std::vector<int> & dilation_radii) -> Array::Pointer
+{}
 
 
 } // namespace cle::tier7
-
-
-
-
-
 
 
 // import numpy as np
@@ -66,10 +59,10 @@ statistics_labelled_neighbors_func(const Device::Pointer & device,
 //     pandas.DataFrame
 //     """
 //     from .._tier1 import generate_distance_matrix, generate_touch_matrix, replace_intensity, sum_y_projection
-//     from .._tier1 import minimum_distance_of_touching_neighbors, average_distance_of_touching_neighbors, maximum_distance_of_touching_neighbors
-//     from .._tier1 import average_distance_of_n_nearest_distances, maximum_distance_of_n_shortest_distances
-//     from .._tier1 import count_touching_neighbors, average_distance_of_n_far_off_distances, set_column, set_row
-//     from .._tier1 import maximum_y_projection, minimum_y_projection, copy, set_where_x_equals_y, nan_to_num
+//     from .._tier1 import minimum_distance_of_touching_neighbors, average_distance_of_touching_neighbors,
+//     maximum_distance_of_touching_neighbors from .._tier1 import average_distance_of_n_nearest_distances,
+//     maximum_distance_of_n_shortest_distances from .._tier1 import count_touching_neighbors, average_distance_of_n_far_off_distances,
+//     set_column, set_row from .._tier1 import maximum_y_projection, minimum_y_projection, copy, set_where_x_equals_y, nan_to_num
 
 //     from .._tier3 import generate_proximal_neighbors_matrix
 //     from .._tier3 import generate_touch_count_matrix
@@ -113,7 +106,8 @@ statistics_labelled_neighbors_func(const Device::Pointer & device,
 //     import warnings
 //     with warnings.catch_warnings():
 //         warnings.simplefilter("ignore")
-//         all_stats["max_min_distance_ratio_of_touching_neighbors"] = all_stats["maximum_distance_of_touching_neighbors"] / all_stats["minimum_distance_of_touching_neighbors"]
+//         all_stats["max_min_distance_ratio_of_touching_neighbors"] = all_stats["maximum_distance_of_touching_neighbors"] /
+//         all_stats["minimum_distance_of_touching_neighbors"]
 
 //     #print("distance_matrix", distance_matrix)
 
@@ -269,8 +263,9 @@ statistics_labelled_neighbors_func(const Device::Pointer & device,
 //             value_to_replace=0,
 //             value_replacement=temp.max())
 
-//         all_stats["touch_count_sum_dilated_r_" + str(dilation_radius)] = cle_to_numpy(remove_first=True, data=sum_y_projection(dilated_touch_count_matrix))
-//         all_stats["minimum_touch_count_dilated_r_" + str(dilation_radius)] = cle_to_numpy(remove_first=True,
+//         all_stats["touch_count_sum_dilated_r_" + str(dilation_radius)] = cle_to_numpy(remove_first=True,
+//         data=sum_y_projection(dilated_touch_count_matrix)) all_stats["minimum_touch_count_dilated_r_" + str(dilation_radius)] =
+//         cle_to_numpy(remove_first=True,
 //                                                        data=minimum_y_projection(dilated_touch_count_matrix_0_set_to_high))
 //         all_stats["maximum_touch_count_dilated_r_" + str(dilation_radius)] = cle_to_numpy(remove_first=True,
 //                                                         data=maximum_y_projection(dilated_touch_count_matrix))

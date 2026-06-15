@@ -238,9 +238,8 @@ generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer 
  * @return Array::Pointer
  */
 auto
-generate_touching_area_matrix_func(const Device::Pointer & device,
-                                   const Array::Pointer &  src_label,
-                                   Array::Pointer          dst_matrix) -> Array::Pointer;
+generate_touching_area_matrix_func(const Device::Pointer & device, const Array::Pointer & src_label, Array::Pointer dst_matrix)
+  -> Array::Pointer;
 
 /**
  * @name generate_touch_count_matrix

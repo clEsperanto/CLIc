@@ -41,10 +41,10 @@ TEST_P(TestDistanceNeighbors, executeMeanDistanceTouching)
   auto gpu_labels = cle::Array::create(6, 6, 1, 2, cle::dType::LABEL, cle::mType::BUFFER, device);
   gpu_labels->writeFrom(input.data());
 
-  auto centroids      = cle::tier4::centroids_of_labels_func(device, gpu_labels, nullptr, false);
-  auto distance_mat   = cle::tier1::generate_distance_matrix_func(device, centroids, centroids, nullptr);
-  auto touch_mat      = cle::tier3::generate_touch_matrix_func(device, gpu_labels, nullptr);
-  auto result         = cle::tier1::mean_distance_touching_neighbors_func(device, distance_mat, touch_mat, nullptr);
+  auto centroids = cle::tier4::centroids_of_labels_func(device, gpu_labels, nullptr, false);
+  auto distance_mat = cle::tier1::generate_distance_matrix_func(device, centroids, centroids, nullptr);
+  auto touch_mat = cle::tier3::generate_touch_matrix_func(device, gpu_labels, nullptr);
+  auto result = cle::tier1::mean_distance_touching_neighbors_func(device, distance_mat, touch_mat, nullptr);
 
   std::array<float, 4> output;
   result->readTo(output.data());
@@ -74,10 +74,10 @@ TEST_P(TestDistanceNeighbors, executeMinimumDistanceTouching)
   auto gpu_labels = cle::Array::create(6, 6, 1, 2, cle::dType::LABEL, cle::mType::BUFFER, device);
   gpu_labels->writeFrom(input.data());
 
-  auto centroids    = cle::tier4::centroids_of_labels_func(device, gpu_labels, nullptr, false);
+  auto centroids = cle::tier4::centroids_of_labels_func(device, gpu_labels, nullptr, false);
   auto distance_mat = cle::tier1::generate_distance_matrix_func(device, centroids, centroids, nullptr);
-  auto touch_mat    = cle::tier3::generate_touch_matrix_func(device, gpu_labels, nullptr);
-  auto result       = cle::tier1::minimum_distance_touching_neighbors_func(device, distance_mat, touch_mat, nullptr);
+  auto touch_mat = cle::tier3::generate_touch_matrix_func(device, gpu_labels, nullptr);
+  auto result = cle::tier1::minimum_distance_touching_neighbors_func(device, distance_mat, touch_mat, nullptr);
 
   std::array<float, 4> output;
   result->readTo(output.data());
@@ -107,10 +107,10 @@ TEST_P(TestDistanceNeighbors, executeMaximumDistanceTouching)
   auto gpu_labels = cle::Array::create(6, 6, 1, 2, cle::dType::LABEL, cle::mType::BUFFER, device);
   gpu_labels->writeFrom(input.data());
 
-  auto centroids    = cle::tier4::centroids_of_labels_func(device, gpu_labels, nullptr, false);
+  auto centroids = cle::tier4::centroids_of_labels_func(device, gpu_labels, nullptr, false);
   auto distance_mat = cle::tier1::generate_distance_matrix_func(device, centroids, centroids, nullptr);
-  auto touch_mat    = cle::tier3::generate_touch_matrix_func(device, gpu_labels, nullptr);
-  auto result       = cle::tier1::maximum_distance_touching_neighbors_func(device, distance_mat, touch_mat, nullptr);
+  auto touch_mat = cle::tier3::generate_touch_matrix_func(device, gpu_labels, nullptr);
+  auto result = cle::tier1::maximum_distance_touching_neighbors_func(device, distance_mat, touch_mat, nullptr);
 
   std::array<float, 4> output;
   result->readTo(output.data());
@@ -144,9 +144,9 @@ TEST_P(TestDistanceNeighbors, executeMeanDistanceNNearestNeighbors)
   auto gpu_labels = cle::Array::create(6, 6, 1, 2, cle::dType::LABEL, cle::mType::BUFFER, device);
   gpu_labels->writeFrom(input.data());
 
-  auto centroids    = cle::tier4::centroids_of_labels_func(device, gpu_labels, nullptr, false);
+  auto centroids = cle::tier4::centroids_of_labels_func(device, gpu_labels, nullptr, false);
   auto distance_mat = cle::tier1::generate_distance_matrix_func(device, centroids, centroids, nullptr);
-  auto result       = cle::tier1::mean_distance_n_nearest_neighbors_func(device, distance_mat, nullptr, 1);
+  auto result = cle::tier1::mean_distance_n_nearest_neighbors_func(device, distance_mat, nullptr, 1);
 
   std::array<float, 4> output;
   result->readTo(output.data());
@@ -176,14 +176,14 @@ TEST_P(TestDistanceNeighbors, executeMaximumDistanceNNearestNeighbors)
   };
   // clang-format on
   const float          sqrt18 = std::sqrt(18.0f);
-  std::array<float, 4> valid  = { 0.0f, sqrt18, sqrt18, 3.0f };
+  std::array<float, 4> valid = { 0.0f, sqrt18, sqrt18, 3.0f };
 
   auto gpu_labels = cle::Array::create(6, 6, 1, 2, cle::dType::LABEL, cle::mType::BUFFER, device);
   gpu_labels->writeFrom(input.data());
 
-  auto centroids    = cle::tier4::centroids_of_labels_func(device, gpu_labels, nullptr, false);
+  auto centroids = cle::tier4::centroids_of_labels_func(device, gpu_labels, nullptr, false);
   auto distance_mat = cle::tier1::generate_distance_matrix_func(device, centroids, centroids, nullptr);
-  auto result       = cle::tier1::maximum_distance_n_nearest_neighbors_func(device, distance_mat, nullptr, 2);
+  auto result = cle::tier1::maximum_distance_n_nearest_neighbors_func(device, distance_mat, nullptr, 2);
 
   std::array<float, 4> output;
   result->readTo(output.data());
@@ -213,14 +213,14 @@ TEST_P(TestDistanceNeighbors, executeMeanDistanceNFarthestNeighbors)
   };
   // clang-format on
   const float          sqrt18 = std::sqrt(18.0f);
-  std::array<float, 4> valid  = { 0.0f, sqrt18, sqrt18, 3.0f };
+  std::array<float, 4> valid = { 0.0f, sqrt18, sqrt18, 3.0f };
 
   auto gpu_labels = cle::Array::create(6, 6, 1, 2, cle::dType::LABEL, cle::mType::BUFFER, device);
   gpu_labels->writeFrom(input.data());
 
-  auto centroids    = cle::tier4::centroids_of_labels_func(device, gpu_labels, nullptr, false);
+  auto centroids = cle::tier4::centroids_of_labels_func(device, gpu_labels, nullptr, false);
   auto distance_mat = cle::tier1::generate_distance_matrix_func(device, centroids, centroids, nullptr);
-  auto result       = cle::tier1::mean_distance_n_farthest_neighbors_func(device, distance_mat, nullptr, 1);
+  auto result = cle::tier1::mean_distance_n_farthest_neighbors_func(device, distance_mat, nullptr, 1);
 
   std::array<float, 4> output;
   result->readTo(output.data());
@@ -230,8 +230,6 @@ TEST_P(TestDistanceNeighbors, executeMeanDistanceNFarthestNeighbors)
     EXPECT_NEAR(output[i], valid[i], 0.01f);
   }
 }
-
-
 
 
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestDistanceNeighbors, ::testing::ValuesIn(getParameters()));
