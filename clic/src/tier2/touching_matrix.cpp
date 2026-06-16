@@ -54,10 +54,10 @@ symmetric_mean_matrix_func(const Device::Pointer & device, const Array::Pointer 
 
 auto
 generate_partial_touching_area_matrix_within_range_func(const Device::Pointer & device,
-                                                const Array::Pointer &  src_matrix,
-                                                Array::Pointer          dst_matrix,
-                                                float                   min_distance,
-                                                float                   max_distance) -> Array::Pointer
+                                                        const Array::Pointer &  src_matrix,
+                                                        Array::Pointer          dst_matrix,
+                                                        float                   min_distance,
+                                                        float                   max_distance) -> Array::Pointer
 {
   tier0::create_like(src_matrix, dst_matrix);
   auto sup = tier1::greater_constant_func(device, src_matrix, nullptr, min_distance);

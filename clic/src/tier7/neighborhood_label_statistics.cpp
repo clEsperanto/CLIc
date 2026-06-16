@@ -47,4 +47,4 @@ statistics_of_labelled_neighbors_func(const Device::Pointer &  device,
 }
 
 
-}
+} // namespace cle::tier7

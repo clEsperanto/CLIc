@@ -1208,10 +1208,10 @@ generate_proximal_neighbors_matrix_func(const Device::Pointer & device,
  */
 auto
 generate_partial_touching_area_matrix_within_range_func(const Device::Pointer & device,
-                                                const Array::Pointer &  src_matrix,
-                                                Array::Pointer          dst_matrix,
-                                                float                   min_distance,
-                                                float                   max_distance) -> Array::Pointer;
+                                                        const Array::Pointer &  src_matrix,
+                                                        Array::Pointer          dst_matrix,
+                                                        float                   min_distance,
+                                                        float                   max_distance) -> Array::Pointer;
 
 /**
  * @name generate_touch_portion_within_range_neighbors_matrix
