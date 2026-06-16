@@ -53,7 +53,7 @@ symmetric_mean_matrix_func(const Device::Pointer & device, const Array::Pointer 
 }
 
 auto
-generate_touching_area_matrix_within_range_func(const Device::Pointer & device,
+generate_partial_touching_area_matrix_within_range_func(const Device::Pointer & device,
                                                 const Array::Pointer &  src_matrix,
                                                 Array::Pointer          dst_matrix,
                                                 float                   min_distance,
@@ -73,7 +73,7 @@ generate_touch_portion_within_range_neighbors_matrix_func(const Device::Pointer 
                                                           float                   min_distance,
                                                           float                   max_distance) -> Array::Pointer
 {
-  return generate_touching_area_matrix_within_range_func(device, src_matrix, dst_matrix, min_distance, max_distance);
+  return generate_partial_touching_area_matrix_within_range_func(device, src_matrix, dst_matrix, min_distance, max_distance);
 }
 
 } // namespace cle::tier2

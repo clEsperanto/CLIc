@@ -378,7 +378,7 @@ compute_neighbors_statistics_per_labels(const Device::Pointer &  device,
   for (auto t : touch_ratio_thresholds)
   {
     auto touch_portion_within_range_neighbors_matrix =
-      tier2::generate_touching_area_matrix_within_range_func(device, touch_portion_matrix, nullptr, t, 1.1f);
+      tier2::generate_partial_touching_area_matrix_within_range_func(device, touch_portion_matrix, nullptr, t, 1.1f);
     tier2::count_touching_neighbors_func(device, touch_portion_within_range_neighbors_matrix, result_device_vector, true);
     auto & touch_portion_above_threshold_neighbor_count = nei_stats["touch_portion_above_" + std::to_string(t) + "_neighbor_count"];
     touch_portion_above_threshold_neighbor_count.resize(nb_labels);

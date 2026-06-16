@@ -1193,7 +1193,7 @@ generate_proximal_neighbors_matrix_func(const Device::Pointer & device,
                                         float                   max_distance) -> Array::Pointer;
 
 /**
- * @name generate_touching_area_matrix_within_range
+ * @name generate_partial_touching_area_matrix_within_range
  * @brief Generates a touch matrix from a matrix describing how much labels touch by selecting neighbors
  * whose touch portion lies strictly within a specified range.
  *
@@ -1207,7 +1207,7 @@ generate_proximal_neighbors_matrix_func(const Device::Pointer & device,
  * @return Array::Pointer
  */
 auto
-generate_touching_area_matrix_within_range_func(const Device::Pointer & device,
+generate_partial_touching_area_matrix_within_range_func(const Device::Pointer & device,
                                                 const Array::Pointer &  src_matrix,
                                                 Array::Pointer          dst_matrix,
                                                 float                   min_distance,
@@ -1225,7 +1225,7 @@ generate_touching_area_matrix_within_range_func(const Device::Pointer & device,
  * @param max_distance Upper excluded bound of the touching-portion range. [float ( = 1.1 )]
  * @return Array::Pointer
  *
- * @deprecated This function is deprecated. Consider using generate_touching_area_matrix_within_range() instead.
+ * @deprecated This function is deprecated. Consider using generate_partial_touching_area_matrix_within_range() instead.
  */
 auto
 generate_touch_portion_within_range_neighbors_matrix_func(const Device::Pointer & device,
