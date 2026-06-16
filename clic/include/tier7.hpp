@@ -327,9 +327,8 @@ voronoi_otsu_labeling_func(const Device::Pointer & device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param label Input label image. [const Array::Pointer &]
- * @param proximal_distances Vector of proximal distances to consider for analysis. [const std::vector<int> & ( = [10, 20, 40, 80, 160] )]
- * @param nearest_neighbor_ns Vector of n nearest neighbors to consider for analysis. [const std::vector<int> & ( = [1, 2, 3, 4, 5, 6, 7, 8,
- * 10, 20] )]
+ * @param proximal_distances Proximal distances list for analysis. [const std::vector<int> & ( = [10, 20, 40, 80, 160] )]
+ * @param nearest_neighbor_ns n-nearest neighbors list for analysis. [const std::vector<int> & ( = [1, 2, 3, 4, 5, 6, 7, 8, 10, 20] )]
  * @param dilation_radii Vector of dilation radii to consider for analysis. [const std::vector<int> & ( = [5, 10] )]
  * @return StatisticsMap
  */
@@ -351,9 +350,8 @@ labels_neighbors_statistics_func(const Device::Pointer &  device,
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param label Input label image. [const Array::Pointer &]
- * @param proximal_distances Vector of proximal distances to consider for analysis. [const std::vector<int> & ( = [10, 20, 40, 80, 160] )]
- * @param nearest_neighbor_ns Vector of n nearest neighbors to consider for analysis. [const std::vector<int> & ( = [1, 2, 3, 4, 5, 6, 7, 8,
- * 10, 20] )]
+ * @param proximal_distances Proximal distances list for analysis. [const std::vector<int> & ( = [10, 20, 40, 80, 160] )]
+ * @param nearest_neighbor_ns n-nearest neighbors list for analysis. [const std::vector<int> & ( = [1, 2, 3, 4, 5, 6, 7, 8, 10, 20] )]
  * @param dilation_radii Vector of dilation radii to consider for analysis. [const std::vector<int> & ( = [5, 10] )]
  * @return StatisticsMap
  *
