@@ -572,10 +572,11 @@ read_intensities_from_map_func(const Device::Pointer & device, const Array::Poin
 /**
  * @name labels_neighbors_statistics
  * @brief Computes touching, distance-based, and neighborhood statistics of labels and their neighbors.
- * For each label in the input label image, this function computes statistics of its surrounding labels within specified proximal distances.
- * The statistics include the count of neighboring labels, their distances, if they are touching, how many pixels they share on the
- * boundary, etc.
- *
+ * For each label in the input label image, this function computes statistics of its surrounding labels within specified proximal distances. 
+ * The statistics include the count of neighboring labels, their distances, if they are touching, how many pixels they share on the boundary, etc.
+ * 
+ * Important: This expect an isotropic image with isotropic pixel spacing. 
+ * 
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param label Input label image. [const Array::Pointer &]
  * @param proximal_distances Vector of proximal distances to consider for analysis. [const std::vector<int> & ( = [10, 20, 40, 80, 160] )]
@@ -594,10 +595,10 @@ labels_neighbors_statistics_func(const Device::Pointer &  device,
 /**
  * @name statistics_of_labelled_neighbors
  * @brief Computes distance-based statistics of the nearest neighbor labels.
- * For each label in the input label image, this function computes statistics of the neighboring labels within specified proximal distances.
- * The statistics include the count of neighboring labels, their distances, if they are touching, how many pixels they share on the
- * boundary, etc.
- *
+ * For each label in the input label image, this function computes statistics of the neighboring labels within specified proximal distances. The statistics include the count of neighboring labels, their distances, if they are touching, how many pixels they share on the boundary, etc.
+ * 
+ * Important: This expect an isotropic image with isotropic pixel spacing. 
+ * 
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param label Input label image. [const Array::Pointer &]
  * @param proximal_distances Vector of proximal distances to consider for analysis. [const std::vector<int> & ( = [10, 20, 40, 80, 160] )]
