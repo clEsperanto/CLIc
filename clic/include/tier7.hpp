@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tier0.hpp"
+#include "statistics.hpp"
 
 /**
  * @namespace cle::tier7
