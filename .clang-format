@@ -115,7 +115,7 @@ PenaltyBreakTemplateDeclaration: 10
 PenaltyExcessCharacter: 1000000
 PenaltyReturnTypeOnItsOwnLine: 200
 PointerAlignment: Middle
-ReflowComments: true
+ReflowComments: false
 # We may want to sort the includes as a separate pass
 SortIncludes: true
 # We may want to revisit this later

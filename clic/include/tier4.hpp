@@ -239,8 +239,7 @@ label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer 
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param label_image Label image from which the centroids will be determined. [const Array::Pointer &]
- * @param centroids_coordinates Output list of coordinates where the centroids will be written. [Array::Pointer ( =
- * None )]
+ * @param centroids_coordinates Output list of coordinates. [Array::Pointer ( = None )]
  * @param include_background Determines if the background label should be included. [bool ( = False )]
  * @return Array::Pointer
  *
