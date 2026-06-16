@@ -201,5 +201,38 @@ auto
 normalize_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float low_percentile, float high_percentile)
   -> Array::Pointer;
 
+/**
+ * @name standard_deviation_partial_touching_area_matrix
+ * @brief Measures partial touching values between labels and determines their standard deviation in a vector.
+ * For each label X, this function analyzes how much of its perimeter touches neighboring labels and computes
+ * the standard deviation of these partial touching values.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_label Input label image. [const Array::Pointer &]
+ * @param dst_vector Output vector containing standard deviations per label. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+standard_deviation_partial_touching_area_matrix_func(const Device::Pointer & device,
+                                                     const Array::Pointer &  src_label,
+                                                     Array::Pointer          dst_vector) -> Array::Pointer;
+
+/**
+ * @name standard_deviation_touch_portion
+ * @brief Measures partial touching values between labels and determines their standard deviation in a vector.
+ * For each label X, this function analyzes how much of its perimeter touches neighboring labels and computes
+ * the standard deviation of these partial touching values.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_label Input label image. [const Array::Pointer &]
+ * @param dst_vector Output vector containing standard deviations per label. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @deprecated This function is deprecated. Use standard_deviation_partial_touching_area_matrix() instead.
+ */
+auto
+standard_deviation_touch_portion_func(const Device::Pointer & device, const Array::Pointer & src_label, Array::Pointer dst_vector)
+  -> Array::Pointer;
+
 
 } // namespace cle::tier5

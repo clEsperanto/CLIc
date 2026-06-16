@@ -227,6 +227,36 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
 auto
 generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst_matrix) -> Array::Pointer;
 
+/**
+ * @name generate_touching_area_matrix
+ * @brief Takes a label map and generates a symmetric (n+1)×(n+1) matrix where each entry [i,j] holds the
+ * number of pixels shared on the boundary between label i and label j. The result is a symmetric matrix.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_label Input label image [const Array::Pointer &]
+ * @param dst_matrix Output matrix [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+generate_touching_area_matrix_func(const Device::Pointer & device, const Array::Pointer & src_label, Array::Pointer dst_matrix)
+  -> Array::Pointer;
+
+/**
+ * @name generate_touch_count_matrix
+ * @brief Takes a label map and generates a symmetric (n+1)×(n+1) matrix where each entry [i,j] holds the
+ * number of pixels shared on the boundary between label i and label j. The result is a symmetric matrix.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_label Input label image [const Array::Pointer &]
+ * @param dst_matrix Output matrix [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @deprecated This function is deprecated. Consider using generate_touch_matrix() with an explicit dst_matrix argument instead.
+ */
+auto
+generate_touch_count_matrix_func(const Device::Pointer & device, const Array::Pointer & src_label, Array::Pointer dst_matrix)
+  -> Array::Pointer;
+
 
 /**
  * @name histogram
@@ -371,6 +401,26 @@ morphological_chan_vese_func(const Device::Pointer & device,
                              float                   lambda1,
                              float                   lambda2) -> Array::Pointer;
 
+
+/**
+ * @name labels_statistics
+ * @brief Computes the bounding box, area (in pixels/voxels), minimum intensity, maximum intensity, average intensity, standard deviation of
+ * the intensity, and shape descriptors of labelled objects in a label image and its corresponding intensity image.
+ *
+ * If not provided, the intensity image defaults to the label image.
+ * If not provided, the label image defaults to a single label covering the entire image.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param label Label image to compute the statistics. [Array::Pointer ( = None )]
+ * @param intensity Intensity image. [Array::Pointer ( = None )]
+ * @param include_background Computed the statistics for the background (label 0). [bool ( = False )]
+ * @return StatisticsMap
+ */
+auto
+labels_statistics_func(const Device::Pointer & device, Array::Pointer label, Array::Pointer intensity, bool include_background)
+  -> StatisticsMap;
+
+
 /**
  * @name statistics_of_labelled_pixels
  * @brief Computes the bounding box, area (in pixels/voxels), minimum intensity, maximum intensity, average intensity,
@@ -386,6 +436,7 @@ morphological_chan_vese_func(const Device::Pointer & device,
  * @return StatisticsMap
  *
  * @see https://clij.github.io/clij2-docs/reference_statisticsOfLabelledPixels
+ * @deprecated This function is deprecated. Consider using labels_statistics() instead.
  */
 auto
 statistics_of_labelled_pixels_func(const Device::Pointer & device, Array::Pointer intensity, Array::Pointer label) -> StatisticsMap;
@@ -405,6 +456,7 @@ statistics_of_labelled_pixels_func(const Device::Pointer & device, Array::Pointe
  * @return StatisticsMap
  *
  * @see https://clij.github.io/clij2-docs/reference_statisticsOfBackgroundAndLabelledPixels
+ * @deprecated This function is deprecated. Consider using labels_statistics() instead.
  */
 auto
 statistics_of_background_and_labelled_pixels_func(const Device::Pointer & device, Array::Pointer intensity, Array::Pointer label)
@@ -515,5 +567,6 @@ read_map_values_func(const Device::Pointer & device, const Array::Pointer & map,
 auto
 read_intensities_from_map_func(const Device::Pointer & device, const Array::Pointer & label, const Array::Pointer & map, Array::Pointer dst)
   -> Array::Pointer;
+
 
 } // namespace cle::tier3

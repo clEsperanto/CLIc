@@ -1192,5 +1192,88 @@ generate_proximal_neighbors_matrix_func(const Device::Pointer & device,
                                         float                   min_distance,
                                         float                   max_distance) -> Array::Pointer;
 
+/**
+ * @name generate_partial_touching_area_matrix_within_range
+ * @brief Generates a touch matrix from a matrix describing how much labels touch by selecting neighbors
+ * whose touch portion lies strictly within a specified range.
+ *
+ * Minimum and maximum range boundaries are excluded.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_matrix Input matrix containing touching portions between labels. [const Array::Pointer &]
+ * @param dst_matrix Output touch matrix. [Array::Pointer ( = None )]
+ * @param min_distance Lower excluded bound of the touching-portion range. [float ( = 0 )]
+ * @param max_distance Upper excluded bound of the touching-portion range. [float ( = 1.1 )]
+ * @return Array::Pointer
+ */
+auto
+generate_partial_touching_area_matrix_within_range_func(const Device::Pointer & device,
+                                                        const Array::Pointer &  src_matrix,
+                                                        Array::Pointer          dst_matrix,
+                                                        float                   min_distance,
+                                                        float                   max_distance) -> Array::Pointer;
+
+/**
+ * @name generate_touch_portion_within_range_neighbors_matrix
+ * @brief Generates a touch matrix from a matrix describing how much labels touch by selecting neighbors
+ * whose touch portion lies strictly within a specified range.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_matrix Input matrix containing touching portions between labels. [const Array::Pointer &]
+ * @param dst_matrix Output touch matrix. [Array::Pointer ( = None )]
+ * @param min_distance Lower excluded bound of the touching-portion range. [float ( = 0 )]
+ * @param max_distance Upper excluded bound of the touching-portion range. [float ( = 1.1 )]
+ * @return Array::Pointer
+ *
+ * @deprecated This function is deprecated. Consider using generate_partial_touching_area_matrix_within_range() instead.
+ */
+auto
+generate_touch_portion_within_range_neighbors_matrix_func(const Device::Pointer & device,
+                                                          const Array::Pointer &  src_matrix,
+                                                          Array::Pointer          dst_matrix,
+                                                          float                   min_distance,
+                                                          float                   max_distance) -> Array::Pointer;
+
+/**
+ * @name symmetric_maximum_matrix
+ * @brief Transforms a matrix into a symmetric matrix by resolving conflicting values (X,Y) and (Y,X)
+ * using their maximum.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_matrix Input matrix. [const Array::Pointer &]
+ * @param dst_matrix Output symmetric matrix. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+symmetric_maximum_matrix_func(const Device::Pointer & device, const Array::Pointer & src_matrix, Array::Pointer dst_matrix)
+  -> Array::Pointer;
+
+/**
+ * @name symmetric_minimum_matrix
+ * @brief Transforms a matrix into a symmetric matrix by resolving conflicting values (X,Y) and (Y,X)
+ * using their minimum.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_matrix Input matrix. [const Array::Pointer &]
+ * @param dst_matrix Output symmetric matrix. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+symmetric_minimum_matrix_func(const Device::Pointer & device, const Array::Pointer & src_matrix, Array::Pointer dst_matrix)
+  -> Array::Pointer;
+
+/**
+ * @name symmetric_mean_matrix
+ * @brief Transforms a matrix into a symmetric matrix by resolving conflicting values (X,Y) and (Y,X)
+ * using their mean.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src_matrix Input matrix. [const Array::Pointer &]
+ * @param dst_matrix Output symmetric matrix. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ */
+auto
+symmetric_mean_matrix_func(const Device::Pointer & device, const Array::Pointer & src_matrix, Array::Pointer dst_matrix) -> Array::Pointer;
+
 
 } // namespace cle::tier2
