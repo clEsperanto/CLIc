@@ -139,7 +139,7 @@ deconvolve_fft_func(const Device::Pointer & device,
  * @param current_spacing_y Original spacing in y dimension. [float ( = 1.0 )]
  * @param current_spacing_z Original spacing in z dimension. [float ( = 1.0 )]
  * @param target_spacing Target isotropic spacing. [float ( = -1.0 )]
- * @param interpolate If true, interpolate the image during rescaling. [bool ( = true )]
+ * @param interpolate If true, interpolate the image during rescaling. [bool ( = True )]
  * @return Array::Pointer
  */
 auto
@@ -168,7 +168,7 @@ make_isotropic_func(const Device::Pointer & device,
  * @param target_spacing_x Target spacing in x dimension. [float ( = -1.0 )]
  * @param target_spacing_y Target spacing in y dimension. [float ( = -1.0 )]
  * @param target_spacing_z Target spacing in z dimension. [float ( = -1.0 )]
- * @param interpolate If true, interpolate the image during rescaling. [bool ( = true )]
+ * @param interpolate If true, interpolate the image during rescaling. [bool ( = True )]
  * @return Array::Pointer
  */
 auto
