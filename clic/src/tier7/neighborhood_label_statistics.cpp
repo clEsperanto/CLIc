@@ -8,6 +8,7 @@
 #include "tier6.hpp"
 #include "tier7.hpp"
 
+#include "statistics.hpp"
 #include "transform.hpp"
 #include "utils.hpp"
 
