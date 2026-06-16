@@ -3314,7 +3314,7 @@ auto
 truncate_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
 /**
- * @name minimum_distance_of_touching_neighbors
+ * @name minimum_distance_touching_neighbors
  * @brief For each label in a touch matrix and its corresponding distance matrix, compute the minimum distance to all touching neighbors.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
