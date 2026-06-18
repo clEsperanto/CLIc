@@ -79,8 +79,8 @@ jobs:
           restore-keys: |
             cmake-${{ runner.os }}-${{ matrix.buildtype }}-
 
-       - name: Clean stale coverage data
-         run: |
+      - name: Clean stale coverage data
+        run: |
            find "${{ runner.workspace }}/build" -name "*.gcda" -delete 2>/dev/null || true
            find "${{ runner.workspace }}/build" -name "*.gcno" -delete 2>/dev/null || true
 
