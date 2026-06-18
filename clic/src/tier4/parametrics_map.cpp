@@ -31,13 +31,15 @@ parametric_map_func(const Device::Pointer & device,
     throw std::runtime_error("Property '" + target_property + "' not found in statistics");
   }
 
-  auto nb_labels = tier2::maximum_of_all_pixels_func(device, labels) + 1;
+  auto   nb_labels = tier2::maximum_of_all_pixels_func(device, labels) + 1;
   auto & vector = properties.at(lower_property_name);
 
   // check if the vector size matches the number of labels
   if (vector.size() != nb_labels)
   {
-    throw std::runtime_error("Property '" + target_property + "' has " + std::to_string(vector.size()) + " values, but the label image has " + std::to_string(nb_labels) + " labels. Verify that the statistics were computed on the same image, with include_background at 'True'.");
+    throw std::runtime_error("Property '" + target_property + "' has " + std::to_string(vector.size()) +
+                             " values, but the label image has " + std::to_string(nb_labels) +
+                             " labels. Verify that the statistics were computed on the same image, with include_background at 'True'.");
   }
 
   auto values = Array::create(vector.size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
@@ -73,7 +75,7 @@ extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & 
 auto
 mean_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-    auto props = tier3::labels_statistics_func(device, src, nullptr, true);
+  auto props = tier3::labels_statistics_func(device, src, nullptr, true);
   return parametric_map_func(device, src, props, dst, std::string("mean_distance_to_centroid"));
 }
 
@@ -90,7 +92,7 @@ auto
 mean_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
   -> Array::Pointer
 {
-    auto props = tier3::labels_statistics_func(device, labels, src, true);
+  auto props = tier3::labels_statistics_func(device, labels, src, true);
   return parametric_map_func(device, labels, props, dst, std::string("mean_intensity"));
 }
 

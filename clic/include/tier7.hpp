@@ -1,7 +1,7 @@
 #pragma once
 
-#include "tier0.hpp"
 #include "statistics.hpp"
+#include "tier0.hpp"
 
 /**
  * @namespace cle::tier7
@@ -339,7 +339,7 @@ labels_neighbors_statistics_func(const Device::Pointer &  device,
                                  const std::vector<int> & proximal_distances,
                                  const std::vector<int> & nearest_neighbor_ns,
                                  const std::vector<int> & dilation_radii,
-                                 const bool & include_background) -> StatisticsMap;
+                                 const bool &             include_background) -> StatisticsMap;
 
 /**
  * @name statistics_of_labelled_neighbors
