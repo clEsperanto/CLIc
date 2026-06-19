@@ -132,8 +132,8 @@ threshold_mean_func(const Device::Pointer & device, const Array::Pointer & src, 
  * @brief Takes label map and its corresponding quantifications table and plots the requested property (e.g., 'mean_intensity')
  * on to the labels. The resulting image is a parametric map of the requested property.
  *
- * The quantification table can be generated using labels_statistics or labels_neighbors_statistics functions. 
- * IMPORTANT: the quantification table must include the background label (label 0)
+ * NOTE: The quantification table can be generated using labels_statistics or labels_neighbors_statistics functions, 
+ * with the 'include_background' parameter set to 'True'.
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param labels Label image. [const Array::Pointer &]
