@@ -1,5 +1,6 @@
 #pragma once
 
+#include "statistics.hpp"
 #include "tier0.hpp"
 
 /**
@@ -128,15 +129,17 @@ threshold_mean_func(const Device::Pointer & device, const Array::Pointer & src, 
 
 /**
  * @name parametric_map
- * @brief Takes an image, a corresponding label map, and maps a specified property (e.g., 'mean_intensity')
- * determined per label onto a new image where every label is replaced by the corresponding property value.
- * The property name must be available from the statistics_labelled_pixels function.
+ * @brief Takes label map and its corresponding quantifications table and plots the requested property (e.g., 'mean_intensity')
+ * on to the labels. The resulting image is a parametric map of the requested property.
+ *
+ * The quantification table can be generated using labels_statistics or labels_neighbors_statistics functions. 
+ * IMPORTANT: the quantification table must include the background label (label 0)
  *
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param labels Label image. [const Array::Pointer &]
- * @param intensity Intensity image. [Array::Pointer ( = None )]
+ * @param properties Statistics properties map (including the background). [const StatisticsMap &]
  * @param property Name of the property to map. [std::string ( = "label" )]
- * @param dst Parametric image computed. [Array::Pointer ( = None )]
+ * @param dst Output parametric map. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
  * @note 'label measurement', 'map', 'in assistant', 'combine'
@@ -149,10 +152,9 @@ threshold_mean_func(const Device::Pointer & device, const Array::Pointer & src, 
 auto
 parametric_map_func(const Device::Pointer & device,
                     const Array::Pointer &  labels,
-                    Array::Pointer          intensity,
-                    const std::string &     property,
-                    Array::Pointer          dst) -> Array::Pointer;
-
+                    const StatisticsMap &   properties,
+                    Array::Pointer          dst,
+                    const std::string &     target_property) -> Array::Pointer;
 
 /**
  * @name mean_intensity_map

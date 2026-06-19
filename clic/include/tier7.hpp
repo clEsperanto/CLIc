@@ -1,7 +1,7 @@
 #pragma once
 
-#include "tier0.hpp"
 #include "statistics.hpp"
+#include "tier0.hpp"
 
 /**
  * @namespace cle::tier7
@@ -330,6 +330,7 @@ voronoi_otsu_labeling_func(const Device::Pointer & device,
  * @param proximal_distances Proximal distances list for analysis. [const std::vector<int> & ( = [10, 20, 40, 80, 160] )]
  * @param nearest_neighbor_ns n-nearest neighbors list for analysis. [const std::vector<int> & ( = [1, 2, 3, 4, 5, 6, 7, 8, 10, 20] )]
  * @param dilation_radii Vector of dilation radii to consider for analysis. [const std::vector<int> & ( = [5, 10] )]
+ * @param include_background If true, the background label is included (but set to 0). [const bool & ( = False )]
  * @return StatisticsMap
  */
 auto
@@ -337,7 +338,8 @@ labels_neighbors_statistics_func(const Device::Pointer &  device,
                                  const Array::Pointer     label,
                                  const std::vector<int> & proximal_distances,
                                  const std::vector<int> & nearest_neighbor_ns,
-                                 const std::vector<int> & dilation_radii) -> StatisticsMap;
+                                 const std::vector<int> & dilation_radii,
+                                 const bool &             include_background) -> StatisticsMap;
 
 /**
  * @name statistics_of_labelled_neighbors

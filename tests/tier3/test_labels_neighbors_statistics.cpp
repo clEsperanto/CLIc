@@ -91,7 +91,8 @@ TEST_P(TestLabelsNeighborsStatistics, execute)
   std::vector<int> nearest_neighbor_ns = { 1, 2, 3, 4, 5, 6 };
   std::vector<int> dilation_radii = {};
 
-  auto stats = cle::tier7::labels_neighbors_statistics_func(device, scaled_labels, proximal_distances, nearest_neighbor_ns, dilation_radii);
+  auto stats =
+    cle::tier7::labels_neighbors_statistics_func(device, scaled_labels, proximal_distances, nearest_neighbor_ns, dilation_radii, false);
 
   const auto & labels_out = get(stats, "label");
   ASSERT_FALSE(labels_out.empty());
@@ -157,7 +158,8 @@ TEST_P(TestLabelsNeighborsStatistics, dilated)
   std::vector<int> nearest_neighbor_ns = { 1, 2, 3, 4, 5, 6, 7, 8, 10, 20 };
   std::vector<int> dilation_radii = { 0, 10 };
 
-  auto stats = cle::tier7::labels_neighbors_statistics_func(device, scaled_labels, proximal_distances, nearest_neighbor_ns, dilation_radii);
+  auto stats =
+    cle::tier7::labels_neighbors_statistics_func(device, scaled_labels, proximal_distances, nearest_neighbor_ns, dilation_radii, false);
 
   const auto & touching_neighbor_count = get(stats, "touching_neighbor_count");
   const auto & minimum_distance_of_touching_neighbors = get(stats, "minimum_distance_of_touching_neighbors");
