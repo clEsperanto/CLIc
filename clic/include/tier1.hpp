@@ -3372,7 +3372,7 @@ mean_distance_touching_neighbors_func(const Device::Pointer & device,
  * @param dst_index_list Output vector containing the average touching-neighbor distance per label. [Array::Pointer ( = None )]
  * @return Array::Pointer
  *
- * @deprecated This function is deprecated. Consider using mean_distance_of_touching_neighbors() instead.
+ * @deprecated This function is deprecated. Consider using mean_distance_touching_neighbors() instead.
  */
 auto
 average_distance_touching_neighbors_func(const Device::Pointer & device,
