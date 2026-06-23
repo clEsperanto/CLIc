@@ -138,8 +138,8 @@ threshold_mean_func(const Device::Pointer & device, const Array::Pointer & src, 
  * @param device Device to perform the operation on. [const Device::Pointer &]
  * @param labels Label image. [const Array::Pointer &]
  * @param properties Statistics properties map (including the background). [const StatisticsMap &]
- * @param property Name of the property to map. [std::string ( = "label" )]
  * @param dst Output parametric map. [Array::Pointer ( = None )]
+ * @param property Name of the property to map. [std::string ( = "label" )]
  * @return Array::Pointer
  *
  * @note 'label measurement', 'map', 'in assistant', 'combine'

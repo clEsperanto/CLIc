@@ -2342,7 +2342,7 @@ replace_intensities_func(const Device::Pointer & device, const Array::Pointer & 
  *
  * @note 'filter', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_maximum3DSphere
- * @deprecated This function is deprecated. Consider using maximum() instead.
+ * @deprecated This function is deprecated. Consider using maximum_filter() instead.
  */
 auto
 maximum_sphere_func(const Device::Pointer & device,
@@ -2368,7 +2368,7 @@ maximum_sphere_func(const Device::Pointer & device,
  *
  * @note 'filter', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_minimum3DSphere
- * @deprecated This function is deprecated. Consider using minimum() instead.
+ * @deprecated This function is deprecated. Consider using minimum_filter() instead.
  */
 auto
 minimum_sphere_func(const Device::Pointer & device,
@@ -2388,6 +2388,7 @@ minimum_sphere_func(const Device::Pointer & device,
  * @param matrix2 Second matrix to process. [const Array::Pointer &]
  * @param matrix_destination Output result matrix. [Array::Pointer ( = None )]
  * @return Array::Pointer
+ *
  * @see https://clij.github.io/clij2-docs/reference_multiplyMatrix
  *
  */
