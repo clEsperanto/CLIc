@@ -31,13 +31,13 @@ parametric_map_func(const Device::Pointer & device,
     throw std::runtime_error("Property '" + target_property + "' not found in statistics");
   }
 
-  auto   nb_labels = tier2::maximum_of_all_pixels_func(device, labels) + 1;
+  auto nb_labels = tier2::maximum_of_all_pixels_func(device, labels) + 1;
   auto vector = properties.at(lower_property_name);
 
   // check if the vector size matches the number of labels
   if (vector.size() != nb_labels)
   {
-      vector.insert(vector.begin(), 0);
+    vector.insert(vector.begin(), 0);
   }
 
   auto values = Array::create(vector.size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
