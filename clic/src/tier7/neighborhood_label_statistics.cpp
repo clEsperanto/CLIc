@@ -20,7 +20,7 @@ labels_neighbors_statistics_func(const Device::Pointer &  device,
                                  const std::vector<int> & proximal_distances,
                                  const std::vector<int> & nearest_neighbor_ns,
                                  const std::vector<int> & dilation_radii,
-                                 bool.                    include_background) -> StatisticsMap
+                                 bool.include_background) -> StatisticsMap
 {
   auto nei_stats = compute_neighbors_statistics_per_labels(device, label, proximal_distances, nearest_neighbor_ns, dilation_radii);
 
