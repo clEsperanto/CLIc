@@ -126,6 +126,51 @@ threshold_yen_func(const Device::Pointer & device, const Array::Pointer & src, A
 auto
 threshold_mean_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
 
+/**
+ * @name threshold_triangle
+ * @brief Binarizes an image using the triangle threshold method (Zack et. al. 1977)
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to threshold. [const Array::Pointer &]
+ * @param dst Output binary image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'binarize', 'in assistant', 'bia-bob-suggestion'
+ * @see https://scikit-image.org/docs/dev/api/skimage.filters.html#skimage.filters.threshold_triangle
+ */
+auto
+threshold_triangle_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+/**
+ * @name threshold_isodata
+ * @brief Binarizes an image using the isodata threshold method (Ridler & Calvard 1978)
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to threshold. [const Array::Pointer &]
+ * @param dst Output binary image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'binarize', 'in assistant', 'bia-bob-suggestion'
+ * @see https://scikit-image.org/docs/dev/api/skimage.filters.html#skimage.filters.threshold_isodata
+ */
+auto
+threshold_isodata_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+/**
+ * @name threshold_li
+ * @brief Binarizes an image using Li's minimum cross-entropy threshold method (Li & Lee 1993, Li & Tam 1998)
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to threshold. [const Array::Pointer &]
+ * @param dst Output binary image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'binarize', 'in assistant', 'bia-bob-suggestion'
+ * @see https://scikit-image.org/docs/dev/api/skimage.filters.html#skimage.filters.threshold_li
+ */
+auto
+threshold_li_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
 
 /**
  * @name parametric_map
