@@ -935,11 +935,8 @@ gaussian_blur_func(const Device::Pointer & device,
  * @see https://doi.org/10.1007/978-1-4684-0769-3_13
  */
 auto
-kuwahara_filter_func(const Device::Pointer & device,
-                     const Array::Pointer &  src,
-                     Array::Pointer          dst,
-                     int                     radius,
-                     float                   sigma) -> Array::Pointer;
+kuwahara_filter_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius, float sigma)
+  -> Array::Pointer;
 
 /**
  * @name gaussian_derivative

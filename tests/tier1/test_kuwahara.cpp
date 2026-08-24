@@ -17,9 +17,9 @@ TEST_P(TestKuwahara, constantImageIsUnchanged)
 
   // On a flat image every region has zero variance, so the variance-weighted
   // blend must return the input value unchanged, regardless of radius/sigma.
-  constexpr int            size = 7 * 7;
-  std::array<float, size>  input;
-  std::array<float, size>  output;
+  constexpr int           size = 7 * 7;
+  std::array<float, size> input;
+  std::array<float, size> output;
   std::fill(input.begin(), input.end(), 42.0F);
 
   auto gpu_input = cle::Array::create(7, 7, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);

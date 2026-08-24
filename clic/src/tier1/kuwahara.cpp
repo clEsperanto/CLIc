@@ -111,11 +111,8 @@ namespace cle::tier1
 {
 
 auto
-kuwahara_filter_func(const Device::Pointer & device,
-                     const Array::Pointer &  src,
-                     Array::Pointer          dst,
-                     int                     radius,
-                     float                   sigma) -> Array::Pointer
+kuwahara_filter_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius, float sigma)
+  -> Array::Pointer
 {
   tier0::create_like(src, dst, src->dtype());
   const int           kernel_size = 2 * radius + 1;
