@@ -185,6 +185,7 @@ OpenCLToMetalTranslator::translateInPlace(std::string & code) const -> void
   translateKernelScalarArgs(code);
   translateWorkItemFunctions(code);
   translateSynchronization(code);
+  translateAtomics(code);
   translateMathFunctions(code);
   cleanupCode(code);
 }
@@ -605,6 +606,104 @@ OpenCLToMetalTranslator::translateSynchronization(std::string & code) -> void
   replaceAll(code, "write_mem_fence(CLK_GLOBAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_device)");
 }
 
+
+auto
+OpenCLToMetalTranslator::translateAtomics(std::string & code) -> void
+{
+  // OpenCL atomic_op(&ptr, val) → MSL atomic_fetch_op_explicit((volatile device atomic_int*)&ptr, val, memory_order_relaxed)
+  // The first argument (pointer) gets an atomic_int cast; memory_order_relaxed is appended.
+
+  // Helper lambda: find the matching ')' for an opening '(' at `openParen`, return its index or npos.
+  auto findCloseParen = [&](size_t openParen) -> size_t {
+    int    depth = 1;
+    size_t i = openParen + 1;
+    while (i < code.size() && depth > 0)
+    {
+      if (code[i] == '(')
+        ++depth;
+      else if (code[i] == ')')
+        --depth;
+      ++i;
+    }
+    return (depth == 0) ? (i - 1) : std::string::npos;
+  };
+
+  // Helper lambda: find the top-level comma that separates the first arg from the rest,
+  // starting just after openParen+1, ending before closeParen.
+  auto findFirstArgComma = [&](size_t start, size_t end) -> size_t {
+    int depth = 0;
+    for (size_t i = start; i < end; ++i)
+    {
+      if (code[i] == '(')
+        ++depth;
+      else if (code[i] == ')')
+        --depth;
+      else if (code[i] == ',' && depth == 0)
+        return i;
+    }
+    return std::string::npos;
+  };
+
+  struct AtomicMapping
+  {
+    const char * opencl;
+    const char * msl;
+    const char * order_suffix;
+  };
+
+  static const AtomicMapping mappings[] = {
+    { "atomic_add(",     "atomic_fetch_add_explicit(",                   ", memory_order_relaxed)" },
+    { "atomic_sub(",     "atomic_fetch_sub_explicit(",                   ", memory_order_relaxed)" },
+    { "atomic_min(",     "atomic_fetch_min_explicit(",                   ", memory_order_relaxed)" },
+    { "atomic_max(",     "atomic_fetch_max_explicit(",                   ", memory_order_relaxed)" },
+    { "atomic_and(",     "atomic_fetch_and_explicit(",                   ", memory_order_relaxed)" },
+    { "atomic_or(",      "atomic_fetch_or_explicit(",                    ", memory_order_relaxed)" },
+    { "atomic_xor(",     "atomic_fetch_xor_explicit(",                   ", memory_order_relaxed)" },
+    { "atomic_xchg(",    "atomic_exchange_explicit(",                    ", memory_order_relaxed)" },
+    { "atomic_cmpxchg(", "atomic_compare_exchange_weak_explicit(",       ", memory_order_relaxed, memory_order_relaxed)" },
+  };
+
+  for (const auto & m : mappings)
+  {
+    const std::string from = m.opencl;
+    const std::string to = m.msl;
+    const std::string suffix = m.order_suffix;
+    size_t            pos = 0;
+
+    while ((pos = code.find(from, pos)) != std::string::npos)
+    {
+      if (pos > 0 && isWordChar(code[pos - 1]))
+      {
+        pos += from.size();
+        continue;
+      }
+
+      size_t openParen = pos + from.size() - 1;
+      size_t closeParen = findCloseParen(openParen);
+      if (closeParen == std::string::npos)
+      {
+        pos += from.size();
+        continue;
+      }
+
+      size_t argsStart = openParen + 1;
+      size_t comma = findFirstArgComma(argsStart, closeParen);
+      if (comma == std::string::npos)
+      {
+        pos += from.size();
+        continue;
+      }
+
+      std::string ptrArg = code.substr(argsStart, comma - argsStart);
+      std::string rest = code.substr(comma, closeParen - comma);
+
+      std::string replacement = to + "(volatile device atomic_int*)" + ptrArg + rest + suffix + ")";
+
+      code.replace(pos, closeParen - pos + 1, replacement);
+      pos += replacement.size();
+    }
+  }
+}
 
 auto
 OpenCLToMetalTranslator::translateMathFunctions(std::string & code) -> void

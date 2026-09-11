@@ -181,6 +181,9 @@ private:
   translateSynchronization(std::string & code) -> void;
 
   static auto
+  translateAtomics(std::string & code) -> void;
+
+  static auto
   translateMathFunctions(std::string & code) -> void;
 
   static auto
