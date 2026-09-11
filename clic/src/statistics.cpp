@@ -40,10 +40,10 @@ _statistics_per_label(const Device::Pointer & device, const Array::Pointer & lab
   ParameterList    params = {
     { "src_label", label }, { "src_image", intensity }, { "dst", cumulative_stats_per_label }, { "sum_background", 0 }, { "z", 0 }
   };
+  auto & z_param = params.back().second;
   for (int z = 0; z < depth; z++)
   {
-    auto it = std::find_if(params.begin(), params.end(), [](const auto & param) { return param.first == "z"; });
-    it->second = z;
+    z_param = z;
     execute(device, kernel, params, range);
   }
 
@@ -66,10 +66,10 @@ _std_per_label(const Device::Pointer & device,
   const RangeArray range_std = { 1, height, 1 };
   ParameterList    params_std = { { "src_statistics", statistics },  { "src_label", label },  { "src_image", intensity },
                                   { "dst", label_statistics_stack }, { "sum_background", 0 }, { "z", 0 } };
+  auto & z_param_std = params_std.back().second;
   for (int z = 0; z < depth; z++)
   {
-    auto it = std::find_if(params_std.begin(), params_std.end(), [](const auto & param) { return param.first == "z"; });
-    it->second = z;
+    z_param_std = z;
     execute(device, kernel_std, params_std, range_std);
   }
 
@@ -139,11 +139,17 @@ compute_statistics_per_labels(const Device::Pointer & device, const Array::Point
   std::vector<float> bbox_width(nb_measurements);
   std::vector<float> bbox_height(nb_measurements);
   std::vector<float> bbox_depth(nb_measurements);
-  for (int i = 0; i < bbox_width.size(); ++i)
+  const auto &       min_x_ref = region_props["bbox_min_x"];
+  const auto &       max_x_ref = region_props["bbox_max_x"];
+  const auto &       min_y_ref = region_props["bbox_min_y"];
+  const auto &       max_y_ref = region_props["bbox_max_y"];
+  const auto &       min_z_ref = region_props["bbox_min_z"];
+  const auto &       max_z_ref = region_props["bbox_max_z"];
+  for (size_t i = 0; i < bbox_width.size(); ++i)
   {
-    bbox_width[i] = region_props["bbox_max_x"][i] - region_props["bbox_min_x"][i] + 1;
-    bbox_height[i] = region_props["bbox_max_y"][i] - region_props["bbox_min_y"][i] + 1;
-    bbox_depth[i] = region_props["bbox_max_z"][i] - region_props["bbox_min_z"][i] + 1;
+    bbox_width[i] = max_x_ref[i] - min_x_ref[i] + 1;
+    bbox_height[i] = max_y_ref[i] - min_y_ref[i] + 1;
+    bbox_depth[i] = max_z_ref[i] - min_z_ref[i] + 1;
   }
   region_props["bbox_width"] = std::move(bbox_width);
   region_props["bbox_height"] = std::move(bbox_height);
@@ -175,8 +181,8 @@ compute_statistics_per_labels(const Device::Pointer & device, const Array::Point
   std::vector<float> sum_intensity(nb_measurements);
   sum_per_label->copyTo(result_device_vector, region, { offset, 7, 0 }, origin);
   result_device_vector->readTo(sum_intensity.data());
-  region_props["sum_intensity"] = sum_intensity;
-  std::vector<float> mean_intensity(std::move(nb_measurements));
+  region_props["sum_intensity"] = std::move(sum_intensity);
+  std::vector<float> mean_intensity(nb_measurements);
   tier1::paste_func(device, sum_over_dimensions, label_statistics_image, offset, 7, 0);
   tier1::divide_images_func(device, result_device_vector, sum_over_dimensions, avg_over_dimensions);
   tier1::paste_func(device, avg_over_dimensions, label_statistics_image, offset, 6, 0);
@@ -254,11 +260,14 @@ compute_statistics_per_labels(const Device::Pointer & device, const Array::Point
   // Calculate distance ratios
   std::vector<float> mean_max_distance_to_centroid_ratio(nb_measurements);
   std::vector<float> mean_max_distance_to_mass_center_ratio(nb_measurements);
-  for (int i = 0; i < nb_measurements; ++i)
+  const auto &       max_dist_centroid_ref = region_props["max_distance_to_centroid"];
+  const auto &       mean_dist_centroid_ref = region_props["mean_distance_to_centroid"];
+  const auto &       max_dist_mass_center_ref = region_props["max_distance_to_mass_center"];
+  const auto &       mean_dist_mass_center_ref = region_props["mean_distance_to_mass_center"];
+  for (size_t i = 0; i < nb_measurements; ++i)
   {
-    mean_max_distance_to_centroid_ratio[i] = region_props["max_distance_to_centroid"][i] / region_props["mean_distance_to_centroid"][i];
-    mean_max_distance_to_mass_center_ratio[i] =
-      region_props["max_distance_to_mass_center"][i] / region_props["mean_distance_to_mass_center"][i];
+    mean_max_distance_to_centroid_ratio[i] = max_dist_centroid_ref[i] / mean_dist_centroid_ref[i];
+    mean_max_distance_to_mass_center_ratio[i] = max_dist_mass_center_ref[i] / mean_dist_mass_center_ref[i];
   }
   region_props["mean_max_distance_to_centroid_ratio"] = std::move(mean_max_distance_to_centroid_ratio);
   region_props["mean_max_distance_to_mass_center_ratio"] = std::move(mean_max_distance_to_mass_center_ratio);
