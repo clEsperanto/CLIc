@@ -62,10 +62,8 @@ centroids_of_labels_func(const Device::Pointer & device,
   accum->fill(0);
 
   const KernelInfo    kernel = { "centroid_accumulate", centroid_kernel_source };
-  const ParameterList params = {
-    { "src_label", label_image }, { "dst", accum }, { "nb_labels", static_cast<int>(nb_labels) }
-  };
-  const RangeArray range = { label_image->width(), label_image->height(), label_image->depth() };
+  const ParameterList params = { { "src_label", label_image }, { "dst", accum }, { "nb_labels", static_cast<int>(nb_labels) } };
+  const RangeArray    range = { label_image->width(), label_image->height(), label_image->depth() };
   execute(device, kernel, params, range);
 
   std::vector<int> host_accum(nb_labels * 4);
@@ -94,13 +92,11 @@ centroids_of_labels_func(const Device::Pointer & device,
     centroids_coordinates = Array::create(out_labels, 3, 1, 1, dType::FLOAT, mType::BUFFER, device);
   }
 
-  if (centroids_coordinates->width() != out_labels || centroids_coordinates->height() != 3 ||
-      centroids_coordinates->depth() != 1)
+  if (centroids_coordinates->width() != out_labels || centroids_coordinates->height() != 3 || centroids_coordinates->depth() != 1)
   {
     throw std::runtime_error("centroids_of_labels: Provided output array has wrong dimensions." +
-                             std::to_string(centroids_coordinates->width()) + "x" + std::to_string(centroids_coordinates->height()) +
-                             "x" + std::to_string(centroids_coordinates->depth()) + " instead of " +
-                             std::to_string(out_labels) + "x3x1");
+                             std::to_string(centroids_coordinates->width()) + "x" + std::to_string(centroids_coordinates->height()) + "x" +
+                             std::to_string(centroids_coordinates->depth()) + " instead of " + std::to_string(out_labels) + "x3x1");
   }
 
   if (centroids_coordinates->dtype() != dType::FLOAT)

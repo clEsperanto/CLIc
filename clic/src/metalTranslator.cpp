@@ -652,15 +652,15 @@ OpenCLToMetalTranslator::translateAtomics(std::string & code) -> void
   };
 
   static const AtomicMapping mappings[] = {
-    { "atomic_add(",     "atomic_fetch_add_explicit(",                   ", memory_order_relaxed)" },
-    { "atomic_sub(",     "atomic_fetch_sub_explicit(",                   ", memory_order_relaxed)" },
-    { "atomic_min(",     "atomic_fetch_min_explicit(",                   ", memory_order_relaxed)" },
-    { "atomic_max(",     "atomic_fetch_max_explicit(",                   ", memory_order_relaxed)" },
-    { "atomic_and(",     "atomic_fetch_and_explicit(",                   ", memory_order_relaxed)" },
-    { "atomic_or(",      "atomic_fetch_or_explicit(",                    ", memory_order_relaxed)" },
-    { "atomic_xor(",     "atomic_fetch_xor_explicit(",                   ", memory_order_relaxed)" },
-    { "atomic_xchg(",    "atomic_exchange_explicit(",                    ", memory_order_relaxed)" },
-    { "atomic_cmpxchg(", "atomic_compare_exchange_weak_explicit(",       ", memory_order_relaxed, memory_order_relaxed)" },
+    { "atomic_add(", "atomic_fetch_add_explicit(", ", memory_order_relaxed)" },
+    { "atomic_sub(", "atomic_fetch_sub_explicit(", ", memory_order_relaxed)" },
+    { "atomic_min(", "atomic_fetch_min_explicit(", ", memory_order_relaxed)" },
+    { "atomic_max(", "atomic_fetch_max_explicit(", ", memory_order_relaxed)" },
+    { "atomic_and(", "atomic_fetch_and_explicit(", ", memory_order_relaxed)" },
+    { "atomic_or(", "atomic_fetch_or_explicit(", ", memory_order_relaxed)" },
+    { "atomic_xor(", "atomic_fetch_xor_explicit(", ", memory_order_relaxed)" },
+    { "atomic_xchg(", "atomic_exchange_explicit(", ", memory_order_relaxed)" },
+    { "atomic_cmpxchg(", "atomic_compare_exchange_weak_explicit(", ", memory_order_relaxed, memory_order_relaxed)" },
   };
 
   for (const auto & m : mappings)

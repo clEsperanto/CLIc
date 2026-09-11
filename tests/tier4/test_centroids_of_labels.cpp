@@ -40,7 +40,7 @@ TEST_P(TestCentroidsOfLabels, allBackgroundWithoutBackgroundCentroid)
   device->setWaitToFinish(true);
 
   std::array<uint32_t, 6 * 5 * 1> all_background{};
-  auto gpu_input = cle::Array::create(6, 5, 1, 2, cle::dType::LABEL, cle::mType::BUFFER, device);
+  auto                            gpu_input = cle::Array::create(6, 5, 1, 2, cle::dType::LABEL, cle::mType::BUFFER, device);
   gpu_input->writeFrom(all_background.data());
 
   auto gpu_output = cle::tier4::centroids_of_labels_func(device, gpu_input, nullptr, false);

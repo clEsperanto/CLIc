@@ -66,7 +66,7 @@ _std_per_label(const Device::Pointer & device,
   const RangeArray range_std = { 1, height, 1 };
   ParameterList    params_std = { { "src_statistics", statistics },  { "src_label", label },  { "src_image", intensity },
                                   { "dst", label_statistics_stack }, { "sum_background", 0 }, { "z", 0 } };
-  auto & z_param_std = params_std.back().second;
+  auto &           z_param_std = params_std.back().second;
   for (int z = 0; z < depth; z++)
   {
     z_param_std = z;
