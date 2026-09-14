@@ -133,6 +133,9 @@ private:
 ///     compare-and-swap loop on the bit-reinterpreted value (as_uint/as_float), which this
 ///     translator supports via translateBitcast and a dedicated atomic_cmpxchg assignment rewrite
 ///     (translateCompareExchange) that reproduces OpenCL's return-old-value semantics.
+///   - `printf(...)` calls are stripped (translateRemovePrintf): MSL's printf has a different
+///     signature than OpenCL C's and is only used in upstream kernels as a workaround/debug aid,
+///     so dropping the call is behavior-preserving for our kernels.
 class OpenCLToMetalTranslator
 {
 public:
@@ -193,6 +196,9 @@ private:
 
   static auto
   translateBitcast(std::string & code) -> void;
+
+  static auto
+  translateRemovePrintf(std::string & code) -> void;
 
   static auto
   translateMathFunctions(std::string & code) -> void;

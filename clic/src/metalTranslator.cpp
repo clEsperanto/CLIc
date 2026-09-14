@@ -188,6 +188,7 @@ OpenCLToMetalTranslator::translateInPlace(std::string & code) const -> void
   translateCompareExchange(code);
   translateAtomics(code);
   translateBitcast(code);
+  translateRemovePrintf(code);
   translateMathFunctions(code);
   cleanupCode(code);
 }
@@ -844,6 +845,57 @@ OpenCLToMetalTranslator::translateBitcast(std::string & code) -> void
       code.replace(pos, from.size(), to);
       pos += to.size();
     }
+  }
+}
+
+auto
+OpenCLToMetalTranslator::translateRemovePrintf(std::string & code) -> void
+{
+  // MSL's printf has a different signature than OpenCL C's (e.g. no bare string-literal-only
+  // calls), and some upstream kernels call printf(...) purely as a workaround/debug aid with no
+  // effect on the result. Rather than trying to translate the call, drop the whole statement
+  // "printf(...);" (including the trailing semicolon, if present).
+  const std::string marker = "printf(";
+
+  auto findCloseParen = [&](size_t openParen) -> size_t {
+    int    depth = 1;
+    size_t i = openParen + 1;
+    while (i < code.size() && depth > 0)
+    {
+      if (code[i] == '(')
+        ++depth;
+      else if (code[i] == ')')
+        --depth;
+      ++i;
+    }
+    return (depth == 0) ? (i - 1) : std::string::npos;
+  };
+
+  size_t pos = 0;
+  while ((pos = code.find(marker, pos)) != std::string::npos)
+  {
+    if (pos > 0 && isWordChar(code[pos - 1]))
+    {
+      pos += marker.size();
+      continue;
+    }
+
+    const size_t openParen = pos + marker.size() - 1;
+    const size_t closeParen = findCloseParen(openParen);
+    if (closeParen == std::string::npos)
+    {
+      pos += marker.size();
+      continue;
+    }
+
+    size_t eraseEnd = closeParen + 1;
+    size_t semi = eraseEnd;
+    while (semi < code.size() && std::isspace(static_cast<unsigned char>(code[semi])))
+      ++semi;
+    if (semi < code.size() && code[semi] == ';')
+      eraseEnd = semi + 1;
+
+    code.erase(pos, eraseEnd - pos);
   }
 }
 

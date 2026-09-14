@@ -22,6 +22,12 @@ protected:
 
 TEST_P(TestMakeIsotropic, makeIsotropicWithExplicitTargetSpacing)
 {
+
+    if (!device->supportImage())
+  {
+    GTEST_SKIP() << "Device does not support image objects.";
+  }
+
   auto gpu_input = cle::Array::create(4, 4, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
@@ -34,6 +40,10 @@ TEST_P(TestMakeIsotropic, makeIsotropicWithExplicitTargetSpacing)
 
 TEST_P(TestMakeIsotropic, makeIsotropicWithDefaultTargetSpacing)
 {
+  if (!device->supportImage())
+  {
+    GTEST_SKIP() << "Device does not support image objects.";
+  } 
   auto gpu_input = cle::Array::create(4, 4, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
@@ -65,6 +75,10 @@ protected:
 
 TEST_P(TestMakeAnisotropic, makeAnisotropicWithExplicitTargetSpacing)
 {
+    if (!device->supportImage())
+  {
+    GTEST_SKIP() << "Device does not support image objects.";
+  }
   auto gpu_input = cle::Array::create(4, 4, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
@@ -77,6 +91,10 @@ TEST_P(TestMakeAnisotropic, makeAnisotropicWithExplicitTargetSpacing)
 
 TEST_P(TestMakeAnisotropic, makeAnisotropicWithDefaultCurrentSpacing)
 {
+  if (!device->supportImage())
+  {
+    GTEST_SKIP() << "Device does not support image objects.";
+  }
   auto gpu_input = cle::Array::create(4, 4, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
