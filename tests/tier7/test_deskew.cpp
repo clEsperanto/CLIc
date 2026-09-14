@@ -24,12 +24,6 @@ protected:
 TEST_P(TestDeskew, deskew_y)
 {
 
-  GTEST_SKIP() << "POCL does not reliably support image interpolation for deskew operations.";
-  if (!device->supportImage())
-  {
-    GTEST_SKIP() << "Device does not support image objects.";
-  }
-
   auto coord_to_index = [](size_t x, size_t y, size_t z, size_t width, size_t height) -> size_t {
     return z * height * width + y * width + x;
   };
@@ -47,7 +41,7 @@ TEST_P(TestDeskew, deskew_y)
   cle::Array::Pointer gpu_input = nullptr;
   try
   {
-    gpu_input = cle::Array::create(10, 10, 10, 3, cle::dType::FLOAT, cle::mType::IMAGE, device);
+    gpu_input = cle::Array::create(10, 10, 10, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
   }
   catch (const std::runtime_error & e)
   {

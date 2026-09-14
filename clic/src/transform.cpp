@@ -148,29 +148,6 @@ apply_affine_transform_deskew_3d(const cle::Array::Pointer &  src,
     dst = cle::Array::create(width, height, depth, src->dimension(), src->dtype(), src->mtype(), src->device());
   }
 
-  // interpolate is only available for image type, we copy src into an image if it is not already
-  cle::Array::Pointer image = nullptr;
-  if (src->mtype() == mType::IMAGE)
-  {
-    image = src;
-  }
-  else
-  {
-    try
-    {
-      image = cle::Array::create(src->width(), src->height(), src->depth(), src->dimension(), src->dtype(), mType::IMAGE, src->device());
-      src->copyTo(image);
-    }
-    catch (const std::exception & e)
-    {
-      std::cerr << "Warning: Device does not support Image type. Deskewing is not available, falling back to "
-                   "non-deskewed transform."
-                << std::endl;
-      dst = apply_affine_transform(src, dst, new_transform, false, false);
-      return dst;
-    }
-  }
-
   // push the matrix on gpu as the inverse transposed transform matrix
   auto mat = cle::Array::create(4, 4, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, src->device());
   mat->writeFrom(cle::AffineTransform::toArray(new_transform.getInverseTranspose()).data());
@@ -202,7 +179,7 @@ apply_affine_transform_deskew_3d(const cle::Array::Pointer &  src,
 
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   const ParameterList params = {
-    { "src", image },         { "dst", dst },           { "mat", mat },           { "pixel_step", pixel_step },
+    { "src", src },         { "dst", dst },           { "mat", mat },           { "pixel_step", pixel_step },
     { "tantheta", tantheta }, { "costheta", costheta }, { "sintheta", sintheta },
   };
 
