@@ -758,7 +758,7 @@ OpenCLToMetalTranslator::translateCompareExchange(std::string & code) -> void
     }
 
     std::vector<size_t> commas;
-    int                  depth = 0;
+    int                 depth = 0;
     for (size_t k = openParen + 1; k < closeParen; ++k)
     {
       if (code[k] == '(')
@@ -782,9 +782,9 @@ OpenCLToMetalTranslator::translateCompareExchange(std::string & code) -> void
     size_t eqPos = pos;
     while (eqPos > 0 && std::isspace(static_cast<unsigned char>(code[eqPos - 1])))
       --eqPos;
-    const bool isPlainAssignment = eqPos > 0 && code[eqPos - 1] == '=' &&
-                                   !(eqPos > 1 && (code[eqPos - 2] == '=' || code[eqPos - 2] == '!' || code[eqPos - 2] == '<' ||
-                                                    code[eqPos - 2] == '>'));
+    const bool isPlainAssignment =
+      eqPos > 0 && code[eqPos - 1] == '=' &&
+      !(eqPos > 1 && (code[eqPos - 2] == '=' || code[eqPos - 2] == '!' || code[eqPos - 2] == '<' || code[eqPos - 2] == '>'));
     if (!isPlainAssignment)
     {
       pos = closeParen + 1;
@@ -806,8 +806,8 @@ OpenCLToMetalTranslator::translateCompareExchange(std::string & code) -> void
 
     const std::string tmp = "__cle_cmpxchg_expected_" + std::to_string(stmtStart);
     const std::string replacement = "{ auto " + tmp + " = " + cmpArg +
-                                    "; atomic_compare_exchange_weak_explicit((volatile device atomic_uint*)" + ptrArg + ", &" + tmp +
-                                    ", " + valArg + ", memory_order_relaxed, memory_order_relaxed); " + lhs + " = " + tmp + "; }";
+                                    "; atomic_compare_exchange_weak_explicit((volatile device atomic_uint*)" + ptrArg + ", &" + tmp + ", " +
+                                    valArg + ", memory_order_relaxed, memory_order_relaxed); " + lhs + " = " + tmp + "; }";
 
     code.replace(stmtStart, (semi + 1) - stmtStart, replacement);
     pos = stmtStart + replacement.size();

@@ -209,12 +209,8 @@ _std_per_label(const Device::Pointer & device,
 
   const KernelInfo    kernel_std = { "std_accumulate", std::string(atomic_float_helpers_source) + std_accumulate_kernel_body };
   const RangeArray    range_std = { label->width(), label->height(), label->depth() };
-  const ParameterList params_std = { { "src_statistics", statistics },
-                                     { "src_label", label },
-                                     { "src_image", intensity },
-                                     { "dst", label_statistics_stack },
-                                     { "nb_labels", nb_labels },
-                                     { "sum_background", 0 } };
+  const ParameterList params_std = { { "src_statistics", statistics },  { "src_label", label },     { "src_image", intensity },
+                                     { "dst", label_statistics_stack }, { "nb_labels", nb_labels }, { "sum_background", 0 } };
   execute(device, kernel_std, params_std, range_std);
 
   return label_statistics_stack;
