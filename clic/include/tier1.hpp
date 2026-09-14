@@ -913,6 +913,32 @@ gaussian_blur_func(const Device::Pointer & device,
                    float                   sigma_z) -> Array::Pointer;
 
 /**
+ * @name kuwahara
+ * @brief Applies a generalized Kuwahara filter (Kuwahara et al., 1976) for edge-preserving denoising. In 2D the image is locally divided
+ * into 4 quadrants; in 3D into 8 octants. Within each region the mean and variance are computed with Gaussian
+ * weights. The output pixel is a weighted blend of the region means, where regions with lower variance contribute
+ * more — preserving sharp edges while smoothing homogeneous areas.
+ *
+ * Increasing @p radius enlarges the local window (kernel_size = 2 * radius + 1), which strengthens denoising but
+ * blurs fine details. Increasing @p sigma widens the Gaussian weighting within the window, giving more influence
+ * to the center and reducing the effective smoothing at the window boundary; a very small sigma makes all samples
+ * equally weighted (box-like), while a large sigma approaches the classical (unweighted) Kuwahara.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param dst Output result image. [Array::Pointer ( = None )]
+ * @param radius Half-size of the local window; kernel_size = 2 * radius + 1. [int ( = 1 )]
+ * @param sigma Standard deviation of the Gaussian weighting within the window. [float ( = 1.0 )]
+ * @return Array::Pointer
+ *
+ * @note 'filter', 'denoise', 'in assistant'
+ * @see https://doi.org/10.1007/978-1-4684-0769-3_13
+ */
+auto
+kuwahara_filter_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius, float sigma)
+  -> Array::Pointer;
+
+/**
  * @name gaussian_derivative
  * @brief Convolves the image with a Gaussian derivative. The filter kernel can have anisotropic sigma and order.
  * The implementation is done separable. In case a sigma equals zero, the direction is not filtered.
