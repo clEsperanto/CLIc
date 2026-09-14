@@ -78,4 +78,73 @@ TEST_P(TestThreshold, yen)
     EXPECT_EQ(output[i], valid[i]);
   }
 }
+TEST_P(TestThreshold, triangle)
+{
+  const std::array<float, 3 * 2 * 2>   input = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }; // 1.0644531 skimage
+  const std::array<uint8_t, 3 * 2 * 2> valid = { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+  std::array<uint8_t, 3 * 2 * 2>       output;
+
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+  device->setWaitToFinish(true);
+
+  auto gpu_input = cle::Array::create(3, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  gpu_input->writeFrom(input.data());
+
+  auto gpu_output = cle::tier4::threshold_triangle_func(device, gpu_input, nullptr);
+
+  gpu_output->readTo(output.data());
+  for (int i = 0; i < output.size(); i++)
+  {
+    EXPECT_EQ(output[i], valid[i]);
+  }
+}
+
+TEST_P(TestThreshold, isodata)
+{
+  const std::array<float, 3 * 2 * 2>   input = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }; // 5.9628906 skimage
+  const std::array<uint8_t, 3 * 2 * 2> valid = { 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 };
+  std::array<uint8_t, 3 * 2 * 2>       output;
+
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+  device->setWaitToFinish(true);
+
+  auto gpu_input = cle::Array::create(3, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  gpu_input->writeFrom(input.data());
+
+  auto gpu_output = cle::tier4::threshold_isodata_func(device, gpu_input, nullptr);
+
+  gpu_output->readTo(output.data());
+  for (int i = 0; i < output.size(); i++)
+  {
+    EXPECT_EQ(output[i], valid[i]);
+  }
+}
+
+TEST_P(TestThreshold, li)
+{
+  const std::array<float, 3 * 2 * 2>   input = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }; // 5.328085 skimage
+  const std::array<uint8_t, 3 * 2 * 2> valid = { 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 };
+  std::array<uint8_t, 3 * 2 * 2>       output;
+
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+  device->setWaitToFinish(true);
+
+  auto gpu_input = cle::Array::create(3, 2, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  gpu_input->writeFrom(input.data());
+
+  auto gpu_output = cle::tier4::threshold_li_func(device, gpu_input, nullptr);
+
+  gpu_output->readTo(output.data());
+  for (int i = 0; i < output.size(); i++)
+  {
+    EXPECT_EQ(output[i], valid[i]);
+  }
+}
+
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestThreshold, ::testing::ValuesIn(getParameters()));
