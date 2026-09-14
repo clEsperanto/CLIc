@@ -128,6 +128,14 @@ private:
 ///   - Kernel signatures are augmented with Metal thread-position builtins so
 ///     get_global_id/get_local_id/get_group_id style calls can be rewritten.
 ///   - Image and macro preambles are expected to be handled by the caller.
+///   - Atomic operations (atomic_add/min/max/etc. → atomic_fetch_*_explicit) are supported for
+///     integer pointees; portable float atomics are expected to be authored in OpenCL C using a
+///     compare-and-swap loop on the bit-reinterpreted value (as_uint/as_float), which this
+///     translator supports via translateBitcast and a dedicated atomic_cmpxchg assignment rewrite
+///     (translateCompareExchange) that reproduces OpenCL's return-old-value semantics.
+///   - `printf(...)` calls are stripped (translateRemovePrintf): MSL's printf has a different
+///     signature than OpenCL C's and is only used in upstream kernels as a workaround/debug aid,
+///     so dropping the call is behavior-preserving for our kernels.
 class OpenCLToMetalTranslator
 {
 public:
@@ -179,6 +187,18 @@ private:
 
   static auto
   translateSynchronization(std::string & code) -> void;
+
+  static auto
+  translateAtomics(std::string & code) -> void;
+
+  static auto
+  translateCompareExchange(std::string & code) -> void;
+
+  static auto
+  translateBitcast(std::string & code) -> void;
+
+  static auto
+  translateRemovePrintf(std::string & code) -> void;
 
   static auto
   translateMathFunctions(std::string & code) -> void;

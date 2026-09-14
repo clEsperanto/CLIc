@@ -185,6 +185,10 @@ OpenCLToMetalTranslator::translateInPlace(std::string & code) const -> void
   translateKernelScalarArgs(code);
   translateWorkItemFunctions(code);
   translateSynchronization(code);
+  translateCompareExchange(code);
+  translateAtomics(code);
+  translateBitcast(code);
+  translateRemovePrintf(code);
   translateMathFunctions(code);
   cleanupCode(code);
 }
@@ -605,6 +609,295 @@ OpenCLToMetalTranslator::translateSynchronization(std::string & code) -> void
   replaceAll(code, "write_mem_fence(CLK_GLOBAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_device)");
 }
 
+
+auto
+OpenCLToMetalTranslator::translateAtomics(std::string & code) -> void
+{
+  // OpenCL atomic_op(&ptr, val) → MSL atomic_fetch_op_explicit((volatile device atomic_int*)&ptr, val, memory_order_relaxed)
+  // The first argument (pointer) gets an atomic_int cast; memory_order_relaxed is appended.
+
+  // Helper lambda: find the matching ')' for an opening '(' at `openParen`, return its index or npos.
+  auto findCloseParen = [&](size_t openParen) -> size_t {
+    int    depth = 1;
+    size_t i = openParen + 1;
+    while (i < code.size() && depth > 0)
+    {
+      if (code[i] == '(')
+        ++depth;
+      else if (code[i] == ')')
+        --depth;
+      ++i;
+    }
+    return (depth == 0) ? (i - 1) : std::string::npos;
+  };
+
+  // Helper lambda: find the top-level comma that separates the first arg from the rest,
+  // starting just after openParen+1, ending before closeParen.
+  auto findFirstArgComma = [&](size_t start, size_t end) -> size_t {
+    int depth = 0;
+    for (size_t i = start; i < end; ++i)
+    {
+      if (code[i] == '(')
+        ++depth;
+      else if (code[i] == ')')
+        --depth;
+      else if (code[i] == ',' && depth == 0)
+        return i;
+    }
+    return std::string::npos;
+  };
+
+  struct AtomicMapping
+  {
+    const char * opencl;
+    const char * msl;
+    const char * order_suffix;
+  };
+
+  static const AtomicMapping mappings[] = {
+    { "atomic_add(", "atomic_fetch_add_explicit(", ", memory_order_relaxed)" },
+    { "atomic_sub(", "atomic_fetch_sub_explicit(", ", memory_order_relaxed)" },
+    { "atomic_min(", "atomic_fetch_min_explicit(", ", memory_order_relaxed)" },
+    { "atomic_max(", "atomic_fetch_max_explicit(", ", memory_order_relaxed)" },
+    { "atomic_and(", "atomic_fetch_and_explicit(", ", memory_order_relaxed)" },
+    { "atomic_or(", "atomic_fetch_or_explicit(", ", memory_order_relaxed)" },
+    { "atomic_xor(", "atomic_fetch_xor_explicit(", ", memory_order_relaxed)" },
+    { "atomic_xchg(", "atomic_exchange_explicit(", ", memory_order_relaxed)" },
+    // Note: atomic_cmpxchg is handled separately by translateCompareExchange, since MSL's
+    // atomic_compare_exchange_weak_explicit has different semantics (in/out "expected" pointer,
+    // returns bool) than OpenCL's atomic_cmpxchg (returns the old value directly); a plain
+    // expression-level substitution here would not produce valid/equivalent MSL.
+  };
+
+  for (const auto & m : mappings)
+  {
+    const std::string from = m.opencl;
+    const std::string to = m.msl;
+    const std::string suffix = m.order_suffix;
+    size_t            pos = 0;
+
+    while ((pos = code.find(from, pos)) != std::string::npos)
+    {
+      if (pos > 0 && isWordChar(code[pos - 1]))
+      {
+        pos += from.size();
+        continue;
+      }
+
+      size_t openParen = pos + from.size() - 1;
+      size_t closeParen = findCloseParen(openParen);
+      if (closeParen == std::string::npos)
+      {
+        pos += from.size();
+        continue;
+      }
+
+      size_t argsStart = openParen + 1;
+      size_t comma = findFirstArgComma(argsStart, closeParen);
+      if (comma == std::string::npos)
+      {
+        pos += from.size();
+        continue;
+      }
+
+      std::string ptrArg = code.substr(argsStart, comma - argsStart);
+      std::string rest = code.substr(comma, closeParen - comma);
+
+      // `rest` spans from the first-arg comma up to (but excluding) the original closing paren,
+      // and `suffix` already supplies its own closing paren (e.g. ", memory_order_relaxed)"), so
+      // no extra ")" must be appended here — doing so previously produced invalid MSL like
+      // "...memory_order_relaxed))".
+      std::string replacement = to + "(volatile device atomic_int*)" + ptrArg + rest + suffix;
+
+      code.replace(pos, closeParen - pos + 1, replacement);
+      pos += replacement.size();
+    }
+  }
+}
+
+auto
+OpenCLToMetalTranslator::translateCompareExchange(std::string & code) -> void
+{
+  // OpenCL: old = atomic_cmpxchg(ptr, cmp, val);  -- returns the previous value.
+  // MSL:    { auto expected = cmp; atomic_compare_exchange_weak_explicit((...)ptr, &expected, val,
+  //            memory_order_relaxed, memory_order_relaxed); old = expected; }
+  // MSL's compare-exchange takes an in/out "expected" pointer and returns a bool, so it cannot be
+  // substituted at the expression level; we rewrite the whole "<lhs> = atomic_cmpxchg(...);"
+  // statement instead, which is the only form this codebase's CAS-loop helpers use.
+  const std::string marker = "atomic_cmpxchg(";
+
+  auto findCloseParen = [&](size_t openParen) -> size_t {
+    int    depth = 1;
+    size_t i = openParen + 1;
+    while (i < code.size() && depth > 0)
+    {
+      if (code[i] == '(')
+        ++depth;
+      else if (code[i] == ')')
+        --depth;
+      ++i;
+    }
+    return (depth == 0) ? (i - 1) : std::string::npos;
+  };
+
+  size_t pos = 0;
+  while ((pos = code.find(marker, pos)) != std::string::npos)
+  {
+    if (pos > 0 && isWordChar(code[pos - 1]))
+    {
+      pos += marker.size();
+      continue;
+    }
+
+    const size_t openParen = pos + marker.size() - 1;
+    const size_t closeParen = findCloseParen(openParen);
+    if (closeParen == std::string::npos)
+    {
+      pos += marker.size();
+      continue;
+    }
+
+    std::vector<size_t> commas;
+    int                 depth = 0;
+    for (size_t k = openParen + 1; k < closeParen; ++k)
+    {
+      if (code[k] == '(')
+        ++depth;
+      else if (code[k] == ')')
+        --depth;
+      else if (code[k] == ',' && depth == 0)
+        commas.push_back(k);
+    }
+    if (commas.size() != 2)
+    {
+      pos = closeParen + 1;
+      continue;
+    }
+
+    const std::string ptrArg = trimWhitespace(code.substr(openParen + 1, commas[0] - openParen - 1));
+    const std::string cmpArg = trimWhitespace(code.substr(commas[0] + 1, commas[1] - commas[0] - 1));
+    const std::string valArg = trimWhitespace(code.substr(commas[1] + 1, closeParen - commas[1] - 1));
+
+    // The call must be the right-hand side of a plain assignment "lhs = atomic_cmpxchg(...);".
+    size_t eqPos = pos;
+    while (eqPos > 0 && std::isspace(static_cast<unsigned char>(code[eqPos - 1])))
+      --eqPos;
+    const bool isPlainAssignment =
+      eqPos > 0 && code[eqPos - 1] == '=' &&
+      !(eqPos > 1 && (code[eqPos - 2] == '=' || code[eqPos - 2] == '!' || code[eqPos - 2] == '<' || code[eqPos - 2] == '>'));
+    if (!isPlainAssignment)
+    {
+      pos = closeParen + 1;
+      continue;
+    }
+    const size_t lhsEnd = eqPos - 1;
+    size_t       stmtStart = code.find_last_of(";{", lhsEnd > 0 ? lhsEnd - 1 : 0);
+    stmtStart = (stmtStart == std::string::npos) ? 0 : stmtStart + 1;
+    const std::string lhs = trimWhitespace(code.substr(stmtStart, lhsEnd - stmtStart));
+
+    size_t semi = closeParen + 1;
+    while (semi < code.size() && std::isspace(static_cast<unsigned char>(code[semi])))
+      ++semi;
+    if (semi >= code.size() || code[semi] != ';')
+    {
+      pos = closeParen + 1;
+      continue;
+    }
+
+    const std::string tmp = "__cle_cmpxchg_expected_" + std::to_string(stmtStart);
+    const std::string replacement = "{ auto " + tmp + " = " + cmpArg +
+                                    "; atomic_compare_exchange_weak_explicit((volatile device atomic_uint*)" + ptrArg + ", &" + tmp + ", " +
+                                    valArg + ", memory_order_relaxed, memory_order_relaxed); " + lhs + " = " + tmp + "; }";
+
+    code.replace(stmtStart, (semi + 1) - stmtStart, replacement);
+    pos = stmtStart + replacement.size();
+  }
+}
+
+auto
+OpenCLToMetalTranslator::translateBitcast(std::string & code) -> void
+{
+  // Bit-reinterpret casts used by portable float-atomics CAS loops (as_uint/as_float/as_int).
+  struct BitcastMapping
+  {
+    const char * opencl;
+    const char * mslType;
+  };
+
+  static const BitcastMapping mappings[] = {
+    { "as_float(", "float" },
+    { "as_uint(", "uint" },
+    { "as_int(", "int" },
+  };
+
+  for (const auto & m : mappings)
+  {
+    const std::string from = m.opencl;
+    const std::string to = std::string("as_type<") + m.mslType + ">(";
+    size_t            pos = 0;
+    while ((pos = code.find(from, pos)) != std::string::npos)
+    {
+      if (pos > 0 && isWordChar(code[pos - 1]))
+      {
+        pos += from.size();
+        continue;
+      }
+      code.replace(pos, from.size(), to);
+      pos += to.size();
+    }
+  }
+}
+
+auto
+OpenCLToMetalTranslator::translateRemovePrintf(std::string & code) -> void
+{
+  // MSL's printf has a different signature than OpenCL C's (e.g. no bare string-literal-only
+  // calls), and some upstream kernels call printf(...) purely as a workaround/debug aid with no
+  // effect on the result. Rather than trying to translate the call, drop the whole statement
+  // "printf(...);" (including the trailing semicolon, if present).
+  const std::string marker = "printf(";
+
+  auto findCloseParen = [&](size_t openParen) -> size_t {
+    int    depth = 1;
+    size_t i = openParen + 1;
+    while (i < code.size() && depth > 0)
+    {
+      if (code[i] == '(')
+        ++depth;
+      else if (code[i] == ')')
+        --depth;
+      ++i;
+    }
+    return (depth == 0) ? (i - 1) : std::string::npos;
+  };
+
+  size_t pos = 0;
+  while ((pos = code.find(marker, pos)) != std::string::npos)
+  {
+    if (pos > 0 && isWordChar(code[pos - 1]))
+    {
+      pos += marker.size();
+      continue;
+    }
+
+    const size_t openParen = pos + marker.size() - 1;
+    const size_t closeParen = findCloseParen(openParen);
+    if (closeParen == std::string::npos)
+    {
+      pos += marker.size();
+      continue;
+    }
+
+    size_t eraseEnd = closeParen + 1;
+    size_t semi = eraseEnd;
+    while (semi < code.size() && std::isspace(static_cast<unsigned char>(code[semi])))
+      ++semi;
+    if (semi < code.size() && code[semi] == ';')
+      eraseEnd = semi + 1;
+
+    code.erase(pos, eraseEnd - pos);
+  }
+}
 
 auto
 OpenCLToMetalTranslator::translateMathFunctions(std::string & code) -> void

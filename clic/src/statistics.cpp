@@ -1,8 +1,5 @@
 #include "statistics.hpp"
 
-#include "cle_standard_deviation_per_label.h"
-#include "cle_statistics_per_label.h"
-
 #include "execution.hpp"
 #include "tier0.hpp"
 #include "tier1.hpp"
@@ -15,6 +12,156 @@
 #include <algorithm>
 #include <iostream>
 #include <numeric>
+namespace
+{
+
+// Portable float atomics for OpenCL/CUDA/Metal: no backend natively supports atomic float
+// min/max, and only CUDA natively supports atomic float add, so all three are implemented as a
+// compare-and-swap loop on the bit-reinterpreted value. Comparisons are done in float domain
+// (not on raw bit patterns) to stay correct across negative values. The translators (see
+// metalTranslator.cpp::translateBitcast / translateCompareExchange, cudaTranslator.cpp) map
+// as_uint/as_float and the "old = atomic_cmpxchg(...);" assignment idiom used below to their
+// backend-native equivalents.
+constexpr const char * atomic_float_helpers_source = R"CLC(
+  inline void atomic_add_float(volatile __global float * addr, float val)
+  {
+    volatile __global uint * addr_as_uint = (volatile __global uint *) addr;
+    uint old = *addr_as_uint;
+    uint assumed;
+    do {
+      assumed = old;
+      float current = as_float(assumed);
+      uint next = as_uint(current + val);
+      old = atomic_cmpxchg(addr_as_uint, assumed, next);
+    } while (assumed != old);
+  }
+
+  inline void atomic_min_float(volatile __global float * addr, float val)
+  {
+    volatile __global uint * addr_as_uint = (volatile __global uint *) addr;
+    uint old = *addr_as_uint;
+    uint assumed;
+    do {
+      assumed = old;
+      float current = as_float(assumed);
+      if (current <= val) break;
+      uint next = as_uint(val);
+      old = atomic_cmpxchg(addr_as_uint, assumed, next);
+    } while (assumed != old);
+  }
+
+  inline void atomic_max_float(volatile __global float * addr, float val)
+  {
+    volatile __global uint * addr_as_uint = (volatile __global uint *) addr;
+    uint old = *addr_as_uint;
+    uint assumed;
+    do {
+      assumed = old;
+      float current = as_float(assumed);
+      if (current >= val) break;
+      uint next = as_uint(val);
+      old = atomic_cmpxchg(addr_as_uint, assumed, next);
+    } while (assumed != old);
+  }
+)CLC";
+
+constexpr const char * statistics_accumulate_kernel_body = R"CLC(
+  __constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
+
+  __kernel void statistics_accumulate(
+      IMAGE_src_label_TYPE src_label,
+      IMAGE_src_image_TYPE src_image,
+      IMAGE_dst_TYPE        dst,
+      int                   nb_labels,
+      int                   sum_background
+  )
+  {
+    const int x = get_global_id(0);
+    const int y = get_global_id(1);
+    const int z = get_global_id(2);
+
+    const int label = (int) READ_IMAGE(src_label, sampler, POS_src_label_INSTANCE(x, y, z, 0)).x;
+    if (label < 0 || (label == 0 && sum_background == 0))
+      return;
+
+    const float value = (float) READ_IMAGE(src_image, sampler, POS_src_image_INSTANCE(x, y, z, 0)).x;
+
+    atomic_add_float(&dst[label + 0 * nb_labels], (float) x);
+    atomic_add_float(&dst[label + 1 * nb_labels], (float) y);
+    atomic_add_float(&dst[label + 2 * nb_labels], (float) z);
+    atomic_add_float(&dst[label + 3 * nb_labels], 1.0f);
+
+    atomic_add_float(&dst[label + 4 * nb_labels], (float) x * value);
+    atomic_add_float(&dst[label + 5 * nb_labels], (float) y * value);
+    atomic_add_float(&dst[label + 6 * nb_labels], (float) z * value);
+    atomic_add_float(&dst[label + 7 * nb_labels], value);
+
+    atomic_min_float(&dst[label + 8 * nb_labels], value);
+    atomic_max_float(&dst[label + 9 * nb_labels], value);
+
+    atomic_min_float(&dst[label + 10 * nb_labels], (float) x);
+    atomic_max_float(&dst[label + 11 * nb_labels], (float) x);
+    atomic_min_float(&dst[label + 12 * nb_labels], (float) y);
+    atomic_max_float(&dst[label + 13 * nb_labels], (float) y);
+    atomic_min_float(&dst[label + 14 * nb_labels], (float) z);
+    atomic_max_float(&dst[label + 15 * nb_labels], (float) z);
+  }
+)CLC";
+
+constexpr const char * std_accumulate_kernel_body = R"CLC(
+  __constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
+
+  __kernel void std_accumulate(
+      IMAGE_src_statistics_TYPE src_statistics,
+      IMAGE_src_label_TYPE      src_label,
+      IMAGE_src_image_TYPE      src_image,
+      IMAGE_dst_TYPE            dst,
+      int                       nb_labels,
+      int                       sum_background
+  )
+  {
+    const int x = get_global_id(0);
+    const int y = get_global_id(1);
+    const int z = get_global_id(2);
+
+    const int label = (int) READ_IMAGE(src_label, sampler, POS_src_label_INSTANCE(x, y, z, 0)).x;
+    if (label < 0 || (label == 0 && sum_background == 0))
+      return;
+
+    const float value = (float) READ_IMAGE(src_image, sampler, POS_src_image_INSTANCE(x, y, z, 0)).x;
+
+    const float centroid_x = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(label, 0, 0, 0)).x;
+    const float centroid_y = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(label, 1, 0, 0)).x;
+    const float centroid_z = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(label, 2, 0, 0)).x;
+    const float mass_center_x = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(label, 3, 0, 0)).x;
+    const float mass_center_y = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(label, 4, 0, 0)).x;
+    const float mass_center_z = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(label, 5, 0, 0)).x;
+    const float mean_intensity = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(label, 6, 0, 0)).x;
+    const float area = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(label, 7, 0, 0)).x;
+
+    const float centroid_distance = sqrt(
+      pow((float)x - centroid_x, (float)2.0) +
+      pow((float)y - centroid_y, (float)2.0) +
+      pow((float)z - centroid_z, (float)2.0)
+    );
+    const float mass_center_distance = sqrt(
+      pow((float)x - mass_center_x, (float)2.0) +
+      pow((float)y - mass_center_y, (float)2.0) +
+      pow((float)z - mass_center_z, (float)2.0)
+    );
+    const float intensity_difference_squared = pow(value - mean_intensity, (float)2.0) / area;
+
+    atomic_add_float(&dst[label + 0 * nb_labels], centroid_distance);
+    atomic_add_float(&dst[label + 1 * nb_labels], mass_center_distance);
+    atomic_add_float(&dst[label + 2 * nb_labels], intensity_difference_squared);
+    atomic_add_float(&dst[label + 3 * nb_labels], 1.0f);
+    atomic_max_float(&dst[label + 4 * nb_labels], centroid_distance);
+    atomic_max_float(&dst[label + 5 * nb_labels], mass_center_distance);
+  }
+)CLC";
+
+} // namespace
+
 namespace cle
 {
 
@@ -25,27 +172,25 @@ _statistics_per_label(const Device::Pointer & device, const Array::Pointer & lab
 {
   constexpr float min_value = std::numeric_limits<float>::lowest();
   constexpr float max_value = std::numeric_limits<float>::max();
-  const size_t    height = label->height();
-  const size_t    depth = label->depth();
 
-  auto cumulative_stats_per_label = Array::create(nb_labels, height, 16, 3, dType::FLOAT, mType::BUFFER, device);
+  // 16 planes per label (see statistics_accumulate above), no more per-height intermediate: the
+  // kernel below accumulates directly over the whole 3D volume in a single launch.
+  auto cumulative_stats_per_label = Array::create(nb_labels, 16, 1, 2, dType::FLOAT, mType::BUFFER, device);
   cumulative_stats_per_label->fill(0);
   for (int i = 8; i <= 15; ++i)
   {
     float value = (i % 2 == 0) ? max_value : min_value;
-    tier1::set_plane_func(device, cumulative_stats_per_label, i, value);
+    tier1::set_row_func(device, cumulative_stats_per_label, i, value);
   }
-  const KernelInfo kernel = { "statistics_per_label", kernel::statistics_per_label };
-  const RangeArray range = { 1, height, 1 };
-  ParameterList    params = {
-    { "src_label", label }, { "src_image", intensity }, { "dst", cumulative_stats_per_label }, { "sum_background", 0 }, { "z", 0 }
-  };
-  for (int z = 0; z < depth; z++)
-  {
-    auto it = std::find_if(params.begin(), params.end(), [](const auto & param) { return param.first == "z"; });
-    it->second = z;
-    execute(device, kernel, params, range);
-  }
+
+  const KernelInfo    kernel = { "statistics_accumulate", std::string(atomic_float_helpers_source) + statistics_accumulate_kernel_body };
+  const RangeArray    range = { label->width(), label->height(), label->depth() };
+  const ParameterList params = { { "src_label", label },
+                                 { "src_image", intensity },
+                                 { "dst", cumulative_stats_per_label },
+                                 { "nb_labels", nb_labels },
+                                 { "sum_background", 0 } };
+  execute(device, kernel, params, range);
 
   return cumulative_stats_per_label;
 }
@@ -57,21 +202,16 @@ _std_per_label(const Device::Pointer & device,
                const Array::Pointer &  intensity,
                int                     nb_labels) -> Array::Pointer
 {
-  const auto height = label->height();
-  const auto depth = label->depth();
-
-  auto label_statistics_stack = Array::create(nb_labels, height, 6, 3, dType::FLOAT, mType::BUFFER, device);
+  // 6 planes per label (see std_accumulate above), single full-volume launch; must run strictly
+  // after `statistics` (centroid/mass-center/mean-intensity/area) has been finalized.
+  auto label_statistics_stack = Array::create(nb_labels, 6, 1, 2, dType::FLOAT, mType::BUFFER, device);
   label_statistics_stack->fill(0);
-  const KernelInfo kernel_std = { "standard_deviation_per_label", kernel::standard_deviation_per_label };
-  const RangeArray range_std = { 1, height, 1 };
-  ParameterList    params_std = { { "src_statistics", statistics },  { "src_label", label },  { "src_image", intensity },
-                                  { "dst", label_statistics_stack }, { "sum_background", 0 }, { "z", 0 } };
-  for (int z = 0; z < depth; z++)
-  {
-    auto it = std::find_if(params_std.begin(), params_std.end(), [](const auto & param) { return param.first == "z"; });
-    it->second = z;
-    execute(device, kernel_std, params_std, range_std);
-  }
+
+  const KernelInfo    kernel_std = { "std_accumulate", std::string(atomic_float_helpers_source) + std_accumulate_kernel_body };
+  const RangeArray    range_std = { label->width(), label->height(), label->depth() };
+  const ParameterList params_std = { { "src_statistics", statistics },  { "src_label", label },     { "src_image", intensity },
+                                     { "dst", label_statistics_stack }, { "nb_labels", nb_labels }, { "sum_background", 0 } };
+  execute(device, kernel_std, params_std, range_std);
 
   return label_statistics_stack;
 }
@@ -93,10 +233,12 @@ compute_statistics_per_labels(const Device::Pointer & device, const Array::Point
   auto result_device_vector = Array::create(nb_measurements, 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
 
   // compute statistics per label and collect slice-by-slice measurements in single planes
+  // statistics_accumulate directly produces the final per-label sums/min/max in one pass, so the
+  // three views below all point at the same buffer (no y-projection reduction needed anymore).
   auto cumulative_stats_per_label = _statistics_per_label(device, label, intensity, nb_labels);
-  auto sum_per_label = tier1::sum_y_projection_func(device, cumulative_stats_per_label, nullptr);
-  auto min_per_label = tier1::minimum_y_projection_func(device, cumulative_stats_per_label, nullptr);
-  auto max_per_label = tier1::maximum_y_projection_func(device, cumulative_stats_per_label, nullptr);
+  auto sum_per_label = cumulative_stats_per_label;
+  auto min_per_label = cumulative_stats_per_label;
+  auto max_per_label = cumulative_stats_per_label;
 
   auto label_statistics_image = Array::create(nb_labels, 8, 1, 2, dType::FLOAT, mType::BUFFER, device);
   auto sum_over_dimensions = Array::create(result_device_vector);
@@ -139,11 +281,17 @@ compute_statistics_per_labels(const Device::Pointer & device, const Array::Point
   std::vector<float> bbox_width(nb_measurements);
   std::vector<float> bbox_height(nb_measurements);
   std::vector<float> bbox_depth(nb_measurements);
-  for (int i = 0; i < bbox_width.size(); ++i)
+  const auto &       min_x_ref = region_props["bbox_min_x"];
+  const auto &       max_x_ref = region_props["bbox_max_x"];
+  const auto &       min_y_ref = region_props["bbox_min_y"];
+  const auto &       max_y_ref = region_props["bbox_max_y"];
+  const auto &       min_z_ref = region_props["bbox_min_z"];
+  const auto &       max_z_ref = region_props["bbox_max_z"];
+  for (size_t i = 0; i < bbox_width.size(); ++i)
   {
-    bbox_width[i] = region_props["bbox_max_x"][i] - region_props["bbox_min_x"][i] + 1;
-    bbox_height[i] = region_props["bbox_max_y"][i] - region_props["bbox_min_y"][i] + 1;
-    bbox_depth[i] = region_props["bbox_max_z"][i] - region_props["bbox_min_z"][i] + 1;
+    bbox_width[i] = max_x_ref[i] - min_x_ref[i] + 1;
+    bbox_height[i] = max_y_ref[i] - min_y_ref[i] + 1;
+    bbox_depth[i] = max_z_ref[i] - min_z_ref[i] + 1;
   }
   region_props["bbox_width"] = std::move(bbox_width);
   region_props["bbox_height"] = std::move(bbox_height);
@@ -175,8 +323,8 @@ compute_statistics_per_labels(const Device::Pointer & device, const Array::Point
   std::vector<float> sum_intensity(nb_measurements);
   sum_per_label->copyTo(result_device_vector, region, { offset, 7, 0 }, origin);
   result_device_vector->readTo(sum_intensity.data());
-  region_props["sum_intensity"] = sum_intensity;
-  std::vector<float> mean_intensity(std::move(nb_measurements));
+  region_props["sum_intensity"] = std::move(sum_intensity);
+  std::vector<float> mean_intensity(nb_measurements);
   tier1::paste_func(device, sum_over_dimensions, label_statistics_image, offset, 7, 0);
   tier1::divide_images_func(device, result_device_vector, sum_over_dimensions, avg_over_dimensions);
   tier1::paste_func(device, avg_over_dimensions, label_statistics_image, offset, 6, 0);
@@ -214,9 +362,10 @@ compute_statistics_per_labels(const Device::Pointer & device, const Array::Point
   }
 
   // Second part: determine parameters which depend on other parameters
+  // std_accumulate likewise produces final sums/max in one pass; both views alias the same buffer.
   auto label_statistics_stack = _std_per_label(device, label_statistics_image, label, intensity, nb_labels);
-  auto sum_statistics = tier1::sum_y_projection_func(device, label_statistics_stack, nullptr);
-  auto max_statistics = tier1::maximum_y_projection_func(device, label_statistics_stack, nullptr);
+  auto sum_statistics = label_statistics_stack;
+  auto max_statistics = label_statistics_stack;
   sum_per_label->copyTo(result_device_vector, region, { offset, 3, 0 }, origin);
 
   // Sum and mean distance to centroid
@@ -254,11 +403,14 @@ compute_statistics_per_labels(const Device::Pointer & device, const Array::Point
   // Calculate distance ratios
   std::vector<float> mean_max_distance_to_centroid_ratio(nb_measurements);
   std::vector<float> mean_max_distance_to_mass_center_ratio(nb_measurements);
-  for (int i = 0; i < nb_measurements; ++i)
+  const auto &       max_dist_centroid_ref = region_props["max_distance_to_centroid"];
+  const auto &       mean_dist_centroid_ref = region_props["mean_distance_to_centroid"];
+  const auto &       max_dist_mass_center_ref = region_props["max_distance_to_mass_center"];
+  const auto &       mean_dist_mass_center_ref = region_props["mean_distance_to_mass_center"];
+  for (size_t i = 0; i < nb_measurements; ++i)
   {
-    mean_max_distance_to_centroid_ratio[i] = region_props["max_distance_to_centroid"][i] / region_props["mean_distance_to_centroid"][i];
-    mean_max_distance_to_mass_center_ratio[i] =
-      region_props["max_distance_to_mass_center"][i] / region_props["mean_distance_to_mass_center"][i];
+    mean_max_distance_to_centroid_ratio[i] = max_dist_centroid_ref[i] / mean_dist_centroid_ref[i];
+    mean_max_distance_to_mass_center_ratio[i] = max_dist_mass_center_ref[i] / mean_dist_mass_center_ref[i];
   }
   region_props["mean_max_distance_to_centroid_ratio"] = std::move(mean_max_distance_to_centroid_ratio);
   region_props["mean_max_distance_to_mass_center_ratio"] = std::move(mean_max_distance_to_mass_center_ratio);
