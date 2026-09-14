@@ -179,7 +179,7 @@ apply_affine_transform_deskew_3d(const cle::Array::Pointer &  src,
 
   const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
   const ParameterList params = {
-    { "src", src },         { "dst", dst },           { "mat", mat },           { "pixel_step", pixel_step },
+    { "src", src },           { "dst", dst },           { "mat", mat },           { "pixel_step", pixel_step },
     { "tantheta", tantheta }, { "costheta", costheta }, { "sintheta", sintheta },
   };
 
