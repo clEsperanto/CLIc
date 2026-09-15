@@ -436,7 +436,7 @@ compute_neighbors_statistics_per_labels(const Device::Pointer &  device,
 
   const auto         nb_stats = nb_proximal_distances + 2 * nb_nearest_neighbor_ns + 6 * nb_dilation_radii + nb_touch_ratio_thresholds + 13;
   cle::StatisticsMap nei_stats;
-  nei_stats.reserve(nb_stats); // 37 properties are calculated (36 actually, we are missing 'original labels')
+  nei_stats.reserve(nb_stats);
 
   auto result_device_vector = Array::create(nb_labels, 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
 
