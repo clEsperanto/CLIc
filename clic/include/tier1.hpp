@@ -913,7 +913,7 @@ gaussian_blur_func(const Device::Pointer & device,
                    float                   sigma_z) -> Array::Pointer;
 
 /**
- * @name kuwahara
+ * @name kuwahara_filter
  * @brief Applies a generalized Kuwahara filter (Kuwahara et al., 1976) for edge-preserving denoising. In 2D the image is locally divided
  * into 4 quadrants; in 3D into 8 octants. Within each region the mean and variance are computed with Gaussian
  * weights. The output pixel is a weighted blend of the region means, where regions with lower variance contribute
