@@ -422,12 +422,14 @@ private:
 
 /**
  * @brief Prepare the output shape and transform for the given transformation matrix and array shape
- * @param src Source array
+ * @param width Width of the array
+ * @param height Height of the array
+ * @param depth Depth of the array
  * @param transform Affine transform
  * @return std::tuple<size_t, size_t, size_t, cle::transform::AffineTransform>
  */
 auto
-prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::transform::AffineTransform & transform)
+prepare_output_shape_and_transform(const size_t width, const size_t height, const size_t depth, const cle::transform::AffineTransform & transform)
   -> std::tuple<size_t, size_t, size_t, cle::transform::AffineTransform>;
 
 /**
