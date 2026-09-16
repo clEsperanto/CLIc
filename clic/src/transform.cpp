@@ -9,21 +9,21 @@ namespace cle
 {
 
 auto
-prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::AffineTransform & transform)
-  -> std::tuple<size_t, size_t, size_t, cle::AffineTransform>
+prepare_output_shape_and_transform(const size_t width, const size_t height, const size_t depth, const cle::TransformMatrix & transform)
+  -> std::tuple<size_t, size_t, size_t, cle::TransformMatrix>
 {
   using point = Eigen::Vector4f;
   using bounding_box = std::array<point, 8>;
 
   bounding_box bbox = { point{ 0.0F, 0.0F, 0.0F, 1.0F },
-                        point{ 0.0F, 0.0F, static_cast<float>(src->depth()), 1.0F },
-                        point{ 0.0F, static_cast<float>(src->height()), 0.0F, 1.0F },
-                        point{ static_cast<float>(src->width()), 0.0F, 0.0F, 1.0F },
-                        point{ static_cast<float>(src->width()), static_cast<float>(src->height()), 0.0F, 1.0F },
-                        point{ 0.0F, static_cast<float>(src->height()), static_cast<float>(src->depth()), 1.0F },
-                        point{ static_cast<float>(src->width()), 0.0F, static_cast<float>(src->depth()), 1.0F },
+                        point{ 0.0F, 0.0F, static_cast<float>(depth), 1.0F },
+                        point{ 0.0F, static_cast<float>(height), 0.0F, 1.0F },
+                        point{ static_cast<float>(width), 0.0F, 0.0F, 1.0F },
+                        point{ static_cast<float>(width), static_cast<float>(height), 0.0F, 1.0F },
+                        point{ 0.0F, static_cast<float>(height), static_cast<float>(depth), 1.0F },
+                        point{ static_cast<float>(width), 0.0F, static_cast<float>(depth), 1.0F },
                         point{
-                          static_cast<float>(src->width()), static_cast<float>(src->height()), static_cast<float>(src->depth()), 1.0F } };
+                          static_cast<float>(width), static_cast<float>(height), static_cast<float>(depth), 1.0F } };
 
   // apply the transform matrix to all the point of the bounding box
   bounding_box updated_bbox;
@@ -39,25 +39,25 @@ prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::A
   }
 
   // compute a new width heigth and depth from the min and max point
-  cle::AffineTransform update_transform(transform);
-  const auto           width = static_cast<size_t>(std::round(max[0] - min[0]));
-  const auto           height = static_cast<size_t>(std::round(max[1] - min[1]));
-  const auto           depth = static_cast<size_t>(std::round(max[2] - min[2]));
+  cle::TransformMatrix update_transform(transform);
+  const auto           new_width = static_cast<size_t>(std::round(max[0] - min[0]));
+  const auto           new_height = static_cast<size_t>(std::round(max[1] - min[1]));
+  const auto           new_depth = static_cast<size_t>(std::round(max[2] - min[2]));
   update_transform.translate(-min[0], -min[1], -min[2]);
 
   // return the new width, height, depth and the updated transform
-  return std::make_tuple(width, height, depth, update_transform);
+  return std::make_tuple(new_width, new_height, new_depth, update_transform);
 }
 
 
 auto
-apply_affine_transform(const cle::Array::Pointer &  src,
+affine_transform(const cle::Array::Pointer &  src,
                        cle::Array::Pointer          dst,
-                       const cle::AffineTransform & transform,
+                       const cle::TransformMatrix & transform,
                        const bool                   interpolate,
                        const bool                   auto_resize) -> cle::Array::Pointer
 {
-  cle::AffineTransform new_transform(transform);
+  cle::TransformMatrix new_transform(transform);
   auto                 width = src->width();
   auto                 height = src->height();
   auto                 depth = src->depth();
@@ -65,7 +65,7 @@ apply_affine_transform(const cle::Array::Pointer &  src,
   // update shape and transform if auto_resize is true
   if (auto_resize)
   {
-    std::tie(width, height, depth, new_transform) = prepare_output_shape_and_transform(src, transform);
+    std::tie(width, height, depth, new_transform) = prepare_output_shape_and_transform(src->width(), src->height(), src->depth(), transform);
   }
   // prepare output if dst is nullptr
   if (dst == nullptr)
@@ -76,7 +76,7 @@ apply_affine_transform(const cle::Array::Pointer &  src,
 
   // push the matrix on gpu as the inverse transposed transform matrix
   auto mat = cle::Array::create(4, 4, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, src->device());
-  mat->writeFrom(cle::AffineTransform::toArray(new_transform.getInverseTranspose()).data());
+  mat->writeFrom(cle::TransformMatrix::toArray(new_transform.getInverseTranspose()).data());
 
   cle::Array::Pointer image = src;
   if (interpolate && src->mtype() != mType::IMAGE)
@@ -89,15 +89,15 @@ apply_affine_transform(const cle::Array::Pointer &  src,
     }
     catch (const std::exception & e)
     {
-      if (src->device()->getType() == Device::Type::CUDA)
+      if (src->device()->getType() == Device::Type::CUDA || src->device()->getType() == Device::Type::METAL)
       {
-        std::cerr << "Warning: Interpolated transform is not implemented with the CUDA backend." << std::endl;
+        std::cerr << "Warning: Interpolation is NOT supported for CUDA and METAL devices, please use the OPENCL backend for this." << std::endl;
       }
       else
       {
-        std::cerr << "Warning: Device does not support Image type required for interpolation." << std::endl;
+        std::cerr << "Warning: Device does not support hardware interpolation." << std::endl;
       }
-      std::cerr << "-> We fall back to non-interpolated transform." << std::endl;
+      std::cerr << "-> Falling back to non-interpolated transform." << std::endl;
     }
   }
 
@@ -114,9 +114,9 @@ apply_affine_transform(const cle::Array::Pointer &  src,
 
 
 auto
-apply_affine_transform_deskew_3d(const cle::Array::Pointer &  src,
+affine_transform_deskew_3d(const cle::Array::Pointer &  src,
                                  cle::Array::Pointer          dst,
-                                 const cle::AffineTransform & transform,
+                                 const cle::TransformMatrix & transform,
                                  float                        deskewing_angle,
                                  float                        voxel_size_x,
                                  float                        voxel_size_y,
@@ -131,7 +131,7 @@ apply_affine_transform_deskew_3d(const cle::Array::Pointer &  src,
   }
 
   // update shape and transform
-  cle::AffineTransform new_transform(transform);
+  cle::TransformMatrix new_transform(transform);
   auto                 width = src->width();
   auto                 height = src->height();
   auto                 depth = src->depth();
@@ -139,7 +139,7 @@ apply_affine_transform_deskew_3d(const cle::Array::Pointer &  src,
   // update shape and transform if auto_resize is true
   if (auto_resize)
   {
-    std::tie(width, height, depth, new_transform) = prepare_output_shape_and_transform(src, transform);
+    std::tie(width, height, depth, new_transform) = prepare_output_shape_and_transform(src->width(), src->height(), src->depth(), transform);
   }
 
   // prepare output if dst is nullptr
@@ -150,7 +150,7 @@ apply_affine_transform_deskew_3d(const cle::Array::Pointer &  src,
 
   // push the matrix on gpu as the inverse transposed transform matrix
   auto mat = cle::Array::create(4, 4, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, src->device());
-  mat->writeFrom(cle::AffineTransform::toArray(new_transform.getInverseTranspose()).data());
+  mat->writeFrom(cle::TransformMatrix::toArray(new_transform.getInverseTranspose()).data());
 
   // precalculate these functions that are dependent on deskewing angle
   float tantheta = static_cast<float>(tan(deskewing_angle * M_PI / 180.0f));

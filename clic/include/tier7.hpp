@@ -26,6 +26,7 @@ namespace cle::tier7
  * @param resize Automatically determines the size of the output depending on the rotation angles. [bool ( = False )]
  * @return Array::Pointer
  *
+ * @deprecated This function is deprecated and will be removed in future versions. Use cle.trasnform.affine_transform instead.
  */
 auto
 affine_transform_func(const Device::Pointer & device,
