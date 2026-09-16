@@ -6,6 +6,7 @@
 #include "device.hpp"
 #include "execution.hpp"
 #include "fft.hpp"
+#include "transform.hpp"
 
 #include "tier1.hpp"
 #include "tier2.hpp"
