@@ -441,10 +441,10 @@ prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::T
  */
 auto
 affine_transform(const cle::Array::Pointer &  src,
-                       cle::Array::Pointer          dst,
-                       const cle::TransformMatrix & transform,
-                       const bool                   interpolate,
-                       const bool                   auto_resize) -> cle::Array::Pointer;
+                 cle::Array::Pointer          dst,
+                 const cle::TransformMatrix & transform,
+                 const bool                   interpolate,
+                 const bool                   auto_resize) -> cle::Array::Pointer;
 
 
 /**
@@ -462,13 +462,13 @@ affine_transform(const cle::Array::Pointer &  src,
  */
 auto
 affine_transform_deskew_3d(const cle::Array::Pointer &  src,
-                                 cle::Array::Pointer          dst,
-                                 const cle::TransformMatrix & transform,
-                                 float                        deskewing_angle,
-                                 float                        voxel_size_x,
-                                 float                        voxel_size_y,
-                                 float                        voxel_size_z,
-                                 int                          deskew_direction,
-                                 bool                         auto_resize) -> cle::Array::Pointer;
+                           cle::Array::Pointer          dst,
+                           const cle::TransformMatrix & transform,
+                           float                        deskewing_angle,
+                           float                        voxel_size_x,
+                           float                        voxel_size_y,
+                           float                        voxel_size_z,
+                           int                          deskew_direction,
+                           bool                         auto_resize) -> cle::Array::Pointer;
 
 } // namespace cle

@@ -22,8 +22,7 @@ prepare_output_shape_and_transform(const size_t width, const size_t height, cons
                         point{ static_cast<float>(width), static_cast<float>(height), 0.0F, 1.0F },
                         point{ 0.0F, static_cast<float>(height), static_cast<float>(depth), 1.0F },
                         point{ static_cast<float>(width), 0.0F, static_cast<float>(depth), 1.0F },
-                        point{
-                          static_cast<float>(width), static_cast<float>(height), static_cast<float>(depth), 1.0F } };
+                        point{ static_cast<float>(width), static_cast<float>(height), static_cast<float>(depth), 1.0F } };
 
   // apply the transform matrix to all the point of the bounding box
   bounding_box updated_bbox;
@@ -52,10 +51,10 @@ prepare_output_shape_and_transform(const size_t width, const size_t height, cons
 
 auto
 affine_transform(const cle::Array::Pointer &  src,
-                       cle::Array::Pointer          dst,
-                       const cle::TransformMatrix & transform,
-                       const bool                   interpolate,
-                       const bool                   auto_resize) -> cle::Array::Pointer
+                 cle::Array::Pointer          dst,
+                 const cle::TransformMatrix & transform,
+                 const bool                   interpolate,
+                 const bool                   auto_resize) -> cle::Array::Pointer
 {
   cle::TransformMatrix new_transform(transform);
   auto                 width = src->width();
@@ -65,7 +64,8 @@ affine_transform(const cle::Array::Pointer &  src,
   // update shape and transform if auto_resize is true
   if (auto_resize)
   {
-    std::tie(width, height, depth, new_transform) = prepare_output_shape_and_transform(src->width(), src->height(), src->depth(), transform);
+    std::tie(width, height, depth, new_transform) =
+      prepare_output_shape_and_transform(src->width(), src->height(), src->depth(), transform);
   }
   // prepare output if dst is nullptr
   if (dst == nullptr)
@@ -91,7 +91,8 @@ affine_transform(const cle::Array::Pointer &  src,
     {
       if (src->device()->getType() == Device::Type::CUDA || src->device()->getType() == Device::Type::METAL)
       {
-        std::cerr << "Warning: Interpolation is NOT supported for CUDA and METAL devices, please use the OPENCL backend for this." << std::endl;
+        std::cerr << "Warning: Interpolation is NOT supported for CUDA and METAL devices, please use the OPENCL backend for this."
+                  << std::endl;
       }
       else
       {
@@ -115,14 +116,14 @@ affine_transform(const cle::Array::Pointer &  src,
 
 auto
 affine_transform_deskew_3d(const cle::Array::Pointer &  src,
-                                 cle::Array::Pointer          dst,
-                                 const cle::TransformMatrix & transform,
-                                 float                        deskewing_angle,
-                                 float                        voxel_size_x,
-                                 float                        voxel_size_y,
-                                 float                        voxel_size_z,
-                                 int                          deskew_direction,
-                                 bool                         auto_resize) -> cle::Array::Pointer
+                           cle::Array::Pointer          dst,
+                           const cle::TransformMatrix & transform,
+                           float                        deskewing_angle,
+                           float                        voxel_size_x,
+                           float                        voxel_size_y,
+                           float                        voxel_size_z,
+                           int                          deskew_direction,
+                           bool                         auto_resize) -> cle::Array::Pointer
 {
 
   if (src->depth() == 1)
@@ -139,7 +140,8 @@ affine_transform_deskew_3d(const cle::Array::Pointer &  src,
   // update shape and transform if auto_resize is true
   if (auto_resize)
   {
-    std::tie(width, height, depth, new_transform) = prepare_output_shape_and_transform(src->width(), src->height(), src->depth(), transform);
+    std::tie(width, height, depth, new_transform) =
+      prepare_output_shape_and_transform(src->width(), src->height(), src->depth(), transform);
   }
 
   // prepare output if dst is nullptr
