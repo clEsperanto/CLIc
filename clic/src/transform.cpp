@@ -9,7 +9,10 @@ namespace cle::transform
 {
 
 auto
-prepare_output_shape_and_transform(const size_t width, const size_t height, const size_t depth, const cle::transform::TransformMatrix & transform)
+prepare_output_shape_and_transform(const size_t                            width,
+                                   const size_t                            height,
+                                   const size_t                            depth,
+                                   const cle::transform::TransformMatrix & transform)
   -> std::tuple<size_t, size_t, size_t, cle::transform::TransformMatrix>
 {
   using point = Eigen::Vector4f;
@@ -39,9 +42,9 @@ prepare_output_shape_and_transform(const size_t width, const size_t height, cons
 
   // compute a new width heigth and depth from the min and max point
   cle::transform::TransformMatrix update_transform(transform);
-  const auto           new_width = static_cast<size_t>(std::round(max[0] - min[0]));
-  const auto           new_height = static_cast<size_t>(std::round(max[1] - min[1]));
-  const auto           new_depth = static_cast<size_t>(std::round(max[2] - min[2]));
+  const auto                      new_width = static_cast<size_t>(std::round(max[0] - min[0]));
+  const auto                      new_height = static_cast<size_t>(std::round(max[1] - min[1]));
+  const auto                      new_depth = static_cast<size_t>(std::round(max[2] - min[2]));
   update_transform.translate(-min[0], -min[1], -min[2]);
 
   // return the new width, height, depth and the updated transform
@@ -50,16 +53,16 @@ prepare_output_shape_and_transform(const size_t width, const size_t height, cons
 
 
 auto
-affine_transform(const cle::Array::Pointer &  src,
-                 cle::Array::Pointer          dst,
+affine_transform(const cle::Array::Pointer &             src,
+                 cle::Array::Pointer                     dst,
                  const cle::transform::TransformMatrix & transform,
-                 const bool                   interpolate,
-                 const bool                   auto_resize) -> cle::Array::Pointer
+                 const bool                              interpolate,
+                 const bool                              auto_resize) -> cle::Array::Pointer
 {
   cle::transform::TransformMatrix new_transform(transform);
-  auto                 width = src->width();
-  auto                 height = src->height();
-  auto                 depth = src->depth();
+  auto                            width = src->width();
+  auto                            height = src->height();
+  auto                            depth = src->depth();
 
   // update shape and transform if auto_resize is true
   if (auto_resize)
@@ -115,15 +118,15 @@ affine_transform(const cle::Array::Pointer &  src,
 
 
 auto
-affine_transform_deskew_3d(const cle::Array::Pointer &  src,
-                           cle::Array::Pointer          dst,
+affine_transform_deskew_3d(const cle::Array::Pointer &             src,
+                           cle::Array::Pointer                     dst,
                            const cle::transform::TransformMatrix & transform,
-                           float                        deskewing_angle,
-                           float                        voxel_size_x,
-                           float                        voxel_size_y,
-                           float                        voxel_size_z,
-                           int                          deskew_direction,
-                           bool                         auto_resize) -> cle::Array::Pointer
+                           float                                   deskewing_angle,
+                           float                                   voxel_size_x,
+                           float                                   voxel_size_y,
+                           float                                   voxel_size_z,
+                           int                                     deskew_direction,
+                           bool                                    auto_resize) -> cle::Array::Pointer
 {
 
   if (src->depth() == 1)
@@ -133,9 +136,9 @@ affine_transform_deskew_3d(const cle::Array::Pointer &  src,
 
   // update shape and transform
   cle::transform::TransformMatrix new_transform(transform);
-  auto                 width = src->width();
-  auto                 height = src->height();
-  auto                 depth = src->depth();
+  auto                            width = src->width();
+  auto                            height = src->height();
+  auto                            depth = src->depth();
 
   // update shape and transform if auto_resize is true
   if (auto_resize)

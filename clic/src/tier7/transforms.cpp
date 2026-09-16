@@ -132,7 +132,7 @@ rotate_func(const Device::Pointer & device,
   {
     transform.center({ src->width(), src->height(), src->depth() }, true);
   }
-  return  cle::transform::affine_transform(src, dst, transform, interpolate, resize);
+  return cle::transform::affine_transform(src, dst, transform, interpolate, resize);
 }
 
 
