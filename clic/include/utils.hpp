@@ -499,16 +499,6 @@ auto inline next_smooth(size_t x) -> size_t
   return std::numeric_limits<size_t>::max();
 }
 
-/**
- * @brief return the next smooth shape (power of 2) from a given shape for fft operations
- */
-auto inline fft_smooth_shape(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>
-{
-  std::array<size_t, 3> result;
-  std::transform(shape.begin(), shape.end(), result.begin(), [](size_t value) { return (value > 1) ? next_smooth(value) : 1; });
-  return result;
-}
-
 
 inline auto
 toDLDataType(const dType & dt) -> DLDataType

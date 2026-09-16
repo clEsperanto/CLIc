@@ -747,7 +747,7 @@ convolve_func(const Device::Pointer & device, const Array::Pointer & src, const 
   // get the next smooth shape for the input and kernel to facilitate the fft
   // auto pad_shape = fft::fft_pad_shape(image_shape, kernel_shape);
   RangeArray pad_shape = { image_shape[0], image_shape[1], image_shape[2] };
-  auto       smoothed_shape = fft_smooth_shape(pad_shape);
+  auto       smoothed_shape = smooth_shape(pad_shape);
 
   // check if smooth size differs from the input size, if yes pad input and save the padding size for unpadding
   bool           padded = false;
@@ -807,7 +807,7 @@ deconvolve_func(const Device::Pointer & device,
 
   // auto pad_shape = fft::fft_pad_shape(image_shape, psf_shape);
   RangeArray pad_shape = { image_shape[0], image_shape[1], image_shape[2] };
-  auto       smoothed_shape = fft_smooth_shape(pad_shape);
+  auto       smoothed_shape = smooth_shape(pad_shape);
 
   // check if smooth size differs from the input size, if yes pad input and save the padding size for unpadding
   bool           padded = false;
@@ -875,5 +875,18 @@ deconvolve_func(const Device::Pointer & device,
 
   return dst;
 }
+
+
+// /**
+//  * @brief return the next smooth shape (power of 2) from a given shape for fft operations
+//  */
+// auto smooth_shape(const std::array<size_t, 3> & shape) -> std::array<size_t, 3>
+// {
+//   std::array<size_t, 3> result;
+//   std::transform(shape.begin(), shape.end(), result.begin(), [](size_t value) { return (value > 1) ? next_smooth(value) : 1; });
+//   return result;
+// }
+
+
 
 } // namespace cle::fft
