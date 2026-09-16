@@ -19,7 +19,6 @@ Array::Pointer
 create_hermitian(const Array::Pointer & input);
 
 
-
 /**
  * @brief Get the closest smooth shape from a given input shape
  *

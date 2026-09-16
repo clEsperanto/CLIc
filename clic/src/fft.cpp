@@ -888,5 +888,4 @@ deconvolve_func(const Device::Pointer & device,
 // }
 
 
-
 } // namespace cle::fft
