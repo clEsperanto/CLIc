@@ -30,7 +30,7 @@ TEST_P(TestAffineTransform, affineTransform)
   gpu_input->writeFrom(input.data());
 
 
-  cle::transform::TransformMatrix matrix({ 1, 0, -1, 0, 0, 1, -1, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
+  cle::transform::AffineTransform matrix({ 1, 0, -1, 0, 0, 1, -1, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
   auto                            gpu_output = cle::transform::affine_transform(gpu_input, nullptr, matrix, false, false);
 
   gpu_output->readTo(output.data());
@@ -61,7 +61,7 @@ TEST_P(TestAffineTransform, affineTransformInterpolate)
   auto gpu_input = cle::Array::create(5, 5, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
   gpu_input->writeFrom(input.data());
 
-  cle::transform::TransformMatrix matrix({ 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
+  cle::transform::AffineTransform matrix({ 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
   auto                            gpu_output = cle::transform::affine_transform(gpu_input, nullptr, matrix, true, true);
 
   gpu_output->readTo(output.data());

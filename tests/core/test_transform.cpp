@@ -8,19 +8,19 @@
 class TestTransform : public ::testing::TestWithParam<std::string>
 {
 protected:
-  cle::transform::TransformMatrix transform;
+  cle::transform::AffineTransform transform;
 
   void
   SetUp() override
   {
-    transform = cle::transform::TransformMatrix();
+    transform = cle::transform::AffineTransform();
   }
 };
 
 TEST_P(TestTransform, toArray)
 {
   transform.rotate(2, 90);
-  auto                  array = cle::transform::TransformMatrix::toArray(transform.getTranspose());
+  auto                  array = cle::transform::AffineTransform::toArray(transform.getTranspose());
   std::array<float, 16> valid = { 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
   for (int i = 0; i < array.size(); i++)
   {

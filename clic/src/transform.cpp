@@ -12,8 +12,8 @@ auto
 prepare_output_shape_and_transform(const size_t                            width,
                                    const size_t                            height,
                                    const size_t                            depth,
-                                   const cle::transform::TransformMatrix & transform)
-  -> std::tuple<size_t, size_t, size_t, cle::transform::TransformMatrix>
+                                   const cle::transform::AffineTransform & transform)
+  -> std::tuple<size_t, size_t, size_t, cle::transform::AffineTransform>
 {
   using point = Eigen::Vector4f;
   using bounding_box = std::array<point, 8>;
@@ -41,7 +41,7 @@ prepare_output_shape_and_transform(const size_t                            width
   }
 
   // compute a new width heigth and depth from the min and max point
-  cle::transform::TransformMatrix update_transform(transform);
+  cle::transform::AffineTransform update_transform(transform);
   const auto                      new_width = static_cast<size_t>(std::round(max[0] - min[0]));
   const auto                      new_height = static_cast<size_t>(std::round(max[1] - min[1]));
   const auto                      new_depth = static_cast<size_t>(std::round(max[2] - min[2]));
@@ -55,11 +55,11 @@ prepare_output_shape_and_transform(const size_t                            width
 auto
 affine_transform(const cle::Array::Pointer &             src,
                  cle::Array::Pointer                     dst,
-                 const cle::transform::TransformMatrix & transform,
+                 const cle::transform::AffineTransform & transform,
                  const bool                              interpolate,
                  const bool                              auto_resize) -> cle::Array::Pointer
 {
-  cle::transform::TransformMatrix new_transform(transform);
+  cle::transform::AffineTransform new_transform(transform);
   auto                            width = src->width();
   auto                            height = src->height();
   auto                            depth = src->depth();
@@ -79,7 +79,7 @@ affine_transform(const cle::Array::Pointer &             src,
 
   // push the matrix on gpu as the inverse transposed transform matrix
   auto mat = cle::Array::create(4, 4, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, src->device());
-  mat->writeFrom(cle::transform::TransformMatrix::toArray(new_transform.getInverseTranspose()).data());
+  mat->writeFrom(cle::transform::AffineTransform::toArray(new_transform.getInverseTranspose()).data());
 
   cle::Array::Pointer image = src;
   if (interpolate && src->mtype() != mType::IMAGE)
@@ -120,7 +120,7 @@ affine_transform(const cle::Array::Pointer &             src,
 auto
 affine_transform_deskew_3d(const cle::Array::Pointer &             src,
                            cle::Array::Pointer                     dst,
-                           const cle::transform::TransformMatrix & transform,
+                           const cle::transform::AffineTransform & transform,
                            float                                   deskewing_angle,
                            float                                   voxel_size_x,
                            float                                   voxel_size_y,
@@ -135,7 +135,7 @@ affine_transform_deskew_3d(const cle::Array::Pointer &             src,
   }
 
   // update shape and transform
-  cle::transform::TransformMatrix new_transform(transform);
+  cle::transform::AffineTransform new_transform(transform);
   auto                            width = src->width();
   auto                            height = src->height();
   auto                            depth = src->depth();
@@ -155,7 +155,7 @@ affine_transform_deskew_3d(const cle::Array::Pointer &             src,
 
   // push the matrix on gpu as the inverse transposed transform matrix
   auto mat = cle::Array::create(4, 4, 1, 2, cle::dType::FLOAT, cle::mType::BUFFER, src->device());
-  mat->writeFrom(cle::transform::TransformMatrix::toArray(new_transform.getInverseTranspose()).data());
+  mat->writeFrom(cle::transform::AffineTransform::toArray(new_transform.getInverseTranspose()).data());
 
   // precalculate these functions that are dependent on deskewing angle
   float tantheta = static_cast<float>(tan(deskewing_angle * M_PI / 180.0f));

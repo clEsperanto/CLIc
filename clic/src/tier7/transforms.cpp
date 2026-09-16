@@ -55,7 +55,7 @@ affine_transform_func(const Device::Pointer & device,
     // If the matrix is already 4x4, just copy the values
     std::copy(transform_matrix->begin(), transform_matrix->end(), transform_matrix_arr.begin());
   }
-  auto transform = cle::transform::TransformMatrix(transform_matrix_arr);
+  auto transform = cle::transform::AffineTransform(transform_matrix_arr);
   return cle::transform::affine_transform(src, dst, transform, interpolate, resize);
 }
 
@@ -74,7 +74,7 @@ rigid_transform_func(const Device::Pointer & device,
                      bool                    interpolate,
                      bool                    resize) -> Array::Pointer
 {
-  auto transform = cle::transform::TransformMatrix();
+  auto transform = cle::transform::AffineTransform();
   if (centered)
   {
     transform.center({ src->width(), src->height(), src->depth() }, false);
@@ -111,7 +111,7 @@ rotate_func(const Device::Pointer & device,
             bool                    interpolate,
             bool                    resize) -> Array::Pointer
 {
-  auto transform = cle::transform::TransformMatrix();
+  auto transform = cle::transform::AffineTransform();
   if (centered)
   {
     transform.center({ src->width(), src->height(), src->depth() }, false);
@@ -147,7 +147,7 @@ scale_func(const Device::Pointer & device,
            bool                    interpolate,
            bool                    resize) -> Array::Pointer
 {
-  auto transform = cle::transform::TransformMatrix();
+  auto transform = cle::transform::AffineTransform();
   if (centered && !resize)
   {
     transform.center({ src->width(), src->height(), src->depth() }, false);
@@ -170,7 +170,7 @@ translate_func(const Device::Pointer & device,
                float                   translate_z,
                bool                    interpolate) -> Array::Pointer
 {
-  auto transform = cle::transform::TransformMatrix();
+  auto transform = cle::transform::AffineTransform();
   transform.translate(translate_x, translate_y, translate_z);
   return cle::transform::affine_transform(src, dst, transform, interpolate, false);
 }
@@ -186,7 +186,7 @@ deskew_x_func(const Device::Pointer & device,
               float                   voxel_size_z,
               float                   scale_factor) -> Array::Pointer
 {
-  auto transform = cle::transform::TransformMatrix();
+  auto transform = cle::transform::AffineTransform();
   transform.deskew_x(angle, voxel_size_x, voxel_size_y, voxel_size_z, scale_factor);
 
   return cle::transform::affine_transform_deskew_3d(src, dst, transform, angle, voxel_size_x, voxel_size_y, voxel_size_z, 0, true);
@@ -203,7 +203,7 @@ deskew_y_func(const Device::Pointer & device,
               float                   voxel_size_z,
               float                   scale_factor) -> Array::Pointer
 {
-  auto transform = cle::transform::TransformMatrix();
+  auto transform = cle::transform::AffineTransform();
   transform.deskew_y(angle, voxel_size_x, voxel_size_y, voxel_size_z, scale_factor);
 
   return cle::transform::affine_transform_deskew_3d(src, dst, transform, angle, voxel_size_x, voxel_size_y, voxel_size_z, 1, true);
