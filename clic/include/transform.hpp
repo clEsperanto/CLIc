@@ -7,37 +7,37 @@
 #include "execution.hpp"
 #include "tier1.hpp"
 
-namespace cle
+namespace cle::transform
 {
 
 /**
- * @brief Affine transformation class
+ * @brief transform matrix class
  *      This class is used to create an affine transformation matrix by applying different transformations
- *      such as scaling, rotation, translation, shearing, deskewing, etc. to the AffineTransform matrix.
+ *      such as scaling, rotation, translation, shearing, deskewing, etc. to the TransformMatrix matrix.
  *      The computed matrix is meant to be used to transform an image or a volume using the affine_transform kernel.
  *      The class rely on the Eigen library [1] to perform the matrix operations.
  *
  * @see https://eigen.tuxfamily.org
  */
-class AffineTransform
+class TransformMatrix
 {
 public:
   using matrix = Eigen::Matrix4f;
 
   /**
-   * @brief Construct a new Affine Transform object
+   * @brief Construct a new Affine Transform Matrix object
    */
-  AffineTransform()
+  TransformMatrix()
   {
     m_matrix = matrix::Identity();
     update();
   }
 
   /**
-   * @brief Construct a new Affine Transform object from a 4x4 matrix
+   * @brief Construct a new Affine Transform Matrix object from a 4x4 matrix
    * @param array Array of 16 floats representing a 4x4 matrix
    */
-  AffineTransform(const std::array<float, 16> & array)
+  TransformMatrix(const std::array<float, 16> & array)
   {
     m_matrix = matrix::Map(array.data()).transpose();
     update();
@@ -46,7 +46,7 @@ public:
   /**
    * @brief Destructor
    */
-  ~AffineTransform() = default;
+  ~TransformMatrix() = default;
 
   /**
    * @brief Scaling transformation
@@ -424,11 +424,11 @@ private:
  * @brief Prepare the output shape and transform for the given transformation matrix and array shape
  * @param src Source array
  * @param transform Affine transform
- * @return std::tuple<size_t, size_t, size_t, cle::AffineTransform>
+ * @return std::tuple<size_t, size_t, size_t, cle::transform::TransformMatrix>
  */
 auto
-prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::AffineTransform & transform)
-  -> std::tuple<size_t, size_t, size_t, cle::AffineTransform>;
+prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::transform::TransformMatrix & transform)
+  -> std::tuple<size_t, size_t, size_t, cle::transform::TransformMatrix>;
 
 /**
  * @brief Apply the transform matrix to an array
@@ -440,11 +440,11 @@ prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::A
  * @return cle::Array::Pointer
  */
 auto
-apply_affine_transform(const cle::Array::Pointer &  src,
-                       cle::Array::Pointer          dst,
-                       const cle::AffineTransform & transform,
-                       const bool                   interpolate,
-                       const bool                   auto_resize) -> cle::Array::Pointer;
+affine_transform(const cle::Array::Pointer &             src,
+                 cle::Array::Pointer                     dst,
+                 const cle::transform::TransformMatrix & transform,
+                 const bool                              interpolate,
+                 const bool                              auto_resize) -> cle::Array::Pointer;
 
 
 /**
@@ -461,14 +461,14 @@ apply_affine_transform(const cle::Array::Pointer &  src,
  * @return cle::Array::Pointer
  */
 auto
-apply_affine_transform_deskew_3d(const cle::Array::Pointer &  src,
-                                 cle::Array::Pointer          dst,
-                                 const cle::AffineTransform & transform,
-                                 float                        deskewing_angle,
-                                 float                        voxel_size_x,
-                                 float                        voxel_size_y,
-                                 float                        voxel_size_z,
-                                 int                          deskew_direction,
-                                 bool                         auto_resize) -> cle::Array::Pointer;
+affine_transform_deskew_3d(const cle::Array::Pointer &             src,
+                           cle::Array::Pointer                     dst,
+                           const cle::transform::TransformMatrix & transform,
+                           float                                   deskewing_angle,
+                           float                                   voxel_size_x,
+                           float                                   voxel_size_y,
+                           float                                   voxel_size_z,
+                           int                                     deskew_direction,
+                           bool                                    auto_resize) -> cle::Array::Pointer;
 
-} // namespace cle
+} // namespace cle::transform
