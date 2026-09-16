@@ -7,7 +7,7 @@
 #include "execution.hpp"
 #include "tier1.hpp"
 
-namespace cle
+namespace cle::transform
 {
 
 /**
@@ -424,11 +424,11 @@ private:
  * @brief Prepare the output shape and transform for the given transformation matrix and array shape
  * @param src Source array
  * @param transform Affine transform
- * @return std::tuple<size_t, size_t, size_t, cle::TransformMatrix>
+ * @return std::tuple<size_t, size_t, size_t, cle::transform::TransformMatrix>
  */
 auto
-prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::TransformMatrix & transform)
-  -> std::tuple<size_t, size_t, size_t, cle::TransformMatrix>;
+prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::transform::TransformMatrix & transform)
+  -> std::tuple<size_t, size_t, size_t, cle::transform::TransformMatrix>;
 
 /**
  * @brief Apply the transform matrix to an array
@@ -442,7 +442,7 @@ prepare_output_shape_and_transform(const cle::Array::Pointer & src, const cle::T
 auto
 affine_transform(const cle::Array::Pointer &  src,
                  cle::Array::Pointer          dst,
-                 const cle::TransformMatrix & transform,
+                 const cle::transform::TransformMatrix & transform,
                  const bool                   interpolate,
                  const bool                   auto_resize) -> cle::Array::Pointer;
 
@@ -463,7 +463,7 @@ affine_transform(const cle::Array::Pointer &  src,
 auto
 affine_transform_deskew_3d(const cle::Array::Pointer &  src,
                            cle::Array::Pointer          dst,
-                           const cle::TransformMatrix & transform,
+                           const cle::transform::TransformMatrix & transform,
                            float                        deskewing_angle,
                            float                        voxel_size_x,
                            float                        voxel_size_y,
@@ -471,4 +471,4 @@ affine_transform_deskew_3d(const cle::Array::Pointer &  src,
                            int                          deskew_direction,
                            bool                         auto_resize) -> cle::Array::Pointer;
 
-} // namespace cle
+} // namespace cle::transform

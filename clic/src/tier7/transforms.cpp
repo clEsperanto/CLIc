@@ -55,8 +55,8 @@ affine_transform_func(const Device::Pointer & device,
     // If the matrix is already 4x4, just copy the values
     std::copy(transform_matrix->begin(), transform_matrix->end(), transform_matrix_arr.begin());
   }
-  auto transform = TransformMatrix(transform_matrix_arr);
-  return cle::affine_transform(src, dst, transform, interpolate, resize);
+  auto transform = cle::transform::TransformMatrix(transform_matrix_arr);
+  return cle::transform::affine_transform(src, dst, transform, interpolate, resize);
 }
 
 
@@ -74,7 +74,7 @@ rigid_transform_func(const Device::Pointer & device,
                      bool                    interpolate,
                      bool                    resize) -> Array::Pointer
 {
-  auto transform = TransformMatrix();
+  auto transform = cle::transform::TransformMatrix();
   if (centered)
   {
     transform.center({ src->width(), src->height(), src->depth() }, false);
@@ -96,7 +96,7 @@ rigid_transform_func(const Device::Pointer & device,
     transform.center({ src->width(), src->height(), src->depth() }, true);
   }
   transform.translate(translate_x, translate_y, translate_z);
-  return cle::affine_transform(src, dst, transform, interpolate, resize);
+  return cle::transform::affine_transform(src, dst, transform, interpolate, resize);
 }
 
 
@@ -111,7 +111,7 @@ rotate_func(const Device::Pointer & device,
             bool                    interpolate,
             bool                    resize) -> Array::Pointer
 {
-  auto transform = TransformMatrix();
+  auto transform = cle::transform::TransformMatrix();
   if (centered)
   {
     transform.center({ src->width(), src->height(), src->depth() }, false);
@@ -132,7 +132,7 @@ rotate_func(const Device::Pointer & device,
   {
     transform.center({ src->width(), src->height(), src->depth() }, true);
   }
-  return cle::affine_transform(src, dst, transform, interpolate, resize);
+  return  cle::transform::affine_transform(src, dst, transform, interpolate, resize);
 }
 
 
@@ -147,7 +147,7 @@ scale_func(const Device::Pointer & device,
            bool                    interpolate,
            bool                    resize) -> Array::Pointer
 {
-  auto transform = TransformMatrix();
+  auto transform = cle::transform::TransformMatrix();
   if (centered && !resize)
   {
     transform.center({ src->width(), src->height(), src->depth() }, false);
@@ -157,7 +157,7 @@ scale_func(const Device::Pointer & device,
   {
     transform.center({ src->width(), src->height(), src->depth() }, true);
   }
-  return cle::affine_transform(src, dst, transform, interpolate, resize);
+  return cle::transform::affine_transform(src, dst, transform, interpolate, resize);
 }
 
 
@@ -170,9 +170,9 @@ translate_func(const Device::Pointer & device,
                float                   translate_z,
                bool                    interpolate) -> Array::Pointer
 {
-  auto transform = TransformMatrix();
+  auto transform = cle::transform::TransformMatrix();
   transform.translate(translate_x, translate_y, translate_z);
-  return cle::affine_transform(src, dst, transform, interpolate, false);
+  return cle::transform::affine_transform(src, dst, transform, interpolate, false);
 }
 
 
@@ -186,10 +186,10 @@ deskew_x_func(const Device::Pointer & device,
               float                   voxel_size_z,
               float                   scale_factor) -> Array::Pointer
 {
-  auto transform = TransformMatrix();
+  auto transform = cle::transform::TransformMatrix();
   transform.deskew_x(angle, voxel_size_x, voxel_size_y, voxel_size_z, scale_factor);
 
-  return affine_transform_deskew_3d(src, dst, transform, angle, voxel_size_x, voxel_size_y, voxel_size_z, 0, true);
+  return cle::transform::affine_transform_deskew_3d(src, dst, transform, angle, voxel_size_x, voxel_size_y, voxel_size_z, 0, true);
 }
 
 
@@ -203,10 +203,10 @@ deskew_y_func(const Device::Pointer & device,
               float                   voxel_size_z,
               float                   scale_factor) -> Array::Pointer
 {
-  auto transform = TransformMatrix();
+  auto transform = cle::transform::TransformMatrix();
   transform.deskew_y(angle, voxel_size_x, voxel_size_y, voxel_size_z, scale_factor);
 
-  return affine_transform_deskew_3d(src, dst, transform, angle, voxel_size_x, voxel_size_y, voxel_size_z, 1, true);
+  return cle::transform::affine_transform_deskew_3d(src, dst, transform, angle, voxel_size_x, voxel_size_y, voxel_size_z, 1, true);
 }
 
 } // namespace cle::tier7
