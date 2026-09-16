@@ -47,8 +47,6 @@ auto
 smooth_connected_labels_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int radius) -> Array::Pointer;
 
 
-
-
 /**
  * @name make_isotropic
  * @brief Resamples an image to make it isotropic by rescaling the image to a target spacing.

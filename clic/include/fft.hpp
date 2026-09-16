@@ -182,12 +182,6 @@ performDeconvolution(const Array::Pointer & observe,
                      float                  regularization) -> Array::Pointer;
 
 
-
-
-
-
-
-
 /**
  * @name fft
  * @brief Performs a 1D, 2D, or 3D FFT (Fast Fourier Transform) on the input image.
@@ -229,11 +223,8 @@ ifft_func(const Device::Pointer & device, const Array::Pointer & src, const Arra
  * @return Array::Pointer
  */
 auto
-convolve_func(const Device::Pointer & device,
-                  const Array::Pointer &  src,
-                  const Array::Pointer &  kernel,
-                  Array::Pointer          dst,
-                  bool                    correlate) -> Array::Pointer;
+convolve_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & kernel, Array::Pointer dst, bool correlate)
+  -> Array::Pointer;
 
 /**
  * @name deconvolve
@@ -257,13 +248,12 @@ convolve_func(const Device::Pointer & device,
  */
 auto
 deconvolve_func(const Device::Pointer & device,
-                    const Array::Pointer &  src,
-                    const Array::Pointer &  psf,
-                    Array::Pointer          normalization,
-                    Array::Pointer          dst,
-                    int                     iteration,
-                    float                   regularization) -> Array::Pointer;
-                    
-                    
+                const Array::Pointer &  src,
+                const Array::Pointer &  psf,
+                Array::Pointer          normalization,
+                Array::Pointer          dst,
+                int                     iteration,
+                float                   regularization) -> Array::Pointer;
+
 
 } // namespace cle::fft

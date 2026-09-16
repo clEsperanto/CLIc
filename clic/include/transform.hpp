@@ -429,7 +429,10 @@ private:
  * @return std::tuple<size_t, size_t, size_t, cle::transform::AffineTransform>
  */
 auto
-prepare_output_shape_and_transform(const size_t width, const size_t height, const size_t depth, const cle::transform::AffineTransform & transform)
+prepare_output_shape_and_transform(const size_t                            width,
+                                   const size_t                            height,
+                                   const size_t                            depth,
+                                   const cle::transform::AffineTransform & transform)
   -> std::tuple<size_t, size_t, size_t, cle::transform::AffineTransform>;
 
 /**
