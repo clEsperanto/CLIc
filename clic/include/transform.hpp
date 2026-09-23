@@ -363,6 +363,31 @@ public:
     return array;
   }
 
+  /**
+   * @brief getter for the transformation matrix value at a specific index (row, col)
+   * @param row Row index of the matrix value
+   * @param col Column index of the matrix value
+   * @return float Value of the matrix at the given row and column
+   */
+  auto
+  getValue(size_t row, size_t col) const -> float
+  {
+    return m_matrix(row, col);
+  }
+
+  /**
+   * @brief setter for the transformation matrix value at a specific index (row, col)
+   * @param row Row index of the matrix value
+   * @param col Column index of the matrix value
+   * @param value Value to set at the given row and column
+   */
+  auto
+  setValue(size_t row, size_t col, float value) -> void
+  {
+    m_matrix(row, col) = value;
+    update();
+  }
+
 protected:
   /**
    * @brief Convert degrees to radians

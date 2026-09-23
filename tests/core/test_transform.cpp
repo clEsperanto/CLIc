@@ -136,5 +136,38 @@ TEST_P(TestTransform, centerRotate)
   ASSERT_EQ(transform.getMatrix(), expected);
 }
 
+TEST_P(TestTransform, getValueIdentity)
+{
+  ASSERT_EQ(transform.getValue(0, 0), 1.0);
+  ASSERT_EQ(transform.getValue(1, 1), 1.0);
+  ASSERT_EQ(transform.getValue(2, 2), 1.0);
+  ASSERT_EQ(transform.getValue(3, 3), 1.0);
+  ASSERT_EQ(transform.getValue(0, 3), 0.0);
+  ASSERT_EQ(transform.getValue(2, 1), 0.0);
+}
+
+TEST_P(TestTransform, setValue)
+{
+  transform.setValue(0, 3, 1.5);
+  transform.setValue(1, 1, 2.0);
+  Eigen::Matrix4f expected = Eigen::Matrix4f::Identity();
+  expected(0, 3) = 1.5;
+  expected(1, 1) = 2.0;
+  ASSERT_EQ(transform.getMatrix(), expected);
+  ASSERT_EQ(transform.getValue(0, 3), 1.5);
+  ASSERT_EQ(transform.getValue(1, 1), 2.0);
+}
+
+TEST_P(TestTransform, setValueUpdatesDerivedMatrices)
+{
+  transform.setValue(0, 0, 2.0);
+  Eigen::Matrix4f expected_transpose = Eigen::Matrix4f::Identity();
+  expected_transpose(0, 0) = 2.0;
+  ASSERT_EQ(transform.getTranspose(), expected_transpose);
+  Eigen::Matrix4f expected_inverse = Eigen::Matrix4f::Identity();
+  expected_inverse(0, 0) = 0.5;
+  ASSERT_EQ(transform.getInverse(), expected_inverse);
+}
+
 // TODO: test shear and deskew
 INSTANTIATE_TEST_SUITE_P(InstantiationName, TestTransform, ::testing::ValuesIn(getParameters()));
