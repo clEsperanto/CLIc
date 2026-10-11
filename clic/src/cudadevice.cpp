@@ -218,24 +218,6 @@ CUDADevice::finish() const -> void
   }
 }
 
-auto
-CUDADevice::setWaitToFinish(bool flag) -> void
-{
-  waitFinish = flag;
-}
-
-auto
-CUDADevice::getWaitToFinish() const -> bool
-{
-  return waitFinish;
-}
-
-auto
-CUDADevice::isInitialized() const -> bool
-{
-  return initialized;
-}
-
 // ============================================================================
 // Device properties
 // ============================================================================
@@ -435,26 +417,6 @@ CUDADevice::getInfoExtended() const -> std::string
 // ============================================================================
 // Program cache
 // ============================================================================
-
-auto
-CUDADevice::getProgramFromCache(const std::string & key) const -> std::shared_ptr<void>
-{
-  if (!cache)
-  {
-    return nullptr;
-  }
-  return cache->get(key);
-}
-
-auto
-CUDADevice::addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void
-{
-  if (!cache)
-  {
-    return;
-  }
-  cache->put(key, std::move(program));
-}
 
 #endif // USE_CUDA
 

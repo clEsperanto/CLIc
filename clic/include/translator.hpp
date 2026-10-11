@@ -1,9 +1,6 @@
 #pragma once
 
-#include <functional>
 #include <string>
-#include <unordered_map>
-#include <vector>
 
 /// Translates OpenCL kernel source code to equivalent CUDA source code at runtime.
 ///
@@ -15,17 +12,14 @@
 ///   - Atomic operations (atomic_add → atomicAdd, etc.)
 ///   - Type conversion functions (convert_int, convert_float, etc.)
 ///   - Math function differences (native_*, half_*)
-///   - Image/sampler stubs
+///   - Sampler stubs
 ///   - Vector component access (.sN → .x/.y/.z/.w)
 ///
 /// Limitations:
 ///   - Does not parse full AST; relies on text substitution
-///   - Complex image read/write may need manual intervention
+///   - OpenCL images (image2d_t, read_image*) are not translated: CUDA images are emulated as buffers
 ///   - Nested vector constructor braces may confuse brace matching
 ///   - OpenCL 2.0+ features (pipes, SVM, work_group_*) are not handled
-///
-/// ToDo:
-///   - Add support for convert_<type>_sat functions
 class OpenCLToCUDATranslator
 {
 public:
@@ -39,85 +33,6 @@ public:
   /// Translate in-place.
   auto
   translateInPlace(std::string & code) const -> void;
-
-private:
-  // ── Replacement helpers ────────────────────────────────────────────
-
-  /// Simple global find-and-replace (all occurrences).
-  static auto
-  replaceAll(std::string & str, const std::string & from, const std::string & to) -> void;
-
-  /// Word-boundary-aware replacement: only matches 'from' when not surrounded
-  /// by alphanumeric or underscore characters.
-  static auto
-  replaceWord(std::string & str, const std::string & from, const std::string & to) -> void;
-
-  /// Suffix-boundary-aware replacement: only matches 'from' when not followed
-  /// by an alphanumeric or underscore character (enforces word boundary at end only).
-  static auto
-  replaceSuffix(std::string & str, const std::string & from, const std::string & to) -> void;
-
-  /// Replace OpenCL compound-literal vector constructors:
-  ///   (typeN){ a, b, ... };  →  make_typeN( a, b, ... );
-  /// Handles nested parentheses inside the braces.
-  static auto
-  replaceVectorConstructor(std::string & code, const std::string & openclCtor, const std::string & cudaCtor) -> void;
-
-  /// Collapse runs of multiple spaces into a single space, in-place.
-  static auto
-  collapseSpaces(std::string & code) -> void;
-
-  /// Collapse runs of 3+ newlines into exactly 2, in-place.
-  static auto
-  collapseNewlines(std::string & code) -> void;
-
-  /// Replace clamp(a, b, c) with min(max(a, b), c) using parenthesis-matching.
-  static auto
-  replaceClamp(std::string & code) -> void;
-
-  // ── Translation passes (applied in order) ──────────────────────────
-
-  static auto
-  translatePragmas(std::string & code) -> void;
-
-  static auto
-  translateSamplers(std::string & code) -> void;
-
-  static auto
-  translateQualifiers(std::string & code) -> void;
-
-  static auto
-  translateAddressSpaces(std::string & code) -> void;
-
-  static auto
-  translateWorkItemFunctions(std::string & code) -> void;
-
-  static auto
-  translateSynchronization(std::string & code) -> void;
-
-  static auto
-  translateVectorConstructors(std::string & code) -> void;
-
-  static auto
-  translateVectorAccess(std::string & code) -> void;
-
-  static auto
-  translateAtomics(std::string & code) -> void;
-
-  static auto
-  translateTypeConversions(std::string & code) -> void;
-
-  static auto
-  translateMathFunctions(std::string & code) -> void;
-
-  static auto
-  translateImageOperations(std::string & code) -> void;
-
-  static auto
-  translateMiscBuiltins(std::string & code) -> void;
-
-  static auto
-  cleanupDoubleQualifiers(std::string & code) -> void;
 };
 
 /// Translates OpenCL kernel source code to equivalent Metal Shading Language (MSL)
@@ -147,62 +62,4 @@ public:
 
   auto
   translateInPlace(std::string & code) const -> void;
-
-private:
-  static auto
-  replaceAll(std::string & str, const std::string & from, const std::string & to) -> void;
-
-  static auto
-  replaceWord(std::string & str, const std::string & from, const std::string & to) -> void;
-
-  static auto
-  collapseSpaces(std::string & code) -> void;
-
-  static auto
-  collapseNewlines(std::string & code) -> void;
-
-  static auto
-  appendMetalBuiltinKernelArgs(std::string & code) -> void;
-
-  static auto
-  translateKernelScalarArgs(std::string & code) -> void;
-
-  static auto
-  translatePragmas(std::string & code) -> void;
-
-  static auto
-  translateSamplers(std::string & code) -> void;
-
-  static auto
-  translateQualifiers(std::string & code) -> void;
-
-  static auto
-  translateAddressSpaces(std::string & code) -> void;
-
-  static auto
-  translateVectorConstructors(std::string & code) -> void;
-
-  static auto
-  translateWorkItemFunctions(std::string & code) -> void;
-
-  static auto
-  translateSynchronization(std::string & code) -> void;
-
-  static auto
-  translateAtomics(std::string & code) -> void;
-
-  static auto
-  translateCompareExchange(std::string & code) -> void;
-
-  static auto
-  translateBitcast(std::string & code) -> void;
-
-  static auto
-  translateRemovePrintf(std::string & code) -> void;
-
-  static auto
-  translateMathFunctions(std::string & code) -> void;
-
-  static auto
-  cleanupCode(std::string & code) -> void;
 };

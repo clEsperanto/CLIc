@@ -301,23 +301,6 @@ TEST(TestCUDATranslator, mathFunctions)
   EXPECT_TRUE(lacks(code, "half_"));
 }
 
-TEST(TestCUDATranslator, imageOperations)
-{
-  const std::string code = toCUDA("void f(__read_only image3d_t a, __write_only image3d_t b, __read_only image2d_t c,"
-                                  " __write_only image2d_t d, read_only image3d_t e, write_only image3d_t f,"
-                                  " read_only image2d_t g, write_only image2d_t h, image2d_t i, image3d_t j)\n"
-                                  "{ read_imagef(a, s, p); read_imagei(a, s, p); read_imageui(a, s, p);"
-                                  " get_image_width(a); get_image_height(a); get_image_depth(a); }");
-  EXPECT_EQ(count(code, "cudaTextureObject_t"), 6);
-  EXPECT_EQ(count(code, "cudaSurfaceObject_t"), 4);
-  EXPECT_TRUE(contains(code, "tex2D<float4>(a, s, p);"));
-  EXPECT_TRUE(contains(code, "tex2D<int4>(a, s, p);"));
-  EXPECT_TRUE(contains(code, "tex2D<uint4>(a, s, p);"));
-  EXPECT_TRUE(contains(code, "/* get_image_width */ (a);"));
-  EXPECT_TRUE(contains(code, "/* get_image_height */ (a);"));
-  EXPECT_TRUE(contains(code, "/* get_image_depth */ (a);"));
-}
-
 TEST(TestCUDATranslator, typeAliasesAndClamp)
 {
   const std::string code = toCUDA("uint a; uint3 b; ushort c; uchar4 d; ulong e; uchar f;\n"

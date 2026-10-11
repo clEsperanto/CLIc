@@ -1,11 +1,15 @@
 #include "translator.hpp"
+#include "translator_common.hpp"
 
-#include <cctype>
 #include <sstream>
+#include <utility>
 #include <vector>
+
+using namespace cle::detail;
 
 namespace
 {
+
 // OpenCL atomic_cmpxchg takes `volatile` pointers, CUDA atomicCAS does not: drop the qualifier. Each operand is
 // deduced separately and converted to the pointee type, as OpenCL code often mixes signed and unsigned values.
 constexpr const char * atomicCmpxchgHelper = R"CU(
@@ -16,24 +20,19 @@ __device__ inline T cle_atomic_cmpxchg(volatile T * ptr, C cmp, V val)
 }
 )CU";
 
-/// Position of the bracket closing the one at `open` (`(`/`)` or `{`/`}`), or npos
+using Replacements = std::vector<std::pair<std::string, std::string>>;
+
+/// Apply the replacements in order (all occurrences of each)
 auto
-findClosing(const std::string & code, size_t open, char open_char, char close_char) -> size_t
+replaceEach(std::string & code, const Replacements & replacements) -> void
 {
-  int depth = 0;
-  for (size_t i = open; i < code.size(); ++i)
+  for (const auto & [from, to] : replacements)
   {
-    if (code[i] == open_char)
-    {
-      ++depth;
-    }
-    else if (code[i] == close_char && --depth == 0)
-    {
-      return i;
-    }
+    replaceAll(code, from, to);
   }
-  return std::string::npos;
 }
+
+const std::vector<std::string> scalarTypes = { "char", "uchar", "short", "ushort", "int", "uint", "long", "ulong", "float", "double" };
 
 /**
  * @brief Give every kernel the global size requested by the host (3 trailing `int` parameters, passed by
@@ -55,29 +54,19 @@ addGlobalSizeParameters(std::string & code) -> void
   const std::string guard = "\n  if (get_global_id(0) >= cle_global_size_0 || get_global_id(1) >= cle_global_size_1 || get_global_id(2) >= "
                             "cle_global_size_2) return;";
 
-  size_t pos = 0;
-  while ((pos = code.find(marker, pos)) != std::string::npos)
-  {
-    const size_t open_paren = code.find('(', pos);
-    const size_t close_paren = (open_paren == std::string::npos) ? open_paren : findClosing(code, open_paren, '(', ')');
-    const size_t open_brace = (close_paren == std::string::npos) ? close_paren : code.find('{', close_paren);
+  forEachKernelSignature(code, marker, [&](size_t start, size_t open_paren, size_t close_paren) -> size_t {
+    const size_t open_brace = code.find('{', close_paren);
     const size_t close_brace = (open_brace == std::string::npos) ? open_brace : findClosing(code, open_brace, '{', '}');
     if (close_brace == std::string::npos || code.find_first_not_of(" \t\r\n", close_paren + 1) != open_brace) // e.g. a prototype
     {
-      pos += marker.size();
-      continue;
+      return start + marker.size();
     }
 
     // body: get_global_size(d) -> requested size
     std::string body = code.substr(open_brace + 1, close_brace - open_brace - 1);
     for (const char dim : { '0', '1', '2' })
     {
-      const std::string from = std::string("get_global_size(") + dim + ")";
-      const std::string to = std::string("cle_global_size_") + dim;
-      for (size_t at = body.find(from); at != std::string::npos; at = body.find(from, at + to.size()))
-      {
-        body.replace(at, from.size(), to);
-      }
+      replaceAll(body, std::string("get_global_size(") + dim + ")", std::string("cle_global_size_") + dim);
     }
     if (!uses_barrier)
     {
@@ -90,16 +79,303 @@ addGlobalSizeParameters(std::string & code) -> void
     const std::string new_params = no_params ? params : current + ", " + params;
 
     const std::string kernel =
-      code.substr(pos, open_paren + 1 - pos) + new_params + ")" + code.substr(close_paren + 1, open_brace - close_paren) + body + "}";
-    code.replace(pos, close_brace + 1 - pos, kernel);
-    pos += kernel.size();
+      code.substr(start, open_paren + 1 - start) + new_params + ")" + code.substr(close_paren + 1, open_brace - close_paren) + body + "}";
+    code.replace(start, close_brace + 1 - start, kernel);
+    return start + kernel.size();
+  });
+}
+
+/// Comment out OpenCL pragmas and version defines
+auto
+translatePragmas(std::string & code) -> void
+{
+  replaceAll(code, "#pragma OPENCL", "// #pragma OPENCL");
+
+  // remaining #pragma lines (unroll, ...), not commented twice
+  std::istringstream stream(code);
+  std::ostringstream result;
+  std::string        line;
+  while (std::getline(stream, line))
+  {
+    auto trimmed = line;
+    trimmed.erase(0, trimmed.find_first_not_of(" \t"));
+    if (trimmed.rfind("#pragma", 0) == 0 && trimmed.find("// #pragma") == std::string::npos)
+    {
+      result << "// ";
+    }
+    result << line << "\n";
+  }
+  code = result.str();
+
+  replaceAll(code, "#define CL_VERSION_", "// #define CL_VERSION_");
+}
+
+/// Samplers become plain ints, sampler flags integer literals (CUDA doesn't use them)
+auto
+translateSamplers(std::string & code) -> void
+{
+  replaceEach(code,
+              { { "__constant sampler_t", "__device__ int" },
+                { "const sampler_t", "__device__ int" },
+                { "sampler_t", "int" },
+                { "CLK_NORMALIZED_COORDS_FALSE", "0" },
+                { "CLK_NORMALIZED_COORDS_TRUE", "1" },
+                { "CLK_ADDRESS_CLAMP_TO_EDGE", "0" },
+                { "CLK_ADDRESS_CLAMP", "0" },
+                { "CLK_ADDRESS_REPEAT", "0" },
+                { "CLK_ADDRESS_NONE", "0" },
+                { "CLK_FILTER_NEAREST", "0" },
+                { "CLK_FILTER_LINEAR", "0" } });
+}
+
+/// Kernel entry points and device functions
+auto
+translateQualifiers(std::string & code) -> void
+{
+  replaceEach(code,
+              { { "__kernel void", "extern \"C\" __global__ void" },
+                { "kernel void", "extern \"C\" __global__ void" },
+                { "__attribute__((reqd_work_group_size(", "// __attribute__((reqd_work_group_size(" } });
+  replaceWord(code, "inline", "__device__ inline");
+}
+
+auto
+translateAddressSpaces(std::string & code) -> void
+{
+  replaceSuffix(code, "__global", ""); // CUDA uses plain pointers; keeps "__global__"
+  replaceAll(code, "__local ", "__shared__ ");
+  replaceSuffix(code, "__constant", "__constant__");
+  replaceEach(code, { { "__private ", "" }, { "__private", "" } });
+}
+
+/// get_<function>(d) -> CUDA built-ins, cast to int as they are unsigned
+auto
+translateWorkItemFunctions(std::string & code) -> void
+{
+  // '@' stands for the axis x, y or z
+  static const Replacements functions = {
+    { "get_global_id", "((int)(blockDim.@ * blockIdx.@ + threadIdx.@))" },
+    { "get_local_id", "((int)threadIdx.@)" },
+    { "get_group_id", "((int)blockIdx.@)" },
+    { "get_local_size", "((int)blockDim.@)" },
+    { "get_global_size", "((int)(gridDim.@ * blockDim.@))" },
+    { "get_num_groups", "((int)gridDim.@)" },
+  };
+  for (const auto & [function, builtin] : functions)
+  {
+    for (const auto & [dim, axis] : { std::pair{ '0', "x" }, std::pair{ '1', "y" }, std::pair{ '2', "z" } })
+    {
+      std::string to = builtin;
+      replaceAll(to, "@", axis);
+      replaceAll(code, function + "(" + dim + ")", to);
+    }
   }
 }
-} // namespace
 
-// ═══════════════════════════════════════════════════════════════════════════
-//  Public API
-// ═══════════════════════════════════════════════════════════════════════════
+auto
+translateSynchronization(std::string & code) -> void
+{
+  // read_/write_ fences first: "mem_fence(" is a suffix of their names. __threadfence is approximate.
+  replaceEach(code,
+              { { "barrier(CLK_LOCAL_MEM_FENCE)", "__syncthreads()" },
+                { "barrier(CLK_GLOBAL_MEM_FENCE)", "__syncthreads()" },
+                { "barrier(CLK_LOCAL_MEM_FENCE | CLK_GLOBAL_MEM_FENCE)", "__syncthreads()" },
+                { "barrier(CLK_GLOBAL_MEM_FENCE | CLK_LOCAL_MEM_FENCE)", "__syncthreads()" },
+                { "read_mem_fence(CLK_GLOBAL_MEM_FENCE)", "__threadfence()" },
+                { "write_mem_fence(CLK_GLOBAL_MEM_FENCE)", "__threadfence()" },
+                { "mem_fence(CLK_GLOBAL_MEM_FENCE)", "__threadfence()" },
+                { "mem_fence(CLK_LOCAL_MEM_FENCE)", "__threadfence_block()" } });
+}
+
+/// (typeN)(a, b) and (typeN){ a, b } -> make_typeN(a, b)
+auto
+translateVectorConstructors(std::string & code) -> void
+{
+  std::vector<std::string> vector_types;
+  for (const auto & type : scalarTypes)
+  {
+    for (const char n : { '2', '3', '4' })
+    {
+      vector_types.push_back(type + n);
+    }
+  }
+
+  // functional casts first; preceded by an alphanumeric character, it is not a cast
+  for (const auto & type : vector_types)
+  {
+    const std::string pattern = "(" + type + ")(";
+    const std::string replacement = "make_" + type + "(";
+    size_t            pos = 0;
+    while ((pos = code.find(pattern, pos)) != std::string::npos)
+    {
+      if (pos > 0 && std::isalnum(static_cast<unsigned char>(code[pos - 1])))
+      {
+        pos += pattern.size();
+        continue;
+      }
+      code.replace(pos, pattern.size(), replacement);
+      pos += replacement.size();
+    }
+  }
+
+  // compound literals: the matching '}' becomes ')' (nested braces allowed)
+  for (const auto & type : vector_types)
+  {
+    const std::string pattern = "(" + type + "){";
+    const std::string replacement = "make_" + type + "(";
+    for (size_t pos = code.find(pattern); pos != std::string::npos; pos = code.find(pattern, pos))
+    {
+      code.replace(pos, pattern.size(), replacement);
+      pos += replacement.size();
+      int    depth = 1;
+      size_t i = pos;
+      for (; i < code.size() && depth > 0; ++i)
+      {
+        depth += (code[i] == '{') - (code[i] == '}');
+      }
+      if (depth == 0)
+      {
+        code[i - 1] = ')';
+      }
+    }
+  }
+}
+
+/// .s0 - .s3 -> .x - .w (the higher components have no CUDA equivalent)
+auto
+translateVectorAccess(std::string & code) -> void
+{
+  for (const auto & [from, to] : Replacements{ { ".s0", ".x" }, { ".s1", ".y" }, { ".s2", ".z" }, { ".s3", ".w" } })
+  {
+    replaceSuffix(code, from, to);
+  }
+}
+
+auto
+translateAtomics(std::string & code) -> void
+{
+  replaceEach(code,
+              { { "atomic_add(", "atomicAdd(" },
+                { "atomic_sub(", "atomicSub(" },
+                { "atomic_xchg(", "atomicExch(" },
+                { "atomic_inc(", "atomicAdd(" }, // NOTE: CUDA atomicInc has different semantics
+                { "atomic_dec(", "atomicSub(" }, // NOTE: CUDA atomicDec has different semantics
+                { "atomic_min(", "atomicMin(" },
+                { "atomic_max(", "atomicMax(" },
+                { "atomic_and(", "atomicAnd(" },
+                { "atomic_or(", "atomicOr(" },
+                { "atomic_xor(", "atomicXor(" },
+                { "atomic_cmpxchg(", "cle_atomic_cmpxchg(" }, // atomicCAS without volatile, see atomicCmpxchgHelper
+                // OpenCL 2.0 C11-style atomics (basic mapping)
+                { "atomic_fetch_add(", "atomicAdd(" },
+                { "atomic_fetch_sub(", "atomicSub(" },
+                { "atomic_fetch_min(", "atomicMin(" },
+                { "atomic_fetch_max(", "atomicMax(" },
+                { "atomic_fetch_and(", "atomicAnd(" },
+                { "atomic_fetch_or(", "atomicOr(" },
+                { "atomic_fetch_xor(", "atomicXor(" } });
+}
+
+/// convert_<type>[_sat][_rounding](x) -> (type)(x), convert_<type>N(x) -> make_<type>N(x), as_<type> -> intrinsics
+auto
+translateTypeConversions(std::string & code) -> void
+{
+  // rounding / saturation have no cast equivalent: dropped. Longest suffixes first.
+  static const std::vector<std::string> suffixes = { "_sat_rte", "_sat_rtz", "_sat_rtp", "_sat_rtn", "_sat",
+                                                     "_rte",     "_rtz",     "_rtp",     "_rtn",     "" };
+  for (const auto & type : scalarTypes)
+  {
+    for (const auto & suffix : suffixes)
+    {
+      replaceAll(code, "convert_" + type + suffix + "(", "(" + type + ")(");
+    }
+  }
+  // rough approximation: a true component-wise conversion would need per-element casts
+  for (const auto & type : scalarTypes)
+  {
+    for (const char * n : { "2", "3", "4", "8", "16" })
+    {
+      replaceAll(code, "convert_" + type + n + "(", "make_" + type + n + "(");
+    }
+  }
+  replaceEach(code, { { "as_float(", "__int_as_float(" }, { "as_int(", "__float_as_int(" }, { "as_uint(", "__float_as_uint(" } });
+}
+
+/// native_* and half_* (fast, lower accuracy) -> CUDA fast intrinsics; mad -> fma
+auto
+translateMathFunctions(std::string & code) -> void
+{
+  static const Replacements functions = {
+    { "sin", "__sinf" },     { "cos", "__cosf" },  { "tan", "__tanf" },      { "exp", "__expf" },        { "exp2", "exp2f" },
+    { "exp10", "__exp10f" }, { "log", "__logf" },  { "log2", "__log2f" },    { "log10", "__log10f" },    { "sqrt", "__fsqrt_rn" },
+    { "rsqrt", "rsqrtf" },   { "powr", "__powf" }, { "recip", "__frcp_rn" }, { "divide", "__fdividef" },
+  };
+  for (const std::string prefix : { "native_", "half_" })
+  {
+    for (const auto & [function, intrinsic] : functions)
+    {
+      replaceAll(code, prefix + function + "(", intrinsic + "(");
+    }
+  }
+  replaceAll(code, "mad(", "fma(");
+}
+
+/// clamp(x, lo, hi) -> min(max(x, lo), hi) (no clamp built-in in CUDA)
+auto
+replaceClamp(std::string & code) -> void
+{
+  const std::string tag = "clamp";
+  for (size_t pos = code.find(tag); pos != std::string::npos; pos = code.find(tag, pos))
+  {
+    size_t open = pos + tag.size();
+    while (open < code.size() && code[open] == ' ')
+    {
+      ++open;
+    }
+    const bool   is_call = !(pos > 0 && isWordChar(code[pos - 1])) && open < code.size() && code[open] == '(';
+    const size_t close = is_call ? findClosing(code, open) : std::string::npos;
+    const auto   commas = (close == std::string::npos) ? std::vector<size_t>{} : topLevelCommas(code, open + 1, close);
+    if (commas.size() < 2)
+    {
+      pos += tag.size();
+      continue;
+    }
+    const std::string replacement = "min(max(" + code.substr(open + 1, commas[0] - open - 1) + "," +
+                                    code.substr(commas[0] + 1, commas[1] - commas[0] - 1) + ")," +
+                                    code.substr(commas[1] + 1, close - commas[1] - 1) + ")";
+    code.replace(pos, close + 1 - pos, replacement);
+    pos += replacement.size();
+  }
+}
+
+auto
+translateMiscBuiltins(std::string & code) -> void
+{
+  replaceEach(code, { { "CLK_LOCAL_MEM_FENCE", "0" }, { "CLK_GLOBAL_MEM_FENCE", "0" } });
+
+  // OpenCL type aliases missing in NVRTC; whole words only (uchar2, uint3, ... are CUDA built-ins)
+  replaceWord(code, "uchar", "unsigned char");
+  replaceWord(code, "ushort", "unsigned short");
+  replaceWord(code, "uint", "unsigned int");
+  replaceWord(code, "ulong", "unsigned long");
+
+  replaceClamp(code);
+}
+
+/// Duplicate qualifiers introduced by the passes, and the whitespace left by removals
+auto
+cleanup(std::string & code) -> void
+{
+  replaceEach(code,
+              { { "__device__ __device__", "__device__" },
+                { "__global__ __global__", "__global__" },
+                { "__shared__ __shared__", "__shared__" },
+                { "__constant__ __constant__", "__constant__" },
+                { "extern \"C\" extern \"C\"", "extern \"C\"" } });
+  collapseWhitespace(code);
+}
+
+} // namespace
 
 auto
 OpenCLToCUDATranslator::translate(const std::string & openclSource) const -> std::string
@@ -115,7 +391,6 @@ OpenCLToCUDATranslator::translateInPlace(std::string & code) const -> void
   addGlobalSizeParameters(code); // first: works on the OpenCL kernel signatures
   translatePragmas(code);
   translateSamplers(code);
-  translateImageOperations(code);
   translateQualifiers(code);
   translateAddressSpaces(code);
   translateWorkItemFunctions(code);
@@ -126,725 +401,11 @@ OpenCLToCUDATranslator::translateInPlace(std::string & code) const -> void
   translateTypeConversions(code);
   translateMathFunctions(code);
   translateMiscBuiltins(code);
-  cleanupDoubleQualifiers(code);
+  cleanup(code);
 
   // Added last, so that the passes above do not rewrite it
   if (code.find("cle_atomic_cmpxchg(") != std::string::npos)
   {
     code.insert(0, atomicCmpxchgHelper);
   }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Replacement helpers
-// ═══════════════════════════════════════════════════════════════════════════
-
-auto
-OpenCLToCUDATranslator::replaceAll(std::string & str, const std::string & from, const std::string & to) -> void
-{
-  if (from.empty())
-    return;
-  size_t pos = 0;
-  while ((pos = str.find(from, pos)) != std::string::npos)
-  {
-    str.replace(pos, from.size(), to);
-    pos += to.size();
-  }
-}
-
-static auto
-isWordChar(char c) -> bool
-{
-  return std::isalnum(static_cast<unsigned char>(c)) || c == '_';
-}
-
-auto
-OpenCLToCUDATranslator::replaceWord(std::string & str, const std::string & from, const std::string & to) -> void
-{
-  if (from.empty())
-    return;
-  size_t pos = 0;
-  while ((pos = str.find(from, pos)) != std::string::npos)
-  {
-    bool wordBefore = (pos > 0 && isWordChar(str[pos - 1]));
-    bool wordAfter = (pos + from.size() < str.size() && isWordChar(str[pos + from.size()]));
-    if (!wordBefore && !wordAfter)
-    {
-      str.replace(pos, from.size(), to);
-      pos += to.size();
-    }
-    else
-    {
-      pos += from.size();
-    }
-  }
-}
-
-auto
-OpenCLToCUDATranslator::replaceSuffix(std::string & str, const std::string & from, const std::string & to) -> void
-{
-  if (from.empty())
-    return;
-  size_t pos = 0;
-  while ((pos = str.find(from, pos)) != std::string::npos)
-  {
-    bool wordAfter = (pos + from.size() < str.size() && isWordChar(str[pos + from.size()]));
-    if (!wordAfter)
-    {
-      str.replace(pos, from.size(), to);
-      pos += to.size();
-    }
-    else
-    {
-      pos += from.size();
-    }
-  }
-}
-
-auto
-OpenCLToCUDATranslator::collapseSpaces(std::string & code) -> void
-{
-  size_t write = 0;
-  bool   prevSpace = false;
-  for (size_t read = 0; read < code.size(); ++read)
-  {
-    if (code[read] == ' ')
-    {
-      if (!prevSpace)
-      {
-        code[write++] = ' ';
-        prevSpace = true;
-      }
-    }
-    else
-    {
-      code[write++] = code[read];
-      prevSpace = false;
-    }
-  }
-  code.resize(write);
-}
-
-auto
-OpenCLToCUDATranslator::collapseNewlines(std::string & code) -> void
-{
-  size_t write = 0;
-  size_t nlCount = 0;
-  for (size_t read = 0; read < code.size(); ++read)
-  {
-    if (code[read] == '\n')
-    {
-      ++nlCount;
-      if (nlCount <= 2)
-        code[write++] = '\n';
-    }
-    else
-    {
-      nlCount = 0;
-      code[write++] = code[read];
-    }
-  }
-  code.resize(write);
-}
-
-auto
-OpenCLToCUDATranslator::replaceClamp(std::string & code) -> void
-{
-  const std::string tag = "clamp";
-  size_t            pos = 0;
-  while ((pos = code.find(tag, pos)) != std::string::npos)
-  {
-    if (pos > 0 && isWordChar(code[pos - 1]))
-    {
-      pos += tag.size();
-      continue;
-    }
-
-    size_t parenStart = pos + tag.size();
-    while (parenStart < code.size() && code[parenStart] == ' ')
-      ++parenStart;
-    if (parenStart >= code.size() || code[parenStart] != '(')
-    {
-      pos += tag.size();
-      continue;
-    }
-
-    int    depth = 1;
-    size_t i = parenStart + 1;
-    size_t comma1 = std::string::npos;
-    size_t comma2 = std::string::npos;
-    while (i < code.size() && depth > 0)
-    {
-      if (code[i] == '(')
-        ++depth;
-      else if (code[i] == ')')
-        --depth;
-      else if (code[i] == ',' && depth == 1)
-      {
-        if (comma1 == std::string::npos)
-          comma1 = i;
-        else if (comma2 == std::string::npos)
-          comma2 = i;
-      }
-      ++i;
-    }
-
-    if (depth != 0 || comma1 == std::string::npos || comma2 == std::string::npos)
-    {
-      pos += tag.size();
-      continue;
-    }
-
-    std::string arg1 = code.substr(parenStart + 1, comma1 - parenStart - 1);
-    std::string arg2 = code.substr(comma1 + 1, comma2 - comma1 - 1);
-    std::string arg3 = code.substr(comma2 + 1, (i - 1) - comma2 - 1);
-
-    std::string replacement = "min(max(" + arg1 + "," + arg2 + ")," + arg3 + ")";
-    code.replace(pos, i - pos, replacement);
-    pos += replacement.size();
-  }
-}
-
-auto
-OpenCLToCUDATranslator::replaceVectorConstructor(std::string & code, const std::string & openclCtor, const std::string & cudaCtor) -> void
-{
-  // Match:  (typeN){ expr, expr, ... }
-  // Replace with:  make_typeN( expr, expr, ... )
-  //
-  // We do brace-depth tracking so nested expressions work correctly.
-  size_t pos = 0;
-  while ((pos = code.find(openclCtor, pos)) != std::string::npos)
-  {
-    // Replace the opening  "(typeN){"  with  "make_typeN("
-    code.replace(pos, openclCtor.size(), cudaCtor);
-    pos += cudaCtor.size();
-
-    // Now find the matching closing brace, respecting nesting.
-    int    depth = 1;
-    size_t i = pos;
-    while (i < code.size() && depth > 0)
-    {
-      if (code[i] == '{')
-        ++depth;
-      else if (code[i] == '}')
-        --depth;
-      ++i;
-    }
-
-    if (depth == 0)
-    {
-      // i now points one past the '}'. Replace '}' (at i-1) with ')'.
-      code[i - 1] = ')';
-    }
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Pragmas
-// ═══════════════════════════════════════════════════════════════════════════
-
-auto
-OpenCLToCUDATranslator::translatePragmas(std::string & code) -> void
-{
-  // Comment out OpenCL pragmas (extensions, FP-contract, etc.)
-  replaceAll(code, "#pragma OPENCL", "// #pragma OPENCL");
-
-  // General catch-all: comment out remaining #pragma if not already commented
-  // We do a line-by-line scan to avoid double-commenting.
-  std::istringstream stream(code);
-  std::ostringstream result;
-  std::string        line;
-  while (std::getline(stream, line))
-  {
-    // Trim leading whitespace to check content
-    auto trimmed = line;
-    trimmed.erase(0, trimmed.find_first_not_of(" \t"));
-
-    if (trimmed.rfind("#pragma", 0) == 0 && trimmed.find("// #pragma") == std::string::npos)
-    {
-      result << "// " << line << "\n";
-    }
-    else
-    {
-      result << line << "\n";
-    }
-  }
-  code = result.str();
-
-  // Remove OpenCL version defines that make no sense in CUDA
-  replaceAll(code, "#define CL_VERSION_", "// #define CL_VERSION_");
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Samplers
-// ═══════════════════════════════════════════════════════════════════════════
-
-auto
-OpenCLToCUDATranslator::translateSamplers(std::string & code) -> void
-{
-  // "__constant sampler_t <name> = ..." → "__device__ int <name> = ..."
-  replaceAll(code, "__constant sampler_t", "__device__ int");
-  replaceAll(code, "const sampler_t", "__device__ int");
-  replaceAll(code, "sampler_t", "int");
-
-  // Sampler flag constants → integer literals (CUDA doesn't use them the same way)
-  replaceAll(code, "CLK_NORMALIZED_COORDS_FALSE", "0");
-  replaceAll(code, "CLK_NORMALIZED_COORDS_TRUE", "1");
-  replaceAll(code, "CLK_ADDRESS_CLAMP_TO_EDGE", "0");
-  replaceAll(code, "CLK_ADDRESS_CLAMP", "0");
-  replaceAll(code, "CLK_ADDRESS_REPEAT", "0");
-  replaceAll(code, "CLK_ADDRESS_NONE", "0");
-  replaceAll(code, "CLK_FILTER_NEAREST", "0");
-  replaceAll(code, "CLK_FILTER_LINEAR", "0");
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Kernel and function qualifiers
-// ═══════════════════════════════════════════════════════════════════════════
-
-auto
-OpenCLToCUDATranslator::translateQualifiers(std::string & code) -> void
-{
-  // Kernel entry point
-  replaceAll(code, "__kernel void", "extern \"C\" __global__ void");
-  replaceAll(code, "kernel void", "extern \"C\" __global__ void");
-  replaceAll(code, "__attribute__((reqd_work_group_size(", "// __attribute__((reqd_work_group_size(");
-
-  // Non-kernel helper functions declared 'inline' should become __device__
-  replaceWord(code, "inline", "__device__ inline");
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Address-space qualifiers
-// ═══════════════════════════════════════════════════════════════════════════
-
-auto
-OpenCLToCUDATranslator::translateAddressSpaces(std::string & code) -> void
-{
-  // __global / global → (nothing, CUDA uses plain pointers for global memory)
-  // But we must be careful not to remove it when it's part of __global__
-  // Strategy: replace "__global " (with trailing space) and "global " when used as qualifier
-
-  replaceSuffix(code, "__global", "");
-
-  // __local → __shared__
-  replaceAll(code, "__local ", "__shared__ ");
-
-  // __constant (standalone, not already replaced) → __constant__
-  replaceSuffix(code, "__constant", "__constant__");
-
-  // __private → (nothing, CUDA local variables are private by default)
-  replaceAll(code, "__private ", "");
-  replaceAll(code, "__private", "");
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Work-item / work-group functions
-// ═══════════════════════════════════════════════════════════════════════════
-
-auto
-OpenCLToCUDATranslator::translateWorkItemFunctions(std::string & code) -> void
-{
-  // get_global_id(dim) — cast to int since blockDim/threadIdx are unsigned
-  replaceAll(code, "get_global_id(0)", "((int)(blockDim.x * blockIdx.x + threadIdx.x))");
-  replaceAll(code, "get_global_id(1)", "((int)(blockDim.y * blockIdx.y + threadIdx.y))");
-  replaceAll(code, "get_global_id(2)", "((int)(blockDim.z * blockIdx.z + threadIdx.z))");
-
-  // get_local_id(dim) — cast to int
-  replaceAll(code, "get_local_id(0)", "((int)threadIdx.x)");
-  replaceAll(code, "get_local_id(1)", "((int)threadIdx.y)");
-  replaceAll(code, "get_local_id(2)", "((int)threadIdx.z)");
-
-  // get_group_id(dim) — cast to int
-  replaceAll(code, "get_group_id(0)", "((int)blockIdx.x)");
-  replaceAll(code, "get_group_id(1)", "((int)blockIdx.y)");
-  replaceAll(code, "get_group_id(2)", "((int)blockIdx.z)");
-
-  // get_local_size(dim) — cast to int
-  replaceAll(code, "get_local_size(0)", "((int)blockDim.x)");
-  replaceAll(code, "get_local_size(1)", "((int)blockDim.y)");
-  replaceAll(code, "get_local_size(2)", "((int)blockDim.z)");
-
-  // get_global_size(dim) — cast to int
-  replaceAll(code, "get_global_size(0)", "((int)(gridDim.x * blockDim.x))");
-  replaceAll(code, "get_global_size(1)", "((int)(gridDim.y * blockDim.y))");
-  replaceAll(code, "get_global_size(2)", "((int)(gridDim.z * blockDim.z))");
-
-  // get_num_groups(dim) — cast to int
-  replaceAll(code, "get_num_groups(0)", "((int)gridDim.x)");
-  replaceAll(code, "get_num_groups(1)", "((int)gridDim.y)");
-  replaceAll(code, "get_num_groups(2)", "((int)gridDim.z)");
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Synchronization
-// ═══════════════════════════════════════════════════════════════════════════
-
-auto
-OpenCLToCUDATranslator::translateSynchronization(std::string & code) -> void
-{
-  // barrier() → __syncthreads()
-  replaceAll(code, "barrier(CLK_LOCAL_MEM_FENCE)", "__syncthreads()");
-  replaceAll(code, "barrier(CLK_GLOBAL_MEM_FENCE)", "__syncthreads()");
-  replaceAll(code, "barrier(CLK_LOCAL_MEM_FENCE | CLK_GLOBAL_MEM_FENCE)", "__syncthreads()");
-  replaceAll(code, "barrier(CLK_GLOBAL_MEM_FENCE | CLK_LOCAL_MEM_FENCE)", "__syncthreads()");
-
-  // mem_fence → __threadfence()  (approximate — semantics differ slightly)
-  // read_/write_ variants first: "mem_fence(" is a suffix of their names
-  replaceAll(code, "read_mem_fence(CLK_GLOBAL_MEM_FENCE)", "__threadfence()");
-  replaceAll(code, "write_mem_fence(CLK_GLOBAL_MEM_FENCE)", "__threadfence()");
-  replaceAll(code, "mem_fence(CLK_GLOBAL_MEM_FENCE)", "__threadfence()");
-  replaceAll(code, "mem_fence(CLK_LOCAL_MEM_FENCE)", "__threadfence_block()");
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Vector constructors
-// ═══════════════════════════════════════════════════════════════════════════
-
-auto
-OpenCLToCUDATranslator::translateVectorConstructors(std::string & code) -> void
-{
-  // Translate functional-style vector casts first: (typeN)(a, b, ...) → make_typeN(a, b, ...)
-  // Must be done before brace-style to avoid confusion
-  static const std::vector<std::string> vecTypeNames = { "char2",  "char3",   "char4",   "uchar2",  "uchar3",  "uchar4", "short2", "short3",
-                                                         "short4", "ushort2", "ushort3", "ushort4", "int2",    "int3",   "int4",   "uint2",
-                                                         "uint3",  "uint4",   "long2",   "long3",   "long4",   "ulong2", "ulong3", "ulong4",
-                                                         "float2", "float3",  "float4",  "double2", "double3", "double4" };
-
-  for (const auto & typeName : vecTypeNames)
-  {
-    std::string pattern = "(" + typeName + ")("; // e.g., "(int3)("
-    std::string replacement = "make_" + typeName + "(";
-    size_t      pos = 0;
-    while ((pos = code.find(pattern, pos)) != std::string::npos)
-    {
-      // Verify this is actually a cast (preceded by space, operator, or paren, not alphanumeric)
-      if (pos == 0 || !std::isalnum(code[pos - 1]))
-      {
-        code.replace(pos, pattern.size(), replacement);
-        pos += replacement.size();
-      }
-      else
-      {
-        pos += pattern.size();
-      }
-    }
-  }
-
-  // List of all standard OpenCL vector types and their sizes.
-  // OpenCL compound literal:  (typeN){ a, b, ... }
-  // CUDA equivalent:          make_typeN( a, b, ... )
-
-  static const std::vector<std::pair<std::string, std::string>> vecTypes = {
-    // char
-    { "(char2){", "make_char2(" },
-    { "(char3){", "make_char3(" },
-    { "(char4){", "make_char4(" },
-    // uchar
-    { "(uchar2){", "make_uchar2(" },
-    { "(uchar3){", "make_uchar3(" },
-    { "(uchar4){", "make_uchar4(" },
-    // short
-    { "(short2){", "make_short2(" },
-    { "(short3){", "make_short3(" },
-    { "(short4){", "make_short4(" },
-    // ushort
-    { "(ushort2){", "make_ushort2(" },
-    { "(ushort3){", "make_ushort3(" },
-    { "(ushort4){", "make_ushort4(" },
-    // int
-    { "(int2){", "make_int2(" },
-    { "(int3){", "make_int3(" },
-    { "(int4){", "make_int4(" },
-    // uint
-    { "(uint2){", "make_uint2(" },
-    { "(uint3){", "make_uint3(" },
-    { "(uint4){", "make_uint4(" },
-    // long
-    { "(long2){", "make_long2(" },
-    { "(long3){", "make_long3(" },
-    { "(long4){", "make_long4(" },
-    // ulong
-    { "(ulong2){", "make_ulong2(" },
-    { "(ulong3){", "make_ulong3(" },
-    { "(ulong4){", "make_ulong4(" },
-    // float
-    { "(float2){", "make_float2(" },
-    { "(float3){", "make_float3(" },
-    { "(float4){", "make_float4(" },
-    // double
-    { "(double2){", "make_double2(" },
-    { "(double3){", "make_double3(" },
-    { "(double4){", "make_double4(" },
-  };
-
-  for (const auto & [from, to] : vecTypes)
-  {
-    replaceVectorConstructor(code, from, to);
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Vector component access
-// ═══════════════════════════════════════════════════════════════════════════
-
-auto
-OpenCLToCUDATranslator::translateVectorAccess(std::string & code) -> void
-{
-  // OpenCL .s0–.s3 → CUDA .x/.y/.z/.w
-  // OpenCL .s4–.s7 and higher are not directly supported in CUDA vector types.
-  // We only handle the first four which map to CUDA's built-in vector fields.
-
-  // Must be careful to only replace when preceded by an identifier character
-  // (letter, digit, underscore, or ')') — indicating member access, not arbitrary text.
-
-  // Use regex for safety: match ".sN" that follows a word character or ')'
-  replaceSuffix(code, ".s0", ".x");
-  replaceSuffix(code, ".s1", ".y");
-  replaceSuffix(code, ".s2", ".z");
-  replaceSuffix(code, ".s3", ".w");
-
-  // Also handle the .lo / .hi accessors for 2-component vectors
-  // .lo → .x   .hi → .y   (only valid for type2, rough approximation)
-  // These are tricky in general so we leave them for now — uncomment if needed:
-  // replaceAll(code, ".lo", ".x");
-  // replaceAll(code, ".hi", ".y");
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Atomic operations
-// ═══════════════════════════════════════════════════════════════════════════
-
-auto
-OpenCLToCUDATranslator::translateAtomics(std::string & code) -> void
-{
-  // OpenCL 1.x atomics → CUDA atomics
-  replaceAll(code, "atomic_add(", "atomicAdd(");
-  replaceAll(code, "atomic_sub(", "atomicSub(");
-  replaceAll(code, "atomic_xchg(", "atomicExch(");
-  replaceAll(code, "atomic_inc(", "atomicAdd("); // NOTE: CUDA atomicInc has different semantics
-  replaceAll(code, "atomic_dec(", "atomicSub("); // NOTE: CUDA atomicDec has different semantics
-  replaceAll(code, "atomic_min(", "atomicMin(");
-  replaceAll(code, "atomic_max(", "atomicMax(");
-  replaceAll(code, "atomic_and(", "atomicAnd(");
-  replaceAll(code, "atomic_or(", "atomicOr(");
-  replaceAll(code, "atomic_xor(", "atomicXor(");
-  replaceAll(code, "atomic_cmpxchg(", "cle_atomic_cmpxchg("); // atomicCAS without volatile, see atomicCmpxchgHelper
-
-  // OpenCL 2.0 C11-style atomics (basic mapping)
-  replaceAll(code, "atomic_fetch_add(", "atomicAdd(");
-  replaceAll(code, "atomic_fetch_sub(", "atomicSub(");
-  replaceAll(code, "atomic_fetch_min(", "atomicMin(");
-  replaceAll(code, "atomic_fetch_max(", "atomicMax(");
-  replaceAll(code, "atomic_fetch_and(", "atomicAnd(");
-  replaceAll(code, "atomic_fetch_or(", "atomicOr(");
-  replaceAll(code, "atomic_fetch_xor(", "atomicXor(");
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Type conversion functions
-// ═══════════════════════════════════════════════════════════════════════════
-
-auto
-OpenCLToCUDATranslator::translateTypeConversions(std::string & code) -> void
-{
-  // OpenCL convert_<type>(x) → CUDA cast or make_ function
-  //
-  // Scalar: convert_int(x)     → (int)(x)
-  // Vector: convert_float4(x)  → make_float4(...)  — imperfect but functional for simple cases
-
-  // Handle scalar conversions with optional rounding/saturation suffixes
-  // e.g., convert_int_rte, convert_float_sat, convert_int_sat_rte
-  static const std::vector<std::string> scalarTypes = { "char", "uchar", "short", "ushort", "int",
-                                                        "uint", "long",  "ulong", "float",  "double" };
-
-  for (const auto & type : scalarTypes)
-  {
-    // Match convert_<type> possibly followed by _sat, _rte, _rtz, _rtp, _rtn
-    // We strip the rounding/saturation suffix (CUDA doesn't have direct equivalents for casts)
-    std::string pattern = "convert_" + type + "_sat_rte(";
-    replaceAll(code, pattern, "(" + type + ")(");
-    pattern = "convert_" + type + "_sat_rtz(";
-    replaceAll(code, pattern, "(" + type + ")(");
-    pattern = "convert_" + type + "_sat_rtp(";
-    replaceAll(code, pattern, "(" + type + ")(");
-    pattern = "convert_" + type + "_sat_rtn(";
-    replaceAll(code, pattern, "(" + type + ")(");
-    pattern = "convert_" + type + "_sat(";
-    replaceAll(code, pattern, "(" + type + ")(");
-    pattern = "convert_" + type + "_rte(";
-    replaceAll(code, pattern, "(" + type + ")(");
-    pattern = "convert_" + type + "_rtz(";
-    replaceAll(code, pattern, "(" + type + ")(");
-    pattern = "convert_" + type + "_rtp(";
-    replaceAll(code, pattern, "(" + type + ")(");
-    pattern = "convert_" + type + "_rtn(";
-    replaceAll(code, pattern, "(" + type + ")(");
-    pattern = "convert_" + type + "(";
-    replaceAll(code, pattern, "(" + type + ")(");
-  }
-
-  // Vector conversions: convert_<type>N(...) → make_<type>N(...)
-  // This is a rough approximation — true component-wise conversion would need per-element casts
-  static const std::vector<std::string> vecSizes = { "2", "3", "4", "8", "16" };
-  for (const auto & type : scalarTypes)
-  {
-    for (const auto & n : vecSizes)
-    {
-      std::string from = "convert_" + type + n + "(";
-      std::string to = "make_" + type + n + "(";
-      replaceAll(code, from, to);
-    }
-  }
-
-  // as_<type> reinterpret casts → reinterpret_cast or __<type>_as_<type> intrinsics
-  // Basic approximation: as_float(x) → __int_as_float(x), etc.
-  replaceAll(code, "as_float(", "__int_as_float(");
-  replaceAll(code, "as_int(", "__float_as_int(");
-  replaceAll(code, "as_uint(", "__float_as_uint(");
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Math functions
-// ═══════════════════════════════════════════════════════════════════════════
-
-auto
-OpenCLToCUDATranslator::translateMathFunctions(std::string & code) -> void
-{
-  // OpenCL native_* and half_* → CUDA fast intrinsics (__*f)
-  // native_* are "fast, lower-accuracy" variants.
-  // CUDA provides __sinf, __cosf, __expf, __logf, __powf, __sqrtf, etc.
-
-  replaceAll(code, "native_sin(", "__sinf(");
-  replaceAll(code, "native_cos(", "__cosf(");
-  replaceAll(code, "native_tan(", "__tanf(");
-  replaceAll(code, "native_exp(", "__expf(");
-  replaceAll(code, "native_exp2(", "exp2f(");
-  replaceAll(code, "native_exp10(", "__exp10f(");
-  replaceAll(code, "native_log(", "__logf(");
-  replaceAll(code, "native_log2(", "__log2f(");
-  replaceAll(code, "native_log10(", "__log10f(");
-  replaceAll(code, "native_sqrt(", "__fsqrt_rn(");
-  replaceAll(code, "native_rsqrt(", "rsqrtf(");
-  replaceAll(code, "native_powr(", "__powf(");
-  replaceAll(code, "native_recip(", "__frcp_rn(");
-  replaceAll(code, "native_divide(", "__fdividef(");
-
-  // half_* are similar to native_*
-  replaceAll(code, "half_sin(", "__sinf(");
-  replaceAll(code, "half_cos(", "__cosf(");
-  replaceAll(code, "half_tan(", "__tanf(");
-  replaceAll(code, "half_exp(", "__expf(");
-  replaceAll(code, "half_exp2(", "exp2f(");
-  replaceAll(code, "half_exp10(", "__exp10f(");
-  replaceAll(code, "half_log(", "__logf(");
-  replaceAll(code, "half_log2(", "__log2f(");
-  replaceAll(code, "half_log10(", "__log10f(");
-  replaceAll(code, "half_sqrt(", "__fsqrt_rn(");
-  replaceAll(code, "half_rsqrt(", "rsqrtf(");
-  replaceAll(code, "half_powr(", "__powf(");
-  replaceAll(code, "half_recip(", "__frcp_rn(");
-  replaceAll(code, "half_divide(", "__fdividef(");
-
-  // mad() → fma() in CUDA (fused multiply-add)
-  replaceAll(code, "mad(", "fma(");
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Image operations
-// ═══════════════════════════════════════════════════════════════════════════
-
-auto
-OpenCLToCUDATranslator::translateImageOperations(std::string & code) -> void
-{
-  // Image support is highly variable depending on the framework.
-  // Below is a stub that handles the most common patterns.
-  //
-  // In many GPGPU frameworks (e.g., CLIJ), images are actually passed as
-  // flat arrays with index macros, so the image types rarely appear raw.
-  //
-  // For raw OpenCL image usage, a full translation would require
-  // CUDA texture objects and surface objects, which have very different APIs.
-
-  // Image type declarations in kernel parameters:
-  //   __read_only image2d_t → cudaTextureObject_t  (approximate)
-  //   __write_only image2d_t → cudaSurfaceObject_t  (approximate)
-  replaceAll(code, "__read_only image3d_t", "cudaTextureObject_t");
-  replaceAll(code, "__write_only image3d_t", "cudaSurfaceObject_t");
-  replaceAll(code, "__read_only image2d_t", "cudaTextureObject_t");
-  replaceAll(code, "__write_only image2d_t", "cudaSurfaceObject_t");
-  replaceAll(code, "read_only image3d_t", "cudaTextureObject_t");
-  replaceAll(code, "write_only image3d_t", "cudaSurfaceObject_t");
-  replaceAll(code, "read_only image2d_t", "cudaTextureObject_t");
-  replaceAll(code, "write_only image2d_t", "cudaSurfaceObject_t");
-  replaceAll(code, "image2d_t", "cudaTextureObject_t");
-  replaceAll(code, "image3d_t", "cudaTextureObject_t");
-
-  // Basic image read/write — these are very approximate:
-  // read_imagef(img, sampler, coord)  → tex2D<float4>(img, coord.x, coord.y)
-  // This would need proper parenthesis matching for a real implementation.
-  // Left as markers for now:
-  replaceAll(code, "read_imagef(", "tex2D<float4>(");
-  replaceAll(code, "read_imagei(", "tex2D<int4>(");
-  replaceAll(code, "read_imageui(", "tex2D<uint4>(");
-
-  // get_image_width/height/depth
-  replaceAll(code, "get_image_width(", "/* get_image_width */ (");
-  replaceAll(code, "get_image_height(", "/* get_image_height */ (");
-  replaceAll(code, "get_image_depth(", "/* get_image_depth */ (");
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Miscellaneous built-ins
-// ═══════════════════════════════════════════════════════════════════════════
-
-auto
-OpenCLToCUDATranslator::translateMiscBuiltins(std::string & code) -> void
-{
-  // select(a, b, cond) → (cond) ? b : a
-  // This is difficult to do with simple replacement because of arbitrary expressions.
-  // We'll leave a comment marker for now and handle simple cases:
-  // (A full implementation would need expression-aware parenthesis matching.)
-
-  // printf — CUDA supports printf in device code since compute capability 2.0
-  // No change needed, but OpenCL printf has %v format specifiers that CUDA doesn't support.
-
-  // CLK_* constants that might remain
-  replaceAll(code, "CLK_LOCAL_MEM_FENCE", "0");
-  replaceAll(code, "CLK_GLOBAL_MEM_FENCE", "0");
-
-  // OpenCL type aliases — use word boundaries to avoid corrupting vector types
-  // (e.g. uchar2, ushort4, ulong2 are valid CUDA built-ins and must not be touched)
-  replaceWord(code, "uchar", "unsigned char");
-  replaceWord(code, "ushort", "unsigned short");
-  // uint is not defined in CUDA NVRTC, so translate it
-  // Must use word boundary matching to avoid replacing it in identifiers like "uint3"
-  replaceWord(code, "uint", "unsigned int");
-  // "ulong" → "unsigned long"
-  replaceWord(code, "ulong", "unsigned long");
-
-  // Add clamp function for CUDA (not built-in)
-  // OpenCL: clamp(x, lo, hi)  ->  CUDA: min(max(x, lo), hi)
-  replaceClamp(code);
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  Cleanup pass — fix double qualifiers
-// ═══════════════════════════════════════════════════════════════════════════
-
-auto
-OpenCLToCUDATranslator::cleanupDoubleQualifiers(std::string & code) -> void
-{
-  // In case multiple passes introduced duplicate qualifiers
-  replaceAll(code, "__device__ __device__", "__device__");
-  replaceAll(code, "__global__ __global__", "__global__");
-  replaceAll(code, "__shared__ __shared__", "__shared__");
-  replaceAll(code, "__constant__ __constant__", "__constant__");
-  replaceAll(code, "extern \"C\" extern \"C\"", "extern \"C\"");
-
-  // Clean up double spaces introduced by removals
-  collapseSpaces(code);
-
-  // Clean up empty lines (more than 2 consecutive newlines → 2)
-  collapseNewlines(code);
 }

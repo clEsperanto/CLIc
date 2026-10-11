@@ -1,5 +1,4 @@
 #include "backend.hpp"
-#include <functional>
 #include <map>
 #include <sstream>
 
@@ -88,24 +87,18 @@ BackendManager::metalEnabled() -> bool
 auto
 BackendManager::getBackendsList() -> std::vector<std::string>
 {
-  // Define a map to associate backend names with their check functions
-  static std::map<std::string, std::function<bool()>> backendCheckMap = {
-    { "cuda", [cudaEnabled = cudaEnabled]() { return cudaEnabled(); } },
-    { "opencl", [openCLEnabled = openCLEnabled]() { return openCLEnabled(); } },
-    { "metal", [metalEnabled = metalEnabled]() { return metalEnabled(); } }
-  };
+  static const std::map<std::string, bool (*)()> backendChecks = { { "cuda", cudaEnabled },
+                                                                   { "opencl", openCLEnabled },
+                                                                   { "metal", metalEnabled } };
 
   std::vector<std::string> availableBackends;
-
-  // Iterate over the map and check each backend
-  for (const auto & [backend, checkFunction] : backendCheckMap)
+  for (const auto & [backend, isEnabled] : backendChecks)
   {
-    if (checkFunction())
+    if (isEnabled())
     {
       availableBackends.push_back(backend);
     }
   }
-
   return availableBackends;
 }
 
@@ -120,77 +113,40 @@ BackendManager::getInstance() -> BackendManager &
 auto
 BackendManager::setBackend(const std::string & backend) -> void
 {
-  // Define a map to associate backend names with their types and creation functions.
-  // Only register backends that were enabled at compile time.
-  static std::map<std::string, std::pair<Backend::Type, std::function<std::unique_ptr<Backend>()>>> backendMap = {
+  // Backends enabled at compile time, with their runtime availability check, its error message and their factory
+  struct BackendEntry
+  {
+    bool (*isEnabled)();
+    const std::string & (*error)();
+    std::unique_ptr<Backend> (*create)();
+  };
+  static const std::map<std::string, BackendEntry> backendMap = {
 #if USE_CUDA
-    { "cuda", { Backend::Type::CUDA, []() -> std::unique_ptr<Backend> { return std::make_unique<CUDABackend>(); } } },
+    { "cuda", { cudaEnabled, getCudaError, []() -> std::unique_ptr<Backend> { return std::make_unique<CUDABackend>(); } } },
 #endif
 #if USE_OPENCL
-    { "opencl", { Backend::Type::OPENCL, []() -> std::unique_ptr<Backend> { return std::make_unique<OpenCLBackend>(); } } },
+    { "opencl", { openCLEnabled, getOpenCLError, []() -> std::unique_ptr<Backend> { return std::make_unique<OpenCLBackend>(); } } },
 #endif
 #if USE_METAL
-    { "metal", { Backend::Type::METAL, []() -> std::unique_ptr<Backend> { return std::make_unique<MetalBackend>(); } } },
+    { "metal", { metalEnabled, getMetalError, []() -> std::unique_ptr<Backend> { return std::make_unique<MetalBackend>(); } } },
 #endif
   };
 
-  // Check if the requested backend is known (i.e. compiled in)
-  if (backendMap.find(backend) == backendMap.end())
+  const auto entry = backendMap.find(backend);
+  if (entry == backendMap.end())
   {
-    throw std::runtime_error("Unknown backend '" + backend + "'. This build supports: " + [&]() {
-      std::string list;
-      for (const auto & [name, _] : backendMap)
-      {
-        if (!list.empty())
-          list += ", ";
-        list += name;
-      }
-      return list.empty() ? "none" : list;
-    }());
+    std::string list;
+    for (const auto & [name, _] : backendMap)
+    {
+      list += (list.empty() ? "" : ", ") + name;
+    }
+    throw std::runtime_error("Unknown backend '" + backend + "'. This build supports: " + (list.empty() ? "none" : list));
   }
-
-  // Get the type and creation function for the requested backend
-  auto [backend_type, createBackend] = backendMap[backend];
-
-  // Check if the requested backend is available at runtime
-  bool isEnabled = false;
-  switch (backend_type)
+  if (!entry->second.isEnabled())
   {
-    case Backend::Type::CUDA:
-      if (!cudaEnabled())
-      {
-        const std::string & errorReason = getCudaError();
-        throw std::runtime_error("Backend '" + backend + "' is not available: " + errorReason);
-      }
-      isEnabled = true;
-      break;
-    case Backend::Type::OPENCL:
-      if (!openCLEnabled())
-      {
-        const std::string & errorReason = getOpenCLError();
-        throw std::runtime_error("Backend '" + backend + "' is not available: " + errorReason);
-      }
-      isEnabled = true;
-      break;
-    case Backend::Type::METAL:
-      if (!metalEnabled())
-      {
-        const std::string & errorReason = getMetalError();
-        throw std::runtime_error("Backend '" + backend + "' is not available: " + errorReason);
-      }
-      isEnabled = true;
-      break;
-    default:
-      throw std::runtime_error("Unsupported backend type");
+    throw std::runtime_error("Backend '" + backend + "' is not available: " + entry->second.error());
   }
-  if (!isEnabled)
-  {
-    const std::string & errorReason = (backend_type == Backend::Type::CUDA) ? getCudaError() : getOpenCLError();
-    throw std::runtime_error("Backend '" + backend + "' is not available: " + errorReason);
-  }
-
-  // Create the requested backend
-  this->backend = createBackend();
+  this->backend = entry->second.create();
 }
 
 auto

@@ -19,16 +19,6 @@ namespace cle
 
 #if USE_METAL
 
-static auto
-castDevice(MTL::Device * device) -> MTL::Device *
-{
-  if (!device)
-  {
-    throw std::runtime_error("Error: Metal device pointer is null");
-  }
-  return device;
-}
-
 MetalDevice::MetalDevice(int deviceIndex)
   : metalDeviceIndex(deviceIndex)
 {
@@ -141,12 +131,6 @@ MetalDevice::addPendingCommandBuffer(void * command_buffer) const -> void
 }
 
 auto
-MetalDevice::getWaitToFinish() const -> bool
-{
-  return waitFinish;
-}
-
-auto
 MetalDevice::waitForCompletion() const -> void
 {
   // Errors are reported, not thrown: this is also called on finalisation
@@ -167,18 +151,6 @@ MetalDevice::waitForCompletion() const -> void
     buffer->release();
   }
   pendingCommandBuffers.clear();
-}
-
-auto
-MetalDevice::setWaitToFinish(bool flag) -> void
-{
-  waitFinish = flag;
-}
-
-auto
-MetalDevice::isInitialized() const -> bool
-{
-  return initialized;
 }
 
 auto
@@ -283,18 +255,6 @@ auto
 MetalDevice::getLocalMemorySize() const -> size_t
 {
   return 32768;
-}
-
-auto
-MetalDevice::getProgramFromCache(const std::string & key) const -> std::shared_ptr<void>
-{
-  return cache->get(key);
-}
-
-auto
-MetalDevice::addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void
-{
-  cache->put(key, std::move(program));
 }
 
 auto

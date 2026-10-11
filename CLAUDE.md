@@ -93,6 +93,7 @@ clic/
   src/                 implementations; src/tierN/*.cpp (one file per op or op family)
     *backend.cpp|.mm, *device.cpp|.mm, *Translator.cpp   backend-specific code (Metal = Objective-C++ .mm)
     backend_common.hpp private helpers shared by the backends (cle::detail, not installed)
+    translator_common.hpp private text helpers shared by the two translators (cle::detail, not installed)
 tests/                 GoogleTest, tests/<core|tierN>/test_*.cpp, one executable per directory
 cmake/                 SetEnv (options, C++17), Backends (find OpenCL/CUDA/Metal), Install, presets
 benchmark/             standalone benchmarks (not wired into the root build)
@@ -180,6 +181,8 @@ Other entry points:
 
 The translators work by **text substitution, not an AST**. When a kernel misbehaves only on CUDA or Metal, suspect the
 translator first (`src/cudaTranslator.cpp`, `src/metalTranslator.cpp`) and check the limitations listed in `translator.hpp`.
+To check that a translator change leaves the output unchanged, translate every kernel of `_deps/clekernels-src/kernels/`
+with the old and the new code and diff the results.
 
 ## Operations and the tier system
 

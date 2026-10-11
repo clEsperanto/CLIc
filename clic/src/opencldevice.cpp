@@ -103,7 +103,6 @@ get_device_type_map(bool uppercase = true)
 
 } // namespace
 
-
 OpenCLDevice::Context::Context(const cl_context & ptr)
   : ptr(ptr)
 {
@@ -134,29 +133,6 @@ OpenCLDevice::Context::get() const -> const cl_context &
   return ptr;
 }
 
-OpenCLDevice::Context::Context(Context && other) noexcept
-  : ptr(other.ptr)
-  , nb_device(other.nb_device)
-{
-  other.ptr = nullptr;
-}
-
-OpenCLDevice::Context &
-OpenCLDevice::Context::operator=(Context && other) noexcept
-{
-  if (this != &other)
-  {
-    if (ptr)
-    {
-      clReleaseContext(ptr);
-    }
-    ptr = other.ptr;
-    nb_device = other.nb_device;
-    other.ptr = nullptr;
-  }
-  return *this;
-}
-
 OpenCLDevice::CommandQueue::CommandQueue(const cl_command_queue & ptr)
   : ptr(ptr)
 {}
@@ -173,28 +149,6 @@ OpenCLDevice::CommandQueue::~CommandQueue()
   }
 }
 
-OpenCLDevice::CommandQueue::CommandQueue(CommandQueue && other) noexcept
-  : ptr(other.ptr)
-{
-  other.ptr = nullptr;
-}
-
-OpenCLDevice::CommandQueue &
-OpenCLDevice::CommandQueue::operator=(CommandQueue && other) noexcept
-{
-  if (this != &other)
-  {
-    if (ptr)
-    {
-      clReleaseCommandQueue(ptr);
-    }
-    ptr = other.ptr;
-    other.ptr = nullptr;
-  }
-  return *this;
-}
-
-
 auto
 OpenCLDevice::CommandQueue::get() const -> const cl_command_queue &
 {
@@ -202,13 +156,12 @@ OpenCLDevice::CommandQueue::get() const -> const cl_command_queue &
 }
 
 OpenCLDevice::Resources::Resources(const cl_platform_id & platform, const cl_device_id & device, size_t device_index)
-  : platform_ptr(platform)
-  , device_ptr(device)
+  : device_ptr(device)
+  , platform_ptr(platform)
   , device_index(device_index)
 {
   // Get platform information
   platform_name = platform_info_string(platform_ptr, CL_PLATFORM_NAME);
-  platform_vendor = platform_info_string(platform_ptr, CL_PLATFORM_VENDOR);
 
   // Get device information
   device_name = device_info_string(device_ptr, CL_DEVICE_NAME);
@@ -249,7 +202,6 @@ OpenCLDevice::Resources::get_platform() const -> const cl_platform_id &
 {
   return platform_ptr;
 }
-
 
 OpenCLDevice::OpenCLDevice(const cl_platform_id & platform, const cl_device_id & device)
   : clResources(std::make_shared<Resources>(platform, device, 0))
@@ -342,18 +294,6 @@ OpenCLDevice::finish() const -> void
   {
     clFinish(clCommandQueue->get());
   }
-}
-
-auto
-OpenCLDevice::setWaitToFinish(bool flag) -> void
-{
-  this->waitFinish = flag;
-}
-
-auto
-OpenCLDevice::isInitialized() const -> bool
-{
-  return initialized;
 }
 
 auto
@@ -511,19 +451,6 @@ OpenCLDevice::getInfoExtended() const -> std::string
 
   return result.str();
 }
-
-auto
-OpenCLDevice::getProgramFromCache(const std::string & key) const -> std::shared_ptr<void>
-{
-  return cache->get(key);
-}
-
-auto
-OpenCLDevice::addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void
-{
-  cache->put(key, program);
-}
-
 
 #endif // USE_OPENCL
 

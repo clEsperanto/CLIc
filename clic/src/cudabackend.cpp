@@ -8,7 +8,6 @@
 #include <cstring>
 #include <limits>
 #include <memory>
-#include <numeric>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
@@ -73,9 +72,6 @@ getErrorString(nvrtcResult error) -> std::string
 /**
  * @brief RAII helper that sets the CUDA context for the given device on
  *        construction. Performs dynamic_pointer_cast and validates once.
- *
- * Eliminates the repeated 3-line boilerplate (cast + validate + set context)
- * from every method.
  */
 class CUDAContextGuard
 {
@@ -99,12 +95,6 @@ public:
   }
 
   [[nodiscard]] auto
-  context() const -> CUcontext
-  {
-    return cuda_device_->getCUDAContext();
-  }
-
-  [[nodiscard]] auto
   stream() const -> CUstream
   {
     return cuda_device_->getCUDAStream();
@@ -117,14 +107,6 @@ private:
 // ============================================================================
 // Memcpy Helpers (unified 1D/2D/3D logic)
 // ============================================================================
-
-/// Direction of a memcpy operation.
-enum class MemcpyDirection
-{
-  HostToDevice,
-  DeviceToHost,
-  DeviceToDevice
-};
 
 /**
  * @brief Row pitch (bytes) and slice height (rows) of a memory of the given shape (x in bytes).
@@ -145,8 +127,8 @@ memoryPitches(const std::array<size_t, 3> & shape, const std::array<size_t, 3> &
 /**
  * @brief Perform a 1D, 2D, or 3D memory copy between host and/or device.
  *
- * Selects cuMemcpyAsync / cuMemcpy2DAsync / cuMemcpy3DAsync based on the region and origins, eliminating
- * the triplicated branching logic that was in writeBuffer/readBuffer/copyBuffer.
+ * Selects cuMemcpyAsync / cuMemcpy2DAsync / cuMemcpy3DAsync based on the region and origins (shared by
+ * writeBuffer / readBuffer / copyBuffer).
  *
  * The copy is queued on `stream`, after the work already submitted to it, and may still be running
  * on return: callers copying to or from host memory must synchronise the stream before returning.
@@ -528,21 +510,8 @@ CUDABackend::getType() const -> Backend::Type
 
 // ── Memory allocation ───────────────────────────────────────────────────────
 
-auto
-CUDABackend::allocateMemory(const Device::Pointer &       device,
-                            const std::array<size_t, 3> & region,
-                            const dType &                 dtype,
-                            const mType &                 mtype,
-                            std::shared_ptr<void> &       data_ptr) const -> void
-{
-  // @StRigaud TODO: implement true image support for CUDA
-  // For now, both BUFFER and IMAGE allocate linear memory.
-  const size_t size = region[0] * region[1] * region[2] * toBytes(dtype);
-  allocateBuffer(device, size, data_ptr);
-}
-
-auto
-CUDABackend::allocateBuffer(const Device::Pointer & device, const size_t & size, std::shared_ptr<void> & data_ptr) -> void
+static auto
+allocateBuffer(const Device::Pointer & device, const size_t & size, std::shared_ptr<void> & data_ptr) -> void
 {
   CUDAContextGuard ctx(device);
   const auto       pool = ctx.device()->getCUDAMemoryPool();
@@ -587,6 +556,20 @@ CUDABackend::allocateBuffer(const Device::Pointer & device, const size_t & size,
 }
 
 auto
+CUDABackend::allocateMemory(const Device::Pointer &       device,
+                            const std::array<size_t, 3> & region,
+                            const dType &                 dtype,
+                            const mType &                 mtype,
+                            std::shared_ptr<void> &       data_ptr) const -> void
+{
+  // @StRigaud TODO: implement true image support for CUDA
+  // For now, both BUFFER and IMAGE allocate linear memory.
+  const size_t size = region[0] * region[1] * region[2] * toBytes(dtype);
+  allocateBuffer(device, size, data_ptr);
+}
+
+
+auto
 CUDABackend::freeMemory(const Device::Pointer &, const mType &, const std::shared_ptr<void> &) const -> void
 {
   // Memory is released by the custom deleter of the shared_ptr returned by allocateMemory (see
@@ -602,30 +585,13 @@ CUDABackend::getRefCount(void * data_ptr) const -> int
 
 // ── Memory read / write ─────────────────────────────────────────────────────
 
-auto
-CUDABackend::writeMemory(const Device::Pointer &       device,
-                         const std::shared_ptr<void> & buffer_ptr,
-                         std::array<size_t, 3> &       buffer_shape,
-                         std::array<size_t, 3> &       buffer_origin,
-                         std::array<size_t, 3> &       region,
-                         const dType &                 dtype,
-                         const mType &                 mtype,
-                         const void *                  host_ptr) const -> void
-{
-  // Convert element counts to byte counts for the first dimension
-  detail::scaleToBytes(buffer_shape, buffer_origin, region, toBytes(dtype));
-
-  // @StRigaud TODO: differentiate IMAGE path when image support lands
-  writeBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
-}
-
-auto
-CUDABackend::writeBuffer(const Device::Pointer &       device,
-                         const std::shared_ptr<void> & buffer_ptr,
-                         const std::array<size_t, 3> & buffer_shape,
-                         const std::array<size_t, 3> & buffer_origin,
-                         const std::array<size_t, 3> & region,
-                         const void *                  host_ptr) -> void
+static auto
+writeBuffer(const Device::Pointer &       device,
+            const std::shared_ptr<void> & buffer_ptr,
+            const std::array<size_t, 3> & buffer_shape,
+            const std::array<size_t, 3> & buffer_origin,
+            const std::array<size_t, 3> & region,
+            const void *                  host_ptr) -> void
 {
   CUDAContextGuard ctx(device);
 
@@ -647,28 +613,30 @@ CUDABackend::writeBuffer(const Device::Pointer &       device,
 }
 
 auto
-CUDABackend::readMemory(const Device::Pointer &       device,
-                        const std::shared_ptr<void> & buffer_ptr,
-                        std::array<size_t, 3> &       buffer_shape,
-                        std::array<size_t, 3> &       buffer_origin,
-                        std::array<size_t, 3> &       region,
-                        const dType &                 dtype,
-                        const mType &                 mtype,
-                        void *                        host_ptr) const -> void
+CUDABackend::writeMemory(const Device::Pointer &       device,
+                         const std::shared_ptr<void> & buffer_ptr,
+                         std::array<size_t, 3> &       buffer_shape,
+                         std::array<size_t, 3> &       buffer_origin,
+                         std::array<size_t, 3> &       region,
+                         const dType &                 dtype,
+                         const mType &                 mtype,
+                         const void *                  host_ptr) const -> void
 {
+  // Convert element counts to byte counts for the first dimension
   detail::scaleToBytes(buffer_shape, buffer_origin, region, toBytes(dtype));
 
   // @StRigaud TODO: differentiate IMAGE path when image support lands
-  readBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
+  writeBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
 }
 
-auto
-CUDABackend::readBuffer(const Device::Pointer &       device,
-                        const std::shared_ptr<void> & buffer_ptr,
-                        const std::array<size_t, 3> & buffer_shape,
-                        const std::array<size_t, 3> & buffer_origin,
-                        const std::array<size_t, 3> & region,
-                        void *                        host_ptr) -> void
+
+static auto
+readBuffer(const Device::Pointer &       device,
+           const std::shared_ptr<void> & buffer_ptr,
+           const std::array<size_t, 3> & buffer_shape,
+           const std::array<size_t, 3> & buffer_origin,
+           const std::array<size_t, 3> & region,
+           void *                        host_ptr) -> void
 {
   CUDAContextGuard ctx(device);
 
@@ -688,6 +656,23 @@ CUDABackend::readBuffer(const Device::Pointer &       device,
   // the caller reads host_ptr as soon as we return
   CU_CHECK(cuStreamSynchronize(ctx.stream()), "Error: Failed to read buffer");
 }
+
+auto
+CUDABackend::readMemory(const Device::Pointer &       device,
+                        const std::shared_ptr<void> & buffer_ptr,
+                        std::array<size_t, 3> &       buffer_shape,
+                        std::array<size_t, 3> &       buffer_origin,
+                        std::array<size_t, 3> &       region,
+                        const dType &                 dtype,
+                        const mType &                 mtype,
+                        void *                        host_ptr) const -> void
+{
+  detail::scaleToBytes(buffer_shape, buffer_origin, region, toBytes(dtype));
+
+  // @StRigaud TODO: differentiate IMAGE path when image support lands
+  readBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
+}
+
 
 // ── Memory copy (device-to-device) ──────────────────────────────────────────
 
@@ -770,14 +755,14 @@ CUDABackend::copyMemoryImageToImage(const Device::Pointer &       device,
 
 // ── Memory fill ─────────────────────────────────────────────────────────────
 
-auto
-CUDABackend::setBuffer(const Device::Pointer &       device,
-                       const std::shared_ptr<void> & buffer_ptr,
-                       const std::array<size_t, 3> & buffer_shape,
-                       const std::array<size_t, 3> & buffer_origin,
-                       const std::array<size_t, 3> & region,
-                       const dType &                 dtype,
-                       const float &                 value) -> void
+static auto
+setBuffer(const Device::Pointer &       device,
+          const std::shared_ptr<void> & buffer_ptr,
+          const std::array<size_t, 3> & buffer_shape,
+          const std::array<size_t, 3> & buffer_origin,
+          const std::array<size_t, 3> & region,
+          const dType &                 dtype,
+          const float &                 value) -> void
 {
   CUDAContextGuard ctx(device);
 

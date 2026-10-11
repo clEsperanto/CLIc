@@ -61,18 +61,34 @@ public:
   /**
    * @brief Set flag for waiting for command queue to finish
    */
-  virtual auto
-  setWaitToFinish(bool flag) -> void = 0;
+  auto
+  setWaitToFinish(bool flag) -> void
+  {
+    waitFinish = flag;
+  }
+
+  /**
+   * @brief Whether the device waits for completion after each operation (see setWaitToFinish())
+   */
+  [[nodiscard]] auto
+  getWaitToFinish() const -> bool
+  {
+    return waitFinish;
+  }
 
   /**
    * @brief Check if device is initialized
    * @return bool
    */
-  [[nodiscard]] virtual auto
-  isInitialized() const -> bool = 0;
+  [[nodiscard]] auto
+  isInitialized() const -> bool
+  {
+    return initialized;
+  }
 
   /**
    * @brief Get device name
+   * @param lowercase return the name in lowercase ( = False )
    * @return std::string
    */
   [[nodiscard]] virtual auto
@@ -158,16 +174,22 @@ public:
    * @param key The key to identify the program
    * @return The program pointer if found, nullptr otherwise
    */
-  [[nodiscard]] virtual auto
-  getProgramFromCache(const std::string & key) const -> std::shared_ptr<void> = 0;
+  [[nodiscard]] auto
+  getProgramFromCache(const std::string & key) const -> std::shared_ptr<void>
+  {
+    return cache->get(key);
+  }
 
   /**
    * @brief Add program to cache with a given key
    * @param key The key to identify the program
    * @param program The program pointer to cache
    */
-  virtual auto
-  addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void = 0;
+  auto
+  addProgramToCache(const std::string & key, const std::shared_ptr<void> & program) -> void
+  {
+    cache->put(key, program);
+  }
 
   /**
    * @brief operator << for Device::Type
@@ -214,6 +236,11 @@ public:
     return device.hash_;
   }
 
+protected:
+  std::shared_ptr<ProgramCache> cache = std::make_shared<ProgramCache>(); // compiled kernels of the device
+  bool                          initialized = false;
+  bool                          waitFinish = false;
+
 private:
   mutable std::string hash_;
 };
@@ -237,16 +264,10 @@ public:
     auto
     get() const -> const cl_context &;
 
-    // Prevent accidental copy (double free)
+    // Not copyable (double free); not movable either: only held by shared_ptr
     Context(const Context &) = delete;
     Context &
     operator=(const Context &) = delete;
-
-    // Allow move
-    Context(Context && other) noexcept;
-
-    Context &
-    operator=(Context && other) noexcept;
   };
 
   struct CommandQueue
@@ -258,17 +279,11 @@ public:
     auto
     get() const -> const cl_command_queue &;
 
-    // Prevent accidental copy (double free)
+    // Not copyable (double free); not movable either: only held by shared_ptr
     CommandQueue(const CommandQueue &) = delete;
 
     CommandQueue &
     operator=(const CommandQueue &) = delete;
-
-    // Allow move
-    CommandQueue(CommandQueue && other) noexcept;
-
-    CommandQueue &
-    operator=(CommandQueue && other) noexcept;
   };
 
   struct Resources
@@ -278,7 +293,6 @@ public:
     cl_device_type device_type = 0;
     std::string    device_name = "";
     std::string    platform_name = "";
-    std::string    platform_vendor = "";
     bool           image_support = false;
     size_t         device_index = 0;
 
@@ -294,7 +308,6 @@ public:
     operator=(const Resources &) = delete;
   };
 
-
   /**
    * @brief Construct a new OpenCLDevice object
    * @param platform
@@ -308,8 +321,6 @@ public:
    * @param resources
    * @param context
    * @param command_queue
-   * @param device_index
-   * @param nb_device
    * @return OpenCLDevice
    */
   OpenCLDevice(const std::shared_ptr<Resources> &    resources,
@@ -321,63 +332,27 @@ public:
    */
   ~OpenCLDevice() override;
 
-  /**
-   * @brief Initialize a device by alocating the platform, device, context and command queue
-   */
+  // Device interface (documented in Device)
   auto
   initialize() -> void override;
 
-  /**
-   * @brief Release the device by releasing the platform, device, context and command queue pointers
-   */
   auto
   finalize() -> void override;
 
-  /**
-   * @brief Wait for command queue to finish
-   */
   auto
   finish() const -> void override;
 
-  /**
-   * @brief Set flag for waiting for command queue to finish
-   */
-  auto
-  setWaitToFinish(bool flag) -> void override;
-
-  /**
-   * @brief Get device platform
-   * @return std::string
-   */
   [[nodiscard]] auto
   getPlatform() const -> std::string override;
 
-  /**
-   * @brief Get device type
-   * @return Device::Type
-   */
   [[nodiscard]] auto
   getType() const -> Device::Type override;
 
-  /**
-   * @brief Get device type as string
-   * @return std::string
-   */
   [[nodiscard]] auto
   getDeviceType() const -> std::string override;
 
-  /**
-   * @brief Get device index in context
-   */
   [[nodiscard]] auto
   getDeviceIndex() const -> size_t override;
-
-  /**
-   * @brief Check if device is initialized
-   * @return bool
-   */
-  [[nodiscard]] auto
-  isInitialized() const -> bool override;
 
   /**
    * @brief Get OpenCL platform
@@ -407,85 +382,34 @@ public:
   [[nodiscard]] auto
   getCLCommandQueue() const -> const cl_command_queue &;
 
-  /**
-   * @brief Get device name
-   * @param lowercase return the name in lowercase ( = False )
-   * @return std::string
-   */
   [[nodiscard]] auto
   getName(bool lowercase = false) const -> std::string override;
 
-  /**
-   * @brief Get device info
-   * @return std::string
-   */
   [[nodiscard]] auto
   getInfo() const -> std::string override;
 
-  /**
-   * @brief Get device with more info
-   * @return std::string
-   */
   [[nodiscard]] auto
   getInfoExtended() const -> std::string override;
 
-  /**
-   * @brief Get shared context devices
-   */
   [[nodiscard]] auto
   getNbDevicesFromContext() const -> size_t override;
 
-  /**
-   * @brief check if device is compatible with cl_image
-   * @return bool
-   */
   [[nodiscard]] auto
   supportImage() const -> bool override;
 
-  /**
-   * @brief Get maximum buffer size
-   * @return size_t
-   */
   [[nodiscard]] auto
   getMaximumBufferSize() const -> size_t override;
 
-  /**
-   * @brief Get local memory size
-   * @return size_t
-   */
   [[nodiscard]] auto
   getLocalMemorySize() const -> size_t override;
 
-  /**
-   * @brief Get maximum work group size
-   * @return size_t
-   */
-  [[nodiscard]] virtual auto
-  getMaximumWorkGroupSize() const -> size_t override;
-
-  /**
-   * @brief Get program from cache by key
-   * @param key The key to identify the program
-   * @return The program pointer if found, nullptr otherwise
-   */
   [[nodiscard]] auto
-  getProgramFromCache(const std::string & key) const -> std::shared_ptr<void> override;
-
-  /**
-   * @brief Add program to cache with a given key
-   * @param key The key to identify the program
-   * @param program The program pointer to cache
-   */
-  auto
-  addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void override;
+  getMaximumWorkGroupSize() const -> size_t override;
 
 private:
   std::shared_ptr<Resources>    clResources = nullptr;
   std::shared_ptr<Context>      clContext = nullptr;
   std::shared_ptr<CommandQueue> clCommandQueue = nullptr;
-  std::shared_ptr<ProgramCache> cache = std::make_shared<ProgramCache>();
-  bool                          initialized = false;
-  bool                          waitFinish = false;
 };
 #endif // USE_OPENCL
 
@@ -508,63 +432,24 @@ public:
    */
   ~CUDADevice() override;
 
-  /**
-   * @brief Initialize a device by alocating the device, context and stream
-   */
+  // Device interface (documented in Device)
   auto
   initialize() -> void override;
 
-  /**
-   * @brief Release the device by releasing the device, context and stream pointers
-   */
   auto
   finalize() -> void override;
 
-  /**
-   * @brief Wait for command queue to finish
-   */
   auto
   finish() const -> void override;
 
-  /**
-   * @brief Set flag for waiting for command queue to finish
-   */
-  auto
-  setWaitToFinish(bool flag) -> void override;
-
-  /**
-   * @brief Whether the device waits for completion after each operation (see setWaitToFinish())
-   */
-  [[nodiscard]] auto
-  getWaitToFinish() const -> bool;
-
-  /**
-   * @brief Get device platform
-   * @return std::string
-   */
   [[nodiscard]] auto
   getPlatform() const -> std::string override;
 
-  /**
-   * @brief Get device type
-   * @return Device::Type
-   */
   [[nodiscard]] auto
   getType() const -> Device::Type override;
 
-  /**
-   * @brief Get device type as string
-   * @return std::string
-   */
   [[nodiscard]] auto
   getDeviceType() const -> std::string override;
-
-  /**
-   * @brief Check if device is initialized
-   * @return bool
-   */
-  [[nodiscard]] auto
-  isInitialized() const -> bool override;
 
   /**
    * @brief Get CUDA device index
@@ -608,25 +493,12 @@ public:
   [[nodiscard]] auto
   getCUDASyncEvent() const -> CUevent;
 
-  /**
-   * @brief Get device name
-   * @param lowercase return the name in lowercase ( = False )
-   * @return std::string
-   */
   [[nodiscard]] auto
   getName(bool lowercase = false) const -> std::string override;
 
-  /**
-   * @brief Get device info
-   * @return std::string
-   */
   [[nodiscard]] auto
   getInfo() const -> std::string override;
 
-  /**
-   * @brief Get device with more info
-   * @return std::string
-   */
   [[nodiscard]] auto
   getInfoExtended() const -> std::string override;
 
@@ -637,72 +509,31 @@ public:
   [[nodiscard]] auto
   getArch() const -> std::string;
 
-  /**
-   * @brief check if device is compatible with cl_image
-   * @return bool
-   */
   [[nodiscard]] auto
   supportImage() const -> bool override;
 
-  /**
-   * @brief Get shared context devices
-   */
   [[nodiscard]] auto
   getNbDevicesFromContext() const -> size_t override;
 
-  /**
-   * @brief Get device index in context
-   */
   [[nodiscard]] auto
   getDeviceIndex() const -> size_t override;
 
-  /**
-   * @brief Get maximum buffer size
-   * @return size_t
-   */
   [[nodiscard]] auto
   getMaximumBufferSize() const -> size_t override;
 
-  /**
-   * @brief Get local memory size
-   * @return size_t
-   */
   [[nodiscard]] auto
   getLocalMemorySize() const -> size_t override;
 
-  /**
-   * @brief Get maximum work group size
-   * @return size_t
-   */
-  [[nodiscard]] virtual auto
+  [[nodiscard]] auto
   getMaximumWorkGroupSize() const -> size_t override;
 
-  /**
-   * @brief Get program from cache by key
-   * @param key The key to identify the program
-   * @return The program pointer if found, nullptr otherwise
-   */
-  [[nodiscard]] auto
-  getProgramFromCache(const std::string & key) const -> std::shared_ptr<void> override;
-
-  /**
-   * @brief Add program to cache with a given key
-   * @param key The key to identify the program
-   * @param program The program pointer to cache
-   */
-  auto
-  addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void override;
-
 private:
-  int                           cudaDeviceIndex;
-  CUdevice                      cudaDevice;
-  CUcontext                     cudaContext;
-  CUstream                      cudaStream;
-  CUmemoryPool                  memoryPool = nullptr; // stream-ordered allocations, nullptr if not supported
-  CUevent                       syncEvent = nullptr;  // reused by syncToStream (re-recording does not affect earlier waits)
-  std::shared_ptr<ProgramCache> cache = std::make_shared<ProgramCache>();
-  bool                          initialized = false;
-  bool                          waitFinish = false;
+  int          cudaDeviceIndex;
+  CUdevice     cudaDevice;
+  CUcontext    cudaContext;
+  CUstream     cudaStream;
+  CUmemoryPool memoryPool = nullptr; // stream-ordered allocations, nullptr if not supported
+  CUevent      syncEvent = nullptr;  // reused by syncToStream (re-recording does not affect earlier waits)
 };
 #endif // USE_CUDA
 
@@ -719,11 +550,7 @@ public:
   finalize() -> void override;
   auto
   finish() const -> void override;
-  auto
-  setWaitToFinish(bool) -> void override;
 
-  [[nodiscard]] auto
-  isInitialized() const -> bool override;
   [[nodiscard]] auto
   getName(bool lc = false) const -> std::string override;
   [[nodiscard]] auto
@@ -748,10 +575,6 @@ public:
   getMaximumWorkGroupSize() const -> size_t override;
   [[nodiscard]] auto
   getLocalMemorySize() const -> size_t override;
-  [[nodiscard]] auto
-  getProgramFromCache(const std::string &) const -> std::shared_ptr<void> override;
-  auto
-  addProgramToCache(const std::string &, std::shared_ptr<void>) -> void override;
 
   // Metal-specific accessors (opaque pointers — cast in .mm files)
   [[nodiscard]] auto
@@ -775,20 +598,11 @@ public:
   auto
   waitForCompletion() const -> void;
 
-  /**
-   * @brief Whether the device waits for completion after each operation (see setWaitToFinish())
-   */
-  [[nodiscard]] auto
-  getWaitToFinish() const -> bool;
-
 private:
-  int                           metalDeviceIndex;
-  void *                        metalDevice = nullptr;
-  void *                        metalQueue = nullptr;
-  mutable std::vector<void *>   pendingCommandBuffers;
-  std::shared_ptr<ProgramCache> cache = std::make_shared<ProgramCache>();
-  bool                          initialized = false;
-  bool                          waitFinish = false;
+  int                         metalDeviceIndex;
+  void *                      metalDevice = nullptr;
+  void *                      metalQueue = nullptr;
+  mutable std::vector<void *> pendingCommandBuffers;
 };
 #endif // USE_METAL
 

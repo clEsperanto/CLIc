@@ -3,7 +3,6 @@
 #include "cle_preamble_cl.h"
 
 #include <memory>
-#include <numeric>
 
 namespace cle
 {
@@ -90,9 +89,6 @@ getErrorString(cl_int error) -> std::string
 
 /**
  * @brief Cast a Device::Pointer to OpenCLDevice, throwing on failure.
- *
- * Eliminates the repeated dynamic_pointer_cast + validate pattern from
- * every method that needs the underlying OpenCL device.
  */
 [[nodiscard]] static auto
 castDevice(const Device::Pointer & device) -> std::shared_ptr<const OpenCLDevice>
@@ -416,17 +412,11 @@ createKernel(const std::shared_ptr<void> & program, const std::string & kernel_n
 // OpenCLBackend Implementation
 // ============================================================================
 
-OpenCLBackend::OpenCLBackend()
-{
-  initialiseResources();
-}
-
-OpenCLBackend::~OpenCLBackend() = default;
-
 // ── Resource initialisation ─────────────────────────────────────────────────
 
-auto
-OpenCLBackend::initialiseResources() -> void
+/// Create one device (own context and queue) per OpenCL device of every platform
+static auto
+discoverDevices() -> std::vector<Device::Pointer>
 {
   // Discover all platforms and their devices, in the order reported by the ICD loader
   // (a vector rather than a hash map, so that device order and default device are deterministic)
@@ -476,7 +466,8 @@ OpenCLBackend::initialiseResources() -> void
   //  see https://github.com/clEsperanto/CLIc/pull/420 for context.)
   // A device whose context or queue cannot be created (e.g. broken driver) is skipped, so that it does
   // not prevent the other devices from being used.
-  device_list_.reserve(device_counter);
+  std::vector<Device::Pointer> devices;
+  devices.reserve(device_counter);
   for (const auto & [platform_id, device_ids] : resources)
   {
     size_t device_index = 0;
@@ -504,10 +495,17 @@ OpenCLBackend::initialiseResources() -> void
       }
       auto command_queue = std::make_shared<OpenCLDevice::CommandQueue>(queue_ptr);
 
-      device_list_.emplace_back(std::make_shared<OpenCLDevice>(resources_ptr, context, command_queue));
+      devices.emplace_back(std::make_shared<OpenCLDevice>(resources_ptr, context, command_queue));
     }
   }
+  return devices;
 }
+
+OpenCLBackend::OpenCLBackend()
+  : device_list_(discoverDevices())
+{}
+
+OpenCLBackend::~OpenCLBackend() = default;
 
 // ── Device enumeration ──────────────────────────────────────────────────────
 
@@ -592,29 +590,8 @@ OpenCLBackend::getType() const -> Backend::Type
 
 // ── Memory allocation ───────────────────────────────────────────────────────
 
-auto
-OpenCLBackend::allocateMemory(const Device::Pointer &       device,
-                              const std::array<size_t, 3> & region,
-                              const dType &                 dtype,
-                              const mType &                 mtype,
-                              std::shared_ptr<void> &       data_ptr) const -> void
-{
-  switch (mtype)
-  {
-    case mType::BUFFER: {
-      const size_t size = region[0] * region[1] * region[2] * toBytes(dtype);
-      allocateBuffer(device, size, data_ptr);
-      break;
-    }
-    case mType::IMAGE: {
-      allocateImage(device, region, dtype, data_ptr);
-      break;
-    }
-  }
-}
-
-auto
-OpenCLBackend::allocateBuffer(const Device::Pointer & device, const size_t & size, std::shared_ptr<void> & data_ptr) -> void
+static auto
+allocateBuffer(const Device::Pointer & device, const size_t & size, std::shared_ptr<void> & data_ptr) -> void
 {
   const auto opencl_device = castDevice(device);
 
@@ -625,11 +602,9 @@ OpenCLBackend::allocateBuffer(const Device::Pointer & device, const size_t & siz
   data_ptr = wrapMemObject(mem);
 }
 
-auto
-OpenCLBackend::allocateImage(const Device::Pointer &       device,
-                             const std::array<size_t, 3> & region,
-                             const dType &                 dtype,
-                             std::shared_ptr<void> &       data_ptr) -> void
+static auto
+allocateImage(const Device::Pointer & device, const std::array<size_t, 3> & region, const dType & dtype, std::shared_ptr<void> & data_ptr)
+  -> void
 {
   const auto opencl_device = castDevice(device);
 
@@ -665,6 +640,28 @@ OpenCLBackend::allocateImage(const Device::Pointer &       device,
 }
 
 auto
+OpenCLBackend::allocateMemory(const Device::Pointer &       device,
+                              const std::array<size_t, 3> & region,
+                              const dType &                 dtype,
+                              const mType &                 mtype,
+                              std::shared_ptr<void> &       data_ptr) const -> void
+{
+  switch (mtype)
+  {
+    case mType::BUFFER: {
+      const size_t size = region[0] * region[1] * region[2] * toBytes(dtype);
+      allocateBuffer(device, size, data_ptr);
+      break;
+    }
+    case mType::IMAGE: {
+      allocateImage(device, region, dtype, data_ptr);
+      break;
+    }
+  }
+}
+
+
+auto
 OpenCLBackend::freeMemory(const Device::Pointer &, const mType &, const std::shared_ptr<void> &) const -> void
 {
   // Memory is released by the custom deleter of the shared_ptr returned by allocateMemory (see
@@ -682,37 +679,13 @@ OpenCLBackend::getRefCount(void * data_ptr) const -> int
 
 // ── Memory write ────────────────────────────────────────────────────────────
 
-auto
-OpenCLBackend::writeMemory(const Device::Pointer &       device,
-                           const std::shared_ptr<void> & buffer_ptr,
-                           std::array<size_t, 3> &       buffer_shape,
-                           std::array<size_t, 3> &       buffer_origin,
-                           std::array<size_t, 3> &       region,
-                           const dType &                 dtype,
-                           const mType &                 mtype,
-                           const void *                  host_ptr) const -> void
-{
-  switch (mtype)
-  {
-    case mType::BUFFER: {
-      detail::scaleToBytes(buffer_shape, buffer_origin, region, toBytes(dtype));
-      writeBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
-      break;
-    }
-    case mType::IMAGE: {
-      writeImage(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
-      break;
-    }
-  }
-}
-
-auto
-OpenCLBackend::writeBuffer(const Device::Pointer &       device,
-                           const std::shared_ptr<void> & buffer_ptr,
-                           const std::array<size_t, 3> & buffer_shape,
-                           const std::array<size_t, 3> & buffer_origin,
-                           const std::array<size_t, 3> & region,
-                           const void *                  host_ptr) -> void
+static auto
+writeBuffer(const Device::Pointer &       device,
+            const std::shared_ptr<void> & buffer_ptr,
+            const std::array<size_t, 3> & buffer_shape,
+            const std::array<size_t, 3> & buffer_origin,
+            const std::array<size_t, 3> & region,
+            const void *                  host_ptr) -> void
 {
   const auto opencl_device = castDevice(device);
   const auto [row_pitch, slice_pitch] = computeBufferPitches(buffer_shape);
@@ -748,13 +721,13 @@ OpenCLBackend::writeBuffer(const Device::Pointer &       device,
   CL_CHECK(err, "Error: Failed to write buffer memory.");
 }
 
-auto
-OpenCLBackend::writeImage(const Device::Pointer &       device,
-                          const std::shared_ptr<void> & buffer_ptr,
-                          const std::array<size_t, 3> & /*buffer_shape*/,
-                          const std::array<size_t, 3> & buffer_origin,
-                          const std::array<size_t, 3> & region,
-                          const void *                  host_ptr) -> void
+static auto
+writeImage(const Device::Pointer &       device,
+           const std::shared_ptr<void> & buffer_ptr,
+           const std::array<size_t, 3> & /*buffer_shape*/,
+           const std::array<size_t, 3> & buffer_origin,
+           const std::array<size_t, 3> & region,
+           const void *                  host_ptr) -> void
 {
   const auto        opencl_device = castDevice(device);
   constexpr cl_bool blocking = CL_TRUE;
@@ -766,39 +739,40 @@ OpenCLBackend::writeImage(const Device::Pointer &       device,
   CL_CHECK(err, "Error: Failed to write image memory.");
 }
 
-// ── Memory read ─────────────────────────────────────────────────────────────
-
 auto
-OpenCLBackend::readMemory(const Device::Pointer &       device,
-                          const std::shared_ptr<void> & buffer_ptr,
-                          std::array<size_t, 3> &       buffer_shape,
-                          std::array<size_t, 3> &       buffer_origin,
-                          std::array<size_t, 3> &       region,
-                          const dType &                 dtype,
-                          const mType &                 mtype,
-                          void *                        host_ptr) const -> void
+OpenCLBackend::writeMemory(const Device::Pointer &       device,
+                           const std::shared_ptr<void> & buffer_ptr,
+                           std::array<size_t, 3> &       buffer_shape,
+                           std::array<size_t, 3> &       buffer_origin,
+                           std::array<size_t, 3> &       region,
+                           const dType &                 dtype,
+                           const mType &                 mtype,
+                           const void *                  host_ptr) const -> void
 {
   switch (mtype)
   {
     case mType::BUFFER: {
       detail::scaleToBytes(buffer_shape, buffer_origin, region, toBytes(dtype));
-      readBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
+      writeBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
       break;
     }
     case mType::IMAGE: {
-      readImage(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
+      writeImage(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
       break;
     }
   }
 }
 
-auto
-OpenCLBackend::readBuffer(const Device::Pointer &       device,
-                          const std::shared_ptr<void> & buffer_ptr,
-                          const std::array<size_t, 3> & buffer_shape,
-                          const std::array<size_t, 3> & buffer_origin,
-                          const std::array<size_t, 3> & region,
-                          void *                        host_ptr) -> void
+
+// ── Memory read ─────────────────────────────────────────────────────────────
+
+static auto
+readBuffer(const Device::Pointer &       device,
+           const std::shared_ptr<void> & buffer_ptr,
+           const std::array<size_t, 3> & buffer_shape,
+           const std::array<size_t, 3> & buffer_origin,
+           const std::array<size_t, 3> & region,
+           void *                        host_ptr) -> void
 {
   const auto opencl_device = castDevice(device);
   const auto [row_pitch, slice_pitch] = computeBufferPitches(buffer_shape);
@@ -834,13 +808,13 @@ OpenCLBackend::readBuffer(const Device::Pointer &       device,
   CL_CHECK(err, "Error: Failed to read buffer memory.");
 }
 
-auto
-OpenCLBackend::readImage(const Device::Pointer &       device,
-                         const std::shared_ptr<void> & buffer_ptr,
-                         const std::array<size_t, 3> & /*buffer_shape*/,
-                         const std::array<size_t, 3> & buffer_origin,
-                         const std::array<size_t, 3> & region,
-                         void *                        host_ptr) -> void
+static auto
+readImage(const Device::Pointer &       device,
+          const std::shared_ptr<void> & buffer_ptr,
+          const std::array<size_t, 3> & /*buffer_shape*/,
+          const std::array<size_t, 3> & buffer_origin,
+          const std::array<size_t, 3> & region,
+          void *                        host_ptr) -> void
 {
   const auto        opencl_device = castDevice(device);
   constexpr cl_bool blocking = CL_TRUE;
@@ -851,6 +825,31 @@ OpenCLBackend::readImage(const Device::Pointer &       device,
 
   CL_CHECK(err, "Error: Failed to read image memory.");
 }
+
+auto
+OpenCLBackend::readMemory(const Device::Pointer &       device,
+                          const std::shared_ptr<void> & buffer_ptr,
+                          std::array<size_t, 3> &       buffer_shape,
+                          std::array<size_t, 3> &       buffer_origin,
+                          std::array<size_t, 3> &       region,
+                          const dType &                 dtype,
+                          const mType &                 mtype,
+                          void *                        host_ptr) const -> void
+{
+  switch (mtype)
+  {
+    case mType::BUFFER: {
+      detail::scaleToBytes(buffer_shape, buffer_origin, region, toBytes(dtype));
+      readBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
+      break;
+    }
+    case mType::IMAGE: {
+      readImage(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
+      break;
+    }
+  }
+}
+
 
 // ── Memory copy (device-to-device) ──────────────────────────────────────────
 
@@ -986,37 +985,14 @@ OpenCLBackend::copyMemoryImageToImage(const Device::Pointer &       device,
 
 // ── Memory fill ─────────────────────────────────────────────────────────────
 
-auto
-OpenCLBackend::setMemory(const Device::Pointer &       device,
-                         const std::shared_ptr<void> & buffer_ptr,
-                         std::array<size_t, 3> &       buffer_shape,
-                         std::array<size_t, 3> &       buffer_origin,
-                         std::array<size_t, 3> &       region,
-                         const dType &                 dtype,
-                         const mType &                 mtype,
-                         const float &                 value) const -> void
-{
-  switch (mtype)
-  {
-    case mType::BUFFER: {
-      setBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, dtype, value);
-      break;
-    }
-    case mType::IMAGE: {
-      setImage(device, buffer_ptr, buffer_shape, buffer_origin, region, dtype, value);
-      break;
-    }
-  }
-}
-
-auto
-OpenCLBackend::setBuffer(const Device::Pointer &       device,
-                         const std::shared_ptr<void> & buffer_ptr,
-                         const std::array<size_t, 3> & /*buffer_shape*/,
-                         const std::array<size_t, 3> & /*buffer_origin*/,
-                         const std::array<size_t, 3> & region,
-                         const dType &                 dtype,
-                         const float &                 value) -> void
+static auto
+setBuffer(const Device::Pointer &       device,
+          const std::shared_ptr<void> & buffer_ptr,
+          const std::array<size_t, 3> & /*buffer_shape*/,
+          const std::array<size_t, 3> & /*buffer_origin*/,
+          const std::array<size_t, 3> & region,
+          const dType &                 dtype,
+          const float &                 value) -> void
 {
   const auto   opencl_device = castDevice(device);
   const size_t size = region[0] * region[1] * region[2] * toBytes(dtype);
@@ -1027,14 +1003,14 @@ OpenCLBackend::setBuffer(const Device::Pointer &       device,
   CL_CHECK(err, "Error: Failed to fill buffer memory.");
 }
 
-auto
-OpenCLBackend::setImage(const Device::Pointer &       device,
-                        const std::shared_ptr<void> & buffer_ptr,
-                        const std::array<size_t, 3> & /*buffer_shape*/,
-                        const std::array<size_t, 3> & buffer_origin,
-                        const std::array<size_t, 3> & region,
-                        const dType &                 dtype,
-                        const float &                 value) -> void
+static auto
+setImage(const Device::Pointer &       device,
+         const std::shared_ptr<void> & buffer_ptr,
+         const std::array<size_t, 3> & /*buffer_shape*/,
+         const std::array<size_t, 3> & buffer_origin,
+         const std::array<size_t, 3> & region,
+         const dType &                 dtype,
+         const float &                 value) -> void
 {
   const auto opencl_device = castDevice(device);
   auto       ptr = static_cast<cl_mem>(buffer_ptr.get());
@@ -1062,6 +1038,30 @@ OpenCLBackend::setImage(const Device::Pointer &       device,
 
   CL_CHECK(err, "Error: Failed to fill image memory.");
 }
+
+auto
+OpenCLBackend::setMemory(const Device::Pointer &       device,
+                         const std::shared_ptr<void> & buffer_ptr,
+                         std::array<size_t, 3> &       buffer_shape,
+                         std::array<size_t, 3> &       buffer_origin,
+                         std::array<size_t, 3> &       region,
+                         const dType &                 dtype,
+                         const mType &                 mtype,
+                         const float &                 value) const -> void
+{
+  switch (mtype)
+  {
+    case mType::BUFFER: {
+      setBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, dtype, value);
+      break;
+    }
+    case mType::IMAGE: {
+      setImage(device, buffer_ptr, buffer_shape, buffer_origin, region, dtype, value);
+      break;
+    }
+  }
+}
+
 
 // ── Kernel build and execution ──────────────────────────────────────────────
 

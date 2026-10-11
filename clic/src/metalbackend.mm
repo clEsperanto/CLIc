@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <array>
 #include <cstring>
-#include <numeric>
 #include <string>
 #include <vector>
 
@@ -287,13 +286,13 @@ MetalBackend::syncToStream(const Device::Pointer & device, int64_t consumer_stre
   castDevice(device)->waitForCompletion();
 }
 
-auto
-MetalBackend::writeBuffer(const Device::Pointer &       device,
-                          const std::shared_ptr<void> & buffer_ptr,
-                          std::array<size_t, 3> &       buffer_shape,
-                          std::array<size_t, 3> &       buffer_origin,
-                          std::array<size_t, 3> &       region,
-                          const void *                  host_ptr) const -> void
+static auto
+writeBuffer(const Device::Pointer &       device,
+            const std::shared_ptr<void> & buffer_ptr,
+            std::array<size_t, 3> &       buffer_shape,
+            std::array<size_t, 3> &       buffer_origin,
+            std::array<size_t, 3> &       region,
+            const void *                  host_ptr) -> void
 {
   // the GPU may still be reading or writing the buffer
   castDevice(device)->waitForCompletion();
@@ -314,13 +313,13 @@ MetalBackend::writeMemory(const Device::Pointer &       device,
   writeBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
 }
 
-auto
-MetalBackend::readBuffer(const Device::Pointer &       device,
-                         const std::shared_ptr<void> & buffer_ptr,
-                         std::array<size_t, 3> &       buffer_shape,
-                         std::array<size_t, 3> &       buffer_origin,
-                         std::array<size_t, 3> &       region,
-                         void *                        host_ptr) const -> void
+static auto
+readBuffer(const Device::Pointer &       device,
+           const std::shared_ptr<void> & buffer_ptr,
+           std::array<size_t, 3> &       buffer_shape,
+           std::array<size_t, 3> &       buffer_origin,
+           std::array<size_t, 3> &       region,
+           void *                        host_ptr) -> void
 {
   // the GPU may still be writing the buffer
   castDevice(device)->waitForCompletion();
@@ -434,14 +433,14 @@ MetalBackend::copyMemoryImageToImage(const Device::Pointer &       device,
   copyMemoryBufferToBuffer(device, src_ptr, src_origin, src_shape, dst_ptr, dst_origin, dst_shape, region, bytes);
 }
 
-auto
-MetalBackend::setBuffer(const Device::Pointer &       device,
-                        const std::shared_ptr<void> & buffer_ptr,
-                        std::array<size_t, 3> &       buffer_shape,
-                        std::array<size_t, 3> &       buffer_origin,
-                        std::array<size_t, 3> &       region,
-                        const dType &                 dtype,
-                        const float &                 value) const -> void
+static auto
+setBuffer(const Device::Pointer &       device,
+          const std::shared_ptr<void> & buffer_ptr,
+          std::array<size_t, 3> &       buffer_shape,
+          std::array<size_t, 3> &       buffer_origin,
+          std::array<size_t, 3> &       region,
+          const dType &                 dtype,
+          const float &                 value) -> void
 {
   // the GPU may still be using the buffer
   castDevice(device)->waitForCompletion();
