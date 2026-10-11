@@ -1,6 +1,11 @@
 #include "cache.hpp"
 
+#include <atomic>
+#include <cstdint>
 #include <fstream>
+#include <iomanip>
+#include <sstream>
+#include <thread>
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 #  define NOMINMAX
@@ -85,6 +90,22 @@ ProgramCache::clear() -> void
 static constexpr std::string_view CACHE_FOLDER_NAME = "clesperanto";
 static constexpr std::string_view CACHE_DIR_UNIX = ".cache";
 
+#ifndef CLIC_VERSION
+#  define CLIC_VERSION "dev"
+#endif
+// Revision of the generated kernel code (defines, preambles, OpenCL->CUDA/Metal translators).
+// Bump it whenever a change alters the code produced from the same OpenCL source, so that stale
+// binaries compiled by a previous revision are not reused from the disk cache.
+static constexpr int CODEGEN_REVISION = 4;
+
+// Cache entries are namespaced by library version and codegen revision
+static auto
+cacheNamespace() -> const std::string &
+{
+  static const std::string name = std::string("clic-") + CLIC_VERSION + "-r" + std::to_string(CODEGEN_REVISION);
+  return name;
+}
+
 auto
 DiskCache::resolveCacheDirectory() -> std::filesystem::path
 {
@@ -157,7 +178,8 @@ auto
 DiskCache::getFilePath(const std::string & device_hash, const std::string & source_hash, const std::string & extension) const
   -> std::filesystem::path
 {
-  return cacheDir_ / std::filesystem::path(device_hash) / std::filesystem::path(source_hash + "." + extension);
+  return cacheDir_ / std::filesystem::u8path(cacheNamespace()) / std::filesystem::path(device_hash) /
+         std::filesystem::path(source_hash + "." + extension);
 }
 
 auto
@@ -169,15 +191,34 @@ DiskCache::saveBinary(const std::string & device_hash,
 {
   auto binary_path = getFilePath(device_hash, source_hash, extension);
   std::filesystem::create_directories(binary_path.parent_path());
-  std::ofstream outfile(binary_path, std::ios::binary);
-  if (!outfile)
+
+  // Write to a unique temporary file then rename it, so that concurrent processes never observe a
+  // partially written cache entry
+  static std::atomic<unsigned> counter{ 0 };
+  std::ostringstream           tmp_name;
+  tmp_name << binary_path.filename().string() << ".tmp" << std::hash<std::thread::id>{}(std::this_thread::get_id()) << "_" << counter++;
+  const auto tmp_path = binary_path.parent_path() / tmp_name.str();
   {
-    throw std::runtime_error("Error: Failed to open cache file for writing: " + binary_path.string());
+    std::ofstream outfile(tmp_path, std::ios::binary);
+    if (!outfile)
+    {
+      throw std::runtime_error("Error: Failed to open cache file for writing: " + tmp_path.string());
+    }
+    outfile.write(reinterpret_cast<const char *>(data), static_cast<std::streamsize>(size));
+    if (!outfile.good())
+    {
+      outfile.close();
+      std::error_code ec;
+      std::filesystem::remove(tmp_path, ec);
+      throw std::runtime_error("Error: Failed to write cache file: " + tmp_path.string());
+    }
   }
-  outfile.write(reinterpret_cast<const char *>(data), size);
-  if (!outfile.good())
+  std::error_code ec;
+  std::filesystem::rename(tmp_path, binary_path, ec);
+  if (ec)
   {
-    throw std::runtime_error("Error: Failed to write cache file: " + binary_path.string());
+    // e.g. Windows refuses to replace an existing file: another process already wrote the entry
+    std::filesystem::remove(tmp_path, ec);
   }
 }
 
@@ -221,7 +262,17 @@ DiskCache::exists(const std::string & device_hash, const std::string & source_ha
 auto
 DiskCache::hash(const std::string & input) -> std::string
 {
-  return std::to_string(std::hash<std::string>{}(input));
+  // 64-bit FNV-1a: stable across platforms and standard libraries (unlike std::hash), combined with
+  // the input length to further reduce the risk of collisions between cached sources
+  std::uint64_t h = 14695981039346656037ULL;
+  for (const unsigned char c : input)
+  {
+    h ^= c;
+    h *= 1099511628211ULL;
+  }
+  std::ostringstream oss;
+  oss << std::hex << std::setw(16) << std::setfill('0') << h << "-" << std::dec << input.size();
+  return oss.str();
 }
 
 } // namespace cle
