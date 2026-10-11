@@ -27,13 +27,37 @@
 namespace cle::fft
 {
 
+/**
+ * @brief Scoped autorelease pool (Metal only, no-op otherwise).
+ *
+ * metal-cpp getters (commandBuffer(), computeCommandEncoder(), ...) return autoreleased objects. The host
+ * application (C++ or Python) has no autorelease pool in place, so the FFT submission drains its own to avoid
+ * leaking them.
+ *
+ * Warning: do NOT open a pool around initializeVkFFT() / deleteVkFFT(): draining it crashes (segfault in the
+ * Metal FFT tests), most likely because VkFFT releases objects it does not own. The autoreleased objects of the
+ * VkFFT initialisation are therefore still leaked (to be fixed upstream in VkFFT).
+ */
+struct AutoreleasePoolGuard
+{
+#if USE_METAL
+  NS::AutoreleasePool * pool = NS::AutoreleasePool::alloc()->init();
+  ~AutoreleasePoolGuard() { pool->release(); }
+#endif
+  AutoreleasePoolGuard() = default;
+  AutoreleasePoolGuard(const AutoreleasePoolGuard &) = delete;
+  auto
+  operator=(const AutoreleasePoolGuard &) -> AutoreleasePoolGuard & = delete;
+};
+
 #if USE_METAL
 static auto
 metalExecuteAppend(VkFFTApplication * app, int direction, void * metalQueue) -> VkFFTResult
 {
-  auto * queue = static_cast<MTL::CommandQueue *>(metalQueue);
-  auto * cmdBuf = queue->commandBuffer();
-  auto * encoder = cmdBuf->computeCommandEncoder();
+  const AutoreleasePoolGuard pool;
+  auto *                     queue = static_cast<MTL::CommandQueue *>(metalQueue);
+  auto *                     cmdBuf = queue->commandBuffer();
+  auto *                     encoder = cmdBuf->computeCommandEncoder();
 
   VkFFTLaunchParams lp = {};
   lp.commandBuffer = cmdBuf;

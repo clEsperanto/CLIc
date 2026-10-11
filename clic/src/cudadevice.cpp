@@ -36,6 +36,43 @@ queryDeviceAttribute(CUdevice_attribute attrib, CUdevice device) -> int
 }
 
 /**
+ * @brief Create the memory pool used for stream-ordered allocations (cuMemAllocFromPoolAsync) on a device.
+ *
+ * A pool of our own, so that the attributes of the device's default pool, shared with other libraries of the
+ * process (CuPy, PyTorch), are left untouched. Freed memory is kept for reuse up to 1/8 of the device memory; the
+ * rest is returned to the driver at the next synchronisation.
+ *
+ * @return the pool, or nullptr if the device or driver does not support memory pools (allocations then fall back
+ *         to synchronous cuMemAlloc / cuMemFree)
+ */
+[[nodiscard]] static auto
+createMemoryPool(CUdevice device, int device_index) -> CUmemoryPool
+{
+  if (queryDeviceAttribute(CU_DEVICE_ATTRIBUTE_MEMORY_POOLS_SUPPORTED, device) == 0)
+  {
+    return nullptr;
+  }
+  CUmemPoolProps props = {};
+  props.allocType = CU_MEM_ALLOCATION_TYPE_PINNED;
+  props.handleTypes = CU_MEM_HANDLE_TYPE_NONE;
+  props.location.type = CU_MEM_LOCATION_TYPE_DEVICE;
+  props.location.id = device_index;
+
+  CUmemoryPool pool = nullptr;
+  if (cuMemPoolCreate(&pool, &props) != CUDA_SUCCESS)
+  {
+    return nullptr;
+  }
+  size_t total_mem = 0;
+  if (cuDeviceTotalMem_v2(&total_mem, device) == CUDA_SUCCESS)
+  {
+    cuuint64_t threshold = total_mem / 8;
+    cuMemPoolSetAttribute(pool, CU_MEMPOOL_ATTR_RELEASE_THRESHOLD, &threshold);
+  }
+  return pool;
+}
+
+/**
  * @brief Format a labelled info line for device info output.
  */
 static auto
@@ -80,19 +117,32 @@ CUDADevice::initialize() -> void
     throw std::runtime_error("Error: Failed to get CUDA device at index " + std::to_string(cudaDeviceIndex));
   }
 
-  err = cuCtxCreate(&cudaContext, 0, cudaDevice);
+  // The device's primary context, as used by the CUDA runtime and by CuPy / PyTorch: memory and streams exchanged with
+  // them over DLPack belong to the same context, and the process keeps one context per device. It is shared, so
+  // finalize() releases it (it is destroyed when its last user releases it) and must free what it created in it.
+  err = cuDevicePrimaryCtxRetain(&cudaContext, cudaDevice);
   if (err != CUDA_SUCCESS)
   {
-    throw std::runtime_error("Error: Failed to create CUDA context for device " + std::to_string(cudaDeviceIndex));
+    throw std::runtime_error("Error: Failed to retain the CUDA primary context of device " + std::to_string(cudaDeviceIndex));
   }
 
-  err = cuStreamCreate(&cudaStream, CU_STREAM_DEFAULT);
+  // Unlike cuCtxCreate, retaining does not make the context current: needed for the stream and the event
+  err = cuCtxSetCurrent(cudaContext);
+  if (err == CUDA_SUCCESS)
+  {
+    err = cuStreamCreate(&cudaStream, CU_STREAM_DEFAULT);
+  }
   if (err != CUDA_SUCCESS)
   {
-    // Clean up the context we just created before throwing
-    cuCtxDestroy(cudaContext);
+    cuDevicePrimaryCtxRelease(cudaDevice);
     cudaContext = nullptr;
     throw std::runtime_error("Error: Failed to create CUDA stream for device " + std::to_string(cudaDeviceIndex));
+  }
+
+  memoryPool = createMemoryPool(cudaDevice, cudaDeviceIndex);
+  if (cuEventCreate(&syncEvent, CU_EVENT_DISABLE_TIMING) != CUDA_SUCCESS)
+  {
+    syncEvent = nullptr; // syncToStream then uses a temporary event
   }
 
   initialized = true;
@@ -106,10 +156,32 @@ CUDADevice::finalize() -> void
     return;
   }
 
-  initialized = false; // Mark early so concurrent deleters see it
-
+  // Wait for the pending work before releasing the stream (finish() is a no-op once uninitialised)
   waitFinish = true;
   finish();
+
+  // Release the cached kernels while their context is alive and current: their deleters unload the modules
+  // (cuModuleUnload acts on the current context). Unloading them after the context is gone crashes the driver; and the
+  // primary context may outlive this device (other users), so the modules must be unloaded explicitly anyway.
+  if (cuCtxSetCurrent(cudaContext) == CUDA_SUCCESS)
+  {
+    cache = std::make_shared<ProgramCache>();
+  }
+
+  initialized = false; // Mark before releasing the context, so memory deleters skip their free
+
+  if (memoryPool != nullptr)
+  {
+    // memory still allocated from the pool is released with it once freed, or with the context
+    cuMemPoolDestroy(memoryPool);
+    memoryPool = nullptr;
+  }
+
+  if (syncEvent != nullptr)
+  {
+    cuEventDestroy(syncEvent); // waits already queued on other streams are not affected
+    syncEvent = nullptr;
+  }
 
   if (cudaStream != nullptr)
   {
@@ -122,7 +194,13 @@ CUDADevice::finalize() -> void
 
   if (cudaContext != nullptr)
   {
-    cuCtxDestroy(cudaContext);
+    // leave no dangling current context on this thread if the release destroys it (last user)
+    CUcontext current = nullptr;
+    if (cuCtxGetCurrent(&current) == CUDA_SUCCESS && current == cudaContext)
+    {
+      cuCtxSetCurrent(nullptr);
+    }
+    cuDevicePrimaryCtxRelease(cudaDevice);
     cudaContext = nullptr;
   }
 }
@@ -144,6 +222,12 @@ auto
 CUDADevice::setWaitToFinish(bool flag) -> void
 {
   waitFinish = flag;
+}
+
+auto
+CUDADevice::getWaitToFinish() const -> bool
+{
+  return waitFinish;
 }
 
 auto
@@ -265,6 +349,18 @@ auto
 CUDADevice::getCUDAStream() const -> const CUstream &
 {
   return cudaStream;
+}
+
+auto
+CUDADevice::getCUDAMemoryPool() const -> CUmemoryPool
+{
+  return memoryPool;
+}
+
+auto
+CUDADevice::getCUDASyncEvent() const -> CUevent
+{
+  return syncEvent;
 }
 
 // ============================================================================

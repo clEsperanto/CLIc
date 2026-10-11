@@ -22,33 +22,41 @@ If any information is missing, is incorrect, or you are facing any kind of diffi
 # Usage example
 
 ```c++
-#include "clesperanto.h"  // CLIc include
+#include "cle.hpp" // CLIc umbrella include
 
-int main( int argc, char** argv)
+#include <cstdlib>
+#include <iostream>
+#include <vector>
+
+int main(int argc, char ** argv)
 {
-    // Initialisation of clEsperanto with default device
-    cle::BackendManager::getInstance().setBackend("opencl");
-    auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+  // Select the backend compiled into the library ("opencl", "cuda" or "metal")
+  // and get a device: the name is a case-insensitive substring, "" picks a default one
+  cle::BackendManager::getInstance().setBackend("opencl");
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+  std::cout << device->getName() << std::endl;
 
-    // host vector to hold input and output
-    std::vector<float> input (width * height * depth);
-    std::vector<float> output (input.size());
+  // host vectors holding input and output data (x is the fastest axis)
+  const size_t       width = 64, height = 64, depth = 1;
+  std::vector<float> input(width * height * depth, 1.0f);
+  std::vector<float> output(input.size());
 
-    /*
-     * ... fill input with data to process
-     */
+  // allocate a 2D float array on the device and push the host data to it
+  auto gpu_src = cle::Array::create(width, height, depth, 2, cle::dType::FLOAT, cle::mType::BUFFER, device);
+  gpu_src->writeFrom(input.data());
 
-    // push data from host to device
-    auto gpu_src = cle::Push<float>(input.data(), width, height, depth, device);
-    // apply filter with parameters
-    auto gpu_dst = cle::tier1::AddImageAndScalar(device, gpu_src, nullptr, 10);
-    // pull output from device to host
-    cle::Pull<float>(gpu_dst, output.data());
+  // apply operations; passing nullptr as destination lets the function allocate it
+  auto gpu_tmp = cle::tier1::add_image_and_scalar_func(device, gpu_src, nullptr, 10);
+  auto gpu_dst = cle::tier1::gaussian_blur_func(device, gpu_tmp, nullptr, 2, 2, 0);
 
-    return EXIT_SUCCESS;
+  // pull the result back from the device to the host
+  gpu_dst->readTo(output.data());
+
+  return EXIT_SUCCESS;
 }
 ```
-See more complete example on usage by looking at the [tests](./tests/).
+Device memory is released automatically when the last `cle::Array::Pointer` referencing it goes out of scope.
+See more complete examples of usage by looking at the [tests](./tests/).
 
 # Feedback & Contribution
 

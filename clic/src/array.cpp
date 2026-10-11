@@ -1,4 +1,5 @@
 #include "array.hpp"
+#include "backend_common.hpp"
 
 #include <array>
 
@@ -385,54 +386,22 @@ Array::copyTo(const Array::Pointer &        dst,
 static auto
 fillWithHostData(Array & array, const float value) -> void
 {
-  switch (array.dtype())
+  if (array.dtype() == dType::COMPLEX || array.dtype() == dType::UNKNOWN)
   {
-    case dType::FLOAT: {
-      std::vector<float> data(array.size(), value);
-      array.writeFrom(data.data());
-      return;
-    }
-    case dType::INT8: {
-      std::vector<int8_t> data(array.size(), static_cast<int8_t>(value));
-      array.writeFrom(data.data());
-      return;
-    }
-    case dType::INT16: {
-      std::vector<int16_t> data(array.size(), static_cast<int16_t>(value));
-      array.writeFrom(data.data());
-      return;
-    }
-    case dType::INT32: {
-      std::vector<int32_t> data(array.size(), static_cast<int32_t>(value));
-      array.writeFrom(data.data());
-      return;
-    }
-    case dType::UINT8: {
-      std::vector<uint8_t> data(array.size(), static_cast<uint8_t>(value));
-      array.writeFrom(data.data());
-      return;
-    }
-    case dType::UINT16: {
-      std::vector<uint16_t> data(array.size(), static_cast<uint16_t>(value));
-      array.writeFrom(data.data());
-      return;
-    }
-    case dType::UINT32: {
-      std::vector<uint32_t> data(array.size(), static_cast<uint32_t>(value));
-      array.writeFrom(data.data());
-      return;
-    }
-    default: {
-      throw std::runtime_error("Error: Unsupported data type");
-    }
+    throw std::runtime_error("Error: Unsupported data type");
   }
+  detail::visitDType(array.dtype(), [&](auto tag) {
+    using T = decltype(tag);
+    const std::vector<T> data(array.size(), static_cast<T>(value));
+    array.writeFrom(data.data());
+  });
 }
 
 auto
 Array::fill(const float value) -> void
 {
-#if defined(__APPLE__)
-  // clEnqueueFillBuffer not behaving as expected on Apple Silicon
+#if defined(__APPLE__) && USE_OPENCL
+  // clEnqueueFillBuffer not behaving as expected on Apple Silicon (OpenCL only, Metal fills natively)
   // FIX: Filling buffer with host data
   // TODO: Find a better solution
   fillWithHostData(*this, value);
@@ -603,6 +572,45 @@ Array::get_ptr() const -> std::shared_ptr<void>
 
 
 // DLPack interoperability
+
+/**
+ * @brief Wait for the device work that may still use memory handed back across DLPack.
+ *
+ * @param all_users CUDA: also wait for the other users of the context (the consumer of an exported tensor — CuPy,
+ *                  PyTorch — works in the same primary context, on its own streams), not only for the device stream
+ *
+ * Called from deleters: never throws (a device that is gone, or belongs to another backend, is skipped).
+ */
+static auto
+waitBeforeDLPackRelease(const Device::Pointer & device, bool all_users) noexcept -> void
+{
+  if (device == nullptr || !device->isInitialized())
+  {
+    return;
+  }
+  try
+  {
+#if USE_CUDA
+    if (all_users)
+    {
+      if (const auto cuda_device = std::dynamic_pointer_cast<const CUDADevice>(device))
+      {
+        if (cuCtxPushCurrent(cuda_device->getCUDAContext()) == CUDA_SUCCESS)
+        {
+          cuCtxSynchronize();
+          CUcontext popped = nullptr;
+          cuCtxPopCurrent(&popped);
+        }
+        return;
+      }
+    }
+#endif
+    BackendManager::getInstance().getBackend().syncToStream(device, 0);
+  }
+  catch (...)
+  {}
+}
+
 auto
 Array::toDLPack() const -> DLManagedTensorVersioned *
 {
@@ -662,9 +670,16 @@ Array::toDLPack() const -> DLManagedTensorVersioned *
   // Keep the Array alive via manager_ctx
   managed->manager_ctx = new Array::Pointer(shallow_copy());
   managed->deleter = [](DLManagedTensorVersioned * self) {
+    auto * array = static_cast<Array::Pointer *>(self->manager_ctx);
+    // The consumer may release the tensor while kernels it queued on its own streams still use the memory; once the
+    // Array is gone, a stream-ordered free (CUDA) would let our next allocation reuse it too early.
+    if (*array != nullptr)
+    {
+      waitBeforeDLPackRelease((*array)->device(), true);
+    }
     delete[] self->dl_tensor.shape;
     delete[] self->dl_tensor.strides;
-    delete static_cast<Array::Pointer *>(self->manager_ctx);
+    delete array;
     delete self;
   };
 
@@ -727,8 +742,10 @@ Array::fromDLPack(DLManagedTensorVersioned * src, const Device::Pointer & device
   dType dt = fromDLDataType(t.dtype);
 
   // Wrap raw pointer — deleter is called when the shared_ptr ref-count hits 0
+  // Before handing the memory back to its producer (which may free or reuse it at once), wait for our queued work
   DLManagedTensorVersioned * captured = src;
-  auto                       shared_data = std::shared_ptr<void>(t.data, [captured](void *) {
+  auto                       shared_data = std::shared_ptr<void>(t.data, [captured, device_ptr](void *) {
+    waitBeforeDLPackRelease(device_ptr, false);
     if (captured->deleter)
       captured->deleter(captured);
   });

@@ -31,6 +31,10 @@ constexpr const char * centroid_kernel_source = R"CLC(
     const int y = get_global_id(1);
     const int z = get_global_id(2);
 
+    // CUDA launches whole blocks: threads beyond the image would accumulate the clamped edge pixels
+    if (x >= GET_IMAGE_WIDTH(src_label) || y >= GET_IMAGE_HEIGHT(src_label) || z >= GET_IMAGE_DEPTH(src_label))
+      return;
+
     const int label = (int) READ_IMAGE(src_label, sampler, POS_src_label_INSTANCE(x, y, z, 0)).x;
     if (label < 0 || label >= nb_labels)
       return;

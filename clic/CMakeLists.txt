@@ -40,6 +40,9 @@ target_include_directories(${LIBRARY_NAME} PUBLIC
 )
 
 
+# library version, used to namespace the kernel disk cache
+target_compile_definitions(${LIBRARY_NAME} PRIVATE CLIC_VERSION="${PROJECT_VERSION}")
+
 set_target_properties(${LIBRARY_NAME} PROPERTIES LINKER_LANGUAGE CXX)        # force C++ linker
 set_target_properties(${LIBRARY_NAME} PROPERTIES VERSION ${PROJECT_VERSION}) # set version
 # When statically linked into a consumer shared library (e.g. a Python extension), hide CLIc symbols

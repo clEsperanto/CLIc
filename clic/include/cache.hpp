@@ -91,7 +91,9 @@ private:
  *
  * Manages saving and loading compiled kernel binaries (OpenCL .bin, CUDA .ptx, etc.)
  * to/from disk. The cache directory is organized as:
- *   <cache_root>/<device_hash>/<source_hash>.<extension>
+ *   <cache_root>/clic-<version>-r<codegen_revision>/<device_hash>/<source_hash>.<extension>
+ *
+ * Entries are written atomically (temporary file + rename), so concurrent processes can share the cache.
  *
  * The disk cache can be disabled via the CLESPERANTO_NO_CACHE environment variable
  * or programmatically via setEnabled().
@@ -181,6 +183,7 @@ public:
 
   /**
    * @brief Compute a hash string for the given input
+   *        (64-bit FNV-1a in hexadecimal followed by the input length, stable across platforms)
    * @param input The string to hash
    * @return The hash as a string
    */
