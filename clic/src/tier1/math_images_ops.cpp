@@ -1,7 +1,9 @@
 #include "tier0.hpp"
 #include "tier1.hpp"
-
 #include "utils.hpp"
+
+#include "cle_add_images_weighted.h"
+#include "cle_multiply_image_and_position.h"
 
 namespace cle::tier1
 {
@@ -177,6 +179,36 @@ binary_subtract_func(const Device::Pointer & device, const Array::Pointer & src0
 {
   tier0::create_or_check_broadcast_dst(src0, src1, dst, dType::BOOL);
   return apply_images_math_operation(device, src0, src1, dst, "(x != 0 && y == 0) ? 1 : 0");
+}
+
+auto
+add_images_weighted_func(const Device::Pointer & device,
+                         const Array::Pointer &  src0,
+                         const Array::Pointer &  src1,
+                         Array::Pointer          dst,
+                         float                   factor1,
+                         float                   factor2) -> Array::Pointer
+{
+  tier0::create_or_check_broadcast_dst(src0, src1, dst, promoteType(src0->dtype(), src1->dtype()));
+  std::vector<ParameterType> params;
+  params.emplace_back(src0);
+  params.emplace_back(factor1);
+  params.emplace_back(src1);
+  params.emplace_back(factor2);
+  evaluate(device, "a * x + b * y", params, dst);
+  return dst;
+}
+
+auto
+multiply_image_and_position_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, int dimension)
+  -> Array::Pointer
+{
+  tier0::create_like(src, dst, dType::FLOAT);
+  const KernelInfo    kernel = { "multiply_image_and_position", kernel::multiply_image_and_position };
+  const ParameterList params = { { "src", src }, { "dst", dst }, { "index", dimension } };
+  const RangeArray    range = { dst->width(), dst->height(), dst->depth() };
+  execute(device, kernel, params, range);
+  return dst;
 }
 
 } // namespace cle::tier1
