@@ -604,12 +604,13 @@ OpenCLToMetalTranslator::translateSynchronization(std::string & code) -> void
   replaceAll(code, "barrier(CLK_LOCAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_threadgroup)");
   replaceAll(code, "barrier(CLK_GLOBAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_device)");
 
-  replaceAll(code, "mem_fence(CLK_LOCAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_threadgroup)");
-  replaceAll(code, "mem_fence(CLK_GLOBAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_device)");
+  // read_/write_ variants first: "mem_fence(" is a suffix of their names
   replaceAll(code, "read_mem_fence(CLK_LOCAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_threadgroup)");
   replaceAll(code, "read_mem_fence(CLK_GLOBAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_device)");
   replaceAll(code, "write_mem_fence(CLK_LOCAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_threadgroup)");
   replaceAll(code, "write_mem_fence(CLK_GLOBAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_device)");
+  replaceAll(code, "mem_fence(CLK_LOCAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_threadgroup)");
+  replaceAll(code, "mem_fence(CLK_GLOBAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_device)");
 }
 
 

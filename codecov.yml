@@ -1,0 +1,3 @@
+parsers:
+  cobertura:
+    partials_as_hits: true # a line with partly covered branches counts as covered

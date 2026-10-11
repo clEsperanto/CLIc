@@ -490,10 +490,11 @@ OpenCLToCUDATranslator::translateSynchronization(std::string & code) -> void
   replaceAll(code, "barrier(CLK_GLOBAL_MEM_FENCE | CLK_LOCAL_MEM_FENCE)", "__syncthreads()");
 
   // mem_fence → __threadfence()  (approximate — semantics differ slightly)
-  replaceAll(code, "mem_fence(CLK_GLOBAL_MEM_FENCE)", "__threadfence()");
-  replaceAll(code, "mem_fence(CLK_LOCAL_MEM_FENCE)", "__threadfence_block()");
+  // read_/write_ variants first: "mem_fence(" is a suffix of their names
   replaceAll(code, "read_mem_fence(CLK_GLOBAL_MEM_FENCE)", "__threadfence()");
   replaceAll(code, "write_mem_fence(CLK_GLOBAL_MEM_FENCE)", "__threadfence()");
+  replaceAll(code, "mem_fence(CLK_GLOBAL_MEM_FENCE)", "__threadfence()");
+  replaceAll(code, "mem_fence(CLK_LOCAL_MEM_FENCE)", "__threadfence_block()");
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

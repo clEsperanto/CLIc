@@ -12,7 +12,7 @@ sub_stack_func(const Device::Pointer & device, const Array::Pointer & src, Array
 {
   auto nb_slice = end_z - start_z + 1;
   nb_slice = nb_slice < 1 ? 1 : nb_slice;
-  return tier1::crop_func(device, src, dst, 0, 0, start_z, 0, 0, nb_slice);
+  return tier1::crop_func(device, src, dst, 0, 0, start_z, static_cast<int>(src->width()), static_cast<int>(src->height()), nb_slice);
 }
 
 auto
