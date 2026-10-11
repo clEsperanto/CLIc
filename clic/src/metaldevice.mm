@@ -2,6 +2,7 @@
 #include "device.hpp"
 #include "utils.hpp"
 
+#include <algorithm>
 #include <iomanip>
 #include <sstream>
 #include <string>
@@ -50,32 +51,39 @@ MetalDevice::initialize() -> void
     return;
   }
 
-  NS::Array * devices = MTL::CopyAllDevices();
-  if (!devices || devices->count() == 0)
+  @autoreleasepool
   {
-    throw std::runtime_error("Error: No Metal devices found");
-  }
+    NS::Array * devices = MTL::CopyAllDevices();
+    if (!devices || devices->count() == 0)
+    {
+      if (devices)
+      {
+        devices->release();
+      }
+      throw std::runtime_error("Error: No Metal devices found");
+    }
 
-  if (static_cast<size_t>(metalDeviceIndex) >= devices->count())
-  {
+    if (static_cast<size_t>(metalDeviceIndex) >= devices->count())
+    {
+      devices->release();
+      throw std::runtime_error("Error: Metal device index " + std::to_string(metalDeviceIndex) + " out of range");
+    }
+
+    auto * dev = devices->object<MTL::Device>(metalDeviceIndex);
+    dev->retain();
     devices->release();
-    throw std::runtime_error("Error: Metal device index " + std::to_string(metalDeviceIndex) + " out of range");
+
+    auto * queue = dev->newCommandQueue();
+    if (!queue)
+    {
+      dev->release();
+      throw std::runtime_error("Error: Failed to create Metal command queue");
+    }
+
+    metalDevice = dev;
+    metalQueue = queue;
+    initialized = true;
   }
-
-  auto * dev = devices->object<MTL::Device>(metalDeviceIndex);
-  dev->retain();
-  devices->release();
-
-  auto * queue = dev->newCommandQueue();
-  if (!queue)
-  {
-    dev->release();
-    throw std::runtime_error("Error: Failed to create Metal command queue");
-  }
-
-  metalDevice = dev;
-  metalQueue = queue;
-  initialized = true;
 }
 
 auto
@@ -86,10 +94,9 @@ MetalDevice::finalize() -> void
     return;
   }
 
+  // Wait for the pending work before releasing the queue
+  waitForCompletion();
   initialized = false;
-
-  waitFinish = true;
-  finish();
 
   if (metalQueue)
   {
@@ -106,17 +113,60 @@ MetalDevice::finalize() -> void
 auto
 MetalDevice::finish() const -> void
 {
-  if (!isInitialized())
+  if (isInitialized() && waitFinish)
   {
-    return;
+    waitForCompletion();
   }
-  if (waitFinish)
+}
+
+auto
+MetalDevice::addPendingCommandBuffer(void * command_buffer) const -> void
+{
+  // Drop the command buffers that already completed, so that the list stays short when the host never waits
+  auto done = [](void * p) {
+    auto * buffer = static_cast<MTL::CommandBuffer *>(p);
+    const auto status = buffer->status();
+    if (status == MTL::CommandBufferStatusCompleted || status == MTL::CommandBufferStatusError)
+    {
+      buffer->release();
+      return true;
+    }
+    return false;
+  };
+  pendingCommandBuffers.erase(std::remove_if(pendingCommandBuffers.begin(), pendingCommandBuffers.end(), done),
+                              pendingCommandBuffers.end());
+
+  static_cast<MTL::CommandBuffer *>(command_buffer)->retain();
+  pendingCommandBuffers.push_back(command_buffer);
+}
+
+auto
+MetalDevice::getWaitToFinish() const -> bool
+{
+  return waitFinish;
+}
+
+auto
+MetalDevice::waitForCompletion() const -> void
+{
+  // Errors are reported, not thrown: this is also called on finalisation
+  for (void * p : pendingCommandBuffers)
   {
-    auto * queue = static_cast<MTL::CommandQueue *>(metalQueue);
-    auto * cmdBuf = queue->commandBuffer();
-    cmdBuf->commit();
-    cmdBuf->waitUntilCompleted();
+    auto * buffer = static_cast<MTL::CommandBuffer *>(p);
+    buffer->waitUntilCompleted();
+    if (buffer->status() == MTL::CommandBufferStatusError)
+    {
+      @autoreleasepool
+      {
+        const auto * error = buffer->error();
+        std::cerr << "Error: Metal command buffer failed: "
+                  << ((error && error->localizedDescription()) ? error->localizedDescription()->utf8String() : "unknown error")
+                  << std::endl;
+      }
+    }
+    buffer->release();
   }
+  pendingCommandBuffers.clear();
 }
 
 auto
@@ -157,7 +207,11 @@ MetalDevice::getName(bool lowercase) const -> std::string
   {
     return lowercase ? "unknown metal device" : "Unknown Metal Device";
   }
-  std::string name = dev->name()->utf8String();
+  std::string name;
+  @autoreleasepool
+  {
+    name = dev->name()->utf8String();
+  }
   return lowercase ? to_lower(name) : name;
 }
 
@@ -207,13 +261,8 @@ MetalDevice::supportImage() const -> bool
 auto
 MetalDevice::getNbDevicesFromContext() const -> size_t
 {
-  NS::Array * devices = MTL::CopyAllDevices();
-  size_t count = devices ? devices->count() : 0;
-  if (devices)
-  {
-    devices->release();
-  }
-  return count;
+  // Metal has no multi-device context: each device has its own queue (same convention as OpenCL / CUDA)
+  return 1;
 }
 
 auto

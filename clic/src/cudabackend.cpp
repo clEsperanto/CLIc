@@ -1,12 +1,18 @@
 #include "backend.hpp"
+#include "backend_common.hpp"
 #include "cle_preamble_cu.h"
 #include "translator.hpp"
 
 #include <algorithm>
 #include <array>
 #include <cstring>
+#include <limits>
+#include <memory>
 #include <numeric>
+#include <stdexcept>
+#include <type_traits>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace cle
@@ -75,13 +81,15 @@ class CUDAContextGuard
 {
 public:
   explicit CUDAContextGuard(const Device::Pointer & device)
-    : cuda_device_(std::dynamic_pointer_cast<const CUDADevice>(device))
+    : cuda_device_(detail::castDevice<CUDADevice>(device, "CUDADevice"))
   {
-    if (!cuda_device_)
+    // The context is usually already current on this thread: skip the driver call in that case
+    const CUcontext context = cuda_device_->getCUDAContext();
+    CUcontext       current = nullptr;
+    if (cuCtxGetCurrent(&current) != CUDA_SUCCESS || current != context)
     {
-      throw std::runtime_error("Error: Failed to cast device to CUDADevice");
+      CU_CHECK(cuCtxSetCurrent(context), "Error: Failed to set CUDA context");
     }
-    CU_CHECK(cuCtxSetCurrent(cuda_device_->getCUDAContext()), "Error: Failed to set CUDA context");
   }
 
   [[nodiscard]] auto
@@ -119,45 +127,66 @@ enum class MemcpyDirection
 };
 
 /**
+ * @brief Row pitch (bytes) and slice height (rows) of a memory of the given shape (x in bytes).
+ *
+ * A flat {N, 1, 1} shape is a packed buffer (e.g. the buffer side of a whole buffer <-> image copy, or host
+ * memory): its rows and slices follow the copied region.
+ */
+[[nodiscard]] static auto
+memoryPitches(const std::array<size_t, 3> & shape, const std::array<size_t, 3> & region) -> std::pair<size_t, size_t>
+{
+  if (shape[1] == 1 && shape[2] == 1)
+  {
+    return { region[0], region[1] };
+  }
+  return { shape[0], shape[1] };
+}
+
+/**
  * @brief Perform a 1D, 2D, or 3D memory copy between host and/or device.
  *
- * Selects cuMemcpy / cuMemcpy2D / cuMemcpy3D based on the shape, eliminating
+ * Selects cuMemcpyAsync / cuMemcpy2DAsync / cuMemcpy3DAsync based on the region and origins, eliminating
  * the triplicated branching logic that was in writeBuffer/readBuffer/copyBuffer.
+ *
+ * The copy is queued on `stream`, after the work already submitted to it, and may still be running
+ * on return: callers copying to or from host memory must synchronise the stream before returning.
+ * With `blocking`, the synchronous cuMemcpy / cuMemcpy2D / cuMemcpy3D are used instead (cheaper than queuing
+ * then synchronising when the device waits after each operation anyway, see CUDADevice::getWaitToFinish).
  *
  * @param src_type        Source memory type (host or device).
  * @param src_ptr         Source pointer (host void* or CUdeviceptr cast).
  * @param src_origin      Byte offset origin for the source.
- * @param src_row_pitch   Row pitch in bytes for the source (0 for 1D).
- * @param src_slice_pitch Slice pitch (height) for the source (0 for 1D/2D).
+ * @param src_pitches     Row pitch in bytes and slice height in rows of the source (see memoryPitches).
  * @param dst_type        Destination memory type.
  * @param dst_ptr         Destination pointer.
  * @param dst_origin      Byte offset origin for the destination.
- * @param dst_row_pitch   Row pitch in bytes for the destination.
- * @param dst_slice_pitch Slice pitch for the destination.
+ * @param dst_pitches     Row pitch in bytes and slice height in rows of the destination.
  * @param region          Size of the region to copy {widthBytes, height, depth}.
- * @param shape           Full buffer shape to determine dimensionality.
+ * @param stream          Stream the copy is queued on.
+ * @param blocking        Use the synchronous copy functions.
  */
 static auto
-performMemcpy(CUmemorytype                  src_type,
-              const void *                  src_ptr,
-              const std::array<size_t, 3> & src_origin,
-              size_t                        src_row_pitch,
-              size_t                        src_slice_pitch,
-              CUmemorytype                  dst_type,
-              const void *                  dst_ptr,
-              const std::array<size_t, 3> & dst_origin,
-              size_t                        dst_row_pitch,
-              size_t                        dst_slice_pitch,
-              const std::array<size_t, 3> & region,
-              const std::array<size_t, 3> & shape) -> void
+performMemcpy(CUmemorytype                      src_type,
+              const void *                      src_ptr,
+              const std::array<size_t, 3> &     src_origin,
+              const std::pair<size_t, size_t> & src_pitches,
+              CUmemorytype                      dst_type,
+              const void *                      dst_ptr,
+              const std::array<size_t, 3> &     dst_origin,
+              const std::pair<size_t, size_t> & dst_pitches,
+              const std::array<size_t, 3> &     region,
+              CUstream                          stream,
+              bool                              blocking) -> void
 {
   CUresult err;
 
-  // Determine effective copy dimensionality from both the buffer shape AND the
-  // origins: a small source pasted at a non-zero z/y offset into a larger
-  // destination still needs a 3D/2D copy to land at the correct address.
-  const bool need_3d = (shape[2] > 1 || src_origin[2] > 0 || dst_origin[2] > 0);
-  const bool need_2d = !need_3d && (shape[1] > 1 || src_origin[1] > 0 || dst_origin[1] > 0);
+  const auto [src_row_pitch, src_slice_pitch] = src_pitches;
+  const auto [dst_row_pitch, dst_slice_pitch] = dst_pitches;
+
+  // Determine the copy dimensionality from the region AND the origins: a small source pasted at a
+  // non-zero z/y offset into a larger destination still needs a 3D/2D copy to land at the correct address.
+  const bool need_3d = (region[2] > 1 || src_origin[2] > 0 || dst_origin[2] > 0);
+  const bool need_2d = !need_3d && (region[1] > 1 || src_origin[1] > 0 || dst_origin[1] > 0);
 
   if (need_3d)
   {
@@ -198,7 +227,7 @@ performMemcpy(CUmemorytype                  src_type,
     params.Height = region[1];
     params.Depth = region[2];
 
-    err = cuMemcpy3D(&params);
+    err = blocking ? cuMemcpy3D(&params) : cuMemcpy3DAsync(&params, stream);
   }
   else if (need_2d)
   {
@@ -234,7 +263,7 @@ performMemcpy(CUmemorytype                  src_type,
     params.WidthInBytes = region[0];
     params.Height = region[1];
 
-    err = cuMemcpy2D(&params);
+    err = blocking ? cuMemcpy2D(&params) : cuMemcpy2DAsync(&params, stream);
   }
   else
   {
@@ -242,31 +271,10 @@ performMemcpy(CUmemorytype                  src_type,
     auto src_addr = reinterpret_cast<CUdeviceptr>(reinterpret_cast<const char *>(src_ptr) + src_origin[0]);
     auto dst_addr = reinterpret_cast<CUdeviceptr>(reinterpret_cast<const char *>(dst_ptr) + dst_origin[0]);
 
-    err = cuMemcpy(dst_addr, src_addr, region[0]);
+    err = blocking ? cuMemcpy(dst_addr, src_addr, region[0]) : cuMemcpyAsync(dst_addr, src_addr, region[0], stream);
   }
 
   CU_CHECK(err, "Error: Memory copy failed");
-}
-
-// ============================================================================
-// Disk cache helpers
-// ============================================================================
-
-static auto
-savePtxToCache(const std::string & device_hash, const std::string & source_hash, const std::string & ptx) -> void
-{
-  DiskCache::instance().saveBinary(device_hash, source_hash, "ptx", ptx.c_str(), ptx.size());
-}
-
-[[nodiscard]] static auto
-loadPtxFromCache(const std::string & device_hash, const std::string & source_hash) -> std::string
-{
-  auto binary = DiskCache::instance().loadBinary(device_hash, source_hash, "ptx");
-  if (binary.empty())
-  {
-    return {};
-  }
-  return std::string(binary.begin(), binary.end());
 }
 
 // ============================================================================
@@ -292,12 +300,14 @@ bitCast(const From & src) -> To
 // ============================================================================
 
 /**
- * @brief Compile an NVRTC program to PTX.
+ * @brief Compile an NVRTC program with the given architecture option.
  *
- * On failure, retrieves and logs the build log before throwing.
+ * @param to_cubin true: return the CUBIN (`--gpu-architecture=sm_XY`), false: return the PTX (`compute_XY`)
+ * @return the compiled module image, or an empty string if NVRTC rejects the architecture option (e.g. a GPU
+ *         newer than the NVRTC library). On a compilation error, throws with the build log.
  */
 [[nodiscard]] static auto
-compileToPtx(const std::string & kernel_source, const std::string & arch) -> std::string
+compileWithNvrtc(const std::string & kernel_source, const std::string & arch_opt, bool to_cubin) -> std::string
 {
   nvrtcProgram prog;
   NVRTC_CHECK(nvrtcCreateProgram(&prog, kernel_source.c_str(), nullptr, 0, nullptr, nullptr), "Error: Failed to create NVRTC program");
@@ -309,11 +319,14 @@ compileToPtx(const std::string & kernel_source, const std::string & arch) -> std
     ~ProgramGuard() { nvrtcDestroyProgram(p); }
   } guard{ &prog };
 
-  const std::string                 arch_opt = "--gpu-architecture=compute_" + arch;
   const std::string                 warn_opt = "--disable-warnings";
   const std::array<const char *, 2> options = { arch_opt.c_str(), warn_opt.c_str() };
 
   nvrtcResult res = nvrtcCompileProgram(prog, static_cast<int>(options.size()), options.data());
+  if (res == NVRTC_ERROR_INVALID_OPTION)
+  {
+    return {};
+  }
   if (res != NVRTC_SUCCESS)
   {
     // Retrieve and report the build log
@@ -325,113 +338,94 @@ compileToPtx(const std::string & kernel_source, const std::string & arch) -> std
                              ")\nBuild log:\n" + log);
   }
 
-  size_t ptx_size = 0;
-  NVRTC_CHECK(nvrtcGetPTXSize(prog, &ptx_size), "Error: Failed to get PTX size");
-
-  // NVRTC includes the null terminator in ptx_size
-  std::string ptx(ptx_size, '\0');
-  NVRTC_CHECK(nvrtcGetPTX(prog, ptx.data()), "Error: Failed to get PTX");
-
-  return ptx;
+  size_t      size = 0;
+  std::string image;
+  if (to_cubin)
+  {
+    NVRTC_CHECK(nvrtcGetCUBINSize(prog, &size), "Error: Failed to get CUBIN size");
+    image.resize(size);
+    NVRTC_CHECK(nvrtcGetCUBIN(prog, image.data()), "Error: Failed to get CUBIN");
+  }
+  else
+  {
+    // NVRTC includes the null terminator in the PTX size
+    NVRTC_CHECK(nvrtcGetPTXSize(prog, &size), "Error: Failed to get PTX size");
+    image.resize(size);
+    NVRTC_CHECK(nvrtcGetPTX(prog, image.data()), "Error: Failed to get PTX");
+  }
+  return image;
 }
 
-// ============================================================================
-// Block size calculation helper
-// ============================================================================
-
 /**
- * @brief Compute a reasonable CUDA block (thread) size for the given global size.
+ * @brief Compile a CUDA kernel source for the device architecture `arch` (e.g. "61").
  *
- * Strategy:
- *   - Determine the active dimensions (global_size[i] > 1).
- *   - Distribute threads per block across active dimensions, capped at 1024 total
- *     and 64 in the z-dimension (hardware limit on many architectures).
- *   - Inactive dimensions get block size = 1.
+ * Compiles to a CUBIN for `sm_<arch>`, which the driver loads as is. PTX (`compute_<arch>`) is only produced when this
+ * NVRTC does not know the architecture; the driver then JIT-compiles it at every module load.
+ *
+ * @return the module image (CUBIN or PTX), accepted by cuModuleLoadData
  */
 [[nodiscard]] static auto
-computeBlockSize(const std::array<size_t, 3> & global_size) -> std::array<size_t, 3>
+compileKernel(const std::string & kernel_source, const std::string & arch) -> std::string
 {
-  int dim = 0;
-  for (size_t i = 0; i < 3; ++i)
+  auto image = compileWithNvrtc(kernel_source, "--gpu-architecture=sm_" + arch, true);
+  if (image.empty())
   {
-    if (global_size[i] > 1)
-    {
-      ++dim;
-    }
+    image = compileWithNvrtc(kernel_source, "--gpu-architecture=compute_" + arch, false);
   }
-
-  std::array<size_t, 3> block = { 1, 1, 1 };
-
-  switch (dim)
+  if (image.empty())
   {
-    case 0:
-      break;
-    case 1: {
-      constexpr size_t kMaxThreads1D = 256;
-      for (size_t i = 0; i < 3; ++i)
-      {
-        if (global_size[i] > 1)
-        {
-          block[i] = std::min(global_size[i], kMaxThreads1D);
-        }
-      }
-      break;
-    }
-    case 2: {
-      // Prefer wider x for coalescing: 32×8 instead of 16×16
-      constexpr size_t kBlockDimX_2D = 32;    // <- changed
-      constexpr size_t kBlockDimOther_2D = 8; // <- changed
-      bool             first_active = true;
-      for (size_t i = 0; i < 3; ++i)
-      {
-        if (global_size[i] > 1)
-        {
-          if (first_active)
-          {
-            block[i] = std::min(global_size[i], kBlockDimX_2D);
-            first_active = false;
-          }
-          else
-          {
-            block[i] = std::min(global_size[i], kBlockDimOther_2D);
-          }
-        }
-      }
-      break;
-    }
-    case 3: {
-      // x=32 for coalescing, y=8, z=1 in block (z goes to grid)
-      constexpr std::array<size_t, 3> kBlockDim3D = { 32, 8, 1 }; // <- changed
-      for (size_t i = 0; i < 3; ++i)
-      {
-        block[i] = std::min(global_size[i], kBlockDim3D[i]);
-      }
-      break;
-    }
+    throw std::runtime_error("Error: Failed to compile kernel. NVRTC does not support the device architecture " + arch);
   }
-
-  block[2] = std::min(block[2], size_t{ 64 });
-
-  size_t total = block[0] * block[1] * block[2];
-  while (total > 1024)
-  {
-    auto max_it = std::max_element(block.begin(), block.end());
-    *max_it = (*max_it + 1) / 2;
-    total = block[0] * block[1] * block[2];
-  }
-
-  return block;
+  return image;
 }
 
 /**
- * @brief Compute grid size from global size and block size (ceiling division).
+ * @brief A loaded kernel, as held by the kernel caches.
+ *
+ * `function` must stay the first member: the object is handed out as a `std::shared_ptr<void>` that callers of
+ * buildKernel read as a `CUfunction *`.
+ */
+struct LoadedFunction
+{
+  CUfunction function = nullptr;
+  size_t     max_block_size = 0; ///< threads per block giving the best occupancy for this kernel (registers, shared memory)
+};
+static_assert(std::is_standard_layout_v<LoadedFunction>, "LoadedFunction must be pointer-interconvertible with its CUfunction");
+
+/**
+ * @brief Load a module image (CUBIN or PTX) and get the kernel function from it.
+ *
+ * The returned LoadedFunction holds the CUfunction and its occupancy-based block size limit (computed once here), and
+ * unloads the module (which must stay alive while the function is in use) when the last reference goes away.
  */
 [[nodiscard]] static auto
-computeGridSize(const std::array<size_t, 3> & global_size, const std::array<size_t, 3> & block_size) -> std::array<size_t, 3>
+loadFunction(const std::string & image, const std::string & kernel_name) -> std::shared_ptr<void>
 {
-  return { (global_size[0] + block_size[0] - 1) / block_size[0],
-           (global_size[1] + block_size[1] - 1) / block_size[1],
-           (global_size[2] + block_size[2] - 1) / block_size[2] };
+  CUmodule cuModule = nullptr;
+  CU_CHECK(cuModuleLoadData(&cuModule, image.data()), "Error: Failed to load CUDA module");
+
+  auto       loaded = std::make_unique<LoadedFunction>();
+  const auto err = cuModuleGetFunction(&loaded->function, cuModule, kernel_name.c_str());
+  if (err != CUDA_SUCCESS)
+  {
+    cuModuleUnload(cuModule);
+    CU_CHECK(err, "Error: Failed to get function '" + kernel_name + "' from module");
+  }
+
+  // Largest block size reaching the best occupancy, given the kernel's register and static shared memory usage.
+  // It is also never above the kernel's own limit (CU_FUNC_ATTRIBUTE_MAX_THREADS_PER_BLOCK), which can be lower than
+  // the device limit for register-heavy kernels: launching more threads would fail.
+  int min_grid_size = 0;
+  int block_size = 0;
+  if (cuOccupancyMaxPotentialBlockSize(&min_grid_size, &block_size, loaded->function, nullptr, 0, 0) == CUDA_SUCCESS && block_size > 0)
+  {
+    loaded->max_block_size = static_cast<size_t>(block_size);
+  }
+
+  return std::shared_ptr<void>(loaded.release(), [cuModule](void * p) {
+    cuModuleUnload(cuModule);
+    delete static_cast<LoadedFunction *>(p);
+  });
 }
 
 // ============================================================================
@@ -448,75 +442,82 @@ CUDABackend::CUDABackend()
 auto
 CUDABackend::getDevices(const std::string & type) const -> std::vector<Device::Pointer>
 {
-  int deviceCount = 0;
-  CU_CHECK(cuDeviceGetCount(&deviceCount), "Error: Failed to get device count");
-
-  std::vector<Device::Pointer> devices;
-  devices.reserve(static_cast<size_t>(deviceCount));
-  for (int i = 0; i < deviceCount; ++i)
+  if (device_list_.empty())
   {
-    devices.push_back(std::make_shared<CUDADevice>(i));
+    int deviceCount = 0;
+    CU_CHECK(cuDeviceGetCount(&deviceCount), "Error: Failed to get device count");
+    device_list_.reserve(static_cast<size_t>(deviceCount));
+    for (int i = 0; i < deviceCount; ++i)
+    {
+      try
+      {
+        device_list_.push_back(std::make_shared<CUDADevice>(i));
+      }
+      catch (const std::exception & e)
+      {
+        // a device that cannot be initialised must not prevent the others from being used
+        std::cerr << "Warning: Skipping CUDA device " << i << ": " << e.what() << std::endl;
+      }
+    }
   }
 
-  if (devices.empty())
+  if (device_list_.empty())
   {
     std::cerr << "Warning: Failed to find '" << type << "' CUDA compatible devices." << std::endl;
   }
-  return devices;
+
+  // CUDA devices are all GPUs: "cpu" selects none, any other type (e.g. "gpu", "all") selects all (as OpenCL / Metal)
+  if (type == "cpu")
+  {
+    return {};
+  }
+  return device_list_;
 }
 
 auto
 CUDABackend::getDevice(const std::string & name, const std::string & type) const -> Device::Pointer
 {
-  auto       devices = getDevices(type);
-  const auto lower_name = to_lower(name);
-
-  auto it = std::find_if(devices.begin(), devices.end(), [&lower_name](const Device::Pointer & dev) {
-    return dev->getName(true).find(lower_name) != std::string::npos;
-  });
-
-  if (it != devices.end())
+  if (getDevices("all").empty()) // also builds the device list
   {
-    return *it;
-  }
-  if (!devices.empty())
-  {
-    return devices.back();
+    std::cerr << "Warning: No CUDA compatible devices found." << std::endl;
+    return nullptr;
   }
 
-  std::cerr << "Warning: No CUDA compatible devices found." << std::endl;
-  return nullptr;
+  // No device of the requested type: fall back to any device (as OpenCL)
+  auto devices = getDevices(type);
+  if (devices.empty())
+  {
+    devices = device_list_;
+  }
+  if (auto device = detail::findDeviceByName(devices, name))
+  {
+    return device;
+  }
+  return devices.back();
 }
 
 auto
 CUDABackend::getDeviceFromIndex(size_t index, const std::string & type) const -> Device::Pointer
 {
+  if (getDevices("all").empty()) // also builds the device list
+  {
+    std::cerr << "Warning: No CUDA compatible devices found." << std::endl;
+    return nullptr;
+  }
+
+  // No device of the requested type: fall back to any device (as OpenCL)
   auto devices = getDevices(type);
-
-  if (index < devices.size())
+  if (devices.empty())
   {
-    return devices[index];
+    devices = device_list_;
   }
-  if (!devices.empty())
-  {
-    return devices.back();
-  }
-
-  std::cerr << "Warning: No CUDA compatible devices found." << std::endl;
-  return nullptr;
+  return (index < devices.size()) ? devices[index] : devices.back();
 }
 
 auto
 CUDABackend::getDevicesList(const std::string & type) const -> std::vector<std::string>
 {
-  auto                     devices = getDevices(type);
-  std::vector<std::string> names;
-  names.reserve(devices.size());
-  for (const auto & dev : devices)
-  {
-    names.emplace_back(dev->getName());
-  }
-  return names;
+  return detail::deviceNames(getDevices(type));
 }
 
 auto
@@ -544,26 +545,52 @@ auto
 CUDABackend::allocateBuffer(const Device::Pointer & device, const size_t & size, std::shared_ptr<void> & data_ptr) -> void
 {
   CUDAContextGuard ctx(device);
+  const auto       pool = ctx.device()->getCUDAMemoryPool();
 
   CUdeviceptr mem = 0;
-  CU_CHECK(cuMemAlloc(&mem, size), "Error: Failed to allocate buffer memory");
-  data_ptr = std::shared_ptr<void>(reinterpret_cast<void *>(mem), [device](void * ptr) {
+  if (pool == nullptr)
+  {
+    CU_CHECK(cuMemAlloc(&mem, size), "Error: Failed to allocate buffer memory");
+  }
+  else
+  {
+    // Stream-ordered allocation: the memory can be used by the work queued on the device stream after this call
+    // (kernels, copies, fills, VkFFT and host transfers all use that stream)
+    CUresult err = cuMemAllocFromPoolAsync(&mem, size, pool, ctx.stream());
+    if (err == CUDA_ERROR_OUT_OF_MEMORY)
+    {
+      // memory freed but not yet returned to the driver: wait for the pending frees, release the cache, retry
+      cuStreamSynchronize(ctx.stream());
+      cuMemPoolTrimTo(pool, 0);
+      err = cuMemAllocFromPoolAsync(&mem, size, pool, ctx.stream());
+    }
+    CU_CHECK(err, "Error: Failed to allocate buffer memory");
+  }
+
+  data_ptr = std::shared_ptr<void>(reinterpret_cast<void *>(mem), [device, pooled = (pool != nullptr)](void * ptr) {
     if (ptr && device->isInitialized())
     {
       CUDAContextGuard guard(device);
-      cuMemFree(reinterpret_cast<CUdeviceptr>(ptr));
+      if (pooled)
+      {
+        // ordered after the work queued on the device stream. Memory exported over DLPack is only released here
+        // once its consumer's work is done (see the DLPack deleter in Array::toDLPack)
+        cuMemFreeAsync(reinterpret_cast<CUdeviceptr>(ptr), guard.stream());
+      }
+      else
+      {
+        cuMemFree(reinterpret_cast<CUdeviceptr>(ptr));
+      }
     }
     // If device already finalized, skip — process exit will reclaim GPU memory
   });
 }
 
 auto
-CUDABackend::freeMemory(const Device::Pointer & device, const mType & mtype, const std::shared_ptr<void> & data_ptr) const -> void
+CUDABackend::freeMemory(const Device::Pointer &, const mType &, const std::shared_ptr<void> &) const -> void
 {
-  CUDAContextGuard ctx(device);
-
-  // @StRigaud TODO: differentiate image vs buffer free when image support lands
-  CU_CHECK(cuMemFree(reinterpret_cast<CUdeviceptr>(data_ptr.get())), "Error: Failed to free memory");
+  // Memory is released by the custom deleter of the shared_ptr returned by allocateMemory (see
+  // allocateBuffer) when its last reference goes away. Releasing it here as well would free it twice.
 }
 
 auto
@@ -586,10 +613,7 @@ CUDABackend::writeMemory(const Device::Pointer &       device,
                          const void *                  host_ptr) const -> void
 {
   // Convert element counts to byte counts for the first dimension
-  const size_t elem_size = toBytes(dtype);
-  buffer_shape[0] *= elem_size;
-  buffer_origin[0] *= elem_size;
-  region[0] *= elem_size;
+  detail::scaleToBytes(buffer_shape, buffer_origin, region, toBytes(dtype));
 
   // @StRigaud TODO: differentiate IMAGE path when image support lands
   writeBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
@@ -605,22 +629,21 @@ CUDABackend::writeBuffer(const Device::Pointer &       device,
 {
   CUDAContextGuard ctx(device);
 
-  const size_t                dst_row_pitch = (buffer_shape[1] > 1) ? buffer_shape[0] : 0;
-  const size_t                dst_slice_pitch = (buffer_shape[2] > 1) ? buffer_shape[1] : 0;
   const std::array<size_t, 3> host_origin = { 0, 0, 0 };
 
   performMemcpy(CU_MEMORYTYPE_HOST,
                 host_ptr,
                 host_origin,
-                0,
-                0,
+                memoryPitches(region, region), // packed host memory
                 CU_MEMORYTYPE_DEVICE,
                 buffer_ptr.get(),
                 buffer_origin,
-                dst_row_pitch,
-                dst_slice_pitch,
+                memoryPitches(buffer_shape, region),
                 region,
-                buffer_shape);
+                ctx.stream(),
+                false);
+  // the caller may release or modify host_ptr as soon as we return
+  CU_CHECK(cuStreamSynchronize(ctx.stream()), "Error: Failed to write buffer");
 }
 
 auto
@@ -633,10 +656,7 @@ CUDABackend::readMemory(const Device::Pointer &       device,
                         const mType &                 mtype,
                         void *                        host_ptr) const -> void
 {
-  const size_t elem_size = toBytes(dtype);
-  buffer_shape[0] *= elem_size;
-  buffer_origin[0] *= elem_size;
-  region[0] *= elem_size;
+  detail::scaleToBytes(buffer_shape, buffer_origin, region, toBytes(dtype));
 
   // @StRigaud TODO: differentiate IMAGE path when image support lands
   readBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
@@ -652,22 +672,21 @@ CUDABackend::readBuffer(const Device::Pointer &       device,
 {
   CUDAContextGuard ctx(device);
 
-  const size_t                src_row_pitch = (buffer_shape[1] > 1) ? buffer_shape[0] : 0;
-  const size_t                src_slice_pitch = (buffer_shape[2] > 1) ? buffer_shape[1] : 0;
   const std::array<size_t, 3> host_origin = { 0, 0, 0 };
 
   performMemcpy(CU_MEMORYTYPE_DEVICE,
                 buffer_ptr.get(),
                 buffer_origin,
-                src_row_pitch,
-                src_slice_pitch,
+                memoryPitches(buffer_shape, region),
                 CU_MEMORYTYPE_HOST,
                 host_ptr,
                 host_origin,
-                0,
-                0,
+                memoryPitches(region, region), // packed host memory
                 region,
-                buffer_shape);
+                ctx.stream(),
+                false);
+  // the caller reads host_ptr as soon as we return
+  CU_CHECK(cuStreamSynchronize(ctx.stream()), "Error: Failed to read buffer");
 }
 
 // ── Memory copy (device-to-device) ──────────────────────────────────────────
@@ -686,29 +705,22 @@ CUDABackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
   CUDAContextGuard ctx(device);
 
   // Convert element counts to byte counts
-  region[0] *= bytes;
-  src_origin[0] *= bytes;
-  src_shape[0] *= bytes;
-  dst_origin[0] *= bytes;
+  detail::scaleToBytes(src_shape, src_origin, region, bytes);
   dst_shape[0] *= bytes;
+  dst_origin[0] *= bytes;
 
-  const size_t src_row_pitch = (src_shape[1] > 1) ? src_shape[0] : 0;
-  const size_t dst_row_pitch = (dst_shape[1] > 1) ? dst_shape[0] : 0;
-  const size_t src_slice_pitch = (src_shape[2] > 1) ? src_shape[1] : 0;
-  const size_t dst_slice_pitch = (dst_shape[2] > 1) ? dst_shape[1] : 0;
-
+  // a flat {N, 1, 1} shape is the packed buffer side of a whole buffer <-> image copy
   performMemcpy(CU_MEMORYTYPE_DEVICE,
                 src_ptr.get(),
                 src_origin,
-                src_row_pitch,
-                src_slice_pitch,
+                memoryPitches(src_shape, region),
                 CU_MEMORYTYPE_DEVICE,
                 dst_ptr.get(),
                 dst_origin,
-                dst_row_pitch,
-                dst_slice_pitch,
+                memoryPitches(dst_shape, region),
                 region,
-                src_shape);
+                ctx.stream(),
+                ctx.device()->getWaitToFinish()); // asynchronous unless the device waits after each operation
 }
 
 auto
@@ -769,50 +781,31 @@ CUDABackend::setBuffer(const Device::Pointer &       device,
 {
   CUDAContextGuard ctx(device);
 
+  // asynchronous on the device stream, unless the device waits after each operation: the synchronous memset is
+  // then cheaper than queuing and synchronising
+  const bool        blocking = ctx.device()->getWaitToFinish();
+  const CUstream    stream = ctx.stream();
   const auto        count = region[0] * region[1] * region[2];
   const CUdeviceptr dev_ptr = reinterpret_cast<CUdeviceptr>(buffer_ptr.get());
-  CUresult          err = CUDA_SUCCESS;
-
-  switch (dtype)
-  {
-    case dType::FLOAT: {
-      const auto cval = static_cast<float>(value);
-      err = cuMemsetD32(dev_ptr, bitCast<uint32_t>(cval), count);
-      break;
+  const CUresult    err = detail::visitDType(dtype, [&](auto tag) -> CUresult {
+    using T = decltype(tag);
+    const auto cval = static_cast<T>(value);
+    if constexpr (sizeof(T) == 4)
+    {
+      const auto bits = bitCast<uint32_t>(cval);
+      return blocking ? cuMemsetD32(dev_ptr, bits, count) : cuMemsetD32Async(dev_ptr, bits, count, stream);
     }
-    case dType::INT32: {
-      const auto cval = static_cast<int32_t>(value);
-      err = cuMemsetD32(dev_ptr, bitCast<uint32_t>(cval), count);
-      break;
+    else if constexpr (sizeof(T) == 2)
+    {
+      const auto bits = bitCast<uint16_t>(cval);
+      return blocking ? cuMemsetD16(dev_ptr, bits, count) : cuMemsetD16Async(dev_ptr, bits, count, stream);
     }
-    case dType::UINT32: {
-      const auto cval = static_cast<uint32_t>(value);
-      err = cuMemsetD32(dev_ptr, cval, count);
-      break;
+    else
+    {
+      const auto bits = bitCast<uint8_t>(cval);
+      return blocking ? cuMemsetD8(dev_ptr, bits, count) : cuMemsetD8Async(dev_ptr, bits, count, stream);
     }
-    case dType::INT16: {
-      const auto cval = static_cast<int16_t>(value);
-      err = cuMemsetD16(dev_ptr, bitCast<uint16_t>(cval), count);
-      break;
-    }
-    case dType::UINT16: {
-      const auto cval = static_cast<uint16_t>(value);
-      err = cuMemsetD16(dev_ptr, cval, count);
-      break;
-    }
-    case dType::INT8: {
-      const auto cval = static_cast<int8_t>(value);
-      err = cuMemsetD8(dev_ptr, bitCast<uint8_t>(cval), count);
-      break;
-    }
-    case dType::UINT8: {
-      const auto cval = static_cast<uint8_t>(value);
-      err = cuMemsetD8(dev_ptr, cval, count);
-      break;
-    }
-    default:
-      throw std::runtime_error("Error: Unsupported data type for CUDA setMemory");
-  }
+  });
 
   CU_CHECK(err, "Error: Failed to fill memory");
 }
@@ -837,107 +830,83 @@ CUDABackend::setMemory(const Device::Pointer &       device,
 auto
 CUDABackend::syncToStream(const Device::Pointer & device, int64_t consumer_stream) const -> void
 {
-  auto cuda_device = std::dynamic_pointer_cast<CUDADevice>(device);
-  if (!cuda_device)
-    return;
-
-  CUstream src_stream = cuda_device->getCUDAStream();
+  CUDAContextGuard ctx(device);
+  const CUstream   src_stream = ctx.stream();
 
   if (consumer_stream <= 0)
   {
     // null/legacy stream: full sync is safest
-    cuStreamSynchronize(src_stream);
+    CU_CHECK(cuStreamSynchronize(src_stream), "Error: Failed to synchronize the CUDA stream");
     return;
   }
 
-  CUstream dst_stream = reinterpret_cast<CUstream>(consumer_stream);
+  const auto dst_stream = reinterpret_cast<CUstream>(consumer_stream);
 
-  CUevent event;
-  cuEventCreate(&event, CU_EVENT_DISABLE_TIMING);
-  cuEventRecord(event, src_stream);        // mark when YOUR work is done
-  cuStreamWaitEvent(dst_stream, event, 0); // make CUPY wait before touching memory
-  cuEventDestroy(event);
+  // Mark when our work is done, and make the consumer stream (e.g. CuPy) wait for it before touching the memory.
+  // The device's event is reused: a wait applies to the work recorded at the time cuStreamWaitEvent is called, so
+  // recording the event again later (or from another thread) does not affect waits already queued.
+  CUevent event = ctx.device()->getCUDASyncEvent();
+  const bool temporary_event = (event == nullptr);
+  if (temporary_event)
+  {
+    CU_CHECK(cuEventCreate(&event, CU_EVENT_DISABLE_TIMING), "Error: Failed to create CUDA event");
+  }
+  CUresult err = cuEventRecord(event, src_stream);
+  if (err == CUDA_SUCCESS)
+  {
+    err = cuStreamWaitEvent(dst_stream, event, 0);
+  }
+  if (temporary_event)
+  {
+    cuEventDestroy(event); // valid right after the wait, which still applies to the recorded work
+  }
+  CU_CHECK(err, "Error: Failed to synchronize with the consumer CUDA stream");
 }
 
 auto
 CUDABackend::buildKernel(const Device::Pointer & device,
                          const std::string &     kernel_source,
                          const std::string &     kernel_name,
-                         std::shared_ptr<void> & kernel) const -> void
+                         std::shared_ptr<void> & kernel,
+                         const std::string &     cache_key) const -> void
 {
   CUDAContextGuard ctx(device);
   const auto &     cuda_device = ctx.device();
 
-  const auto source_hash = DiskCache::hash(kernel_source);
-  const auto device_hash = DiskCache::hash(cuda_device->getInfo());
-  auto &     disk_cache = DiskCache::instance();
+  // The function (with its module) is cached in memory; the module image (CUBIN, or PTX if NVRTC does not know the
+  // architecture) on disk, which avoids the OpenCL->CUDA translation, the NVRTC compilation and, for CUBIN, the
+  // driver JIT compilation. The disk entries are per device, hence per architecture.
+  auto function_holder = detail::cachedBuild(
+    device,
+    kernel_source,
+    kernel_name,
+    "cubin",
+    cache_key,
+    [&](const std::string & image) { return loadFunction(image, kernel_name); },
+    [&]() {
+      // The kernel_source string is: defines + preamble_cu + opencl_kernel.
+      // preamble_cu is already valid CUDA — translate only the opencl_kernel part that follows it,
+      // to avoid the translator corrupting the preamble. The defines block (before the preamble) is
+      // plain #define macros valid in both OpenCL and CUDA, so it is kept as-is.
+      const OpenCLToCUDATranslator translator;
+      const auto                   cuda_source = detail::translateAroundPreamble(
+        kernel_source,
+        getPreamble(),
+        [](const std::string & defines) { return defines; },
+        [&](const std::string & code) { return translator.translate(code); });
+      auto image = compileKernel(cuda_source, cuda_device->getArch());
+      return std::make_pair(loadFunction(image, kernel_name), image);
+    });
 
-  // ── Level 1: in-memory cache (fastest, skips translation entirely) ──
-  const auto cache_key = device_hash + "_" + source_hash + "_" + kernel_name;
-  auto       cached = device->getProgramFromCache(cache_key);
-  if (cached != nullptr)
+  // kernel either points to caller-provided CUfunction storage, or receives the cached holder
+  if (kernel != nullptr)
   {
-    *reinterpret_cast<CUfunction *>(kernel.get()) = *reinterpret_cast<CUfunction *>(cached.get());
-    return;
+    *reinterpret_cast<CUfunction *>(kernel.get()) = *reinterpret_cast<CUfunction *>(function_holder.get());
   }
-
-  // ── Level 2: disk cache (avoids translation and recompilation) ──
-  std::string ptx;
-  if (disk_cache.isEnabled())
+  else
   {
-    ptx = loadPtxFromCache(device_hash, source_hash);
+    kernel = function_holder;
   }
-
-  // ── Level 3: translate OpenCL→CUDA and compile from source ──
-  if (ptx.empty())
-  {
-    // The kernel_source string is: defines + preamble_cu + opencl_kernel.
-    // preamble_cu is already valid CUDA — translate only the opencl_kernel
-    // part that follows it, then reassemble to avoid the translator corrupting
-    // the already-CUDA preamble.  The defines block (before the preamble) is
-    // plain #define macros valid in both OpenCL and CUDA, so it is kept as-is.
-    const std::string preamble = getPreamble();
-    const auto        preamble_pos = kernel_source.find(preamble);
-
-    std::string cuda_source;
-    if (preamble_pos != std::string::npos)
-    {
-      const std::string      before = kernel_source.substr(0, preamble_pos);
-      const std::string      after = kernel_source.substr(preamble_pos + preamble.length());
-      OpenCLToCUDATranslator translator;
-      cuda_source = before + preamble + translator.translate(after);
-    }
-    else
-    {
-      OpenCLToCUDATranslator translator;
-      cuda_source = translator.translate(kernel_source);
-    }
-
-    ptx = compileToPtx(cuda_source, cuda_device->getArch());
-
-    if (disk_cache.isEnabled())
-    {
-      savePtxToCache(device_hash, source_hash, ptx);
-    }
-  }
-
-  // ── Load module and extract function ──
-  CUmodule cuModule = nullptr;
-  CU_CHECK(cuModuleLoadData(&cuModule, ptx.c_str()), "Error: Failed to load PTX module");
-
-  CUfunction cuFunction = nullptr;
-  CU_CHECK(cuModuleGetFunction(&cuFunction, cuModule, kernel_name.c_str()),
-           "Error: Failed to get function '" + kernel_name + "' from module");
-
-  // Cache both the function and the module (module must stay alive while
-  // the function is in use). We attach the module to the shared_ptr deleter.
-  auto function_ptr = std::shared_ptr<void>(new CUfunction(cuFunction), [cuModule](void * p) {
-    cuModuleUnload(cuModule);
-    delete reinterpret_cast<CUfunction *>(p);
-  });
-  device->addProgramToCache(cache_key, function_ptr);
-
-  *reinterpret_cast<CUfunction *>(kernel.get()) = cuFunction;
 }
 
 auto
@@ -947,39 +916,56 @@ CUDABackend::executeKernel(const Device::Pointer &                    device,
                            const std::array<size_t, 3> &              global_size,
                            const std::array<size_t, 3> &              local_size,
                            const std::vector<std::shared_ptr<void>> & args,
-                           const std::vector<size_t> &                sizes) const -> void
+                           const std::vector<size_t> &                sizes,
+                           const std::string &                        cache_key) const -> void
 {
   CUDAContextGuard ctx(device);
 
-  // ── Build / retrieve the kernel function ──
-  CUfunction            cuFunction = nullptr;
-  std::shared_ptr<void> kernel_holder(reinterpret_cast<void *>(&cuFunction), [](void *) { /* no-op, stack-owned */ });
-  buildKernel(device, kernel_source, kernel_name, kernel_holder);
+  // ── Build / retrieve the kernel function (the holder keeps its module loaded during the launch) ──
+  std::shared_ptr<void> function_holder;
+  buildKernel(device, kernel_source, kernel_name, function_holder, cache_key);
+  const auto &     loaded = *static_cast<const LoadedFunction *>(function_holder.get());
+  const CUfunction cuFunction = loaded.function;
 
   // ── Prepare kernel arguments ──
-  // cuLaunchKernel expects an array of pointers, where each element points
-  // to the argument value. For GPU memory pointers (identified by size), we pass
-  // the address of the shared_ptr itself. For scalars, we pass the pointer value.
-  std::vector<void *> arg_ptrs(args.size());
+  // cuLaunchKernel expects an array of pointers, each one pointing to an argument value. Device memory
+  // is passed by the address of its handle, scalars by the address of their value (args[i].get()).
+  std::vector<CUdeviceptr> mem_handles(args.size(), 0);
+  std::vector<void *>      arg_ptrs(args.size(), nullptr);
   for (size_t i = 0; i < args.size(); ++i)
   {
-    void * arg_ptr = args[i].get();
-
-    // Check if the argument is a GPU memory pointer (CUdeviceptr)
     if (sizes[i] == sizeof(CUdeviceptr))
     {
-      arg_ptr = (void *)&args[i];
+      mem_handles[i] = reinterpret_cast<CUdeviceptr>(args[i].get());
+      arg_ptrs[i] = &mem_handles[i];
     }
+    else
+    {
+      arg_ptrs[i] = args[i].get();
+    }
+  }
 
-    arg_ptrs[i] = arg_ptr;
+  // The translator gives every kernel 3 trailing parameters: the requested global size (see addGlobalSizeParameters
+  // in cudaTranslator.cpp). Extra arguments are ignored by kernels without them.
+  std::array<int, 3> requested_size = {};
+  for (size_t i = 0; i < 3; ++i)
+  {
+    if (global_size[i] > static_cast<size_t>(std::numeric_limits<int>::max()))
+    {
+      throw std::out_of_range("Error: Global size of kernel '" + kernel_name + "' too large for CUDA");
+    }
+    requested_size[i] = static_cast<int>(std::max<size_t>(global_size[i], 1));
+    arg_ptrs.push_back(&requested_size[i]);
   }
 
   // ── Compute launch configuration ──
   // Use the caller-provided local_size if it's fully specified (non-zero in all dims),
-  // otherwise fall back to the auto-computed block size.
-  const bool use_local = (local_size[0] > 0 && local_size[1] > 0 && local_size[2] > 0);
-  const auto block_size = use_local ? local_size : computeBlockSize(global_size);
-  const auto grid_size = computeGridSize(global_size, block_size);
+  // otherwise fall back to the auto-computed block size: the usual shape (256 threads, see computeBlockSize), reduced
+  // for kernels whose register / shared memory usage gives a better occupancy (or only allows) smaller blocks.
+  const bool   use_local = (local_size[0] > 0 && local_size[1] > 0 && local_size[2] > 0);
+  const size_t max_threads = (loaded.max_block_size > 0) ? loaded.max_block_size : 1024;
+  const auto   block_size = use_local ? local_size : detail::computeBlockSize(global_size, max_threads);
+  const auto grid_size = detail::computeGridSize(global_size, block_size);
 
   // ── Launch ──
   CU_CHECK(cuLaunchKernel(cuFunction,

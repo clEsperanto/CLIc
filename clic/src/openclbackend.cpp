@@ -1,4 +1,5 @@
 #include "backend.hpp"
+#include "backend_common.hpp"
 #include "cle_preamble_cl.h"
 
 #include <memory>
@@ -96,12 +97,7 @@ getErrorString(cl_int error) -> std::string
 [[nodiscard]] static auto
 castDevice(const Device::Pointer & device) -> std::shared_ptr<const OpenCLDevice>
 {
-  auto opencl_device = std::dynamic_pointer_cast<const OpenCLDevice>(device);
-  if (!opencl_device)
-  {
-    throw std::runtime_error("Error: Failed to cast device to OpenCLDevice");
-  }
-  return opencl_device;
+  return detail::castDevice<OpenCLDevice>(device, "OpenCLDevice");
 }
 
 // ============================================================================
@@ -125,6 +121,64 @@ struct BufferPitches
 computeBufferPitches(const std::array<size_t, 3> & shape) -> BufferPitches
 {
   return { (shape[1] > 1) ? shape[0] : 0, (shape[2] > 1) ? shape[0] * shape[1] : 0 };
+}
+
+// ============================================================================
+// Buffer <-> image copy helper
+// ============================================================================
+
+/// A block of rows of a buffer <-> image copy: image origin and region (in pixels).
+struct RectRows
+{
+  std::array<size_t, 3> image_origin;
+  std::array<size_t, 3> region;
+};
+
+/**
+ * @brief Split a buffer <-> image copy into blocks that are contiguous in the buffer.
+ *
+ * clEnqueueCopyBufferToImage / clEnqueueCopyImageToBuffer read or write the buffer side as a packed
+ * block starting at a byte offset: they have no row or slice pitch. A region is contiguous in the
+ * buffer when it spans whole rows (and whole slices if 3D); otherwise it is copied row by row.
+ *
+ * @param buffer_shape  shape of the buffer, in elements
+ * @param buffer_origin origin of the region in the buffer, in elements
+ * @param image_origin  origin of the region in the image, in pixels
+ * @param region        size of the region, in elements / pixels
+ * @param bytes         size of one element, in bytes
+ * @param func          `(size_t buffer_offset_in_bytes, const RectRows & rows)` called for each block
+ */
+template <typename Func>
+static auto
+forEachBufferRow(const std::array<size_t, 3> & buffer_shape,
+                 const std::array<size_t, 3> & buffer_origin,
+                 const std::array<size_t, 3> & image_origin,
+                 const std::array<size_t, 3> & region,
+                 size_t                        bytes,
+                 Func &&                       func) -> void
+{
+  const size_t row_pitch = buffer_shape[0];
+  const size_t slice_pitch = buffer_shape[0] * buffer_shape[1];
+  const auto   offset_of = [&](size_t y, size_t z) {
+    return (buffer_origin[0] + (buffer_origin[1] + y) * row_pitch + (buffer_origin[2] + z) * slice_pitch) * bytes;
+  };
+
+  // A flat shape { N, 1, 1 } describes a packed buffer (e.g. whole-array copies): the region is contiguous
+  const bool flat = buffer_shape[1] == 1 && buffer_shape[2] == 1;
+  const bool whole_rows = region[0] == buffer_shape[0];
+  const bool whole_slices = whole_rows && region[1] == buffer_shape[1];
+  if (flat || whole_slices || (whole_rows && region[2] == 1))
+  {
+    func(offset_of(0, 0), RectRows{ image_origin, region });
+    return;
+  }
+  for (size_t z = 0; z < region[2]; ++z)
+  {
+    for (size_t y = 0; y < region[1]; ++y)
+    {
+      func(offset_of(y, z), RectRows{ { image_origin[0], image_origin[1] + y, image_origin[2] + z }, { region[0], 1, 1 } });
+    }
+  }
 }
 
 // ============================================================================
@@ -278,85 +332,53 @@ buildProgram(const std::shared_ptr<const OpenCLDevice> & opencl_device, const st
 }
 
 /**
- * @brief Save a compiled program binary to the disk cache.
+ * @brief Extract the compiled binary of a program, to be stored in the disk cache.
  *
- * Extracts the binary for the first device in the program's device list
- * (assumes 1 context = 1 device as per current architecture).
+ * Returns the binary of the first device in the program's device list
+ * (1 context = 1 device as per current architecture).
  */
-static auto
-saveBinaryToCache(const std::string &           device_hash,
-                  const std::string &           source_hash,
-                  const std::shared_ptr<void> & program,
-                  const Device::Pointer &       device) -> void
+[[nodiscard]] static auto
+getProgramBinary(const std::shared_ptr<void> & program, const Device::Pointer & device) -> std::string
 {
   // Note: only 1 device per context
   // https://github.com/clEsperanto/CLIc/pull/420/commits/e246f6d065b503b61a70b423db25738d577dda0b
   constexpr size_t device_index = 0;
-  const size_t     nb_devices = device->getNbDevicesFromContext();
+  const size_t     nb_devices = std::max<size_t>(device->getNbDevicesFromContext(), 1);
   const auto       cl_prog = reinterpret_cast<cl_program>(program.get());
 
-  // Query binary sizes
-  auto bin_size_list = std::make_unique<size_t[]>(nb_devices);
-  CL_CHECK(clGetProgramInfo(cl_prog, CL_PROGRAM_BINARY_SIZES, sizeof(size_t) * nb_devices, bin_size_list.get(), nullptr),
+  std::vector<size_t> bin_sizes(nb_devices, 0);
+  CL_CHECK(clGetProgramInfo(cl_prog, CL_PROGRAM_BINARY_SIZES, sizeof(size_t) * nb_devices, bin_sizes.data(), nullptr),
            "Error: Failed to query program binary sizes.");
 
-  // Allocate storage for each device's binary
-  auto bin_value_list = std::make_unique<std::unique_ptr<char[]>[]>(nb_devices);
-  auto bin_ptrs = std::make_unique<char *[]>(nb_devices);
+  std::vector<std::string> binaries(nb_devices);
+  std::vector<char *>      bin_ptrs(nb_devices);
   for (size_t i = 0; i < nb_devices; ++i)
   {
-    bin_value_list[i] = std::make_unique<char[]>(bin_size_list[i]);
-    bin_ptrs[i] = bin_value_list[i].get();
+    binaries[i].resize(bin_sizes[i]);
+    bin_ptrs[i] = binaries[i].data();
   }
-
-  CL_CHECK(clGetProgramInfo(cl_prog, CL_PROGRAM_BINARIES, sizeof(unsigned char *) * nb_devices, bin_ptrs.get(), nullptr),
+  CL_CHECK(clGetProgramInfo(cl_prog, CL_PROGRAM_BINARIES, sizeof(char *) * nb_devices, bin_ptrs.data(), nullptr),
            "Error: Failed to fetch program binary.");
-
-  DiskCache::instance().saveBinary(device_hash, source_hash, "bin", bin_value_list[device_index].get(), bin_size_list[device_index]);
+  return std::move(binaries[device_index]);
 }
 
 /**
- * @brief Attempt to load a cached program binary from disk and rebuild it.
- *
- * @return A shared_ptr to the rebuilt program, or nullptr if not found / failed.
+ * @brief Create and build an OpenCL program from a cached binary.
+ * @throw std::runtime_error if the binary is rejected (e.g. after a driver update)
  */
 [[nodiscard]] static auto
-loadProgramFromCache(const std::shared_ptr<const OpenCLDevice> & opencl_device,
-                     const std::string &                         device_hash,
-                     const std::string &                         source_hash) -> std::shared_ptr<void>
+createProgramFromBinary(const std::shared_ptr<const OpenCLDevice> & opencl_device, const std::string & binary) -> std::shared_ptr<void>
 {
-  const auto binary = DiskCache::instance().loadBinary(device_hash, source_hash, "bin");
-  if (binary.empty())
-  {
-    return nullptr;
-  }
-
-  auto         binary_size = binary.size();
-  const auto * binary_code_ptr = binary.data();
-  cl_int       status;
-  cl_int       err;
-  auto         program = clCreateProgramWithBinary(
-    opencl_device->getCLContext(), 1, &opencl_device->getCLDevice(), &binary_size, &binary_code_ptr, &status, &err);
-
-  if (status != CL_SUCCESS || program == nullptr)
-  {
-    std::cerr << "Warning: Failed to create program from cached binary. Status: " << getErrorString(status) << " (" << status
-              << "), Error: " << getErrorString(err) << " (" << err << ")" << std::endl;
-    return nullptr;
-  }
-
+  const size_t binary_size = binary.size();
+  const auto * binary_ptr = reinterpret_cast<const unsigned char *>(binary.data());
+  cl_int       status = CL_SUCCESS;
+  cl_int       err = CL_SUCCESS;
+  auto         program =
+    clCreateProgramWithBinary(opencl_device->getCLContext(), 1, &opencl_device->getCLDevice(), &binary_size, &binary_ptr, &status, &err);
+  CL_CHECK(err, "Error: Failed to create program from cached binary.");
   auto program_ptr = wrapProgram(program);
-
-  try
-  {
-    buildProgram(opencl_device, program_ptr);
-  }
-  catch (const std::exception & e)
-  {
-    std::cerr << "Warning: Failed to build program from cached binary: " << e.what() << std::endl;
-    return nullptr;
-  }
-
+  CL_CHECK(status, "Error: Cached binary rejected by the device.");
+  buildProgram(opencl_device, program_ptr);
   return program_ptr;
 }
 
@@ -377,6 +399,19 @@ createProgramFromSource(const std::shared_ptr<const OpenCLDevice> & opencl_devic
   return program_ptr;
 }
 
+/**
+ * @brief Create a kernel object from a built program.
+ *        The kernel retains its program, so the program wrapper can be released afterwards.
+ */
+[[nodiscard]] static auto
+createKernel(const std::shared_ptr<void> & program, const std::string & kernel_name) -> std::shared_ptr<void>
+{
+  cl_int err;
+  auto   ocl_kernel = clCreateKernel(reinterpret_cast<cl_program>(program.get()), kernel_name.c_str(), &err);
+  CL_CHECK(err, "Error: Failed to create kernel '" + kernel_name + "'.");
+  return wrapKernel(ocl_kernel);
+}
+
 // ============================================================================
 // OpenCLBackend Implementation
 // ============================================================================
@@ -393,9 +428,10 @@ OpenCLBackend::~OpenCLBackend() = default;
 auto
 OpenCLBackend::initialiseResources() -> void
 {
-  // Discover all platforms and their devices
-  std::unordered_map<cl_platform_id, std::vector<cl_device_id>> resources;
-  size_t                                                        device_counter = 0;
+  // Discover all platforms and their devices, in the order reported by the ICD loader
+  // (a vector rather than a hash map, so that device order and default device are deterministic)
+  std::vector<std::pair<cl_platform_id, std::vector<cl_device_id>>> resources;
+  size_t                                                            device_counter = 0;
 
   cl_uint platformCount = 0;
   cl_int  err = clGetPlatformIDs(0, nullptr, &platformCount);
@@ -426,7 +462,7 @@ OpenCLBackend::initialiseResources() -> void
     {
       continue;
     }
-    resources[platform_id] = deviceIds;
+    resources.emplace_back(platform_id, std::move(deviceIds));
     device_counter += deviceCount;
   }
 
@@ -438,26 +474,37 @@ OpenCLBackend::initialiseResources() -> void
   // Allocate resources: 1 context = 1 device
   // (Multi-device contexts are possible but currently unused;
   //  see https://github.com/clEsperanto/CLIc/pull/420 for context.)
+  // A device whose context or queue cannot be created (e.g. broken driver) is skipped, so that it does
+  // not prevent the other devices from being used.
   device_list_.reserve(device_counter);
   for (const auto & [platform_id, device_ids] : resources)
   {
     size_t device_index = 0;
     for (const auto & device_id : device_ids)
     {
-      auto context = std::make_shared<OpenCLDevice::Context>(clCreateContext(nullptr, 1, &device_id, nullptr, nullptr, nullptr));
-      if (context == nullptr)
-      {
-        throw std::runtime_error("Error: Failed to create OpenCL context.");
-      }
+      auto resources_ptr = std::make_shared<OpenCLDevice::Resources>(platform_id, device_id, device_index++);
 
-      auto command_queue = std::make_shared<OpenCLDevice::CommandQueue>(clCreateCommandQueue(context->get(), device_id, 0, nullptr));
-      if (command_queue == nullptr)
+      cl_int     context_err = CL_SUCCESS;
+      cl_context context_ptr = clCreateContext(nullptr, 1, &device_id, nullptr, nullptr, &context_err);
+      if (context_err != CL_SUCCESS || context_ptr == nullptr)
       {
-        throw std::runtime_error("Error: Failed to create OpenCL command queue.");
+        std::cerr << "Warning: Skipping OpenCL device '" << resources_ptr->device_name << "': failed to create context ("
+                  << getErrorString(context_err) << ")." << std::endl;
+        continue;
       }
+      auto context = std::make_shared<OpenCLDevice::Context>(context_ptr);
 
-      device_list_.emplace_back(std::make_shared<OpenCLDevice>(
-        std::make_shared<OpenCLDevice::Resources>(platform_id, device_id, device_index++), context, command_queue));
+      cl_int           queue_err = CL_SUCCESS;
+      cl_command_queue queue_ptr = clCreateCommandQueue(context->get(), device_id, 0, &queue_err);
+      if (queue_err != CL_SUCCESS || queue_ptr == nullptr)
+      {
+        std::cerr << "Warning: Skipping OpenCL device '" << resources_ptr->device_name << "': failed to create command queue ("
+                  << getErrorString(queue_err) << ")." << std::endl;
+        continue;
+      }
+      auto command_queue = std::make_shared<OpenCLDevice::CommandQueue>(queue_ptr);
+
+      device_list_.emplace_back(std::make_shared<OpenCLDevice>(resources_ptr, context, command_queue));
     }
   }
 }
@@ -503,19 +550,9 @@ OpenCLBackend::getDevice(const std::string & name, const std::string & type) con
     return devices.back();
   }
 
-  // Search for the device by name (case-insensitive)
-  const auto lower_name = to_lower(name);
-  const auto it = std::find_if(devices.begin(), devices.end(), [&lower_name](const Device::Pointer & dev) {
-    return to_lower(dev->getName()).find(lower_name) != std::string::npos;
-  });
-
-  if (it != devices.end())
-  {
-    return *it;
-  }
-
-  // If no match found, return last device of the specified type
-  return devices.back();
+  // Search for the device by name (case-insensitive), else return last device of the specified type
+  auto device = detail::findDeviceByName(devices, name);
+  return (device != nullptr) ? device : devices.back();
 }
 
 auto
@@ -544,12 +581,7 @@ OpenCLBackend::getDeviceFromIndex(size_t index, const std::string & type) const 
 auto
 OpenCLBackend::getDevicesList(const std::string & type) const -> std::vector<std::string>
 {
-  const auto               devices = getDevices(type);
-  std::vector<std::string> deviceList;
-  deviceList.reserve(devices.size());
-  std::transform(
-    devices.begin(), devices.end(), std::back_inserter(deviceList), [](const Device::Pointer & device) { return device->getName(); });
-  return deviceList;
+  return detail::deviceNames(getDevices(type));
 }
 
 auto
@@ -633,12 +665,10 @@ OpenCLBackend::allocateImage(const Device::Pointer &       device,
 }
 
 auto
-OpenCLBackend::freeMemory(const Device::Pointer &, const mType &, const std::shared_ptr<void> & data_ptr) const -> void
+OpenCLBackend::freeMemory(const Device::Pointer &, const mType &, const std::shared_ptr<void> &) const -> void
 {
-  // Note: device and mtype parameters are unused; OpenCL handles cleanup
-  // through the shared_ptr custom deleter. This explicit release decrements
-  // the OpenCL reference count immediately.
-  CL_CHECK(clReleaseMemObject(static_cast<cl_mem>(data_ptr.get())), "Error: Failed to free memory.");
+  // Memory is released by the custom deleter of the shared_ptr returned by allocateMemory (see
+  // wrapMemObject) when its last reference goes away. Releasing it here as well would free it twice.
 }
 
 auto
@@ -665,10 +695,7 @@ OpenCLBackend::writeMemory(const Device::Pointer &       device,
   switch (mtype)
   {
     case mType::BUFFER: {
-      const size_t elem_size = toBytes(dtype);
-      buffer_shape[0] *= elem_size;
-      buffer_origin[0] *= elem_size;
-      region[0] *= elem_size;
+      detail::scaleToBytes(buffer_shape, buffer_origin, region, toBytes(dtype));
       writeBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
       break;
     }
@@ -754,10 +781,7 @@ OpenCLBackend::readMemory(const Device::Pointer &       device,
   switch (mtype)
   {
     case mType::BUFFER: {
-      const size_t elem_size = toBytes(dtype);
-      buffer_shape[0] *= elem_size;
-      buffer_origin[0] *= elem_size;
-      region[0] *= elem_size;
+      detail::scaleToBytes(buffer_shape, buffer_origin, region, toBytes(dtype));
       readBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
       break;
     }
@@ -844,11 +868,9 @@ OpenCLBackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
   const auto opencl_device = castDevice(device);
 
   // Adjust sizes and offsets for byte alignment
-  region[0] *= bytes;
-  src_origin[0] *= bytes;
-  src_shape[0] *= bytes;
-  dst_origin[0] *= bytes;
+  detail::scaleToBytes(src_shape, src_origin, region, bytes);
   dst_shape[0] *= bytes;
+  dst_origin[0] *= bytes;
 
   const auto [src_row_pitch, src_slice_pitch] = computeBufferPitches(src_shape);
   const auto [dst_row_pitch, dst_slice_pitch] = computeBufferPitches(dst_shape);
@@ -891,47 +913,53 @@ OpenCLBackend::copyMemoryBufferToImage(const Device::Pointer &       device,
                                        std::array<size_t, 3> &       dst_origin,
                                        std::array<size_t, 3> & /*dst_shape*/,
                                        std::array<size_t, 3> & region,
-                                       const size_t & /*bytes*/) const -> void
+                                       const size_t &          bytes) const -> void
 {
   const auto opencl_device = castDevice(device);
+  auto       in_ptr = static_cast<cl_mem>(src_ptr.get());
+  auto       out_ptr = static_cast<cl_mem>(dst_ptr.get());
 
-  // Note: Byte scaling is not needed when copying from buffer to image
-  const auto [src_row_pitch, src_slice_pitch] = computeBufferPitches(src_shape);
-  const size_t bufferOffset = src_origin[0] + src_origin[1] * src_row_pitch + src_origin[2] * src_slice_pitch;
-
-  auto in_ptr = static_cast<cl_mem>(src_ptr.get());
-  auto out_ptr = static_cast<cl_mem>(dst_ptr.get());
-
-  const auto err = clEnqueueCopyBufferToImage(
-    opencl_device->getCLCommandQueue(), in_ptr, out_ptr, bufferOffset, dst_origin.data(), region.data(), 0, nullptr, nullptr);
-
-  CL_CHECK(err, "Error: Failed to copy memory from buffer to image.");
+  forEachBufferRow(src_shape, src_origin, dst_origin, region, bytes, [&](size_t buffer_offset, const RectRows & rows) {
+    CL_CHECK(clEnqueueCopyBufferToImage(opencl_device->getCLCommandQueue(),
+                                        in_ptr,
+                                        out_ptr,
+                                        buffer_offset,
+                                        rows.image_origin.data(),
+                                        rows.region.data(),
+                                        0,
+                                        nullptr,
+                                        nullptr),
+             "Error: Failed to copy memory from buffer to image.");
+  });
 }
 
 auto
 OpenCLBackend::copyMemoryImageToBuffer(const Device::Pointer &       device,
                                        const std::shared_ptr<void> & src_ptr,
                                        std::array<size_t, 3> &       src_origin,
-                                       std::array<size_t, 3> &       src_shape,
+                                       std::array<size_t, 3> & /*src_shape*/,
                                        const std::shared_ptr<void> & dst_ptr,
                                        std::array<size_t, 3> &       dst_origin,
                                        std::array<size_t, 3> &       dst_shape,
                                        std::array<size_t, 3> &       region,
-                                       const size_t & /*bytes*/) const -> void
+                                       const size_t &                bytes) const -> void
 {
   const auto opencl_device = castDevice(device);
+  auto       in_ptr = static_cast<cl_mem>(src_ptr.get());
+  auto       out_ptr = static_cast<cl_mem>(dst_ptr.get());
 
-  // Note: Byte scaling is not applied when copying from image to buffer
-  const auto [dst_row_pitch, dst_slice_pitch] = computeBufferPitches(dst_shape);
-  const size_t bufferOffset = src_origin[0] + src_origin[1] * dst_row_pitch + src_origin[2] * dst_slice_pitch;
-
-  auto in_ptr = static_cast<cl_mem>(src_ptr.get());
-  auto out_ptr = static_cast<cl_mem>(dst_ptr.get());
-
-  const auto err = clEnqueueCopyImageToBuffer(
-    opencl_device->getCLCommandQueue(), in_ptr, out_ptr, src_origin.data(), region.data(), bufferOffset, 0, nullptr, nullptr);
-
-  CL_CHECK(err, "Error: Failed to copy memory from image to buffer.");
+  forEachBufferRow(dst_shape, dst_origin, src_origin, region, bytes, [&](size_t buffer_offset, const RectRows & rows) {
+    CL_CHECK(clEnqueueCopyImageToBuffer(opencl_device->getCLCommandQueue(),
+                                        in_ptr,
+                                        out_ptr,
+                                        rows.image_origin.data(),
+                                        rows.region.data(),
+                                        buffer_offset,
+                                        0,
+                                        nullptr,
+                                        nullptr),
+             "Error: Failed to copy memory from image to buffer.");
+  });
 }
 
 auto
@@ -995,34 +1023,7 @@ OpenCLBackend::setBuffer(const Device::Pointer &       device,
   auto         ptr = static_cast<cl_mem>(buffer_ptr.get());
   const auto   queue = opencl_device->getCLCommandQueue();
 
-  cl_int err;
-  switch (dtype)
-  {
-    case dType::FLOAT:
-      err = fillBufferTyped<float>(queue, ptr, size, value);
-      break;
-    case dType::INT32:
-      err = fillBufferTyped<int32_t>(queue, ptr, size, value);
-      break;
-    case dType::UINT32:
-      err = fillBufferTyped<uint32_t>(queue, ptr, size, value);
-      break;
-    case dType::INT16:
-      err = fillBufferTyped<int16_t>(queue, ptr, size, value);
-      break;
-    case dType::UINT16:
-      err = fillBufferTyped<uint16_t>(queue, ptr, size, value);
-      break;
-    case dType::INT8:
-      err = fillBufferTyped<int8_t>(queue, ptr, size, value);
-      break;
-    case dType::UINT8:
-      err = fillBufferTyped<uint8_t>(queue, ptr, size, value);
-      break;
-    default:
-      throw std::invalid_argument("Error: Invalid data type for buffer fill operation");
-  }
-
+  const cl_int err = detail::visitDType(dtype, [&](auto tag) { return fillBufferTyped<decltype(tag)>(queue, ptr, size, value); });
   CL_CHECK(err, "Error: Failed to fill buffer memory.");
 }
 
@@ -1068,51 +1069,31 @@ OpenCLBackend::setImage(const Device::Pointer &       device,
 auto
 OpenCLBackend::syncToStream(const Device::Pointer & device, int64_t /*consumer_stream*/) const -> void
 {
-  auto ocl_device = std::dynamic_pointer_cast<OpenCLDevice>(device);
-  if (!ocl_device)
-    return;
-  clFinish(ocl_device->getCLCommandQueue());
+  CL_CHECK(clFinish(castDevice(device)->getCLCommandQueue()), "Error: Failed to synchronise the command queue.");
 }
 
 auto
 OpenCLBackend::buildKernel(const Device::Pointer & device,
                            const std::string &     kernel_source,
                            const std::string &     kernel_name,
-                           std::shared_ptr<void> & kernel) const -> void
+                           std::shared_ptr<void> & kernel,
+                           const std::string &     cache_key) const -> void
 {
   const auto opencl_device = castDevice(device);
-  auto &     disk_cache = DiskCache::instance();
-  const auto source_hash = DiskCache::hash(kernel_source);
-  const auto device_hash = DiskCache::hash(opencl_device->getInfo());
 
-  // ── Level 1: in-memory cache (fastest) ──
-  const auto cache_key = device_hash + "_" + source_hash;
-  auto       program = device->getProgramFromCache(cache_key);
-
-  // ── Level 2: disk cache (avoids recompilation) ──
-  if (program == nullptr && disk_cache.isEnabled())
-  {
-    program = loadProgramFromCache(opencl_device, device_hash, source_hash);
-  }
-
-  // ── Level 3: compile from source ──
-  if (program == nullptr)
-  {
-    program = createProgramFromSource(opencl_device, kernel_source);
-    if (disk_cache.isEnabled())
-    {
-      saveBinaryToCache(device_hash, source_hash, program, device);
-    }
-  }
-
-  device->addProgramToCache(cache_key, program);
-
-  // Create kernel from program
-  cl_int err;
-  auto   ocl_kernel = clCreateKernel(reinterpret_cast<cl_program>(program.get()), kernel_name.c_str(), &err);
-  CL_CHECK(err, "Error: Failed to create kernel '" + kernel_name + "'.");
-
-  kernel = wrapKernel(ocl_kernel);
+  // The kernel object (which retains its program) is cached in memory; the program binary on disk.
+  kernel = detail::cachedBuild(
+    device,
+    kernel_source,
+    kernel_name,
+    "bin",
+    cache_key,
+    [&](const std::string & binary) { return createKernel(createProgramFromBinary(opencl_device, binary), kernel_name); },
+    [&]() {
+      auto program = createProgramFromSource(opencl_device, kernel_source);
+      auto ocl_kernel = createKernel(program, kernel_name);
+      return std::make_pair(ocl_kernel, getProgramBinary(program, device));
+    });
 }
 
 auto
@@ -1122,25 +1103,27 @@ OpenCLBackend::executeKernel(const Device::Pointer &                    device,
                              const std::array<size_t, 3> &              global_size,
                              const std::array<size_t, 3> &              local_size,
                              const std::vector<std::shared_ptr<void>> & args,
-                             const std::vector<size_t> &                sizes) const -> void
+                             const std::vector<size_t> &                sizes,
+                             const std::string &                        cache_key) const -> void
 {
   const auto opencl_device = castDevice(device);
 
   // Build or retrieve the kernel
   std::shared_ptr<void> ocl_kernel;
-  buildKernel(device, kernel_source, kernel_name, ocl_kernel);
+  buildKernel(device, kernel_source, kernel_name, ocl_kernel, cache_key);
 
   const auto cl_kern = reinterpret_cast<cl_kernel>(ocl_kernel.get());
 
-  // Set kernel arguments
+  // Set kernel arguments. Memory objects are passed by the address of their handle, scalars by the
+  // address of their value (both are what args[i].get() points to, resp. is).
+  std::vector<cl_mem> mem_handles(args.size(), nullptr);
   for (size_t i = 0; i < args.size(); ++i)
   {
-    void * arg_ptr = args[i].get();
-
-    // Check if the argument is a cl_mem (device memory object)
+    const void * arg_ptr = args[i].get();
     if (sizes[i] == sizeof(cl_mem))
     {
-      arg_ptr = (void *)&args[i];
+      mem_handles[i] = static_cast<cl_mem>(args[i].get());
+      arg_ptr = &mem_handles[i];
     }
 
     const cl_int err = clSetKernelArg(cl_kern, static_cast<cl_uint>(i), sizes[i], arg_ptr);

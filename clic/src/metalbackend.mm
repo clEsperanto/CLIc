@@ -1,5 +1,6 @@
 
 #include "backend.hpp"
+#include "backend_common.hpp"
 #include "translator.hpp"
 #include "cle_preamble_metal.h"
 
@@ -22,54 +23,140 @@ namespace cle
 
 #if USE_METAL
 
+// Note on memory management: metal-cpp getters such as commandBuffer(), computeCommandEncoder() or
+// NS::String::string() return autoreleased objects. The host application (C++ or Python) has no
+// autorelease pool in place, so each entry point creating such objects drains its own pool.
+
 [[nodiscard]] static auto
 castDevice(const Device::Pointer & device) -> std::shared_ptr<const MetalDevice>
 {
-  auto metal_device = std::dynamic_pointer_cast<const MetalDevice>(device);
-  if (!metal_device)
-  {
-    throw std::runtime_error("Error: Failed to cast device to MetalDevice");
-  }
-  return metal_device;
+  return detail::castDevice<MetalDevice>(device, "MetalDevice");
 }
 
 [[nodiscard]] static auto
-castDeviceMutable(const Device::Pointer & device) -> std::shared_ptr<MetalDevice>
+contentsOf(const std::shared_ptr<void> & buffer_ptr) -> uint8_t *
 {
-  auto metal_device = std::dynamic_pointer_cast<MetalDevice>(device);
-  if (!metal_device)
-  {
-    throw std::runtime_error("Error: Failed to cast device to MetalDevice");
-  }
-  return metal_device;
+  return static_cast<uint8_t *>(static_cast<MTL::Buffer *>(buffer_ptr.get())->contents());
+}
+
+[[nodiscard]] static auto
+errorMessage(const NS::Error * error) -> std::string
+{
+  return (error && error->localizedDescription()) ? error->localizedDescription()->utf8String() : "Unknown error";
 }
 
 // ============================================================================
-// Disk cache helpers
+// Rectangular copy helpers (shapes, origins and regions with x in bytes)
 // ============================================================================
 
+/**
+ * @brief Byte offset of a region origin in a buffer, and whether the region is one contiguous block of it.
+ *        A flat shape { N, 1, 1 } describes a packed buffer (e.g. whole-array copies).
+ */
+struct Span
+{
+  size_t offset;
+  bool   contiguous;
+};
+
+[[nodiscard]] static auto
+spanOf(const std::array<size_t, 3> & shape, const std::array<size_t, 3> & origin, const std::array<size_t, 3> & region) -> Span
+{
+  const size_t offset = (origin[2] * shape[1] + origin[1]) * shape[0] + origin[0];
+  const bool   flat = shape[1] == 1 && shape[2] == 1;
+  const bool   whole_rows = region[0] == shape[0] || (region[1] == 1 && region[2] == 1);
+  const bool   whole_slices = region[1] == shape[1] || region[2] == 1;
+  return { offset, flat || (whole_rows && whole_slices) };
+}
+
+/**
+ * @brief Copy a rectangular region between two host-visible memory areas.
+ *
+ * Contiguous regions are copied in chunks of 4 KB: measured on Apple Silicon, single large memcpy calls into
+ * or out of shared Metal buffers are ~35% slower than 4 KB copies when host writes and reads alternate
+ * (chunks of 16 KB and more show the same slowdown; 1-4 KB chunks match the row-by-row copy).
+ */
 static auto
-saveMSLToCache(const std::string & device_hash, const std::string & source_hash, const std::string & msl) -> void
+copyRect(uint8_t *                     dst,
+         const std::array<size_t, 3> & dst_shape,
+         const std::array<size_t, 3> & dst_origin,
+         const uint8_t *               src,
+         const std::array<size_t, 3> & src_shape,
+         const std::array<size_t, 3> & src_origin,
+         const std::array<size_t, 3> & region) -> void
 {
-  DiskCache::instance().saveBinary(device_hash, source_hash, "msl", msl.c_str(), msl.size());
+  const auto src_span = spanOf(src_shape, src_origin, region);
+  const auto dst_span = spanOf(dst_shape, dst_origin, region);
+  if (src_span.contiguous && dst_span.contiguous)
+  {
+    constexpr size_t chunk = 4096;
+    const size_t     total = region[0] * region[1] * region[2];
+    for (size_t offset = 0; offset < total; offset += chunk)
+    {
+      std::memcpy(dst + dst_span.offset + offset, src + src_span.offset + offset, std::min(chunk, total - offset));
+    }
+    return;
+  }
+  for (size_t z = 0; z < region[2]; ++z)
+  {
+    for (size_t y = 0; y < region[1]; ++y)
+    {
+      const size_t s_off = ((src_origin[2] + z) * src_shape[1] + src_origin[1] + y) * src_shape[0] + src_origin[0];
+      const size_t d_off = ((dst_origin[2] + z) * dst_shape[1] + dst_origin[1] + y) * dst_shape[0] + dst_origin[0];
+      std::memcpy(dst + d_off, src + s_off, region[0]);
+    }
+  }
 }
 
+// ============================================================================
+// Kernel build helper
+// ============================================================================
+
+/**
+ * @brief Compile Metal Shading Language source into a compute pipeline state for the given kernel.
+ *        The returned object releases the pipeline state when its last reference goes away.
+ */
 [[nodiscard]] static auto
-loadMSLFromCache(const std::string & device_hash, const std::string & source_hash) -> std::string
+createPipeline(MTL::Device * dev, const std::string & metal_source, const std::string & kernel_name) -> std::shared_ptr<void>
 {
-  auto binary = DiskCache::instance().loadBinary(device_hash, source_hash, "msl");
-  if (binary.empty())
+  @autoreleasepool
   {
-    return {};
+    NS::Error * error = nullptr;
+    auto *      library = dev->newLibrary(NS::String::string(metal_source.c_str(), NS::UTF8StringEncoding), nullptr, &error);
+    if (!library)
+    {
+      throw std::runtime_error("Error: Failed to compile Metal kernel library: " + errorMessage(error));
+    }
+
+    auto * function = library->newFunction(NS::String::string(kernel_name.c_str(), NS::UTF8StringEncoding));
+    if (!function)
+    {
+      library->release();
+      throw std::runtime_error("Error: Failed to find function '" + kernel_name + "' in Metal library");
+    }
+
+    auto * pipelineState = dev->newComputePipelineState(function, &error);
+    function->release();
+    library->release();
+    if (!pipelineState)
+    {
+      throw std::runtime_error("Error: Failed to create Metal compute pipeline state: " + errorMessage(error));
+    }
+
+    return std::shared_ptr<void>(new MTL::ComputePipelineState *(pipelineState), [](void * p) {
+      auto * pp = reinterpret_cast<MTL::ComputePipelineState **>(p);
+      if (*pp)
+      {
+        (*pp)->release();
+      }
+      delete pp;
+    });
   }
-  return std::string(binary.begin(), binary.end());
 }
 
 // ============================================================================
 
-MetalBackend::MetalBackend()
-{
-}
+MetalBackend::MetalBackend() {}
 
 auto
 MetalBackend::getType() const -> Backend::Type
@@ -85,40 +172,46 @@ MetalBackend::getDevices(const std::string & type) const -> std::vector<Device::
     return {};
   }
 
-  NS::Array * devices = MTL::CopyAllDevices();
-  if (!devices || devices->count() == 0)
+  // Devices are created once (each one owns a command queue and a kernel cache)
+  if (device_list_.empty())
   {
-    std::cerr << "Warning: No Metal devices found." << std::endl;
-    if (devices)
+    @autoreleasepool
     {
-      devices->release();
+      NS::Array *  devices = MTL::CopyAllDevices();
+      const size_t count = devices ? devices->count() : 0;
+      if (devices)
+      {
+        devices->release();
+      }
+      device_list_.reserve(count);
+      for (size_t i = 0; i < count; ++i)
+      {
+        try
+        {
+          device_list_.push_back(std::make_shared<MetalDevice>(static_cast<int>(i)));
+        }
+        catch (const std::exception & e)
+        {
+          std::cerr << "Warning: Skipping Metal device " << i << ": " << e.what() << std::endl;
+        }
+      }
     }
-    return {};
   }
 
-  std::vector<Device::Pointer> result;
-  result.reserve(devices->count());
-  for (NS::UInteger i = 0; i < devices->count(); ++i)
+  if (device_list_.empty())
   {
-    result.push_back(std::make_shared<MetalDevice>(static_cast<int>(i)));
+    std::cerr << "Warning: No Metal devices found." << std::endl;
   }
-  devices->release();
-  return result;
+  return device_list_;
 }
 
 auto
 MetalBackend::getDevice(const std::string & name, const std::string & type) const -> Device::Pointer
 {
-  auto       devices = getDevices(type);
-  const auto lower_name = to_lower(name);
-
-  auto it = std::find_if(devices.begin(), devices.end(), [&lower_name](const Device::Pointer & dev) {
-    return dev->getName(true).find(lower_name) != std::string::npos;
-  });
-
-  if (it != devices.end())
+  const auto devices = getDevices(type);
+  if (auto device = detail::findDeviceByName(devices, name))
   {
-    return *it;
+    return device;
   }
   if (!devices.empty())
   {
@@ -132,7 +225,7 @@ MetalBackend::getDevice(const std::string & name, const std::string & type) cons
 auto
 MetalBackend::getDeviceFromIndex(size_t index, const std::string & type) const -> Device::Pointer
 {
-  auto devices = getDevices(type);
+  const auto devices = getDevices(type);
 
   if (index < devices.size())
   {
@@ -150,14 +243,7 @@ MetalBackend::getDeviceFromIndex(size_t index, const std::string & type) const -
 auto
 MetalBackend::getDevicesList(const std::string & type) const -> std::vector<std::string>
 {
-  auto                     devices = getDevices(type);
-  std::vector<std::string> names;
-  names.reserve(devices.size());
-  for (const auto & dev : devices)
-  {
-    names.emplace_back(dev->getName());
-  }
-  return names;
+  return detail::deviceNames(getDevices(type));
 }
 
 auto
@@ -169,7 +255,7 @@ MetalBackend::allocateMemory(const Device::Pointer &       device,
 {
   const size_t size = region[0] * region[1] * region[2] * toBytes(dtype);
 
-  auto metal_device = castDevice(device);
+  auto   metal_device = castDevice(device);
   auto * dev = static_cast<MTL::Device *>(metal_device->getMetalDevice());
 
   MTL::Buffer * buffer = dev->newBuffer(size, MTL::ResourceStorageModeShared);
@@ -178,14 +264,15 @@ MetalBackend::allocateMemory(const Device::Pointer &       device,
     throw std::runtime_error("Error: Failed to allocate Metal buffer of size " + std::to_string(size));
   }
 
-  data_ptr = std::shared_ptr<void>(buffer, [](void * p) {
-    static_cast<MTL::Buffer *>(p)->release();
-  });
+  // Command buffers retain the buffers they use, so a buffer released while still in use by the GPU
+  // is only destroyed once that work has completed.
+  data_ptr = std::shared_ptr<void>(buffer, [](void * p) { static_cast<MTL::Buffer *>(p)->release(); });
 }
 
 auto
-MetalBackend::freeMemory(const Device::Pointer & device, const mType & mtype, const std::shared_ptr<void> & data_ptr) const -> void
+MetalBackend::freeMemory(const Device::Pointer &, const mType &, const std::shared_ptr<void> &) const -> void
 {
+  // Memory is released by the custom deleter of the shared_ptr returned by allocateMemory.
 }
 
 auto
@@ -197,19 +284,7 @@ MetalBackend::getRefCount(void * data_ptr) const -> int
 auto
 MetalBackend::syncToStream(const Device::Pointer & device, int64_t consumer_stream) const -> void
 {
-  auto metal_device = castDevice(device);
-  auto * queue = static_cast<MTL::CommandQueue *>(metal_device->getMetalCommandQueue());
-  auto * cmdBuf = queue->commandBuffer();
-  cmdBuf->commit();
-  cmdBuf->waitUntilCompleted();
-}
-
-static auto
-computeLinearIndex(const std::array<size_t, 3> & origin,
-                   const std::array<size_t, 3> & shape,
-                   size_t                        elem_size) -> size_t
-{
-  return (origin[2] * shape[1] * shape[0] + origin[1] * shape[0] + origin[0]) * elem_size;
+  castDevice(device)->waitForCompletion();
 }
 
 auto
@@ -220,21 +295,9 @@ MetalBackend::writeBuffer(const Device::Pointer &       device,
                           std::array<size_t, 3> &       region,
                           const void *                  host_ptr) const -> void
 {
-  const size_t row_bytes = region[0];
-  auto *       dst_base = static_cast<uint8_t *>(static_cast<MTL::Buffer *>(buffer_ptr.get())->contents());
-  const auto * src_base = static_cast<const uint8_t *>(host_ptr);
-
-  for (size_t z = 0; z < region[2]; ++z)
-  {
-    for (size_t y = 0; y < region[1]; ++y)
-    {
-      const size_t dst_offset = (buffer_origin[2] + z) * buffer_shape[1] * buffer_shape[0]
-                              + (buffer_origin[1] + y) * buffer_shape[0]
-                              + buffer_origin[0];
-      const size_t src_offset = z * region[1] * region[0] + y * region[0];
-      std::memcpy(dst_base + dst_offset, src_base + src_offset, row_bytes);
-    }
-  }
+  // the GPU may still be reading or writing the buffer
+  castDevice(device)->waitForCompletion();
+  copyRect(contentsOf(buffer_ptr), buffer_shape, buffer_origin, static_cast<const uint8_t *>(host_ptr), region, { 0, 0, 0 }, region);
 }
 
 auto
@@ -247,11 +310,7 @@ MetalBackend::writeMemory(const Device::Pointer &       device,
                           const mType &                 mtype,
                           const void *                  host_ptr) const -> void
 {
-  const size_t elem_size = toBytes(dtype);
-  buffer_shape[0] *= elem_size;
-  buffer_origin[0] *= elem_size;
-  region[0] *= elem_size;
-
+  detail::scaleToBytes(buffer_shape, buffer_origin, region, toBytes(dtype));
   writeBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
 }
 
@@ -263,21 +322,9 @@ MetalBackend::readBuffer(const Device::Pointer &       device,
                          std::array<size_t, 3> &       region,
                          void *                        host_ptr) const -> void
 {
-  const size_t row_bytes = region[0];
-  const auto * src_base = static_cast<const uint8_t *>(static_cast<MTL::Buffer *>(buffer_ptr.get())->contents());
-  auto *       dst_base = static_cast<uint8_t *>(host_ptr);
-
-  for (size_t z = 0; z < region[2]; ++z)
-  {
-    for (size_t y = 0; y < region[1]; ++y)
-    {
-      const size_t src_offset = (buffer_origin[2] + z) * buffer_shape[1] * buffer_shape[0]
-                              + (buffer_origin[1] + y) * buffer_shape[0]
-                              + buffer_origin[0];
-      const size_t dst_offset = z * region[1] * region[0] + y * region[0];
-      std::memcpy(dst_base + dst_offset, src_base + src_offset, row_bytes);
-    }
-  }
+  // the GPU may still be writing the buffer
+  castDevice(device)->waitForCompletion();
+  copyRect(static_cast<uint8_t *>(host_ptr), region, { 0, 0, 0 }, contentsOf(buffer_ptr), buffer_shape, buffer_origin, region);
 }
 
 auto
@@ -290,11 +337,7 @@ MetalBackend::readMemory(const Device::Pointer &       device,
                          const mType &                 mtype,
                          void *                        host_ptr) const -> void
 {
-  const size_t elem_size = toBytes(dtype);
-  buffer_shape[0] *= elem_size;
-  buffer_origin[0] *= elem_size;
-  region[0] *= elem_size;
-
+  detail::scaleToBytes(buffer_shape, buffer_origin, region, toBytes(dtype));
   readBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
 }
 
@@ -309,29 +352,44 @@ MetalBackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
                                        std::array<size_t, 3> &       region,
                                        const size_t &                bytes) const -> void
 {
-  region[0] *= bytes;
-  src_origin[0] *= bytes;
-  src_shape[0] *= bytes;
-  dst_origin[0] *= bytes;
+  detail::scaleToBytes(src_shape, src_origin, region, bytes);
   dst_shape[0] *= bytes;
+  dst_origin[0] *= bytes;
 
-  const size_t row_bytes = region[0];
-  const auto * src_base = static_cast<const uint8_t *>(static_cast<MTL::Buffer *>(src_ptr.get())->contents());
-  auto *       dst_base = static_cast<uint8_t *>(static_cast<MTL::Buffer *>(dst_ptr.get())->contents());
+  const auto metal_device = castDevice(device);
+  const auto src_span = spanOf(src_shape, src_origin, region);
+  const auto dst_span = spanOf(dst_shape, dst_origin, region);
+  const auto size = region[0] * region[1] * region[2];
 
-  for (size_t z = 0; z < region[2]; ++z)
+  if (src_span.contiguous && dst_span.contiguous && !metal_device->getWaitToFinish())
   {
-    for (size_t y = 0; y < region[1]; ++y)
+    // Asynchronous mode: contiguous copy done by the GPU, queued after the pending work without waiting for it.
+    // In synchronous mode a host copy is cheaper than submitting and awaiting a blit (unified memory).
+    @autoreleasepool
     {
-      const size_t s_off = (src_origin[2] + z) * src_shape[1] * src_shape[0]
-                         + (src_origin[1] + y) * src_shape[0]
-                         + src_origin[0];
-      const size_t d_off = (dst_origin[2] + z) * dst_shape[1] * dst_shape[0]
-                         + (dst_origin[1] + y) * dst_shape[0]
-                         + dst_origin[0];
-      std::memcpy(dst_base + d_off, src_base + s_off, row_bytes);
+      auto * queue = static_cast<MTL::CommandQueue *>(metal_device->getMetalCommandQueue());
+      auto * cmdBuf = queue->commandBuffer();
+      auto * blit = cmdBuf ? cmdBuf->blitCommandEncoder() : nullptr;
+      if (!blit)
+      {
+        throw std::runtime_error("Error: Failed to create Metal blit command encoder");
+      }
+      blit->copyFromBuffer(static_cast<MTL::Buffer *>(src_ptr.get()),
+                           src_span.offset,
+                           static_cast<MTL::Buffer *>(dst_ptr.get()),
+                           dst_span.offset,
+                           size);
+      blit->endEncoding();
+      cmdBuf->commit();
+      metal_device->addPendingCommandBuffer(cmdBuf);
     }
+    metal_device->finish();
+    return;
   }
+
+  // Host copy, once the pending work has completed
+  metal_device->waitForCompletion();
+  copyRect(contentsOf(dst_ptr), dst_shape, dst_origin, contentsOf(src_ptr), src_shape, src_origin, region);
 }
 
 auto
@@ -385,60 +443,33 @@ MetalBackend::setBuffer(const Device::Pointer &       device,
                         const dType &                 dtype,
                         const float &                 value) const -> void
 {
-  const size_t elem_size = toBytes(dtype);
-  const size_t count = region[0] * region[1] * region[2];
-  auto *       dst = static_cast<uint8_t *>(static_cast<MTL::Buffer *>(buffer_ptr.get())->contents());
-  const size_t offset = (buffer_origin[2] * buffer_shape[1] * buffer_shape[0]
-                       + buffer_origin[1] * buffer_shape[0]
-                       + buffer_origin[0]) * elem_size;
+  // the GPU may still be using the buffer
+  castDevice(device)->waitForCompletion();
 
-  switch (dtype)
-  {
-    case dType::FLOAT: {
-      auto * p = reinterpret_cast<float *>(dst + offset);
-      auto   v = static_cast<float>(value);
-      for (size_t i = 0; i < count; ++i) p[i] = v;
-      break;
+  uint8_t * base = contentsOf(buffer_ptr);
+  detail::visitDType(dtype, [&](auto tag) {
+    using T = decltype(tag);
+    const auto cval = static_cast<T>(value);
+    const auto row_ptr = [&](size_t y, size_t z) {
+      const size_t offset = ((buffer_origin[2] + z) * buffer_shape[1] + buffer_origin[1] + y) * buffer_shape[0] + buffer_origin[0];
+      return reinterpret_cast<T *>(base + offset * sizeof(T));
+    };
+    std::array<size_t, 3> byte_shape = { buffer_shape[0] * sizeof(T), buffer_shape[1], buffer_shape[2] };
+    std::array<size_t, 3> byte_origin = { buffer_origin[0] * sizeof(T), buffer_origin[1], buffer_origin[2] };
+    std::array<size_t, 3> byte_region = { region[0] * sizeof(T), region[1], region[2] };
+    if (spanOf(byte_shape, byte_origin, byte_region).contiguous)
+    {
+      std::fill_n(row_ptr(0, 0), region[0] * region[1] * region[2], cval);
+      return;
     }
-    case dType::INT32: {
-      auto * p = reinterpret_cast<int32_t *>(dst + offset);
-      auto   v = static_cast<int32_t>(value);
-      for (size_t i = 0; i < count; ++i) p[i] = v;
-      break;
+    for (size_t z = 0; z < region[2]; ++z)
+    {
+      for (size_t y = 0; y < region[1]; ++y)
+      {
+        std::fill_n(row_ptr(y, z), region[0], cval);
+      }
     }
-    case dType::UINT32: {
-      auto * p = reinterpret_cast<uint32_t *>(dst + offset);
-      auto   v = static_cast<uint32_t>(value);
-      for (size_t i = 0; i < count; ++i) p[i] = v;
-      break;
-    }
-    case dType::INT16: {
-      auto * p = reinterpret_cast<int16_t *>(dst + offset);
-      auto   v = static_cast<int16_t>(value);
-      for (size_t i = 0; i < count; ++i) p[i] = v;
-      break;
-    }
-    case dType::UINT16: {
-      auto * p = reinterpret_cast<uint16_t *>(dst + offset);
-      auto   v = static_cast<uint16_t>(value);
-      for (size_t i = 0; i < count; ++i) p[i] = v;
-      break;
-    }
-    case dType::INT8: {
-      auto * p = reinterpret_cast<int8_t *>(dst + offset);
-      auto   v = static_cast<int8_t>(value);
-      for (size_t i = 0; i < count; ++i) p[i] = v;
-      break;
-    }
-    case dType::UINT8: {
-      auto * p = reinterpret_cast<uint8_t *>(dst + offset);
-      auto   v = static_cast<uint8_t>(value);
-      for (size_t i = 0; i < count; ++i) p[i] = v;
-      break;
-    }
-    default:
-      throw std::runtime_error("Error: Unsupported data type for Metal setMemory");
-  }
+  });
 }
 
 auto
@@ -458,99 +489,44 @@ auto
 MetalBackend::buildKernel(const Device::Pointer & device,
                           const std::string &     kernel_source,
                           const std::string &     kernel_name,
-                          std::shared_ptr<void> & kernel) const -> void
+                          std::shared_ptr<void> & kernel,
+                          const std::string &     cache_key) const -> void
 {
   auto   metal_device = castDevice(device);
   auto * dev = static_cast<MTL::Device *>(metal_device->getMetalDevice());
-  auto & disk_cache = DiskCache::instance();
 
-  const auto source_hash = DiskCache::hash(kernel_source);
-  const auto device_hash = DiskCache::hash(metal_device->getInfo());
-  const auto cache_key = device_hash + "_" + source_hash + "_" + kernel_name;
-
-  // ── Level 1: in-memory cache (fastest) ──
-  auto cached = device->getProgramFromCache(cache_key);
-  if (cached != nullptr)
-  {
-    *reinterpret_cast<MTL::ComputePipelineState **>(kernel.get()) =
-      *reinterpret_cast<MTL::ComputePipelineState **>(cached.get());
-    return;
-  }
-
-  // ── Level 2: disk cache (avoids re-translation) ──
-  std::string metal_source;
-  if (disk_cache.isEnabled())
-  {
-    metal_source = loadMSLFromCache(device_hash, source_hash);
-  }
-
-  // ── Level 3: translate from source ──
-  if (metal_source.empty())
-  {
-    // The input source is: defines + metal preamble + OpenCL-like kernel body.
-    // Translate only the kernel body to preserve the already-valid Metal preamble.
-    const std::string preamble = getPreamble();
-    const auto        preamble_pos = kernel_source.find(preamble);
-
-    if (preamble_pos != std::string::npos)
-    {
-      const std::string       before = kernel_source.substr(0, preamble_pos);
-      const std::string       after = kernel_source.substr(preamble_pos + preamble.length());
-      OpenCLToMetalTranslator translator;
-      metal_source = translator.translate(before) + preamble + translator.translate(after);
-    }
-    else
-    {
-      OpenCLToMetalTranslator translator;
-      metal_source = translator.translate(kernel_source);
-    }
-
-    if (disk_cache.isEnabled())
-    {
-      saveMSLToCache(device_hash, source_hash, metal_source);
-    }
-  }
-
-  NS::Error * error = nullptr;
-  auto        sourceStr = NS::String::string(metal_source.c_str(), NS::UTF8StringEncoding);
-  auto *      library = dev->newLibrary(sourceStr, nullptr, &error);
-  if (!library)
-  {
-    std::string errMsg = error ? error->localizedDescription()->utf8String() : "Unknown error";
-    throw std::runtime_error("Error: Failed to compile Metal kernel library: " + errMsg);
-  }
-
-  auto   funcName = NS::String::string(kernel_name.c_str(), NS::UTF8StringEncoding);
-  auto * function = library->newFunction(funcName);
-  if (!function)
-  {
-    library->release();
-    throw std::runtime_error("Error: Failed to find function '" + kernel_name + "' in Metal library");
-  }
-
-  auto * pipelineState = dev->newComputePipelineState(function, &error);
-  function->release();
-  library->release();
-
-  if (!pipelineState)
-  {
-    std::string errMsg = error ? error->localizedDescription()->utf8String() : "Unknown error";
-    throw std::runtime_error("Error: Failed to create Metal compute pipeline state: " + errMsg);
-  }
-
-  auto pipeline_ptr = std::shared_ptr<void>(
-    new MTL::ComputePipelineState *(pipelineState),
-    [](void * p) {
-      auto * pp = reinterpret_cast<MTL::ComputePipelineState **>(p);
-      if (*pp)
+  // The pipeline state is cached in memory; the translated MSL source on disk (avoids the translation).
+  auto pipeline_holder = detail::cachedBuild(
+    device,
+    kernel_source,
+    kernel_name,
+    "msl",
+    cache_key,
+    [&](const std::string & metal_source) { return createPipeline(dev, metal_source, kernel_name); },
+    [&]() {
+      // The input source is: defines + metal preamble + OpenCL-like kernel body.
+      // Translate around the preamble to preserve the already-valid Metal code.
+      const OpenCLToMetalTranslator translator;
+      const auto                    translate = [&](const std::string & code) { return translator.translate(code); };
+      auto metal_source = detail::translateAroundPreamble(kernel_source, getPreamble(), translate, translate);
+      // Kernels without the CLIc preamble (native_execute) still need the Metal standard library: translated code
+      // uses its unqualified names (atomic_int, memory_order_relaxed, math functions, ...)
+      if (metal_source.find("<metal_stdlib>") == std::string::npos)
       {
-        (*pp)->release();
+        metal_source = "#include <metal_stdlib>\nusing namespace metal;\n" + metal_source;
       }
-      delete pp;
+      return std::make_pair(createPipeline(dev, metal_source, kernel_name), metal_source);
     });
 
-  device->addProgramToCache(cache_key, pipeline_ptr);
-  *reinterpret_cast<MTL::ComputePipelineState **>(kernel.get()) = pipelineState;
+  // kernel either points to caller-provided MTL::ComputePipelineState * storage, or receives the cached holder
+  if (kernel != nullptr)
+  {
+    *reinterpret_cast<MTL::ComputePipelineState **>(kernel.get()) = *reinterpret_cast<MTL::ComputePipelineState **>(pipeline_holder.get());
+  }
+  else
+  {
+    kernel = pipeline_holder;
+  }
 }
 
 auto
@@ -560,63 +536,56 @@ MetalBackend::executeKernel(const Device::Pointer &                    device,
                             const std::array<size_t, 3> &              global_size,
                             const std::array<size_t, 3> &              local_size,
                             const std::vector<std::shared_ptr<void>> & args,
-                            const std::vector<size_t> &                sizes) const -> void
+                            const std::vector<size_t> &                sizes,
+                            const std::string &                        cache_key) const -> void
 {
-  auto metal_device = castDevice(device);
+  auto   metal_device = castDevice(device);
   auto * queue = static_cast<MTL::CommandQueue *>(metal_device->getMetalCommandQueue());
-  auto * dev = static_cast<MTL::Device *>(metal_device->getMetalDevice());
 
-  MTL::ComputePipelineState * pipelineState = nullptr;
-  std::shared_ptr<void>       kernel_holder(reinterpret_cast<void *>(&pipelineState), [](void *) {});
-  buildKernel(std::const_pointer_cast<Device>(device), kernel_source, kernel_name, kernel_holder);
+  // the holder keeps the pipeline state alive while it is encoded
+  std::shared_ptr<void> pipeline_holder;
+  buildKernel(device, kernel_source, kernel_name, pipeline_holder, cache_key);
+  auto * pipelineState = *reinterpret_cast<MTL::ComputePipelineState **>(pipeline_holder.get());
 
-  auto * cmdBuf = queue->commandBuffer();
-  if (!cmdBuf)
+  @autoreleasepool
   {
-    throw std::runtime_error("Error: Failed to create Metal command buffer");
-  }
-
-  auto * encoder = cmdBuf->computeCommandEncoder();
-  if (!encoder)
-  {
-    throw std::runtime_error("Error: Failed to create Metal compute command encoder");
-  }
-
-  encoder->setComputePipelineState(pipelineState);
-
-  for (size_t i = 0; i < args.size(); ++i)
-  {
-    if (sizes[i] == GPU_MEM_PTR_SIZE)
+    auto * cmdBuf = queue->commandBuffer();
+    if (!cmdBuf)
     {
-      auto * mtlBuf = static_cast<MTL::Buffer *>(args[i].get());
-      encoder->setBuffer(mtlBuf, 0, i);
+      throw std::runtime_error("Error: Failed to create Metal command buffer");
     }
-    else
+    auto * encoder = cmdBuf->computeCommandEncoder();
+    if (!encoder)
     {
-      encoder->setBytes(args[i].get(), sizes[i], i);
+      throw std::runtime_error("Error: Failed to create Metal compute command encoder");
     }
+
+    encoder->setComputePipelineState(pipelineState);
+    for (size_t i = 0; i < args.size(); ++i)
+    {
+      if (sizes[i] == GPU_MEM_PTR_SIZE)
+      {
+        encoder->setBuffer(static_cast<MTL::Buffer *>(args[i].get()), 0, i);
+      }
+      else
+      {
+        encoder->setBytes(args[i].get(), sizes[i], i);
+      }
+    }
+
+    // Threadgroup shaped after the grid, within the limit of the pipeline (which can be lower than the
+    // device limit for kernels using many registers)
+    const bool use_local = (local_size[0] > 0 && local_size[1] > 0 && local_size[2] > 0);
+    const auto block = use_local ? local_size : detail::computeBlockSize(global_size, pipelineState->maxTotalThreadsPerThreadgroup());
+    encoder->dispatchThreads(MTL::Size::Make(global_size[0], global_size[1], global_size[2]), MTL::Size::Make(block[0], block[1], block[2]));
+    encoder->endEncoding();
+
+    // Submitted without waiting: the host waits for completion only when it needs to (host access to
+    // buffers, finish() or setWaitToFinish(true))
+    cmdBuf->commit();
+    metal_device->addPendingCommandBuffer(cmdBuf);
   }
-
-  const bool use_local = (local_size[0] > 0 && local_size[1] > 0 && local_size[2] > 0);
-
-  MTL::Size grid = MTL::Size::Make(global_size[0], global_size[1], global_size[2]);
-
-  MTL::Size threads;
-  if (use_local)
-  {
-    threads = MTL::Size::Make(local_size[0], local_size[1], local_size[2]);
-  }
-  else
-  {
-    NS::UInteger w = pipelineState->threadExecutionWidth();
-    NS::UInteger h = pipelineState->maxTotalThreadsPerThreadgroup() / w;
-    threads = MTL::Size::Make(w, h, 1);
-  }
-
-  encoder->dispatchThreads(grid, threads);
-  encoder->endEncoding();
-  cmdBuf->commit();
-  cmdBuf->waitUntilCompleted();
+  metal_device->finish();
 }
 
 auto

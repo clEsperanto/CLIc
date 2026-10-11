@@ -322,12 +322,16 @@ public:
    * @param kernel_source
    * @param kernel_name
    * @param kernel
+   * @param cache_key optional identifier of kernel_source for the in-memory kernel cache. When provided, the backend
+   *        uses it instead of hashing the whole source on every call. The same key must always designate the same
+   *        source. Empty (default): the source is hashed.
    */
   virtual auto
   buildKernel(const Device::Pointer & device,
               const std::string &     kernel_source,
               const std::string &     kernel_name,
-              std::shared_ptr<void> & kernel) const -> void = 0;
+              std::shared_ptr<void> & kernel,
+              const std::string &     cache_key = {}) const -> void = 0;
 
   /**
    * @brief Execute a kernel
@@ -338,6 +342,7 @@ public:
    * @param global_size
    * @param args
    * @param sizes
+   * @param cache_key optional identifier of kernel_source for the in-memory kernel cache (see buildKernel)
    */
   virtual auto
   executeKernel(const Device::Pointer &                    device,
@@ -346,7 +351,8 @@ public:
                 const std::array<size_t, 3> &              global_size,
                 const std::array<size_t, 3> &              local_size,
                 const std::vector<std::shared_ptr<void>> & args,
-                const std::vector<size_t> &                sizes) const -> void = 0;
+                const std::vector<size_t> &                sizes,
+                const std::string &                        cache_key = {}) const -> void = 0;
 
   /**
    * @brief Operator << to print the backend type
@@ -390,6 +396,10 @@ public:
  */
 class CUDABackend : public Backend
 {
+private:
+  // devices are discovered once, on first use, then shared by all the device queries
+  mutable std::vector<Device::Pointer> device_list_;
+
 public:
   CUDABackend();
 
@@ -542,7 +552,8 @@ public:
   buildKernel(const Device::Pointer & device,
               const std::string &     kernel_source,
               const std::string &     kernel_name,
-              std::shared_ptr<void> & kernel) const -> void override;
+              std::shared_ptr<void> & kernel,
+              const std::string &     cache_key = {}) const -> void override;
 
   auto
   executeKernel(const Device::Pointer &                    device,
@@ -551,7 +562,8 @@ public:
                 const std::array<size_t, 3> &              global_size,
                 const std::array<size_t, 3> &              local_size,
                 const std::vector<std::shared_ptr<void>> & args,
-                const std::vector<size_t> &                sizes) const -> void override;
+                const std::vector<size_t> &                sizes,
+                const std::string &                        cache_key = {}) const -> void override;
 
   [[nodiscard]] auto
   getPreamble() const -> std::string override;
@@ -750,7 +762,8 @@ public:
   buildKernel(const Device::Pointer & device,
               const std::string &     kernel_source,
               const std::string &     kernel_name,
-              std::shared_ptr<void> & kernel) const -> void override;
+              std::shared_ptr<void> & kernel,
+              const std::string &     cache_key = {}) const -> void override;
   auto
   executeKernel(const Device::Pointer &                    device,
                 const std::string &                        kernel_source,
@@ -758,7 +771,8 @@ public:
                 const std::array<size_t, 3> &              global_size,
                 const std::array<size_t, 3> &              local_size,
                 const std::vector<std::shared_ptr<void>> & args,
-                const std::vector<size_t> &                sizes) const -> void override;
+                const std::vector<size_t> &                sizes,
+                const std::string &                        cache_key = {}) const -> void override;
   [[nodiscard]] auto
   getPreamble() const -> std::string override;
 
@@ -770,6 +784,10 @@ public:
 #if USE_METAL
 class MetalBackend : public Backend
 {
+private:
+  // devices are discovered once, on first use, then shared by all the device queries
+  mutable std::vector<Device::Pointer> device_list_;
+
 public:
   MetalBackend();
   ~MetalBackend() override = default;
@@ -886,7 +904,8 @@ public:
             const dType &,
             const float &) const -> void;
   auto
-  buildKernel(const Device::Pointer &, const std::string &, const std::string &, std::shared_ptr<void> &) const -> void override;
+  buildKernel(const Device::Pointer &, const std::string &, const std::string &, std::shared_ptr<void> &, const std::string & = {}) const
+    -> void override;
   auto
   executeKernel(const Device::Pointer &,
                 const std::string &,
@@ -894,7 +913,8 @@ public:
                 const std::array<size_t, 3> &,
                 const std::array<size_t, 3> &,
                 const std::vector<std::shared_ptr<void>> &,
-                const std::vector<size_t> &) const -> void override;
+                const std::vector<size_t> &,
+                const std::string & = {}) const -> void override;
 };
 #endif // USE_METAL
 

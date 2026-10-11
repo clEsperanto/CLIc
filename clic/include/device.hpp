@@ -6,6 +6,7 @@
 #include <iostream>
 #include <memory>
 #include <sstream>
+#include <vector>
 
 namespace cle
 {
@@ -198,6 +199,23 @@ public:
     out << "(" << device->getType() << ") " << device->getName();
     return out;
   }
+
+  /**
+   * @brief Hash identifying the device in the kernel caches, computed once from getInfo()
+   *        (internal use by the backends, found by argument-dependent lookup)
+   */
+  friend auto
+  deviceHash(const Device & device) -> const std::string &
+  {
+    if (device.hash_.empty())
+    {
+      device.hash_ = DiskCache::hash(device.getInfo());
+    }
+    return device.hash_;
+  }
+
+private:
+  mutable std::string hash_;
 };
 
 #if USE_OPENCL
@@ -515,6 +533,12 @@ public:
   setWaitToFinish(bool flag) -> void override;
 
   /**
+   * @brief Whether the device waits for completion after each operation (see setWaitToFinish())
+   */
+  [[nodiscard]] auto
+  getWaitToFinish() const -> bool;
+
+  /**
    * @brief Get device platform
    * @return std::string
    */
@@ -569,6 +593,20 @@ public:
    */
   [[nodiscard]] auto
   getCUDAStream() const -> const CUstream &;
+
+  /**
+   * @brief Get the memory pool used for stream-ordered allocations on the device stream
+   * @return CUmemoryPool, nullptr if the device or driver does not support memory pools (synchronous allocations)
+   */
+  [[nodiscard]] auto
+  getCUDAMemoryPool() const -> CUmemoryPool;
+
+  /**
+   * @brief Get the event recorded on the device stream to make another stream wait for it (Backend::syncToStream)
+   * @return CUevent, nullptr if it could not be created
+   */
+  [[nodiscard]] auto
+  getCUDASyncEvent() const -> CUevent;
 
   /**
    * @brief Get device name
@@ -660,6 +698,8 @@ private:
   CUdevice                      cudaDevice;
   CUcontext                     cudaContext;
   CUstream                      cudaStream;
+  CUmemoryPool                  memoryPool = nullptr; // stream-ordered allocations, nullptr if not supported
+  CUevent                       syncEvent = nullptr;  // reused by syncToStream (re-recording does not affect earlier waits)
   std::shared_ptr<ProgramCache> cache = std::make_shared<ProgramCache>();
   bool                          initialized = false;
   bool                          waitFinish = false;
@@ -721,10 +761,31 @@ public:
   [[nodiscard]] auto
   getMetalDeviceIndex() const -> int;
 
+  /**
+   * @brief Track a command buffer committed to the queue (opaque MTL::CommandBuffer *), retained by the
+   *        device until its completion has been awaited. Completed buffers are dropped along the way.
+   */
+  auto
+  addPendingCommandBuffer(void * command_buffer) const -> void;
+
+  /**
+   * @brief Block until all the command buffers tracked by addPendingCommandBuffer() have completed,
+   *        regardless of setWaitToFinish(). Must be called before any host access to buffer contents.
+   */
+  auto
+  waitForCompletion() const -> void;
+
+  /**
+   * @brief Whether the device waits for completion after each operation (see setWaitToFinish())
+   */
+  [[nodiscard]] auto
+  getWaitToFinish() const -> bool;
+
 private:
   int                           metalDeviceIndex;
   void *                        metalDevice = nullptr;
   void *                        metalQueue = nullptr;
+  mutable std::vector<void *>   pendingCommandBuffers;
   std::shared_ptr<ProgramCache> cache = std::make_shared<ProgramCache>();
   bool                          initialized = false;
   bool                          waitFinish = false;
