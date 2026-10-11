@@ -3,8 +3,12 @@
 #include "clic.hpp"
 #include "tier0.hpp"
 #include <cctype>
+#include <cstdio>
 #include <cstring>
+#include <limits>
+#include <mutex>
 #include <set>
+#include <type_traits>
 
 namespace cle
 {
@@ -22,67 +26,108 @@ static const std::unordered_map<dType, std::string> dtype_defines = {
 } // namespace
 
 
+// The defines are built with plain string appends: std::ostringstream formatting was measured to be ~50% of the
+// host time of a kernel launch. The generated text must stay byte-identical (it is part of the cache keys).
+
+// Append several strings (std::string or const char *) to `out`
+template <typename... Parts>
+static auto
+append(std::string & out, const Parts &... parts) -> void
+{
+  (out.append(parts), ...);
+}
+
+// Append a constant value, formatted like std::ostream would (floats: "%g", i.e. 6 significant digits)
+static auto
+appendConstant(std::string & out, const ConstantType & value) -> void
+{
+  std::visit(
+    [&out](const auto & v) {
+      using T = std::decay_t<decltype(v)>;
+      if constexpr (std::is_same_v<T, std::string>)
+      {
+        out += v;
+      }
+      else if constexpr (std::is_same_v<T, float>)
+      {
+        std::array<char, 32> buffer{};
+        const int            length = std::snprintf(buffer.data(), buffer.size(), "%g", static_cast<double>(v));
+        out.append(buffer.data(), static_cast<size_t>(length));
+      }
+      else
+      {
+        out += std::to_string(v);
+      }
+    },
+    value);
+}
+
 // Function creating common defines for constants
 static auto
-commonDefines(const ConstantList & constant_list) -> std::string
+commonDefines(std::string & defines, const ConstantList & constant_list) -> void
 {
-  std::ostringstream defines;
   for (const auto & item : constant_list)
   {
-    std::visit([&](const auto & v) { defines << "#define " << item.first << " " << v << "\n"; }, item.second);
+    append(defines, "#define ", item.first, " ");
+    appendConstant(defines, item.second);
+    defines += '\n';
   }
-  defines << "\n";
-  defines << "\n#define GET_IMAGE_WIDTH(image_key) IMAGE_SIZE_ ## image_key ## _WIDTH";
-  defines << "\n#define GET_IMAGE_HEIGHT(image_key) IMAGE_SIZE_ ## image_key ## _HEIGHT";
-  defines << "\n#define GET_IMAGE_DEPTH(image_key) IMAGE_SIZE_ ## image_key ## _DEPTH";
-  defines << "\n";
-  return defines.str();
+  defines += "\n";
+  defines += "\n#define GET_IMAGE_WIDTH(image_key) IMAGE_SIZE_ ## image_key ## _WIDTH";
+  defines += "\n#define GET_IMAGE_HEIGHT(image_key) IMAGE_SIZE_ ## image_key ## _HEIGHT";
+  defines += "\n#define GET_IMAGE_DEPTH(image_key) IMAGE_SIZE_ ## image_key ## _DEPTH";
+  defines += "\n";
 }
 
 
 // Function creating buffer specific defines
 static auto
-bufferDefines(std::ostringstream &   defines,
-              const std::string &    key,
-              const Array::Pointer & arr,
-              const size_t &         dim,
-              const Device::Type &   device) -> void
+bufferDefines(std::string & defines, const std::string & key, const Array::Pointer & arr, const size_t & dim, const Device::Type & device)
+  -> void
 {
   static constexpr std::array<const char *, 3> ndimMap = { "1", "2", "3" };
   static constexpr std::array<const char *, 3> posTypeMap = { "int", "int2", "int4" };
   static constexpr std::array<const char *, 3> posMap = { "(pos0)", "(pos0, pos1)", "(pos0, pos1, pos2, 0)" };
 
-  const size_t        dimIndex = dim - 1;
-  const std::string   ndim = ndimMap[dimIndex];
-  const std::string   pos_type = posTypeMap[dimIndex];
-  const std::string   pos = posMap[dimIndex];
-  const std::string   stype = toShortString(arr->dtype());
-  const std::string & dtype = toString(arr->dtype());
-
-  std::string access_type = (device == Device::Type::OPENCL) ? "__global " : "";
-
-  defines << "\n#define CONVERT_" << key << "_PIXEL_TYPE clij_convert_" << arr->dtype() << "_sat";
-  defines << "\n#define IMAGE_" << key << "_PIXEL_TYPE " << arr->dtype();
-  defines << "\n#define POS_" << key << "_TYPE " << pos_type;
+  const size_t      dimIndex = dim - 1;
+  const char *      ndim = ndimMap[dimIndex];
+  const std::string pos_type = posTypeMap[dimIndex];
+  const char *      pos = posMap[dimIndex];
+  const std::string stype = toShortString(arr->dtype());
+  const std::string dtype = toString(arr->dtype());
+  const char *      access_type = (device == Device::Type::OPENCL) ? "__global " : "";
   const std::string prefix = (device == Device::Type::OPENCL || pos_type == "int") ? "(" + pos_type + ")" : "make_" + pos_type;
-  defines << "\n#define POS_" << key << "_INSTANCE(pos0,pos1,pos2,pos3) " << prefix << pos;
-  defines << "\n";
 
-  defines << "\n#define IMAGE_" << key << "_TYPE " << access_type << dtype << "*";
-  defines << "\n#define READ_" << key << "_IMAGE(a,b,c) read_buffer" << ndim << "d" << stype
-          << "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
-  defines << "\n#define WRITE_" << key << "_IMAGE(a,b,c) write_buffer" << ndim << "d" << stype
-          << "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)";
+  append(defines, "\n#define CONVERT_", key, "_PIXEL_TYPE clij_convert_", dtype, "_sat");
+  append(defines, "\n#define IMAGE_", key, "_PIXEL_TYPE ", dtype);
+  append(defines, "\n#define POS_", key, "_TYPE ", pos_type);
+  append(defines, "\n#define POS_", key, "_INSTANCE(pos0,pos1,pos2,pos3) ", prefix, pos);
+  defines += "\n";
+
+  append(defines, "\n#define IMAGE_", key, "_TYPE ", access_type, dtype, "*");
+  append(defines,
+         "\n#define READ_",
+         key,
+         "_IMAGE(a,b,c) read_buffer",
+         ndim,
+         "d",
+         stype,
+         "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)");
+  append(defines,
+         "\n#define WRITE_",
+         key,
+         "_IMAGE(a,b,c) write_buffer",
+         ndim,
+         "d",
+         stype,
+         "(GET_IMAGE_WIDTH(a),GET_IMAGE_HEIGHT(a),GET_IMAGE_DEPTH(a),a,b,c)");
 }
 
 
 // Function creating image specific defines (OpenCL only for now)
 static auto
-imageDefines(std::ostringstream &   defines,
-             const std::string &    key,
-             const Array::Pointer & arr,
-             const size_t &         dim,
-             const Device::Type &   device) -> void
+imageDefines(std::string & defines, const std::string & key, const Array::Pointer & arr, const size_t & dim, const Device::Type & device)
+  -> void
 {
   static constexpr std::array<const char *, 3> ndimMap = { "1", "2", "3" };
   static constexpr std::array<const char *, 3> posIntTypeMap = { "int", "int2", "int4" };
@@ -90,63 +135,54 @@ imageDefines(std::ostringstream &   defines,
   static constexpr std::array<const char *, 3> posMap = { "(pos0)", "(pos0, pos1)", "(pos0, pos1, pos2, 0)" };
 
   const size_t      dimIndex = dim - 1;
-  const std::string ndim = ndimMap[dimIndex];
-  std::string       pos_type;
-  const std::string pos = posMap[dimIndex];
+  const char *      ndim = ndimMap[dimIndex];
+  const char *      pos = posMap[dimIndex];
   const std::string stype = toShortString(arr->dtype());
+  const std::string dtype = toString(arr->dtype());
 
-  std::string access_type;
-  if (key.find("dst") != std::string::npos || key.find("destination") != std::string::npos || key.find("output") != std::string::npos)
-  {
-    access_type = "__write_only";
-    pos_type = posIntTypeMap[dimIndex];
-  }
-  else
-  {
-    access_type = "__read_only";
-    pos_type = posFloatTypeMap[dimIndex];
-  }
-
-  defines << "\n#define CONVERT_" << key << "_PIXEL_TYPE clij_convert_" << arr->dtype() << "_sat";
-  defines << "\n#define IMAGE_" << key << "_PIXEL_TYPE " << arr->dtype();
-  defines << "\n#define POS_" << key << "_TYPE " << pos_type;
+  const bool write_only =
+    key.find("dst") != std::string::npos || key.find("destination") != std::string::npos || key.find("output") != std::string::npos;
+  const char *      access_type = write_only ? "__write_only" : "__read_only";
+  const std::string pos_type = write_only ? posIntTypeMap[dimIndex] : posFloatTypeMap[dimIndex];
   const std::string prefix1 = (device == Device::Type::OPENCL || pos_type == "int") ? "(" + pos_type + ")" : "make_" + pos_type;
-  defines << "\n#define POS_" << key << "_INSTANCE(pos0,pos1,pos2,pos3) " << prefix1 << pos;
-  defines << "\n";
 
-  char        front_char = stype.front();
-  std::string prefix2 = (front_char == 'u') ? "ui" : (front_char == 'f') ? "f" : "i";
-  std::string img_type_name = access_type + " image" + ndim + "d_t";
-  defines << "\n#define IMAGE_" << key << "_TYPE " << img_type_name;
-  defines << "\n#define READ_" << key << "_IMAGE(a,b,c) read_image" << prefix2 << "(a,b,c)";
-  defines << "\n#define WRITE_" << key << "_IMAGE(a,b,c) write_image" << prefix2 << "(a,b,c)";
+  append(defines, "\n#define CONVERT_", key, "_PIXEL_TYPE clij_convert_", dtype, "_sat");
+  append(defines, "\n#define IMAGE_", key, "_PIXEL_TYPE ", dtype);
+  append(defines, "\n#define POS_", key, "_TYPE ", pos_type);
+  append(defines, "\n#define POS_", key, "_INSTANCE(pos0,pos1,pos2,pos3) ", prefix1, pos);
+  defines += "\n";
+
+  const char   front_char = stype.front();
+  const char * prefix2 = (front_char == 'u') ? "ui" : (front_char == 'f') ? "f" : "i";
+  append(defines, "\n#define IMAGE_", key, "_TYPE ", access_type, " image", ndim, "d_t");
+  append(defines, "\n#define READ_", key, "_IMAGE(a,b,c) read_image", prefix2, "(a,b,c)");
+  append(defines, "\n#define WRITE_", key, "_IMAGE(a,b,c) write_image", prefix2, "(a,b,c)");
 }
 
 static auto
-platform_options(const Device::Pointer & device, std::string * source) -> void
+amdPlatform(const Device::Pointer & device) -> bool
 {
-  auto platform = device->getPlatform();
-  if (platform.find("AMD") != std::string::npos)
-  {
-    // append at the begining of the source code the following string "#pragma OPENCL EXTENSION cl_amd_printf : enable"
-    *source = "#pragma OPENCL EXTENSION cl_amd_printf : enable\n" + *source;
-  }
+  return device->getPlatform().find("AMD") != std::string::npos;
 }
 
 // Function for creating defines for each array parameters
 static auto
-arrayDefines(const ParameterList & parameter_list, const Device::Type & device) -> std::string
+arrayDefines(std::string & defines, const ParameterList & parameter_list, const Device::Type & device) -> void
 {
-  std::ostringstream defines;
   // loop over all parameters, skip if parameter is not an array
   for (const auto & param : parameter_list)
   {
-    if (std::holds_alternative<float>(param.second) || std::holds_alternative<int>(param.second))
+    const auto * arr_ptr = std::get_if<Array::Pointer>(&param.second);
+    if (arr_ptr == nullptr)
     {
       continue;
     }
-    const auto & arr = std::get<Array::Pointer>(param.second);
+    const auto & arr = *arr_ptr;
     const auto & key = param.first;
+    if (arr == nullptr)
+    {
+      throw std::invalid_argument("Error: Array parameter '" + key + "' is null");
+    }
 
     // manage array dimension
     auto dim = shape_to_dimension(arr->width(), arr->height(), arr->depth());
@@ -161,13 +197,12 @@ arrayDefines(const ParameterList & parameter_list, const Device::Type & device) 
     }
 
     // manage array size
-    defines << "\n";
-    defines << "\n#define IMAGE_SIZE_" << key << "_WIDTH " << std::to_string(arr->width());
-    defines << "\n#define IMAGE_SIZE_" << key << "_HEIGHT " << std::to_string(arr->height());
-    defines << "\n#define IMAGE_SIZE_" << key << "_DEPTH " << std::to_string(arr->depth());
-    defines << "\n\n";
+    defines += "\n";
+    append(defines, "\n#define IMAGE_SIZE_", key, "_WIDTH ", std::to_string(arr->width()));
+    append(defines, "\n#define IMAGE_SIZE_", key, "_HEIGHT ", std::to_string(arr->height()));
+    append(defines, "\n#define IMAGE_SIZE_", key, "_DEPTH ", std::to_string(arr->depth()));
+    defines += "\n\n";
   }
-  return defines.str();
 }
 
 
@@ -175,10 +210,132 @@ arrayDefines(const ParameterList & parameter_list, const Device::Type & device) 
 auto
 generateDefines(const ParameterList & parameter_list, const ConstantList & constant_list, const Device::Type & device) -> std::string
 {
-  std::ostringstream defines;
-  defines << commonDefines(constant_list);
-  defines << arrayDefines(parameter_list, device);
-  return defines.str();
+  std::string defines;
+  defines.reserve(1024 + 1024 * parameter_list.size());
+  commonDefines(defines, constant_list);
+  arrayDefines(defines, parameter_list, device);
+  return defines;
+}
+
+
+// ============================================================================
+// Program source cache
+// ============================================================================
+
+// The program source passed to the backend (defines + preamble + kernel) only depends on the "launch signature":
+// kernel, backend, and the name, type, memory type and shape of each array parameter (sizes are baked into the
+// defines), plus the constants. Scalar values are kernel arguments and do not change the source. Caching the source
+// per signature skips the defines generation and the source assembly on every launch with the same signature.
+// The cache is shared by all devices (the source does not depend on the device beyond the backend and platform).
+// The signature is also given to the backend as cache_key, so that it does not hash the whole source again.
+
+namespace
+{
+struct SourceCache
+{
+  std::mutex   mutex;
+  ProgramCache cache; // LRU, values are std::shared_ptr<const std::string>
+};
+
+auto
+sourceCache() -> SourceCache &
+{
+  static SourceCache instance;
+  return instance;
+}
+} // namespace
+
+// Build the launch signature. Every input of the source generation must be part of it.
+static auto
+launchSignature(const Device::Pointer & device,
+                const KernelInfo &      kernel_func,
+                const ParameterList &   parameters,
+                const ConstantList &    constants) -> std::string
+{
+  constexpr char field = '\x1f';
+  constexpr char record = '\x1e';
+
+  std::string key;
+  key.reserve(128 + 64 * parameters.size());
+  append(key, kernel_func.first, std::string(1, field));
+  append(key, std::to_string(std::hash<std::string>{}(kernel_func.second)), "-", std::to_string(kernel_func.second.size()));
+  key += field;
+  key += std::to_string(static_cast<int>(device->getType()));
+  key += amdPlatform(device) ? "A" : "-";
+
+  for (const auto & [name, value] : parameters)
+  {
+    key += record;
+    key += name;
+    key += field;
+    key += std::to_string(value.index());
+    if (const auto * arr = std::get_if<Array::Pointer>(&value))
+    {
+      if (*arr == nullptr)
+      {
+        throw std::invalid_argument("Error: Array parameter '" + name + "' is null");
+      }
+      const auto & a = *arr;
+      for (const size_t v : { static_cast<size_t>(a->dtype()),
+                              static_cast<size_t>(a->mtype()),
+                              a->width(),
+                              a->height(),
+                              a->depth(),
+                              static_cast<size_t>(a->dim()) })
+      {
+        key += field;
+        key += std::to_string(v);
+      }
+    }
+  }
+  for (const auto & [name, value] : constants)
+  {
+    key += record;
+    append(key, name, std::string(1, field));
+    appendConstant(key, value);
+  }
+  return key;
+}
+
+// Generate the full program source: defines + backend preamble + kernel
+static auto
+generateProgramSource(const Device::Pointer & device,
+                      const KernelInfo &      kernel_func,
+                      const ParameterList &   parameters,
+                      const ConstantList &    constants) -> std::string
+{
+  auto kernel_preamble = cle::BackendManager::getInstance().getBackend().getPreamble();
+  auto defines = generateDefines(parameters, constants, device->getType());
+  if (amdPlatform(device))
+  {
+    kernel_preamble = "#pragma OPENCL EXTENSION cl_amd_printf : enable\n" + kernel_preamble;
+  }
+
+  // Collect unique array dtypes and dimensions for CLIJ defines
+  std::set<dType> used_dtypes;
+  std::set<int>   used_dimensions;
+  for (const auto & [key, value] : parameters)
+  {
+    if (const auto * arr = std::get_if<Array::Pointer>(&value))
+    {
+      used_dtypes.insert((*arr)->dtype());
+      used_dimensions.insert((*arr)->dim());
+    }
+  }
+  for (const auto & dtype : used_dtypes)
+  {
+    append(defines, "\n", dtype_defines.at(dtype));
+  }
+  for (const auto & dim : used_dimensions)
+  {
+    append(defines, "\n", dimension_defines.at(dim));
+  }
+  defines += "\n\n";
+
+  std::string program_source;
+  program_source.reserve(defines.size() + kernel_preamble.size() + kernel_func.second.size());
+  append(program_source, defines, kernel_preamble, kernel_func.second);
+  return program_source;
 }
 
 
@@ -192,7 +349,11 @@ marshalParameters(const ParameterList & parameters, std::vector<std::shared_ptr<
   {
     if (const auto * arr = std::get_if<Array::Pointer>(&value))
     {
-      if (*arr != nullptr && (!(*arr)->isContiguous() || (*arr)->offset() != 0))
+      if (*arr == nullptr)
+      {
+        throw std::invalid_argument("Error: Array parameter '" + key + "' is null");
+      }
+      if (!(*arr)->isContiguous() || (*arr)->offset() != 0)
       {
         throw std::runtime_error("Error: Array views are not yet supported in kernel execution (parameter '" + key + "')");
       }
@@ -216,8 +377,14 @@ marshalParameters(const ParameterList & parameters, std::vector<std::shared_ptr<
     }
     else if (const auto * s = std::get_if<size_t>(&value))
     {
-      args_ptr.push_back(std::static_pointer_cast<void>(std::make_shared<size_t>(*s)));
-      args_size.push_back(sizeof(size_t));
+      // size_t is not a valid kernel argument type in OpenCL C, and its size equals the size of a device
+      // pointer, which the backends use to identify memory arguments: pass it as a 32-bit unsigned int.
+      if (*s > std::numeric_limits<unsigned int>::max())
+      {
+        throw std::out_of_range("Error: Parameter '" + key + "' (" + std::to_string(*s) + ") exceeds the unsigned int range");
+      }
+      args_ptr.push_back(std::static_pointer_cast<void>(std::make_shared<unsigned int>(static_cast<unsigned int>(*s))));
+      args_size.push_back(sizeof(unsigned int));
     }
     else
     {
@@ -235,41 +402,27 @@ execute(const Device::Pointer & device,
         const RangeArray &      local_range,
         const ConstantList &    constants) -> void
 {
-  auto kernel_source = kernel_func.second;
-  auto kernel_name = kernel_func.first;
-  auto kernel_preamble = cle::BackendManager::getInstance().getBackend().getPreamble();
-  auto defines = generateDefines(parameters, constants, device->getType());
-  platform_options(device, &kernel_preamble);
-
-  // Collect unique array dtypes and dimensions for CLIJ defines
-  std::set<dType> used_dtypes;
-  std::set<int>   used_dimensions;
-  for (const auto & [key, value] : parameters)
+  // Program source from the cache when this launch signature was already seen, else generated and cached
+  const auto                         signature = launchSignature(device, kernel_func, parameters, constants);
+  std::shared_ptr<const std::string> program_source;
+  auto &                             source_cache = sourceCache();
   {
-    if (const auto * arr = std::get_if<Array::Pointer>(&value))
-    {
-      used_dtypes.insert((*arr)->dtype());
-      used_dimensions.insert((*arr)->dim());
-    }
+    std::lock_guard<std::mutex> lock(source_cache.mutex);
+    program_source = std::static_pointer_cast<const std::string>(source_cache.cache.get(signature));
+  }
+  if (program_source == nullptr)
+  {
+    program_source = std::make_shared<const std::string>(generateProgramSource(device, kernel_func, parameters, constants));
+    std::lock_guard<std::mutex> lock(source_cache.mutex);
+    source_cache.cache.put(signature, std::const_pointer_cast<std::string>(program_source));
   }
 
   std::vector<std::shared_ptr<void>> args_ptr;
   std::vector<size_t>                args_size;
   marshalParameters(parameters, args_ptr, args_size);
 
-  for (const auto & dtype : used_dtypes)
-  {
-    defines += "\n" + dtype_defines.at(dtype);
-  }
-  for (const auto & dim : used_dimensions)
-  {
-    defines += "\n" + dimension_defines.at(dim);
-  }
-  defines += "\n\n";
-
-  const std::string program_source = defines + kernel_preamble + kernel_source;
   cle::BackendManager::getInstance().getBackend().executeKernel(
-    device, program_source, kernel_name, global_range, local_range, args_ptr, args_size);
+    device, *program_source, kernel_func.first, global_range, local_range, args_ptr, args_size, signature);
 }
 
 
@@ -287,30 +440,53 @@ execute_separable(const Device::Pointer &      device,
 
   const RangeArray global_range = { dst->width(), dst->height(), dst->depth() };
 
-  auto tmp1 = Array::create(dst);
-  auto tmp2 = Array::create(dst);
-
-  auto execute_if_needed = [&](int dim, int idx, auto & input, auto & output) {
-    if (dim > 1 && sigma[idx] > 0)
+  // 1D passes to run, along x, y, z: a dimension is processed if it is not flat and its sigma is positive
+  const std::array<size_t, 3> extent = { dst->width(), dst->height(), dst->depth() };
+  std::vector<int>            passes;
+  for (int axis = 0; axis < 3; ++axis)
+  {
+    if (extent[axis] > 1 && sigma[axis] > 0)
     {
-      ParameterList parameters;
-      parameters.emplace_back("src", input);
-      parameters.emplace_back("dst", output);
-      parameters.emplace_back("dim", idx);
-      parameters.emplace_back("N", radius[idx]);
-      parameters.emplace_back("s", sigma[idx]);
-      parameters.emplace_back("order", orders[idx]);
-      execute(device, kernel, parameters, global_range);
+      passes.push_back(axis);
     }
-    else
-    {
-      input->copyTo(output);
-    }
-  };
+  }
+  if (passes.empty())
+  {
+    src->copyTo(dst);
+    return;
+  }
 
-  execute_if_needed(dst->width(), 0, src, tmp1);
-  execute_if_needed(dst->height(), 1, tmp1, tmp2);
-  execute_if_needed(dst->depth(), 2, tmp2, dst);
+  // Ping-pong between dst and a single temporary, ordered so that the last pass writes into dst:
+  // 1 pass: src -> dst; 2 passes: src -> tmp -> dst; 3 passes: src -> dst -> tmp -> dst.
+  // A pass never reads and writes the same buffer: when src and dst share their memory, src is copied first.
+  Array::Pointer input = src;
+  if (src->get() == dst->get())
+  {
+    input = Array::create(dst);
+    src->copyTo(input);
+  }
+  Array::Pointer tmp = (passes.size() > 1) ? Array::create(dst) : nullptr;
+  if (passes.size() == 3 && input != src)
+  {
+    tmp = input; // the copy of src is free after the first pass: reuse it as the temporary
+  }
+
+  for (size_t i = 0; i < passes.size(); ++i)
+  {
+    const int  axis = passes[i];
+    const bool to_dst = ((passes.size() - 1 - i) % 2) == 0;
+    const auto output = to_dst ? dst : tmp;
+
+    ParameterList parameters;
+    parameters.emplace_back("src", input);
+    parameters.emplace_back("dst", output);
+    parameters.emplace_back("dim", axis);
+    parameters.emplace_back("N", radius[axis]);
+    parameters.emplace_back("s", sigma[axis]);
+    parameters.emplace_back("order", orders[axis]);
+    execute(device, kernel, parameters, global_range);
+    input = output;
+  }
 }
 
 
