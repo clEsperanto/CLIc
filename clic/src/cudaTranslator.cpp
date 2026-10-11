@@ -52,9 +52,8 @@ addGlobalSizeParameters(std::string & code) -> void
   static const std::string marker = "__kernel void";
   static const std::string params = "const int cle_global_size_0, const int cle_global_size_1, const int cle_global_size_2";
   const bool               uses_barrier = code.find("barrier(") != std::string::npos;
-  const std::string        guard =
-    "\n  if (get_global_id(0) >= cle_global_size_0 || get_global_id(1) >= cle_global_size_1 || get_global_id(2) >= "
-    "cle_global_size_2) return;";
+  const std::string guard = "\n  if (get_global_id(0) >= cle_global_size_0 || get_global_id(1) >= cle_global_size_1 || get_global_id(2) >= "
+                            "cle_global_size_2) return;";
 
   size_t pos = 0;
   while ((pos = code.find(marker, pos)) != std::string::npos)
@@ -63,8 +62,7 @@ addGlobalSizeParameters(std::string & code) -> void
     const size_t close_paren = (open_paren == std::string::npos) ? open_paren : findClosing(code, open_paren, '(', ')');
     const size_t open_brace = (close_paren == std::string::npos) ? close_paren : code.find('{', close_paren);
     const size_t close_brace = (open_brace == std::string::npos) ? open_brace : findClosing(code, open_brace, '{', '}');
-    if (close_brace == std::string::npos ||
-        code.find_first_not_of(" \t\r\n", close_paren + 1) != open_brace) // e.g. a prototype
+    if (close_brace == std::string::npos || code.find_first_not_of(" \t\r\n", close_paren + 1) != open_brace) // e.g. a prototype
     {
       pos += marker.size();
       continue;
@@ -91,8 +89,8 @@ addGlobalSizeParameters(std::string & code) -> void
     const bool        no_params = current.find_first_not_of(" \t\r\n") == std::string::npos || current == "void";
     const std::string new_params = no_params ? params : current + ", " + params;
 
-    const std::string kernel = code.substr(pos, open_paren + 1 - pos) + new_params + ")" +
-                               code.substr(close_paren + 1, open_brace - close_paren) + body + "}";
+    const std::string kernel =
+      code.substr(pos, open_paren + 1 - pos) + new_params + ")" + code.substr(close_paren + 1, open_brace - close_paren) + body + "}";
     code.replace(pos, close_brace + 1 - pos, kernel);
     pos += kernel.size();
   }

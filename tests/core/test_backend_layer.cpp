@@ -444,10 +444,10 @@ TEST_P(TestBackendLayer, allocationChurnAsynchronous)
   for (int i = 0; i < 40; ++i)
   {
     src->fill(static_cast<float>(i));
-    auto tmp = cle::tier1::add_image_and_scalar_func(device, src, nullptr, 1); // new allocation
+    auto tmp = cle::tier1::add_image_and_scalar_func(device, src, nullptr, 1);      // new allocation
     auto out = cle::tier1::multiply_image_and_scalar_func(device, tmp, nullptr, 2); // new allocation
-    tmp.reset(); // released while queued
-    auto big = cle::Array::create(src); // same size: may reuse the block of tmp
+    tmp.reset();                                                                    // released while queued
+    auto big = cle::Array::create(src);                                             // same size: may reuse the block of tmp
     big->fill(-1);
     out->readTo(result.data());
     ASSERT_TRUE(std::all_of(result.begin(), result.end(), [i](float v) { return v == 2.0f * (i + 1); })) << "iteration " << i;

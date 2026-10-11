@@ -10,8 +10,8 @@
 #include <memory>
 #include <numeric>
 #include <stdexcept>
-#include <type_traits>
 #include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -845,7 +845,7 @@ CUDABackend::syncToStream(const Device::Pointer & device, int64_t consumer_strea
   // Mark when our work is done, and make the consumer stream (e.g. CuPy) wait for it before touching the memory.
   // The device's event is reused: a wait applies to the work recorded at the time cuStreamWaitEvent is called, so
   // recording the event again later (or from another thread) does not affect waits already queued.
-  CUevent event = ctx.device()->getCUDASyncEvent();
+  CUevent    event = ctx.device()->getCUDASyncEvent();
   const bool temporary_event = (event == nullptr);
   if (temporary_event)
   {
@@ -965,7 +965,7 @@ CUDABackend::executeKernel(const Device::Pointer &                    device,
   const bool   use_local = (local_size[0] > 0 && local_size[1] > 0 && local_size[2] > 0);
   const size_t max_threads = (loaded.max_block_size > 0) ? loaded.max_block_size : 1024;
   const auto   block_size = use_local ? local_size : detail::computeBlockSize(global_size, max_threads);
-  const auto grid_size = detail::computeGridSize(global_size, block_size);
+  const auto   grid_size = detail::computeGridSize(global_size, block_size);
 
   // ── Launch ──
   CU_CHECK(cuLaunchKernel(cuFunction,

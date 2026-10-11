@@ -608,8 +608,7 @@ waitBeforeDLPackRelease(const Device::Pointer & device, bool all_users) noexcept
     BackendManager::getInstance().getBackend().syncToStream(device, 0);
   }
   catch (...)
-  {
-  }
+  {}
 }
 
 auto
