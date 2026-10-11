@@ -25,7 +25,14 @@ TEST_P(TestDevice, availableDevices)
   auto devices_cpu = cle::BackendManager::getInstance().getBackend().getDevices("cpu");
   if (backend == "cuda" || backend == "metal")
   {
-    devices_cpu.clear();
+    // GPU-only backends: no device of type "cpu", but asking for one still gives a usable device
+    EXPECT_TRUE(devices_cpu.empty());
+    if (backend == "cuda")
+    {
+      EXPECT_NE(cle::BackendManager::getInstance().getBackend().getDevice("", "cpu"), nullptr);
+      EXPECT_NE(cle::BackendManager::getInstance().getBackend().getDeviceFromIndex(0, "cpu"), nullptr);
+      EXPECT_TRUE(cle::BackendManager::getInstance().getBackend().getDevicesList("cpu").empty());
+    }
   }
 
   EXPECT_FALSE(devices_all.empty());
