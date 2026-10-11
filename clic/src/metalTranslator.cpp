@@ -320,7 +320,8 @@ OpenCLToMetalTranslator::appendMetalBuiltinKernelArgs(std::string & code) -> voi
                            "uint3 __cle_tid [[thread_position_in_threadgroup]], "
                            "uint3 __cle_tgid [[threadgroup_position_in_grid]], "
                            "uint3 __cle_tptg [[threads_per_threadgroup]], "
-                           "uint3 __cle_tgpg [[threadgroups_per_grid]]";
+                           "uint3 __cle_tgpg [[threadgroups_per_grid]], "
+                           "uint3 __cle_tpg [[threads_per_grid]]";
 
     std::string insertion;
     if (params.find_first_not_of(" \t\n\r") == std::string::npos)
@@ -588,9 +589,11 @@ OpenCLToMetalTranslator::translateWorkItemFunctions(std::string & code) -> void
   replaceAll(code, "get_num_groups(1)", "((int)__cle_tgpg.y)");
   replaceAll(code, "get_num_groups(2)", "((int)__cle_tgpg.z)");
 
-  replaceAll(code, "get_global_size(0)", "((int)(__cle_tptg.x * __cle_tgpg.x))");
-  replaceAll(code, "get_global_size(1)", "((int)(__cle_tptg.y * __cle_tgpg.y))");
-  replaceAll(code, "get_global_size(2)", "((int)(__cle_tptg.z * __cle_tgpg.z))");
+  // threads_per_grid is the exact grid size of dispatchThreads (as OpenCL's global size). Threadgroup size times
+  // threadgroup count would round it up to whole threadgroups.
+  replaceAll(code, "get_global_size(0)", "((int)__cle_tpg.x)");
+  replaceAll(code, "get_global_size(1)", "((int)__cle_tpg.y)");
+  replaceAll(code, "get_global_size(2)", "((int)__cle_tpg.z)");
 }
 
 auto

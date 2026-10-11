@@ -4,6 +4,101 @@
 #include <sstream>
 #include <vector>
 
+namespace
+{
+// OpenCL atomic_cmpxchg takes `volatile` pointers, CUDA atomicCAS does not: drop the qualifier. Each operand is
+// deduced separately and converted to the pointee type, as OpenCL code often mixes signed and unsigned values.
+constexpr const char * atomicCmpxchgHelper = R"CU(
+template <typename T, typename C, typename V>
+__device__ inline T cle_atomic_cmpxchg(volatile T * ptr, C cmp, V val)
+{
+  return atomicCAS(const_cast<T *>(ptr), static_cast<T>(cmp), static_cast<T>(val));
+}
+)CU";
+
+/// Position of the bracket closing the one at `open` (`(`/`)` or `{`/`}`), or npos
+auto
+findClosing(const std::string & code, size_t open, char open_char, char close_char) -> size_t
+{
+  int depth = 0;
+  for (size_t i = open; i < code.size(); ++i)
+  {
+    if (code[i] == open_char)
+    {
+      ++depth;
+    }
+    else if (code[i] == close_char && --depth == 0)
+    {
+      return i;
+    }
+  }
+  return std::string::npos;
+}
+
+/**
+ * @brief Give every kernel the global size requested by the host (3 trailing `int` parameters, passed by
+ *        CUDABackend::executeKernel), as OpenCL does.
+ *
+ * CUDA launches whole blocks: the grid covers a multiple of the block size, so without this some threads run
+ * beyond the global size (e.g. 96 threads for a width of 80), and get_global_size() returns the rounded size.
+ *  - get_global_size(d) inside a kernel body returns the requested size;
+ *  - out-of-range threads return immediately (they do not exist in OpenCL). Not done when the code uses barriers:
+ *    every thread of a block must reach them, such kernels handle the range themselves.
+ * A kernel whose signature or body cannot be delimited is left unchanged (the extra arguments are then ignored).
+ */
+auto
+addGlobalSizeParameters(std::string & code) -> void
+{
+  static const std::string marker = "__kernel void";
+  static const std::string params = "const int cle_global_size_0, const int cle_global_size_1, const int cle_global_size_2";
+  const bool               uses_barrier = code.find("barrier(") != std::string::npos;
+  const std::string        guard =
+    "\n  if (get_global_id(0) >= cle_global_size_0 || get_global_id(1) >= cle_global_size_1 || get_global_id(2) >= "
+    "cle_global_size_2) return;";
+
+  size_t pos = 0;
+  while ((pos = code.find(marker, pos)) != std::string::npos)
+  {
+    const size_t open_paren = code.find('(', pos);
+    const size_t close_paren = (open_paren == std::string::npos) ? open_paren : findClosing(code, open_paren, '(', ')');
+    const size_t open_brace = (close_paren == std::string::npos) ? close_paren : code.find('{', close_paren);
+    const size_t close_brace = (open_brace == std::string::npos) ? open_brace : findClosing(code, open_brace, '{', '}');
+    if (close_brace == std::string::npos ||
+        code.find_first_not_of(" \t\r\n", close_paren + 1) != open_brace) // e.g. a prototype
+    {
+      pos += marker.size();
+      continue;
+    }
+
+    // body: get_global_size(d) -> requested size
+    std::string body = code.substr(open_brace + 1, close_brace - open_brace - 1);
+    for (const char dim : { '0', '1', '2' })
+    {
+      const std::string from = std::string("get_global_size(") + dim + ")";
+      const std::string to = std::string("cle_global_size_") + dim;
+      for (size_t at = body.find(from); at != std::string::npos; at = body.find(from, at + to.size()))
+      {
+        body.replace(at, from.size(), to);
+      }
+    }
+    if (!uses_barrier)
+    {
+      body.insert(0, guard);
+    }
+
+    // parameters
+    const std::string current = code.substr(open_paren + 1, close_paren - open_paren - 1);
+    const bool        no_params = current.find_first_not_of(" \t\r\n") == std::string::npos || current == "void";
+    const std::string new_params = no_params ? params : current + ", " + params;
+
+    const std::string kernel = code.substr(pos, open_paren + 1 - pos) + new_params + ")" +
+                               code.substr(close_paren + 1, open_brace - close_paren) + body + "}";
+    code.replace(pos, close_brace + 1 - pos, kernel);
+    pos += kernel.size();
+  }
+}
+} // namespace
+
 // ═══════════════════════════════════════════════════════════════════════════
 //  Public API
 // ═══════════════════════════════════════════════════════════════════════════
@@ -19,6 +114,7 @@ OpenCLToCUDATranslator::translate(const std::string & openclSource) const -> std
 auto
 OpenCLToCUDATranslator::translateInPlace(std::string & code) const -> void
 {
+  addGlobalSizeParameters(code); // first: works on the OpenCL kernel signatures
   translatePragmas(code);
   translateSamplers(code);
   translateImageOperations(code);
@@ -33,6 +129,12 @@ OpenCLToCUDATranslator::translateInPlace(std::string & code) const -> void
   translateMathFunctions(code);
   translateMiscBuiltins(code);
   cleanupDoubleQualifiers(code);
+
+  // Added last, so that the passes above do not rewrite it
+  if (code.find("cle_atomic_cmpxchg(") != std::string::npos)
+  {
+    code.insert(0, atomicCmpxchgHelper);
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -528,7 +630,7 @@ OpenCLToCUDATranslator::translateAtomics(std::string & code) -> void
   replaceAll(code, "atomic_and(", "atomicAnd(");
   replaceAll(code, "atomic_or(", "atomicOr(");
   replaceAll(code, "atomic_xor(", "atomicXor(");
-  replaceAll(code, "atomic_cmpxchg(", "atomicCAS(");
+  replaceAll(code, "atomic_cmpxchg(", "cle_atomic_cmpxchg("); // atomicCAS without volatile, see atomicCmpxchgHelper
 
   // OpenCL 2.0 C11-style atomics (basic mapping)
   replaceAll(code, "atomic_fetch_add(", "atomicAdd(");
