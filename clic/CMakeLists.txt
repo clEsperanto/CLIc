@@ -3,8 +3,8 @@ add_subdirectory(thirdparty)
 
 # manage configuration files
 configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_NAME_LOWERCASE}.hpp.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/include/${LIBRARY_NAME_LOWERCASE}.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/clic.hpp.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/include/clic.hpp"
     NO_SOURCE_PERMISSIONS @ONLY
 )
 
@@ -19,19 +19,18 @@ if(CLE_METAL)
 endif()
 
 message(STATUS "FETCHCONTENT_BASE_DIR: ${FETCHCONTENT_BASE_DIR}")
-message(STATUS "VKFFT_INCLUDE_DIR: ${VKFFT_INCLUDE_DIR}")
 
 # target library definition
-add_library(${LIBRARY_NAME} ${SOURCES})
-target_link_libraries(${LIBRARY_NAME} PUBLIC cleKernels::cleKernels Eigen3::Eigen VkFFT)
+add_library(CLIc ${SOURCES})
+target_link_libraries(CLIc PUBLIC cleKernels::cleKernels Eigen3::Eigen clic_vkfft)
 # consumers of the installed package need C++17 too (public headers use it)
-target_compile_features(${LIBRARY_NAME} PUBLIC cxx_std_17)
+target_compile_features(CLIc PUBLIC cxx_std_17)
 # make target depend on other targets
-add_dependencies(${LIBRARY_NAME} cleKernels::cleKernels Eigen3::Eigen VkFFT)
+add_dependencies(CLIc cleKernels::cleKernels Eigen3::Eigen clic_vkfft)
 
-add_library(${PROJECT_NAME}::${LIBRARY_NAME} ALIAS ${LIBRARY_NAME})
-# target_include_directories(${LIBRARY_NAME} PUBLIC ${FETCHCONTENT_BASE_DIR}/vkfft-src/vkFFT/)
-target_include_directories(${LIBRARY_NAME} PUBLIC
+add_library(CLIc::CLIc ALIAS CLIc)
+# target_include_directories(CLIc PUBLIC ${FETCHCONTENT_BASE_DIR}/vkfft-src/vkFFT/)
+target_include_directories(CLIc PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> # CLIc headers
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include> # CLIc configuration headers
     $<BUILD_INTERFACE:${CLEKERNELS_INCLUDE_DIR}>           # cleKernels headers
@@ -43,34 +42,35 @@ target_include_directories(${LIBRARY_NAME} PUBLIC
 
 
 # library version, used to namespace the kernel disk cache
-target_compile_definitions(${LIBRARY_NAME} PRIVATE CLIC_VERSION="${PROJECT_VERSION}")
+target_compile_definitions(CLIc PRIVATE CLIC_VERSION="${PROJECT_VERSION}")
 
-set_target_properties(${LIBRARY_NAME} PROPERTIES LINKER_LANGUAGE CXX)        # force C++ linker
-set_target_properties(${LIBRARY_NAME} PROPERTIES VERSION ${PROJECT_VERSION}) # set version
+set_target_properties(CLIc PROPERTIES LINKER_LANGUAGE CXX)        # force C++ linker
+set_target_properties(CLIc PROPERTIES VERSION ${PROJECT_VERSION}) # set version
+set_target_properties(CLIc PROPERTIES DEBUG_POSTFIX "_d")             # libCLIc_d for debug builds
 # When statically linked into a consumer shared library (e.g. a Python extension), hide CLIc symbols
 # by default so they don't leak into the consumer's dynamic symbol table and cause interposition.
 if(NOT BUILD_SHARED_LIBS)
-    set_target_properties(${LIBRARY_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden)
-    set_target_properties(${LIBRARY_NAME} PROPERTIES VISIBILITY_INLINES_HIDDEN YES)
+    set_target_properties(CLIc PROPERTIES CXX_VISIBILITY_PRESET hidden)
+    set_target_properties(CLIc PROPERTIES VISIBILITY_INLINES_HIDDEN YES)
 endif()
 # link backend-specific dependencies
 if(CLE_OPENCL)
-    target_link_libraries(${LIBRARY_NAME} PUBLIC OpenCL::OpenCL)
+    target_link_libraries(CLIc PUBLIC OpenCL::OpenCL)
 elseif(CLE_CUDA)
-    set_target_properties(${LIBRARY_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
-    set_target_properties(${LIBRARY_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
-    target_include_directories(${LIBRARY_NAME} PUBLIC "$<BUILD_INTERFACE:${CUDAToolkit_INCLUDE_DIRS}>")
-    target_link_libraries(${LIBRARY_NAME} PUBLIC CUDA::cudart CUDA::cuda_driver CUDA::nvrtc)
+    set_target_properties(CLIc PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+    set_target_properties(CLIc PROPERTIES POSITION_INDEPENDENT_CODE ON)
+    target_include_directories(CLIc PUBLIC "$<BUILD_INTERFACE:${CUDAToolkit_INCLUDE_DIRS}>")
+    target_link_libraries(CLIc PUBLIC CUDA::cudart CUDA::cuda_driver CUDA::nvrtc)
 elseif(CLE_METAL)
     enable_language(OBJCXX)
     file(GLOB_RECURSE OBJCXX_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.mm")
     set_source_files_properties(${OBJCXX_SOURCES} PROPERTIES
         COMPILE_FLAGS "-x objective-c++"
     )
-    target_include_directories(${LIBRARY_NAME} BEFORE PUBLIC
+    target_include_directories(CLIc BEFORE PUBLIC
         $<BUILD_INTERFACE:${vkfft_SOURCE_DIR}/metal-cpp>
     )
-    target_link_libraries(${LIBRARY_NAME} PUBLIC
+    target_link_libraries(CLIc PUBLIC
         "-framework Metal"
         "-framework Foundation"
         "-framework QuartzCore"

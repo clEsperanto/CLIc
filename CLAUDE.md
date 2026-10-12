@@ -36,8 +36,14 @@ also builds it with `-DCLIC_SOURCE_DIR=<repo>` (`add_subdirectory`). Run it afte
 install rules: a public dependency must also be found in `cmake/CLIcConfig.cmake.in`.
 
 Useful CMake options (see `cmake/CMakeSetEnv.cmake`): `BUILD_TESTING` (ON), `BUILD_SHARED_LIBS` (ON), `BUILD_COVERAGE` (OFF),
-`CLEAR_KERNEL_CACHE` (OFF; wipes `~/.cache/clesperanto` at configure). `BUILD_BENCHMARK` exists, but `benchmark/` and `docs/`
-are **not** added by the top-level `CMakeLists.txt`.
+`CLEAR_KERNEL_CACHE` (OFF; wipes `~/.cache/clesperanto` at configure, or build the `clic_clear_cache` target).
+`BUILD_BENCHMARK` exists, but `benchmark/` and `docs/` are **not** added by the top-level `CMakeLists.txt`.
+
+CLIc is consumed as a subproject (FetchContent / `add_subdirectory`) by pyclesperanto and clesperantoj, both with
+`BUILD_SHARED_LIBS=OFF`; clesperantoj also runs CLIc's install rules. `CLIC_IS_TOP_LEVEL` (root `CMakeLists.txt`) guards
+everything that would change a parent project: cache variables, build type, `USE_FOLDERS`, tests (never built as a
+subproject). Keep new options and variables `CLIC_`/`CLE_`-prefixed, prefer normal variables to cache entries, and check
+changes to the CMake files against both bindings (build them with `-DFETCHCONTENT_SOURCE_DIR_CLIC=<this repo>`).
 
 One build tree = one backend, and tests only run on the backend that was compiled in. To test another backend, use a
 separate tree, e.g. Metal on a Mac:
@@ -64,18 +70,18 @@ Tests need a working GPU runtime. CI (`.github/workflows/tests_and_coverage.yml`
 
 ### Dependencies (FetchContent, `clic/thirdparty/CMakeLists.txt`)
 
-Version tags are set in the root `CMakeLists.txt`.
+Version tags are set in the root `CMakeLists.txt` (normal variables, override with `-D<name>=<tag>`).
 
 | Dependency | Purpose |
 |---|---|
-| `clij-opencl-kernels` (`kernel_version_tag`) | OpenCL kernel sources, turned into headers `cle_<name>.h` with `constexpr const char* kernel::<name>`, plus `cle_preamble_{cl,cu,metal}.h` |
-| Eigen (`eigen_lib_version_tag`) | Host-side matrix math |
-| VkFFT (`vkFFT_version_tag`) | GPU FFT, header-only; `VKFFT_BACKEND` follows `CLE_BACKEND` (3=OpenCL, 1=CUDA, 5=Metal) |
+| `clij-opencl-kernels` (`CLIC_KERNELS_TAG`) | OpenCL kernel sources, turned into headers `cle_<name>.h` with `constexpr const char* kernel::<name>`, plus `cle_preamble_{cl,cu,metal}.h` |
+| Eigen (`CLIC_EIGEN_TAG`) | Host-side matrix math |
+| VkFFT (`CLIC_VKFFT_TAG`) | GPU FFT, header-only, target `clic_vkfft`; `VKFFT_BACKEND` follows `CLE_BACKEND` (3=OpenCL, 1=CUDA, 5=Metal) |
 | DLPack | Zero-copy tensor interop (`Array::toDLPack` / `fromDLPack`) |
 | GoogleTest v1.14 | Tests, always built static |
 
 The kernel sources are **not in this repo**. To read one, look in `build/<preset>/_deps/clekernels-src/` or
-`_deps/clekernels-build/include/cle_<name>.h`. To change a kernel, change it upstream and bump `kernel_version_tag`.
+`_deps/clekernels-build/include/cle_<name>.h`. To change a kernel, change it upstream and bump `CLIC_KERNELS_TAG`.
 
 ## Code layout
 

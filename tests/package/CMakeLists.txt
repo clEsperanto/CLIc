@@ -9,8 +9,7 @@ project(clic_package_test LANGUAGES CXX)
 set(CLIC_SOURCE_DIR "" CACHE PATH "CLIc source tree to add as a subproject (default: use find_package)")
 
 if(CLIC_SOURCE_DIR)
-    set(BUILD_TESTING OFF)
-    add_subdirectory(${CLIC_SOURCE_DIR} clic)
+    add_subdirectory(${CLIC_SOURCE_DIR} clic) # CLIc tests are not built when it is a subproject
 else()
     find_package(CLIc REQUIRED)
     message(STATUS "Found CLIc ${CLIc_VERSION} (backend: ${CLIc_BACKEND})")
