@@ -156,9 +156,8 @@ CUDADevice::finalize() -> void
     return;
   }
 
-  // Wait for the pending work before releasing the stream (finish() is a no-op once uninitialised)
-  waitFinish = true;
-  finish();
+  // Wait for the pending work before releasing the stream, whatever the wait setting
+  cuStreamSynchronize(cudaStream);
 
   // Release the cached kernels while their context is alive and current: their deleters unload the modules
   // (cuModuleUnload acts on the current context). Unloading them after the context is gone crashes the driver; and the
@@ -216,24 +215,6 @@ CUDADevice::finish() const -> void
   {
     cuStreamSynchronize(cudaStream);
   }
-}
-
-auto
-CUDADevice::setWaitToFinish(bool flag) -> void
-{
-  waitFinish = flag;
-}
-
-auto
-CUDADevice::getWaitToFinish() const -> bool
-{
-  return waitFinish;
-}
-
-auto
-CUDADevice::isInitialized() const -> bool
-{
-  return initialized;
 }
 
 // ============================================================================
@@ -435,26 +416,6 @@ CUDADevice::getInfoExtended() const -> std::string
 // ============================================================================
 // Program cache
 // ============================================================================
-
-auto
-CUDADevice::getProgramFromCache(const std::string & key) const -> std::shared_ptr<void>
-{
-  if (!cache)
-  {
-    return nullptr;
-  }
-  return cache->get(key);
-}
-
-auto
-CUDADevice::addProgramToCache(const std::string & key, std::shared_ptr<void> program) -> void
-{
-  if (!cache)
-  {
-    return;
-  }
-  cache->put(key, std::move(program));
-}
 
 #endif // USE_CUDA
 

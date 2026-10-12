@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <array>
 #include <cstring>
-#include <numeric>
 #include <string>
 #include <vector>
 
@@ -50,26 +49,6 @@ errorMessage(const NS::Error * error) -> std::string
 // ============================================================================
 
 /**
- * @brief Byte offset of a region origin in a buffer, and whether the region is one contiguous block of it.
- *        A flat shape { N, 1, 1 } describes a packed buffer (e.g. whole-array copies).
- */
-struct Span
-{
-  size_t offset;
-  bool   contiguous;
-};
-
-[[nodiscard]] static auto
-spanOf(const std::array<size_t, 3> & shape, const std::array<size_t, 3> & origin, const std::array<size_t, 3> & region) -> Span
-{
-  const size_t offset = (origin[2] * shape[1] + origin[1]) * shape[0] + origin[0];
-  const bool   flat = shape[1] == 1 && shape[2] == 1;
-  const bool   whole_rows = region[0] == shape[0] || (region[1] == 1 && region[2] == 1);
-  const bool   whole_slices = region[1] == shape[1] || region[2] == 1;
-  return { offset, flat || (whole_rows && whole_slices) };
-}
-
-/**
  * @brief Copy a rectangular region between two host-visible memory areas.
  *
  * Contiguous regions are copied in chunks of 4 KB: measured on Apple Silicon, single large memcpy calls into
@@ -85,15 +64,15 @@ copyRect(uint8_t *                     dst,
          const std::array<size_t, 3> & src_origin,
          const std::array<size_t, 3> & region) -> void
 {
-  const auto src_span = spanOf(src_shape, src_origin, region);
-  const auto dst_span = spanOf(dst_shape, dst_origin, region);
-  if (src_span.contiguous && dst_span.contiguous)
+  if (detail::isContiguous(src_shape, region) && detail::isContiguous(dst_shape, region))
   {
     constexpr size_t chunk = 4096;
-    const size_t     total = region[0] * region[1] * region[2];
+    const size_t     total = detail::elementCount(region);
+    dst += detail::linearOffset(dst_shape, dst_origin);
+    src += detail::linearOffset(src_shape, src_origin);
     for (size_t offset = 0; offset < total; offset += chunk)
     {
-      std::memcpy(dst + dst_span.offset + offset, src + src_span.offset + offset, std::min(chunk, total - offset));
+      std::memcpy(dst + offset, src + offset, std::min(chunk, total - offset));
     }
     return;
   }
@@ -101,9 +80,9 @@ copyRect(uint8_t *                     dst,
   {
     for (size_t y = 0; y < region[1]; ++y)
     {
-      const size_t s_off = ((src_origin[2] + z) * src_shape[1] + src_origin[1] + y) * src_shape[0] + src_origin[0];
-      const size_t d_off = ((dst_origin[2] + z) * dst_shape[1] + dst_origin[1] + y) * dst_shape[0] + dst_origin[0];
-      std::memcpy(dst + d_off, src + s_off, region[0]);
+      std::memcpy(dst + detail::linearOffset(dst_shape, dst_origin, y, z),
+                  src + detail::linearOffset(src_shape, src_origin, y, z),
+                  region[0]);
     }
   }
 }
@@ -209,35 +188,25 @@ auto
 MetalBackend::getDevice(const std::string & name, const std::string & type) const -> Device::Pointer
 {
   const auto devices = getDevices(type);
-  if (auto device = detail::findDeviceByName(devices, name))
+  if (devices.empty())
   {
-    return device;
+    std::cerr << "Warning: No Metal compatible devices found." << std::endl;
+    return nullptr;
   }
-  if (!devices.empty())
-  {
-    return devices.back();
-  }
-
-  std::cerr << "Warning: No Metal compatible devices found." << std::endl;
-  return nullptr;
+  const auto device = detail::findDeviceByName(devices, name);
+  return device ? device : devices.back();
 }
 
 auto
 MetalBackend::getDeviceFromIndex(size_t index, const std::string & type) const -> Device::Pointer
 {
   const auto devices = getDevices(type);
-
-  if (index < devices.size())
+  if (devices.empty())
   {
-    return devices[index];
+    std::cerr << "Warning: No Metal compatible devices found." << std::endl;
+    return nullptr;
   }
-  if (!devices.empty())
-  {
-    return devices.back();
-  }
-
-  std::cerr << "Warning: No Metal compatible devices found." << std::endl;
-  return nullptr;
+  return detail::deviceAt(devices, index);
 }
 
 auto
@@ -253,7 +222,7 @@ MetalBackend::allocateMemory(const Device::Pointer &       device,
                              const mType &                 mtype,
                              std::shared_ptr<void> &       data_ptr) const -> void
 {
-  const size_t size = region[0] * region[1] * region[2] * toBytes(dtype);
+  const size_t size = detail::elementCount(region) * toBytes(dtype);
 
   auto   metal_device = castDevice(device);
   auto * dev = static_cast<MTL::Device *>(metal_device->getMetalDevice());
@@ -287,13 +256,13 @@ MetalBackend::syncToStream(const Device::Pointer & device, int64_t consumer_stre
   castDevice(device)->waitForCompletion();
 }
 
-auto
-MetalBackend::writeBuffer(const Device::Pointer &       device,
-                          const std::shared_ptr<void> & buffer_ptr,
-                          std::array<size_t, 3> &       buffer_shape,
-                          std::array<size_t, 3> &       buffer_origin,
-                          std::array<size_t, 3> &       region,
-                          const void *                  host_ptr) const -> void
+static auto
+writeBuffer(const Device::Pointer &       device,
+            const std::shared_ptr<void> & buffer_ptr,
+            std::array<size_t, 3> &       buffer_shape,
+            std::array<size_t, 3> &       buffer_origin,
+            std::array<size_t, 3> &       region,
+            const void *                  host_ptr) -> void
 {
   // the GPU may still be reading or writing the buffer
   castDevice(device)->waitForCompletion();
@@ -314,13 +283,13 @@ MetalBackend::writeMemory(const Device::Pointer &       device,
   writeBuffer(device, buffer_ptr, buffer_shape, buffer_origin, region, host_ptr);
 }
 
-auto
-MetalBackend::readBuffer(const Device::Pointer &       device,
-                         const std::shared_ptr<void> & buffer_ptr,
-                         std::array<size_t, 3> &       buffer_shape,
-                         std::array<size_t, 3> &       buffer_origin,
-                         std::array<size_t, 3> &       region,
-                         void *                        host_ptr) const -> void
+static auto
+readBuffer(const Device::Pointer &       device,
+           const std::shared_ptr<void> & buffer_ptr,
+           std::array<size_t, 3> &       buffer_shape,
+           std::array<size_t, 3> &       buffer_origin,
+           std::array<size_t, 3> &       region,
+           void *                        host_ptr) -> void
 {
   // the GPU may still be writing the buffer
   castDevice(device)->waitForCompletion();
@@ -353,15 +322,11 @@ MetalBackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
                                        const size_t &                bytes) const -> void
 {
   detail::scaleToBytes(src_shape, src_origin, region, bytes);
-  dst_shape[0] *= bytes;
-  dst_origin[0] *= bytes;
+  detail::scaleToBytes(dst_shape, dst_origin, bytes);
 
   const auto metal_device = castDevice(device);
-  const auto src_span = spanOf(src_shape, src_origin, region);
-  const auto dst_span = spanOf(dst_shape, dst_origin, region);
-  const auto size = region[0] * region[1] * region[2];
-
-  if (src_span.contiguous && dst_span.contiguous && !metal_device->getWaitToFinish())
+  const bool contiguous = detail::isContiguous(src_shape, region) && detail::isContiguous(dst_shape, region);
+  if (contiguous && !metal_device->getWaitToFinish())
   {
     // Asynchronous mode: contiguous copy done by the GPU, queued after the pending work without waiting for it.
     // In synchronous mode a host copy is cheaper than submitting and awaiting a blit (unified memory).
@@ -375,10 +340,10 @@ MetalBackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
         throw std::runtime_error("Error: Failed to create Metal blit command encoder");
       }
       blit->copyFromBuffer(static_cast<MTL::Buffer *>(src_ptr.get()),
-                           src_span.offset,
+                           detail::linearOffset(src_shape, src_origin),
                            static_cast<MTL::Buffer *>(dst_ptr.get()),
-                           dst_span.offset,
-                           size);
+                           detail::linearOffset(dst_shape, dst_origin),
+                           detail::elementCount(region));
       blit->endEncoding();
       cmdBuf->commit();
       metal_device->addPendingCommandBuffer(cmdBuf);
@@ -434,14 +399,14 @@ MetalBackend::copyMemoryImageToImage(const Device::Pointer &       device,
   copyMemoryBufferToBuffer(device, src_ptr, src_origin, src_shape, dst_ptr, dst_origin, dst_shape, region, bytes);
 }
 
-auto
-MetalBackend::setBuffer(const Device::Pointer &       device,
-                        const std::shared_ptr<void> & buffer_ptr,
-                        std::array<size_t, 3> &       buffer_shape,
-                        std::array<size_t, 3> &       buffer_origin,
-                        std::array<size_t, 3> &       region,
-                        const dType &                 dtype,
-                        const float &                 value) const -> void
+static auto
+setBuffer(const Device::Pointer &       device,
+          const std::shared_ptr<void> & buffer_ptr,
+          std::array<size_t, 3> &       buffer_shape,
+          std::array<size_t, 3> &       buffer_origin,
+          std::array<size_t, 3> &       region,
+          const dType &                 dtype,
+          const float &                 value) -> void
 {
   // the GPU may still be using the buffer
   castDevice(device)->waitForCompletion();
@@ -451,15 +416,11 @@ MetalBackend::setBuffer(const Device::Pointer &       device,
     using T = decltype(tag);
     const auto cval = static_cast<T>(value);
     const auto row_ptr = [&](size_t y, size_t z) {
-      const size_t offset = ((buffer_origin[2] + z) * buffer_shape[1] + buffer_origin[1] + y) * buffer_shape[0] + buffer_origin[0];
-      return reinterpret_cast<T *>(base + offset * sizeof(T));
+      return reinterpret_cast<T *>(base) + detail::linearOffset(buffer_shape, buffer_origin, y, z);
     };
-    std::array<size_t, 3> byte_shape = { buffer_shape[0] * sizeof(T), buffer_shape[1], buffer_shape[2] };
-    std::array<size_t, 3> byte_origin = { buffer_origin[0] * sizeof(T), buffer_origin[1], buffer_origin[2] };
-    std::array<size_t, 3> byte_region = { region[0] * sizeof(T), region[1], region[2] };
-    if (spanOf(byte_shape, byte_origin, byte_region).contiguous)
+    if (detail::isContiguous(buffer_shape, region))
     {
-      std::fill_n(row_ptr(0, 0), region[0] * region[1] * region[2], cval);
+      std::fill_n(row_ptr(0, 0), detail::elementCount(region), cval);
       return;
     }
     for (size_t z = 0; z < region[2]; ++z)

@@ -74,19 +74,74 @@ deviceNames(const std::vector<Device::Pointer> & devices) -> std::vector<std::st
   return names;
 }
 
+/**
+ * @brief Device at `index`, or the last device when the index is out of range (`devices` must not be empty)
+ */
+[[nodiscard]] inline auto
+deviceAt(const std::vector<Device::Pointer> & devices, size_t index) -> Device::Pointer
+{
+  return (index < devices.size()) ? devices[index] : devices.back();
+}
+
 // ============================================================================
 // Memory region helpers
 // ============================================================================
 
 /**
- * @brief Convert the x component of a shape, origin and region from elements to bytes
+ * @brief Convert the x component of a shape and origin (and region) from elements to bytes
  */
 inline auto
-scaleToBytes(std::array<size_t, 3> & shape, std::array<size_t, 3> & origin, std::array<size_t, 3> & region, size_t elem_size) -> void
+scaleToBytes(std::array<size_t, 3> & shape, std::array<size_t, 3> & origin, size_t elem_size) -> void
 {
   shape[0] *= elem_size;
   origin[0] *= elem_size;
+}
+
+inline auto
+scaleToBytes(std::array<size_t, 3> & shape, std::array<size_t, 3> & origin, std::array<size_t, 3> & region, size_t elem_size) -> void
+{
+  scaleToBytes(shape, origin, elem_size);
   region[0] *= elem_size;
+}
+
+/**
+ * @brief Number of elements of a region
+ */
+[[nodiscard]] inline auto
+elementCount(const std::array<size_t, 3> & region) -> size_t
+{
+  return region[0] * region[1] * region[2];
+}
+
+/**
+ * @brief Whether a shape is flat ({N, 1, 1}): it then describes a packed buffer whose rows and slices follow the
+ *        accessed region (e.g. the buffer side of a whole buffer <-> image copy, or host memory)
+ */
+[[nodiscard]] inline auto
+isFlat(const std::array<size_t, 3> & shape) -> bool
+{
+  return shape[1] == 1 && shape[2] == 1;
+}
+
+/**
+ * @brief Whether a region of a memory of the given shape is one contiguous block: flat shape, whole slices,
+ *        whole rows of a single slice, or a single (partial) row
+ */
+[[nodiscard]] inline auto
+isContiguous(const std::array<size_t, 3> & shape, const std::array<size_t, 3> & region) -> bool
+{
+  const bool whole_rows = region[0] == shape[0] || (region[1] == 1 && region[2] == 1);
+  const bool whole_slices = region[1] == shape[1] || region[2] == 1;
+  return isFlat(shape) || (whole_rows && whole_slices);
+}
+
+/**
+ * @brief Linear offset (in the unit of shape[0]) of the row (y, z) of a region starting at `origin`
+ */
+[[nodiscard]] inline auto
+linearOffset(const std::array<size_t, 3> & shape, const std::array<size_t, 3> & origin, size_t y = 0, size_t z = 0) -> size_t
+{
+  return ((origin[2] + z) * shape[1] + origin[1] + y) * shape[0] + origin[0];
 }
 
 /**
@@ -138,44 +193,15 @@ computeBlockSize(const std::array<size_t, 3> & global_size, size_t max_threads =
 {
   const auto dim = std::count_if(global_size.begin(), global_size.end(), [](size_t size) { return size > 1; });
 
+  // block size along the 1st, 2nd and 3rd active dimension, per number of active dimensions
+  constexpr size_t      kBlockDims[3][3] = { { 256, 1, 1 }, { 32, 8, 1 }, { 32, 8, 1 } };
   std::array<size_t, 3> block = { 1, 1, 1 };
-  switch (dim)
+  for (size_t i = 0, active = 0; i < 3 && dim > 0; ++i)
   {
-    case 1: {
-      constexpr size_t kMaxThreads1D = 256;
-      for (size_t i = 0; i < 3; ++i)
-      {
-        if (global_size[i] > 1)
-        {
-          block[i] = std::min(global_size[i], kMaxThreads1D);
-        }
-      }
-      break;
+    if (global_size[i] > 1)
+    {
+      block[i] = std::min(global_size[i], kBlockDims[dim - 1][active++]);
     }
-    case 2: {
-      constexpr size_t kBlockDimFirst2D = 32;
-      constexpr size_t kBlockDimOther2D = 8;
-      bool             first_active = true;
-      for (size_t i = 0; i < 3; ++i)
-      {
-        if (global_size[i] > 1)
-        {
-          block[i] = std::min(global_size[i], first_active ? kBlockDimFirst2D : kBlockDimOther2D);
-          first_active = false;
-        }
-      }
-      break;
-    }
-    case 3: {
-      constexpr std::array<size_t, 3> kBlockDim3D = { 32, 8, 1 };
-      for (size_t i = 0; i < 3; ++i)
-      {
-        block[i] = std::min(global_size[i], kBlockDim3D[i]);
-      }
-      break;
-    }
-    default:
-      break;
   }
 
   block[2] = std::min(block[2], size_t{ 64 });

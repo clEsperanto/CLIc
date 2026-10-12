@@ -1,169 +1,472 @@
 #include "translator.hpp"
+#include "translator_common.hpp"
 
-#include <cctype>
 #include <sstream>
+#include <utility>
 #include <vector>
 
-static auto
-isWordChar(char c) -> bool
+using namespace cle::detail;
+
+namespace
 {
-  return std::isalnum(static_cast<unsigned char>(c)) || c == '_';
+
+using Replacements = std::vector<std::pair<std::string, std::string>>;
+
+/// Apply the replacements in order (all occurrences of each)
+auto
+replaceEach(std::string & code, const Replacements & replacements) -> void
+{
+  for (const auto & [from, to] : replacements)
+  {
+    replaceAll(code, from, to);
+  }
 }
 
-static auto
-trimWhitespace(const std::string & s) -> std::string
-{
-  size_t b = 0;
-  while (b < s.size() && std::isspace(static_cast<unsigned char>(s[b])))
-    ++b;
-  size_t e = s.size();
-  while (e > b && std::isspace(static_cast<unsigned char>(s[e - 1])))
-    --e;
-  return s.substr(b, e - b);
-}
-
-// Returns true when `token` is one of the recognized scalar type names.
-static auto
+/// True when `token` is one of the recognized scalar type names.
+auto
 isScalarType(const std::string & token) -> bool
 {
   static const char * types[] = { "float", "int", "uint", "short", "ushort", "char", "uchar", "long", "ulong", "half", "double" };
   for (const auto * t : types)
+  {
     if (token == t)
+    {
       return true;
+    }
+  }
   return false;
 }
 
-// Try to parse a scalar parameter "[const] <type> <name> [suffix]".
-// Returns true on success, filling isConst/type/name/suffix.
-static auto
+/// Parse a scalar parameter "[const] <type> <name> [suffix]"; false if it is not one (pointer, array, ...).
+auto
 parseScalarParam(const std::string & trimmed, bool & isConst, std::string & type, std::string & name, std::string & suffix) -> bool
 {
-  if (trimmed.find('*') != std::string::npos || trimmed.find('[') != std::string::npos || trimmed.find("[[") != std::string::npos)
-    return false;
-
-  // Tokenize on whitespace.
-  std::vector<std::string> tokens;
+  if (trimmed.find('*') != std::string::npos || trimmed.find('[') != std::string::npos)
   {
-    size_t i = 0;
-    while (i < trimmed.size())
-    {
-      while (i < trimmed.size() && std::isspace(static_cast<unsigned char>(trimmed[i])))
-        ++i;
-      if (i >= trimmed.size())
-        break;
-      size_t start = i;
-      while (i < trimmed.size() && !std::isspace(static_cast<unsigned char>(trimmed[i])))
-        ++i;
-      tokens.push_back(trimmed.substr(start, i - start));
-    }
-  }
-  if (tokens.empty())
     return false;
+  }
+
+  std::vector<std::string> tokens;
+  std::istringstream       stream(trimmed);
+  for (std::string token; stream >> token;)
+  {
+    tokens.push_back(token);
+  }
 
   size_t idx = 0;
-  isConst = false;
-  if (tokens[idx] == "const")
+  isConst = idx < tokens.size() && tokens[idx] == "const";
+  idx += isConst ? 1 : 0;
+  if (idx >= tokens.size())
   {
-    isConst = true;
-    ++idx;
+    return false;
   }
 
-  // Type: either a single word ("float") or "unsigned"/"signed" + word.
-  if (idx >= tokens.size())
-    return false;
-
+  // type: a single word ("float") or "unsigned"/"signed" + int/short/char/long
   if (tokens[idx] == "unsigned" || tokens[idx] == "signed")
   {
-    if (idx + 1 >= tokens.size())
-      return false;
-    const std::string & second = tokens[idx + 1];
-    if (second == "int" || second == "short" || second == "char" || second == "long")
+    const bool valid = idx + 1 < tokens.size() &&
+                       (tokens[idx + 1] == "int" || tokens[idx + 1] == "short" || tokens[idx + 1] == "char" || tokens[idx + 1] == "long");
+    if (!valid)
     {
-      type = tokens[idx] + " " + second;
-      idx += 2;
-    }
-    else
       return false;
+    }
+    type = tokens[idx] + " " + tokens[idx + 1];
+    idx += 2;
   }
   else if (isScalarType(tokens[idx]))
   {
-    type = tokens[idx];
-    ++idx;
+    type = tokens[idx++];
   }
   else
+  {
     return false;
+  }
 
-  // Name: must be an identifier.
-  if (idx >= tokens.size())
+  // name: an identifier
+  if (idx >= tokens.size() || !(std::isalpha(static_cast<unsigned char>(tokens[idx][0])) || tokens[idx][0] == '_'))
+  {
     return false;
-  name = tokens[idx];
-  if (name.empty() || !(std::isalpha(static_cast<unsigned char>(name[0])) || name[0] == '_'))
-    return false;
-  ++idx;
+  }
+  name = tokens[idx++];
 
-  // Remaining tokens become the suffix.
+  // remaining tokens: suffix
   suffix.clear();
   for (; idx < tokens.size(); ++idx)
   {
-    if (!suffix.empty())
-      suffix += ' ';
-    suffix += tokens[idx];
+    suffix += (suffix.empty() ? "" : " ") + tokens[idx];
   }
   return true;
 }
 
-// Insert "thread " before IMAGE_xxx_PIXEL_TYPE when followed by '*'.
-// Replaces the regex: \b(IMAGE_[A-Za-z0-9_]+_PIXEL_TYPE)\s*\*
-static auto
+/// Insert "thread " before IMAGE_<key>_PIXEL_TYPE when followed by '*' (helpers receiving stack arrays)
+auto
 addThreadToPixelTypePtrs(std::string & code) -> void
 {
   const std::string tag = "_PIXEL_TYPE";
+  const std::string prefix = "thread ";
   size_t            pos = 0;
   while ((pos = code.find(tag, pos)) != std::string::npos)
   {
-    // Walk back to find the start of "IMAGE_..."
+    // start of the identifier, which must be "IMAGE_..."
     size_t start = pos;
-    while (start > 0 && (std::isalnum(static_cast<unsigned char>(code[start - 1])) || code[start - 1] == '_'))
+    while (start > 0 && isWordChar(code[start - 1]))
+    {
       --start;
-
-    // Check it begins with "IMAGE_"
+    }
+    const size_t after_tag = pos + tag.size();
+    size_t       star = after_tag;
+    while (star < code.size() && code[star] == ' ')
+    {
+      ++star;
+    }
     if (code.compare(start, 6, "IMAGE_") != 0)
     {
       pos += tag.size();
-      continue;
     }
-
-    // Check word boundary before the identifier.
-    if (start > 0 && isWordChar(code[start - 1]))
+    else if (star >= code.size() || code[star] != '*')
     {
-      pos += tag.size();
-      continue;
+      pos = after_tag;
     }
-
-    size_t afterTag = pos + tag.size();
-    // Skip whitespace after _PIXEL_TYPE
-    size_t starPos = afterTag;
-    while (starPos < code.size() && code[starPos] == ' ')
-      ++starPos;
-
-    if (starPos < code.size() && code[starPos] == '*')
+    else if (start >= prefix.size() && code.compare(start - prefix.size(), prefix.size(), prefix) == 0)
     {
-      // Already has "thread " prefix?
-      const std::string prefix = "thread ";
-      if (start >= prefix.size() && code.compare(start - prefix.size(), prefix.size(), prefix) == 0)
-      {
-        pos = starPos + 1;
-        continue;
-      }
-      code.insert(start, prefix);
-      pos = starPos + prefix.size() + 1;
+      pos = star + 1; // already prefixed
     }
     else
     {
-      pos = afterTag;
+      code.insert(start, prefix);
+      pos = star + prefix.size() + 1;
     }
   }
 }
+
+/// Metal thread-position built-ins appended to every kernel signature (get_global_id & co. are rewritten to them)
+auto
+appendBuiltinKernelArgs(std::string & code) -> void
+{
+  static const std::string builtins = "uint3 __cle_gid [[thread_position_in_grid]], "
+                                      "uint3 __cle_tid [[thread_position_in_threadgroup]], "
+                                      "uint3 __cle_tgid [[threadgroup_position_in_grid]], "
+                                      "uint3 __cle_tptg [[threads_per_threadgroup]], "
+                                      "uint3 __cle_tgpg [[threadgroups_per_grid]], "
+                                      "uint3 __cle_tpg [[threads_per_grid]]";
+
+  forEachKernelSignature(code, "kernel void", [&](size_t, size_t open, size_t close) -> size_t {
+    const std::string params = code.substr(open + 1, close - open - 1);
+    if (params.find("__cle_gid") != std::string::npos)
+    {
+      return close + 1;
+    }
+    const std::string insertion = (params.find_first_not_of(" \t\n\r") == std::string::npos) ? builtins : ", " + builtins;
+    code.insert(close, insertion);
+    return close + insertion.size() + 1;
+  });
+}
+
+/**
+ * @brief Scalar kernel parameters: Metal passes them by reference from the constant address space.
+ *
+ * `const T x` becomes `constant T& x`. A non-const `T x` (modifiable in OpenCL) becomes a hidden
+ * `constant T& __cle_arg_x` copied into a mutable local `T x` at kernel entry.
+ */
+auto
+translateKernelScalarArgs(std::string & code) -> void
+{
+  forEachKernelSignature(code, "kernel void", [&](size_t, size_t open, size_t close) -> size_t {
+    // drop `// ...` comments so that their commas do not split the parameter list
+    std::string params;
+    bool        in_comment = false;
+    for (size_t k = open + 1; k < close; ++k)
+    {
+      if (!in_comment && code.compare(k, 2, "//") == 0)
+      {
+        in_comment = true;
+      }
+      else if (code[k] == '\n')
+      {
+        in_comment = false;
+      }
+      if (!in_comment)
+      {
+        params += code[k];
+      }
+    }
+
+    // parameters, split on every comma
+    std::vector<std::string> mutable_locals;
+    std::string              new_params;
+    bool                     changed = false;
+    size_t                   start = 0;
+    for (bool first = true, last = false; !last; first = false)
+    {
+      const size_t comma = params.find(',', start);
+      last = (comma == std::string::npos);
+      std::string param = params.substr(start, last ? std::string::npos : comma - start);
+      start = comma + 1;
+
+      bool        is_const = false;
+      std::string type, name, suffix;
+      if (parseScalarParam(trimWhitespace(param), is_const, type, name, suffix))
+      {
+        param = "constant " + type + "& " + (is_const ? "" : "__cle_arg_") + name + (suffix.empty() ? "" : " " + suffix);
+        if (!is_const)
+        {
+          mutable_locals.push_back(type + " " + name + " = __cle_arg_" + name + ";");
+        }
+        changed = true;
+      }
+      new_params += (first ? "" : ", ") + param;
+    }
+
+    if (!changed)
+    {
+      return close + 1;
+    }
+    code.replace(open + 1, close - open - 1, new_params);
+    size_t resume = open + 1 + new_params.size() + 1;
+    if (!mutable_locals.empty())
+    {
+      const size_t body = code.find('{', resume);
+      if (body != std::string::npos)
+      {
+        std::string locals = "\n";
+        for (const auto & local : mutable_locals)
+        {
+          locals += " " + local + "\n";
+        }
+        code.insert(body + 1, locals);
+        resume = body + 1 + locals.size();
+      }
+    }
+    return resume;
+  });
+}
+
+auto
+translateSamplers(std::string & code) -> void
+{
+  // The Metal preamble defines sampler_t as int and CLK_* as integer constants: only the address space changes
+  replaceEach(code, { { "__constant sampler_t", "constant sampler_t" }, { "const sampler_t", "constant sampler_t" } });
+  // a variable named 'sampler' is ambiguous with metal::sampler
+  replaceWord(code, "sampler", "__cle_sampler");
+}
+
+auto
+translateAddressSpaces(std::string & code) -> void
+{
+  replaceEach(code,
+              { { "__global ", "device " },
+                { " global ", " device " },
+                { "__local ", "threadgroup " },
+                { " local ", " threadgroup " },
+                { "__constant ", "constant " },
+                { "__private ", "" } });
+
+  addThreadToPixelTypePtrs(code);
+  replaceAll(code, " private ", " ");
+
+  // IMAGE_<key>_TYPE pointer macros expand to kernel parameters: MSL requires an explicit address space
+  std::istringstream stream(code);
+  std::ostringstream result;
+  std::string        line;
+  while (std::getline(stream, line))
+  {
+    const size_t type_end = line.find("_TYPE");
+    if (line.find("#define IMAGE_") != std::string::npos && type_end != std::string::npos && line.find('*') != std::string::npos &&
+        line.find("device ") == std::string::npos && line.find("threadgroup ") == std::string::npos &&
+        line.find("constant ") == std::string::npos)
+    {
+      size_t at = type_end + 5;
+      while (at < line.size() && line[at] == ' ')
+      {
+        ++at;
+      }
+      line.insert(at, "device ");
+    }
+    result << line << "\n";
+  }
+  code = result.str();
+}
+
+/// (typeN)(a, b) -> typeN(a, b), which MSL parses as a constructor
+auto
+translateVectorConstructors(std::string & code) -> void
+{
+  for (const char * type : { "char", "uchar", "short", "ushort", "int", "uint", "long", "ulong", "float", "half", "double" })
+  {
+    for (const char n : { '2', '3', '4' })
+    {
+      replaceAll(code, "(" + std::string(type) + n + ")(", std::string(type) + n + "(");
+    }
+  }
+}
+
+auto
+translateWorkItemFunctions(std::string & code) -> void
+{
+  // threads_per_grid is the exact grid size of dispatchThreads (as OpenCL's global size); threadgroup size times
+  // threadgroup count would round it up to whole threadgroups
+  static const Replacements functions = {
+    { "get_global_id", "__cle_gid" },   { "get_local_id", "__cle_tid" },    { "get_group_id", "__cle_tgid" },
+    { "get_local_size", "__cle_tptg" }, { "get_num_groups", "__cle_tgpg" }, { "get_global_size", "__cle_tpg" },
+  };
+  for (const auto & [function, builtin] : functions)
+  {
+    for (const auto & [dim, axis] : { std::pair{ '0', 'x' }, std::pair{ '1', 'y' }, std::pair{ '2', 'z' } })
+    {
+      replaceAll(code, function + "(" + dim + ")", "((int)" + builtin + "." + axis + ")");
+    }
+  }
+}
+
+auto
+translateSynchronization(std::string & code) -> void
+{
+  // read_/write_ fences first: "mem_fence(" is a suffix of their names
+  const std::string threadgroup = "threadgroup_barrier(mem_flags::mem_threadgroup)";
+  const std::string device = "threadgroup_barrier(mem_flags::mem_device)";
+  replaceEach(code,
+              { { "barrier(CLK_LOCAL_MEM_FENCE | CLK_GLOBAL_MEM_FENCE)", threadgroup },
+                { "barrier(CLK_GLOBAL_MEM_FENCE | CLK_LOCAL_MEM_FENCE)", threadgroup },
+                { "barrier(CLK_LOCAL_MEM_FENCE)", threadgroup },
+                { "barrier(CLK_GLOBAL_MEM_FENCE)", device },
+                { "read_mem_fence(CLK_LOCAL_MEM_FENCE)", threadgroup },
+                { "read_mem_fence(CLK_GLOBAL_MEM_FENCE)", device },
+                { "write_mem_fence(CLK_LOCAL_MEM_FENCE)", threadgroup },
+                { "write_mem_fence(CLK_GLOBAL_MEM_FENCE)", device },
+                { "mem_fence(CLK_LOCAL_MEM_FENCE)", threadgroup },
+                { "mem_fence(CLK_GLOBAL_MEM_FENCE)", device } });
+}
+
+/**
+ * @brief old = atomic_cmpxchg(ptr, cmp, val);  ->  MSL compare-exchange (in/out "expected" pointer, returns a bool)
+ *
+ * It cannot be substituted at the expression level: the whole "<lhs> = atomic_cmpxchg(...);" statement is
+ * rewritten, the only form the CAS-loop helpers use. Other forms are left unchanged.
+ */
+auto
+translateCompareExchange(std::string & code) -> void
+{
+  const std::string marker = "atomic_cmpxchg(";
+  size_t            pos = 0;
+  while (const auto call = nextCall(code, marker, pos))
+  {
+    pos = call->close + 1;
+    const auto commas = topLevelCommas(code, call->open + 1, call->close);
+    if (commas.size() != 2)
+    {
+      continue;
+    }
+
+    // a plain assignment "lhs = atomic_cmpxchg(...);"
+    size_t eq = call->start;
+    while (eq > 0 && std::isspace(static_cast<unsigned char>(code[eq - 1])))
+    {
+      --eq;
+    }
+    const bool   is_assignment = eq > 0 && code[eq - 1] == '=' &&
+                                 !(eq > 1 && (code[eq - 2] == '=' || code[eq - 2] == '!' || code[eq - 2] == '<' || code[eq - 2] == '>'));
+    const size_t semi = code.find_first_not_of(" \t\r\n\f\v", call->close + 1);
+    if (!is_assignment || semi == std::string::npos || code[semi] != ';')
+    {
+      continue;
+    }
+
+    const size_t lhs_end = eq - 1;
+    size_t       stmt_start = code.find_last_of(";{", lhs_end > 0 ? lhs_end - 1 : 0);
+    stmt_start = (stmt_start == std::string::npos) ? 0 : stmt_start + 1;
+    const std::string lhs = trimWhitespace(code.substr(stmt_start, lhs_end - stmt_start));
+    const std::string ptr = trimWhitespace(code.substr(call->open + 1, commas[0] - call->open - 1));
+    const std::string cmp = trimWhitespace(code.substr(commas[0] + 1, commas[1] - commas[0] - 1));
+    const std::string val = trimWhitespace(code.substr(commas[1] + 1, call->close - commas[1] - 1));
+
+    const std::string tmp = "__cle_cmpxchg_expected_" + std::to_string(stmt_start);
+    const std::string replacement = "{ auto " + tmp + " = " + cmp +
+                                    "; atomic_compare_exchange_weak_explicit((volatile device atomic_uint*)" + ptr + ", &" + tmp + ", " +
+                                    val + ", memory_order_relaxed, memory_order_relaxed); " + lhs + " = " + tmp + "; }";
+    code.replace(stmt_start, semi + 1 - stmt_start, replacement);
+    pos = stmt_start + replacement.size();
+  }
+}
+
+/// atomic_op(&p, v) -> atomic_op_explicit((volatile device atomic_int*)&p, v, memory_order_relaxed)
+auto
+translateAtomics(std::string & code) -> void
+{
+  // atomic_cmpxchg is handled by translateCompareExchange
+  static const Replacements functions = {
+    { "atomic_add(", "atomic_fetch_add_explicit(" }, { "atomic_sub(", "atomic_fetch_sub_explicit(" },
+    { "atomic_min(", "atomic_fetch_min_explicit(" }, { "atomic_max(", "atomic_fetch_max_explicit(" },
+    { "atomic_and(", "atomic_fetch_and_explicit(" }, { "atomic_or(", "atomic_fetch_or_explicit(" },
+    { "atomic_xor(", "atomic_fetch_xor_explicit(" }, { "atomic_xchg(", "atomic_exchange_explicit(" },
+  };
+  for (const auto & [from, to] : functions)
+  {
+    size_t pos = 0;
+    while (const auto call = nextCall(code, from, pos))
+    {
+      const auto commas = topLevelCommas(code, call->open + 1, call->close);
+      if (commas.empty())
+      {
+        pos = call->start + from.size();
+        continue;
+      }
+      const std::string replacement = to + "(volatile device atomic_int*)" + code.substr(call->open + 1, commas[0] - call->open - 1) +
+                                      code.substr(commas[0], call->close - commas[0]) + ", memory_order_relaxed)";
+      code.replace(call->start, call->close + 1 - call->start, replacement);
+      pos = call->start + replacement.size();
+    }
+  }
+}
+
+/// as_float / as_uint / as_int (bit reinterpretation, used by float-atomic CAS loops) -> as_type<T>
+auto
+translateBitcast(std::string & code) -> void
+{
+  replacePrefix(code, "as_float(", "as_type<float>(");
+  replacePrefix(code, "as_uint(", "as_type<uint>(");
+  replacePrefix(code, "as_int(", "as_type<int>(");
+}
+
+/// printf(...); statements are dropped: MSL's printf differs, and upstream kernels only use it as a debug aid
+auto
+translateRemovePrintf(std::string & code) -> void
+{
+  const std::string marker = "printf(";
+  size_t            pos = 0;
+  while (const auto call = nextCall(code, marker, pos))
+  {
+    pos = call->start;
+    const size_t next = code.find_first_not_of(" \t\r\n\f\v", call->close + 1);
+    const size_t end = (next != std::string::npos && code[next] == ';') ? next + 1 : call->close + 1;
+    code.erase(call->start, end - call->start);
+  }
+}
+
+auto
+translateMathFunctions(std::string & code) -> void
+{
+  // cbrt / pow: preamble helpers. sqrt needs metal:: (native_execute bypasses the preamble, no macro possible)
+  replaceWord(code, "cbrt", "__cle_cbrt");
+  replaceWord(code, "pow", "__cle_pow");
+  replaceWord(code, "sqrt", "metal::sqrt");
+
+  replaceEach(code,
+              { // affine transform boundary check: preamble macro with a built-in tolerance
+                { "x2 >= 0 && y2 >= 0 && z2 >= 0 && x2 < Nx && y2 < Ny && z2 < Nz", "AFFINE_BOUNDS_CHECK(x2, y2, z2, Nx, Ny, Nz)" },
+                { "POS_src_INSTANCE(x2, y2, z2, 0)", "POS_src_INSTANCE(x2 + 1e-5f, y2 + 1e-5f, z2 + 1e-5f, 0)" },
+                { "native_", "fast::" },
+                { "half_", "fast::" } });
+}
+
+auto
+cleanup(std::string & code) -> void
+{
+  replaceEach(code,
+              { { "device device ", "device " }, { "threadgroup threadgroup ", "threadgroup " }, { "constant constant ", "constant " } });
+  collapseWhitespace(code);
+}
+
+} // namespace
 
 auto
 OpenCLToMetalTranslator::translate(const std::string & openclSource) const -> std::string
@@ -176,12 +479,13 @@ OpenCLToMetalTranslator::translate(const std::string & openclSource) const -> st
 auto
 OpenCLToMetalTranslator::translateInPlace(std::string & code) const -> void
 {
-  translatePragmas(code);
+  replaceAll(code, "#pragma OPENCL", "// #pragma OPENCL");
   translateSamplers(code);
-  translateQualifiers(code);
+  replaceEach(
+    code, { { "__kernel void", "kernel void" }, { "__attribute__((reqd_work_group_size(", "// __attribute__((reqd_work_group_size(" } });
   translateAddressSpaces(code);
   translateVectorConstructors(code);
-  appendMetalBuiltinKernelArgs(code);
+  appendBuiltinKernelArgs(code);
   translateKernelScalarArgs(code);
   translateWorkItemFunctions(code);
   translateSynchronization(code);
@@ -190,747 +494,5 @@ OpenCLToMetalTranslator::translateInPlace(std::string & code) const -> void
   translateBitcast(code);
   translateRemovePrintf(code);
   translateMathFunctions(code);
-  cleanupCode(code);
-}
-
-auto
-OpenCLToMetalTranslator::replaceAll(std::string & str, const std::string & from, const std::string & to) -> void
-{
-  if (from.empty())
-    return;
-
-  size_t pos = 0;
-  while ((pos = str.find(from, pos)) != std::string::npos)
-  {
-    str.replace(pos, from.size(), to);
-    pos += to.size();
-  }
-}
-
-auto
-OpenCLToMetalTranslator::replaceWord(std::string & str, const std::string & from, const std::string & to) -> void
-{
-  if (from.empty())
-    return;
-
-  size_t pos = 0;
-  while ((pos = str.find(from, pos)) != std::string::npos)
-  {
-    const bool wordBefore = (pos > 0 && isWordChar(str[pos - 1]));
-    const bool wordAfter = (pos + from.size() < str.size() && isWordChar(str[pos + from.size()]));
-
-    if (!wordBefore && !wordAfter)
-    {
-      str.replace(pos, from.size(), to);
-      pos += to.size();
-    }
-    else
-    {
-      pos += from.size();
-    }
-  }
-}
-
-auto
-OpenCLToMetalTranslator::collapseSpaces(std::string & code) -> void
-{
-  size_t write = 0;
-  bool   prevSpace = false;
-  for (size_t read = 0; read < code.size(); ++read)
-  {
-    if (code[read] == ' ')
-    {
-      if (!prevSpace)
-      {
-        code[write++] = ' ';
-        prevSpace = true;
-      }
-    }
-    else
-    {
-      code[write++] = code[read];
-      prevSpace = false;
-    }
-  }
-  code.resize(write);
-}
-
-auto
-OpenCLToMetalTranslator::collapseNewlines(std::string & code) -> void
-{
-  size_t write = 0;
-  size_t nlCount = 0;
-  for (size_t read = 0; read < code.size(); ++read)
-  {
-    if (code[read] == '\n')
-    {
-      ++nlCount;
-      if (nlCount <= 2)
-      {
-        code[write++] = '\n';
-      }
-    }
-    else
-    {
-      nlCount = 0;
-      code[write++] = code[read];
-    }
-  }
-  code.resize(write);
-}
-
-auto
-OpenCLToMetalTranslator::appendMetalBuiltinKernelArgs(std::string & code) -> void
-{
-  const std::string marker = "kernel void";
-  size_t            pos = 0;
-
-  while ((pos = code.find(marker, pos)) != std::string::npos)
-  {
-    size_t parenStart = code.find('(', pos + marker.size());
-    if (parenStart == std::string::npos)
-      break;
-
-    int    depth = 1;
-    size_t i = parenStart + 1;
-    while (i < code.size() && depth > 0)
-    {
-      if (code[i] == '(')
-        ++depth;
-      else if (code[i] == ')')
-        --depth;
-      ++i;
-    }
-
-    if (depth != 0)
-    {
-      pos += marker.size();
-      continue;
-    }
-
-    const size_t      parenEnd = i - 1;
-    const std::string params = code.substr(parenStart + 1, parenEnd - parenStart - 1);
-    if (params.find("__cle_gid") != std::string::npos)
-    {
-      pos = parenEnd + 1;
-      continue;
-    }
-
-    std::string builtins = "uint3 __cle_gid [[thread_position_in_grid]], "
-                           "uint3 __cle_tid [[thread_position_in_threadgroup]], "
-                           "uint3 __cle_tgid [[threadgroup_position_in_grid]], "
-                           "uint3 __cle_tptg [[threads_per_threadgroup]], "
-                           "uint3 __cle_tgpg [[threadgroups_per_grid]], "
-                           "uint3 __cle_tpg [[threads_per_grid]]";
-
-    std::string insertion;
-    if (params.find_first_not_of(" \t\n\r") == std::string::npos)
-      insertion = builtins;
-    else
-      insertion = ", " + builtins;
-
-    code.insert(parenEnd, insertion);
-    pos = parenEnd + insertion.size() + 1;
-  }
-}
-
-auto
-OpenCLToMetalTranslator::translateKernelScalarArgs(std::string & code) -> void
-{
-  // In Metal, scalar kernel parameters are passed by reference from constant
-  // address space. For non-const OpenCL scalars we preserve by-value semantics
-  // by binding a hidden constant ref argument and creating a mutable local copy
-  // at kernel entry.
-  const std::string marker = "kernel void";
-  size_t            pos = 0;
-
-  while ((pos = code.find(marker, pos)) != std::string::npos)
-  {
-    size_t parenStart = code.find('(', pos + marker.size());
-    if (parenStart == std::string::npos)
-      break;
-
-    int    depth = 1;
-    size_t i = parenStart + 1;
-    while (i < code.size() && depth > 0)
-    {
-      if (code[i] == '(')
-        ++depth;
-      else if (code[i] == ')')
-        --depth;
-      ++i;
-    }
-    if (depth != 0)
-    {
-      pos += marker.size();
-      continue;
-    }
-
-    const size_t parenEnd = i - 1;
-    std::string  params = code.substr(parenStart + 1, parenEnd - parenStart - 1);
-
-    // Drop inline `// ...` comments so comma-splitting of parameter lists is
-    // not confused by commas inside comments.
-    {
-      std::string cleaned;
-      cleaned.reserve(params.size());
-      bool inLineComment = false;
-      for (size_t k = 0; k < params.size(); ++k)
-      {
-        const char c = params[k];
-        if (!inLineComment && c == '/' && (k + 1) < params.size() && params[k + 1] == '/')
-        {
-          inLineComment = true;
-          ++k;
-          continue;
-        }
-        if (inLineComment)
-        {
-          if (c == '\n')
-          {
-            inLineComment = false;
-            cleaned.push_back(c);
-          }
-          continue;
-        }
-        cleaned.push_back(c);
-      }
-      params.swap(cleaned);
-    }
-
-    std::vector<std::string> mutableScalarLocals;
-    std::vector<std::string> parts;
-    size_t                   start = 0;
-    while (start <= params.size())
-    {
-      size_t comma = params.find(',', start);
-      if (comma == std::string::npos)
-      {
-        parts.push_back(params.substr(start));
-        break;
-      }
-      parts.push_back(params.substr(start, comma - start));
-      start = comma + 1;
-    }
-
-    std::string newParams;
-    bool        changed = false;
-    for (size_t p = 0; p < parts.size(); ++p)
-    {
-      std::string param = parts[p];
-      std::string trimmed = param;
-      trimmed = trimWhitespace(trimmed);
-
-      bool        scalarConst = false;
-      std::string scalarType, scalarName, scalarSuffix;
-      if (parseScalarParam(trimmed, scalarConst, scalarType, scalarName, scalarSuffix))
-      {
-        if (scalarConst)
-        {
-          param = "constant " + scalarType + "& " + scalarName;
-          if (!scalarSuffix.empty())
-            param += " " + scalarSuffix;
-          changed = true;
-        }
-        else
-        {
-          param = "constant " + scalarType + "& __cle_arg_" + scalarName;
-          if (!scalarSuffix.empty())
-            param += " " + scalarSuffix;
-          mutableScalarLocals.push_back(scalarType + " " + scalarName + " = __cle_arg_" + scalarName + ";");
-          changed = true;
-        }
-      }
-
-      if (p != 0)
-        newParams += ", ";
-      newParams += param;
-    }
-
-    if (changed)
-    {
-      code.replace(parenStart + 1, parenEnd - parenStart - 1, newParams);
-
-      size_t searchFrom = parenStart + 1 + newParams.size() + 1;
-      if (!mutableScalarLocals.empty())
-      {
-        size_t bodyStart = code.find('{', searchFrom);
-        if (bodyStart != std::string::npos)
-        {
-          std::string localsBlock = "\n";
-          for (size_t l = 0; l < mutableScalarLocals.size(); ++l)
-          {
-            localsBlock += " " + mutableScalarLocals[l] + "\n";
-          }
-          code.insert(bodyStart + 1, localsBlock);
-          searchFrom = bodyStart + 1 + localsBlock.size();
-        }
-      }
-
-      pos = searchFrom;
-    }
-    else
-    {
-      pos = parenEnd + 1;
-    }
-  }
-}
-
-auto
-OpenCLToMetalTranslator::translatePragmas(std::string & code) -> void
-{
-  replaceAll(code, "#pragma OPENCL", "// #pragma OPENCL");
-}
-
-auto
-OpenCLToMetalTranslator::translateSamplers(std::string & code) -> void
-{
-  // The Metal preamble already defines sampler_t as int and CLK_* as integer
-  // constants, so only the address space qualifier needs fixing here.
-  replaceAll(code, "__constant sampler_t", "constant sampler_t");
-  replaceAll(code, "const sampler_t", "constant sampler_t");
-
-  // Rename any standalone variable named 'sampler' to avoid ambiguity with
-  // metal::sampler (from <metal_stdlib>). replaceWord respects word boundaries
-  // so sampler_t is not affected.
-  replaceWord(code, "sampler", "__cle_sampler");
-}
-
-auto
-OpenCLToMetalTranslator::translateQualifiers(std::string & code) -> void
-{
-  replaceAll(code, "__kernel void", "kernel void");
-  replaceAll(code, "__attribute__((reqd_work_group_size(", "// __attribute__((reqd_work_group_size(");
-}
-
-auto
-OpenCLToMetalTranslator::translateAddressSpaces(std::string & code) -> void
-{
-  replaceAll(code, "__global ", "device ");
-  replaceAll(code, " global ", " device ");
-
-  replaceAll(code, "__local ", "threadgroup ");
-  replaceAll(code, " local ", " threadgroup ");
-
-  replaceAll(code, "__constant ", "constant ");
-
-  replaceAll(code, "__private ", "");
-
-  // Helper functions that receive stack arrays via IMAGE_*_PIXEL_TYPE pointers
-  // need an explicit address space in MSL.
-  addThreadToPixelTypePtrs(code);
-  replaceAll(code, " private ", " ");
-
-  // Add 'device' address space to IMAGE_*_TYPE pointer macros.
-  // These macros expand to kernel parameters and MSL requires an explicit
-  // address space qualifier on all pointer types.
-  {
-    std::istringstream stream(code);
-    std::ostringstream result;
-    std::string        line;
-    while (std::getline(stream, line))
-    {
-      if (line.find("#define IMAGE_") != std::string::npos && line.find("_TYPE") != std::string::npos &&
-          line.find('*') != std::string::npos && line.find("device ") == std::string::npos &&
-          line.find("threadgroup ") == std::string::npos && line.find("constant ") == std::string::npos)
-      {
-        size_t typeNameEnd = line.find("_TYPE");
-        if (typeNameEnd != std::string::npos)
-        {
-          typeNameEnd += 5; // skip "_TYPE"
-          while (typeNameEnd < line.size() && line[typeNameEnd] == ' ')
-            ++typeNameEnd;
-          line.insert(typeNameEnd, "device ");
-        }
-      }
-      result << line << "\n";
-    }
-    code = result.str();
-  }
-}
-
-auto
-OpenCLToMetalTranslator::translateVectorConstructors(std::string & code) -> void
-{
-  // OpenCL vector literals often use `(int3)(x, y, z)` syntax. In MSL this
-  // can be parsed differently; normalize to constructor form `int3(x, y, z)`.
-  static const char * prefixes[] = { "char", "uchar", "short", "ushort", "int", "uint", "long", "ulong", "float", "half", "double" };
-  for (size_t i = 0; i < sizeof(prefixes) / sizeof(prefixes[0]); ++i)
-  {
-    for (int n = 2; n <= 4; ++n)
-    {
-      const std::string opencl = "(" + std::string(prefixes[i]) + std::to_string(n) + ")(";
-      const std::string metal = std::string(prefixes[i]) + std::to_string(n) + "(";
-      replaceAll(code, opencl, metal);
-    }
-  }
-}
-
-auto
-OpenCLToMetalTranslator::translateWorkItemFunctions(std::string & code) -> void
-{
-  replaceAll(code, "get_global_id(0)", "((int)__cle_gid.x)");
-  replaceAll(code, "get_global_id(1)", "((int)__cle_gid.y)");
-  replaceAll(code, "get_global_id(2)", "((int)__cle_gid.z)");
-
-  replaceAll(code, "get_local_id(0)", "((int)__cle_tid.x)");
-  replaceAll(code, "get_local_id(1)", "((int)__cle_tid.y)");
-  replaceAll(code, "get_local_id(2)", "((int)__cle_tid.z)");
-
-  replaceAll(code, "get_group_id(0)", "((int)__cle_tgid.x)");
-  replaceAll(code, "get_group_id(1)", "((int)__cle_tgid.y)");
-  replaceAll(code, "get_group_id(2)", "((int)__cle_tgid.z)");
-
-  replaceAll(code, "get_local_size(0)", "((int)__cle_tptg.x)");
-  replaceAll(code, "get_local_size(1)", "((int)__cle_tptg.y)");
-  replaceAll(code, "get_local_size(2)", "((int)__cle_tptg.z)");
-
-  replaceAll(code, "get_num_groups(0)", "((int)__cle_tgpg.x)");
-  replaceAll(code, "get_num_groups(1)", "((int)__cle_tgpg.y)");
-  replaceAll(code, "get_num_groups(2)", "((int)__cle_tgpg.z)");
-
-  // threads_per_grid is the exact grid size of dispatchThreads (as OpenCL's global size). Threadgroup size times
-  // threadgroup count would round it up to whole threadgroups.
-  replaceAll(code, "get_global_size(0)", "((int)__cle_tpg.x)");
-  replaceAll(code, "get_global_size(1)", "((int)__cle_tpg.y)");
-  replaceAll(code, "get_global_size(2)", "((int)__cle_tpg.z)");
-}
-
-auto
-OpenCLToMetalTranslator::translateSynchronization(std::string & code) -> void
-{
-  replaceAll(code, "barrier(CLK_LOCAL_MEM_FENCE | CLK_GLOBAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_threadgroup)");
-  replaceAll(code, "barrier(CLK_GLOBAL_MEM_FENCE | CLK_LOCAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_threadgroup)");
-  replaceAll(code, "barrier(CLK_LOCAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_threadgroup)");
-  replaceAll(code, "barrier(CLK_GLOBAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_device)");
-
-  // read_/write_ variants first: "mem_fence(" is a suffix of their names
-  replaceAll(code, "read_mem_fence(CLK_LOCAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_threadgroup)");
-  replaceAll(code, "read_mem_fence(CLK_GLOBAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_device)");
-  replaceAll(code, "write_mem_fence(CLK_LOCAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_threadgroup)");
-  replaceAll(code, "write_mem_fence(CLK_GLOBAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_device)");
-  replaceAll(code, "mem_fence(CLK_LOCAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_threadgroup)");
-  replaceAll(code, "mem_fence(CLK_GLOBAL_MEM_FENCE)", "threadgroup_barrier(mem_flags::mem_device)");
-}
-
-
-auto
-OpenCLToMetalTranslator::translateAtomics(std::string & code) -> void
-{
-  // OpenCL atomic_op(&ptr, val) → MSL atomic_fetch_op_explicit((volatile device atomic_int*)&ptr, val, memory_order_relaxed)
-  // The first argument (pointer) gets an atomic_int cast; memory_order_relaxed is appended.
-
-  // Helper lambda: find the matching ')' for an opening '(' at `openParen`, return its index or npos.
-  auto findCloseParen = [&](size_t openParen) -> size_t {
-    int    depth = 1;
-    size_t i = openParen + 1;
-    while (i < code.size() && depth > 0)
-    {
-      if (code[i] == '(')
-        ++depth;
-      else if (code[i] == ')')
-        --depth;
-      ++i;
-    }
-    return (depth == 0) ? (i - 1) : std::string::npos;
-  };
-
-  // Helper lambda: find the top-level comma that separates the first arg from the rest,
-  // starting just after openParen+1, ending before closeParen.
-  auto findFirstArgComma = [&](size_t start, size_t end) -> size_t {
-    int depth = 0;
-    for (size_t i = start; i < end; ++i)
-    {
-      if (code[i] == '(')
-        ++depth;
-      else if (code[i] == ')')
-        --depth;
-      else if (code[i] == ',' && depth == 0)
-        return i;
-    }
-    return std::string::npos;
-  };
-
-  struct AtomicMapping
-  {
-    const char * opencl;
-    const char * msl;
-    const char * order_suffix;
-  };
-
-  static const AtomicMapping mappings[] = {
-    { "atomic_add(", "atomic_fetch_add_explicit(", ", memory_order_relaxed)" },
-    { "atomic_sub(", "atomic_fetch_sub_explicit(", ", memory_order_relaxed)" },
-    { "atomic_min(", "atomic_fetch_min_explicit(", ", memory_order_relaxed)" },
-    { "atomic_max(", "atomic_fetch_max_explicit(", ", memory_order_relaxed)" },
-    { "atomic_and(", "atomic_fetch_and_explicit(", ", memory_order_relaxed)" },
-    { "atomic_or(", "atomic_fetch_or_explicit(", ", memory_order_relaxed)" },
-    { "atomic_xor(", "atomic_fetch_xor_explicit(", ", memory_order_relaxed)" },
-    { "atomic_xchg(", "atomic_exchange_explicit(", ", memory_order_relaxed)" },
-    // Note: atomic_cmpxchg is handled separately by translateCompareExchange, since MSL's
-    // atomic_compare_exchange_weak_explicit has different semantics (in/out "expected" pointer,
-    // returns bool) than OpenCL's atomic_cmpxchg (returns the old value directly); a plain
-    // expression-level substitution here would not produce valid/equivalent MSL.
-  };
-
-  for (const auto & m : mappings)
-  {
-    const std::string from = m.opencl;
-    const std::string to = m.msl;
-    const std::string suffix = m.order_suffix;
-    size_t            pos = 0;
-
-    while ((pos = code.find(from, pos)) != std::string::npos)
-    {
-      if (pos > 0 && isWordChar(code[pos - 1]))
-      {
-        pos += from.size();
-        continue;
-      }
-
-      size_t openParen = pos + from.size() - 1;
-      size_t closeParen = findCloseParen(openParen);
-      if (closeParen == std::string::npos)
-      {
-        pos += from.size();
-        continue;
-      }
-
-      size_t argsStart = openParen + 1;
-      size_t comma = findFirstArgComma(argsStart, closeParen);
-      if (comma == std::string::npos)
-      {
-        pos += from.size();
-        continue;
-      }
-
-      std::string ptrArg = code.substr(argsStart, comma - argsStart);
-      std::string rest = code.substr(comma, closeParen - comma);
-
-      // `rest` spans from the first-arg comma up to (but excluding) the original closing paren,
-      // and `suffix` already supplies its own closing paren (e.g. ", memory_order_relaxed)"), so
-      // no extra ")" must be appended here — doing so previously produced invalid MSL like
-      // "...memory_order_relaxed))".
-      std::string replacement = to + "(volatile device atomic_int*)" + ptrArg + rest + suffix;
-
-      code.replace(pos, closeParen - pos + 1, replacement);
-      pos += replacement.size();
-    }
-  }
-}
-
-auto
-OpenCLToMetalTranslator::translateCompareExchange(std::string & code) -> void
-{
-  // OpenCL: old = atomic_cmpxchg(ptr, cmp, val);  -- returns the previous value.
-  // MSL:    { auto expected = cmp; atomic_compare_exchange_weak_explicit((...)ptr, &expected, val,
-  //            memory_order_relaxed, memory_order_relaxed); old = expected; }
-  // MSL's compare-exchange takes an in/out "expected" pointer and returns a bool, so it cannot be
-  // substituted at the expression level; we rewrite the whole "<lhs> = atomic_cmpxchg(...);"
-  // statement instead, which is the only form this codebase's CAS-loop helpers use.
-  const std::string marker = "atomic_cmpxchg(";
-
-  auto findCloseParen = [&](size_t openParen) -> size_t {
-    int    depth = 1;
-    size_t i = openParen + 1;
-    while (i < code.size() && depth > 0)
-    {
-      if (code[i] == '(')
-        ++depth;
-      else if (code[i] == ')')
-        --depth;
-      ++i;
-    }
-    return (depth == 0) ? (i - 1) : std::string::npos;
-  };
-
-  size_t pos = 0;
-  while ((pos = code.find(marker, pos)) != std::string::npos)
-  {
-    if (pos > 0 && isWordChar(code[pos - 1]))
-    {
-      pos += marker.size();
-      continue;
-    }
-
-    const size_t openParen = pos + marker.size() - 1;
-    const size_t closeParen = findCloseParen(openParen);
-    if (closeParen == std::string::npos)
-    {
-      pos += marker.size();
-      continue;
-    }
-
-    std::vector<size_t> commas;
-    int                 depth = 0;
-    for (size_t k = openParen + 1; k < closeParen; ++k)
-    {
-      if (code[k] == '(')
-        ++depth;
-      else if (code[k] == ')')
-        --depth;
-      else if (code[k] == ',' && depth == 0)
-        commas.push_back(k);
-    }
-    if (commas.size() != 2)
-    {
-      pos = closeParen + 1;
-      continue;
-    }
-
-    const std::string ptrArg = trimWhitespace(code.substr(openParen + 1, commas[0] - openParen - 1));
-    const std::string cmpArg = trimWhitespace(code.substr(commas[0] + 1, commas[1] - commas[0] - 1));
-    const std::string valArg = trimWhitespace(code.substr(commas[1] + 1, closeParen - commas[1] - 1));
-
-    // The call must be the right-hand side of a plain assignment "lhs = atomic_cmpxchg(...);".
-    size_t eqPos = pos;
-    while (eqPos > 0 && std::isspace(static_cast<unsigned char>(code[eqPos - 1])))
-      --eqPos;
-    const bool isPlainAssignment =
-      eqPos > 0 && code[eqPos - 1] == '=' &&
-      !(eqPos > 1 && (code[eqPos - 2] == '=' || code[eqPos - 2] == '!' || code[eqPos - 2] == '<' || code[eqPos - 2] == '>'));
-    if (!isPlainAssignment)
-    {
-      pos = closeParen + 1;
-      continue;
-    }
-    const size_t lhsEnd = eqPos - 1;
-    size_t       stmtStart = code.find_last_of(";{", lhsEnd > 0 ? lhsEnd - 1 : 0);
-    stmtStart = (stmtStart == std::string::npos) ? 0 : stmtStart + 1;
-    const std::string lhs = trimWhitespace(code.substr(stmtStart, lhsEnd - stmtStart));
-
-    size_t semi = closeParen + 1;
-    while (semi < code.size() && std::isspace(static_cast<unsigned char>(code[semi])))
-      ++semi;
-    if (semi >= code.size() || code[semi] != ';')
-    {
-      pos = closeParen + 1;
-      continue;
-    }
-
-    const std::string tmp = "__cle_cmpxchg_expected_" + std::to_string(stmtStart);
-    const std::string replacement = "{ auto " + tmp + " = " + cmpArg +
-                                    "; atomic_compare_exchange_weak_explicit((volatile device atomic_uint*)" + ptrArg + ", &" + tmp + ", " +
-                                    valArg + ", memory_order_relaxed, memory_order_relaxed); " + lhs + " = " + tmp + "; }";
-
-    code.replace(stmtStart, (semi + 1) - stmtStart, replacement);
-    pos = stmtStart + replacement.size();
-  }
-}
-
-auto
-OpenCLToMetalTranslator::translateBitcast(std::string & code) -> void
-{
-  // Bit-reinterpret casts used by portable float-atomics CAS loops (as_uint/as_float/as_int).
-  struct BitcastMapping
-  {
-    const char * opencl;
-    const char * mslType;
-  };
-
-  static const BitcastMapping mappings[] = {
-    { "as_float(", "float" },
-    { "as_uint(", "uint" },
-    { "as_int(", "int" },
-  };
-
-  for (const auto & m : mappings)
-  {
-    const std::string from = m.opencl;
-    const std::string to = std::string("as_type<") + m.mslType + ">(";
-    size_t            pos = 0;
-    while ((pos = code.find(from, pos)) != std::string::npos)
-    {
-      if (pos > 0 && isWordChar(code[pos - 1]))
-      {
-        pos += from.size();
-        continue;
-      }
-      code.replace(pos, from.size(), to);
-      pos += to.size();
-    }
-  }
-}
-
-auto
-OpenCLToMetalTranslator::translateRemovePrintf(std::string & code) -> void
-{
-  // MSL's printf has a different signature than OpenCL C's (e.g. no bare string-literal-only
-  // calls), and some upstream kernels call printf(...) purely as a workaround/debug aid with no
-  // effect on the result. Rather than trying to translate the call, drop the whole statement
-  // "printf(...);" (including the trailing semicolon, if present).
-  const std::string marker = "printf(";
-
-  auto findCloseParen = [&](size_t openParen) -> size_t {
-    int    depth = 1;
-    size_t i = openParen + 1;
-    while (i < code.size() && depth > 0)
-    {
-      if (code[i] == '(')
-        ++depth;
-      else if (code[i] == ')')
-        --depth;
-      ++i;
-    }
-    return (depth == 0) ? (i - 1) : std::string::npos;
-  };
-
-  size_t pos = 0;
-  while ((pos = code.find(marker, pos)) != std::string::npos)
-  {
-    if (pos > 0 && isWordChar(code[pos - 1]))
-    {
-      pos += marker.size();
-      continue;
-    }
-
-    const size_t openParen = pos + marker.size() - 1;
-    const size_t closeParen = findCloseParen(openParen);
-    if (closeParen == std::string::npos)
-    {
-      pos += marker.size();
-      continue;
-    }
-
-    size_t eraseEnd = closeParen + 1;
-    size_t semi = eraseEnd;
-    while (semi < code.size() && std::isspace(static_cast<unsigned char>(code[semi])))
-      ++semi;
-    if (semi < code.size() && code[semi] == ';')
-      eraseEnd = semi + 1;
-
-    code.erase(pos, eraseEnd - pos);
-  }
-}
-
-auto
-OpenCLToMetalTranslator::translateMathFunctions(std::string & code) -> void
-{
-  // Map cbrt/pow to preamble helpers. replaceWord respects word boundaries
-  // so __cle_cbrt/__cle_pow are not re-matched (leading _ is a word char).
-  replaceWord(code, "cbrt", "__cle_cbrt");
-  replaceWord(code, "pow", "__cle_pow");
-
-  // sqrt needs metal:: qualification. native_execute() bypasses the preamble,
-  // so this cannot be a preamble-only macro.
-  replaceWord(code, "sqrt", "metal::sqrt");
-
-  // Affine-transform boundary check: use preamble macro with built-in tolerance.
-  replaceAll(code, "x2 >= 0 && y2 >= 0 && z2 >= 0 && x2 < Nx && y2 < Ny && z2 < Nz", "AFFINE_BOUNDS_CHECK(x2, y2, z2, Nx, Ny, Nz)");
-
-  replaceAll(code, "POS_src_INSTANCE(x2, y2, z2, 0)", "POS_src_INSTANCE(x2 + 1e-5f, y2 + 1e-5f, z2 + 1e-5f, 0)");
-
-  replaceAll(code, "native_", "fast::");
-  replaceAll(code, "half_", "fast::");
-}
-
-auto
-OpenCLToMetalTranslator::cleanupCode(std::string & code) -> void
-{
-  replaceAll(code, "device device ", "device ");
-  replaceAll(code, "threadgroup threadgroup ", "threadgroup ");
-  replaceAll(code, "constant constant ", "constant ");
-
-  collapseSpaces(code);
-  collapseNewlines(code);
+  cleanup(code);
 }
