@@ -1,0 +1,78 @@
+name: Package
+
+# Check that CLIc can be integrated in an external C++ project (tests/package), both as an installed
+# package (find_package) and as a subproject (add_subdirectory), as a shared and as a static library.
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  cmake-parallel: 10
+  POCL_DEVICES: "cpu"
+  POCL_TARGETS: "host"
+
+jobs:
+  package:
+    name: ${{ matrix.mode }}-shared_${{ matrix.shared }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [install, subproject]
+        shared: ["ON", "OFF"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.1
+
+      - name: Install build dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            ninja-build pocl-opencl-icd ocl-icd-opencl-dev opencl-headers clinfo
+          clinfo -l || echo "Warning: clinfo -l failed (non-fatal)"
+        shell: bash
+
+      - name: Build and install CLIc
+        if: matrix.mode == 'install'
+        run: |
+          set -euo pipefail
+          cmake -S "${{ github.workspace }}" -B "${{ runner.temp }}/clic-build" -G Ninja \
+                -DCMAKE_BUILD_TYPE=Release \
+                -DBUILD_TESTING=OFF \
+                -DBUILD_SHARED_LIBS=${{ matrix.shared }} \
+                -DCMAKE_INSTALL_PREFIX="${{ runner.temp }}/clic-install"
+          cmake --build "${{ runner.temp }}/clic-build" --parallel ${{ env.cmake-parallel }}
+          cmake --install "${{ runner.temp }}/clic-build"
+        shell: bash
+
+      - name: Build consumer project (find_package)
+        if: matrix.mode == 'install'
+        run: |
+          set -euo pipefail
+          cmake -S "${{ github.workspace }}/tests/package" -B "${{ runner.temp }}/consumer" -G Ninja \
+                -DCMAKE_BUILD_TYPE=Release \
+                -DCMAKE_PREFIX_PATH="${{ runner.temp }}/clic-install"
+          cmake --build "${{ runner.temp }}/consumer" --parallel ${{ env.cmake-parallel }}
+        shell: bash
+
+      - name: Build consumer project (add_subdirectory)
+        if: matrix.mode == 'subproject'
+        run: |
+          set -euo pipefail
+          cmake -S "${{ github.workspace }}/tests/package" -B "${{ runner.temp }}/consumer" -G Ninja \
+                -DCMAKE_BUILD_TYPE=Release \
+                -DBUILD_SHARED_LIBS=${{ matrix.shared }} \
+                -DCLIC_SOURCE_DIR="${{ github.workspace }}"
+          cmake --build "${{ runner.temp }}/consumer" --parallel ${{ env.cmake-parallel }}
+        shell: bash
+
+      - name: Run consumer
+        run: |
+          set -euo pipefail
+          "${{ runner.temp }}/consumer/clic_package_test"
+        shell: bash

@@ -7,13 +7,23 @@ set(VERSION_CONFIG_FILE "${PROJECT_NAME}ConfigVersion.cmake")
 
 # Install library targets
 install(
-    TARGETS ${LIBRARY_NAME}  VkFFT #clFFT
+    TARGETS ${LIBRARY_NAME} VkFFT
     EXPORT ${TARGETS_EXPORT_NAME}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT Development
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT RuntimeLibraries
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT RuntimeLibraries
     INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
+)
+
+# Install CLIc public headers and the generated configuration header (include/CLIc/)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
+    COMPONENT Development
+    FILES_MATCHING PATTERN "*.hpp"
+)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/${LIBRARY_NAME_LOWERCASE}.hpp
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
+    COMPONENT Development
 )
 
 install(DIRECTORY ${FETCHCONTENT_BASE_DIR}/dlpack-src/include/
@@ -21,20 +31,11 @@ install(DIRECTORY ${FETCHCONTENT_BASE_DIR}/dlpack-src/include/
     FILES_MATCHING PATTERN "*.h"
 )
 
-# Install metal-cpp headers if Metal support is enabled
-if(USE_METAL AND EXISTS ${metal-cpp_SOURCE_DIR})
-    install(DIRECTORY ${metal-cpp_SOURCE_DIR}/
-        DESTINATION include
-        COMPONENT Development
-        FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
-    )
-endif()
-
 # Export for the build tree
 write_basic_package_version_file(
     "${PROJECT_BINARY_DIR}/${VERSION_CONFIG_FILE}"
     VERSION "${${PROJECT_NAME}_VERSION}"
-    COMPATIBILITY SameMajorVersion
+    COMPATIBILITY SameMinorVersion # 0.x releases may break the API
 )
 export(
     EXPORT ${TARGETS_EXPORT_NAME}

@@ -27,7 +27,13 @@ Running a subset of tests (one executable per suite: `test_core`, `test_tier1` â
 ctest --test-dir build/macos-ninja-multi -C Release -R TestAbsoluteDifference --output-on-failure
 ctest --test-dir build/macos-ninja-multi -C Release -L tier2          # by label (= suite name)
 build/macos-ninja-multi/tests/tier2/Release/test_tier2 --gtest_filter='*AbsoluteDifference*'
+ctest --test-dir build/macos-ninja-multi -C Release -L package       # install + find_package(CLIc) consumer
 ```
+
+`tests/package/` is a standalone consumer project, not a test suite: the `package_*` tests (skipped with
+`BUILD_COVERAGE`) install CLIc into the build tree and build it with `find_package(CLIc)`; `.github/workflows/package.yml`
+also builds it with `-DCLIC_SOURCE_DIR=<repo>` (`add_subdirectory`). Run it after changing targets, link dependencies or
+install rules: a public dependency must also be found in `cmake/CLIcConfig.cmake.in`.
 
 Useful CMake options (see `cmake/CMakeSetEnv.cmake`): `BUILD_TESTING` (ON), `BUILD_SHARED_LIBS` (ON), `BUILD_COVERAGE` (OFF),
 `CLEAR_KERNEL_CACHE` (OFF; wipes `~/.cache/clesperanto` at configure). `BUILD_BENCHMARK` exists, but `benchmark/` and `docs/`
