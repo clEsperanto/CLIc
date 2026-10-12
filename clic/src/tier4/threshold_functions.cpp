@@ -29,6 +29,10 @@ struct Histogram
   double              range;
 };
 
+// Bin i is centered on min + i * step: the histogram kernel assigns a value to the bin of the nearest center.
+// For an integer image spanning fewer values than bins, bins narrower than one intensity step would leave bins that no
+// pixel can fall into: these artificial gaps mislead the methods (the triangle method in particular). Such images get
+// one bin per intensity value instead, as scikit-image does for integer images, so the histogram has range + 1 bins.
 auto
 _compute_histogram(const Device::Pointer & device, const Array::Pointer & src, int bin) -> Histogram
 {
@@ -36,17 +40,22 @@ _compute_histogram(const Device::Pointer & device, const Array::Pointer & src, i
   const float  max_intensity = tier2::maximum_of_all_pixels_func(device, src);
   const double range = max_intensity - min_intensity;
 
-  // Compute histogram
-  auto hist_array = Array::create(bin, 1, 1, 1, dType::FLOAT, mType::BUFFER, src->device());
-  tier3::histogram_func(device, src, hist_array, bin, min_intensity, max_intensity);
+  // Compute histogram, over [min, min + bin - 1] for one bin per intensity value: the bins above max stay empty
+  const bool  integer_bins = src->dtype() != dType::FLOAT && range > 0 && range < bin - 1;
+  const float histogram_max = integer_bins ? min_intensity + static_cast<float>(bin - 1) : max_intensity;
+  const int   nb_bins = integer_bins ? static_cast<int>(range) + 1 : bin;
+  auto        hist_array = Array::create(bin, 1, 1, 1, dType::FLOAT, mType::BUFFER, src->device());
+  tier3::histogram_func(device, src, hist_array, bin, min_intensity, histogram_max);
   std::vector<float> counts(hist_array->size());
   hist_array->readTo(counts.data());
+  counts.resize(nb_bins);
 
   // Compute bin centers
-  std::vector<double> bin_centers(bin);
+  const double        step = (static_cast<double>(histogram_max) - min_intensity) / (bin - 1);
+  std::vector<double> bin_centers(nb_bins);
   std::iota(bin_centers.begin(), bin_centers.end(), 0.0);
-  std::transform(bin_centers.begin(), bin_centers.end(), bin_centers.begin(), [range, min_intensity, bin](double value) {
-    return (value * range) / (bin - 1) + static_cast<double>(min_intensity);
+  std::transform(bin_centers.begin(), bin_centers.end(), bin_centers.begin(), [step, min_intensity](double value) {
+    return value * step + static_cast<double>(min_intensity);
   });
 
   return Histogram{ std::vector<double>(counts.begin(), counts.end()), std::move(bin_centers), min_intensity, max_intensity, range };
@@ -73,8 +82,8 @@ threshold_mean_func(const Device::Pointer & device, const Array::Pointer & src, 
 auto
 threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  const int  bin = histogram_bin_count;
-  const auto histogram = _compute_histogram(device, src, bin);
+  const auto histogram = _compute_histogram(device, src, histogram_bin_count);
+  const int  bin = static_cast<int>(histogram.counts.size());
 
   // Compute weight1
   std::vector<double> weight1(bin), weight2(bin), mean1(bin), mean2(bin), variance12(bin - 1);
@@ -111,8 +120,8 @@ threshold_otsu_func(const Device::Pointer & device, const Array::Pointer & src, 
 auto
 threshold_yen_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  const int  bin = histogram_bin_count;
-  const auto histogram = _compute_histogram(device, src, bin);
+  const auto histogram = _compute_histogram(device, src, histogram_bin_count);
+  const int  bin = static_cast<int>(histogram.counts.size());
 
   // pmf = counts.astype('float32', copy=False) / counts.sum()
   const double total_counts = std::accumulate(histogram.counts.begin(), histogram.counts.end(), 0.0);
@@ -167,8 +176,8 @@ threshold_yen_func(const Device::Pointer & device, const Array::Pointer & src, A
 auto
 threshold_triangle_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  const int  bin = histogram_bin_count;
-  const auto histogram = _compute_histogram(device, src, bin);
+  const auto histogram = _compute_histogram(device, src, histogram_bin_count);
+  const int  bin = static_cast<int>(histogram.counts.size());
 
   if (histogram.range <= 0.0)
   {
@@ -240,8 +249,8 @@ threshold_triangle_func(const Device::Pointer & device, const Array::Pointer & s
 auto
 threshold_isodata_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  const int  bin = histogram_bin_count;
-  const auto histogram = _compute_histogram(device, src, bin);
+  const auto histogram = _compute_histogram(device, src, histogram_bin_count);
+  const int  bin = static_cast<int>(histogram.counts.size());
 
   if (histogram.range <= 0.0)
   {
@@ -288,8 +297,8 @@ threshold_isodata_func(const Device::Pointer & device, const Array::Pointer & sr
 auto
 threshold_li_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  const int  bin = histogram_bin_count;
-  const auto histogram = _compute_histogram(device, src, bin);
+  const auto histogram = _compute_histogram(device, src, histogram_bin_count);
+  const int  bin = static_cast<int>(histogram.counts.size());
 
   if (histogram.range <= 0.0)
   {
