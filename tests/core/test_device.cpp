@@ -123,27 +123,37 @@ TEST_P(TestDevice, info)
 
 TEST_P(TestDevice, waitInitFinit)
 {
-
   auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "all");
   device->setWaitToFinish(true);
 
-  // Initialize the device
+  // runs a kernel on the device (and caches it)
+  const auto add_one = [&device]() {
+    auto array = cle::Array::create(4, 3, 2, 3, cle::dType::FLOAT, cle::mType::BUFFER, device);
+    array->fill(2.5F);
+    auto               result = cle::tier1::add_image_and_scalar_func(device, array, nullptr, 1);
+    std::vector<float> output(4 * 3 * 2);
+    result->readTo(output.data());
+    for (const float value : output)
+    {
+      EXPECT_EQ(value, 3.5F);
+    }
+  };
+
   device->initialize();
-
-  // Check that the device is initialized
   EXPECT_TRUE(device->isInitialized());
+  add_one();
 
-  // Finalize the device
-  device->finalize();
-
-  // Check that the device is not initialized
-  EXPECT_FALSE(device->isInitialized());
-
-  // Set wait to finish to true
-  device->setWaitToFinish(true);
-
-  // Set wait to finish to false
+  // finalize() waits for the pending work without changing the wait setting
   device->setWaitToFinish(false);
+  device->finalize();
+  EXPECT_FALSE(device->isInitialized());
+  EXPECT_FALSE(device->getWaitToFinish());
+
+  // a finalized device can be initialized again and used (its kernels are rebuilt for the new context)
+  device->initialize();
+  ASSERT_TRUE(device->isInitialized());
+  device->setWaitToFinish(true);
+  add_one();
 }
 
 #if USE_OPENCL

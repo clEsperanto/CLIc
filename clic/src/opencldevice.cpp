@@ -269,15 +269,14 @@ OpenCLDevice::finalize() -> void
     return;
   }
 
-  // force device to finish
-  waitFinish = true;
-  finish();
-  waitFinish = false;
+  // Wait for the pending work, whatever the wait setting
+  clFinish(clCommandQueue->get());
 
-  // Release OpenCL resources in reverse order of acquisition
+  // Release the queue and the context. The cached kernels belong to that context; the resources (platform and
+  // device identity) are kept, so that the device can be initialized again.
+  cache = std::make_shared<ProgramCache>();
   clCommandQueue.reset();
   clContext.reset();
-  clResources.reset();
 
   initialized = false;
 }

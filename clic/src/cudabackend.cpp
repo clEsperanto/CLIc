@@ -109,19 +109,13 @@ private:
 // ============================================================================
 
 /**
- * @brief Row pitch (bytes) and slice height (rows) of a memory of the given shape (x in bytes).
- *
- * A flat {N, 1, 1} shape is a packed buffer (e.g. the buffer side of a whole buffer <-> image copy, or host
- * memory): its rows and slices follow the copied region.
+ * @brief Row pitch (bytes) and slice height (rows) of a memory of the given shape (x in bytes); a flat shape is a
+ *        packed buffer whose rows and slices follow the copied region (see detail::isFlat).
  */
 [[nodiscard]] static auto
 memoryPitches(const std::array<size_t, 3> & shape, const std::array<size_t, 3> & region) -> std::pair<size_t, size_t>
 {
-  if (shape[1] == 1 && shape[2] == 1)
-  {
-    return { region[0], region[1] };
-  }
-  return { shape[0], shape[1] };
+  return detail::isFlat(shape) ? std::pair{ region[0], region[1] } : std::pair{ shape[0], shape[1] };
 }
 
 /**
@@ -170,11 +164,8 @@ performMemcpy(CUmemorytype                      src_type,
   const bool need_3d = (region[2] > 1 || src_origin[2] > 0 || dst_origin[2] > 0);
   const bool need_2d = !need_3d && (region[1] > 1 || src_origin[1] > 0 || dst_origin[1] > 0);
 
-  if (need_3d)
-  {
-    // ── 3D copy ──
-    CUDA_MEMCPY3D params = {};
-
+  // fields shared by CUDA_MEMCPY2D and CUDA_MEMCPY3D
+  const auto set_2d_fields = [&](auto & params) {
     params.srcMemoryType = src_type;
     if (src_type == CU_MEMORYTYPE_HOST)
     {
@@ -186,9 +177,7 @@ performMemcpy(CUmemorytype                      src_type,
     }
     params.srcXInBytes = src_origin[0];
     params.srcY = src_origin[1];
-    params.srcZ = src_origin[2];
     params.srcPitch = src_row_pitch;
-    params.srcHeight = src_slice_pitch;
 
     params.dstMemoryType = dst_type;
     if (dst_type == CU_MEMORYTYPE_HOST)
@@ -201,50 +190,27 @@ performMemcpy(CUmemorytype                      src_type,
     }
     params.dstXInBytes = dst_origin[0];
     params.dstY = dst_origin[1];
-    params.dstZ = dst_origin[2];
     params.dstPitch = dst_row_pitch;
-    params.dstHeight = dst_slice_pitch;
 
     params.WidthInBytes = region[0];
     params.Height = region[1];
-    params.Depth = region[2];
+  };
 
+  if (need_3d)
+  {
+    CUDA_MEMCPY3D params = {};
+    set_2d_fields(params);
+    params.srcZ = src_origin[2];
+    params.srcHeight = src_slice_pitch;
+    params.dstZ = dst_origin[2];
+    params.dstHeight = dst_slice_pitch;
+    params.Depth = region[2];
     err = blocking ? cuMemcpy3D(&params) : cuMemcpy3DAsync(&params, stream);
   }
   else if (need_2d)
   {
-    // ── 2D copy ──
     CUDA_MEMCPY2D params = {};
-
-    params.srcMemoryType = src_type;
-    if (src_type == CU_MEMORYTYPE_HOST)
-    {
-      params.srcHost = src_ptr;
-    }
-    else
-    {
-      params.srcDevice = reinterpret_cast<CUdeviceptr>(src_ptr);
-    }
-    params.srcXInBytes = src_origin[0];
-    params.srcY = src_origin[1];
-    params.srcPitch = src_row_pitch;
-
-    params.dstMemoryType = dst_type;
-    if (dst_type == CU_MEMORYTYPE_HOST)
-    {
-      params.dstHost = const_cast<void *>(dst_ptr);
-    }
-    else
-    {
-      params.dstDevice = reinterpret_cast<CUdeviceptr>(dst_ptr);
-    }
-    params.dstXInBytes = dst_origin[0];
-    params.dstY = dst_origin[1];
-    params.dstPitch = dst_row_pitch;
-
-    params.WidthInBytes = region[0];
-    params.Height = region[1];
-
+    set_2d_fields(params);
     err = blocking ? cuMemcpy2D(&params) : cuMemcpy2DAsync(&params, stream);
   }
   else
@@ -456,44 +422,37 @@ CUDABackend::getDevices(const std::string & type) const -> std::vector<Device::P
   return device_list_;
 }
 
+/// Devices of the requested type, or all of them when there is none of that type (as OpenCL)
+static auto
+devicesOfTypeOrAll(const CUDABackend & backend, const std::string & type) -> std::vector<Device::Pointer>
+{
+  auto devices = backend.getDevices(type); // also builds the device list
+  return (devices.empty() && type == "cpu") ? backend.getDevices("all") : devices;
+}
+
 auto
 CUDABackend::getDevice(const std::string & name, const std::string & type) const -> Device::Pointer
 {
-  if (getDevices("all").empty()) // also builds the device list
+  const auto devices = devicesOfTypeOrAll(*this, type);
+  if (devices.empty())
   {
     std::cerr << "Warning: No CUDA compatible devices found." << std::endl;
     return nullptr;
   }
-
-  // No device of the requested type: fall back to any device (as OpenCL)
-  auto devices = getDevices(type);
-  if (devices.empty())
-  {
-    devices = device_list_;
-  }
-  if (auto device = detail::findDeviceByName(devices, name))
-  {
-    return device;
-  }
-  return devices.back();
+  const auto device = detail::findDeviceByName(devices, name);
+  return device ? device : devices.back();
 }
 
 auto
 CUDABackend::getDeviceFromIndex(size_t index, const std::string & type) const -> Device::Pointer
 {
-  if (getDevices("all").empty()) // also builds the device list
+  const auto devices = devicesOfTypeOrAll(*this, type);
+  if (devices.empty())
   {
     std::cerr << "Warning: No CUDA compatible devices found." << std::endl;
     return nullptr;
   }
-
-  // No device of the requested type: fall back to any device (as OpenCL)
-  auto devices = getDevices(type);
-  if (devices.empty())
-  {
-    devices = device_list_;
-  }
-  return (index < devices.size()) ? devices[index] : devices.back();
+  return detail::deviceAt(devices, index);
 }
 
 auto
@@ -564,7 +523,7 @@ CUDABackend::allocateMemory(const Device::Pointer &       device,
 {
   // @StRigaud TODO: implement true image support for CUDA
   // For now, both BUFFER and IMAGE allocate linear memory.
-  const size_t size = region[0] * region[1] * region[2] * toBytes(dtype);
+  const size_t size = detail::elementCount(region) * toBytes(dtype);
   allocateBuffer(device, size, data_ptr);
 }
 
@@ -691,8 +650,7 @@ CUDABackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
 
   // Convert element counts to byte counts
   detail::scaleToBytes(src_shape, src_origin, region, bytes);
-  dst_shape[0] *= bytes;
-  dst_origin[0] *= bytes;
+  detail::scaleToBytes(dst_shape, dst_origin, bytes);
 
   // a flat {N, 1, 1} shape is the packed buffer side of a whole buffer <-> image copy
   performMemcpy(CU_MEMORYTYPE_DEVICE,
@@ -770,7 +728,7 @@ setBuffer(const Device::Pointer &       device,
   // then cheaper than queuing and synchronising
   const bool        blocking = ctx.device()->getWaitToFinish();
   const CUstream    stream = ctx.stream();
-  const auto        count = region[0] * region[1] * region[2];
+  const auto        count = detail::elementCount(region);
   const CUdeviceptr dev_ptr = reinterpret_cast<CUdeviceptr>(buffer_ptr.get());
   const CUresult    err = detail::visitDType(dtype, [&](auto tag) -> CUresult {
     using T = decltype(tag);
