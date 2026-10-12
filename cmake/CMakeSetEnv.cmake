@@ -47,7 +47,8 @@ if(CLIC_IS_TOP_LEVEL)
   option(BUILD_COVERAGE "Enable coverage reporting" OFF)
   message(STATUS "Build project code coverage: ${BUILD_COVERAGE}")
   if(BUILD_COVERAGE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+    # atomic counters: the threading tests update them concurrently, racy updates give negative hits in gcov
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage -fprofile-update=atomic")
     set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
   endif()
 
