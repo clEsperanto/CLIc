@@ -37,7 +37,7 @@ install rules: a public dependency must also be found in `cmake/CLIcConfig.cmake
 
 Useful CMake options (see `cmake/CMakeSetEnv.cmake`): `BUILD_TESTING` (ON), `BUILD_SHARED_LIBS` (ON), `BUILD_COVERAGE` (OFF),
 `CLEAR_KERNEL_CACHE` (OFF; wipes `~/.cache/clesperanto` at configure, or build the `clic_clear_cache` target).
-`BUILD_BENCHMARK` exists, but `benchmark/` and `docs/` are **not** added by the top-level `CMakeLists.txt`.
+`benchmark/` and `docs/` are **not** part of the build (the benchmarks still use the old `clesperanto.hpp` API).
 
 CLIc is consumed as a subproject (FetchContent / `add_subdirectory`) by pyclesperanto and clesperantoj, both with
 `BUILD_SHARED_LIBS=OFF`; clesperantoj also runs CLIc's install rules. `CLIC_IS_TOP_LEVEL` (root `CMakeLists.txt`) guards
@@ -53,8 +53,9 @@ cmake -S . -B build/metal -G Ninja -DCMAKE_BUILD_TYPE=Release -DCLE_BACKEND=META
 cmake --build build/metal -j 18 && ctest --test-dir build/metal -j 8
 ```
 
-Let each tree fetch its own dependencies: overriding `FETCHCONTENT_SOURCE_DIR_*` breaks the build, because the DLPack and
-VkFFT include paths in `clic/CMakeLists.txt` are hard-coded under `${FETCHCONTENT_BASE_DIR}`.
+To reuse already downloaded dependencies, pass `-DFETCHCONTENT_SOURCE_DIR_<NAME>=<dir>` (`CLEKERNELS`, `EIGEN`, `DLPACK`,
+`VKFFT`); `FETCHCONTENT_SOURCE_DIR_CLIC` does the same for the bindings. Don't hard-code `${FETCHCONTENT_BASE_DIR}/...`
+paths: use `<name>_SOURCE_DIR` (or `CLIC_VKFFT_SOURCE_DIR` / `CLIC_DLPACK_INCLUDE_DIR` outside `clic/thirdparty`).
 
 To validate a change to the backend layer, run the full suite on every available backend **twice**: once with a warm disk
 cache (exercises loading kernels from disk) and once with `CLESPERANTO_NO_CACHE=1` (compiles everything from source).
@@ -69,6 +70,12 @@ Tests need a working GPU runtime. CI (`.github/workflows/tests_and_coverage.yml`
 `build-{opencl,cuda,metal}.yml` only check that the code compiles.
 
 ### Dependencies (FetchContent, `clic/thirdparty/CMakeLists.txt`)
+
+cleKernels and Eigen are configured (`add_subdirectory`): cleKernels generates the kernel headers, and Eigen's install
+rules feed the CLIc package and clesperantoj (its tests and docs are switched off there). DLPack and VkFFT are header-only
+and **never configured**: they are declared with `SOURCE_SUBDIR download-only` (a folder without `CMakeLists.txt`), so
+`FetchContent_MakeAvailable` only downloads them. Use the same pattern for any new header-only dependency, not the
+deprecated `FetchContent_Populate(<name>)`.
 
 Version tags are set in the root `CMakeLists.txt` (normal variables, override with `-D<name>=<tag>`).
 
@@ -107,12 +114,12 @@ clic/
     backend_common.hpp private helpers shared by the backends (cle::detail, not installed)
 tests/                 GoogleTest, tests/<core|tierN>/test_*.cpp, one executable per directory
 cmake/                 SetEnv (options, C++17), Backends (find OpenCL/CUDA/Metal), Install, presets
-benchmark/             standalone benchmarks (not wired into the root build)
+benchmark/             old standalone benchmarks (old API, not built)
 BACKEND_REVIEW_PLAN.md status of the backend/device review (done / remaining items): read it before backend work
 ```
 
-Sources are picked up with `GLOB_RECURSE`, so a new `.cpp` under `clic/src/` (or a new test under `tests/<dir>/`) is built
-automatically. **Re-run the CMake configure step** after adding files.
+Sources are picked up with `GLOB_RECURSE ... CONFIGURE_DEPENDS`, so a new `.cpp` under `clic/src/` (or a new test under
+`tests/<dir>/`) is built automatically: the next build re-runs the glob, no manual reconfigure is needed.
 
 ## Core architecture
 
@@ -261,7 +268,7 @@ exact syntax:
 1. Pick the lowest tier that matches its dependencies.
 2. Declare it with the doc block in `clic/include/tierN.hpp`.
 3. Implement it in `clic/src/tierN/<name>.cpp`, or append it to an existing family file such as `math_unary_ops.cpp`.
-4. Add `tests/tierN/test_<name>.cpp` (see below) and re-run configure.
+4. Add `tests/tierN/test_<name>.cpp` (see below).
 5. Build and run the suite on the local backend.
 
 ## Tests

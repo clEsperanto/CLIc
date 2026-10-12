@@ -3,6 +3,8 @@ include(FetchContent)
 # Prevent BUILD_SHARED_LIBS from leaking into GTest — always build it static.
 # This eliminates the need to copy gtest.dll / gtest_main.dll entirely.
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)  # Use shared CRT to match your project
+set(INSTALL_GTEST OFF)  # 'cmake --install' installs CLIc only
+set(BUILD_GMOCK OFF)    # tests use gtest only
 set(BUILD_SHARED_LIBS_BACKUP ${BUILD_SHARED_LIBS})
 set(BUILD_SHARED_LIBS OFF)
 FetchContent_Declare(
@@ -23,7 +25,6 @@ function(add_clic_test_suite SUITE_NAME LABEL)
     endif()
 
     add_executable(${SUITE_NAME} ${SUITE_SOURCES})
-    add_dependencies(${SUITE_NAME} CLIc)
     target_link_libraries(${SUITE_NAME} PRIVATE CLIc::CLIc gtest gtest_main)
     target_include_directories(${SUITE_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/tests)
     set_target_properties(${SUITE_NAME} PROPERTIES FOLDER "Tests")

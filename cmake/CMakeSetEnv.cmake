@@ -51,8 +51,6 @@ if(CLIC_IS_TOP_LEVEL)
     set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
   endif()
 
-  option(BUILD_BENCHMARK "build benchmarks tests" OFF)
-
   # Kernel disk cache: 'cmake --build <dir> --target clic_clear_cache' deletes it,
   # -DCLEAR_KERNEL_CACHE=ON deletes it at configure time
   if(WIN32)
@@ -95,6 +93,3 @@ if(BUILD_SHARED_LIBS)
   # add the directories of linked libraries outside the build tree
   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 endif()
-
-# CMake Registry
-include(${PROJECT_SOURCE_DIR}/cmake/CMakeRegistery.cmake)

@@ -156,7 +156,7 @@ jobs:
           BUILD_DIR="${{ runner.workspace }}/build"
 
           # Set OpenCL paths for Windows and Linux
-          CMAKE_OPTS="-DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} -DBUILD_DOCUMENTATION=OFF -DBUILD_BENCHMARK=OFF"
+          CMAKE_OPTS="-DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }}"
 
           if [ "${{ matrix.opencl-required }}" = "true" ]; then
             CACHE_DIR="${{ runner.workspace }}/opencl-cache"

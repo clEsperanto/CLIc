@@ -91,8 +91,6 @@ jobs:
                  -B "${{ runner.workspace }}/build" \
                  -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} \
                  -DBUILD_COVERAGE=ON \
-                 -DBUILD_BENCHMARK=OFF \
-                 -DBUILD_DOCUMENTATION=OFF \
                  -DOpenCL_LIBRARY=/usr/lib/x86_64-linux-gnu/libOpenCL.so \
                  -DOpenCL_INCLUDE_DIR=/usr/include
         shell: bash

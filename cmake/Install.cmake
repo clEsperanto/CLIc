@@ -26,7 +26,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/clic.hpp
     COMPONENT Development
 )
 
-install(DIRECTORY ${FETCHCONTENT_BASE_DIR}/dlpack-src/include/
+install(DIRECTORY ${CLIC_DLPACK_INCLUDE_DIR}/
     DESTINATION include
     FILES_MATCHING PATTERN "*.h"
 )

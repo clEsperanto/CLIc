@@ -8,35 +8,29 @@ configure_file(
     NO_SOURCE_PERMISSIONS @ONLY
 )
 
-# list project source files
-file(GLOB_RECURSE SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
-file(GLOB_RECURSE TIERS "${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.cpp")
-list(APPEND SOURCES ${TIERS})
-
+# list project source files (src/ and src/tierN/); CONFIGURE_DEPENDS re-runs the glob at build time,
+# so a new source file is picked up without re-running the configure step by hand
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 if(CLE_METAL)
-    file(GLOB_RECURSE OBJCXX_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.mm")
+    # Metal backend sources are Objective-C++ (.mm)
+    enable_language(OBJCXX)
+    file(GLOB_RECURSE OBJCXX_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.mm")
     list(APPEND SOURCES ${OBJCXX_SOURCES})
 endif()
-
-message(STATUS "FETCHCONTENT_BASE_DIR: ${FETCHCONTENT_BASE_DIR}")
 
 # target library definition
 add_library(CLIc ${SOURCES})
 target_link_libraries(CLIc PUBLIC cleKernels::cleKernels Eigen3::Eigen clic_vkfft)
 # consumers of the installed package need C++17 too (public headers use it)
 target_compile_features(CLIc PUBLIC cxx_std_17)
-# make target depend on other targets
-add_dependencies(CLIc cleKernels::cleKernels Eigen3::Eigen clic_vkfft)
 
 add_library(CLIc::CLIc ALIAS CLIc)
-# target_include_directories(CLIc PUBLIC ${FETCHCONTENT_BASE_DIR}/vkfft-src/vkFFT/)
+# cleKernels and Eigen headers come with their targets; VkFFT and DLPack are download-only (clic/thirdparty)
 target_include_directories(CLIc PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> # CLIc headers
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include> # CLIc configuration headers
-    $<BUILD_INTERFACE:${CLEKERNELS_INCLUDE_DIR}>           # cleKernels headers
-    $<BUILD_INTERFACE:${EIGEN3_INCLUDE_DIR}>               # Eigen headers
-    $<BUILD_INTERFACE:${FETCHCONTENT_BASE_DIR}/vkfft-src/vkFFT/> # VkFFT headers
-    $<BUILD_INTERFACE:${FETCHCONTENT_BASE_DIR}/dlpack-src/include> # DLPack headers
+    $<BUILD_INTERFACE:${CLIC_VKFFT_SOURCE_DIR}/vkFFT>      # VkFFT headers
+    $<BUILD_INTERFACE:${CLIC_DLPACK_INCLUDE_DIR}>          # DLPack headers
     $<INSTALL_INTERFACE:include>
 )
 
@@ -57,18 +51,12 @@ endif()
 if(CLE_OPENCL)
     target_link_libraries(CLIc PUBLIC OpenCL::OpenCL)
 elseif(CLE_CUDA)
-    set_target_properties(CLIc PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
     set_target_properties(CLIc PROPERTIES POSITION_INDEPENDENT_CODE ON)
     target_include_directories(CLIc PUBLIC "$<BUILD_INTERFACE:${CUDAToolkit_INCLUDE_DIRS}>")
     target_link_libraries(CLIc PUBLIC CUDA::cudart CUDA::cuda_driver CUDA::nvrtc)
 elseif(CLE_METAL)
-    enable_language(OBJCXX)
-    file(GLOB_RECURSE OBJCXX_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.mm")
-    set_source_files_properties(${OBJCXX_SOURCES} PROPERTIES
-        COMPILE_FLAGS "-x objective-c++"
-    )
     target_include_directories(CLIc BEFORE PUBLIC
-        $<BUILD_INTERFACE:${vkfft_SOURCE_DIR}/metal-cpp>
+        $<BUILD_INTERFACE:${CLIC_VKFFT_SOURCE_DIR}/metal-cpp>
     )
     target_link_libraries(CLIc PUBLIC
         "-framework Metal"
