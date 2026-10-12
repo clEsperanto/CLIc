@@ -156,9 +156,8 @@ CUDADevice::finalize() -> void
     return;
   }
 
-  // Wait for the pending work before releasing the stream (finish() is a no-op once uninitialised)
-  waitFinish = true;
-  finish();
+  // Wait for the pending work before releasing the stream, whatever the wait setting
+  cuStreamSynchronize(cudaStream);
 
   // Release the cached kernels while their context is alive and current: their deleters unload the modules
   // (cuModuleUnload acts on the current context). Unloading them after the context is gone crashes the driver; and the

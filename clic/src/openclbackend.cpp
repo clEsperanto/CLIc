@@ -153,17 +153,8 @@ forEachBufferRow(const std::array<size_t, 3> & buffer_shape,
                  size_t                        bytes,
                  Func &&                       func) -> void
 {
-  const size_t row_pitch = buffer_shape[0];
-  const size_t slice_pitch = buffer_shape[0] * buffer_shape[1];
-  const auto   offset_of = [&](size_t y, size_t z) {
-    return (buffer_origin[0] + (buffer_origin[1] + y) * row_pitch + (buffer_origin[2] + z) * slice_pitch) * bytes;
-  };
-
-  // A flat shape { N, 1, 1 } describes a packed buffer (e.g. whole-array copies): the region is contiguous
-  const bool flat = buffer_shape[1] == 1 && buffer_shape[2] == 1;
-  const bool whole_rows = region[0] == buffer_shape[0];
-  const bool whole_slices = whole_rows && region[1] == buffer_shape[1];
-  if (flat || whole_slices || (whole_rows && region[2] == 1))
+  const auto offset_of = [&](size_t y, size_t z) { return detail::linearOffset(buffer_shape, buffer_origin, y, z) * bytes; };
+  if (detail::isContiguous(buffer_shape, region))
   {
     func(offset_of(0, 0), RectRows{ image_origin, region });
     return;
@@ -243,43 +234,16 @@ fillImageTyped(cl_command_queue queue, cl_mem mem, const std::array<size_t, 3> &
 // ============================================================================
 
 /**
- * @brief Wrap a cl_mem in a shared_ptr with automatic clReleaseMemObject.
+ * @brief Wrap an OpenCL object in a shared_ptr that releases it with `release` (clReleaseMemObject, clReleaseProgram, ...)
  */
+template <typename T, typename Release>
 [[nodiscard]] static auto
-wrapMemObject(cl_mem mem) -> std::shared_ptr<void>
+wrapCL(T object, Release release) -> std::shared_ptr<void>
 {
-  return std::shared_ptr<void>(mem, [](void * p) {
+  return std::shared_ptr<void>(object, [release](void * p) {
     if (p)
     {
-      clReleaseMemObject(static_cast<cl_mem>(p));
-    }
-  });
-}
-
-/**
- * @brief Wrap a cl_program in a shared_ptr with automatic clReleaseProgram.
- */
-[[nodiscard]] static auto
-wrapProgram(cl_program program) -> std::shared_ptr<void>
-{
-  return std::shared_ptr<void>(program, [](void * p) {
-    if (p)
-    {
-      clReleaseProgram(static_cast<cl_program>(p));
-    }
-  });
-}
-
-/**
- * @brief Wrap a cl_kernel in a shared_ptr with automatic clReleaseKernel.
- */
-[[nodiscard]] static auto
-wrapKernel(cl_kernel kernel) -> std::shared_ptr<void>
-{
-  return std::shared_ptr<void>(kernel, [](void * p) {
-    if (p)
-    {
-      clReleaseKernel(static_cast<cl_kernel>(p));
+      release(static_cast<T>(p));
     }
   });
 }
@@ -296,11 +260,6 @@ wrapKernel(cl_kernel kernel) -> std::shared_ptr<void>
 static auto
 buildProgram(const std::shared_ptr<const OpenCLDevice> & opencl_device, const std::shared_ptr<void> & program) -> void
 {
-  if (!program)
-  {
-    throw std::runtime_error("Error: Program pointer is null.");
-  }
-
   const auto   cl_prog = reinterpret_cast<cl_program>(program.get());
   const cl_int buildStatus = clBuildProgram(cl_prog, 1, &opencl_device->getCLDevice(), "-w", nullptr, nullptr);
 
@@ -372,7 +331,7 @@ createProgramFromBinary(const std::shared_ptr<const OpenCLDevice> & opencl_devic
   auto         program =
     clCreateProgramWithBinary(opencl_device->getCLContext(), 1, &opencl_device->getCLDevice(), &binary_size, &binary_ptr, &status, &err);
   CL_CHECK(err, "Error: Failed to create program from cached binary.");
-  auto program_ptr = wrapProgram(program);
+  auto program_ptr = wrapCL(program, clReleaseProgram);
   CL_CHECK(status, "Error: Cached binary rejected by the device.");
   buildProgram(opencl_device, program_ptr);
   return program_ptr;
@@ -390,7 +349,7 @@ createProgramFromSource(const std::shared_ptr<const OpenCLDevice> & opencl_devic
   auto         program = clCreateProgramWithSource(opencl_device->getCLContext(), 1, &source, nullptr, &err);
   CL_CHECK(err, "Error: Failed to create program from source.");
 
-  auto program_ptr = wrapProgram(program);
+  auto program_ptr = wrapCL(program, clReleaseProgram);
   buildProgram(opencl_device, program_ptr);
   return program_ptr;
 }
@@ -405,7 +364,7 @@ createKernel(const std::shared_ptr<void> & program, const std::string & kernel_n
   cl_int err;
   auto   ocl_kernel = clCreateKernel(reinterpret_cast<cl_program>(program.get()), kernel_name.c_str(), &err);
   CL_CHECK(err, "Error: Failed to create kernel '" + kernel_name + "'.");
-  return wrapKernel(ocl_kernel);
+  return wrapCL(ocl_kernel, clReleaseKernel);
 }
 
 // ============================================================================
@@ -418,18 +377,12 @@ createKernel(const std::shared_ptr<void> & program, const std::string & kernel_n
 static auto
 discoverDevices() -> std::vector<Device::Pointer>
 {
-  // Discover all platforms and their devices, in the order reported by the ICD loader
-  // (a vector rather than a hash map, so that device order and default device are deterministic)
-  std::vector<std::pair<cl_platform_id, std::vector<cl_device_id>>> resources;
-  size_t                                                            device_counter = 0;
-
   cl_uint platformCount = 0;
   cl_int  err = clGetPlatformIDs(0, nullptr, &platformCount);
   if (err != CL_SUCCESS || platformCount == 0)
   {
     throw std::runtime_error("Error: Failed to find any OpenCL compatible platforms.");
   }
-
   std::vector<cl_platform_id> platformIds(platformCount);
   err = clGetPlatformIDs(platformCount, platformIds.data(), nullptr);
   if (err != CL_SUCCESS)
@@ -437,6 +390,12 @@ discoverDevices() -> std::vector<Device::Pointer>
     throw std::runtime_error("Error: Failed to get OpenCL platform IDs.");
   }
 
+  // Devices in the order reported by the ICD loader, so that the default device is deterministic.
+  // 1 context = 1 device (multi-device contexts are possible but unused, see
+  // https://github.com/clEsperanto/CLIc/pull/420). A device whose context or queue cannot be created (e.g. broken
+  // driver) is skipped, so that it does not prevent the other devices from being used.
+  std::vector<Device::Pointer> devices;
+  bool                         found_any = false;
   for (const auto & platform_id : platformIds)
   {
     cl_uint deviceCount = 0;
@@ -445,33 +404,15 @@ discoverDevices() -> std::vector<Device::Pointer>
     {
       continue;
     }
-
     std::vector<cl_device_id> deviceIds(deviceCount);
-    err = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_ALL, deviceCount, deviceIds.data(), nullptr);
-    if (err != CL_SUCCESS)
+    if (clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_ALL, deviceCount, deviceIds.data(), nullptr) != CL_SUCCESS)
     {
       continue;
     }
-    resources.emplace_back(platform_id, std::move(deviceIds));
-    device_counter += deviceCount;
-  }
+    found_any = true;
 
-  if (resources.empty())
-  {
-    std::cerr << "Warning: Failed to find OpenCL compatible devices." << std::endl;
-  }
-
-  // Allocate resources: 1 context = 1 device
-  // (Multi-device contexts are possible but currently unused;
-  //  see https://github.com/clEsperanto/CLIc/pull/420 for context.)
-  // A device whose context or queue cannot be created (e.g. broken driver) is skipped, so that it does
-  // not prevent the other devices from being used.
-  std::vector<Device::Pointer> devices;
-  devices.reserve(device_counter);
-  for (const auto & [platform_id, device_ids] : resources)
-  {
     size_t device_index = 0;
-    for (const auto & device_id : device_ids)
+    for (const auto & device_id : deviceIds)
     {
       auto resources_ptr = std::make_shared<OpenCLDevice::Resources>(platform_id, device_id, device_index++);
 
@@ -497,6 +438,11 @@ discoverDevices() -> std::vector<Device::Pointer>
 
       devices.emplace_back(std::make_shared<OpenCLDevice>(resources_ptr, context, command_queue));
     }
+  }
+
+  if (!found_any)
+  {
+    std::cerr << "Warning: Failed to find OpenCL compatible devices." << std::endl;
   }
   return devices;
 }
@@ -563,17 +509,7 @@ OpenCLBackend::getDeviceFromIndex(size_t index, const std::string & type) const 
   }
 
   const auto devices = getDevices(type);
-  if (devices.empty())
-  {
-    return device_list_.back();
-  }
-
-  if (index < devices.size())
-  {
-    return devices[index];
-  }
-
-  return devices.back();
+  return devices.empty() ? device_list_.back() : detail::deviceAt(devices, index);
 }
 
 auto
@@ -599,7 +535,7 @@ allocateBuffer(const Device::Pointer & device, const size_t & size, std::shared_
   auto   mem = clCreateBuffer(opencl_device->getCLContext(), CL_MEM_READ_WRITE, size, nullptr, &err);
   CL_CHECK(err, "Error: Failed to allocate buffer memory.");
 
-  data_ptr = wrapMemObject(mem);
+  data_ptr = wrapCL(mem, clReleaseMemObject);
 }
 
 static auto
@@ -636,7 +572,7 @@ allocateImage(const Device::Pointer & device, const std::array<size_t, 3> & regi
   auto   image = clCreateImage(opencl_device->getCLContext(), CL_MEM_READ_WRITE, &image_format, &image_desc, nullptr, &err);
   CL_CHECK(err, "Error: Failed to allocate image memory.");
 
-  data_ptr = wrapMemObject(image);
+  data_ptr = wrapCL(image, clReleaseMemObject);
 }
 
 auto
@@ -649,7 +585,7 @@ OpenCLBackend::allocateMemory(const Device::Pointer &       device,
   switch (mtype)
   {
     case mType::BUFFER: {
-      const size_t size = region[0] * region[1] * region[2] * toBytes(dtype);
+      const size_t size = detail::elementCount(region) * toBytes(dtype);
       allocateBuffer(device, size, data_ptr);
       break;
     }
@@ -665,7 +601,7 @@ auto
 OpenCLBackend::freeMemory(const Device::Pointer &, const mType &, const std::shared_ptr<void> &) const -> void
 {
   // Memory is released by the custom deleter of the shared_ptr returned by allocateMemory (see
-  // wrapMemObject) when its last reference goes away. Releasing it here as well would free it twice.
+  // wrapCL) when its last reference goes away. Releasing it here as well would free it twice.
 }
 
 auto
@@ -868,8 +804,7 @@ OpenCLBackend::copyMemoryBufferToBuffer(const Device::Pointer &       device,
 
   // Adjust sizes and offsets for byte alignment
   detail::scaleToBytes(src_shape, src_origin, region, bytes);
-  dst_shape[0] *= bytes;
-  dst_origin[0] *= bytes;
+  detail::scaleToBytes(dst_shape, dst_origin, bytes);
 
   const auto [src_row_pitch, src_slice_pitch] = computeBufferPitches(src_shape);
   const auto [dst_row_pitch, dst_slice_pitch] = computeBufferPitches(dst_shape);
@@ -995,7 +930,7 @@ setBuffer(const Device::Pointer &       device,
           const float &                 value) -> void
 {
   const auto   opencl_device = castDevice(device);
-  const size_t size = region[0] * region[1] * region[2] * toBytes(dtype);
+  const size_t size = detail::elementCount(region) * toBytes(dtype);
   auto         ptr = static_cast<cl_mem>(buffer_ptr.get());
   const auto   queue = opencl_device->getCLCommandQueue();
 
@@ -1126,12 +1061,8 @@ OpenCLBackend::executeKernel(const Device::Pointer &                    device,
       arg_ptr = &mem_handles[i];
     }
 
-    const cl_int err = clSetKernelArg(cl_kern, static_cast<cl_uint>(i), sizes[i], arg_ptr);
-    if (err != CL_SUCCESS)
-    {
-      throw std::runtime_error("Error: Failed to set kernel argument " + std::to_string(i) + " for kernel '" + kernel_name +
-                               "'. OpenCL error: " + getErrorString(err) + " (" + std::to_string(err) + ")");
-    }
+    CL_CHECK(clSetKernelArg(cl_kern, static_cast<cl_uint>(i), sizes[i], arg_ptr),
+             "Error: Failed to set kernel argument " + std::to_string(i) + " for kernel '" + kernel_name + "'.");
   }
 
   // Launch kernel
