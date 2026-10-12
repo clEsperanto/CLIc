@@ -456,7 +456,7 @@ compute_neighbors_statistics_per_labels(const Device::Pointer &  device,
 
   // labels include background #0 during computation
   std::vector<float> labels_list(nb_labels);
-  std::iota(labels_list.begin(), labels_list.end(), 0);
+  std::iota(labels_list.begin(), labels_list.end(), 0.0F);
   nei_stats["label"] = std::move(labels_list);
 
   // touching neighbor count # 1

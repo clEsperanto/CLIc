@@ -51,6 +51,30 @@ ProgramCache::put(const std::string & key, const std::shared_ptr<void> & program
 }
 
 auto
+ProgramCache::emplace(const std::string & key, const std::shared_ptr<void> & program) -> std::shared_ptr<void>
+{
+  const std::lock_guard<std::mutex> lock(mutex_);
+  auto                              it = cache_.find(key);
+  if (it != cache_.end())
+  {
+    // Keep the cached program: it may be in use by launches still running
+    lru_.erase(it->second.lru_it);
+    lru_.push_back(key);
+    it->second.lru_it = std::prev(lru_.end());
+    return it->second.program;
+  }
+  if (cache_.size() >= MAX_CACHE_SIZE)
+  {
+    auto oldest = lru_.front();
+    lru_.pop_front();
+    cache_.erase(oldest);
+  }
+  lru_.push_back(key);
+  cache_[key] = { program, std::prev(lru_.end()) };
+  return program;
+}
+
+auto
 ProgramCache::get(const std::string & key) -> std::shared_ptr<void>
 {
   const std::lock_guard<std::mutex> lock(mutex_);

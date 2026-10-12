@@ -50,6 +50,15 @@ public:
   put(const std::string & key, const std::shared_ptr<void> & program) -> void;
 
   /**
+   * @brief Cache a program unless the key is already cached (e.g. by a concurrent build of the same kernel)
+   * @param key The key to identify the program
+   * @param program The compiled program pointer to cache
+   * @return The cached program: the existing one if the key was already cached, else `program`
+   */
+  auto
+  emplace(const std::string & key, const std::shared_ptr<void> & program) -> std::shared_ptr<void>;
+
+  /**
    * @brief Retrieve a cached program by key, updating its LRU position
    * @param key The key to identify the program
    * @return The program pointer if found, nullptr otherwise

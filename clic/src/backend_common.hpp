@@ -342,8 +342,9 @@ cachedBuild(const Device::Pointer & device,
   {
     throw std::runtime_error("Error: Failed to build kernel '" + kernel_name + "'");
   }
-  device->addProgramToCache(memory_key, kernel);
-  return kernel;
+  // Threads that missed the cache concurrently all use the first kernel cached. Replacing it would release a kernel
+  // whose asynchronous launch may still be running, which crashes the NVIDIA OpenCL driver.
+  return device->addProgramToCache(memory_key, kernel);
 }
 
 } // namespace cle::detail

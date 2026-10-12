@@ -33,7 +33,7 @@ protected:
     input_int32 = { 0, 0, 0, 3, 4, 3, 3, 4, 3, 3, 4, 3, 3, 4, 3, 3, 4, 3 };
 
     // Initialize pixelindex input with random binary values
-    std::fill(input_pixelindex.begin(), input_pixelindex.end(), 0);
+    std::fill(input_pixelindex.begin(), input_pixelindex.end(), 0.0F);
     for (auto it = input_pixelindex.begin(); it != input_pixelindex.end(); ++it)
     {
       *it = static_cast<float>(rand() % 2);

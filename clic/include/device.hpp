@@ -183,14 +183,15 @@ public:
   }
 
   /**
-   * @brief Add program to cache with a given key
+   * @brief Add program to cache with a given key, unless the key is already cached
    * @param key The key to identify the program
    * @param program The program pointer to cache
+   * @return The cached program: the existing one if the key was already cached, else `program`
    */
   auto
-  addProgramToCache(const std::string & key, const std::shared_ptr<void> & program) -> void
+  addProgramToCache(const std::string & key, const std::shared_ptr<void> & program) -> std::shared_ptr<void>
   {
-    cache->put(key, program);
+    return cache->emplace(key, program);
   }
 
   /**

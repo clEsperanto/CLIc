@@ -105,10 +105,13 @@ BackendManager::getBackendsList() -> std::vector<std::string>
 auto
 BackendManager::getInstance() -> BackendManager &
 {
-  static BackendManager instance;
-  return instance;
+  // Intentionally leaked: destroying the backend at exit releases its GPU objects (context, queue, kernels, memory)
+  // from the static destructors. On Windows these run in DllMain(DLL_PROCESS_DETACH), after ExitProcess has killed
+  // the driver threads, and the NVIDIA OpenCL driver then deadlocks in clReleaseContext once several host threads used
+  // the device. The OS reclaims everything when the process ends.
+  static auto * instance = new BackendManager();
+  return *instance;
 }
-
 
 auto
 BackendManager::setBackend(const std::string & backend) -> void
