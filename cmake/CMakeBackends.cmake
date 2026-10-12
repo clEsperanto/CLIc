@@ -10,6 +10,14 @@ if(CLE_BACKEND STREQUAL "OPENCL")
     #   -DOpenCL_INCLUDE_DIRS=/path/to/opencl/headers
     if(OpenCL_LIBRARIES AND OpenCL_INCLUDE_DIRS)
         message(STATUS "Using user-provided OpenCL paths")
+        # same target as find_package(OpenCL) provides
+        if(NOT TARGET OpenCL::OpenCL)
+            add_library(OpenCL::OpenCL INTERFACE IMPORTED)
+            set_target_properties(OpenCL::OpenCL PROPERTIES
+                INTERFACE_LINK_LIBRARIES "${OpenCL_LIBRARIES}"
+                INTERFACE_INCLUDE_DIRECTORIES "${OpenCL_INCLUDE_DIRS}"
+            )
+        endif()
     else()
         find_package(OpenCL REQUIRED)
     endif()

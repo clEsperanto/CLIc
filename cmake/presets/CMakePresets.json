@@ -110,7 +110,7 @@
             ],
             "configuration": "Release",
             "output": {
-                "outputLogFile": "Ctest-${presetName}-debug.log"
+                "outputLogFile": "Ctest-${presetName}-release.log"
             }
         },
         {
@@ -120,7 +120,7 @@
             "inherits": [
                 "default-test"
             ],
-            "configuration": "debug",
+            "configuration": "Debug",
             "output": {
                 "outputLogFile": "Ctest-${presetName}-debug.log"
             }

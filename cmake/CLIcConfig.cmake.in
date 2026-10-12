@@ -1,18 +1,23 @@
 @PACKAGE_INIT@
 
-if(NOT TARGET ${PROJECT_NAME}::${PROJECT_NAME})
-    include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+include(CMakeFindDependencyMacro)
+
+# GPU backend CLIc was compiled for: OPENCL, CUDA or METAL
+set(CLIc_BACKEND "@CLE_BACKEND@")
+
+# dependencies of the CLIc::CLIc target
+find_dependency(cleKernels)
+find_dependency(Eigen3)
+if(CLIc_BACKEND STREQUAL "OPENCL")
+    find_dependency(OpenCL)
+elseif(CLIc_BACKEND STREQUAL "CUDA")
+    find_dependency(CUDAToolkit)
 endif()
 
-set(@PROJECT_NAME_UPPERCASE@_LIBRARIES @PROJECT_NAME@::@PROJECT_NAME@)
-
-# find GPU Framework (OpenCL, CUDA)
-find_package(OpenCL)
-find_package(clFFT)
-# find_package(CUDA)
-# find_package(CUDAToolkit)
-if (NOT OpenCL_FOUND AND NOT CUDAToolkit_FOUND AND NOT CUDA_FOUND)
-    message(FATAL_ERROR "No GPU framework found (OpenCL, CUDA). Please install one of them in order to compile the librairy.")
+if(NOT TARGET CLIc::CLIc)
+    include("${CMAKE_CURRENT_LIST_DIR}/CLIcTargets.cmake")
 endif()
 
-check_required_components("@PROJECT_NAME@")
+set(CLIC_LIBRARIES CLIc::CLIc)
+
+check_required_components(CLIc)
