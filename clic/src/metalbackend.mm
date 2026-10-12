@@ -152,8 +152,7 @@ MetalBackend::getDevices(const std::string & type) const -> std::vector<Device::
   }
 
   // Devices are created once (each one owns a command queue and a kernel cache)
-  if (device_list_.empty())
-  {
+  std::call_once(devices_once_, [this]() {
     @autoreleasepool
     {
       NS::Array *  devices = MTL::CopyAllDevices();
@@ -175,7 +174,7 @@ MetalBackend::getDevices(const std::string & type) const -> std::vector<Device::
         }
       }
     }
-  }
+  });
 
   if (device_list_.empty())
   {

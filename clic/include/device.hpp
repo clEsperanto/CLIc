@@ -3,8 +3,10 @@
 #include "cache.hpp"
 #include "clic.hpp"
 
+#include <atomic>
 #include <iostream>
 #include <memory>
+#include <mutex>
 #include <sstream>
 #include <vector>
 
@@ -229,20 +231,18 @@ public:
   friend auto
   deviceHash(const Device & device) -> const std::string &
   {
-    if (device.hash_.empty())
-    {
-      device.hash_ = DiskCache::hash(device.getInfo());
-    }
+    std::call_once(device.hash_once_, [&device]() { device.hash_ = DiskCache::hash(device.getInfo()); });
     return device.hash_;
   }
 
 protected:
   std::shared_ptr<ProgramCache> cache = std::make_shared<ProgramCache>(); // compiled kernels of the device
   bool                          initialized = false;
-  bool                          waitFinish = false;
+  std::atomic<bool>             waitFinish{ false }; // read by every finish(), possibly from several threads
 
 private:
-  mutable std::string hash_;
+  mutable std::once_flag hash_once_;
+  mutable std::string    hash_;
 };
 
 #if USE_OPENCL
@@ -382,6 +382,17 @@ public:
   [[nodiscard]] auto
   getCLCommandQueue() const -> const cl_command_queue &;
 
+  /**
+   * @brief Mutex serialising kernel launches on this device: the cached cl_kernel objects are shared by all the
+   *        threads using the device, and clSetKernelArg is not thread-safe on a given cl_kernel. Hold it from the
+   *        first clSetKernelArg to the clEnqueueNDRangeKernel of a launch.
+   */
+  [[nodiscard]] auto
+  getLaunchMutex() const -> std::mutex &
+  {
+    return launchMutex_;
+  }
+
   [[nodiscard]] auto
   getName(bool lowercase = false) const -> std::string override;
 
@@ -410,6 +421,7 @@ private:
   std::shared_ptr<Resources>    clResources = nullptr;
   std::shared_ptr<Context>      clContext = nullptr;
   std::shared_ptr<CommandQueue> clCommandQueue = nullptr;
+  mutable std::mutex            launchMutex_;
 };
 #endif // USE_OPENCL
 
@@ -603,6 +615,9 @@ private:
   void *                      metalDevice = nullptr;
   void *                      metalQueue = nullptr;
   mutable std::vector<void *> pendingCommandBuffers;
+  // Guards pendingCommandBuffers. Held for the whole wait in waitForCompletion(): a thread must not return while
+  // command buffers committed before its call are still running, even if another thread is waiting on them.
+  mutable std::mutex pendingMutex_;
 };
 #endif // USE_METAL
 

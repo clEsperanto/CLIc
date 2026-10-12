@@ -390,8 +390,7 @@ CUDABackend::CUDABackend()
 auto
 CUDABackend::getDevices(const std::string & type) const -> std::vector<Device::Pointer>
 {
-  if (device_list_.empty())
-  {
+  std::call_once(devices_once_, [this]() {
     int deviceCount = 0;
     CU_CHECK(cuDeviceGetCount(&deviceCount), "Error: Failed to get device count");
     device_list_.reserve(static_cast<size_t>(deviceCount));
@@ -407,7 +406,7 @@ CUDABackend::getDevices(const std::string & type) const -> std::vector<Device::P
         std::cerr << "Warning: Skipping CUDA device " << i << ": " << e.what() << std::endl;
       }
     }
-  }
+  });
 
   if (device_list_.empty())
   {

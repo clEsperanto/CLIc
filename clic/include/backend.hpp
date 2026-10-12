@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <array>
+#include <mutex>
 #include <vector>
 
 namespace cle
@@ -410,6 +411,7 @@ class CUDABackend : public Backend
 private:
   // devices are discovered once, on first use, then shared by all the device queries
   mutable std::vector<Device::Pointer> device_list_;
+  mutable std::once_flag               devices_once_; // device_list_ is built on first use, once
 
 public:
   CUDABackend();
@@ -708,6 +710,7 @@ class MetalBackend : public Backend
 private:
   // devices are discovered once, on first use, then shared by all the device queries
   mutable std::vector<Device::Pointer> device_list_;
+  mutable std::once_flag               devices_once_; // device_list_ is built on first use, once
 
 public:
   MetalBackend();

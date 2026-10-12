@@ -28,7 +28,8 @@ ProgramCache::ProgramCache()
 auto
 ProgramCache::put(const std::string & key, const std::shared_ptr<void> & program) -> void
 {
-  auto it = cache_.find(key);
+  const std::lock_guard<std::mutex> lock(mutex_);
+  auto                              it = cache_.find(key);
   if (it != cache_.end())
   {
     // Key already exists: update program and move to most-recently-used
@@ -52,7 +53,8 @@ ProgramCache::put(const std::string & key, const std::shared_ptr<void> & program
 auto
 ProgramCache::get(const std::string & key) -> std::shared_ptr<void>
 {
-  auto it = cache_.find(key);
+  const std::lock_guard<std::mutex> lock(mutex_);
+  auto                              it = cache_.find(key);
   if (it != cache_.end())
   {
     // Move to most-recently-used
@@ -67,18 +69,21 @@ ProgramCache::get(const std::string & key) -> std::shared_ptr<void>
 auto
 ProgramCache::contains(const std::string & key) const -> bool
 {
+  const std::lock_guard<std::mutex> lock(mutex_);
   return cache_.find(key) != cache_.end();
 }
 
 auto
 ProgramCache::size() const -> size_t
 {
+  const std::lock_guard<std::mutex> lock(mutex_);
   return cache_.size();
 }
 
 auto
 ProgramCache::clear() -> void
 {
+  const std::lock_guard<std::mutex> lock(mutex_);
   cache_.clear();
   lru_.clear();
 }

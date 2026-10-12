@@ -123,6 +123,7 @@ MetalDevice::addPendingCommandBuffer(void * command_buffer) const -> void
     }
     return false;
   };
+  const std::lock_guard<std::mutex> lock(pendingMutex_);
   pendingCommandBuffers.erase(std::remove_if(pendingCommandBuffers.begin(), pendingCommandBuffers.end(), done),
                               pendingCommandBuffers.end());
 
@@ -134,6 +135,7 @@ auto
 MetalDevice::waitForCompletion() const -> void
 {
   // Errors are reported, not thrown: this is also called on finalisation
+  const std::lock_guard<std::mutex> lock(pendingMutex_);
   for (void * p : pendingCommandBuffers)
   {
     auto * buffer = static_cast<MTL::CommandBuffer *>(p);

@@ -1049,6 +1049,9 @@ OpenCLBackend::executeKernel(const Device::Pointer &                    device,
 
   const auto cl_kern = reinterpret_cast<cl_kernel>(ocl_kernel.get());
 
+  // The cached kernel is shared by the threads using this device: keep its arguments ours until the launch is enqueued
+  std::unique_lock<std::mutex> launch_lock(opencl_device->getLaunchMutex());
+
   // Set kernel arguments. Memory objects are passed by the address of their handle, scalars by the
   // address of their value (both are what args[i].get() points to, resp. is).
   std::vector<cl_mem> mem_handles(args.size(), nullptr);
@@ -1088,6 +1091,7 @@ OpenCLBackend::executeKernel(const Device::Pointer &                    device,
     }
     throw std::runtime_error(error_msg);
   }
+  launch_lock.unlock(); // the enqueued launch keeps its own copy of the arguments
 
   // Wait for kernel to complete
   opencl_device->finish();

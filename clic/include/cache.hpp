@@ -6,6 +6,7 @@
 #include <iostream>
 #include <list>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -21,6 +22,8 @@ namespace cle
  * Uses a least-recently-used eviction policy with a configurable maximum size.
  * Each device should own its own ProgramCache instance since compiled programs
  * are device-specific.
+ *
+ * Thread-safe: every member function locks the cache, so threads may share a device.
  */
 class ProgramCache
 {
@@ -30,13 +33,13 @@ public:
   ProgramCache();
   ~ProgramCache() = default;
 
-  // Non-copyable, movable
+  // Non-copyable, non-movable (owns a mutex)
   ProgramCache(const ProgramCache &) = delete;
   ProgramCache &
   operator=(const ProgramCache &) = delete;
-  ProgramCache(ProgramCache &&) = default;
+  ProgramCache(ProgramCache &&) = delete;
   ProgramCache &
-  operator=(ProgramCache &&) = default;
+  operator=(ProgramCache &&) = delete;
 
   /**
    * @brief Cache a compiled program with a given key
@@ -82,6 +85,7 @@ private:
     std::list<std::string>::iterator lru_it;
   };
 
+  mutable std::mutex                     mutex_;
   std::unordered_map<std::string, Entry> cache_;
   std::list<std::string>                 lru_;
 };
