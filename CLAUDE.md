@@ -107,9 +107,9 @@ automatically. **Re-run the CMake configure step** after adding files.
 
 ### Backend / Device
 - `BackendManager::getInstance().setBackend("opencl"|"cuda"|"metal")` and then `.getBackend().getDevice(name, "gpu"|"cpu")`.
-  `name` is a case-insensitive substring. With an empty or unmatched name, OpenCL returns the **last** device of the type,
-  CUDA and Metal the **first**. This is intentional, don't unify it: OpenCL often lists a CPU device first, CUDA/Metal
-  have no CPU device. OpenCL device indices restart at 0 per platform, also by design (it's the DLPack `device_id`).
+  `name` is a case-insensitive substring. With an empty name, OpenCL returns the **last** device of the type, CUDA and
+  Metal the **first** (an empty substring matches every device); an unmatched name gives the last device everywhere.
+  This is intentional, don't unify it: OpenCL often lists a CPU device first, CUDA/Metal have no CPU device. OpenCL device indices restart at 0 per platform, also by design (it's the DLPack `device_id`).
   CUDA ignores the type filter; Metal returns nothing for `"cpu"`.
   Only the backend compiled in with `CLE_BACKEND` is usable.
 - Backend-specific code is guarded with `#if USE_OPENCL / USE_CUDA / USE_METAL` (from `clic.hpp`). The compile definitions
@@ -189,8 +189,8 @@ with the old and the new code and diff the results.
 - **tier0**: allocation helpers. `create_like`, `create_dst`, `create_one`, `create_vector`, `create_xy`/`yx`/..., and
   `create_or_check_broadcast_dst`. They allocate `dst` only when it is `nullptr`.
 - **tier1**: a **direct kernel execution** (or an `evaluate` expression) built on `cle_<name>.h`.
-- **tier2 … tier8**: composed **only from lower-tier functions**. Never include a kernel header or call `execute` there.
-  A tier-N function may only call tiers `< N`.
+- **tier2 … tier8**: a function belongs to tier N when it uses a tier N-1 operation (the highest tier it calls + 1).
+  It may only call tiers `< N`, and it may also run its own kernel (`cle_<name>.h` + `execute`) when it needs one.
 - `fft`, `transform`, `statistics` are separate namespaces outside the tier numbering.
 
 ### Function conventions (follow exactly; wrappers rely on them)
