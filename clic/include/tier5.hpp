@@ -79,6 +79,7 @@ connected_components_labeling_func(const Device::Pointer & device,
  *
  * @note 'label', 'in assistant', 'bia-bob-suggestion'
  * @see https://clij.github.io/clij2-docs/reference_connectedComponentsLabelingBox
+ * @see https://doi.org/10.1109/TPDS.2018.2799216
  */
 auto
 connected_component_labeling_func(const Device::Pointer & device,
