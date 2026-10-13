@@ -7,7 +7,7 @@ set(CLIc_BACKEND "@CLE_BACKEND@")
 
 # dependencies of the CLIc::CLIc target
 find_dependency(cleKernels)
-find_dependency(Eigen3)
+find_dependency(Eigen3 HINTS "@CLIC_EIGEN3_DIR_HINT@") # hint: the Eigen CLIc was built with, when not installed with it
 if(CLIc_BACKEND STREQUAL "OPENCL")
     find_dependency(OpenCL)
 elseif(CLIc_BACKEND STREQUAL "CUDA")

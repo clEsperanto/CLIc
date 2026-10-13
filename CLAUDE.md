@@ -79,10 +79,17 @@ deprecated `FetchContent_Populate(<name>)`.
 
 Version tags are set in the root `CMakeLists.txt` (normal variables, override with `-D<name>=<tag>`).
 
+Eigen is only downloaded (from gitlab, which is sometimes down) when `find_package(Eigen3)` finds no Eigen >= 3.4
+(point to one with `-DEigen3_DIR=` / `-DEigen3_ROOT=`, force the download with `-DCMAKE_DISABLE_FIND_PACKAGE_Eigen3=ON`).
+A found Eigen is not installed with CLIc; `CLIcConfig.cmake` gets its location as a hint. The downloaded Eigen 5 gets
+`EIGEN_BUILD_CMAKE_PACKAGE=ON` (else no `Eigen3Config.cmake` is installed) and `CMAKE_EXPORT_PACKAGE_REGISTRY=OFF` (else it
+registers its build tree in `~/.cmake/packages`). Don't `set(BUILD_TESTING OFF)` around it: its `cmake_dependent_option`
+would write that value into the global `BUILD_TESTING` cache entry and disable the tests.
+
 | Dependency | Purpose |
 |---|---|
 | `clij-opencl-kernels` (`CLIC_KERNELS_TAG`) | OpenCL kernel sources, turned into headers `cle_<name>.h` with `constexpr const char* kernel::<name>`, plus `cle_preamble_{cl,cu,metal}.h` |
-| Eigen (`CLIC_EIGEN_TAG`) | Host-side matrix math |
+| Eigen (`CLIC_EIGEN_TAG`, 5.0.1) | Host-side matrix math (`transform.hpp`); a system Eigen >= 3.4 is used first if found |
 | VkFFT (`CLIC_VKFFT_TAG`) | GPU FFT, header-only, target `clic_vkfft`; `VKFFT_BACKEND` follows `CLE_BACKEND` (3=OpenCL, 1=CUDA, 5=Metal) |
 | DLPack | Zero-copy tensor interop (`Array::toDLPack` / `fromDLPack`) |
 | GoogleTest v1.14 | Tests, always built static |

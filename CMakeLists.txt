@@ -17,7 +17,7 @@ if(NOT DEFINED CLIC_KERNELS_TAG)
     set(CLIC_KERNELS_TAG "3.7.0")   # clEsperanto kernels (clij-opencl-kernels)
 endif()
 if(NOT DEFINED CLIC_EIGEN_TAG)
-    set(CLIC_EIGEN_TAG "3.4.0")     # Eigen
+    set(CLIC_EIGEN_TAG "5.0.1")     # Eigen (downloaded only when no suitable Eigen is found, see clic/thirdparty)
 endif()
 if(NOT DEFINED CLIC_VKFFT_TAG)
     set(CLIC_VKFFT_TAG "v1.3.4")    # VkFFT

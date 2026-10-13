@@ -1,18 +1,36 @@
 include(FetchContent)
 
+## Eigen: an installed Eigen >= 3.4 is used when found (point to one with Eigen3_DIR or Eigen3_ROOT), otherwise
+## Eigen ${CLIC_EIGEN_TAG} is downloaded. The user package registry is skipped: it lists stale Eigen build trees.
+# Each Eigen only accepts a request for its own major version (no range spans both): ask for 5, then for 3.4.
+find_package(Eigen3 5 CONFIG QUIET NO_CMAKE_PACKAGE_REGISTRY)
+if(NOT Eigen3_FOUND)
+    find_package(Eigen3 3.4 CONFIG QUIET NO_CMAKE_PACKAGE_REGISTRY)
+endif()
+if(Eigen3_FOUND)
+    message(STATUS "CLIc: using Eigen ${Eigen3_VERSION} from ${Eigen3_DIR}")
+    set_target_properties(Eigen3::Eigen PROPERTIES IMPORTED_GLOBAL TRUE) # visible outside this directory
+    set(CLIC_EIGEN3_DIR_HINT "${Eigen3_DIR}" PARENT_SCOPE)               # for CLIcConfig.cmake (not installed with CLIc)
+endif()
+
 ## Configured dependencies (their CMakeLists.txt runs):
 # - cleKernels: generates the cle_<name>.h kernel headers
-# - Eigen: provides Eigen3::Eigen and the install rules used by the CLIc package and clesperantoj (include/eigen3)
+# - Eigen (when downloaded): provides Eigen3::Eigen and the install rules used by the CLIc package and clesperantoj
+#   (include/eigen3)
 FetchContent_Declare(cleKernels
     GIT_REPOSITORY https://github.com/clEsperanto/clij-opencl-kernels.git
     GIT_TAG        ${CLIC_KERNELS_TAG}
     GIT_SHALLOW    ON
 )
-FetchContent_Declare(eigen
-    GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
-    GIT_TAG        ${CLIC_EIGEN_TAG}
-    GIT_SHALLOW    ON
-)
+if(NOT Eigen3_FOUND)
+    message(STATUS "CLIc: no Eigen >= 3.4 found, downloading Eigen ${CLIC_EIGEN_TAG}")
+    FetchContent_Declare(eigen
+        GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+        GIT_TAG        ${CLIC_EIGEN_TAG}
+        GIT_SHALLOW    ON
+    )
+    set(CLIC_EIGEN_DEPENDENCY eigen)
+endif()
 
 ## Header-only dependencies, downloaded but never configured nor built: SOURCE_SUBDIR points to a folder without
 ## CMakeLists.txt, so FetchContent_MakeAvailable does not call add_subdirectory (their own CMake would build extra code).
@@ -29,13 +47,12 @@ FetchContent_Declare(VkFFT
     SOURCE_SUBDIR  download-only
 )
 
-# Eigen without its tests and documentation. Normal variables, local to this directory (not in the cache);
-# Eigen 3.4 requires CMake 3.5, so CMP0077 must be NEW for its option() calls to accept them.
-set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
-set(BUILD_TESTING OFF)
-set(EIGEN_BUILD_DOC OFF)
+# Downloaded Eigen: install Eigen3Config.cmake (off by default in a subproject, CLIcConfig.cmake needs it) and keep
+# its build tree out of the user package registry (~/.cmake/packages). Its tests and docs are off in a subproject.
+set(EIGEN_BUILD_CMAKE_PACKAGE ON)
+set(CMAKE_EXPORT_PACKAGE_REGISTRY OFF)
 
-FetchContent_MakeAvailable(cleKernels eigen dlpack VkFFT)
+FetchContent_MakeAvailable(cleKernels ${CLIC_EIGEN_DEPENDENCY} dlpack VkFFT)
 
 # Header locations of the download-only dependencies, for clic/CMakeLists.txt and the install rules
 set(CLIC_DLPACK_INCLUDE_DIR "${dlpack_SOURCE_DIR}/include" PARENT_SCOPE)
