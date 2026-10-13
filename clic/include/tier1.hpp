@@ -1860,12 +1860,52 @@ minimum_z_projection_func(const Device::Pointer & device, const Array::Pointer &
   -> Array::Pointer;
 
 
+/**
+ * @name maximum_of_all_pixels
+ * @brief Determines the maximum of all pixels in a given image.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @return float
+ *
+ * @see https://clij.github.io/clij2-docs/reference_maximumOfAllPixels
+ *
+ */
 auto
-minimum_of_masked_pixels_reduction_func(const Device::Pointer & device,
-                                        const Array::Pointer &  src,
-                                        const Array::Pointer &  mask,
-                                        Array::Pointer          reduced_src,
-                                        Array::Pointer          reduced_mask) -> Array::Pointer;
+maximum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
+
+
+/**
+ * @name minimum_of_all_pixels
+ * @brief Determines the minimum of all pixels in a given image.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @return float
+ *
+ * @see https://clij.github.io/clij2-docs/reference_minimumOfAllPixels
+ *
+ */
+auto
+minimum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
+
+
+/**
+ * @name minimum_of_masked_pixels
+ * @brief Determines the minimum intensity in a masked image, but only over pixels that have nonzero values in a
+ * separate mask image.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer &]
+ * @param mask Input mask. [const Array::Pointer &]
+ * @return float
+ *
+ * @see https://clij.github.io/clij2-docs/reference_minimumOfMaskedPixels
+ *
+ */
+auto
+minimum_of_masked_pixels_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & mask) -> float;
+
 
 /**
  * @name mode_box
@@ -3086,6 +3126,34 @@ variance_z_projection_func(const Device::Pointer & device,
 auto
 subtract_image_from_scalar_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst, float scalar)
   -> Array::Pointer;
+
+
+/**
+ * @name sum_of_all_pixels
+ * @brief Determines the sum of all pixels in a given image.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer & ( = None )]
+ * @return float
+ * @see https://clij.github.io/clij2-docs/reference_sumOfAllPixels
+ *
+ */
+auto
+sum_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
+
+
+/**
+ * @name product_of_all_pixels
+ * @brief Determines the product of all pixels in a given image.
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input image to process. [const Array::Pointer & ( = None )]
+ * @return float
+ *
+ * @note 'combine'
+ */
+auto
+product_of_all_pixels_func(const Device::Pointer & device, const Array::Pointer & src) -> float;
 
 
 /**
