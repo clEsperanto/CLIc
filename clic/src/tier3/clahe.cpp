@@ -23,8 +23,8 @@ clahe_func(const Device::Pointer & device,
 
   if (std::isnan(minimum_intensity) || std::isnan(maximum_intensity))
   {
-    minimum_intensity = tier2::minimum_of_all_pixels_func(device, src);
-    maximum_intensity = tier2::maximum_of_all_pixels_func(device, src);
+    minimum_intensity = tier1::minimum_of_all_pixels_func(device, src);
+    maximum_intensity = tier1::maximum_of_all_pixels_func(device, src);
   }
   clip_limit = clip_limit * 255; // top 1% of the histogram for an 8-bit image
 

@@ -36,8 +36,8 @@ auto
 compute_contour_score(const Device::Pointer & device, const Array::Pointer & image, const Array::Pointer & contour, float & c) -> void
 {
   auto masked = tier1::mask_func(device, image, contour, nullptr);
-  auto sum_image_value = tier2::sum_of_all_pixels_func(device, masked);
-  auto sum_contour_value = tier2::sum_of_all_pixels_func(device, contour) + 1e-8;
+  auto sum_image_value = tier1::sum_of_all_pixels_func(device, masked);
+  auto sum_contour_value = tier1::sum_of_all_pixels_func(device, contour) + 1e-8;
   c = -sum_image_value / sum_contour_value;
 }
 
@@ -82,13 +82,6 @@ compute_contour_evolution(const Device::Pointer & device,
 auto
 apply_contour_evolution(const Device::Pointer & device, const Array::Pointer & evolution, Array::Pointer contour) -> void
 {
-  // auto evolution_pos = tier1::greater_constant_func(device, evolution, nullptr, 0);
-  // auto evolution_neg = tier1::smaller_constant_func(device, evolution, nullptr, 0);
-  // auto evolution_or = tier1::binary_or_func(device, evolution_pos, evolution_neg, nullptr);
-  // auto mask = tier1::binary_not_func(device, evolution_or, nullptr);
-  // auto masked_evolution = tier1::mask_func(device, contour, mask, nullptr);
-  // tier1::add_images_weighted_func(device, masked_evolution, evolution_neg, contour, 1, 1);
-
   evaluate(device, "b * (a == 0.0f) + (a < 0.0f)", { contour, evolution }, contour);
 }
 

@@ -19,7 +19,7 @@ merge_touching_labels_func(const Device::Pointer & device, const Array::Pointer 
   tier1::set_row_func(device, touching_matrix, 0, 0);
 
   // check if there are touching labels
-  if (tier2::maximum_of_all_pixels_func(device, touching_matrix) == 0)
+  if (tier1::maximum_of_all_pixels_func(device, touching_matrix) == 0)
   {
     return src;
   }

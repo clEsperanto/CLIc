@@ -54,7 +54,7 @@ centroids_of_labels_func(const Device::Pointer & device,
                          Array::Pointer          centroids_coordinates,
                          bool                    include_background) -> Array::Pointer
 {
-  const auto max_label = tier2::maximum_of_all_pixels_func(device, label_image);
+  const auto max_label = tier1::maximum_of_all_pixels_func(device, label_image);
   const auto nb_labels = static_cast<size_t>(std::max(max_label, 0.0f)) + 1;
 
   if (max_label < 0)

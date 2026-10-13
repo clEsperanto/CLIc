@@ -15,7 +15,7 @@ combine_labels_func(const Device::Pointer & device, const Array::Pointer & src0,
   -> Array::Pointer
 {
   tier0::create_like(src0, dst, dType::LABEL);
-  auto max_label = tier2::maximum_of_all_pixels_func(device, src0);
+  auto max_label = tier1::maximum_of_all_pixels_func(device, src0);
   auto temp1 = tier1::add_image_and_scalar_func(device, src1, nullptr, max_label);
   auto temp2 = tier1::greater_constant_func(device, src1, nullptr, 0);
   temp1 = tier1::mask_func(device, temp1, temp2, nullptr);

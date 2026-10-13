@@ -230,7 +230,7 @@ compute_statistics_per_labels(const Device::Pointer & device, const Array::Point
 {
   // initialize variables, output, and constants
   const auto       offset = 1;
-  const auto       nb_labels = static_cast<size_t>(tier2::maximum_of_all_pixels_func(device, label)) + offset;
+  const auto       nb_labels = static_cast<size_t>(tier1::maximum_of_all_pixels_func(device, label)) + offset;
   const auto       nb_measurements = nb_labels - offset;
   const RangeArray origin = { 0, 0, 0 };
   const RangeArray region = { nb_measurements, 1, 1 };
@@ -436,7 +436,7 @@ compute_neighbors_statistics_per_labels(const Device::Pointer &  device,
 {
   const std::array<float, 6> touch_ratio_thresholds = { 0, 0.16, 0.2, 0.33, 0.5, 0.75 };
 
-  const auto nb_labels = static_cast<size_t>(tier2::maximum_of_all_pixels_func(device, label)) + 1;
+  const auto nb_labels = static_cast<size_t>(tier1::maximum_of_all_pixels_func(device, label)) + 1;
   const auto nb_proximal_distances = proximal_distances.size();
   const auto nb_nearest_neighbor_ns = nearest_neighbor_ns.size();
   const auto nb_dilation_radii = dilation_radii.size();
@@ -499,7 +499,7 @@ compute_neighbors_statistics_per_labels(const Device::Pointer &  device,
   }
 
   auto self_far_distance_matrix = tier1::copy_func(device, distance_matrix, nullptr);
-  auto max_distance = tier2::maximum_of_all_pixels_func(device, distance_matrix);
+  auto max_distance = tier1::maximum_of_all_pixels_func(device, distance_matrix);
   tier1::set_where_x_equals_y_func(device, self_far_distance_matrix, max_distance + 1);
 
   // maximum and average distance of n nearest neighbors # ... and distance of most distant other neighbor
@@ -533,7 +533,7 @@ compute_neighbors_statistics_per_labels(const Device::Pointer &  device,
   tier1::set_row_func(device, touch_portion_matrix, 0, 0);
 
   // set all 0 pixels to a high value to detect the minimum touch count/portion
-  auto max_touch_count = tier2::maximum_of_all_pixels_func(device, touch_count_matrix);
+  auto max_touch_count = tier1::maximum_of_all_pixels_func(device, touch_count_matrix);
   auto touch_count_matrix_0_set_to_high = tier1::replace_intensity_func(device, touch_count_matrix, nullptr, 0, max_touch_count);
   for (auto t : touch_ratio_thresholds)
   {
@@ -546,7 +546,7 @@ compute_neighbors_statistics_per_labels(const Device::Pointer &  device,
   }
 
   auto temp = tier1::nan_to_num_func(device, touch_portion_matrix, nullptr);
-  auto max_touch_portion = tier2::maximum_of_all_pixels_func(device, temp);
+  auto max_touch_portion = tier1::maximum_of_all_pixels_func(device, temp);
   auto touch_portion_matrix_0_set_to_high = tier1::replace_intensity_func(device, temp, nullptr, 0, max_touch_portion);
 
   auto & touch_count_sum = nei_stats["touch_count_sum"];
@@ -624,11 +624,11 @@ compute_neighbors_statistics_per_labels(const Device::Pointer &  device,
     tier1::set_column_func(device, dilated_touch_portion_matrix, 0, 0);
     tier1::set_row_func(device, dilated_touch_portion_matrix, 0, 0);
 
-    auto max_dilated_touch_count = tier2::maximum_of_all_pixels_func(device, dilated_touch_count_matrix);
+    auto max_dilated_touch_count = tier1::maximum_of_all_pixels_func(device, dilated_touch_count_matrix);
     auto dilated_touch_count_matrix_0_set_to_high =
       tier1::replace_intensity_func(device, dilated_touch_count_matrix, nullptr, 0, max_dilated_touch_count);
     auto temp = tier1::nan_to_num_func(device, dilated_touch_portion_matrix, nullptr);
-    auto max_dilated_touch_portion = tier2::maximum_of_all_pixels_func(device, temp);
+    auto max_dilated_touch_portion = tier1::maximum_of_all_pixels_func(device, temp);
     auto dilated_touch_portion_matrix_0_set_to_high = tier1::replace_intensity_func(device, temp, nullptr, 0, max_dilated_touch_portion);
 
     auto & touch_count_sum_dilated_r = nei_stats["touch_count_sum_dilated_r_" + std::to_string(r)];
