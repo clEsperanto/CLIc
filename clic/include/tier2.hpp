@@ -733,6 +733,24 @@ binary_opening_func(const Device::Pointer & device,
                     std::string             connectivity) -> Array::Pointer;
 
 /**
+ * @name skeletonize
+ * @brief Reduces the objects of a binary image to their skeleton: lines one pixel (voxel) wide that keep the topology
+ * of the objects (number of objects, holes and cavities) and their end points. Works on 2D and 3D images; non-zero
+ * pixels are considered foreground. The result is similar, but not identical pixel by pixel, to scikit-image's
+ * skeletonize (Lee method in 3D).
+ *
+ * @param device Device to perform the operation on. [const Device::Pointer &]
+ * @param src Input binary image. [const Array::Pointer &]
+ * @param dst Output skeleton image. [Array::Pointer ( = None )]
+ * @return Array::Pointer
+ *
+ * @note 'binary processing', 'in assistant'
+ * @see https://doi.org/10.1006/cgip.1994.1042
+ */
+auto
+skeletonize_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
+
+/**
  * @name radians_to_degrees
  * @brief Converts radians to degrees.
  *
