@@ -745,7 +745,7 @@ binary_opening_func(const Device::Pointer & device,
  * @return Array::Pointer
  *
  * @note 'binary processing', 'in assistant'
- * @see https://scikit-image.org/docs/stable/api/skimage.morphology.html#skimage.morphology.skeletonize
+ * @see https://doi.org/10.1006/cgip.1994.1042
  */
 auto
 skeletonize_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer;
