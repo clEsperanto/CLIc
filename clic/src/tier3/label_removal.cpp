@@ -59,7 +59,7 @@ remove_labels_on_edges_func(const Device::Pointer & device,
                             bool                    exclude_z) -> Array::Pointer
 {
   tier0::create_like(src, dst, dType::LABEL);
-  auto num_labels = static_cast<uint32_t>(tier2::maximum_of_all_pixels_func(device, src));
+  auto num_labels = static_cast<uint32_t>(tier1::maximum_of_all_pixels_func(device, src));
   auto label_map = Array::create(num_labels + 1, 1, 1, 1, dType::LABEL, mType::BUFFER, src->device());
   tier1::set_ramp_x_func(device, label_map);
 

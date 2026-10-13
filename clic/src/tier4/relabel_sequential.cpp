@@ -18,7 +18,7 @@ relabel_sequential_func(const Device::Pointer & device, const Array::Pointer & s
   tier0::create_like(src, dst);
   // the maximum comes back as a float, rounded to the nearest representable value above 2^24 (possibly below the
   // actual maximum): round it up so that the flag array covers every label
-  const float max_value = tier2::maximum_of_all_pixels_func(device, src);
+  const float max_value = tier1::maximum_of_all_pixels_func(device, src);
   auto        max_label = static_cast<int>(std::nextafter(max_value, std::numeric_limits<float>::infinity()));
   auto        flagged = Array::create(int(max_label + 1), 1, 1, 1, src->dtype(), src->mtype(), src->device());
   flagged->fill(0);

@@ -16,7 +16,7 @@ generate_touch_matrix_func(const Device::Pointer & device, const Array::Pointer 
 {
   if (dst_matrix == nullptr)
   {
-    auto max_label = tier2::maximum_of_all_pixels_func(device, src) + 1;
+    auto max_label = tier1::maximum_of_all_pixels_func(device, src) + 1;
     tier0::create_dst(src, dst_matrix, max_label, max_label, 1, dType::INDEX);
   }
   dst_matrix->fill(0);
@@ -34,7 +34,7 @@ generate_touching_area_matrix_func(const Device::Pointer & device, const Array::
 {
   if (dst_matrix == nullptr)
   {
-    auto max_label = tier2::maximum_of_all_pixels_func(device, src_label) + 1;
+    auto max_label = tier1::maximum_of_all_pixels_func(device, src_label) + 1;
     tier0::create_dst(src_label, dst_matrix, max_label, max_label, 1, dType::UINT32);
   }
   dst_matrix->fill(0);
@@ -67,8 +67,8 @@ generate_binary_overlap_matrix_func(const Device::Pointer & device,
 {
   if (dst == nullptr)
   {
-    auto max_label_0 = tier2::maximum_of_all_pixels_func(device, src0) + 1;
-    auto max_label_1 = tier2::maximum_of_all_pixels_func(device, src1) + 1;
+    auto max_label_0 = tier1::maximum_of_all_pixels_func(device, src0) + 1;
+    auto max_label_1 = tier1::maximum_of_all_pixels_func(device, src1) + 1;
     tier0::create_dst(src0, dst, max_label_0, max_label_1, 1, dType::INDEX);
   }
   dst->fill(0);

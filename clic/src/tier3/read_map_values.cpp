@@ -14,7 +14,7 @@ auto
 read_map_values_func(const Device::Pointer & device, const Array::Pointer & map, const Array::Pointer & label, Array::Pointer dst)
   -> Array::Pointer
 {
-  auto max_label = tier2::maximum_of_all_pixels_func(device, label) + 1;
+  auto max_label = tier1::maximum_of_all_pixels_func(device, label) + 1;
   tier0::create_vector(label, dst, max_label, dType::FLOAT);
   dst->fill(0.0f);
 

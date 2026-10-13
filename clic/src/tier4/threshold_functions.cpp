@@ -36,8 +36,8 @@ struct Histogram
 auto
 _compute_histogram(const Device::Pointer & device, const Array::Pointer & src, int bin) -> Histogram
 {
-  const float  min_intensity = tier2::minimum_of_all_pixels_func(device, src);
-  const float  max_intensity = tier2::maximum_of_all_pixels_func(device, src);
+  const float  min_intensity = tier1::minimum_of_all_pixels_func(device, src);
+  const float  max_intensity = tier1::maximum_of_all_pixels_func(device, src);
   const double range = max_intensity - min_intensity;
 
   // Compute histogram, over [min, min + bin - 1] for one bin per intensity value: the bins above max stay empty
