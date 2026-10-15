@@ -23,7 +23,7 @@ remove_labels_func(const Device::Pointer & device, const Array::Pointer & src, c
 
   labels_list.front() = 0;
   uint32_t count = 1;
-  for (int32_t i = 1; i < labels_list.size(); i++)
+  for (size_t i = 1; i < labels_list.size(); i++)
   {
     if (labels_list[i] == 0)
     {

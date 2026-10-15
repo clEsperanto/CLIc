@@ -8,10 +8,44 @@
 #include "tier4.hpp"
 
 #include "utils.hpp"
+#include <algorithm>
 #include <numeric>
 
 namespace cle::tier4
 {
+
+namespace
+{
+
+// Remove the labels whose value (values[label], compared in float) satisfies `remove`; the background is always kept.
+// The value list holds one value per label, so it is compared on the host: one read-back instead of three kernel
+// launches, and remove_labels_func reads the flags back anyway.
+template <typename Predicate>
+auto
+remove_labels_where(const Device::Pointer & device,
+                    const Array::Pointer &  src,
+                    const Array::Pointer &  values,
+                    Array::Pointer          dst,
+                    Predicate               remove) -> Array::Pointer
+{
+  Array::check_ptr(values, "Error: 'values' is null. Please ensure the provided parameters before calling this function.");
+  auto values_float = values;
+  if (values->dtype() != dType::FLOAT)
+  {
+    values_float = Array::create(values->width(), values->height(), values->depth(), values->dim(), dType::FLOAT, mType::BUFFER, device);
+    tier1::copy_func(device, values, values_float);
+  }
+  std::vector<float> host_values(values->size());
+  values_float->readTo(host_values.data());
+
+  std::vector<uint32_t> flags(host_values.size());
+  std::transform(host_values.begin(), host_values.end(), flags.begin(), [&remove](float v) { return remove(v) ? 1U : 0U; });
+  auto flaglist = Array::create(flags.size(), 1, 1, 1, dType::LABEL, mType::BUFFER, device);
+  flaglist->writeFrom(flags.data());
+  return tier3::remove_labels_func(device, src, flaglist, dst);
+}
+
+} // namespace
 
 auto
 remove_labels_with_map_values_out_of_range_func(const Device::Pointer & device,
@@ -21,11 +55,7 @@ remove_labels_with_map_values_out_of_range_func(const Device::Pointer & device,
                                                 float                   min_value,
                                                 float                   max_value) -> Array::Pointer
 {
-  auto above = tier1::greater_constant_func(device, values, nullptr, max_value);
-  auto below = tier1::smaller_constant_func(device, values, nullptr, min_value);
-  auto flaglist = Array::create(values->size(), 1, 1, 1, dType::LABEL, mType::BUFFER, device);
-  tier1::binary_or_func(device, below, above, flaglist);
-  return tier3::remove_labels_func(device, src, flaglist, dst);
+  return remove_labels_where(device, src, values, dst, [=](float v) { return v < min_value || v > max_value; });
 }
 
 
@@ -37,11 +67,7 @@ remove_labels_with_map_values_within_range_func(const Device::Pointer & device,
                                                 float                   min_value,
                                                 float                   max_value) -> Array::Pointer
 {
-  auto above = tier1::greater_or_equal_constant_func(device, values, nullptr, min_value);
-  auto below = tier1::smaller_or_equal_constant_func(device, values, nullptr, max_value);
-  auto flaglist = Array::create(values->size(), 1, 1, 1, dType::LABEL, mType::BUFFER, device);
-  tier1::binary_and_func(device, below, above, flaglist);
-  return tier3::remove_labels_func(device, src, flaglist, dst);
+  return remove_labels_where(device, src, values, dst, [=](float v) { return v >= min_value && v <= max_value; });
 }
 
 
