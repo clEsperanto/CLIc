@@ -6,11 +6,75 @@
 #include "tier4.hpp"
 #include "tier7.hpp"
 
+#include "statistics.hpp"
 #include "utils.hpp"
+
+#include <algorithm>
+#include <functional>
 #include <numeric>
 
 namespace cle::tier4
 {
+
+namespace
+{
+
+// Replace every label by values[label]; the background (index 0) becomes 0. replace_values does not check bounds, so
+// labels without a value (values shorter than nb_labels) are mapped to 0 instead of being read out of bounds.
+auto
+map_label_values(const Device::Pointer & device,
+                 const Array::Pointer &  labels,
+                 std::vector<float>      values,
+                 size_t                  nb_labels,
+                 Array::Pointer          dst) -> Array::Pointer
+{
+  tier0::create_like(labels, dst, dType::FLOAT);
+  values.resize(std::max(values.size(), nb_labels), 0);
+  values.front() = 0;
+  auto lookup = Array::create(values.size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
+  lookup->writeFrom(values.data());
+  return tier1::replace_values_func(device, labels, lookup, dst);
+}
+
+// Map of a property of the first statistics pass only (see statistics_accumulate in statistics.cpp): plane 3 is the
+// pixel count, 7 the sum, 8 the minimum and 9 the maximum intensity. With divide_by_count, the plane is divided by the
+// pixel count, as compute_statistics_per_labels does (plane 7: mean intensity).
+auto
+first_pass_map(const Device::Pointer & device,
+               const Array::Pointer &  labels,
+               const Array::Pointer &  intensity,
+               Array::Pointer          dst,
+               size_t                  plane,
+               bool                    divide_by_count) -> Array::Pointer
+{
+  const auto         nb_labels = static_cast<size_t>(tier1::maximum_of_all_pixels_func(device, labels)) + 1;
+  const auto         stats = _statistics_per_label(device, labels, intensity, static_cast<int>(nb_labels));
+  std::vector<float> values(nb_labels);
+  stats->readTo(values.data(), { nb_labels, 1, 1 }, { 0, plane, 0 });
+  if (divide_by_count)
+  {
+    std::vector<float> count(nb_labels);
+    stats->readTo(count.data(), { nb_labels, 1, 1 }, { 0, 3, 0 });
+    std::transform(values.begin(), values.end(), count.begin(), values.begin(), std::divides<float>());
+  }
+  return map_label_values(device, labels, std::move(values), nb_labels, dst);
+}
+
+// Map of any property of compute_statistics_per_labels (labels 1 to max, the background is not measured).
+auto
+statistics_map(const Device::Pointer & device,
+               const Array::Pointer &  labels,
+               const Array::Pointer &  intensity,
+               Array::Pointer          dst,
+               const std::string &     property) -> Array::Pointer
+{
+  auto values = compute_statistics_per_labels(device, labels, intensity).at(property);
+  values.insert(values.begin(), 0);
+  const auto nb_labels = values.size();
+  return map_label_values(device, labels, std::move(values), nb_labels, dst);
+}
+
+} // namespace
 
 auto
 parametric_map_func(const Device::Pointer & device,
@@ -19,8 +83,6 @@ parametric_map_func(const Device::Pointer & device,
                     Array::Pointer          dst,
                     const std::string &     target_property) -> Array::Pointer
 {
-  tier0::create_like(labels, dst, dType::FLOAT);
-
   // force property name to lower case
   std::string lower_property_name;
   std::transform(target_property.begin(), target_property.end(), std::back_inserter(lower_property_name), ::tolower);
@@ -31,30 +93,25 @@ parametric_map_func(const Device::Pointer & device,
     throw std::runtime_error("Property '" + target_property + "' not found in statistics");
   }
 
-  auto nb_labels = tier1::maximum_of_all_pixels_func(device, labels) + 1;
-  auto vector = properties.at(lower_property_name);
+  const auto nb_labels = static_cast<size_t>(tier1::maximum_of_all_pixels_func(device, labels)) + 1;
+  auto       vector = properties.at(lower_property_name);
 
-  // check if the vector size matches the number of labels
+  // properties measured without the background start at label 1
   if (vector.size() != nb_labels)
   {
     vector.insert(vector.begin(), 0);
   }
-
-  auto values = Array::create(vector.size(), 1, 1, 1, dType::FLOAT, mType::BUFFER, device);
-  values->writeFrom(vector.data());
-
-  tier1::set_column_func(device, values, 0, 0);
-  return tier1::replace_values_func(device, labels, values, dst);
+  return map_label_values(device, labels, std::move(vector), nb_labels, dst);
 }
 
 
 // -- Label props --
+// The intensity-free maps pass the labels as intensity image: the properties they map do not depend on it.
 
 auto
 pixel_count_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  auto props = tier3::labels_statistics_func(device, src, nullptr, true);
-  return parametric_map_func(device, src, props, dst, std::string("area"));
+  return first_pass_map(device, src, src, dst, 3, false);
 }
 
 auto
@@ -66,22 +123,19 @@ label_pixel_count_map_func(const Device::Pointer & device, const Array::Pointer 
 auto
 extension_ratio_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  auto props = tier3::labels_statistics_func(device, src, nullptr, true);
-  return parametric_map_func(device, src, props, dst, std::string("mean_max_distance_to_centroid_ratio"));
+  return statistics_map(device, src, src, dst, "mean_max_distance_to_centroid_ratio");
 }
 
 auto
 mean_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  auto props = tier3::labels_statistics_func(device, src, nullptr, true);
-  return parametric_map_func(device, src, props, dst, std::string("mean_distance_to_centroid"));
+  return statistics_map(device, src, src, dst, "mean_distance_to_centroid");
 }
 
 auto
 maximum_extension_map_func(const Device::Pointer & device, const Array::Pointer & src, Array::Pointer dst) -> Array::Pointer
 {
-  auto props = tier3::labels_statistics_func(device, src, nullptr, true);
-  return parametric_map_func(device, src, props, dst, std::string("max_distance_to_centroid"));
+  return statistics_map(device, src, src, dst, "max_distance_to_centroid");
 }
 
 // -- Intensity props --
@@ -90,8 +144,7 @@ auto
 mean_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
   -> Array::Pointer
 {
-  auto props = tier3::labels_statistics_func(device, labels, src, true);
-  return parametric_map_func(device, labels, props, dst, std::string("mean_intensity"));
+  return first_pass_map(device, labels, src, dst, 7, true);
 }
 
 auto
@@ -105,16 +158,14 @@ auto
 minimum_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
   -> Array::Pointer
 {
-  auto props = tier3::labels_statistics_func(device, labels, src, true);
-  return parametric_map_func(device, labels, props, dst, std::string("min_intensity"));
+  return first_pass_map(device, labels, src, dst, 8, false);
 }
 
 auto
 maximum_intensity_map_func(const Device::Pointer & device, const Array::Pointer & src, const Array::Pointer & labels, Array::Pointer dst)
   -> Array::Pointer
 {
-  auto props = tier3::labels_statistics_func(device, labels, src, true);
-  return parametric_map_func(device, labels, props, dst, std::string("max_intensity"));
+  return first_pass_map(device, labels, src, dst, 9, false);
 }
 
 auto
@@ -123,8 +174,7 @@ standard_deviation_intensity_map_func(const Device::Pointer & device,
                                       const Array::Pointer &  labels,
                                       Array::Pointer          dst) -> Array::Pointer
 {
-  auto props = tier3::labels_statistics_func(device, labels, src, true);
-  return parametric_map_func(device, labels, props, dst, std::string("standard_deviation_intensity"));
+  return statistics_map(device, labels, src, dst, "standard_deviation_intensity");
 }
 
 

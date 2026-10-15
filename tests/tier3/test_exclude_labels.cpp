@@ -42,6 +42,31 @@ TEST_P(TestExcludeLabels, onList)
   }
 }
 
+TEST_P(TestExcludeLabels, onShortList)
+{
+  // the list only covers labels 0 to 5: labels 6 to 9 have no flag and are kept
+  std::array<uint32_t, 6 * 1 * 1> list = { 0, 0, 0, 1, 0, 0 };
+  std::array<uint32_t, 10>        new_labels = { 0, 1, 2, 0, 3, 4, 5, 6, 7, 8 };
+
+  std::string param = GetParam();
+  cle::BackendManager::getInstance().setBackend(param);
+  auto device = cle::BackendManager::getInstance().getBackend().getDevice("", "gpu");
+  device->setWaitToFinish(true);
+
+  auto gpu_input = cle::Array::create(7, 6, 3, 3, cle::dType::UINT32, cle::mType::BUFFER, device);
+  auto gpu_list = cle::Array::create(6, 1, 1, 1, cle::dType::UINT32, cle::mType::BUFFER, device);
+  gpu_input->writeFrom(input.data());
+  gpu_list->writeFrom(list.data());
+
+  auto gpu_output = cle::tier3::remove_labels_func(device, gpu_input, gpu_list, nullptr);
+
+  gpu_output->readTo(output.data());
+  for (int i = 0; i < output.size(); i++)
+  {
+    EXPECT_EQ(output[i], new_labels[input[i]]);
+  }
+}
+
 TEST_P(TestExcludeLabels, onEdges)
 {
   std::array<uint32_t, 7 * 6 * 3> valid = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
