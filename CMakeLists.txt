@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(CLIc VERSION 0.25.0 LANGUAGES C CXX)
+project(CLIc VERSION 0.25.1 LANGUAGES C CXX)
 
 # CLIc is built on its own (development, CI) or as a subproject of another project (pyclesperanto, clesperantoj, ...).
 # Settings that would change the parent project are only applied when CLIc is the top-level project.

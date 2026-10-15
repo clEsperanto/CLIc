@@ -82,7 +82,10 @@ jobs:
           set -euo pipefail
           BUILD_DIR="${{ runner.workspace }}/build"
 
-          cmake -S "${{ github.workspace }}" -B "$BUILD_DIR" \
+          # The build tree restored from an older run caches GIT_EXECUTABLE: after a runner image update it can point to a
+          # git that no longer runs, and FetchContent fails with "git version 1.6.5 or later required ... Git_VERSION=''".
+          # -UGIT_EXECUTABLE makes CMake search git again.
+          cmake -S "${{ github.workspace }}" -B "$BUILD_DIR" -UGIT_EXECUTABLE \
             -DCMAKE_BUILD_TYPE=${{ matrix.cmake-build-type }} \
             -DCLE_BACKEND=METAL \
             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \

@@ -6,6 +6,34 @@
 
 #include "cle_exclude_on_edges.h"
 
+namespace
+{
+
+// replace_values with a bounds check: a label past the end of the lookup table has no flag, it is kept and numbered
+// after the ones of the table (label - shift), as if the table had been padded with zeros up to the largest label.
+constexpr const char * remove_labels_lookup_kernel = R"CLC(
+  __constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
+
+  __kernel void remove_labels_lookup(
+      IMAGE_src_TYPE    src,
+      IMAGE_lookup_TYPE lookup,
+      IMAGE_dst_TYPE    dst,
+      int               lookup_size,
+      int               shift
+  )
+  {
+    const int x = get_global_id(0);
+    const int y = get_global_id(1);
+    const int z = get_global_id(2);
+
+    const int label = (int) READ_IMAGE(src, sampler, POS_src_INSTANCE(x, y, z, 0)).x;
+    const int value = (label < lookup_size) ? (int) READ_IMAGE(lookup, sampler, POS_lookup_INSTANCE(label, 0, 0, 0)).x : label - shift;
+    WRITE_IMAGE(dst, POS_dst_INSTANCE(x, y, z, 0), CONVERT_dst_PIXEL_TYPE(value));
+  }
+)CLC";
+
+} // namespace
+
 namespace cle::tier3
 {
 
@@ -23,7 +51,7 @@ remove_labels_func(const Device::Pointer & device, const Array::Pointer & src, c
 
   labels_list.front() = 0;
   uint32_t count = 1;
-  for (int32_t i = 1; i < labels_list.size(); i++)
+  for (size_t i = 1; i < labels_list.size(); i++)
   {
     if (labels_list[i] == 0)
     {
@@ -36,10 +64,18 @@ remove_labels_func(const Device::Pointer & device, const Array::Pointer & src, c
     }
   }
 
-  auto index_list = Array::create(list->size(), 1, 1, 1, dType::LABEL, mType::BUFFER, src->device());
+  auto index_list = Array::create(labels_list.size(), 1, 1, 1, dType::LABEL, mType::BUFFER, src->device());
   index_list->writeFrom(labels_list.data());
 
-  tier1::replace_values_func(device, src, index_list, dst);
+  // labels from labels_list.size() on are numbered from `count` on
+  const int           lookup_size = static_cast<int>(labels_list.size());
+  const KernelInfo    kernel = { "remove_labels_lookup", remove_labels_lookup_kernel };
+  const ParameterList params = { { "src", src },
+                                 { "lookup", index_list },
+                                 { "dst", dst },
+                                 { "lookup_size", lookup_size },
+                                 { "shift", lookup_size - static_cast<int>(count) } };
+  execute(device, kernel, params, { dst->width(), dst->height(), dst->depth() });
   return dst;
 }
 

@@ -171,7 +171,10 @@ jobs:
             CMAKE_OPTS="$CMAKE_OPTS -DCLE_BACKEND=OPENCL"
           fi
 
-          cmake -S "${{ github.workspace }}" -B "$BUILD_DIR" $CMAKE_OPTS ${{ matrix.cmake-build-flag }}
+          # The build tree restored from an older run caches GIT_EXECUTABLE: after a runner image update it can point to a
+          # git that no longer runs, and FetchContent fails with "git version 1.6.5 or later required ... Git_VERSION=''".
+          # -UGIT_EXECUTABLE makes CMake search git again.
+          cmake -S "${{ github.workspace }}" -B "$BUILD_DIR" -UGIT_EXECUTABLE $CMAKE_OPTS ${{ matrix.cmake-build-flag }}
           cmake --build "$BUILD_DIR" --parallel ${{ env.cmake-parallel }} --config Release
         shell: bash -l {0}
         env:

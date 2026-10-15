@@ -87,8 +87,12 @@ jobs:
       - name: Configure CMake
         run: |
           set -euo pipefail
+          # The build tree restored from an older run caches GIT_EXECUTABLE: after a runner image update it can point to a
+          # git that no longer runs, and FetchContent fails with "git version 1.6.5 or later required ... Git_VERSION=''".
+          # -UGIT_EXECUTABLE makes CMake search git again.
           cmake -S "${{ github.workspace }}" \
                  -B "${{ runner.workspace }}/build" \
+                 -UGIT_EXECUTABLE \
                  -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} \
                  -DBUILD_COVERAGE=ON \
                  -DOpenCL_LIBRARY=/usr/lib/x86_64-linux-gnu/libOpenCL.so \
