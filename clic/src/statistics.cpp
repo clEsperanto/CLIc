@@ -65,6 +65,15 @@ constexpr const char * atomic_float_helpers_source = R"CLC(
   }
 )CLC";
 
+// The accumulation kernels below do not issue atomics per pixel: a large label (the background when it is included,
+// which is most of the image) would make every thread hammer the same few addresses with compare-and-swap loops, which
+// serialises the whole launch (seconds on a 1k x 1k image). Instead:
+//  - each thread walks a run of `chunk` consecutive pixels along x and accumulates in registers, and only flushes to
+//    global memory when the label changes (labels come in runs along x);
+//  - the flushes go to one of `nb_slots` copies of the output (chosen per run), merged afterwards by
+//    statistics_merge_slots, which divides the contention on a single label by nb_slots.
+// Output layout: dst[(slot * nb_planes + plane) * nb_labels + label].
+
 constexpr const char * statistics_accumulate_kernel_body = R"CLC(
   __constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
 
@@ -73,42 +82,82 @@ constexpr const char * statistics_accumulate_kernel_body = R"CLC(
       IMAGE_src_image_TYPE src_image,
       IMAGE_dst_TYPE        dst,
       int                   nb_labels,
-      int                   sum_background
+      int                   chunk,
+      int                   nb_slots
   )
   {
-    const int x = get_global_id(0);
+    const int cx = get_global_id(0);
     const int y = get_global_id(1);
     const int z = get_global_id(2);
 
+    const int w = GET_IMAGE_WIDTH(src_label);
+    const int h = GET_IMAGE_HEIGHT(src_label);
+    const int x0 = cx * chunk;
     // CUDA launches whole blocks: threads beyond the image would accumulate the clamped edge pixels
-    if (x >= GET_IMAGE_WIDTH(src_label) || y >= GET_IMAGE_HEIGHT(src_label) || z >= GET_IMAGE_DEPTH(src_label))
+    if (x0 >= w || y >= h || z >= GET_IMAGE_DEPTH(src_label))
       return;
+    const int x1 = min(x0 + chunk, w);
+    const int nb_chunks = (w + chunk - 1) / chunk;
+    const int slot_offset = (((z * h + y) * nb_chunks + cx) % nb_slots) * 16 * nb_labels;
 
-    const int label = (int) READ_IMAGE(src_label, sampler, POS_src_label_INSTANCE(x, y, z, 0)).x;
-    if (label < 0 || (label == 0 && sum_background == 0))
-      return;
+    int   current = 0;
+    float sum_x = 0, sum_y = 0, sum_z = 0, count = 0;
+    float sum_ix = 0, sum_iy = 0, sum_iz = 0, sum_i = 0;
+    float min_i = 0, max_i = 0;
+    int   min_x = 0, max_x = 0;
+    for (int x = x0; x <= x1; ++x)
+    {
+      // x == x1 is a sentinel that flushes the last run
+      const int label = (x < x1) ? (int) READ_IMAGE(src_label, sampler, POS_src_label_INSTANCE(x, y, z, 0)).x : -1;
+      if (label != current)
+      {
+        if (current > 0)
+        {
+          const int base = slot_offset + current;
+          atomic_add_float(&dst[base + 0 * nb_labels], sum_x);
+          atomic_add_float(&dst[base + 1 * nb_labels], sum_y);
+          atomic_add_float(&dst[base + 2 * nb_labels], sum_z);
+          atomic_add_float(&dst[base + 3 * nb_labels], count);
+          atomic_add_float(&dst[base + 4 * nb_labels], sum_ix);
+          atomic_add_float(&dst[base + 5 * nb_labels], sum_iy);
+          atomic_add_float(&dst[base + 6 * nb_labels], sum_iz);
+          atomic_add_float(&dst[base + 7 * nb_labels], sum_i);
+          atomic_min_float(&dst[base + 8 * nb_labels], min_i);
+          atomic_max_float(&dst[base + 9 * nb_labels], max_i);
+          atomic_min_float(&dst[base + 10 * nb_labels], (float) min_x);
+          atomic_max_float(&dst[base + 11 * nb_labels], (float) max_x);
+          atomic_min_float(&dst[base + 12 * nb_labels], (float) y);
+          atomic_max_float(&dst[base + 13 * nb_labels], (float) y);
+          atomic_min_float(&dst[base + 14 * nb_labels], (float) z);
+          atomic_max_float(&dst[base + 15 * nb_labels], (float) z);
+        }
+        current = label;
+        sum_x = 0; sum_y = 0; sum_z = 0; count = 0;
+        sum_ix = 0; sum_iy = 0; sum_iz = 0; sum_i = 0;
+        min_x = x;
+        if (current > 0)
+        {
+          const float value = (float) READ_IMAGE(src_image, sampler, POS_src_image_INSTANCE(x, y, z, 0)).x;
+          min_i = value;
+          max_i = value;
+        }
+      }
+      if (current <= 0)
+        continue;
 
-    const float value = (float) READ_IMAGE(src_image, sampler, POS_src_image_INSTANCE(x, y, z, 0)).x;
-
-    atomic_add_float(&dst[label + 0 * nb_labels], (float) x);
-    atomic_add_float(&dst[label + 1 * nb_labels], (float) y);
-    atomic_add_float(&dst[label + 2 * nb_labels], (float) z);
-    atomic_add_float(&dst[label + 3 * nb_labels], 1.0f);
-
-    atomic_add_float(&dst[label + 4 * nb_labels], (float) x * value);
-    atomic_add_float(&dst[label + 5 * nb_labels], (float) y * value);
-    atomic_add_float(&dst[label + 6 * nb_labels], (float) z * value);
-    atomic_add_float(&dst[label + 7 * nb_labels], value);
-
-    atomic_min_float(&dst[label + 8 * nb_labels], value);
-    atomic_max_float(&dst[label + 9 * nb_labels], value);
-
-    atomic_min_float(&dst[label + 10 * nb_labels], (float) x);
-    atomic_max_float(&dst[label + 11 * nb_labels], (float) x);
-    atomic_min_float(&dst[label + 12 * nb_labels], (float) y);
-    atomic_max_float(&dst[label + 13 * nb_labels], (float) y);
-    atomic_min_float(&dst[label + 14 * nb_labels], (float) z);
-    atomic_max_float(&dst[label + 15 * nb_labels], (float) z);
+      const float value = (float) READ_IMAGE(src_image, sampler, POS_src_image_INSTANCE(x, y, z, 0)).x;
+      sum_x += (float) x;
+      sum_y += (float) y;
+      sum_z += (float) z;
+      count += 1.0f;
+      sum_ix += (float) x * value;
+      sum_iy += (float) y * value;
+      sum_iz += (float) z * value;
+      sum_i += value;
+      min_i = min(min_i, value);
+      max_i = max(max_i, value);
+      max_x = x;
+    }
   }
 )CLC";
 
@@ -121,86 +170,210 @@ constexpr const char * std_accumulate_kernel_body = R"CLC(
       IMAGE_src_image_TYPE      src_image,
       IMAGE_dst_TYPE            dst,
       int                       nb_labels,
-      int                       sum_background
+      int                       chunk,
+      int                       nb_slots
   )
   {
-    const int x = get_global_id(0);
+    const int cx = get_global_id(0);
     const int y = get_global_id(1);
     const int z = get_global_id(2);
 
+    const int w = GET_IMAGE_WIDTH(src_label);
+    const int h = GET_IMAGE_HEIGHT(src_label);
+    const int x0 = cx * chunk;
     // CUDA launches whole blocks: threads beyond the image would accumulate the clamped edge pixels
-    if (x >= GET_IMAGE_WIDTH(src_label) || y >= GET_IMAGE_HEIGHT(src_label) || z >= GET_IMAGE_DEPTH(src_label))
+    if (x0 >= w || y >= h || z >= GET_IMAGE_DEPTH(src_label))
       return;
+    const int x1 = min(x0 + chunk, w);
+    const int nb_chunks = (w + chunk - 1) / chunk;
+    const int slot_offset = (((z * h + y) * nb_chunks + cx) % nb_slots) * 6 * nb_labels;
 
-    const int label = (int) READ_IMAGE(src_label, sampler, POS_src_label_INSTANCE(x, y, z, 0)).x;
-    if (label < 0 || (label == 0 && sum_background == 0))
-      return;
+    int   current = 0;
+    float centroid_x = 0, centroid_y = 0, centroid_z = 0;
+    float mass_center_x = 0, mass_center_y = 0, mass_center_z = 0;
+    float mean_intensity = 0, area = 1;
+    float sum_cd = 0, sum_md = 0, sum_diff = 0, count = 0, max_cd = 0, max_md = 0;
+    for (int x = x0; x <= x1; ++x)
+    {
+      // x == x1 is a sentinel that flushes the last run
+      const int label = (x < x1) ? (int) READ_IMAGE(src_label, sampler, POS_src_label_INSTANCE(x, y, z, 0)).x : -1;
+      if (label != current)
+      {
+        if (current > 0)
+        {
+          const int base = slot_offset + current;
+          atomic_add_float(&dst[base + 0 * nb_labels], sum_cd);
+          atomic_add_float(&dst[base + 1 * nb_labels], sum_md);
+          atomic_add_float(&dst[base + 2 * nb_labels], sum_diff);
+          atomic_add_float(&dst[base + 3 * nb_labels], count);
+          atomic_max_float(&dst[base + 4 * nb_labels], max_cd);
+          atomic_max_float(&dst[base + 5 * nb_labels], max_md);
+        }
+        current = label;
+        sum_cd = 0; sum_md = 0; sum_diff = 0; count = 0; max_cd = 0; max_md = 0;
+        if (current > 0)
+        {
+          centroid_x = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(current, 0, 0, 0)).x;
+          centroid_y = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(current, 1, 0, 0)).x;
+          centroid_z = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(current, 2, 0, 0)).x;
+          mass_center_x = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(current, 3, 0, 0)).x;
+          mass_center_y = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(current, 4, 0, 0)).x;
+          mass_center_z = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(current, 5, 0, 0)).x;
+          mean_intensity = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(current, 6, 0, 0)).x;
+          area = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(current, 7, 0, 0)).x;
+        }
+      }
+      if (current <= 0)
+        continue;
 
-    const float value = (float) READ_IMAGE(src_image, sampler, POS_src_image_INSTANCE(x, y, z, 0)).x;
-
-    const float centroid_x = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(label, 0, 0, 0)).x;
-    const float centroid_y = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(label, 1, 0, 0)).x;
-    const float centroid_z = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(label, 2, 0, 0)).x;
-    const float mass_center_x = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(label, 3, 0, 0)).x;
-    const float mass_center_y = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(label, 4, 0, 0)).x;
-    const float mass_center_z = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(label, 5, 0, 0)).x;
-    const float mean_intensity = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(label, 6, 0, 0)).x;
-    const float area = READ_IMAGE(src_statistics, sampler, POS_src_statistics_INSTANCE(label, 7, 0, 0)).x;
-
-    const float centroid_distance = sqrt(
-      pow((float)x - centroid_x, (float)2.0) +
-      pow((float)y - centroid_y, (float)2.0) +
-      pow((float)z - centroid_z, (float)2.0)
-    );
-    const float mass_center_distance = sqrt(
-      pow((float)x - mass_center_x, (float)2.0) +
-      pow((float)y - mass_center_y, (float)2.0) +
-      pow((float)z - mass_center_z, (float)2.0)
-    );
-    const float intensity_difference_squared = pow(value - mean_intensity, (float)2.0) / area;
-
-    atomic_add_float(&dst[label + 0 * nb_labels], centroid_distance);
-    atomic_add_float(&dst[label + 1 * nb_labels], mass_center_distance);
-    atomic_add_float(&dst[label + 2 * nb_labels], intensity_difference_squared);
-    atomic_add_float(&dst[label + 3 * nb_labels], 1.0f);
-    atomic_max_float(&dst[label + 4 * nb_labels], centroid_distance);
-    atomic_max_float(&dst[label + 5 * nb_labels], mass_center_distance);
+      const float value = (float) READ_IMAGE(src_image, sampler, POS_src_image_INSTANCE(x, y, z, 0)).x;
+      const float centroid_distance = sqrt(
+        pow((float)x - centroid_x, (float)2.0) +
+        pow((float)y - centroid_y, (float)2.0) +
+        pow((float)z - centroid_z, (float)2.0)
+      );
+      const float mass_center_distance = sqrt(
+        pow((float)x - mass_center_x, (float)2.0) +
+        pow((float)y - mass_center_y, (float)2.0) +
+        pow((float)z - mass_center_z, (float)2.0)
+      );
+      sum_cd += centroid_distance;
+      sum_md += mass_center_distance;
+      sum_diff += pow(value - mean_intensity, (float)2.0) / area;
+      count += 1.0f;
+      max_cd = max(max_cd, centroid_distance);
+      max_md = max(max_md, mass_center_distance);
+    }
   }
 )CLC";
+
+// Initialise the slots (sums to 0; min/max planes to +/-big) and merge them into the first one.
+// Planes >= nb_sums are extrema: with alternate_min_max, even planes are minima and odd planes maxima, otherwise maxima.
+constexpr const char * statistics_init_slots_kernel = R"CLC(
+  __kernel void statistics_init_slots(
+      IMAGE_dst_TYPE dst,
+      int            nb_labels,
+      int            nb_planes,
+      int            nb_sums,
+      int            alternate_min_max,
+      float          big
+  )
+  {
+    const int label = get_global_id(0);
+    const int row = get_global_id(1);
+    if (label >= nb_labels || row >= GET_IMAGE_HEIGHT(dst))
+      return;
+    const int plane = row % nb_planes;
+    float value = 0;
+    if (plane >= nb_sums && alternate_min_max)
+      value = (plane % 2 == 0) ? big : -big;
+    dst[row * nb_labels + label] = value;
+  }
+)CLC";
+
+constexpr const char * statistics_merge_slots_kernel = R"CLC(
+  __kernel void statistics_merge_slots(
+      IMAGE_src_TYPE src,
+      IMAGE_dst_TYPE dst,
+      int            nb_labels,
+      int            nb_planes,
+      int            nb_sums,
+      int            alternate_min_max,
+      int            nb_slots
+  )
+  {
+    const int label = get_global_id(0);
+    const int plane = get_global_id(1);
+    if (label >= nb_labels || plane >= nb_planes)
+      return;
+    float acc = src[plane * nb_labels + label];
+    for (int s = 1; s < nb_slots; ++s)
+    {
+      const float v = src[(s * nb_planes + plane) * nb_labels + label];
+      if (plane < nb_sums)
+        acc += v;
+      else if (alternate_min_max && plane % 2 == 0)
+        acc = min(acc, v);
+      else
+        acc = max(acc, v);
+    }
+    dst[plane * nb_labels + label] = acc;
+  }
+)CLC";
+
+// Pixels per thread along x, and memory budget (in floats) for the output slots
+constexpr int    statistics_chunk = 64;
+constexpr size_t statistics_slot_budget = size_t(1) << 22;
 
 } // namespace
 
 namespace cle
 {
 
+// Run an accumulation kernel (statistics_accumulate / std_accumulate) through the slotted buffer and merge the slots.
+static auto
+_accumulate_per_label(const Device::Pointer & device,
+                      const std::string &     name,
+                      const char *            body,
+                      ParameterList           params,
+                      const Array::Pointer &  label,
+                      int                     nb_labels,
+                      int                     nb_planes,
+                      int                     nb_sums,
+                      int                     alternate_min_max) -> Array::Pointer
+{
+  const size_t per_slot = static_cast<size_t>(nb_planes) * static_cast<size_t>(nb_labels);
+  const int    nb_slots = static_cast<int>(std::clamp<size_t>(statistics_slot_budget / per_slot, 1, 64));
+
+  auto             slots = Array::create(nb_labels, nb_planes * nb_slots, 1, 2, dType::FLOAT, mType::BUFFER, device);
+  const KernelInfo kernel_slots = { "statistics_init_slots", statistics_init_slots_kernel };
+  execute(device,
+          kernel_slots,
+          { { "dst", slots },
+            { "nb_labels", nb_labels },
+            { "nb_planes", nb_planes },
+            { "nb_sums", nb_sums },
+            { "alternate_min_max", alternate_min_max },
+            { "big", std::numeric_limits<float>::max() } },
+          { slots->width(), slots->height(), 1 });
+
+  params.push_back({ "dst", slots });
+  params.push_back({ "nb_labels", nb_labels });
+  params.push_back({ "chunk", statistics_chunk });
+  params.push_back({ "nb_slots", nb_slots });
+  const KernelInfo kernel = { name, std::string(atomic_float_helpers_source) + body };
+  const RangeArray range = { (label->width() + statistics_chunk - 1) / statistics_chunk, label->height(), label->depth() };
+  execute(device, kernel, params, range);
+
+  auto             result = Array::create(nb_labels, nb_planes, 1, 2, dType::FLOAT, mType::BUFFER, device);
+  const KernelInfo kernel_merge = { "statistics_merge_slots", statistics_merge_slots_kernel };
+  execute(device,
+          kernel_merge,
+          { { "src", slots },
+            { "dst", result },
+            { "nb_labels", nb_labels },
+            { "nb_planes", nb_planes },
+            { "nb_sums", nb_sums },
+            { "alternate_min_max", alternate_min_max },
+            { "nb_slots", nb_slots } },
+          { result->width(), result->height(), 1 });
+  return result;
+}
 
 auto
 _statistics_per_label(const Device::Pointer & device, const Array::Pointer & label, const Array::Pointer & intensity, int nb_labels)
   -> Array::Pointer
 {
-  constexpr float min_value = std::numeric_limits<float>::lowest();
-  constexpr float max_value = std::numeric_limits<float>::max();
-
-  // 16 planes per label (see statistics_accumulate above), no more per-height intermediate: the
-  // kernel below accumulates directly over the whole 3D volume in a single launch.
-  auto cumulative_stats_per_label = Array::create(nb_labels, 16, 1, 2, dType::FLOAT, mType::BUFFER, device);
-  cumulative_stats_per_label->fill(0);
-  for (int i = 8; i <= 15; ++i)
-  {
-    float value = (i % 2 == 0) ? max_value : min_value;
-    tier1::set_row_func(device, cumulative_stats_per_label, i, value);
-  }
-
-  const KernelInfo    kernel = { "statistics_accumulate", std::string(atomic_float_helpers_source) + statistics_accumulate_kernel_body };
-  const RangeArray    range = { label->width(), label->height(), label->depth() };
-  const ParameterList params = { { "src_label", label },
-                                 { "src_image", intensity },
-                                 { "dst", cumulative_stats_per_label },
-                                 { "nb_labels", nb_labels },
-                                 { "sum_background", 0 } };
-  execute(device, kernel, params, range);
-
-  return cumulative_stats_per_label;
+  // 16 planes per label (see statistics_accumulate above): 8 sums, then min/max pairs
+  return _accumulate_per_label(device,
+                               "statistics_accumulate",
+                               statistics_accumulate_kernel_body,
+                               { { "src_label", label }, { "src_image", intensity } },
+                               label,
+                               nb_labels,
+                               16,
+                               8,
+                               1);
 }
 
 auto
@@ -210,18 +383,17 @@ _std_per_label(const Device::Pointer & device,
                const Array::Pointer &  intensity,
                int                     nb_labels) -> Array::Pointer
 {
-  // 6 planes per label (see std_accumulate above), single full-volume launch; must run strictly
-  // after `statistics` (centroid/mass-center/mean-intensity/area) has been finalized.
-  auto label_statistics_stack = Array::create(nb_labels, 6, 1, 2, dType::FLOAT, mType::BUFFER, device);
-  label_statistics_stack->fill(0);
-
-  const KernelInfo    kernel_std = { "std_accumulate", std::string(atomic_float_helpers_source) + std_accumulate_kernel_body };
-  const RangeArray    range_std = { label->width(), label->height(), label->depth() };
-  const ParameterList params_std = { { "src_statistics", statistics },  { "src_label", label },     { "src_image", intensity },
-                                     { "dst", label_statistics_stack }, { "nb_labels", nb_labels }, { "sum_background", 0 } };
-  execute(device, kernel_std, params_std, range_std);
-
-  return label_statistics_stack;
+  // 6 planes per label (see std_accumulate above): 4 sums, then 2 maxima; must run strictly after `statistics`
+  // (centroid/mass-center/mean-intensity/area) has been finalized.
+  return _accumulate_per_label(device,
+                               "std_accumulate",
+                               std_accumulate_kernel_body,
+                               { { "src_statistics", statistics }, { "src_label", label }, { "src_image", intensity } },
+                               label,
+                               nb_labels,
+                               6,
+                               4,
+                               0);
 }
 
 auto
